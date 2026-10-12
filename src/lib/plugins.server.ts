@@ -317,7 +317,7 @@ export async function setPluginEnabled(
   // safe): a flagged manifest needs a recorded approval for its exact
   // version, else enabling is refused before any write.
   if (enabled) {
-    const { scanPackage } = await import("./package-scan");
+    const { scanPackage, hasSecretFinding } = await import("./package-scan");
     const manifestJson = JSON.stringify(
       (row as { manifest?: unknown }).manifest ?? {},
     );
@@ -325,6 +325,14 @@ export async function setPluginEnabled(
       { path: "plugin.json", bytes: new TextEncoder().encode(manifestJson) },
     ]);
     if (report.verdict === "flagged") {
+      // Severity policy (Tier-0): secret content is NEVER
+      // merchant-approvable — refuse even when a legacy `plugin.approved`
+      // row exists (written before the Tier-0 ban).
+      if (hasSecretFinding(report)) {
+        throw new Error(
+          `plugin.approval_forbidden:${report.findings.map((f) => f.code).join(",")}`,
+        );
+      }
       const currentVersion = (row as { manifest_version?: unknown })
         .manifest_version;
       const { data: approvals } = await db
@@ -379,6 +387,11 @@ export async function setPluginEnabled(
  * installed manifest; approval covers that exact version only (a later
  * update needs its own approval). Returns, never throws for missing audit
  * transport (audit best-effort per `auditAction`).
+ *
+ * Severity policy (Tier-0, see `package-scan.ts` header): `secret`
+ * (credential-theft) findings are NEVER merchant-approvable — a fresh scan
+ * of the installed manifest that yields one refuses with
+ * `plugin.approval_forbidden` and writes no audit row.
  */
 export async function approvePluginVersion(
   db: Client,
@@ -389,7 +402,7 @@ export async function approvePluginVersion(
 ) {
   const { data: row } = await db
     .from("plugin_state")
-    .select("manifest_version")
+    .select("manifest, manifest_version")
     .eq("merchant_id", merchantId)
     .eq("plugin_id", pluginId)
     .maybeSingle();
@@ -397,6 +410,18 @@ export async function approvePluginVersion(
   const current = (row as { manifest_version?: unknown }).manifest_version;
   if (current !== manifestVersion)
     throw new Error("plugin_version_mismatch");
+  const { scanPackage, hasSecretFinding } = await import("./package-scan");
+  const manifestJson = JSON.stringify(
+    (row as { manifest?: unknown }).manifest ?? {},
+  );
+  const report = scanPackage([
+    { path: "plugin.json", bytes: new TextEncoder().encode(manifestJson) },
+  ]);
+  if (hasSecretFinding(report)) {
+    throw new Error(
+      `plugin.approval_forbidden:${report.findings.map((f) => f.code).join(",")}`,
+    );
+  }
   await auditAction(
     db,
     merchantId,

@@ -1154,6 +1154,12 @@ async function materializeLegacyVersion(
  * id-bound approval could never cover the row that actually goes live —
  * while any content change (new hash) correctly needs fresh approval. The
  * theme must belong to the caller and the version to the theme.
+ *
+ * Severity policy (Tier-0, see `package-scan.ts` header): `secret`
+ * (credential-theft) findings are NEVER merchant-approvable — a fresh scan
+ * of the target version that yields one refuses with
+ * `theme.approval_forbidden` and writes no audit row. Tier-1 findings
+ * (`svg-script`, `no-plugin-territory.*`) stay approvable.
  */
 export async function approveThemeVersion(
   db: Client,
@@ -1177,6 +1183,19 @@ export async function approveThemeVersion(
     );
   }
   const templates = (version as { templates?: unknown }).templates;
+  const { scanPackage, hasSecretFinding } = await import("../package-scan");
+  const report = scanPackage([
+    {
+      path: "templates.json",
+      bytes: new TextEncoder().encode(JSON.stringify(templates ?? {})),
+    },
+  ]);
+  if (hasSecretFinding(report)) {
+    throw new ThemeDeskError(
+      "theme.approval_forbidden",
+      `Version can never be approved: ${report.findings.map((f) => f.code).join(", ")}.`,
+    );
+  }
   await db.from("theme_audit").insert({
     merchant_id: merchantId,
     theme_id: themeId,
@@ -1212,7 +1231,7 @@ async function assertVersionApproved(
     .eq("id", versionId)
     .maybeSingle();
   const templates = (version as { templates?: unknown } | null)?.templates;
-  const { scanPackage } = await import("../package-scan");
+  const { scanPackage, hasSecretFinding } = await import("../package-scan");
   const report = scanPackage([
     {
       path: "templates.json",
@@ -1220,6 +1239,15 @@ async function assertVersionApproved(
     },
   ]);
   if (report.verdict === "clean") return;
+  // Severity policy (Tier-0): secret content is NEVER merchant-approvable —
+  // refuse even when a legacy `theme.approved` row exists (written before
+  // the Tier-0 ban, when approval bound any flagged content).
+  if (hasSecretFinding(report)) {
+    throw new ThemeDeskError(
+      "theme.approval_forbidden",
+      `Version can never be approved: ${report.findings.map((f) => f.code).join(", ")}.`,
+    );
+  }
   const { data: approvals } = await db
     .from("theme_audit")
     .select("after")

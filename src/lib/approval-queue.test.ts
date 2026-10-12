@@ -252,35 +252,109 @@ describe("pendingApprovals", () => {
     expect(foreign.plugins).toHaveLength(1);
   });
 
-  it("theme approval removes the theme row from the queue", async () => {
+  it("theme approval of secret content is forbidden and the row stays queued", async () => {
     const { approveThemeVersion } = await import("./themes/appearance.server");
     const db = queueDb();
+    expect(
+      (await pendingApprovals(db.asClient(), MERCHANT)).themes,
+    ).toHaveLength(1);
+    // Tier-0 (secret) is never merchant-approvable: refusal writes no audit.
+    const err = await approveThemeVersion(
+      db.asClient(),
+      MERCHANT,
+      THEME,
+      VERSION,
+      ACTOR,
+    ).catch((e) => e);
+    expect((err as { code?: string }).code ?? String(err)).toMatch(
+      /approval_forbidden/,
+    );
+    expect(
+      db.rows("theme_audit").filter((a) => a.action === "theme.approved"),
+    ).toHaveLength(0);
+    const out = await pendingApprovals(db.asClient(), MERCHANT);
+    expect(out.themes).toHaveLength(1);
+    // The plugin half is untouched by a theme approval refusal.
+    expect(out.plugins).toHaveLength(1);
+  });
+
+  it("theme approval of approvable content removes the theme row from the queue", async () => {
+    const { approveThemeVersion } = await import("./themes/appearance.server");
+    const PIXEL_TEMPLATES = {
+      index: {
+        header: [],
+        main: [
+          {
+            id: "p1",
+            type: "html",
+            props: {
+              body: '<img src="https://cdn.example.com/p.gif" width="1" height="1">',
+            },
+          },
+        ],
+        footer: [],
+      },
+    };
+    const db = fakeDb({
+      tables: {
+        store_themes: [
+          { id: THEME, merchant_id: MERCHANT, name: "Pixel Theme", is_active: false },
+        ],
+        theme_drafts: [
+          {
+            merchant_id: MERCHANT,
+            theme_id: THEME,
+            revision: 2,
+            templates: PIXEL_TEMPLATES,
+            tokens: {},
+          },
+        ],
+        theme_versions: [
+          {
+            id: VERSION,
+            merchant_id: MERCHANT,
+            theme_id: THEME,
+            version: 2,
+            status: "draft",
+            templates: PIXEL_TEMPLATES,
+            tokens: {},
+          },
+        ],
+        theme_audit: [],
+        plugin_state: [],
+        activity_log: [],
+      },
+    });
     expect(
       (await pendingApprovals(db.asClient(), MERCHANT)).themes,
     ).toHaveLength(1);
     await approveThemeVersion(db.asClient(), MERCHANT, THEME, VERSION, ACTOR);
     const out = await pendingApprovals(db.asClient(), MERCHANT);
     expect(out.themes).toHaveLength(0);
-    // The plugin half is untouched by a theme approval.
-    expect(out.plugins).toHaveLength(1);
   });
 
-  it("plugin approval removes the plugin row from the queue", async () => {
+  it("plugin approval of secret content is forbidden and the row stays queued", async () => {
     const { approvePluginVersion } = await import("./plugins.server");
     const db = queueDb();
     expect(
       (await pendingApprovals(db.asClient(), MERCHANT)).plugins,
     ).toHaveLength(1);
-    await approvePluginVersion(
-      db.asClient(),
-      MERCHANT,
-      "flagged-probe",
-      "1.0.0",
-      ACTOR,
-    );
+    // Tier-0 (secret) is never merchant-approvable: refusal writes no audit.
+    await expect(
+      approvePluginVersion(
+        db.asClient(),
+        MERCHANT,
+        "flagged-probe",
+        "1.0.0",
+        ACTOR,
+      ),
+    ).rejects.toThrow(/approval_forbidden/);
+    expect(
+      db.rows("activity_log").filter((a) => a.action === "plugin.approved"),
+    ).toHaveLength(0);
     const out = await pendingApprovals(db.asClient(), MERCHANT);
-    expect(out.plugins).toHaveLength(0);
-    // The theme half is untouched by a plugin approval.
+    expect(out.plugins).toHaveLength(1);
+    // The theme half is untouched by a plugin approval refusal.
     expect(out.themes).toHaveLength(1);
   });
 });

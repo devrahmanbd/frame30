@@ -20,7 +20,9 @@ import * as fs from "node:fs";
 import { fakeDb } from "./__fixtures__/fake-db";
 
 const { pluginApproveFn } = await import("./plugins.functions");
-const { approvePluginVersion } = await import("./plugins.server");
+const { approvePluginVersion, setPluginEnabled } = await import(
+  "./plugins.server"
+);
 
 const MERCHANT = "22222222-2222-2222-2222-222222222222";
 const OTHER = "33333333-3333-4333-8333-333333333333";
@@ -29,6 +31,42 @@ const PLUGIN = "audit-probe";
 const VERSION = "1.0.0";
 
 const FUNCTIONS_SRC = "/opt/frame28/src/lib/plugins.functions.ts";
+
+const SECRET = "sk-" + "abcdefghij0123456789ABCDEFGH0123";
+
+/** Secret-bearing manifest: Tier-0, never merchant-approvable. */
+const SECRET_MANIFEST = {
+  id: PLUGIN,
+  name: "Audit Probe",
+  version: VERSION,
+  api: "^3.0.0",
+  permissions: ["render_storefront"],
+  widgets: [
+    {
+      key: "probe",
+      label: "Probe",
+      slots: ["main"],
+      entry: `framique.mount(document.createElement('div')) // ${SECRET}`,
+    },
+  ],
+  hooks: [],
+  settings: [],
+  i18n: { en: {}, bn: {} },
+};
+
+/** Info-only manifest (external URL, no secret): approvable, clean verdict. */
+const URL_MANIFEST = {
+  id: PLUGIN,
+  name: "Audit Probe",
+  version: VERSION,
+  api: "^3.0.0",
+  description: "See https://docs.example.com/probe for help.",
+  permissions: ["render_storefront"],
+  widgets: [],
+  hooks: [],
+  settings: [],
+  i18n: { en: {}, bn: {} },
+};
 
 function approveDb() {
   return fakeDb({
@@ -117,5 +155,80 @@ describe("plugin approval delegation", () => {
       approvePluginVersion(db.asClient(), OTHER, PLUGIN, VERSION, ACTOR),
     ).rejects.toThrow("plugin_not_found");
     expect(db.rows("activity_log")).toHaveLength(0);
+  });
+
+  function manifestDb(manifest: unknown) {
+    return fakeDb({
+      tables: {
+        plugin_state: [
+          {
+            merchant_id: MERCHANT,
+            plugin_id: PLUGIN,
+            manifest,
+            manifest_version: VERSION,
+            enabled: false,
+          },
+        ],
+        activity_log: [],
+      },
+    });
+  }
+
+  it("refuses secret-flagged content with plugin.approval_forbidden and writes no audit", async () => {
+    const db = manifestDb(SECRET_MANIFEST);
+    await expect(
+      approvePluginVersion(db.asClient(), MERCHANT, PLUGIN, VERSION, ACTOR),
+    ).rejects.toThrow(/plugin\.approval_forbidden/);
+    expect(
+      db.rows("activity_log").filter((a) => a.action === "plugin.approved"),
+    ).toHaveLength(0);
+  });
+
+  it("still approves info-only findings (external URL, no secret)", async () => {
+    const db = manifestDb(URL_MANIFEST);
+    const out = await approvePluginVersion(
+      db.asClient(),
+      MERCHANT,
+      PLUGIN,
+      VERSION,
+      ACTOR,
+    );
+    expect(out).toEqual({ ok: true });
+    expect(
+      db.rows("activity_log").filter((a) => a.action === "plugin.approved"),
+    ).toHaveLength(1);
+  });
+
+  it("enabling still refuses secret content covered by a legacy approval", async () => {
+    const db = fakeDb({
+      tables: {
+        plugin_state: [
+          {
+            merchant_id: MERCHANT,
+            plugin_id: PLUGIN,
+            manifest: SECRET_MANIFEST,
+            manifest_version: VERSION,
+            enabled: false,
+          },
+        ],
+        // Pre-policy approval row: must not unlock Tier-0 content.
+        activity_log: [
+          {
+            merchant_id: MERCHANT,
+            actor: ACTOR,
+            action: "plugin.approved",
+            resource_type: "plugin",
+            resource_id: null,
+            changed: { plugin: PLUGIN, manifest_version: VERSION },
+          },
+        ],
+      },
+    });
+    await expect(
+      setPluginEnabled(db.asClient(), MERCHANT, PLUGIN, true, ACTOR),
+    ).rejects.toThrow(/plugin\.approval_forbidden/);
+    expect(
+      db.rows("plugin_state").find((r) => r.plugin_id === PLUGIN)?.enabled,
+    ).toBe(false);
   });
 });

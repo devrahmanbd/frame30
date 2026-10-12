@@ -269,24 +269,50 @@ describe("plugin flagged enable approval (threat-defense)", () => {
   it("enabling a flagged plugin requires approval, staying disabled", async () => {
     const db = pluginDb();
     await installFlagged(db);
+    // Tier-0 (secret) surfaces as approval_forbidden; Tier-1 still surfaces
+    // as approval_required — either way the toggle is refused pre-approval.
     await expect(
       setPluginEnabled(db.asClient(), MERCHANT, "audit-probe", true, ACTOR),
-    ).rejects.toThrow(/approval_required/);
+    ).rejects.toThrow(/approval_(required|forbidden)/);
     expect(
       db.rows("plugin_state").find((r) => r.plugin_id === "audit-probe")?.enabled,
     ).toBe(false);
   });
-  it("approval records audit, then enable succeeds", async () => {
+  it("approval of secret content is forbidden, then enable still refused", async () => {
     const db = pluginDb();
     const { approvePluginVersion } = await installFlagged(db);
-    await approvePluginVersion(db.asClient(), MERCHANT, "audit-probe", "1.0.0", ACTOR);
-    await setPluginEnabled(db.asClient(), MERCHANT, "audit-probe", true, ACTOR);
-    expect(
-      db.rows("plugin_state").find((r) => r.plugin_id === "audit-probe")?.enabled,
-    ).toBe(true);
+    // Tier-0 (secret) is never merchant-approvable: refusal writes no audit.
+    await expect(
+      approvePluginVersion(db.asClient(), MERCHANT, "audit-probe", "1.0.0", ACTOR),
+    ).rejects.toThrow(/approval_forbidden/);
     expect(
       db.rows("activity_log").filter((a) => a.action === "plugin.approved"),
-    ).toHaveLength(1);
+    ).toHaveLength(0);
+    await expect(
+      setPluginEnabled(db.asClient(), MERCHANT, "audit-probe", true, ACTOR),
+    ).rejects.toThrow(/approval_forbidden/);
+    expect(
+      db.rows("plugin_state").find((r) => r.plugin_id === "audit-probe")?.enabled,
+    ).toBe(false);
+  });
+  it("a legacy approval does not unlock secret content", async () => {
+    const db = pluginDb();
+    await installFlagged(db);
+    // Pre-policy approval row (written before the Tier-0 ban).
+    db.rows("activity_log").push({
+      merchant_id: MERCHANT,
+      actor: ACTOR,
+      action: "plugin.approved",
+      resource_type: "plugin",
+      resource_id: null,
+      changed: { plugin: "audit-probe", manifest_version: "1.0.0" },
+    });
+    await expect(
+      setPluginEnabled(db.asClient(), MERCHANT, "audit-probe", true, ACTOR),
+    ).rejects.toThrow(/approval_forbidden/);
+    expect(
+      db.rows("plugin_state").find((r) => r.plugin_id === "audit-probe")?.enabled,
+    ).toBe(false);
   });
   it("foreign approval writes nothing", async () => {
     const db = pluginDb();

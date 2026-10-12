@@ -2062,7 +2062,7 @@ describe("PKG-2 flagged activation approval (threat-defense)", () => {
     );
     return { res, activateTheme, approveThemeVersion };
   }
-  it("activation of a flagged version requires approval, staying inactive", async () => {
+  it("activation of secret-flagged content is forbidden, staying inactive", async () => {
     const db = pkgDb();
     const { res, activateTheme } = await installFlagged(db);
     const err = await activateTheme(
@@ -2071,35 +2071,38 @@ describe("PKG-2 flagged activation approval (threat-defense)", () => {
       res.packageId,
       ACTOR,
     ).catch((e) => e);
-    expect(err?.code ?? err?.message).toMatch(/approval_required/);
+    // Tier-0 (secret) is never merchant-approvable: the gate refuses with
+    // approval_forbidden even with no approval row on record.
+    expect(err?.code ?? err?.message).toMatch(/approval_forbidden/);
     expect(
       db.rows("store_themes").find((r) => r.id === res.packageId)?.is_active,
     ).toBe(false);
   });
-  it("approval records audit, then activation succeeds", async () => {
+  it("approval of secret content is forbidden, then activation still refused", async () => {
     const db = pkgDb();
     const { res, activateTheme, approveThemeVersion } = await installFlagged(db);
-    const approval = await approveThemeVersion(
+    // Tier-0 (secret) is never merchant-approvable: refusal writes no audit.
+    const err = await approveThemeVersion(
       db.asClient(),
       MERCHANT_A,
       res.packageId,
       res.versionId,
       ACTOR,
-    );
-    expect(approval).toMatchObject({ ok: true });
-    const activated = await activateTheme(
+    ).catch((e) => e);
+    expect(err?.code ?? err?.message).toMatch(/approval_forbidden/);
+    expect(
+      db.rows("theme_audit").filter((a) => a.action === "theme.approved"),
+    ).toHaveLength(0);
+    const blocked = await activateTheme(
       db.asClient(),
       MERCHANT_A,
       res.packageId,
       ACTOR,
-    );
-    expect(activated.id).toBe(res.packageId);
+    ).catch((e) => e);
+    expect(blocked?.code ?? blocked?.message).toMatch(/approval_forbidden/);
     expect(
       db.rows("store_themes").find((r) => r.id === res.packageId)?.is_active,
-    ).toBe(true);
-    expect(
-      db.rows("theme_audit").filter((a) => a.action === "theme.approved"),
-    ).toHaveLength(1);
+    ).toBe(false);
   });
   it("foreign approval writes nothing", async () => {
     const db = pkgDb();
@@ -2111,36 +2114,34 @@ describe("PKG-2 flagged activation approval (threat-defense)", () => {
       db.rows("theme_audit").filter((a) => a.action === "theme.approved"),
     ).toHaveLength(0);
   });
-  it("changed content after approval needs fresh approval", async () => {
+  it("a legacy approval does not unlock secret content", async () => {
     const db = pkgDb();
-    const { res, activateTheme, approveThemeVersion } = await installFlagged(db);
-    await approveThemeVersion(
-      db.asClient(),
-      MERCHANT_A,
-      res.packageId,
-      res.versionId,
-      ACTOR,
-    );
-    // Merchant edits the draft after approving: new flaggable content (a
-    // leaked credential — markup scripts would be stripped by the builder
-    // sanitiser instead, which is also safe but a different path).
-    const SECRET2 = "sk-" + "zzzzz9999900000AAAAABBBBB1234567";
-    await db
-      .asClient<FakeDb>()
-      .from("theme_drafts")
-      .update({
-        templates: {
-          index: { header: [], main: [{ id: "evil", type: "heading", props: { text: `token ${SECRET2}` } }], footer: [] },
-        },
-      } as never)
-      .eq("theme_id", res.packageId);
+    const { res, activateTheme } = await installFlagged(db);
+    // Pre-policy approval row (written before the Tier-0 ban): bound to the
+    // exact installed content hash, exactly as `approveThemeVersion` bound it
+    // (`templatesOf` keys files by name, so the version row holds
+    // `{ index: <templates/index.json> }`).
+    const { createHash } = await import("node:crypto");
+    db.rows("theme_audit").push({
+      merchant_id: MERCHANT_A,
+      theme_id: res.packageId,
+      actor: ACTOR,
+      action: "theme.approved",
+      before: null,
+      after: {
+        version_id: res.versionId,
+        content_hash: createHash("sha256")
+          .update(JSON.stringify({ index: secretTemplates }))
+          .digest("hex"),
+      },
+    });
     const err = await activateTheme(
       db.asClient(),
       MERCHANT_A,
       res.packageId,
       ACTOR,
     ).catch((e) => e);
-    expect(err?.code ?? err?.message).toMatch(/approval_required/);
+    expect(err?.code ?? err?.message).toMatch(/approval_forbidden/);
     expect(
       db.rows("store_themes").find((r) => r.id === res.packageId)?.is_active,
     ).toBe(false);

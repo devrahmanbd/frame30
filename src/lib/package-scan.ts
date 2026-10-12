@@ -10,6 +10,20 @@
  * gated separately (`diffCapabilities`), consent screens already show
  * scopes, and the audit trail already records URL inventories.
  *
+ * Approval tiers (severity policy — `approveThemeVersion` /
+ * `approvePluginVersion` and the activation/enable gates enforce this):
+ *
+ * | Tier | Findings | Merchant-approvable? |
+ * | ---- | -------- | -------------------- |
+ * | 0 — never | `secret` (credential theft) | NO — the approve fns refuse with `theme.approval_forbidden` / `plugin.approval_forbidden` and write no audit row; the gates refuse even when a legacy approval row exists. |
+ * | 1 — gated | `svg-script`, `no-plugin-territory.*` (payments, tracking-pixel, auth-form, seo-write) | YES — with a recorded audit bound to the exact content hash / manifest version. |
+ * | 2 — informational | `external-urls`, `permissions` | n/a — verdict stays `clean`, no approval needed. |
+ *
+ * `svg-script` stays merchant-approvable: the upload lane already sanitizes
+ * SVG at install, so stored bytes are clean and the flag covers legacy rows.
+ * Use `hasSecretFinding` (Tier-0 probe) to enforce the never-approvable
+ * tier — never re-derive it from raw severity, which Tier-1 shares.
+ *
  * Pure: no I/O, no database. Reuses the repo's own gates read-only —
  * `scanSecrets` (custom-code.ts), `isSvgSafe` (media/library.ts),
  * `inventoryExternalUrls` (package-review.ts).
@@ -33,6 +47,23 @@ export type ScanReport = {
   verdict: "clean" | "flagged";
   findings: ScanFinding[];
 };
+
+/**
+ * Scanner revision carried by versioned security reports
+ * (`package-security-report.ts`). Bump when scan rules change so a report
+ * reader can tell which rule set produced its findings.
+ */
+export const SCANNER_VERSION = "1";
+
+/**
+ * Tier-0 probe for the approval policy (see header): true when the report
+ * carries a `secret` (credential-theft) finding. Tier-1 findings
+ * (`svg-script`, `no-plugin-territory.*`) share `high` severity but stay
+ * merchant-approvable — callers must use this probe, not raw severity.
+ */
+export function hasSecretFinding(report: ScanReport): boolean {
+  return report.findings.some((f) => f.code === "secret");
+}
 
 const TEXT_EXTS = new Set([
   ".json",
