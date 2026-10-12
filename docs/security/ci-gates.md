@@ -17,9 +17,17 @@ the human review layer. Nothing here passes silently.
 
 ## SAST suspicious-diff (`scripts/sast-scan.mjs`)
 
-Scans **added lines** in the working tree plus the committed range vs
-`origin/main` (override with `--base <ref>` or `SAST_BASE`; `--full` scans the
-whole tree for local baselining; `-- <paths>` scopes to files).
+Scans **added lines** in the working tree plus the committed range vs a
+PR-aware base (override with `--base <ref>` or `SAST_BASE`; `--full` scans the
+whole tree; `-- <paths>` scopes to files). CI resolves the base fail-closed:
+the fetch is fatal (no `|| true`), fork-PR destinations resolve via the
+GitHub API when a token exists, otherwise the branch default applies
+(`frame30` diffs vs `origin/main`; other branches vs `origin/frame30` when it
+exists). The scanner runs with `SAST_REQUIRE_BASE=1`, so an unresolvable base
+is a hard error (exit 2) — a clean checkout can never pass vacuously; base
+established + zero changed lines stays a genuine pass. A nightly
+`nightly-full-sast` workflow sweeps the whole tree (`--full`) on `main` and
+`frame30`; its backlog triages via `sast-allow -- reason` like any finding.
 
 Rules: `dynamic-exec` (`eval(`, `new Function`), `dynamic-import`
 (non-literal `import()` specifier only — static code-splitting is fine),

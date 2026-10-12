@@ -31,6 +31,13 @@
  *   node scripts/sast-scan.mjs --full          # whole tree (local baselining)
  *   node scripts/sast-scan.mjs -- <path>...    # exactly these files, all lines
  *
+ * Base resolution (first hit wins): --base <ref>, SAST_BASE, origin/main,
+ * origin/master. With --require-base (or SAST_REQUIRE_BASE=1) an
+ * unresolvable base is a hard error (exit 2) — the scan never silently
+ * narrows to working-tree-only, which would pass vacuously on a clean
+ * checkout. CI always sets SAST_REQUIRE_BASE=1; local runs without the
+ * flag keep the lenient working-tree fallback.
+ *
  * Findings print as `file:line  [rule-id]  snippet` and exit non-zero.
  * A line can carry an inline suppression with a mandatory reason, e.g.:
  *
@@ -1131,6 +1138,16 @@ function resolveBase() {
   return null;
 }
 
+// Fail-closed gate for CI: `--require-base` (or SAST_REQUIRE_BASE=1) turns
+// an unresolvable base into a hard error instead of silently narrowing to
+// working-tree-only (which passes vacuously on a clean checkout). Local
+// runs without the flag keep the old lenient default.
+function requireBaseEnabled() {
+  if (args.includes("--require-base")) return true;
+  const v = (process.env.SAST_REQUIRE_BASE ?? "").toLowerCase();
+  return v === "1" || v === "true" || v === "yes";
+}
+
 function collectTargets() {
   // Explicit file list: `node scripts/sast-scan.mjs -- <path>...`
   const dash = args.indexOf("--");
@@ -1181,6 +1198,25 @@ function collectTargets() {
   // untracked files (whole file — a new file is all added lines).
   const map = new Map();
   const base = resolveBase();
+  if (!base && requireBaseEnabled()) {
+    console.error(
+      "sast scan FAILED — no base ref resolves and --require-base is set " +
+        "(tried --base, SAST_BASE, origin/main, origin/master); refusing to " +
+        "narrow to working-tree-only, which passes vacuously on a clean " +
+        "checkout. Fetch the target branch first, e.g. " +
+        "`git fetch origin main:refs/remotes/origin/main`, or set " +
+        "--base <ref> / SAST_BASE=<ref>.",
+    );
+    process.exit(2);
+  }
+  if (base && !refExists(base) && requireBaseEnabled()) {
+    console.error(
+      `sast scan FAILED — base '${base}' does not resolve locally and ` +
+        "--require-base is set; fetch the target branch (or fix --base / " +
+        "SAST_BASE) so the committed range can be established.",
+    );
+    process.exit(2);
+  }
   if (base) {
     try {
       mergeInto(map, addedLines(git(["diff", "-U0", `${base}...HEAD`, "--"])));

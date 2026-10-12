@@ -65,6 +65,12 @@ jobs:
           command: bun run test:contracts
 
   scan:
+    parameters:
+      sast-mode:
+        description: "diff scans changed code vs the PR-aware base (fail-closed); full scans the whole tree (nightly sweep)."
+        type: enum
+        enum: ["diff", "full"]
+        default: "diff"
     executor: bun-executor
     steps:
       - checkout
@@ -75,8 +81,72 @@ jobs:
       - run:
           name: SAST suspicious-diff (blocking)
           command: |
-            git fetch origin main:refs/remotes/origin/main --depth 50 || true
-            bun run sast:scan
+            if [ "<< parameters.sast-mode >>" = "full" ]; then
+              # Scheduled whole-tree sweep (nightly-full-sast workflow): the
+              # full tree is the target set, so no base ref is needed.
+              node scripts/sast-scan.mjs --full
+              # Preserve the scanner's exit code; never fall through to diff mode.
+              exit "$?"
+            fi
+            # Fail-closed base resolution — first hit wins:
+            #   1. SAST_BASE when explicitly set (manual override / project env;
+            #      must name a ref fetchable below, e.g. origin/main).
+            #   2. Fork-PR context (CIRCLE_PR_NUMBER): destination branch via
+            #      the GitHub API when a token is available (best effort —
+            #      any failure falls through to the branch default below).
+            #   3. Branch-aware default: builds on `frame30` (the integration
+            #      branch) diff against origin/main; any other branch diffs
+            #      against origin/frame30 when it exists (PRs target it),
+            #      else origin/main. CircleCI exposes the source branch as
+            #      CIRCLE_BRANCH but never the PR destination, hence this chain.
+            # Every fetch below is fatal by design: if the base
+            # cannot be fetched the job fails here. The scanner then runs with
+            # SAST_REQUIRE_BASE=1, so an unresolvable base can never pass
+            # vacuously — base established + zero changed lines stays a
+            # genuine pass (e.g. post-merge builds on main).
+            set -eu
+            BASE="${SAST_BASE:-}"
+            TOKEN="${GITHUB_TOKEN:-${GH_TOKEN:-}}"
+            if [ -z "$BASE" ] && [ -n "${CIRCLE_PR_NUMBER:-}" ] && [ -n "$TOKEN" ]; then
+              SLUG="$(git config --get remote.origin.url | sed -E -e 's#\.git$##' -e 's#.*github\.com[:/]([^/]+)/([^/]+)$#\1/\2#')"
+              if PR_BASE="$(curl -fsSL -H "Authorization: Bearer $TOKEN" "https://api.github.com/repos/$SLUG/pulls/$CIRCLE_PR_NUMBER" 2>/dev/null | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).base.ref))" 2>/dev/null)"; then
+                if [ -n "$PR_BASE" ]; then
+                  git fetch origin "$PR_BASE:refs/remotes/origin/$PR_BASE" --depth 50
+                  BASE="origin/$PR_BASE"
+                  echo "SAST: base $BASE (PR #$CIRCLE_PR_NUMBER destination via API)"
+                fi
+              else
+                echo "SAST: PR-destination lookup failed; falling back to branch default"
+              fi
+            fi
+            if [ -z "$BASE" ]; then
+              CUR="${CIRCLE_BRANCH:-}"
+              if [ -z "$CUR" ]; then
+                if TRY="$(git branch --show-current 2>/dev/null)"; then
+                  CUR="$TRY"
+                else
+                  CUR=""
+                fi
+              fi
+              CANDIDATE="main"
+              if [ -n "$CUR" ] && [ "$CUR" != "main" ] && [ "$CUR" != "master" ] && [ "$CUR" != "frame30" ]; then
+                if git ls-remote --exit-code --heads origin frame30 >/dev/null 2>&1; then
+                  CANDIDATE="frame30"
+                fi
+              fi
+              git fetch origin "$CANDIDATE:refs/remotes/origin/$CANDIDATE" --depth 50
+              BASE="origin/$CANDIDATE"
+              echo "SAST: base $BASE (branch default for '${CUR:-unknown}')"
+            else
+              case "$BASE" in
+                origin/*)
+                  git fetch origin "${BASE#origin/}:refs/remotes/$BASE" --depth 50
+                  ;;
+              esac
+              echo "SAST: base $BASE (explicit SAST_BASE)"
+            fi
+            export SAST_BASE="$BASE"
+            SAST_REQUIRE_BASE=1 bun run sast:scan
       - run:
           name: Dependency audit (blocking, reviewed exceptions only)
           command: bun run scan:deps
@@ -145,3 +215,18 @@ workflows:
           requires:
             - build
       - plugin-storefront-gate
+  # Nightly whole-tree SAST sweep: catches anything that landed outside a
+  # scanned diff (long-lived branches, suppression drift). Covers main plus
+  # frame30 while the integration branch lives; drop it when retired.
+  nightly-full-sast:
+    triggers:
+      - schedule:
+          cron: "0 4 * * *"
+          filters:
+            branches:
+              only:
+                - main
+                - frame30
+    jobs:
+      - scan:
+          sast-mode: full
