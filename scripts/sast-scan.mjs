@@ -1074,7 +1074,14 @@ function suppressed(line, ruleId) {
 // Change collection
 // ---------------------------------------------------------------------------
 function git(args_) {
-  return execFileSync("git", args_, { cwd: ROOT, encoding: "utf8" }).trim();
+  // Large maxBuffer: the committed-range diff grows with the branch and
+  // must never fail with ENOBUFS (a scanner that cannot read the diff
+  // cannot report findings — fail-closed means reading it reliably).
+  return execFileSync("git", args_, {
+    cwd: ROOT,
+    encoding: "utf8",
+    maxBuffer: 64 * 1024 * 1024,
+  }).trim();
 }
 function refExists(ref) {
   try {
