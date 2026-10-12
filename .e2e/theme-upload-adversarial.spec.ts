@@ -192,6 +192,10 @@ test("hostile preview URL renders nothing executable", async ({ page }) => {
     `&variation=<script>window.${marker}="variation"</script>`;
   const response = await page.goto(hostile, {
     waitUntil: "domcontentloaded",
+    // Cold-sensitive first navigation only (see theme-preview-isolation
+    // spec): SSR compile budget lives on this goto alone; assertions below
+    // keep their strict timeouts.
+    timeout: 180_000,
   });
   // The route itself stays servable (unknown keys are sanitized, not fatal).
   expect(response?.status()).toBe(200);

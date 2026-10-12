@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import { fileURLToPath } from "node:url";
 import { resolveBaseURL, resolvePort } from "./helpers";
 
 /**
@@ -22,10 +23,20 @@ import { resolveBaseURL, resolvePort } from "./helpers";
 
 const baseURL = resolveBaseURL();
 const port = resolvePort(baseURL);
+// Repo root (parent of .e2e/): the spawned dev server must run from here.
+// Playwright defaults webServer.cwd to the config file's directory, which
+// would make `vite` serve .e2e/ as its root — instant 404s on every path,
+// so the readiness probe below could never succeed (measured: favicon.ico
+// answered empty-404 in <1 ms from a server spawned without cwd).
+const repoRoot = fileURLToPath(new URL("..", import.meta.url));
 
 export default defineConfig({
   testDir: "./",
   testMatch: "*.spec.ts",
+  // SSR warm-up runs here: .e2e/global-setup.ts polls the preview route
+  // until it answers 200 (generous budget) BEFORE any spec asserts, so a
+  // cold vite SSR compile cannot flake the first navigation.
+  globalSetup: "./global-setup.ts",
   timeout: 60_000,
   expect: { timeout: 15_000 },
   retries: process.env.CI ? 2 : 1,
@@ -58,6 +69,9 @@ export default defineConfig({
     ? undefined
     : {
         command: `npx vite --port ${port} --strictPort --host localhost`,
+        // Run vite from the repo root (see repoRoot above): without this
+        // it serves .e2e/ as root and every probe path 404s instantly.
+        cwd: repoRoot,
         // Static-asset probe: proves vite is serving without paying for
         // (or depending on) an SSR compile or any DB-backed loader.
         // Page specs assert SSR/health separately.
@@ -65,7 +79,11 @@ export default defineConfig({
         reuseExistingServer: true,
         // Cold-start budget: a fresh checkout re-optimizes the whole
         // dependency graph before serving (~1-4 min on CI executors;
-        // observed >180s on a loaded dev box). Warm runs serve in seconds.
-        timeout: 300_000,
+        // observed >180s on a loaded dev box; allow headroom beyond the
+        // old 300 s ceiling for a guaranteed-cold run under parallel
+        // load). Warm runs serve in seconds; the extra ceiling costs
+        // nothing when warm. The SSR warm-up in global-setup.ts runs
+        // after this probe succeeds.
+        timeout: 600_000,
       },
 });

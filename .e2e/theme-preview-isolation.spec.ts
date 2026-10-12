@@ -35,6 +35,12 @@ test("songoskriti preview serves every image with zero assets/ 404s", async ({
   await blockExternalRequests(page, blocked);
   const response = await page.goto("/theme-preview/songoskriti", {
     waitUntil: "domcontentloaded",
+    // Cold-sensitive first navigation only: on a guaranteed-cold server
+    // the first SSR compile can outlast the 45 s navigationTimeout. The
+    // global-setup warm-up absorbs this in the common case; this per-goto
+    // budget (not a blanket raise) covers a still-compiling worker.
+    // Every assertion below keeps its strict timeout.
+    timeout: 180_000,
   });
   expect(response?.status()).toBe(200);
 
