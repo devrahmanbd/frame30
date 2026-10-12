@@ -152,6 +152,94 @@ describe("package CSS gate — exfiltration attempts are rejected", () => {
       "hostile @font-face src",
       `@font-face{font-family:x;src:url(javascript:alert(1))}`,
     ],
+    // Parser-differential battery (frame30): the gate must judge what the
+    // browser tokenizer sees — CSS `\\XX` escapes decoded, comments removed
+    // — never the raw source bytes. Each vector below would execute/fetch in
+    // a real browser while the raw text matches no ban pattern.
+    [
+      "escaped javascript: scheme",
+      `a{background:url(\\6a avascript:alert(1))}`,
+    ],
+    [
+      "uppercase-hex escaped javascript:",
+      `a{background:url(\\6A avascript:alert(1))}`,
+    ],
+    [
+      "escaped url( function name",
+      `a{background:\\75 rl(http://evil.example/x.png)}`,
+    ],
+    ["escaped expression()", `a{width:\\65 xpression(alert(1))}`],
+    [
+      "escaped @import",
+      `@\\69mport url("https://evil.example/x.css");a{color:red}`,
+    ],
+    [
+      "comment-split @import",
+      `@/*x*/import url("https://evil.example/x.css");a{color:red}`,
+    ],
+    [
+      "comment-split javascript: scheme",
+      `a{background:url(java/*x*/script:alert(1))}`,
+    ],
+    ["escaped data: scheme", `a{background:url(\\64 ata:text/html,<b>)}`],
+    ["escaped remote url", `a{background:url(\\68 ttp://evil.example/x.png)}`],
+    [
+      "escaped protocol-relative url",
+      `a{background:url(\\2f \\2f evil.example/x.png)}`,
+    ],
+    ["escaped -moz-binding", `a{-\\6d oz-binding:url(x.xml#x)}`],
+    ["escaped behavior:", `a{beh\\61 vior:url(x.htc)}`],
+    [
+      "escaped javascript: in @font-face src",
+      `@font-face{font-family:x;src:url(\\6a avascript:alert(1))}`,
+    ],
+    [
+      "escaped js url nested in @media",
+      `@media screen{a{background:url(\\6a avascript:alert(1))}}`,
+    ],
+    // Dropped at-rules are still scanned: the browser honors @media/@page
+    // bodies (print context fetches @page urls), so a hostile body inside a
+    // dropped or escaped wrapper is a reject, never a silent drop.
+    [
+      "hostile url inside escaped @media wrapper",
+      `@\\6d edia screen{a{background:url(http://evil.example/x.png)}}`,
+    ],
+    [
+      "hostile url inside dropped @page",
+      `@page{a{background:url(http://evil.example/x.png)}}`,
+    ],
+    [
+      "hostile nested in @supports",
+      `@supports (display:grid){a{background:url(http://e.example/x.png)}}`,
+    ],
+    [
+      "expression() nested in @layer",
+      `@layer base{a{width:expression(alert(1))}}`,
+    ],
+    [
+      "image-set() remote url",
+      `a{background:image-set(url(http://e.example/x.png) 1x)}`,
+    ],
+    ["vbscript: scheme", `a{background:url(vbscript:msgbox(1))}`],
+    [
+      "data:application/javascript",
+      `a{background:url(data:application/javascript,alert(1))}`,
+    ],
+    [
+      "case/whitespace-smeared remote url",
+      "a{background:url( \t HtTp://evil.example/x.png )}",
+    ],
+    [
+      "unclosed block hostile url",
+      `a{background:url(http://evil.example/x.png)`,
+    ],
+    // Safe-direction over-reject (documented, not weakened): an unclosed
+    // comment swallows the rest of the sheet for a browser (ignored), but the
+    // gate refuses the ambiguous bytes rather than guessing.
+    [
+      "unclosed comment carrying @import refused",
+      `/* @import url(http://e.example/x.css);`,
+    ],
   ];
   it.each(cases)("rejects %s", (_name, css) => {
     const r = gatePackageCss(css);
@@ -414,5 +502,131 @@ describe("theme lane — CSS/SVG gate enforcement", () => {
     );
     expect(res.alreadyInstalled).toBe(false);
     expect(db.rows("store_themes")).toHaveLength(1);
+  });
+});
+
+/* --------------------- parser-differential sanitizations (frame30) */
+
+describe("package CSS gate — escaped sanitize-shapes stay sanitized", () => {
+  it("drops an escaped position:fixed without the opt-in class", () => {
+    const r = gatePackageCss(`a{p\\6f sition:fixed;color:red}`);
+    expect(r.ok).toBe(true);
+    expect(r.sanitizedCss).not.toMatch(/fixed/i);
+    expect(r.sanitizedCss).toContain("color: red");
+  });
+
+  it("keeps escaped position:fixed on the opt-in class", () => {
+    const r = gatePackageCss(`.fq-allow-fixed{p\\6f sition:fixed}`);
+    expect(r.ok).toBe(true);
+    expect(r.sanitizedCss).toMatch(/fixed/i);
+  });
+
+  it("drops an escaped --theme-* redefinition but keeps the rest", () => {
+    const r = gatePackageCss(`a{--the\\6d e-ink:red;color:blue}`);
+    expect(r.ok).toBe(true);
+    expect(r.sanitizedCss).not.toContain("--theme-");
+    expect(r.sanitizedCss).toContain("color: blue");
+  });
+
+  it("honours an escaped @media wrapper as media (scoped inner rules)", () => {
+    const r = gatePackageCss(`@\\6d edia (min-width: 100px){a{color:red}}`);
+    expect(r.ok).toBe(true);
+    expect(r.sanitizedCss).toContain(".pkg-scope a");
+    expect(r.sanitizedCss).toContain("color: red");
+  });
+});
+
+/* ------------------- documented allows with reason (frame30) */
+
+describe("package CSS gate — documented allows (no browser differential)", () => {
+  it("allows data:image/svg+xml with markup: image-context scripts never run", () => {
+    // Reason: the font/image data: allowlist intentionally covers svg+xml;
+    // as a CSS background-image the SVG loads in image context where scripts
+    // are inert. The .e2e differential spec proves window.__pwned stays
+    // undefined for exactly this payload.
+    const r = gatePackageCss(
+      `a{background:url(data:image/svg+xml,<svg><script>alert(1)</script></svg>)}`,
+    );
+    expect(r.ok).toBe(true);
+  });
+
+  it("allows unicode-range: a font descriptor with no URL channel", () => {
+    const r = gatePackageCss(
+      `@font-face{font-family:x;src:url(assets/f.woff2);unicode-range:U+0-10FFFF}`,
+    );
+    expect(r.ok).toBe(true);
+    expect(r.sanitizedCss).toContain("@font-face");
+  });
+
+  it("allows url( with a space: browsers parse it as non-url (dropped decl)", () => {
+    // Reason: `url (` is not a url token per CSS Syntax — Chrome drops the
+    // declaration, so nothing fetches. The .e2e differential asserts the
+    // computed background-image stays none and zero egress occurs.
+    const r = gatePackageCss(`a{background:url (http://evil.example/x.png)}`);
+    expect(r.ok).toBe(true);
+  });
+
+  it("allows an overlong benign sheet (terminates, no finding)", () => {
+    const r = gatePackageCss(`a{color:red}`.repeat(20_000));
+    expect(r.ok).toBe(true);
+    expect(r.errors).toEqual([]);
+    expect(r.sanitizedCss ?? "").toContain("color: red");
+  });
+
+  it("allows an unclosed benign block (browser error-recovery agrees)", () => {
+    const r = gatePackageCss(`a{color:red`);
+    expect(r.ok).toBe(true);
+    expect(r.sanitizedCss).toContain("color: red");
+  });
+
+  it("allows benign doubly-nested at-rules", () => {
+    const r = gatePackageCss(
+      `@supports (display:grid){@media screen{a{color:red}}}`,
+    );
+    expect(r.ok).toBe(true);
+    expect(r.sanitizedCss).toContain(".pkg-scope a");
+  });
+});
+
+/* ----------------- benign near-misses for the new restrictions */
+
+describe("package CSS gate — escape-decoding keeps legitimate theme CSS", () => {
+  it("keeps escaped text in content: strings", () => {
+    const r = gatePackageCss(`a{content:"\\65 x";color:red}`);
+    expect(r.ok).toBe(true);
+    expect(r.sanitizedCss).toContain("color: red");
+  });
+
+  it("keeps a relative url containing an escape", () => {
+    const r = gatePackageCss(`a{background:url(assets/bg\\2e png)}`);
+    expect(r.ok).toBe(true);
+  });
+
+  it("keeps token USE (read-only, never redefined)", () => {
+    const r = gatePackageCss(`a{color:var(--theme-ink)}`);
+    expect(r.ok).toBe(true);
+    expect(r.sanitizedCss).toContain("var(--theme-ink)");
+  });
+
+  it("keeps local() font sources", () => {
+    const r = gatePackageCss(
+      `@font-face{font-family:x;src:local(Foo Regular)}`,
+    );
+    expect(r.ok).toBe(true);
+  });
+
+  it("emits allowed data: URLs intact (no mid-token truncation)", () => {
+    // Regression: declaration splitting once cut on the `;` inside
+    // `data:...;base64,...`, emitting corrupt CSS the browser dropped.
+    const png = gatePackageCss(
+      `.box{background:url(data:image/png;base64,iVBORw0KGgo=)}`,
+    );
+    expect(png.ok).toBe(true);
+    expect(png.sanitizedCss).toContain("base64,iVBORw0KGgo=");
+    const svg = gatePackageCss(
+      `a{background:url("data:image/svg+xml,<svg></svg>")}`,
+    );
+    expect(svg.ok).toBe(true);
+    expect(svg.sanitizedCss).toContain("data:image/svg+xml,<svg></svg>");
   });
 });
