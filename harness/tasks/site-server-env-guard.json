@@ -1,0 +1,17 @@
+{
+  "cost": "fast",
+  "environment": { "ports": 0, "worktree": true },
+  "id": "site-server-env-guard",
+  "instruction": "Make the red suite green without weakening its assertions: in src/lib/site.server.ts, publicClient() must throw an error matching /Missing Supabase environment/ when SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, VITE_SUPABASE_URL, and VITE_SUPABASE_PUBLISHABLE_KEY are all empty (never construct a client against placeholder URLs/keys), while still using runtime process.env when present and letting publicPlans() fail soft to default plans. Run the verifier; all 3 tests in src/lib/site.server.test.ts must pass, and no test assertion may be edited to get green.",
+  "kind": "fix",
+  "reward": { "mode": "all-pass" },
+  "title": "Fix site.server publicClient missing-env guard",
+  "verifier": {
+    "command": [
+      "./node_modules/.bin/vitest",
+      "run",
+      "src/lib/site.server.test.ts"
+    ],
+    "timeout_sec": 120
+  }
+}

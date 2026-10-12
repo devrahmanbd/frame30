@@ -1,0 +1,17 @@
+{
+  "cost": "fast",
+  "environment": { "ports": 0, "worktree": true },
+  "id": "scope-css-isolation",
+  "instruction": "Keep theme CSS scoping airtight: every selector (including html/body, :root, and at-rule bodies) must be prefixed into the .fq-theme-scope sandbox so theme CSS cannot restyle the host storefront. Run the verifier; all 27 tests in src/lib/phase4-custom-code.test.ts must pass. Do not weaken any assertion to get green.",
+  "kind": "guard",
+  "reward": { "mode": "all-pass" },
+  "title": "Theme CSS scoping and custom-code suite stays green",
+  "verifier": {
+    "command": [
+      "./node_modules/.bin/vitest",
+      "run",
+      "src/lib/phase4-custom-code.test.ts"
+    ],
+    "timeout_sec": 120
+  }
+}

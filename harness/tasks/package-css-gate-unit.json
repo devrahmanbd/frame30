@@ -1,0 +1,17 @@
+{
+  "cost": "fast",
+  "environment": { "ports": 0, "worktree": true },
+  "id": "package-css-gate-unit",
+  "instruction": "Keep the package CSS gate green: hostile theme CSS (unscoped selectors, scope escapes, at-rule breakouts) must be rejected with zip.css_rejected and write nothing, while benign scoped CSS passes. Run the verifier; all 75 tests in src/lib/package-css-gate.test.ts must pass. Do not weaken any assertion to get green.",
+  "kind": "guard",
+  "reward": { "mode": "all-pass" },
+  "title": "Package CSS gate unit suite stays green",
+  "verifier": {
+    "command": [
+      "./node_modules/.bin/vitest",
+      "run",
+      "src/lib/package-css-gate.test.ts"
+    ],
+    "timeout_sec": 120
+  }
+}

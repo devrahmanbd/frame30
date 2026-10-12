@@ -1,0 +1,17 @@
+{
+  "cost": "fast",
+  "environment": { "ports": 0, "worktree": true },
+  "id": "package-install-unit",
+  "instruction": "Keep package installation and activation safe: secret-flagged or otherwise rejected content must never activate, and install/update flows must preserve their approval gates. Run the verifier; all 67 tests in src/lib/package-install.test.ts must pass. Do not weaken any assertion to get green.",
+  "kind": "guard",
+  "reward": { "mode": "all-pass" },
+  "title": "Package install and activation unit suite stays green",
+  "verifier": {
+    "command": [
+      "./node_modules/.bin/vitest",
+      "run",
+      "src/lib/package-install.test.ts"
+    ],
+    "timeout_sec": 180
+  }
+}

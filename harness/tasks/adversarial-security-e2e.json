@@ -1,0 +1,24 @@
+{
+  "cost": "slow",
+  "environment": { "ports": 1, "worktree": true },
+  "id": "adversarial-security-e2e",
+  "instruction": "Hold the adversarial theme-security line end to end: hostile theme uploads must be rejected, preview routes must stay isolated between tenants and unauthenticated callers, the CSS-gate differential must hold in the browser, and frame CPU recovery must behave. Playwright spawns and kills its own loopback vite server via .e2e/playwright.config.ts; start no other servers and leave none running. The verifier passes only when all specs across the five files pass.",
+  "kind": "e2e",
+  "reward": { "mode": "all-pass" },
+  "title": "Adversarial theme-security specs pass in a real browser",
+  "verifier": {
+    "command": [
+      "npx",
+      "playwright",
+      "test",
+      "-c",
+      ".e2e/playwright.config.ts",
+      "theme-upload-adversarial",
+      "theme-preview-isolation",
+      "theme-preview-security",
+      "package-css-gate-differential",
+      "frame-cpu-recovery"
+    ],
+    "timeout_sec": 600
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "cost": "fast",
+  "environment": { "ports": 0, "worktree": true },
+  "id": "widget-sandbox-suite",
+  "instruction": "Keep the marketplace WidgetSandbox green: the iframe shell must render during SSR without touching window (storefront pages SSR plugin islands before hydration), and the postMessage bridge must preserve its scope and origin checks. Run the verifier; every test in WidgetSandbox.test.tsx and WidgetSandbox.bridge.test.tsx must pass. Do not weaken any assertion to get green.",
+  "kind": "guard",
+  "reward": { "mode": "all-pass" },
+  "title": "WidgetSandbox SSR shell and bridge suite stays green",
+  "verifier": {
+    "command": [
+      "./node_modules/.bin/vitest",
+      "run",
+      "src/components/marketplace/WidgetSandbox.test.tsx",
+      "src/components/marketplace/WidgetSandbox.bridge.test.tsx"
+    ],
+    "timeout_sec": 180
+  }
+}

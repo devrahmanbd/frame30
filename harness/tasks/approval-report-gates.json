@@ -1,0 +1,18 @@
+{
+  "cost": "fast",
+  "environment": { "ports": 0, "worktree": true },
+  "id": "approval-report-gates",
+  "instruction": "Keep the human-approval and security-report gates green: approval of secret-flagged content must stay forbidden with the row remaining queued, and the package security report must preserve its verdicts. Run the verifier; every test in src/lib/approval-queue.test.ts and src/lib/package-security-report.test.ts must pass. Do not weaken any assertion to get green.",
+  "kind": "guard",
+  "reward": { "mode": "all-pass" },
+  "title": "Approval queue and security report suites stay green",
+  "verifier": {
+    "command": [
+      "./node_modules/.bin/vitest",
+      "run",
+      "src/lib/approval-queue.test.ts",
+      "src/lib/package-security-report.test.ts"
+    ],
+    "timeout_sec": 180
+  }
+}

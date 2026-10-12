@@ -1,0 +1,13 @@
+{
+  "cost": "fast",
+  "environment": { "ports": 0, "worktree": true },
+  "id": "sast-diff-scan",
+  "instruction": "Keep changed code free of suspicious patterns: run the SAST diff scanner over working-tree and committed-range changes versus origin/main and reach its passing state. If it reports a finding (dynamic exec, unsandboxed HTML sink, unallowlisted egress, shell exec, privileged env access outside server modules, tainted flows), fix the code or route it through human review; do not edit the scanner to hide the finding.",
+  "kind": "guard",
+  "reward": { "mode": "all-pass" },
+  "title": "SAST diff scan passes on changed code",
+  "verifier": {
+    "command": ["node", "scripts/sast-scan.mjs"],
+    "timeout_sec": 120
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "cost": "fast",
+  "environment": { "ports": 0, "worktree": true },
+  "id": "package-scan-unit",
+  "instruction": "Keep the package quarantine scanner green: scanPackage must flag secret-bearing or script-bearing content for approval and keep informational findings (external URLs, permission inventory) non-blocking. Run the verifier; every test in src/lib/package-scan.test.ts must pass. Do not weaken any assertion to get green.",
+  "kind": "guard",
+  "reward": { "mode": "all-pass" },
+  "title": "Package quarantine scan unit suite stays green",
+  "verifier": {
+    "command": [
+      "./node_modules/.bin/vitest",
+      "run",
+      "src/lib/package-scan.test.ts"
+    ],
+    "timeout_sec": 120
+  }
+}

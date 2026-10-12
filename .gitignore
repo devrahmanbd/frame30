@@ -9,3 +9,4 @@ node_modules/
 .env.local
 ops/backup/rehearsals.jsonl
 .opencode/
+harness/traces/

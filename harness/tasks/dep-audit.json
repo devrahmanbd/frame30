@@ -1,0 +1,13 @@
+{
+  "cost": "fast",
+  "environment": { "ports": 0, "worktree": true },
+  "id": "dep-audit",
+  "instruction": "Keep third-party dependencies within policy: run the dependency audit and reach its passing state where every high or critical finding is covered by a reviewed exception in scripts/dep-exceptions.json. If a new finding appears, either upgrade the dependency or add a reviewed exception with owner and expiry; do not delete findings from the report.",
+  "kind": "guard",
+  "reward": { "mode": "all-pass" },
+  "title": "Dependency audit passes with covered exceptions",
+  "verifier": {
+    "command": ["node", "scripts/dep-audit.mjs"],
+    "timeout_sec": 120
+  }
+}

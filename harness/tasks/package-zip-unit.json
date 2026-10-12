@@ -1,0 +1,17 @@
+{
+  "cost": "fast",
+  "environment": { "ports": 0, "worktree": true },
+  "id": "package-zip-unit",
+  "instruction": "Keep theme package zip handling safe: malformed, oversized, or hostile archives must be rejected without writing files outside the staging area, and valid zips must unpack intact. Run the verifier; every test in src/lib/package-zip.test.ts must pass. Do not weaken any assertion to get green.",
+  "kind": "guard",
+  "reward": { "mode": "all-pass" },
+  "title": "Package zip handling unit suite stays green",
+  "verifier": {
+    "command": [
+      "./node_modules/.bin/vitest",
+      "run",
+      "src/lib/package-zip.test.ts"
+    ],
+    "timeout_sec": 180
+  }
+}

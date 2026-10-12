@@ -51,6 +51,9 @@ jobs:
             shopt -s nullglob
             for f in ops/backup/*.sh; do bash -n "$f"; done
             echo "syntax OK"
+      - run:
+          name: Harness registry (schema check, no execution)
+          command: node harness/run.mjs --list > /dev/null
 
   unit-contract:
     executor: bun-executor
