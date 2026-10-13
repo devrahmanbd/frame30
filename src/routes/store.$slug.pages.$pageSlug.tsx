@@ -6,15 +6,28 @@ import { PluginLayer } from "@/components/store/PluginLayer";
 import { useLang } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/theme-seo";
 import { getStorePageFn } from "@/lib/storefront-search.functions";
+import {
+  StorefrontError,
+  isStorefrontInfrastructureError,
+  normalizeStorefrontLoaderError,
+} from "@/components/store/StorefrontError";
 import { verificationTags } from "@/lib/search-console";
 import { handleMissingStoreUrl } from "@/lib/missing-url";
 import { PageView } from "@/components/store/PageView";
 
 export const Route = createFileRoute("/store/$slug/pages/$pageSlug")({
   loader: async ({ params }) => {
-    const found = await getStorePageFn({
-      data: { slug: params.slug, pageSlug: params.pageSlug },
-    });
+    let found;
+    try {
+      found = await getStorePageFn({
+        data: { slug: params.slug, pageSlug: params.pageSlug },
+      });
+    } catch (err) {
+      // Infrastructure blips (5xx/timeout) reach the shared errorComponent
+      // with retry; only a null payload below takes the missing-URL verdict.
+      if (!isStorefrontInfrastructureError(err)) throw err;
+      throw normalizeStorefrontLoaderError(err);
+    }
     if (!found)
       throw await handleMissingStoreUrl(
         params.slug,
@@ -53,4 +66,17 @@ export const Route = createFileRoute("/store/$slug/pages/$pageSlug")({
   component: function RouteComponent() {
     return <PageView data={Route.useLoaderData()} />;
   },
+  errorComponent: StorefrontError,
+  notFoundComponent: StorePageMissing,
 });
+
+function StorePageMissing() {
+  const { t } = useLang();
+  return (
+    <main className="mx-auto max-w-xl px-4 py-24 text-center">
+      <h1 className="text-2xl font-semibold">
+        {t("Store not found", "দোকান পাওয়া যায়নি")}
+      </h1>
+    </main>
+  );
+}

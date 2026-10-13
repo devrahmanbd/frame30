@@ -33,6 +33,7 @@ import {
   accountUpsertSelfFn,
 } from "@/lib/accounts.functions";
 import { getStoreChrome } from "@/lib/storefront.functions";
+import { StorefrontError } from "@/components/store/StorefrontError";
 import {
   ACCOUNT_TABS as TABS,
   initialAccountTab,
@@ -71,7 +72,20 @@ export const Route = createFileRoute("/store/$slug/account")({
     };
   },
   component: AccountPage,
+  errorComponent: StorefrontError,
+  notFoundComponent: AccountMissing,
 });
+
+function AccountMissing() {
+  const { t } = useLang();
+  return (
+    <main className="mx-auto max-w-xl px-4 py-24 text-center">
+      <h1 className="text-2xl font-semibold">
+        {t("Store not found", "দোকান পাওয়া যায়নি")}
+      </h1>
+    </main>
+  );
+}
 
 type Tab = AccountTab;
 

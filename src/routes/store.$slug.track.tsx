@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { trackParcelFn } from "@/lib/shipping.functions";
+import { useLang } from "@/lib/i18n";
+import { StorefrontError } from "@/components/store/StorefrontError";
 
 /**
  * Anonymous parcel tracking. The buyer holds an opaque token; the server
@@ -27,7 +29,20 @@ export const Route = createFileRoute("/store/$slug/track")({
     ],
   }),
   component: TrackPage,
+  errorComponent: StorefrontError,
+  notFoundComponent: TrackMissing,
 });
+
+function TrackMissing() {
+  const { t } = useLang();
+  return (
+    <main className="mx-auto max-w-xl px-4 py-24 text-center">
+      <h1 className="text-2xl font-semibold">
+        {t("Store not found", "দোকান পাওয়া যায়নি")}
+      </h1>
+    </main>
+  );
+}
 
 const LABELS: Record<string, string> = {
   created: "Order created",

@@ -8,6 +8,11 @@ import {
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { PluginLayer } from "@/components/store/PluginLayer";
 import { getStoreChrome } from "@/lib/storefront.functions";
+import {
+  StorefrontError,
+  isStorefrontInfrastructureError,
+  normalizeStorefrontLoaderError,
+} from "@/components/store/StorefrontError";
 import { useMutation } from "@tanstack/react-query";
 import {
   StoreHeader,
@@ -63,13 +68,121 @@ export function mintCheckoutToken(slug: string): string {
   return `${slug}-hold-${uuid ? uuid.replace(/-/g, "") : legacyHoldSuffix()}`;
 }
 
+export type PendingOrder = {
+  orderId: string;
+  accessToken: string;
+  placedAt: number;
+};
+
+/** Rescue window for a stranded checkout: one day, then the key expires. */
+export const PENDING_ORDER_TTL_MS = 24 * 60 * 60 * 1000;
+
+type PendingOrderStore = Pick<Storage, "getItem" | "setItem" | "removeItem">;
+
+function pendingOrderStorage(
+  fallback?: PendingOrderStore,
+): PendingOrderStore | null {
+  if (fallback) return fallback;
+  if (typeof window !== "undefined" && window.sessionStorage) {
+    try {
+      // Touch it once: private-mode Safari throws on access, not on read.
+      window.sessionStorage.getItem("__fq_probe__");
+      return window.sessionStorage;
+    } catch {
+      return null;
+    }
+  }
+  return null;
+}
+
+export function pendingOrderKeyName(slug: string): string {
+  return `fq-pending-order:${slug}`;
+}
+
+/**
+ * Persisted BEFORE the charge hop so a network drop never strands the
+ * shopper: the order already exists server-side from here on, and the banner
+ * can link straight back to it.
+ */
+export function savePendingOrder(
+  slug: string,
+  pending: { orderId: string; accessToken: string },
+  store?: PendingOrderStore,
+): void {
+  const s = pendingOrderStorage(store);
+  if (!s) return;
+  try {
+    s.setItem(
+      pendingOrderKeyName(slug),
+      JSON.stringify({ ...pending, placedAt: Date.now() }),
+    );
+  } catch {
+    // Storage full/blocked: the order still exists server-side.
+  }
+}
+
+/** Fresh pending order for this tab, or null when none/malformed/stale. */
+export function readPendingOrder(
+  slug: string,
+  store?: PendingOrderStore,
+): PendingOrder | null {
+  const s = pendingOrderStorage(store);
+  if (!s) return null;
+  let raw: string | null;
+  try {
+    raw = s.getItem(pendingOrderKeyName(slug));
+  } catch {
+    return null;
+  }
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as Partial<PendingOrder>;
+    if (
+      typeof parsed.orderId !== "string" ||
+      !parsed.orderId ||
+      typeof parsed.accessToken !== "string" ||
+      !parsed.accessToken ||
+      typeof parsed.placedAt !== "number"
+    )
+      return null;
+    if (Date.now() - parsed.placedAt > PENDING_ORDER_TTL_MS) return null;
+    return {
+      orderId: parsed.orderId,
+      accessToken: parsed.accessToken,
+      placedAt: parsed.placedAt,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** Retired once the shopper reaches the order page, or on banner dismiss. */
+export function clearPendingOrder(
+  slug: string,
+  store?: PendingOrderStore,
+): void {
+  try {
+    pendingOrderStorage(store)?.removeItem(pendingOrderKeyName(slug));
+  } catch {
+    // Best-effort: a stale key merely expires via TTL.
+  }
+}
+
 export const Route = createFileRoute("/store/$slug/checkout")({
   // Checkout wears the active theme like every other storefront page, so the
   // store's header, footer and tokens stay put at the moment a shopper pays.
   loader: async ({ params }) => {
-    const chrome = await getStoreChrome({
-      data: { slug: params.slug, template: "checkout" },
-    });
+    let chrome;
+    try {
+      chrome = await getStoreChrome({
+        data: { slug: params.slug, template: "checkout" },
+      });
+    } catch (err) {
+      // Infrastructure blips (5xx/timeout) reach the shared errorComponent
+      // with retry; only a null payload below becomes a 404.
+      if (!isStorefrontInfrastructureError(err)) throw err;
+      throw normalizeStorefrontLoaderError(err);
+    }
     if (!chrome) throw notFound();
     return chrome;
   },
@@ -90,7 +203,20 @@ export const Route = createFileRoute("/store/$slug/checkout")({
     ],
   }),
   component: CheckoutPage,
+  errorComponent: StorefrontError,
+  notFoundComponent: CheckoutMissing,
 });
+
+function CheckoutMissing() {
+  const { t } = useLang();
+  return (
+    <main className="mx-auto max-w-xl px-4 py-24 text-center">
+      <h1 className="text-2xl font-semibold">
+        {t("Store not found", "দোকান পাওয়া যায়নি")}
+      </h1>
+    </main>
+  );
+}
 
 function CheckoutPage() {
   const { t, lang } = useLang();
@@ -101,6 +227,14 @@ function CheckoutPage() {
   const { lines, setQuantity, clear, hydrated } = useCart(slug);
   const [method, setMethod] = useState<Method>("cod");
   const [chargeFailed, setChargeFailed] = useState(false);
+  // Rescue: an order placed in this tab whose charge hop never completed
+  // (network drop). Read post-hydration so SSR and first paint agree.
+  const [pendingOrder, setPendingOrder] = useState<PendingOrder | null>(null);
+  useEffect(() => {
+    setPendingOrder(readPendingOrder(slug));
+  }, [slug]);
+  // Explicit hop state: placing (mutation) → redirecting (charge hop).
+  const [chargeHop, setChargeHop] = useState<"idle" | "redirecting">("idle");
   const [quote, setQuote] = useState<Awaited<
     ReturnType<typeof quoteCart>
   > | null>(null);
@@ -208,6 +342,18 @@ function CheckoutPage() {
     },
 
     onSuccess: async (res) => {
+      // Rescue first: the order exists server-side from here on, so a
+      // dropped hop can always link back to it.
+      const placed: PendingOrder = {
+        orderId: res.orderId,
+        accessToken: res.accessToken,
+        placedAt: Date.now(),
+      };
+      savePendingOrder(slug, {
+        orderId: res.orderId,
+        accessToken: res.accessToken,
+      });
+      setPendingOrder(placed);
       clear();
       // The order is placed: retire the session key so the next checkout in
       // this tab cannot replay this order's idempotency key.
@@ -215,6 +361,7 @@ function CheckoutPage() {
       if (method !== "cod") {
         // Hand the shopper to the provider rail. Only the signed return can mark
         // the order paid, so a failed hop just leaves it awaiting payment.
+        setChargeHop("redirecting");
         try {
           const charge = await startCharge({
             data: {
@@ -224,13 +371,21 @@ function CheckoutPage() {
             },
           });
           if (charge.redirectUrl) {
+            // The pending key stays: if this hop dies mid-flight, the banner
+            // links straight back to the awaiting-payment order.
             window.location.assign(charge.redirectUrl);
             return;
           }
         } catch {
           setChargeFailed(true);
+        } finally {
+          setChargeHop("idle");
         }
       }
+      // The shopper lands on the order page (which owns retry from here),
+      // so the rescue key retires.
+      clearPendingOrder(slug);
+      setPendingOrder(null);
       void navigate({
         to: "/store/$slug/order/$orderId",
         params: { slug, orderId: res.orderId },
@@ -278,6 +433,39 @@ function CheckoutPage() {
         fallback={
           <div className="mx-auto grid max-w-[var(--fq-container,1280px)] gap-12 px-4 py-8 lg:grid-cols-[1.5fr_1fr] lg:gap-16 sm:px-6 lg:px-8">
             <section className="order-2 lg:order-1 pt-4">
+              {pendingOrder && (
+                <div
+                  role="status"
+                  className="mb-6 rounded-fq-md border border-border/60 bg-warning-soft p-4 text-left"
+                >
+                  <p className="text-[13.5px] font-medium text-warning-foreground">
+                    {t(
+                      "You have an order awaiting payment.",
+                      "আপনার একটি অর্ডার পেমেন্টের অপেক্ষায় আছে।",
+                    )}
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-3">
+                    <Link
+                      to="/store/$slug/order/$orderId"
+                      params={{ slug, orderId: pendingOrder.orderId }}
+                      search={{ t: pendingOrder.accessToken }}
+                      className="inline-flex min-h-11 items-center justify-center rounded-fq-md bg-foreground px-5 text-[13px] font-bold fq-caps tracking-widest text-background"
+                    >
+                      {t("Continue to order", "অর্ডারে যান")}
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        clearPendingOrder(slug);
+                        setPendingOrder(null);
+                      }}
+                      className="inline-flex min-h-11 items-center justify-center rounded-fq-md border border-border px-5 text-[13px] font-medium"
+                    >
+                      {t("Dismiss", "বাদ দিন")}
+                    </button>
+                  </div>
+                </div>
+              )}
               <nav className="mb-10 flex items-center gap-3 text-[11px] font-bold fq-caps tracking-widest text-muted-foreground">
                 <Link
                   to="/store/$slug/cart"
@@ -464,13 +652,35 @@ function CheckoutPage() {
                 <div className="pt-8 border-t border-border/40">
                   <button
                     type="submit"
-                    disabled={!totals || mutation.isPending}
+                    disabled={
+                      !totals ||
+                      mutation.isPending ||
+                      chargeHop === "redirecting"
+                    }
                     className="min-h-14 w-full rounded-fq-md bg-foreground px-8 text-[13.5px] font-bold fq-caps tracking-widest text-background shadow-sm transition-transform active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100"
                   >
                     {mutation.isPending
                       ? t("Processing…", "প্রসেসিং…")
-                      : t("Place Order", "অর্ডার কনফার্ম করুন")}
+                      : chargeHop === "redirecting"
+                        ? t(
+                            "Redirecting to payment…",
+                            "পেমেন্টে নিয়ে যাওয়া হচ্ছে…",
+                          )
+                        : t("Place Order", "অর্ডার কনফার্ম করুন")}
                   </button>
+                  {(mutation.isPending || chargeHop === "redirecting") && (
+                    <p
+                      aria-live="polite"
+                      className="mt-3 text-center text-[12.5px] text-muted-foreground"
+                    >
+                      {chargeHop === "redirecting"
+                        ? t(
+                            "Contacting the payment provider — do not close this page.",
+                            "পেমেন্ট প্রোভাইডারের সাথে যোগাযোগ করা হচ্ছে — এই পেজ বন্ধ করবেন না।",
+                          )
+                        : t("Placing your order…", "অর্ডার করা হচ্ছে…")}
+                    </p>
+                  )}
                 </div>
               </form>
             </section>

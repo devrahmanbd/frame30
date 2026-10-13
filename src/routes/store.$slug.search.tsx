@@ -14,6 +14,11 @@ import { facetIndexPolicy } from "@/lib/seo-technical";
 import { listingPolicy } from "@/lib/url-lifecycle";
 import { searchStorefrontFn } from "@/lib/storefront-search.functions";
 import { getStoreChrome } from "@/lib/storefront.functions";
+import {
+  StorefrontError,
+  isStorefrontInfrastructureError,
+  normalizeStorefrontLoaderError,
+} from "@/components/store/StorefrontError";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { PluginLayer } from "@/components/store/PluginLayer";
 import { SupportWidget } from "@/components/store/SupportWidget";
@@ -38,23 +43,33 @@ export const Route = createFileRoute("/store/$slug/search")({
     const state = normalizeSearchParams(deps as Record<string, unknown>);
     // The published `search` template is fetched alongside the results, so the
     // page arrives already wearing the merchant's theme.
-    const [outcome, chrome] = await Promise.all([
-      searchStorefrontFn({
-        data: {
-          slug: params.slug,
-          q: state.q,
-          category: state.category,
-          collection: state.collection,
-          kind: state.kind,
-          min: state.minMinor,
-          max: state.maxMinor,
-          stock: state.inStock,
-          sort: state.sort,
-          page: state.page,
-        },
-      }),
-      getStoreChrome({ data: { slug: params.slug, template: "search" } }),
-    ]);
+    let outcome;
+    let chrome;
+    try {
+      [outcome, chrome] = await Promise.all([
+        searchStorefrontFn({
+          data: {
+            slug: params.slug,
+            q: state.q,
+            category: state.category,
+            collection: state.collection,
+            kind: state.kind,
+            min: state.minMinor,
+            max: state.maxMinor,
+            stock: state.inStock,
+            sort: state.sort,
+            page: state.page,
+          },
+        }),
+        getStoreChrome({ data: { slug: params.slug, template: "search" } }),
+      ]);
+    } catch (err) {
+      // Infrastructure blips (5xx/timeout) reach the shared errorComponent
+      // with retry. Degraded/empty outcomes still resolve below and render
+      // in-page — they are not loader failures.
+      if (!isStorefrontInfrastructureError(err)) throw err;
+      throw normalizeStorefrontLoaderError(err);
+    }
     return { ...outcome, chrome, origin: chrome?.origin ?? null };
   },
   head: ({ params, match, loaderData }) => {
@@ -89,7 +104,20 @@ export const Route = createFileRoute("/store/$slug/search")({
     });
   },
   component: SearchPage,
+  errorComponent: StorefrontError,
+  notFoundComponent: SearchMissing,
 });
+
+function SearchMissing() {
+  const { t } = useLang();
+  return (
+    <main className="mx-auto max-w-xl px-4 py-24 text-center">
+      <h1 className="text-2xl font-semibold">
+        {t("Store not found", "দোকান পাওয়া যায়নি")}
+      </h1>
+    </main>
+  );
+}
 
 function SearchPage() {
   const { t } = useLang();
