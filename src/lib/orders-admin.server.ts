@@ -561,12 +561,28 @@ export async function refundOrderLines(
       currency_code: order.currency_code,
       refund_key: refundKey,
       payment_provider: order.payment_method,
-      status: "issued",
+      // The legal refund rail is requested → processing → settled
+      // (`refund_status_transitions`); the row rides `advanceRefund` like a
+      // full `refundOrder` so money never moves without its ledger debit.
+      status: "requested",
       reason: note?.trim() ? `${reason}: ${note.trim().slice(0, 240)}` : reason,
     })
     .select("id")
     .single();
-  if (error) throw error;
+  if (error) {
+    const { data: raced } = await supabaseAdmin
+      .from("refunds")
+      .select("id")
+      .eq("refund_key", refundKey)
+      .maybeSingle();
+    if (raced)
+      return {
+        refundId: (raced as { id: string }).id,
+        amountMinor: total,
+        replayed: true,
+      };
+    throw error;
+  }
 
   await supabaseAdmin.from("refund_items").insert(
     planned.map((l) => ({
@@ -578,6 +594,14 @@ export async function refundOrderLines(
       restock: l.restock,
     })),
   );
+
+  // Money moves only through the sanctioned rail. `advanceRefund` advances
+  // requested → processing → settled and posts the compensating ledger debit
+  // on settle; if the ledger leg fails it throws, and the restock + order
+  // flip below never run — a refunded line always has its debit.
+  const { advanceRefund } = await import("./payments.server");
+  await advanceRefund(supabaseAdmin, refund.id, "processing");
+  await advanceRefund(supabaseAdmin, refund.id, "settled");
 
   for (const l of planned) {
     if (!l.restock || !l.variantId) continue;

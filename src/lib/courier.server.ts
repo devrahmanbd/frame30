@@ -814,3 +814,141 @@ export async function replayWebhookEvent(
     };
   });
 }
+
+// ------------------------------------------------------- DLQ depth signal
+export type DlqDepthResult = {
+  depth: number;
+  threshold: number;
+  alerted: boolean;
+};
+
+/** Row states that still need a human or a retry — everything else is done. */
+const DLQ_OPEN_STATUSES = ["parked", "rejected", "dead_letter"];
+
+/**
+ * DLQ-depth alert hook. Unmatched-AWB parks used to sit silent: this counts
+ * every non-terminal webhook event plus the dead-letter table and pages
+ * (metric + warn log for the alert router) past `threshold`. Run from the
+ * couriers cron; the desk replays individual rows via `replayWebhookEvent`.
+ */
+export async function dlqDepthAlert(
+  opts: { threshold?: number } = {},
+): Promise<DlqDepthResult> {
+  const threshold = opts.threshold ?? 50;
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
+  const [{ data: parked }, { data: dead, count }] = await Promise.all([
+    supabaseAdmin
+      .from("courier_webhook_events")
+      .select("id")
+      .in("status", DLQ_OPEN_STATUSES),
+    supabaseAdmin
+      .from("courier_dead_letters")
+      .select("id", { count: "exact", head: true }),
+  ]);
+  const depth =
+    (parked ?? []).length + (count ?? (dead as unknown[] | null)?.length ?? 0);
+  const alerted = depth >= threshold;
+  incr("framique_courier_dlq_depth_total", {
+    outcome: alerted ? "alert" : "ok",
+  });
+  if (alerted) {
+    log("warn", "courier.dlq_depth_high", { depth, threshold });
+  }
+  return { depth, threshold, alerted };
+}
+
+// ------------------------------------------------------- null-AWB auto-retry
+export type NullAwbRetryResult = {
+  scanned: number;
+  rebooked: number;
+  failed: number;
+};
+
+/**
+ * Null-AWB auto-retry for the couriers cron. Shipments booked during a
+ * carrier outage keep `awb = NULL` with only a manual "retry" button; this
+ * sweep rebooks them (per-shipment try/catch, cancelled rows skipped) so the
+ * backlog drains without staff clicks. Credentials load per carrier like the
+ * create path; a carrier that is still down is counted, never thrown.
+ */
+export async function retryNullAwbShipments(
+  opts: { limit?: number } = {},
+): Promise<NullAwbRetryResult> {
+  const limit = Math.min(Math.max(opts.limit ?? 50, 1), 200);
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
+  const out: NullAwbRetryResult = { scanned: 0, rebooked: 0, failed: 0 };
+  const { data: rows } = await supabaseAdmin
+    .from("carrier_shipments")
+    .select(
+      "id, merchant_id, carrier_id, carrier_code, order_id, pos_order_id, address_line, city, weight_grams, is_cod, cod_amount_minor_int, cancelled_at",
+    )
+    .is("awb", null)
+    .limit(limit);
+  for (const shipment of (rows ?? []) as Array<{
+    id: string;
+    merchant_id: string;
+    carrier_id: string | null;
+    carrier_code: string;
+    order_id: string | null;
+    pos_order_id: string | null;
+    address_line: string | null;
+    city: string | null;
+    weight_grams: number;
+    is_cod: boolean;
+    cod_amount_minor_int: number;
+    cancelled_at: string | null;
+  }>) {
+    if (shipment.cancelled_at) continue;
+    out.scanned += 1;
+    try {
+      let credentials: Record<string, unknown> | null = null;
+      if (shipment.carrier_id) {
+        const { data: carrier } = await supabaseAdmin
+          .from("carriers")
+          .select("config")
+          .eq("id", shipment.carrier_id)
+          .maybeSingle();
+        credentials = await loadCarrierCredentials(
+          (carrier as { config: unknown } | null)?.config ?? null,
+        );
+      }
+      const booked = await adapterFor(
+        shipment.carrier_code,
+        credentials,
+      ).createShipment({
+        reference: shipment.order_id ?? shipment.pos_order_id ?? shipment.id,
+        addressLine: shipment.address_line,
+        city: shipment.city,
+        weightGrams: shipment.weight_grams,
+        isCod: shipment.is_cod,
+        codAmountMinorInt: shipment.cod_amount_minor_int,
+      });
+      await supabaseAdmin
+        .from("carrier_shipments")
+        .update({ awb: booked.awb, tracking_url: booked.trackingUrl })
+        .eq("id", shipment.id);
+      out.rebooked += 1;
+      incr("framique_courier_awb_retry_total", { outcome: "rebooked" });
+      await logEvent(
+        shipment.merchant_id,
+        shipment.id,
+        "shipment.rate_retried",
+        {
+          carrier: shipment.carrier_code,
+          auto: true,
+        },
+      );
+    } catch (err) {
+      out.failed += 1;
+      incr("framique_courier_awb_retry_total", { outcome: "failed" });
+      log("warn", "courier.awb_retry_failed", {
+        shipmentId: shipment.id,
+        carrier: shipment.carrier_code,
+        message: err instanceof Error ? err.message : String(err),
+      });
+    }
+  }
+  return out;
+}

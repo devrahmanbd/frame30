@@ -265,8 +265,17 @@ export async function payInvoice(
       .maybeSingle();
     if (!invoice)
       throw new BillingError("invoice_not_found", "Invoice not found");
+    // Stable payment reference + idempotency evidence for every verdict,
+    // including replays: the flip below records no provider rail of its own,
+    // so the reference is what ties the paid row to its settlement.
+    const paymentReference = `invoice:${invoice.id}`;
+    const idempotencyKey =
+      (invoice as { idempotency_key?: string }).idempotency_key ?? invoice.id;
     // Replay of a settled invoice returns the original verdict, never a second effect.
-    if (invoice.status === "paid") return { invoice };
+    if (invoice.status === "paid") {
+      incr("framique_billing_invoice_paid_total", { outcome: "replayed" });
+      return { invoice, paymentReference, replayed: true as const };
+    }
     if (invoice.status === "void")
       throw new BillingError("invoice_void", "Invoice is void");
 
@@ -279,7 +288,11 @@ export async function payInvoice(
       .select("*")
       .maybeSingle();
     if (error) throw new BillingError("payment_failed", error.message);
-    if (!paid) return { invoice };
+    // A concurrent settle won the race: same verdict as a replay, no effects.
+    if (!paid) {
+      incr("framique_billing_invoice_paid_total", { outcome: "replayed" });
+      return { invoice, paymentReference, replayed: true as const };
+    }
 
     const { count } = await db
       .from("invoices")
@@ -306,9 +319,11 @@ export async function payInvoice(
     await logEvent(db, merchantId, actor, "invoice.paid", {
       invoice_id: invoiceId,
       total_minor_int: paid.total_minor_int,
+      payment_reference: paymentReference,
+      idempotency_key: idempotencyKey,
     });
-    incr("framique_billing_invoice_paid_total", {});
-    return { invoice: paid };
+    incr("framique_billing_invoice_paid_total", { outcome: "paid" });
+    return { invoice: paid, paymentReference, replayed: false as const };
   });
 }
 

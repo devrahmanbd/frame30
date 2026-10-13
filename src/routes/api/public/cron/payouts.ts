@@ -8,7 +8,16 @@ export const Route = createFileRoute("/api/public/cron/payouts")({
       GET: cronGet,
       POST: cronPost("payouts", async (ctx) => {
         const { processPayoutQueue } = await import("@/lib/payouts.server");
-        return processPayoutQueue(ctx.num("limit", 20, 100));
+        const { reconcileSettlementCompletions } =
+          await import("@/lib/payments.server");
+        const [payouts, settlement] = await Promise.all([
+          processPayoutQueue(ctx.num("limit", 20, 100)),
+          // Crash-safe compensation: heals paid-row-unpaid-order shapes left
+          // by a ledger/order-update failure in the settlement path. Both
+          // legs are idempotent, so this is safe alongside live traffic.
+          reconcileSettlementCompletions({ limit: 100 }),
+        ]);
+        return { ...payouts, settlement };
       }),
     },
   },

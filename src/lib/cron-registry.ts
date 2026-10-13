@@ -98,7 +98,8 @@ export const CRON_JOBS: CronJobDefinition[] = [
   {
     key: "couriers",
     label: "Courier tracking poll",
-    description: "Polls carrier tracking for shipments awaiting movement.",
+    description:
+      "Polls carrier tracking for shipments awaiting movement, pages on DLQ depth and rebooks null-AWB shipments.",
     schedule: "7,37 * * * *",
     timezone: "UTC",
     timeoutMs: 55_000,
@@ -113,7 +114,7 @@ export const CRON_JOBS: CronJobDefinition[] = [
     key: "payouts",
     label: "Payout sweep",
     description:
-      "Advances payout batches, applies holds and reconciles settlements.",
+      "Advances payout batches, applies holds, reconciles settlements and heals paid-row-unpaid-order completions.",
     schedule: "12 * * * *",
     timezone: "UTC",
     timeoutMs: 55_000,

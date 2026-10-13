@@ -104,6 +104,21 @@ export function returnSignatureMatches(
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
+/**
+ * Settlement provider reference: `<method>:<full idempotency key>`.
+ *
+ * A prior shape truncated the key to 12 chars. Retry attempts share long
+ * prefixes (`retry-<orderId>-…`), so truncation collides across attempts:
+ * the settlement matcher (`provider_reference = ref OR idempotency_key =
+ * ref`) and the paid-placement audit both assume the full key. Never slice.
+ */
+export function providerReferenceFor(
+  method: string,
+  idempotencyKey: string,
+): string {
+  return `${method}:${idempotencyKey}`;
+}
+
 // ------------------------------------------------- retry key canonicalisation
 /**
  * Collapse every retry key for an order onto the current attempt (T5).
@@ -392,7 +407,10 @@ export async function applySignedReturn(
         throw new PaymentError("payment.signature_invalid");
       }
 
-      const reference = `${intent.method}:${intent.idempotency_key.slice(0, 12)}`;
+      const reference = providerReferenceFor(
+        intent.method,
+        intent.idempotency_key,
+      );
       if (intent.status !== status) {
         await db.rpc("charge_intent_advance", {
           _intent_id: intent.id,
@@ -404,6 +422,10 @@ export async function applySignedReturn(
 
       if (status === "paid") {
         // Idempotent: the payment row and the ledger entry share the attempt key.
+        // A crash between these three legs leaves a paid row + pending order;
+        // that shape is replay-safe here AND healed by the payouts-cron
+        // watchdog (`reconcileSettlementCompletions`), so a throw below is a
+        // retryable signal, never silent money.
         await db.from("payments").upsert(
           {
             merchant_id: intent.merchant_id,
@@ -417,20 +439,51 @@ export async function applySignedReturn(
           },
           { onConflict: "idempotency_key", ignoreDuplicates: true },
         );
-        await postLedgerEntry(db, {
-          merchantId: intent.merchant_id,
-          source: "order.captured",
-          referenceId: intent.order_id,
-          direction: "credit",
-          gross: money(Number(intent.amount_minor_int), intent.currency_code),
-          idempotencyKey: `capture:${intent.idempotency_key}`,
-          memo: `${intent.method} attempt ${intent.attempt}`,
-        });
-        await db
+        try {
+          await postLedgerEntry(db, {
+            merchantId: intent.merchant_id,
+            source: "order.captured",
+            referenceId: intent.order_id,
+            direction: "credit",
+            gross: money(Number(intent.amount_minor_int), intent.currency_code),
+            idempotencyKey: `capture:${intent.idempotency_key}`,
+            memo: `${intent.method} attempt ${intent.attempt}`,
+          });
+        } catch (err) {
+          incr("framique_payment_settlement_total", {
+            outcome: "ledger_failed",
+          });
+          log("error", "payments.settlement_ledger_failed", {
+            intentId: intent.id,
+            orderId: intent.order_id,
+          });
+          throw err;
+        }
+        const { error: orderError } = (await db
           .from("orders")
           .update({ status: "paid" })
           .eq("id", intent.order_id)
-          .in("status", ["pending", "payment_pending", "confirmed"]);
+          .in("status", [
+            "pending",
+            "payment_pending",
+            "confirmed",
+          ])) as unknown as {
+          error: { message: string } | null;
+        };
+        if (orderError) {
+          incr("framique_payment_settlement_total", {
+            outcome: "order_failed",
+          });
+          log("error", "payments.settlement_order_failed", {
+            intentId: intent.id,
+            orderId: intent.order_id,
+            message: orderError.message,
+          });
+          throw new PaymentError(
+            "payment.intent_not_found",
+            `order advance failed: ${orderError.message}`,
+          );
+        }
         // T1: the funnel's paid signal fires at verified capture, never at
         // placement. Same dedupe key the placement path used, best effort.
         try {
@@ -477,6 +530,100 @@ export async function applySignedReturn(
     },
     { status },
   );
+}
+
+// --------------------------------------- settlement-completion watchdog
+export type SettlementCompletionResult = {
+  scanned: number;
+  healed: number;
+  failed: number;
+  skipped: number;
+};
+
+/**
+ * Crash-safe compensation for the settlement path.
+ *
+ * Heals the paid-row-unpaid-order shape: a `payments` row at `paid` whose
+ * order never left its pre-paid status (ledger throw or order-update failure
+ * inside `applySignedReturn`, or a crash between the legs). Every leg is
+ * idempotent — the ledger entry replays on `capture:<idempotency_key>` and
+ * the order update keeps its status-predicate guard — so a rerun after a
+ * partial heal converges instead of double-moving money.
+ *
+ * Runs from the payouts cron, never inline in the shopper path.
+ */
+export async function reconcileSettlementCompletions(
+  opts: { limit?: number } = {},
+): Promise<SettlementCompletionResult> {
+  const limit = Math.min(Math.max(opts.limit ?? 100, 1), 500);
+  const db = await admin();
+  const out: SettlementCompletionResult = {
+    scanned: 0,
+    healed: 0,
+    failed: 0,
+    skipped: 0,
+  };
+  const { data: paidRows } = await db
+    .from("payments")
+    .select(
+      "id, merchant_id, order_id, payment_provider, currency_code, amount_minor_int, provider_reference, idempotency_key",
+    )
+    .eq("payment_status", "paid")
+    .limit(limit);
+  for (const pay of (paidRows ?? []) as Array<{
+    merchant_id: string;
+    order_id: string;
+    payment_provider: string;
+    currency_code: string;
+    amount_minor_int: number;
+    idempotency_key: string;
+  }>) {
+    out.scanned += 1;
+    try {
+      const { data: order } = await db
+        .from("orders")
+        .select("id, status")
+        .eq("id", pay.order_id)
+        .maybeSingle();
+      const status = (order as { status: string } | null)?.status;
+      if (!order || status === "paid") {
+        out.skipped += 1;
+        continue;
+      }
+      if (
+        status === undefined ||
+        !["pending", "payment_pending", "confirmed"].includes(status)
+      ) {
+        out.skipped += 1;
+        continue;
+      }
+      await postLedgerEntry(db, {
+        merchantId: pay.merchant_id,
+        source: "order.captured",
+        referenceId: pay.order_id,
+        direction: "credit",
+        gross: money(Number(pay.amount_minor_int), pay.currency_code),
+        idempotencyKey: `capture:${pay.idempotency_key}`,
+        memo: `${pay.payment_provider} settlement retry`,
+      });
+      await db
+        .from("orders")
+        .update({ status: "paid" })
+        .eq("id", pay.order_id)
+        .in("status", ["pending", "payment_pending", "confirmed"]);
+      out.healed += 1;
+      incr("framique_payment_settlement_total", { outcome: "healed" });
+      log("info", "payments.settlement_healed", { orderId: pay.order_id });
+    } catch (err) {
+      out.failed += 1;
+      incr("framique_payment_settlement_total", { outcome: "heal_failed" });
+      log("error", "payments.settlement_heal_failed", {
+        orderId: pay.order_id,
+        message: err instanceof Error ? err.message : String(err),
+      });
+    }
+  }
+  return out;
 }
 
 // ------------------------------------------------------------- refund engine
@@ -536,6 +683,13 @@ export async function requestRefund(
 /**
  * Advance a refund on its own rail. `settled` posts the compensating ledger
  * debit; a provider rejection lands on `failed` and money stays with us.
+ *
+ * Ledger-first ordering: the debit is posted BEFORE the `settled` transition,
+ * so a ledger throw leaves the refund at `processing` (retryable) instead of
+ * an orphan `settled` row with no debit. Both legs are idempotent (ledger key
+ * `refund:<refund_key>`, SQL redelivery returns the row), so a crash between
+ * them heals on retry. Transitions that cannot legally settle throw before
+ * the ledger is touched.
  */
 export async function advanceRefund(
   db: Client,
@@ -543,6 +697,39 @@ export async function advanceRefund(
   to: string,
   providerRef?: string,
 ) {
+  let settledDebitPosted = false;
+  if (to === "settled") {
+    const { data: current } = await db
+      .from("refunds")
+      .select(
+        "id, merchant_id, order_id, amount_minor_int, currency_code, refund_key, status, attempt",
+      )
+      .eq("id", refundId)
+      .maybeSingle();
+    const row = current as RefundRow | null;
+    if (row && row.status !== "settled" && row.status !== "processing") {
+      incr("framique_refund_total", { outcome: "advance_rejected" });
+      throw new PaymentError(
+        "payment.refund_rejected",
+        `cannot settle from ${row.status}`,
+      );
+    }
+    if (row && row.status === "processing") {
+      const ledgerDb = await admin();
+      await postLedgerEntry(ledgerDb, {
+        merchantId: row.merchant_id,
+        source: "order.refunded",
+        referenceId: row.order_id,
+        direction: "debit",
+        gross: money(Number(row.amount_minor_int), row.currency_code),
+        idempotencyKey: `refund:${row.refund_key}`,
+        memo: `refund attempt ${row.attempt}`,
+      });
+      // The debit for this settle is on the books; the post-RPC ensure below
+      // must not write it a second time.
+      settledDebitPosted = true;
+    }
+  }
   const { data, error } = await (db as unknown as Rpc).rpc("refund_advance", {
     _refund_id: refundId,
     _to: to,
@@ -556,7 +743,9 @@ export async function advanceRefund(
     throw new PaymentError("payment.refund_rejected", error.message);
   }
   const row = data as RefundRow;
-  if (to === "settled") {
+  if (to === "settled" && row.status === "settled" && !settledDebitPosted) {
+    // Replay or post-crash retry: ensure the debit exists; the idempotency
+    // key makes this a no-op when the ledger-first write already landed.
     const ledgerDb = await admin();
     await postLedgerEntry(ledgerDb, {
       merchantId: row.merchant_id,
@@ -688,7 +877,10 @@ export async function postSettlement(fileId: string) {
     .eq("id", fileId)
     .maybeSingle();
   if (!file) throw new PaymentError("payment.intent_not_found", fileId);
-  if (file.status !== "matched") {
+  // `variance_hold` is accepted so a triaged retry posts the remainder
+  // without human re-entry; items with an OPEN post_failed alert stay
+  // quarantined (counted, never silently skipped).
+  if (file.status !== "matched" && file.status !== "variance_hold") {
     throw new PaymentError(
       "payment.refund_rejected",
       `file is ${file.status}, not matched`,
@@ -704,31 +896,80 @@ export async function postSettlement(fileId: string) {
     .eq("posted", false)
     .in("match_kind", ["exact", "manual"]);
 
+  const { data: openAlerts } = await db
+    .from("settlement_variance_alerts")
+    .select("item_id")
+    .eq("file_id", fileId)
+    .eq("kind", "post_failed")
+    .eq("resolved", false);
+  const quarantinedIds = new Set(
+    ((openAlerts ?? []) as Array<{ item_id: string | null }>)
+      .map((a) => a.item_id)
+      .filter((v): v is string => typeof v === "string" && v.length > 0),
+  );
+
   let posted = 0;
+  let failed = 0;
+  let quarantined = 0;
   for (const item of items ?? []) {
-    await postLedgerEntry(db, {
-      merchantId: file.merchant_id,
-      source: "payout.sent",
-      referenceId: item.order_id,
-      direction: "credit",
-      gross: money(Number(item.gross_minor_int), item.currency_code),
-      platformFee: money(Number(item.fee_minor_int), item.currency_code),
-      idempotencyKey: `settle:${fileId}:${item.id}`,
-      memo: `${file.provider} settlement ${file.file_date}`,
-    });
+    if (quarantinedIds.has(item.id)) {
+      quarantined += 1;
+      incr("framique_settlement_item_total", { outcome: "quarantined" });
+      continue;
+    }
+    try {
+      await postLedgerEntry(db, {
+        merchantId: file.merchant_id,
+        source: "payout.sent",
+        referenceId: item.order_id,
+        direction: "credit",
+        gross: money(Number(item.gross_minor_int), item.currency_code),
+        platformFee: money(Number(item.fee_minor_int), item.currency_code),
+        idempotencyKey: `settle:${fileId}:${item.id}`,
+        memo: `${file.provider} settlement ${file.file_date}`,
+      });
+    } catch (err) {
+      // One poisoned item must never block the file: quarantine it visibly
+      // and keep posting the rest.
+      failed += 1;
+      incr("framique_settlement_item_total", { outcome: "failed" });
+      log("error", "payments.settlement_item_failed", {
+        fileId,
+        itemId: item.id,
+        message: err instanceof Error ? err.message : String(err),
+      });
+      await db.from("settlement_variance_alerts").insert({
+        merchant_id: file.merchant_id,
+        file_id: fileId,
+        item_id: item.id,
+        kind: "post_failed",
+        expected_minor_int: Number(item.gross_minor_int),
+        actual_minor_int: 0,
+      });
+      continue;
+    }
     await db
       .from("settlement_items")
       .update({ posted: true })
       .eq("id", item.id);
     posted += 1;
+    incr("framique_settlement_item_total", { outcome: "posted" });
   }
 
-  await db
-    .from("settlement_files")
-    .update({ status: "posted", posted_at: new Date().toISOString() })
-    .eq("id", fileId);
-  incr("framique_settlement_posted_total", {}, posted);
-  return { posted };
+  if (failed > 0 || quarantined > 0) {
+    await db
+      .from("settlement_files")
+      .update({ status: "variance_hold" })
+      .eq("id", fileId);
+    incr("framique_settlement_posted_total", { outcome: "partial" }, posted);
+  } else {
+    await db
+      .from("settlement_files")
+      .update({ status: "posted", posted_at: new Date().toISOString() })
+      .eq("id", fileId);
+    incr("framique_settlement_posted_total", { outcome: "posted" }, posted);
+  }
+  return { posted, failed, quarantined };
 }
 
 export async function resolveSettlementAlert(
