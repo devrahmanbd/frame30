@@ -16,6 +16,14 @@ import { getRequest } from "@tanstack/react-start/server";
  */
 
 export const ACTIVE_MERCHANT_COOKIE = "fq.active_merchant_id";
+/**
+ * `__Host-` successor (origin-split §2.1/§3 step 4, backward-compatible half).
+ * The prefix requires `Secure` + `Path=/` + absent `Domain` — the writer
+ * always emits it that way. Dual-read: the legacy name stays honored until
+ * legacy-read removal lands as a separate, later deploy; readers prefer the
+ * new cookie when both are present and valid.
+ */
+export const HOST_ACTIVE_MERCHANT_COOKIE = "__Host-fq.active_merchant_id";
 
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -25,14 +33,23 @@ export function parseActiveMerchantCookie(
   cookieHeader: string | null | undefined,
 ): string | null {
   if (!cookieHeader) return null;
+  let legacy: string | null = null;
   for (const part of cookieHeader.split(";")) {
     const [name, ...rest] = part.trim().split("=");
-    if (name === ACTIVE_MERCHANT_COOKIE) {
-      const value = rest.join("=").trim();
-      return UUID_RE.test(value) ? value : null;
+    if (
+      name !== ACTIVE_MERCHANT_COOKIE &&
+      name !== HOST_ACTIVE_MERCHANT_COOKIE
+    ) {
+      continue;
     }
+    const value = rest.join("=").trim();
+    if (!UUID_RE.test(value)) continue;
+    // The successor wins whenever it is present and well-formed; a malformed
+    // new value must not shadow a good legacy one (old sessions keep working).
+    if (name === HOST_ACTIVE_MERCHANT_COOKIE) return value;
+    legacy ??= value;
   }
-  return null;
+  return legacy;
 }
 
 export type MembershipRow = { merchant_id: string };

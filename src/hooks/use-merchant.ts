@@ -40,11 +40,46 @@ export function candidateStoreSlugs(name: string, max = 10): string[] {
 
 /** Mirror of lib/merchant-scope.server.ts ACTIVE_MERCHANT_COOKIE (keep in sync). */
 export const ACTIVE_MERCHANT_COOKIE = "fq.active_merchant_id";
+/** Mirror of lib/merchant-scope.server.ts HOST_ACTIVE_MERCHANT_COOKIE (keep in sync). */
+export const HOST_ACTIVE_MERCHANT_COOKIE = "__Host-fq.active_merchant_id";
 export const ACTIVE_MERCHANT_KEY = ACTIVE_MERCHANT_COOKIE;
+
+const MERCHANT_COOKIE_MAX_AGE = 31536000;
+
+/**
+ * Dual-write cookie strings for the active-store hint (origin-split §3
+ * step 4, backward-compatible half — old sessions keep working).
+ *
+ * Index 0 is the legacy entry: byte-identical to the pre-split writer on
+ * plain HTTP dev, plus `Secure` only when serving HTTPS (parity — `Secure`
+ * on http would silently drop the cookie, so local dev is never weakened).
+ * Index 1 is the `__Host-` successor: always `Secure` + `Path=/` + host-only
+ * (no `Domain=`), which the prefix requires; browsers ignore it on http,
+ * where the legacy entry covers. Both stay `SameSite=Lax` for the
+ * top-level-navigated flows. Pure (no DOM) so tests pin the flags exactly.
+ */
+export function buildMerchantCookieStrings(
+  merchantId: string,
+  protocol?: string,
+): [legacy: string, next: string] {
+  const secure = protocol === "https:" ? "; Secure" : "";
+  return [
+    `${ACTIVE_MERCHANT_COOKIE}=${merchantId}; path=/; max-age=${MERCHANT_COOKIE_MAX_AGE}; SameSite=Lax${secure}`,
+    `${HOST_ACTIVE_MERCHANT_COOKIE}=${merchantId}; Path=/; Max-Age=${MERCHANT_COOKIE_MAX_AGE}; SameSite=Lax; Secure`,
+  ];
+}
 
 function writeMerchantCookie(merchantId: string) {
   if (typeof document === "undefined") return;
-  document.cookie = `${ACTIVE_MERCHANT_COOKIE}=${merchantId}; path=/; max-age=31536000; SameSite=Lax`;
+  const protocol =
+    typeof window !== "undefined" ? window.location?.protocol : undefined;
+  for (const value of buildMerchantCookieStrings(merchantId, protocol)) {
+    try {
+      document.cookie = value;
+    } catch {
+      /* cookies disabled — localStorage still carries the hint */
+    }
+  }
 }
 
 export type MerchantMembership = {
