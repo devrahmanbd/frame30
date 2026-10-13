@@ -1,0 +1,24 @@
+{
+  "id": "webgl-showcase",
+  "version": "0.1.0",
+  "runtime": "1.0.0",
+  "name": "WebGL Showcase",
+  "publisher": "Framique Dev WebGL Slice",
+  "capabilities": ["presentation", "webgl", "commerce-read"],
+  "dependencies": [
+    {
+      "name": "three",
+      "version": "0.186.1",
+      "license": "MIT",
+      "integrity": "sha384-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+    }
+  ],
+  "sections": [
+    { "key": "webgl-showcase", "slot": "main", "component": "WebGLProductShowcase" }
+  ],
+  "settings": [
+    { "key": "heading", "label": "Heading", "type": "text" },
+    { "key": "products", "label": "Products", "type": "product-selection" },
+    { "key": "poster", "label": "Fallback poster", "type": "image" }
+  ]
+}
