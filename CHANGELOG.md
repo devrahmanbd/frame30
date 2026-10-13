@@ -14,6 +14,111 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [Unreleased] (frame30) — Fault acceptance and disaster recovery
+
+System-wide resilience program (three read-only audits → 7 build lanes).
+Nothing here deploys itself: all verified on `frame30` locally unless noted.
+
+### Added — deploy recovery (`ops/deploy-from-git.sh`, `DEPLOY.md`)
+
+- Retained rollback snapshots: live `.output/` snapshotted (keeps newest 2)
+  before rsync; verify-fail or restart-fail rsyncs back + restarts +
+  re-polls readiness, always exiting nonzero with `ROLLBACK RESTORED` /
+  `ROLLBACK UNRESTORED`.
+- Health-gated restart: bounded readiness poll replaces blind `sleep 8`.
+- Lock expiry/steal: lock records owner+pid+epoch; fresh+alive refuses,
+  stale steals with audit line; explicit `--steal`.
+- Bundle-marker assertion before lock release + printed post-deploy lines
+  (`git rev-parse HEAD` + live marker), per the shared-server warning above.
+- Proven with 49/49 sandboxed failure-mode simulations (stubbed
+  systemctl/curl/real rsync).
+
+### Added — server fault containment
+
+- Gateway webhooks: DB fault on account lookup returns 503 (keeps provider
+  retries alive) instead of 401; dead-letter write failures get their own
+  metric (8 regression tests, incl. route-level canary fail-closed).
+- `/api/canary-alert` fails closed (404) with no secret; constant-time
+  compare; alertname allowlist before breaker trips.
+- Boot policy: `assertBootEnv()` (Supabase URL/keys required, Redis/Resend
+  warn-only) + `unhandledRejection`/`uncaughtException` controlled shutdown.
+- `withDbTimeout()` bounds money-path DB waits (fail-closed 503-style);
+  `AbortSignal.timeout` on outbound fetches; healthz probe-race loser
+  aborted + Redis-absent reads `skipped`; courier work abortable with
+  one-sample-per-call breakers; order emails bounded (2s cap, metric on
+  timeout); metrics/error-alert rate-limited with constant-time secrets.
+
+### Added — commerce recovery
+
+- bKash capture receipts recorded durably before settlement + exported
+  (unwired) stuck-capture sweep; `refundOrder`/`refundOrderLines` route
+  through `advanceRefund` ledger debits (transition blocked on ledger
+  failure); hold-aware cancel (no double-restore); atomic conditional
+  reserve UPDATE (safe with or without Redis) + `sweepStockHolds`
+  throw-on-RPC-error for cron alerting.
+- Settlement watchdog (heals paid-row/unpaid-order via idempotent replay),
+  `postSettlement` poison-item quarantine (`variance_hold`), full-length
+  provider references, `payInvoice` payment evidence, courier DLQ-depth
+  alert + null-AWB auto-retry on the couriers cron.
+- `fraud-shield` 4th official plugin (free, source-backed, read-only
+  permissions, allow/review-only scorer); post-order fake-order guard
+  (velocity/COD/value/address signals → fraud scores → existing rules,
+  commerce continuity beats detection — evaluation can never fail an order);
+  per-tenant Meta pixel snippet + noscript fallback; COD Purchase
+  conversion via idempotent CAPI queue.
+
+### Added — storefront resilience
+
+- Shared `StorefrontError` boundary (localized + loader-invalidating retry)
+  on every `store.$slug.*` route + root; infrastructure-vs-not-found loader
+  mapping; localized `notFoundComponent` on all store routes (checkout,
+  search, pages, account, track were bare defaults); checkout pending-order
+  rescue via sessionStorage + order-page key retirement; order thumbnails
+  via the `StoreImage` degrade path. E2E 26/26 cold (incl. 3 resilience
+  specs proving retry boundaries + rescue).
+
+### Added — ops hygiene
+
+- `rehearse.sh` asserts manifest counts, non-empty money tables, and
+  orders→payments→ledger joins (zero-row restores now fail); nightly
+  `--skip-rehearse` removed with measured evidence; docker `log-opts` caps
+  on 24 services; logrotate config; `certified-age-gate.sh` +
+  `BackupCertifiedStale` paging (fails until live encryption + off-site
+  exist — intended).
+
+### Verification (this program)
+
+- Unit: lane suites green (money 26+19, server 8+4, storefront 47+10,
+  pixel 43, fraud 28+17); neighbors 1300+ assertions green; `tsc`,
+  eslint (own lines), secret scan, SAST diff+full green; `vite build`
+  green; full E2E 26/26 cold.
+- Live (production, read-only): homepage 200 with zero console errors
+  attributable to this work; pre-existing live asset 500 noted below.
+
+### Known gaps / not done
+
+- Payment-freeze TOCTOU needs a live-DB routine change (`charge_intent_open`
+  bodies are not in-repo) — reported, not fixed.
+- `refundOrderLines` edge cases + `voidHalfWrittenOrder` per-line crash
+  window: reported, loop untouched by design scope.
+- Online-rail (non-COD) Purchase wiring deferred to settlement paths.
+- Backup encryption + off-site remotes unverified from here (gate pages
+  until configured); bare-metal restore unproven end-to-end.
+- Single-box topology retained (documented accepted risk; RPO/RTO targets
+  still owner decisions); blue/green compose remains unwired to the live
+  path (docs labeled accordingly by audit).
+- Pre-existing failures left alone: tree-wide prettier drift (338 files),
+  one env-dependent `site.server` test, Supabase-dependent schema checks.
+
+### Live observation (2026-10-13, pre-existing, not caused by this work)
+
+- `GET https://framique.qubickle.com/assets/styles-D20lWL3s.css` → **500**
+  while `/` → 200: the live homepage's hashed stylesheet fails, so the
+  production homepage renders unstyled/degraded. Nothing in this program
+  deployed (no production changes made); the new rollback + bundle-marker
+  machinery exists precisely so the next deploy either lands verified or
+  restores last-good automatically.
+
 ## [Unreleased] (frame30) — Official source themes without ZIP distribution
 
 ### Removed
