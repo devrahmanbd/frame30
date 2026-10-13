@@ -156,8 +156,26 @@ platform path. Never point merchants at `edge.framique.*` or `76.76.21.21`
   flamelancer.com rename). If this check starts serving 200, a mapping
   changed — check `merchant_domains` first, code second.
 - **Restart precedes verify.** rsync + `systemctl restart` happen before
-  checks, so a red gate means "new code live, proof incomplete" — read
-  which line failed before deciding rollback vs edge wait.
+  checks, and the restart is health-gated: the script polls
+  `http://127.0.0.1:3200/api/healthz?type=readiness` until 200 (120s bound)
+  instead of sleeping blind. A red gate triggers the rollback below
+  automatically — read which line failed before deciding edge wait vs
+  accepting the restored standby.
+
+## Deploy-script rollback (deploy-from-git.sh, frame30)
+
+- **Last-good retained.** Before rsync, live `.output/` is snapshotted to
+  `.output-snapshots/snap_<UTC>_<sha>` (newest 2 kept, older pruned).
+- **Auto-restore.** Restart-fail, readiness-timeout, or verify-fail →
+  snapshot rsynced back + service restarted + readiness re-checked. Exit is
+  always nonzero on a failed deploy, with `ROLLBACK RESTORED` (old bits live
+  and ready) or `ROLLBACK UNRESTORED` (needs a human) in the log.
+- **Lock steal.** Lock holds `owner pid started_at`; a fresh (<90min) lock
+  whose pid is alive refuses, anything else is stolen with an audit line in
+  `.deploy-lock-audit.log`. `ops/deploy-from-git.sh --steal <branch>` forces it.
+- **Bundle marker.** The deployed SHA is stamped into `.output/DEPLOYED_SHA`
+  and asserted live before lock release; success prints `git rev-parse HEAD`
+  + live marker (the CHANGELOG shared-server proof).
 
 ## Edge custom-cert flapping runbook (diagnosed 2026-09-25)
 
