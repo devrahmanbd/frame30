@@ -142,12 +142,19 @@ export async function cancelOrder(
   const { supabaseAdmin } =
     await import("@/integrations/supabase/client.server");
 
-  const { error } = await supabaseAdmin
+  const { data: moved, error } = await supabaseAdmin
     .from("orders")
     .update({ status: "cancelled" })
     .eq("id", orderId)
-    .eq("status", order.status);
+    .eq("status", order.status)
+    .select("id");
   if (error) throw error;
+  // Status-predicate guard: a concurrent cancel (or any status move) that won
+  // the race matches zero rows here, so the loser throws instead of running
+  // the restore path a second time.
+  if (!moved || moved.length === 0) {
+    throw new Error("Order changed underneath the cancel; please retry");
+  }
 
   await logEvent(
     orderId,
@@ -156,6 +163,42 @@ export async function cancelOrder(
     reason?.trim() ? reason.trim() : "Cancelled by staff; stock restored",
   );
 
+  // Hold-aware single restore path. Holds linked to this order that are still
+  // live (unconsumed, unreleased) already account for the taken stock: release
+  // them back. Variants restored that way are skipped in the line restock
+  // below, so stock comes back exactly once. Consumed holds (or no holds)
+  // fall through to the line restock, which is then the only restore.
+  const { data: holds } = await supabaseAdmin
+    .from("stock_holds")
+    .select("variant_id, quantity, consumed_at, released_at")
+    .eq("order_id", orderId)
+    .eq("merchant_id", order.merchant_id);
+  const released = new Set<string>();
+  for (const hold of holds ?? []) {
+    if (hold.consumed_at || hold.released_at) continue;
+    if (!hold.variant_id) continue;
+    const { data: variant } = await supabaseAdmin
+      .from("product_variants")
+      .select("stock_quantity")
+      .eq("id", hold.variant_id)
+      .maybeSingle();
+    if (!variant) continue;
+    await supabaseAdmin
+      .from("product_variants")
+      .update({ stock_quantity: variant.stock_quantity + hold.quantity })
+      .eq("id", hold.variant_id);
+    released.add(hold.variant_id);
+  }
+  if (released.size > 0) {
+    await supabaseAdmin
+      .from("stock_holds")
+      .update({ released_at: new Date().toISOString() })
+      .eq("order_id", orderId)
+      .eq("merchant_id", order.merchant_id)
+      .is("consumed_at", null)
+      .is("released_at", null);
+  }
+
   const { data: items } = await supabaseAdmin
     .from("order_items")
     .select("variant_id, quantity")
@@ -163,6 +206,7 @@ export async function cancelOrder(
 
   for (const item of items ?? []) {
     if (!item.variant_id) continue;
+    if (released.has(item.variant_id)) continue;
     const { data: variant } = await supabaseAdmin
       .from("product_variants")
       .select("stock_quantity")
@@ -270,7 +314,10 @@ export async function refundOrder(
       amount_minor_int: order.total_minor_int,
       refund_key: refundKey,
       payment_provider: order.payment_method,
-      status: "issued",
+      // The legal refund rail is requested → processing → settled
+      // (`refund_status_transitions`); anything else has no outgoing edge and
+      // `refund_advance` would reject it.
+      status: "requested",
       reason: reason?.trim() || null,
     })
     .select("id")
@@ -290,11 +337,24 @@ export async function refundOrder(
     throw error;
   }
 
-  await supabaseAdmin
+  // Money moves only through the sanctioned rail. `advanceRefund` advances
+  // requested → processing → settled and posts the compensating ledger debit
+  // on settle; if the ledger leg fails it throws, and the order below never
+  // flips — a refunded order always has its debit.
+  const { advanceRefund } = await import("./payments.server");
+  await advanceRefund(supabaseAdmin, refund.id, "processing");
+  await advanceRefund(supabaseAdmin, refund.id, "settled");
+
+  const { data: moved, error: moveError } = await supabaseAdmin
     .from("orders")
     .update({ status: "refunded" })
     .eq("id", orderId)
-    .eq("status", order.status);
+    .eq("status", order.status)
+    .select("id");
+  if (moveError) throw moveError;
+  if (!moved || moved.length === 0) {
+    throw new Error("Order changed underneath the refund; please retry");
+  }
   await logEvent(
     orderId,
     order.merchant_id,

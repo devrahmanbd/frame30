@@ -47,6 +47,176 @@ export type LiveAccount = {
   webhookSecret: string;
 };
 
+/* ------------------------------------------------------------------ */
+/* Provider-capture receipts (bKash crash-between-execute-and-settle)  */
+/* ------------------------------------------------------------------ */
+
+export type ProviderCaptureReceipt = {
+  intentId: string;
+  merchantId: string;
+  provider: LiveProvider;
+  providerReference: string;
+  amountMinorInt: number | null;
+};
+
+export type ValidateOptions = {
+  /**
+   * Durable capture recorder. When present, a provider-confirmed capture is
+   * written to the database in the same unit that handled the execute
+   * success — before any settlement runs — so a crash in between stays
+   * recoverable. Absent, validation stays pure (no I/O).
+   */
+  capture?: { db: Client; merchantId: string };
+};
+
+/**
+ * Record a durable provider-captured receipt: the intent row carries the
+ * provider reference and a `charge_intent_events` row pins the capture facts
+ * (`to_status: "pending"` — captured at the rail, not yet settled here).
+ *
+ * Idempotent: re-recording the same reference replays without a second
+ * event row. A *different* reference for the same intent is a conflict and
+ * throws — two providers must never claim one intent.
+ */
+export async function recordProviderCapture(
+  db: Client,
+  receipt: ProviderCaptureReceipt,
+): Promise<{ intentId: string; providerReference: string; replayed: boolean }> {
+  const { data: intent } = await db
+    .from("charge_intents")
+    .select("id, merchant_id, status, provider_reference")
+    .eq("id", receipt.intentId)
+    .eq("merchant_id", receipt.merchantId)
+    .maybeSingle();
+  const row = intent as {
+    id: string;
+    merchant_id: string;
+    status: string;
+    provider_reference: string | null;
+  } | null;
+  if (!row)
+    throw new LiveGatewayError("live_gateway.intent_missing", receipt.intentId);
+  if (
+    row.provider_reference &&
+    row.provider_reference !== receipt.providerReference
+  ) {
+    log("error", "live_gateway.capture_conflict", {
+      intentId: receipt.intentId,
+      provider: receipt.provider,
+    });
+    throw new LiveGatewayError(
+      "live_gateway.capture_conflict",
+      receipt.intentId,
+    );
+  }
+  if (row.provider_reference === receipt.providerReference) {
+    incr("framique_live_capture_receipt_total", {
+      provider: receipt.provider,
+      outcome: "replayed",
+    });
+    return {
+      intentId: receipt.intentId,
+      providerReference: receipt.providerReference,
+      replayed: true,
+    };
+  }
+  const { error: refError } = await db
+    .from("charge_intents")
+    .update({ provider_reference: receipt.providerReference })
+    .eq("id", receipt.intentId)
+    .eq("merchant_id", receipt.merchantId);
+  if (refError)
+    throw new LiveGatewayError(
+      "live_gateway.capture_receipt_failed",
+      refError.message,
+    );
+  const { error: eventError } = await db.from("charge_intent_events").insert({
+    intent_id: receipt.intentId,
+    merchant_id: receipt.merchantId,
+    from_status: String(row.status),
+    to_status: "pending",
+    detail: {
+      capture_receipt: true,
+      provider: receipt.provider,
+      provider_reference: receipt.providerReference,
+      amount_minor_int: receipt.amountMinorInt,
+    },
+  });
+  if (eventError)
+    throw new LiveGatewayError(
+      "live_gateway.capture_receipt_failed",
+      eventError.message,
+    );
+  incr("framique_live_capture_receipt_total", {
+    provider: receipt.provider,
+    outcome: "recorded",
+  });
+  return {
+    intentId: receipt.intentId,
+    providerReference: receipt.providerReference,
+    replayed: false,
+  };
+}
+
+export type StuckCapture = {
+  id: string;
+  merchant_id: string;
+  order_id: string;
+  method: string;
+  amount_minor_int: number;
+  provider_reference: string;
+  status: string;
+  expires_at: string;
+};
+
+/**
+ * Find intents captured at the provider but never settled here, past the
+ * intent's own TTL. Exported cron-wireable (NOT wired): the caller passes a
+ * service-role client on whatever cadence ops chooses.
+ *
+ * Report-only by design: the sweep never settles or voids money itself. Each
+ * surfaced intent is for completion (re-validate with a fresh grant, then
+ * settle) or voiding (provider-side cancel + expire) by the operator or the
+ * callback retry path — the durable receipt above is what makes either
+ * possible after a crash.
+ */
+export async function sweepStuckCaptures(
+  db: Client,
+  opts?: { now?: Date | string; limit?: number },
+): Promise<StuckCapture[]> {
+  const nowIso =
+    opts?.now instanceof Date
+      ? opts.now.toISOString()
+      : (opts?.now ?? new Date().toISOString());
+  const { data, error } = await db
+    .from("charge_intents")
+    .select(
+      "id, merchant_id, order_id, method, amount_minor_int, provider_reference, status, expires_at",
+    )
+    .in("status", ["initiated", "pending"])
+    .not("provider_reference", "is", null)
+    .lte("expires_at", nowIso)
+    .order("expires_at", { ascending: true })
+    .limit(opts?.limit ?? 100);
+  if (error)
+    throw new LiveGatewayError("live_gateway.sweep_failed", error.message);
+  // `.not(..., "is", null)` is the server-side predicate; the JS filter keeps
+  // test doubles (which record but do not evaluate `not`) honest too.
+  const stuck = ((data ?? []) as StuckCapture[]).filter(
+    (r) => r.provider_reference,
+  );
+  for (const row of stuck) {
+    log("warn", "live_gateway.stuck_capture", {
+      intentId: row.id,
+      orderId: row.order_id,
+      providerReference: row.provider_reference,
+    });
+  }
+  if (stuck.length > 0)
+    incr("framique_live_stuck_capture_total", {}, stuck.length);
+  return stuck;
+}
+
 /**
  * A rail is "live-capable" only when the account is active, out of mock mode,
  * and holds every credential the rail needs. Otherwise callers fall back to the
@@ -274,6 +444,7 @@ function holdPending(
 export async function validateWithProvider(
   account: LiveAccount,
   verdict: CallbackVerdict,
+  opts?: ValidateOptions,
 ): Promise<CallbackVerdict> {
   if (account.provider === "aamarpay") {
     if (verdict.status !== "paid") return verdict;
@@ -326,13 +497,41 @@ export async function validateWithProvider(
         payerReference: verdict.intentId,
       });
       if (checked.status !== "paid") return holdPending(account, verdict);
-      return {
+      const intentId = verdict.intentId;
+      const paid = {
         ...verdict,
-        status: "paid",
+        status: "paid" as const,
         providerReference:
           checked.providerReference ?? verdict.providerReference,
         amountMinorInt: checked.amountMinorInt ?? verdict.amountMinorInt,
       };
+      // The execute call CAPTURED at the provider. Record the receipt in this
+      // same unit, before any settlement runs: a crash after this point must
+      // leave durable evidence, not a silent charge. A receipt-leg failure
+      // never blocks the verdict — settlement itself is the authoritative
+      // durable write when this process survives.
+      if (opts?.capture && paid.providerReference) {
+        try {
+          await recordProviderCapture(opts.capture.db, {
+            intentId,
+            merchantId: opts.capture.merchantId,
+            provider: account.provider,
+            providerReference: paid.providerReference,
+            amountMinorInt: paid.amountMinorInt,
+          });
+        } catch (err) {
+          incr("framique_live_capture_receipt_total", {
+            provider: account.provider,
+            outcome: "error",
+          });
+          log("error", "live_gateway.capture_failed", {
+            intentId,
+            provider: account.provider,
+            reason: (err as Error).message.slice(0, 160),
+          });
+        }
+      }
+      return paid;
     } catch {
       return holdPending(account, verdict);
     }
@@ -434,7 +633,9 @@ export async function settleLiveCallback(
     );
   }
 
-  const verdict = await validateWithProvider(account, raw);
+  const verdict = await validateWithProvider(account, raw, {
+    capture: { db, merchantId: intent.merchant_id },
+  });
 
   let status = verdict.status;
   if (

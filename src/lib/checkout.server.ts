@@ -106,7 +106,10 @@ export async function reserveStock(
         await import("@/integrations/supabase/client.server");
       const wanted = new Map<string, number>();
       for (const l of lines) {
-        const q = Math.max(1, Math.floor(l.quantity));
+        // Quantity-0/negative lines reserve nothing. The old `Math.max(1, …)`
+        // coerced them into taking a unit each — phantom demand on the shelf.
+        const q = Math.floor(Number(l.quantity));
+        if (!Number.isFinite(q) || q <= 0) continue;
         wanted.set(l.variantId, Math.max(wanted.get(l.variantId) ?? 0, q));
       }
       if (wanted.size === 0) fail("stock_hold.variant_not_found");
@@ -187,14 +190,21 @@ export async function reserveStock(
         const stock = Number(
           (row as { stock_quantity: number }).stock_quantity,
         );
-        if (delta > 0 && stock < delta) {
+        // Single conditional UPDATE: the take lands only while enough stock
+        // is still on the shelf, so two reserves racing the last unit cannot
+        // both succeed even where the tenant lock degrades to isolate-local
+        // (no Redis). Zero matched rows = insufficient — never a floored
+        // write that masks an oversell.
+        const { data: taken, error: takeError } = await supabaseAdmin
+          .from("product_variants")
+          .update({ stock_quantity: stock - delta })
+          .eq("id", variantId)
+          .gte("stock_quantity", delta)
+          .select("id");
+        if (takeError) fail(takeError.message);
+        if (!taken || taken.length === 0) {
           fail(`stock_hold.insufficient: ${variantId}`);
         }
-        const { error: takeError } = await supabaseAdmin
-          .from("product_variants")
-          .update({ stock_quantity: Math.max(0, stock - delta) })
-          .eq("id", variantId);
-        if (takeError) fail(takeError.message);
         if (held.has(variantId)) {
           await supabaseAdmin
             .from("stock_holds")
@@ -242,13 +252,16 @@ export async function reserveStock(
           supabaseAdmin as never,
           merchantId,
         );
-        const outcomes = await runHook(installed, "checkout.validate", {
-          merchantId,
-          // NOTE: checkoutToken is intentionally absent — it authorizes
-          // reserve/release/place calls for the shopper's live session and
-          // must never reach vendors. Nothing consumes it downstream
-          // (verified Oct 2026).
-          lineCount: lines.length,
+        const outcomes = await runHook(
+          installed,
+          "checkout.validate",
+          {
+            merchantId,
+            // NOTE: checkoutToken is intentionally absent — it authorizes
+            // reserve/release/place calls for the shopper's live session and
+            // must never reach vendors. Nothing consumes it downstream
+            // (verified Oct 2026).
+            lineCount: lines.length,
           },
           undefined,
           transport,
@@ -414,9 +427,39 @@ export async function releaseStock(checkoutToken: string, merchantId: string) {
   return true;
 }
 
+/**
+ * Reclaim expired holds. Exported cron-wireable — deliberately NOT wired
+ * here; the sibling that owns the cron registry decides cadence. Caller-ready
+ * shape, following the repo's sweep convention (cf. the support SLA sweep):
+ *
+ *   { key: "stock-holds", schedule: "every 5 minutes",
+ *     timezone: "UTC", timeoutMs: 55_000, components: ["commerce"],
+ *     touchesThirdParty: false }
+ *   → on tick, with a service-role client: `await sweepStockHolds()`.
+ *
+ * The call is idempotent (the RPC returns a reclaimed count) and throws on
+ * RPC failure so the cron wrapper pages — the throw is the alerting contract.
+ *
+ * RPC-shape note (read in-repo, Oct 2026): `stock_hold_sweep()` is declared
+ * zero-arg → number (`types.ts`), which is exactly how it is called below.
+ * Its BODY is not in-repo (only the grant/revoke in
+ * `supabase/migrations/20260907174014_*` references it), so whether it
+ * predicates the live row-per-line shape (`consumed_at IS NULL AND
+ * released_at IS NULL AND expires_at < now()`) and restores
+ * `product_variants.stock_quantity` per expired line is UNVERIFIED — confirm
+ * with a live `\sf public.stock_hold_sweep` before trusting reclamation.
+ * Do NOT write migrations for this (DDL repair is blocked: not table owner).
+ */
 export async function sweepStockHolds() {
   const db = await admin();
-  const { data } = await db.rpc("stock_hold_sweep", {});
+  const { data, error } = await db.rpc("stock_hold_sweep", {});
+  if (error) {
+    log("error", "checkout.sweep_failed", { reason: error.message });
+    throw new CheckoutError(
+      "stock_sweep_failed",
+      `Stock hold sweep failed: ${error.message}`,
+    );
+  }
   const swept = Number(data ?? 0);
   if (swept > 0) incr("framique_checkout_holds_swept_total", {}, swept);
   return swept;
