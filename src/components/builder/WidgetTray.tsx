@@ -1,7 +1,19 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { catalogEntry, type SectionType, type Slot } from "@/lib/builder-ast";
+import {
+  catalogEntry,
+  type ExtensionNode,
+  type SectionType,
+  type Slot,
+} from "@/lib/builder-ast";
 import { useLang } from "@/lib/i18n";
-import { pluginTrayEntries, type BlockSlot } from "@/lib/plugin-manifest";
+import { parsePluginWidgetKey } from "@/lib/plugin-manifest";
+import {
+  createWidgetRegistry,
+  fromBuiltinWidgets,
+  fromPluginManifest,
+  fromStudioCatalog,
+} from "@/lib/unified-widget-registry";
+import { insertPluginWidget } from "./studio/plugin-tray";
 import {
   VERTICALS,
   presetsFor,
@@ -155,12 +167,20 @@ export function WidgetTray({
   slot,
   onAdd,
   onAddPlugin,
+  onAddExtension,
 }: {
   slot: Slot;
   /** `presetKey` is `"default"` when the widget has no variants. */
   onAdd: (type: SectionType, presetKey: string) => void;
   /** Phase 5: adds a `plugin_block` already pointed at an app widget. */
   onAddPlugin?: (pluginKey: string) => void;
+  /**
+   * Frame30: receives the canonical extension node built from the unified
+   * registry (defaults + unique instance id + permitted slot + selection id
+   * inside). Absent keeps the legacy `onAddPlugin` path byte-identical, so
+   * existing callers stay unwired until their track adopts the node.
+   */
+  onAddExtension?: (node: ExtensionNode) => void;
 }) {
   const { t } = useLang();
   const [term, setTerm] = useState("");
@@ -195,15 +215,63 @@ export function WidgetTray({
     return [...map.entries()];
   }, [hits]);
 
+  // ONE unified registry seeded with every tier (builtin + studio +
+  // installed-plugin defs). Both the listing below and insertion read from
+  // it, so the tray can never offer a widget it cannot insert.
+  const trayRegistry = useMemo(() => {
+    const registry = createWidgetRegistry();
+    for (const def of [
+      ...fromBuiltinWidgets(),
+      ...fromStudioCatalog(),
+      ...fromPluginManifest(plugins),
+    ]) {
+      registry.registerWidget(def);
+    }
+    return registry;
+  }, [plugins]);
+
   const appEntries = useMemo(() => {
-    const q = term.trim().toLowerCase();
-    return pluginTrayEntries(plugins, slot as BlockSlot).filter(
-      (e) =>
-        !q ||
-        e.label.toLowerCase().includes(q) ||
-        e.pluginName.toLowerCase().includes(q),
+    // Only the plugin slice is emitted. Disabled installs and incompatible
+    // builder-API manifests contribute nothing — the shared adapter
+    // filtering — and the label/plugin-name search mirrors the old path.
+    const pluginNames = new Map(
+      plugins.map((item) => [item.manifest.id, item.manifest.name]),
     );
-  }, [plugins, slot, term]);
+    const q = term.trim().toLowerCase();
+    const out: { key: string; label: string; pluginName: string }[] = [];
+    for (const def of trayRegistry.listWidgets()) {
+      if (def.namespace !== "plugin") continue;
+      if (!def.slots.includes(slot)) continue;
+      const parsed = parsePluginWidgetKey(def.id);
+      const pluginName = (parsed && pluginNames.get(parsed.pluginId)) ?? def.id;
+      if (
+        q &&
+        !def.label.toLowerCase().includes(q) &&
+        !pluginName.toLowerCase().includes(q)
+      ) {
+        continue;
+      }
+      out.push({ key: def.id, label: def.label, pluginName });
+    }
+    return out;
+  }, [plugins, slot, term, trayRegistry]);
+
+  const insertPlugin = useCallback(
+    (pluginKey: string) => {
+      // Adopted callers receive the canonical extension node; everyone else
+      // — and every resolve/slot miss — keeps the legacy placeholder path.
+      if (!onAddExtension) {
+        onAddPlugin?.(pluginKey);
+        return;
+      }
+      insertPluginWidget(
+        trayRegistry,
+        { widgetKey: pluginKey, slot },
+        { onAddExtension, onAddPlugin },
+      );
+    },
+    [onAddExtension, onAddPlugin, slot, trayRegistry],
+  );
 
   const insert = useCallback(
     (type: SectionType, presetKey: string) => {
@@ -413,8 +481,8 @@ export function WidgetTray({
               <li key={entry.key}>
                 <button
                   type="button"
-                  onClick={() => onAddPlugin?.(entry.key)}
-                  disabled={!onAddPlugin}
+                  onClick={() => insertPlugin(entry.key)}
+                  disabled={!onAddPlugin && !onAddExtension}
                   title={entry.pluginName}
                   className="flex w-full items-center gap-1.5 rounded-fq-md border border-border/70 bg-card p-2 text-left text-xs hover:border-primary hover:bg-accent/60 transition-all cursor-pointer shadow-xs disabled:opacity-50"
                 >

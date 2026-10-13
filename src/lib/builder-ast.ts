@@ -427,7 +427,83 @@ export type Section = {
   when?: VisibilityRule[];
   /** Phase 3.2: renders only for visitors assigned to this experiment variant. */
   ab?: { experiment: string; variant: string };
+  /**
+   * Frame30 canonical extension payload. Meaningful only when the stored
+   * `type` is `"extension"` at runtime (see `EXTENSION_TYPE`); `SectionType`
+   * itself stays closed, so every existing member and its parsing is
+   * untouched. The widget's authored props live in the inherited `props`
+   * bag (registry-validated per-widget schema, preserved JSON-safe); these
+   * envelope fields identify and version the instance around them.
+   */
+  /** Stable instance identity; defaults to the node id at insert/parse. */
+  instanceId?: string;
+  /** Which tier owns the widget (derived from `widgetKey` when absent). */
+  owner?: ExtensionOwner;
+  /** Registry address of the widget (`plugin:{app}/{widget}`, `builtin:*`, …). */
+  widgetKey?: string;
+  /** Builder API line the instance targets; opaque to the AST layer. */
+  apiVersion?: string;
+  /** Pinned widget version; absent tracks the registry latest (upgrade path). */
+  version?: string;
+  /** Per-breakpoint overrides for the extension widget props (mirrors `bp`).
+   * Typed as the `bp` prop-bag shape (not `Record<string, unknown>`) so the
+   * TanStack server-fn serializability gate accepts `Section`: at runtime the
+   * bag still holds the same JSON-safe widget props (cast at the parse and
+   * migration seams, exactly like `Section.props` already does). */
+  responsive?: Partial<Record<Breakpoint, Record<string, PropValue>>>;
+  /** Permitted locations snapshot recorded at insertion. */
+  slots?: Slot[];
 };
+
+/**
+ * Frame30 canonical extension node.
+ *
+ * Standalone shape (not a `SectionType` member — the core union stays
+ * closed): `{ id, type: "extension", instanceId, owner: { kind, id },
+ * widgetKey, apiVersion, props, responsive?, slots? }` plus the shared
+ * `hidden / when / ab / invalid` chrome. Stored inside `ThemeAst` slots as
+ * a `Section` (cast at the seam — `Section.props` is typed narrower, but at
+ * runtime the bag holds the same JSON-safe widget props); `isExtensionNode`
+ * narrows back without casts for readers.
+ */
+export const EXTENSION_TYPE = "extension";
+
+/** Default `apiVersion` for migrated legacy nodes (unpinned, never gates). */
+export const EXTENSION_API_DEFAULT = "1.0.0";
+
+export type ExtensionOwnerKind = "builtin" | "studio" | "plugin" | "theme";
+export type ExtensionOwner = { kind: ExtensionOwnerKind; id: string };
+
+export type ExtensionNode = {
+  id: string;
+  type: "extension";
+  instanceId: string;
+  owner: ExtensionOwner;
+  widgetKey: string;
+  apiVersion: string;
+  version?: string;
+  props: Record<string, unknown>;
+  responsive?: Partial<Record<Breakpoint, Record<string, unknown>>>;
+  slots?: Slot[];
+  hidden?: Breakpoint[];
+  when?: VisibilityRule[];
+  ab?: { experiment: string; variant: string };
+  invalid?: string;
+};
+
+/** True for the runtime `"extension"` discriminator (any value, never throws). */
+export function isExtensionType(value: unknown): value is "extension" {
+  return value === EXTENSION_TYPE;
+}
+
+/** True for a stored node carrying the canonical extension envelope. */
+export function isExtensionNode(value: unknown): value is ExtensionNode {
+  return (
+    !!value &&
+    typeof value === "object" &&
+    (value as { type?: unknown }).type === EXTENSION_TYPE
+  );
+}
 
 /**
  * Builder callback themes use to construct sections (id assignment,
@@ -6596,6 +6672,360 @@ export function resolveGlobalRef(
   return { sections: graft(block.nodes, section.id), missing: false };
 }
 
+/* ------------------------- Frame30 canonical extension node ---------------
+ *
+ * The core `SectionType` union stays closed (total maps such as `WIDGET_HELP`
+ * and the `SECTION_CATALOG.length` / studio-twin-parity pins forbid a new
+ * member), so the canonical variant is a runtime `"extension"` node handled
+ * here. It is registered in the `CATALOG` map below — never in
+ * `SECTION_CATALOG` — so `parseSection` slot legality, the shared node
+ * budget, duplicate-id remap, `lintTemplate` slot/child checks and
+ * `withThemeWidgetDefaults` all treat it like every other type with zero
+ * changes to existing members or their parsing.
+ */
+
+/** Slots an extension node may occupy (identical to `plugin_block`). */
+export const EXTENSION_SLOTS: Slot[] = ["header", "main", "footer"];
+
+export const EXTENSION_ENTRY: CatalogEntry = {
+  // Runtime discriminator is `"extension"`; the cast keeps `SectionType`
+  // closed while letting the generic parse/lint paths find this entry.
+  type: EXTENSION_TYPE as unknown as SectionType,
+  label: "Extension",
+  group: "content",
+  slots: ["header", "main", "footer"],
+  heading: false,
+  defaults: {},
+  fields: [],
+};
+
+/** Owner scope derived from a registry widget key (no registry import). */
+export function ownerForWidgetKey(widgetKey: string): ExtensionOwner {
+  const m = /^(builtin|studio|plugin|theme):(.+)$/.exec(widgetKey.trim());
+  if (m) {
+    const scope = m[2]!.split("/")[0]!.trim().slice(0, 64);
+    return { kind: m[1] as ExtensionOwnerKind, id: scope };
+  }
+  return { kind: "plugin", id: "" };
+}
+
+const EXTENSION_OWNER_KINDS: readonly string[] = [
+  "builtin",
+  "studio",
+  "plugin",
+  "theme",
+];
+
+/** Keep an explicit valid owner; otherwise derive it from the widget key. */
+export function normalizeExtensionOwner(
+  raw: unknown,
+  widgetKey: string,
+): ExtensionOwner {
+  if (raw && typeof raw === "object" && !Array.isArray(raw)) {
+    const bag = raw as Record<string, unknown>;
+    if (
+      typeof bag["kind"] === "string" &&
+      EXTENSION_OWNER_KINDS.includes(bag["kind"]) &&
+      typeof bag["id"] === "string" &&
+      bag["id"].trim()
+    ) {
+      return {
+        kind: bag["kind"] as ExtensionOwnerKind,
+        id: bag["id"].trim().slice(0, 64),
+      };
+    }
+  }
+  return ownerForWidgetKey(widgetKey);
+}
+
+/**
+ * JSON-safe preservation for extension widget props. The per-widget schema
+ * (unified registry + `validateProps`) owns value validation; the AST layer
+ * only guarantees serialisability: scalars/`null` pass through, arrays and
+ * plain objects recurse (depth-capped, cycle-safe), and functions, symbols,
+ * class instances and cyclic references are dropped. Non-finite numbers
+ * become 0 so `JSON.stringify` can never emit `null` for them mid-document.
+ */
+const EXTENSION_PROPS_DEPTH = 12;
+const EXTENSION_PROPS_ARRAY_CAP = 500;
+
+function cleanExtensionValue(
+  value: unknown,
+  depth: number,
+  seen: WeakSet<object>,
+): { keep: boolean; value?: unknown } {
+  if (typeof value === "string" || typeof value === "boolean")
+    return { keep: true, value };
+  if (typeof value === "number")
+    return { keep: true, value: Number.isFinite(value) ? value : 0 };
+  if (value === null) return { keep: true, value: null };
+  if (depth >= EXTENSION_PROPS_DEPTH || typeof value !== "object")
+    return { keep: false };
+  if (seen.has(value)) return { keep: false };
+  seen.add(value);
+  if (Array.isArray(value)) {
+    const out: unknown[] = [];
+    for (const item of value.slice(0, EXTENSION_PROPS_ARRAY_CAP)) {
+      const cleaned = cleanExtensionValue(item, depth + 1, seen);
+      if (cleaned.keep) out.push(cleaned.value);
+    }
+    return { keep: true, value: out };
+  }
+  const proto = Object.getPrototypeOf(value);
+  if (proto !== Object.prototype && proto !== null) return { keep: false };
+  const out: Record<string, unknown> = {};
+  for (const [key, entry] of Object.entries(value)) {
+    if (key.length > 120) continue;
+    const cleaned = cleanExtensionValue(entry, depth + 1, seen);
+    if (cleaned.keep) out[key] = cleaned.value;
+  }
+  return { keep: true, value: out };
+}
+
+/** Top-level widget-props bag for an extension node (always a record). */
+export function cleanExtensionProps(value: unknown): Record<string, unknown> {
+  const source =
+    value && typeof value === "object" && !Array.isArray(value) ? value : {};
+  const cleaned = cleanExtensionValue(source, 0, new WeakSet());
+  if (
+    cleaned.keep &&
+    cleaned.value &&
+    typeof cleaned.value === "object" &&
+    !Array.isArray(cleaned.value)
+  ) {
+    return cleaned.value as Record<string, unknown>;
+  }
+  return {};
+}
+
+/** Per-breakpoint extension overrides; unknown devices are dropped. */
+function cleanExtensionResponsive(
+  value: unknown,
+): Partial<Record<Breakpoint, Record<string, unknown>>> | undefined {
+  if (!value || typeof value !== "object" || Array.isArray(value))
+    return undefined;
+  const bag = value as Record<string, unknown>;
+  let out: Partial<Record<Breakpoint, Record<string, unknown>>> | undefined;
+  for (const device of BREAKPOINTS) {
+    const layer = bag[device];
+    if (!layer || typeof layer !== "object" || Array.isArray(layer)) continue;
+    const cleaned = cleanExtensionProps(layer);
+    if (Object.keys(cleaned).length) {
+      out = out ?? {};
+      out[device] = cleaned;
+    }
+  }
+  return out;
+}
+
+/**
+ * Legacy `plugin_block` → canonical extension, WITHOUT data loss: the namespaced
+ * key is promoted to `widgetKey`, `height` and every other prop ride along in
+ * `props`, and identity/chrome (`id`, `hidden`, `when`, `ab`) are preserved.
+ * Returns null unless the input is a `plugin_block`.
+ */
+export function pluginBlockToExtension(node: Section): Section | null {
+  if (!node || node.type !== "plugin_block") return null;
+  const carried: Record<string, unknown> = { ...(node.props ?? {}) };
+  const rawKey =
+    typeof carried["pluginKey"] === "string"
+      ? carried["pluginKey"].trim().slice(0, 120)
+      : "";
+  delete carried["pluginKey"];
+  const apiRaw = carried["apiVersion"];
+  if (typeof apiRaw === "string" && apiRaw.trim()) {
+    delete carried["apiVersion"];
+  }
+  const out: Section = {
+    id: node.id,
+    type: EXTENSION_TYPE as unknown as SectionType,
+    props: carried as unknown as Record<string, PropValue>,
+  };
+  if (node.hidden) out.hidden = [...node.hidden];
+  if (node.when) out.when = node.when.map((rule) => ({ ...rule }));
+  if (node.ab) out.ab = { ...node.ab };
+  out.widgetKey = rawKey;
+  out.apiVersion =
+    (typeof node.apiVersion === "string" && node.apiVersion.trim()
+      ? node.apiVersion.trim().slice(0, 32)
+      : typeof apiRaw === "string" && apiRaw.trim()
+        ? apiRaw.trim().slice(0, 32)
+        : EXTENSION_API_DEFAULT) || EXTENSION_API_DEFAULT;
+  out.instanceId =
+    typeof node.instanceId === "string" && node.instanceId.trim()
+      ? node.instanceId.trim().slice(0, 64)
+      : node.id;
+  out.owner = node.owner ?? ownerForWidgetKey(rawKey);
+  if (typeof node.version === "string" && node.version.trim())
+    out.version = node.version.trim().slice(0, 32);
+  if (node.responsive) {
+    const cleanedResponsive = cleanExtensionResponsive(node.responsive);
+    // Same `bp`-shaped cast as the parse seam above; runtime bag unchanged.
+    if (cleanedResponsive)
+      out.responsive = cleanedResponsive as Partial<
+        Record<Breakpoint, Record<string, PropValue>>
+      >;
+  }
+  if (node.slots) out.slots = [...node.slots];
+  if (node.invalid) out.invalid = node.invalid;
+  else if (!rawKey) out.invalid = EXTENSION_MISSING_KEY;
+  return out;
+}
+
+/** `plugin:{app}/{widget}` shape guard (mirrors `parsePluginWidgetKey`). */
+const EXTENSION_PLUGIN_KEY_RE =
+  /^plugin:([a-z][a-z0-9-]{2,39})\/([a-z][a-z0-9_-]{1,39})$/;
+
+/**
+ * Canonical extension → legacy `plugin_block`, where sensible: only
+ * plugin-namespaced keys have a legacy home (anything else returns null).
+ * The legacy-representable subset (`pluginKey`, clamped `height`) round-trips
+ * exactly; every other prop rides along on the returned object (a legacy
+ * re-parse drops undeclared props — that is why the extension shape is
+ * canonical). Chrome (`hidden`, `when`, `ab`, `invalid`) is preserved.
+ */
+export function extensionToPluginBlock(node: Section): Section | null {
+  if (!isExtensionNode(node)) return null;
+  // Runtime shape is proven by the guard; the cast is the documented seam
+  // (the core `SectionType` union stays closed, so no metadata map changes).
+  // Rebound because the predicate would otherwise narrow `node` to `never`.
+  const ext = node as unknown as ExtensionNode;
+  const base = node as Section;
+  const key = ext.widgetKey.trim();
+  if (!EXTENSION_PLUGIN_KEY_RE.test(key)) return null;
+  const carried: Record<string, unknown> = { ...(base.props ?? {}) };
+  const heightRaw = carried["height"];
+  carried["pluginKey"] = key;
+  carried["height"] =
+    typeof heightRaw === "number" && Number.isFinite(heightRaw)
+      ? Math.min(1200, Math.max(80, Math.trunc(heightRaw)))
+      : 320;
+  const out: Section = {
+    id: base.id,
+    type: "plugin_block",
+    props: carried as unknown as Record<string, PropValue>,
+  };
+  if (base.hidden) out.hidden = [...base.hidden];
+  if (base.when) out.when = base.when.map((rule) => ({ ...rule }));
+  if (base.ab) out.ab = { ...base.ab };
+  if (base.invalid) out.invalid = base.invalid;
+  return out;
+}
+
+/** `invalid` marker prefix for unresolvable extension instances. */
+export const EXTENSION_MISSING = "extension.missing";
+/** `invalid` marker for an extension node with no widget key. */
+export const EXTENSION_MISSING_KEY = "extension.missing_key";
+
+export type ExtensionMissingReason =
+  "unknown" | "disabled" | "incompatible" | "uninstalled" | "missing_key";
+
+const RESOLVABLE_REASONS: readonly string[] = [
+  "unknown",
+  "disabled",
+  "incompatible",
+  "uninstalled",
+];
+
+/** Parse the missing reason off an extension placeholder (null when healthy). */
+export function extensionMissingReason(
+  node: Section,
+): ExtensionMissingReason | null {
+  const marker = typeof node.invalid === "string" ? node.invalid : "";
+  if (!marker) return null;
+  if (marker === EXTENSION_MISSING_KEY) return "missing_key";
+  if (
+    marker === EXTENSION_MISSING ||
+    marker.startsWith(`${EXTENSION_MISSING}:`)
+  ) {
+    const reason = marker.slice(EXTENSION_MISSING.length + 1) || "unknown";
+    return RESOLVABLE_REASONS.includes(reason)
+      ? (reason as ExtensionMissingReason)
+      : "unknown";
+  }
+  return null;
+}
+
+/**
+ * Data-preserving placeholder (the `global_ref.missing` pattern, not a
+ * redesign): the node keeps its identity, key, owner, props and chrome and
+ * gains only the `invalid` marker, so renderers show their existing labelled
+ * placeholder and the instance recovers byte-identically when the widget
+ * resolves again. Never mutates the input.
+ */
+export function toExtensionPlaceholder(
+  node: Section,
+  reason: ExtensionMissingReason,
+): Section {
+  return {
+    ...node,
+    props: { ...(node.props ?? {}) },
+    invalid:
+      reason === "missing_key"
+        ? EXTENSION_MISSING_KEY
+        : `${EXTENSION_MISSING}:${reason}`,
+  };
+}
+
+/**
+ * Registry-agnostic resolve seam (keeps this module dependency-free: callers
+ * pass a lookup backed by the unified registry or a fake). On a hit the node
+ * is returned with any stale missing marker cleared (recovery); on a miss it
+ * becomes a data-preserving placeholder. Never throws, never drops data.
+ */
+export type ExtensionLookup = (
+  widgetKey: string,
+  ctx: { version?: string; builderApi?: string },
+) => { ok: true } | { ok: false; reason: string };
+
+export function resolveExtensionNode(
+  node: Section,
+  lookup: ExtensionLookup,
+  opts: { builderApi?: string } = {},
+): { node: Section; missing: boolean; reason?: ExtensionMissingReason } {
+  if (!isExtensionNode(node)) return { node, missing: false };
+  // Same documented seam as `extensionToPluginBlock` above.
+  const ext = node as unknown as ExtensionNode;
+  const base = node as Section;
+  const key = ext.widgetKey;
+  if (!key.trim()) {
+    return {
+      node: toExtensionPlaceholder(node, "missing_key"),
+      missing: true,
+      reason: "missing_key",
+    };
+  }
+  let verdict: { ok: true } | { ok: false; reason: string };
+  try {
+    verdict = lookup(key, {
+      ...(ext.version ? { version: ext.version } : {}),
+      ...(typeof opts.builderApi === "string"
+        ? { builderApi: opts.builderApi }
+        : {}),
+    });
+  } catch {
+    verdict = { ok: false, reason: "unknown" };
+  }
+  if (verdict.ok) {
+    if (extensionMissingReason(base)) {
+      const recovered: Section = { ...base, props: { ...(base.props ?? {}) } };
+      delete recovered.invalid;
+      return { node: recovered, missing: false };
+    }
+    return { node: base, missing: false };
+  }
+  const reason: ExtensionMissingReason = RESOLVABLE_REASONS.includes(
+    verdict.reason,
+  )
+    ? (verdict.reason as ExtensionMissingReason)
+    : "unknown";
+  return {
+    node: toExtensionPlaceholder(base, reason),
+    missing: true,
+    reason,
+  };
+}
+
 const CATALOG = new Map<SectionType, CatalogEntry>([
   ...SECTION_CATALOG.map(
     (entry): [SectionType, CatalogEntry] => [entry.type, entry],
@@ -6604,6 +7034,11 @@ const CATALOG = new Map<SectionType, CatalogEntry>([
   // parity covered); the explicit registration below is now redundant but
   // harmless (Map overwrite with the identical entry).
   [GLOBAL_REF_ENTRY.type, GLOBAL_REF_ENTRY],
+  // Frame30 extension: CATALOG-only on purpose. Joining SECTION_CATALOG
+  // would break the `SECTION_CATALOG.length` pin and the studio twin-parity
+  // gate (the extension twin is the unified registry, not studio/catalog).
+  // Generic parse/lint/slot paths below find it here all the same.
+  [EXTENSION_ENTRY.type, EXTENSION_ENTRY],
 ]);
 
 export function catalogEntry(type: SectionType) {
@@ -7188,6 +7623,8 @@ type ParseCtx = {
   stack: Set<object>;
   /** Every id already emitted for this template — ids must be unique. */
   ids: Set<string>;
+  /** Every extension instanceId already emitted — same uniqueness rule. */
+  extIds: Set<string>;
 };
 
 function parseSection(node: unknown, ctx: ParseCtx): Section | null {
@@ -7241,6 +7678,13 @@ function parseSection(node: unknown, ctx: ParseCtx): Section | null {
     raw.props && typeof raw.props === "object" ? raw.props : {}
   ) as Record<string, unknown>;
   const props: Record<string, PropValue> = {};
+  // Frame30 extension: widget props are registry-validated per-widget schema,
+  // so the AST layer preserves them JSON-safe instead of coercing through
+  // catalog fields (the extension entry declares none).
+  const isExtension = isExtensionType(raw.type);
+  if (isExtension) {
+    Object.assign(props, cleanExtensionProps(source));
+  }
   // Phase 3.2: `group` fields are presentation-only, so their sub-fields are
   // flattened here and keep storing flat props.
   const fields = flattenFields(entry.fields);
@@ -7333,6 +7777,52 @@ function parseSection(node: unknown, ctx: ParseCtx): Section | null {
   if (when) section.when = when;
   const ab = parseAb((raw as { ab?: unknown }).ab);
   if (ab) section.ab = ab;
+
+  // Frame30 extension envelope (leaf — never takes children, like every
+  // non-container). Blank widget keys stay on the node as a data-preserving
+  // `extension.missing_key` placeholder instead of dropping the instance.
+  if (isExtension) {
+    const bag = raw as unknown as Record<string, unknown>;
+    const keyRaw =
+      typeof bag["widgetKey"] === "string"
+        ? bag["widgetKey"].trim().slice(0, 120)
+        : "";
+    section.widgetKey = keyRaw;
+    const apiRaw = bag["apiVersion"];
+    section.apiVersion =
+      (typeof apiRaw === "string" && apiRaw.trim()
+        ? apiRaw.trim().slice(0, 32)
+        : EXTENSION_API_DEFAULT) || EXTENSION_API_DEFAULT;
+    const pin = bag["version"];
+    if (typeof pin === "string" && pin.trim())
+      section.version = pin.trim().slice(0, 32);
+    // Duplicate instanceIds get the same suffixed remap as duplicate node
+    // ids above, so selection and data keying can never shadow an instance.
+    const idRaw = bag["instanceId"];
+    let instanceId =
+      typeof idRaw === "string" && idRaw.trim()
+        ? idRaw.trim().slice(0, 64)
+        : id;
+    if (ctx.extIds.has(instanceId)) {
+      let n = 2;
+      while (ctx.extIds.has(`${instanceId}-${n}`)) n += 1;
+      instanceId = `${instanceId}-${n}`.slice(0, 64);
+    }
+    ctx.extIds.add(instanceId);
+    section.instanceId = instanceId;
+    section.owner = normalizeExtensionOwner(bag["owner"], keyRaw);
+    const responsive = cleanExtensionResponsive(bag["responsive"]);
+    // Typed as the `bp` prop-bag shape for the server-fn serializability
+    // gate (see the field); the runtime bag is unchanged JSON-safe data.
+    if (responsive)
+      section.responsive = responsive as Partial<
+        Record<Breakpoint, Record<string, PropValue>>
+      >;
+    if (Array.isArray(bag["slots"])) {
+      section.slots = bag["slots"].filter((s): s is Slot => isSlot(s));
+    }
+    if (!keyRaw) section.invalid = EXTENSION_MISSING_KEY;
+  }
 
   // AST v3: only container entries accept children, and only above the depth cap.
   if (entry.container) {
@@ -7482,6 +7972,8 @@ export function parseAst(input: unknown): ThemeAst {
   const budget = { left: MAX_NODES_PER_TEMPLATE };
   // Ids are unique per template, so the set is shared across the three slots.
   const ids = new Set<string>();
+  // Extension instanceIds share the template and the uniqueness rule.
+  const extIds = new Set<string>();
   const slot = (value: unknown, name: Slot): Section[] => {
     if (!Array.isArray(value)) return [];
     const out: Section[] = [];
@@ -7493,6 +7985,7 @@ export function parseAst(input: unknown): ThemeAst {
         budget,
         stack: new Set(),
         ids,
+        extIds,
       });
       if (parsed) out.push(parsed);
     }
