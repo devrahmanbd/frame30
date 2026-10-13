@@ -1,38 +1,24 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { resolveAllowedOrigin } from "@/lib/cors-policy";
 
 /**
  * Public REST API v1. Every concern (auth, scopes, rate limit, idempotency,
  * pagination, problem responses, metrics) lives in the gateway module so the
  * route stays a thin adapter.
  */
-function getAllowedOrigin(request: Request): string {
-  const origin = request.headers.get("origin");
-  if (!origin) return "*";
-  try {
-    const { hostname } = new URL(origin);
-    if (
-      hostname.endsWith(".framique.store") ||
-      hostname.endsWith(".framique.com") ||
-      hostname === "framique.qubickle.com" ||
-      hostname === "localhost"
-    ) {
-      return origin;
-    }
-  } catch {
-    /* ignore */
-  }
-  return "*";
-}
-
 function corsHeaders(request: Request): Record<string, string> {
-  return {
-    "access-control-allow-origin": getAllowedOrigin(request),
+  const headers: Record<string, string> = {
     "access-control-allow-methods": "GET,POST,PATCH,DELETE,OPTIONS",
     "access-control-allow-headers":
       "authorization,content-type,idempotency-key",
     "access-control-max-age": "600",
-    "access-control-allow-credentials": "true",
   };
+  const allowed = resolveAllowedOrigin(request);
+  if (allowed) {
+    headers["access-control-allow-origin"] = allowed;
+    headers["access-control-allow-credentials"] = "true";
+  }
+  return headers;
 }
 
 async function dispatch(request: Request, splat: string | undefined) {

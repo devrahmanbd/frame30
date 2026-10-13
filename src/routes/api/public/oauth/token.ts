@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { resolveAllowedOrigin } from "@/lib/cors-policy";
 
 /**
  * OAuth 2.1 token endpoint: authorization_code (PKCE required) and
@@ -6,32 +7,17 @@ import { createFileRoute } from "@tanstack/react-router";
  * per RFC 6749 and JSON for convenience. Errors follow the OAuth error shape,
  * never leaking whether a client id exists.
  */
-function getAllowedOrigin(request: Request): string {
-  const origin = request.headers.get("origin");
-  if (!origin) return "*";
-  try {
-    const { hostname } = new URL(origin);
-    if (
-      hostname.endsWith(".framique.store") ||
-      hostname.endsWith(".framique.com") ||
-      hostname === "framique.qubickle.com" ||
-      hostname === "localhost"
-    ) {
-      return origin;
-    }
-  } catch {
-    /* ignore */
-  }
-  return "*";
-}
-
 function corsHeaders(request: Request): Record<string, string> {
-  return {
-    "access-control-allow-origin": getAllowedOrigin(request),
+  const headers: Record<string, string> = {
     "access-control-allow-methods": "POST,OPTIONS",
     "access-control-allow-headers": "authorization,content-type",
-    "access-control-allow-credentials": "true",
   };
+  const allowed = resolveAllowedOrigin(request);
+  if (allowed) {
+    headers["access-control-allow-origin"] = allowed;
+    headers["access-control-allow-credentials"] = "true";
+  }
+  return headers;
 }
 
 function oauthError(

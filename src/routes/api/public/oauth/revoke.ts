@@ -1,35 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { resolveAllowedOrigin } from "@/lib/cors-policy";
 
 /**
  * RFC 7009 token revocation. Always answers 200 — even for unknown tokens — so
  * the endpoint cannot be used to probe which tokens exist.
  */
-function getAllowedOrigin(request: Request): string {
-  const origin = request.headers.get("origin");
-  if (!origin) return "*";
-  try {
-    const { hostname } = new URL(origin);
-    if (
-      hostname.endsWith(".framique.store") ||
-      hostname.endsWith(".framique.com") ||
-      hostname === "framique.qubickle.com" ||
-      hostname === "localhost"
-    ) {
-      return origin;
-    }
-  } catch {
-    /* ignore */
-  }
-  return "*";
-}
-
 function corsHeaders(request: Request): Record<string, string> {
-  return {
-    "access-control-allow-origin": getAllowedOrigin(request),
+  const headers: Record<string, string> = {
     "access-control-allow-methods": "POST,OPTIONS",
     "access-control-allow-headers": "authorization,content-type",
-    "access-control-allow-credentials": "true",
   };
+  const allowed = resolveAllowedOrigin(request);
+  if (allowed) {
+    headers["access-control-allow-origin"] = allowed;
+    headers["access-control-allow-credentials"] = "true";
+  }
+  return headers;
 }
 
 export const Route = createFileRoute("/api/public/oauth/revoke")({
