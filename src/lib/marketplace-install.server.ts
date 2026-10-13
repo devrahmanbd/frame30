@@ -24,6 +24,12 @@ import { daysBetween } from "./billing.server";
 import { money } from "./money";
 import { isOfficialPluginKey } from "./official-plugins";
 import {
+  getReviewedThemeRef,
+  installReviewedThemeBundle,
+} from "./dev-theme-bundle-install";
+import type { DevThemeBundleInput } from "./dev-theme-bundle";
+import type { DevThemeRelease } from "./dev-theme-review";
+import {
   APP_VERSION,
   SELLER_SHARE_BASIS_POINTS,
   TRIAL_DAYS,
@@ -49,6 +55,18 @@ export type InstallInput = {
   consentedBy?: string | null;
   /** Recurring cadence for paid installs. Defaults to `one_time`. */
   billingInterval?: InstallBillingInterval;
+  /**
+   * Level B reviewed-theme bytes (the presented bundle the fingerprint lane
+   * re-validates and re-hashes at install). Only read when the listing
+   * carries a `dev_theme` approval marker; otherwise ignored.
+   */
+  reviewedBundle?: DevThemeBundleInput | null;
+  /**
+   * Level B published approval snapshot (caller looked it up via the review
+   * store — releases have no DB backing yet). Only read on the
+   * reviewed-theme lane; otherwise ignored.
+   */
+  reviewedRelease?: DevThemeRelease | null;
 };
 
 function split(gross: number) {
@@ -203,6 +221,64 @@ function resolveWidgetArtifact(
 }
 
 /**
+ * Level B reviewed-theme hook wrapper (ingestion hook — the ONLY Level B
+ * touchpoint in this module). Binds the listing marker's theme id to the
+ * caller-supplied approval, then delegates to the fingerprint-pinned
+ * installer. Fail-closed when the caller supplies no bytes or no approval:
+ * a reviewed listing never installs blind, and the widget-oriented
+ * bundle/consent gates below never see these installs (dev themes carry
+ * reviewed capabilities, not install-time scopes). Builtin
+ * (`installBuiltinWidget`) and custom-ZIP (`installPackage` via
+ * `resolveWidgetArtifact`) branches are untouched.
+ */
+async function installReviewedThemeListing(
+  db: Client,
+  merchantId: string,
+  listing: {
+    id: string;
+    slug: string;
+    name: string;
+    version: string;
+    install_count: number;
+    price_minor_int?: unknown;
+    currency_code?: unknown;
+    seller_merchant_id?: unknown;
+  },
+  input: InstallInput,
+  expectedThemeId: string,
+) {
+  if (!input.reviewedBundle)
+    throw new Error("dev_theme_install.bytes_required");
+  if (!input.reviewedRelease)
+    throw new Error("dev_theme_install.approval_required");
+  return installReviewedThemeBundle(db, merchantId, {
+    release: input.reviewedRelease,
+    bytes: input.reviewedBundle,
+    idempotencyKey: input.idempotencyKey,
+    listing: {
+      id: listing.id,
+      slug: listing.slug,
+      name: listing.name,
+      version: listing.version,
+      price_minor_int: listing.price_minor_int,
+      currency_code:
+        typeof listing.currency_code === "string"
+          ? listing.currency_code
+          : undefined,
+      seller_merchant_id:
+        typeof listing.seller_merchant_id === "string"
+          ? listing.seller_merchant_id
+          : null,
+      install_count: listing.install_count,
+    },
+    trial: input.trial,
+    consentedBy: input.consentedBy ?? null,
+    grantedScopes: input.grantedScopes ?? [],
+    expectedThemeId,
+  });
+}
+
+/**
  * FOLLOW-UP — persists the installed artifact identity onto the install row
  * (artifact_checksum/version/pinned, see
  * supabase/migrations/20260928000002_marketplace_install_artifacts.sql).
@@ -271,6 +347,34 @@ export async function installListing(
     );
   if (input.trial && !listing.trial_allowed)
     throw new Error("market_trial_not_allowed");
+
+  // Level B reviewed-theme lane (ingestion hook): a theme listing carrying a
+  // well-formed `dev_theme` approval marker installs through the
+  // fingerprint-pinned lane — presented bytes are re-validated and re-hashed
+  // at install, and anything whose bytes differ from the published approval
+  // fails closed before any write. Listings without a marker (legacy
+  // data-only themes, widgets, malformed markers) fall through to the
+  // historical paths below, byte-identical in behavior.
+  if (input.kind === "theme") {
+    const reviewedRef = getReviewedThemeRef(
+      (listing as { manifest?: unknown }).manifest,
+    );
+    if (reviewedRef) {
+      return installReviewedThemeListing(
+        db,
+        merchantId,
+        listing as {
+          id: string;
+          slug: string;
+          name: string;
+          version: string;
+          install_count: number;
+        },
+        input,
+        reviewedRef.themeId,
+      );
+    }
+  }
 
   // Bundle gate (R2-7): structural denials fire before any write.
   const listingManifest = (listing as { manifest?: unknown }).manifest;
