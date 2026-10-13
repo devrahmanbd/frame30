@@ -763,6 +763,44 @@ export async function createOrder(
     /* emission must never fail order creation */
   }
 
+  // FB CAPI Purchase (best-effort, replay-safe): commerce committed above —
+  // queue the server-side Purchase keyed by order id. T1: only COD is
+  // confirmed at placement, so only COD queues here; online rails queue from
+  // the verified settlement path. Missing/malformed tenant config skips
+  // silently and any failure degrades to a metric. Never throws.
+  if (input.paymentMethod === "cod") {
+    try {
+      const warehouse = await import("./analytics-warehouse.server");
+      const queue = (
+        warehouse as unknown as {
+          queueFbPurchaseConversion?: (
+            admin: never,
+            input: {
+              merchantId: string;
+              orderId: string;
+              valueMinorInt: number;
+              currencyCode: string;
+              email?: string | null;
+              phone?: string | null;
+            },
+          ) => Promise<unknown>;
+        }
+      ).queueFbPurchaseConversion;
+      if (typeof queue === "function") {
+        await queue(supabaseAdmin as never, {
+          merchantId: merchant.id,
+          orderId: order.id,
+          valueMinorInt: totals.totalMinor,
+          currencyCode: totals.currency,
+          email: input.customer.email || null,
+          phone: input.customer.phone,
+        });
+      }
+    } catch {
+      /* analytics is best effort */
+    }
+  }
+
   return {
     orderId: order.id,
     orderNumber: order.order_number,

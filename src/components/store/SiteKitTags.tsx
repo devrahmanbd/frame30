@@ -24,6 +24,11 @@ import {
   type AnalyticsSettings,
   type VerificationSettings,
 } from "@/lib/search-console";
+import {
+  metaPixelNoscriptUrl,
+  metaPixelScriptBody,
+  renderMetaPixelSnippet,
+} from "@/lib/fb-pixel";
 
 /**
  * Storefront projection of Site Kit settings.
@@ -163,6 +168,78 @@ export function TurnstileLoader() {
   return null;
 }
 
+/**
+ * Meta Pixel (fbq) for the CURRENT tenant only.
+ *
+ * The pixel ID comes from this tenant's own validated Site Kit envelope
+ * (`analytics.enabled.meta` — invalid entries are dropped by `validateSiteKit`
+ * long before they reach the storefront) and is re-validated here, so a
+ * malformed stored ID never reaches markup. Same gates as `AnalyticsTags`:
+ * never on slug storefronts (`hasCustomDomain`), never before visitor consent
+ * when the merchant left consent gating on (the default).
+ *
+ * Delivery is split because the two halves have opposite constraints:
+ * - the fbq stub is appended to `document.head` post-hydration, at idle, via
+ *   `textContent` (never `innerHTML`, so there is no markup-injection sink);
+ * - the `<noscript>` img fallback is SSR-rendered JSX — it only matters when
+ *   JS is disabled, in which case the effect above never runs. It is emitted
+ *   only when consent gating is OFF: with gating on, SSR cannot know consent
+ *   and the safe default is silence.
+ */
+export function MetaPixelTags({
+  analytics,
+  consented,
+  hasCustomDomain,
+}: {
+  analytics: AnalyticsSettings;
+  consented: boolean;
+  hasCustomDomain: boolean;
+}) {
+  const rendered = renderMetaPixelSnippet(analytics.enabled["meta"]);
+  const pixelId = rendered.skipped ? null : rendered.pixelId;
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    // Primary gate: never fire tags on slug-based storefronts.
+    if (!hasCustomDomain) return;
+    if (done) return;
+    if (!pixelId) return;
+    if (analytics.consentRequired && !consented) return;
+    if (document.querySelector('script[data-fq-tag="meta-pixel"]')) return;
+
+    const attach = () => {
+      if (document.querySelector('script[data-fq-tag="meta-pixel"]')) return;
+      const el = document.createElement("script");
+      el.dataset["fqTag"] = "meta-pixel";
+      el.textContent = metaPixelScriptBody(pixelId);
+      document.head.appendChild(el);
+      setDone(true);
+    };
+
+    const idle = (
+      window as unknown as { requestIdleCallback?: (cb: () => void) => number }
+    ).requestIdleCallback;
+    if (idle) idle(attach);
+    else window.setTimeout(attach, 1500);
+  }, [analytics, consented, done, hasCustomDomain, pixelId]);
+
+  if (!hasCustomDomain || rendered.skipped) return null;
+  // SSR noscript only when no consent gate needs satisfying; otherwise the
+  // effect above (post-consent) is the sole emitter.
+  if (analytics.consentRequired) return null;
+  return (
+    <noscript>
+      <img
+        height="1"
+        width="1"
+        style={{ display: "none" }}
+        src={metaPixelNoscriptUrl(rendered.pixelId)}
+        alt=""
+      />
+    </noscript>
+  );
+}
+
 /** Everything the storefront mounts for Site Kit. Never used on admin routes. */
 export function SiteKitSurface({
   siteKit,
@@ -176,6 +253,12 @@ export function SiteKitSurface({
       <SiteVerification verification={siteKit.verification} />
       {/* Analytics: only fires on verified custom-domain storefronts */}
       <AnalyticsTags
+        analytics={siteKit.analytics}
+        consented={consented}
+        hasCustomDomain={siteKit.hasCustomDomain}
+      />
+      {/* Meta Pixel: same gates, tenant's own validated ID only */}
+      <MetaPixelTags
         analytics={siteKit.analytics}
         consented={consented}
         hasCustomDomain={siteKit.hasCustomDomain}

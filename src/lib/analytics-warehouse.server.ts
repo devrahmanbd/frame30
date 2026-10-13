@@ -28,6 +28,7 @@ import {
   type Persona,
   type ReportDefinition,
 } from "./analytics-pipeline";
+import { isValidFacebookPixelId } from "./fb-pixel";
 import { incr, log, observe, withSpan } from "./observability.server";
 
 type Client = SupabaseClient<Database>;
@@ -862,6 +863,90 @@ export async function queueConversion(
   return data as { ok: boolean; queued: boolean; id: string | null };
 }
 
+export type FbPurchaseQueueReason =
+  "pixel_not_configured" | "pixel_id_invalid" | "capi_token_missing";
+
+export type FbPurchaseQueueOutcome =
+  | { ok: true; queued: boolean; deduped: boolean; id: string | null }
+  | { skipped: true; reason: FbPurchaseQueueReason }
+  | { ok: false; degraded: true; error: string };
+
+/**
+ * FB CAPI Purchase entry for the order-confirmation path.
+ *
+ * Resolves the ORDER tenant's stored pixel/token from `merchant_settings`
+ * (tenant row only — env fallbacks would address one tenant's purchase to
+ * another tenant's pixel), validates the pixel shape, then enqueues a
+ * `Purchase` via `queueConversion` with `event_id = order id` so replayed
+ * confirmations dedupe at the `analytics_queue_conversion` RPC.
+ *
+ * Best-effort by contract: missing/malformed config skips with a reason,
+ * any failure degrades to the existing conversion metric + warn log and
+ * NEVER throws — commerce commits before this runs and must not depend on it.
+ */
+export async function queueFbPurchaseConversion(
+  admin: Client,
+  input: {
+    merchantId: string;
+    orderId: string;
+    valueMinorInt: number;
+    currencyCode: string;
+    email?: string | null;
+    phone?: string | null;
+  },
+): Promise<FbPurchaseQueueOutcome> {
+  try {
+    const { data } = await admin
+      .from("merchant_settings")
+      .select("seo_settings")
+      .eq("merchant_id", input.merchantId)
+      .maybeSingle();
+    const seo = (data as { seo_settings?: unknown } | null)?.seo_settings as
+      Record<string, unknown> | undefined;
+    const pixelText =
+      typeof seo?.["facebook_pixel_id"] === "string"
+        ? seo["facebook_pixel_id"].trim()
+        : "";
+    if (!pixelText) return { skipped: true, reason: "pixel_not_configured" };
+    if (!isValidFacebookPixelId(pixelText))
+      return { skipped: true, reason: "pixel_id_invalid" };
+    const tokenText =
+      typeof seo?.["facebook_capi_token"] === "string"
+        ? seo["facebook_capi_token"].trim()
+        : "";
+    if (!tokenText) return { skipped: true, reason: "capi_token_missing" };
+
+    const result = await queueConversion(admin, {
+      merchantId: input.merchantId,
+      provider: "facebook",
+      eventName: "Purchase",
+      orderId: input.orderId,
+      eventId: input.orderId,
+      valueMinorInt: Math.max(0, Math.round(input.valueMinorInt)),
+      currencyCode: input.currencyCode || "BDT",
+      email: input.email ?? null,
+      phone: input.phone ?? null,
+    });
+    return {
+      ok: true,
+      queued: result.queued,
+      deduped: !result.queued,
+      id: result.id,
+    };
+  } catch (err) {
+    incr("framique_analytics_conversion_total", {
+      provider: "facebook",
+      outcome: "queue_failed",
+    });
+    log("warn", "analytics.conversion_queue_failed", {
+      merchantId: input.merchantId,
+      orderId: input.orderId,
+      reason: String((err as Error)?.message ?? err).slice(0, 160),
+    });
+    return { ok: false, degraded: true, error: "facebook_queue_failed" };
+  }
+}
+
 type ClaimedConversion = {
   id: string;
   merchant_id: string;
@@ -939,6 +1024,10 @@ async function deliver(row: ClaimedConversion, admin?: Client) {
   let fbToken = process.env["FACEBOOK_CAPI_TOKEN"];
   let fbPixel = process.env["FACEBOOK_PIXEL_ID"];
   let googleUrl = process.env["GOOGLE_CONVERSION_URL"];
+  // Outbound deadline per attempt: the outbox already retries with backoff,
+  // so one slow attempt must never hold the drain. Abort surfaces as a failed
+  // verdict below (caught by dispatchConversions) — never a hung sweep.
+  const CONVERSION_FETCH_TIMEOUT_MS = 10_000;
 
   if (admin && row.merchant_id) {
     const config = await loadMerchantAnalyticsConfig(admin, row.merchant_id);
@@ -970,6 +1059,7 @@ async function deliver(row: ClaimedConversion, admin?: Client) {
             },
           ],
         }),
+        signal: AbortSignal.timeout(CONVERSION_FETCH_TIMEOUT_MS),
       },
     );
     return res.ok
@@ -988,6 +1078,7 @@ async function deliver(row: ClaimedConversion, admin?: Client) {
       currency: row.currency_code,
       user_data: row.hashed_payload,
     }),
+    signal: AbortSignal.timeout(CONVERSION_FETCH_TIMEOUT_MS),
   });
   return res.ok ? { ok: true } : { ok: false, error: `google_${res.status}` };
 }

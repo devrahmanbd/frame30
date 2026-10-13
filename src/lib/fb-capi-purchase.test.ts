@@ -27,6 +27,7 @@ import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import {
   loadMerchantAnalyticsConfig,
   queueConversion,
+  queueFbPurchaseConversion,
 } from "./analytics-warehouse.server";
 
 /* ------------------------------------------------------------------ *
@@ -376,5 +377,249 @@ describe("fb capi purchase per-tenant correctness", () => {
       expect(call.url.startsWith("https://graph.facebook.com/")).toBe(true);
       expect(call.url).not.toContain("connect.facebook.net");
     }
+  });
+});
+
+describe("queueFbPurchaseConversion (source order-confirmation entry)", () => {
+  const merchantA = "merchant_capi_src_A";
+  const merchantB = "merchant_capi_src_B";
+
+  function srcAdmin(
+    settingsByMerchant: Record<string, Record<string, unknown>>,
+  ) {
+    return makeMockAdmin(settingsByMerchant);
+  }
+
+  it("queues the Purchase with value/currency + hashed PII, keyed by order id", async () => {
+    const { admin, queuedCalls } = srcAdmin({
+      [merchantA]: {
+        facebook_pixel_id: PIXEL_A,
+        facebook_capi_token: CAPI_A,
+      },
+    });
+
+    const outcome = await queueFbPurchaseConversion(admin as never, {
+      merchantId: merchantA,
+      orderId: "order-A-200",
+      valueMinorInt: 259900,
+      currencyCode: "BDT",
+      email: "Shopper@Example.Com",
+      phone: "+8801712345678",
+    });
+
+    expect(outcome).toEqual({
+      ok: true,
+      queued: true,
+      deduped: false,
+      id: "conv-order-A-200",
+    });
+    expect(queuedCalls).toHaveLength(1);
+    const args = queuedCalls[0]!;
+    expect(args["_merchant_id"]).toBe(merchantA);
+    expect(args["_provider"]).toBe("facebook");
+    expect(args["_event_name"]).toBe("Purchase");
+    expect(args["_order_id"]).toBe("order-A-200");
+    expect(args["_event_id"]).toBe("order-A-200");
+    expect(args["_value_minor_int"]).toBe(259900);
+    expect(args["_currency_code"]).toBe("BDT");
+    const hashed = args["_hashed_payload"] as Record<string, string>;
+    expect(hashed["em"]).toMatch(/^[0-9a-f]{64}$/);
+    expect(hashed["ph"]).toMatch(/^[0-9a-f]{64}$/);
+    expect(JSON.stringify(args)).not.toContain("Shopper@Example.Com");
+    expect(JSON.stringify(args)).not.toContain("8801712345678");
+  });
+
+  it("replayed confirmation queues nothing effective (RPC-dedupe idempotency)", async () => {
+    const { admin, queuedCalls } = srcAdmin({
+      [merchantA]: {
+        facebook_pixel_id: PIXEL_A,
+        facebook_capi_token: CAPI_A,
+      },
+    });
+    const input = {
+      merchantId: merchantA,
+      orderId: "order-A-201",
+      valueMinorInt: 99900,
+      currencyCode: "BDT",
+    };
+
+    const first = await queueFbPurchaseConversion(admin as never, input);
+    const replay = await queueFbPurchaseConversion(admin as never, input);
+
+    expect(first).toMatchObject({ ok: true, queued: true, deduped: false });
+    expect(replay).toMatchObject({ ok: true, queued: false, deduped: true });
+    // One effective queue: only the first confirmation produced a queued row.
+    expect(
+      [first, replay].filter((o) => "ok" in o && o.ok && o.queued),
+    ).toHaveLength(1);
+    expect(queuedCalls.map((c) => c["_event_id"])).toEqual([
+      "order-A-201",
+      "order-A-201",
+    ]);
+  });
+
+  it("isolates tenants: A and B queue under their own merchant rows", async () => {
+    const { admin, queuedCalls } = srcAdmin({
+      [merchantA]: {
+        facebook_pixel_id: PIXEL_A,
+        facebook_capi_token: CAPI_A,
+      },
+      [merchantB]: {
+        facebook_pixel_id: PIXEL_B,
+        facebook_capi_token: CAPI_B,
+      },
+    });
+
+    await queueFbPurchaseConversion(admin as never, {
+      merchantId: merchantA,
+      orderId: "order-A-202",
+      valueMinorInt: 1000,
+      currencyCode: "BDT",
+    });
+    await queueFbPurchaseConversion(admin as never, {
+      merchantId: merchantB,
+      orderId: "order-B-202",
+      valueMinorInt: 2000,
+      currencyCode: "BDT",
+    });
+
+    expect(queuedCalls.map((c) => c["_merchant_id"])).toEqual([
+      merchantA,
+      merchantB,
+    ]);
+    // Pixel/token never ride the queue row — and no cross-tenant bleed.
+    const blob = JSON.stringify(queuedCalls);
+    expect(blob).not.toContain(PIXEL_A);
+    expect(blob).not.toContain(PIXEL_B);
+    expect(blob).not.toContain(CAPI_A);
+    expect(blob).not.toContain(CAPI_B);
+  });
+
+  it("missing pixel/token skips with a reason and queues nothing", async () => {
+    const { admin, queuedCalls } = srcAdmin({
+      merchant_no_pixel: { facebook_capi_token: CAPI_A },
+      merchant_no_token: { facebook_pixel_id: PIXEL_A },
+      merchant_blank: { facebook_pixel_id: "   ", facebook_capi_token: "" },
+    });
+
+    expect(
+      await queueFbPurchaseConversion(admin as never, {
+        merchantId: "merchant_no_pixel",
+        orderId: "order-C-201",
+        valueMinorInt: 1000,
+        currencyCode: "BDT",
+      }),
+    ).toEqual({ skipped: true, reason: "pixel_not_configured" });
+    expect(
+      await queueFbPurchaseConversion(admin as never, {
+        merchantId: "merchant_no_token",
+        orderId: "order-C-202",
+        valueMinorInt: 1000,
+        currencyCode: "BDT",
+      }),
+    ).toEqual({ skipped: true, reason: "capi_token_missing" });
+    expect(
+      await queueFbPurchaseConversion(admin as never, {
+        merchantId: "merchant_blank",
+        orderId: "order-C-203",
+        valueMinorInt: 1000,
+        currencyCode: "BDT",
+      }),
+    ).toEqual({ skipped: true, reason: "pixel_not_configured" });
+    expect(
+      await queueFbPurchaseConversion(admin as never, {
+        merchantId: "merchant_unknown",
+        orderId: "order-C-204",
+        valueMinorInt: 1000,
+        currencyCode: "BDT",
+      }),
+    ).toEqual({ skipped: true, reason: "pixel_not_configured" });
+    expect(queuedCalls).toHaveLength(0);
+  });
+
+  it("malformed stored pixel IDs are ignored with a reason (never queued)", async () => {
+    const hostile = [
+      "<script>alert(1)</script>",
+      `${PIXEL_A}"><script>alert(1)</script>`,
+      "1234567",
+      "123456789012345678901",
+      "97922469778527a",
+      "abc",
+    ];
+    for (const [index, pixel] of hostile.entries()) {
+      const merchant = `merchant_hostile_${index}`;
+      const { admin, queuedCalls } = srcAdmin({
+        [merchant]: { facebook_pixel_id: pixel, facebook_capi_token: CAPI_A },
+      });
+      const outcome = await queueFbPurchaseConversion(admin as never, {
+        merchantId: merchant,
+        orderId: `order-H-${index}`,
+        valueMinorInt: 1000,
+        currencyCode: "BDT",
+      });
+      expect(outcome).toEqual({ skipped: true, reason: "pixel_id_invalid" });
+      expect(queuedCalls).toHaveLength(0);
+    }
+  });
+
+  it("queue/RPC failure degrades (never throws) so confirmation survives", async () => {
+    const failingAdmin = {
+      from: () => ({
+        select: () => ({
+          eq: () => ({
+            maybeSingle: async () => ({
+              data: {
+                seo_settings: {
+                  facebook_pixel_id: PIXEL_A,
+                  facebook_capi_token: CAPI_A,
+                },
+              },
+              error: null,
+            }),
+          }),
+        }),
+      }),
+      rpc: async () => {
+        throw new Error("db down");
+      },
+    };
+    const outcome = await queueFbPurchaseConversion(failingAdmin as never, {
+      merchantId: merchantA,
+      orderId: "order-A-203",
+      valueMinorInt: 1000,
+      currencyCode: "BDT",
+    });
+    expect(outcome).toEqual({
+      ok: false,
+      degraded: true,
+      error: "facebook_queue_failed",
+    });
+
+    const unreadableAdmin = {
+      from: () => ({
+        select: () => ({
+          eq: () => ({
+            maybeSingle: async () => {
+              throw new Error("settings read failed");
+            },
+          }),
+        }),
+      }),
+      rpc: async () => ({ data: null, error: null }),
+    };
+    const unreadable = await queueFbPurchaseConversion(
+      unreadableAdmin as never,
+      {
+        merchantId: merchantA,
+        orderId: "order-A-204",
+        valueMinorInt: 1000,
+        currencyCode: "BDT",
+      },
+    );
+    expect(unreadable).toEqual({
+      ok: false,
+      degraded: true,
+      error: "facebook_queue_failed",
+    });
   });
 });

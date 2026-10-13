@@ -28,6 +28,7 @@ import {
   validateAnalytics,
   validateSiteKit,
 } from "./search-console";
+import { renderMetaPixelSnippet as renderMetaPixelSnippetSource } from "./fb-pixel";
 
 /* ------------------------------------------------------------------ *
  * Contract helper under test (hermetic — pure string building only).
@@ -84,6 +85,20 @@ function storefrontMarkup(pixelId: unknown): string {
   if (rendered.skipped) return "";
   return `${rendered.script}\n${rendered.noscript}`;
 }
+
+/** Shared hostile-ID vectors: XSS-shaped input that must never reach markup. */
+const HOSTILE_PIXEL_IDS = [
+  "<script>alert(1)</script>",
+  `${PIXEL_A}"><script>alert(1)</script>`,
+  `12345"><img src=x onerror=alert(1)>`,
+  `" onload="alert(1)`,
+  "javascript:alert(1)",
+  "abc",
+  "1234567", // too short (< 8 digits)
+  "123456789012345678901", // too long (> 20 digits)
+  "1234 5678 9012",
+  "97922469778527a",
+];
 
 describe("fb pixel per-tenant isolation", () => {
   it("renders tenant A's pixel ID on A's storefront", () => {
@@ -144,18 +159,7 @@ describe("fb pixel per-tenant isolation", () => {
   });
 
   it("rejects/ignores malformed pixel IDs — XSS-shaped input never reaches markup", () => {
-    const hostile = [
-      "<script>alert(1)</script>",
-      `${PIXEL_A}"><script>alert(1)</script>`,
-      `12345"><img src=x onerror=alert(1)>`,
-      `" onload="alert(1)`,
-      "javascript:alert(1)",
-      "abc",
-      "1234567", // too short (< 8 digits)
-      "123456789012345678901", // too long (> 20 digits)
-      "1234 5678 9012",
-      "97922469778527a",
-    ];
+    const hostile = HOSTILE_PIXEL_IDS;
     for (const input of hostile) {
       const rendered = renderMetaPixelSnippet(input);
       expect(rendered).toEqual({ skipped: true, reason: "pixel_id_invalid" });
@@ -197,5 +201,50 @@ describe("fb pixel per-tenant isolation", () => {
     });
     expect(kit.value.analytics.enabled["meta"]).toBeUndefined();
     expect(tagPlan(kit.value.analytics)).toEqual([]);
+  });
+});
+
+describe("fb pixel source snippet (src/lib/fb-pixel.ts)", () => {
+  it("matches the pinned contract shape exactly (no drift)", () => {
+    for (const pixel of [PIXEL_A, PIXEL_B]) {
+      expect(renderMetaPixelSnippetSource(pixel)).toEqual(
+        renderMetaPixelSnippet(pixel),
+      );
+    }
+    for (const missing of [undefined, null, "", "   "]) {
+      expect(renderMetaPixelSnippetSource(missing)).toEqual(
+        renderMetaPixelSnippet(missing),
+      );
+      expect(renderMetaPixelSnippetSource(missing)).toEqual({
+        skipped: true,
+        reason: "pixel_not_configured",
+      });
+    }
+  });
+
+  it("rejects the shared hostile-ID list — malformed IDs never reach markup", () => {
+    for (const input of HOSTILE_PIXEL_IDS) {
+      expect(renderMetaPixelSnippetSource(input)).toEqual({
+        skipped: true,
+        reason: "pixel_id_invalid",
+      });
+      expect(renderMetaPixelSnippetSource(input)).toEqual(
+        renderMetaPixelSnippet(input),
+      );
+    }
+  });
+
+  it("isolates tenants through the source renderer", () => {
+    const sourceMarkup = (pixelId: unknown): string => {
+      const rendered = renderMetaPixelSnippetSource(pixelId);
+      if (rendered.skipped) return "";
+      return `${rendered.script}\n${rendered.noscript}`;
+    };
+    const htmlA = sourceMarkup(PIXEL_A);
+    expect(htmlA).toContain(`fbq('init','${PIXEL_A}')`);
+    expect(htmlA).toContain(`tr?id=${PIXEL_A}`);
+    expect(htmlA).not.toContain(PIXEL_B);
+    expect(sourceMarkup(PIXEL_B)).not.toContain(PIXEL_A);
+    expect(sourceMarkup(undefined)).toBe("");
   });
 });

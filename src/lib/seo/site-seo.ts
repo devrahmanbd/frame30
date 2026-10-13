@@ -6,6 +6,7 @@
  * share it, so what the merchant saves is what the storefront reads.
  */
 import { SEPARATORS, applyTokens, type TokenVars } from "./seo-meta";
+import { isValidFacebookPixelId } from "../fb-pixel";
 
 export const SEO_ENTITY_KINDS = [
   "home",
@@ -119,6 +120,14 @@ export function parseSiteSeo(input: unknown): SiteSeoSettings {
   }
 
   const perPage = Number(sitemap["perPage"]);
+  const rawPixelId = str(
+    analytics["facebookPixelId"] ?? raw["facebook_pixel_id"],
+    200,
+  );
+  // Mirror the Site Kit Meta spec (ANALYTICS_SPEC.meta): digits-only 8–20.
+  // Malformed stored IDs are dropped here so they can never reach markup;
+  // render/send-time callers additionally skip with an explicit reason.
+  const facebookPixelId = isValidFacebookPixelId(rawPixelId) ? rawPixelId : "";
   return {
     separator: (SEPARATORS as readonly string[]).includes(separator)
       ? separator
@@ -139,10 +148,7 @@ export function parseSiteSeo(input: unknown): SiteSeoSettings {
     aiCrawlers: bool(raw["aiCrawlers"], true),
     instantIndexing: bool(raw["instantIndexing"], false),
     analytics: {
-      facebookPixelId: str(
-        analytics["facebookPixelId"] ?? raw["facebook_pixel_id"],
-        200,
-      ),
+      facebookPixelId,
       facebookCapiToken: str(
         analytics["facebookCapiToken"] ?? raw["facebook_capi_token"],
         1000,
