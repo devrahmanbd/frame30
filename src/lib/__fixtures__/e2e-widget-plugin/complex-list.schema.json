@@ -1,0 +1,39 @@
+{
+  "fields": [
+    {
+      "default": "Top picks for {{product.title}}",
+      "key": "title",
+      "kind": "text",
+      "label": "Title"
+    },
+    {
+      "default": "grid",
+      "key": "layout",
+      "kind": "select",
+      "label": "Layout",
+      "options": [
+        { "label": "Grid", "value": "grid" },
+        { "label": "List", "value": "list" }
+      ]
+    },
+    {
+      "default": [
+        { "name": "First", "swatch": "#111111" },
+        { "name": "Second", "swatch": "#222222" }
+      ],
+      "fields": [
+        { "default": "Item", "key": "name", "kind": "text", "label": "Name" },
+        {
+          "default": "#111111",
+          "key": "swatch",
+          "kind": "color",
+          "label": "Swatch"
+        }
+      ],
+      "key": "items",
+      "kind": "repeater",
+      "label": "Items"
+    }
+  ],
+  "widget": "plugin:e2e-widgets/complex_list"
+}

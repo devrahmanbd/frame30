@@ -1,0 +1,24 @@
+{
+  "fields": [
+    {
+      "default": "Hello from E2E",
+      "key": "headline",
+      "kind": "text",
+      "label": "Headline",
+      "required": true
+    },
+    {
+      "default": "#0ea5e9",
+      "key": "accent",
+      "kind": "color",
+      "label": "Accent"
+    },
+    {
+      "default": true,
+      "key": "showBadge",
+      "kind": "boolean",
+      "label": "Show badge"
+    }
+  ],
+  "widget": "plugin:e2e-widgets/simple_card"
+}

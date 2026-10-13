@@ -1,0 +1,32 @@
+{
+  "api": "^3.0.0",
+  "budget": { "jsKb": 10, "mainThreadMs": 5 },
+  "hooks": [],
+  "i18n": { "bn": { "title": "শিরোনাম" }, "en": { "title": "Title" } },
+  "id": "e2e-widgets",
+  "name": "E2E Workflow Widgets",
+  "permissions": ["read_shop", "render_storefront"],
+  "settings": [
+    {
+      "default": "E2E Widgets",
+      "key": "title",
+      "kind": "text",
+      "label": "Title"
+    }
+  ],
+  "version": "1.0.0",
+  "widgets": [
+    {
+      "entry": "framique.mountSimple(document.createElement('div'))",
+      "key": "simple_card",
+      "label": "Simple Card",
+      "slots": ["main"]
+    },
+    {
+      "entry": "framique.mountComplex(document.createElement('div'))",
+      "key": "complex_list",
+      "label": "Complex List",
+      "slots": ["main"]
+    }
+  ]
+}
