@@ -25,7 +25,7 @@
 
 ## Loops
 
-- [ ] Loop A — extension AST node + tray adoption via unified registry
+- [x] Loop A — extension AST node + tray adoption via unified registry (57 tests; SectionType untouched by constraint, serializability lesson: no `unknown` in server-fn types)
 - [x] Loop B — inspector swap-in + server save-path validation (38 tests, bespoke path byte-identical)
 - [ ] Loop C — namespaced presentations + theme-owned tray (needs A)
 - [ ] Loop D — E2E test plugin + 16-step workflow (needs A+B)
