@@ -17,6 +17,11 @@ import {
   type StorefrontSiteKit,
 } from "@/components/store/SiteKitTags";
 import { ThemeSurface } from "@/components/builder/ThemeSurface";
+import {
+  buildThemeFrameUrl,
+  ThemeRuntime,
+  type ThemeHostHandler,
+} from "@/components/theme-runtime/ThemeRuntime";
 import { StoreWelcome } from "@/components/store/StoreWelcome";
 import { isCustomHostPath } from "@/lib/storefront-url";
 import { useLangScope } from "@/lib/i18n";
@@ -73,7 +78,68 @@ type Props = {
    * responsive sheet — it is tiny, tenant-specific and on the critical path.
    */
   customCss?: string | null;
+  /**
+   * Custom-isolated theme mount (ThemeRuntime activation). Only a record
+   * flagged `runtime: "custom-isolated"` with a valid immutable descriptor
+   * renders through the sandboxed `ThemeRuntime` document (bridge v2, the
+   * install's capability grants). Absent — or any other record, including a
+   * missing flag — keeps the classic `ThemeSurface` renderer below,
+   * byte-identical. Disabling the custom theme (prop absent again) reverts
+   * to the previous renderer with no stranded frame.
+   */
+  isolatedTheme?: CustomIsolatedThemeMount | null;
 };
+
+/**
+ * Custom-isolated theme mount descriptor: the theme record's runtime flag
+ * plus everything `ThemeRuntime` needs — the version-pinned identity on the
+ * controlled asset origin, the install's granted `theme:*` scopes (see
+ * `buildThemeGrants`) and the host implementation behind bridge calls.
+ */
+export type CustomIsolatedThemeMount = {
+  /** Runtime flag from the theme record: only this value mounts ThemeRuntime. */
+  runtime: "custom-isolated";
+  /** Controlled https origin serving version-pinned theme documents. */
+  assetOrigin: string;
+  /** Pinned theme identity (name + immutable version). */
+  name: string;
+  version: string;
+  /** Granted `theme:*` scopes for this install. */
+  granted: readonly string[];
+  /** Exact https origins the theme may navigate to (empty = paths only). */
+  navigateAllowlist?: readonly string[];
+  /** Host implementation behind authorized bridge calls (server revalidates). */
+  onCall: ThemeHostHandler;
+  /** Descriptive frame title (defaults to the store name). */
+  title?: string;
+};
+
+/**
+ * Mount decision for custom-isolated themes. True ONLY for a record flagged
+ * `runtime: "custom-isolated"` carrying a complete mount descriptor that
+ * addresses a valid immutable theme document. Everything else — another
+ * runtime, a missing flag, a malformed descriptor, an unaddressable
+ * identity — is false, so the classic renderer below serves the page and the
+ * storefront is never stranded on a blank frame.
+ */
+export function shouldUseIsolatedTheme(
+  value: unknown,
+): value is CustomIsolatedThemeMount {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  const r = value as Partial<CustomIsolatedThemeMount>;
+  if (r.runtime !== "custom-isolated") return false;
+  if (
+    typeof r.assetOrigin !== "string" ||
+    typeof r.name !== "string" ||
+    typeof r.version !== "string"
+  )
+    return false;
+  if (!Array.isArray(r.granted)) return false;
+  if (typeof r.onCall !== "function") return false;
+  if (!buildThemeFrameUrl(r.assetOrigin, { name: r.name, version: r.version }))
+    return false;
+  return true;
+}
 
 /** Exactly one section per page may render the h1. Shared implementation
  *  lives in builder-ast so the storefront host and the theme preview agree;
@@ -122,6 +188,7 @@ export function ThemeChrome({
   ownsPrimary = false,
   containerClassName = "mx-auto max-w-6xl px-4 py-8",
   customCss = null,
+  isolatedTheme = null,
 }: Props) {
   // Phase 2.1: language choice is remembered per storefront.
   useLangScope(storeSlug ?? null);
@@ -139,6 +206,42 @@ export function ThemeChrome({
         custom={isCustomHostPath(pathname)}
         tokens={tokens}
       />
+    );
+  }
+  if (shouldUseIsolatedTheme(isolatedTheme)) {
+    // Custom-isolated themes own the whole storefront inside the sandboxed
+    // ThemeRuntime document (bridge v2, the install's capability grants).
+    // SEO-critical metadata stays host-rendered per
+    // docs/theme-runtime/limits.md: route `head()` (theme-seo) owns title /
+    // meta / canonical / JSON-LD, and the verification/analytics surface
+    // below stays mounted on the host — the frame contributes no crawlable
+    // head. Classic sections are deliberately NOT rendered here; the theme
+    // bundle owns presentation inside its document.
+    const isolated = (
+      <>
+        <VitalsReporter
+          merchantId={merchantId}
+          template={template ?? "unknown"}
+        />
+        <TrafficReporter
+          merchantId={merchantId}
+          template={template ?? "unknown"}
+        />
+        <SiteKitSurface siteKit={siteKit ?? null} />
+        <ThemeRuntime
+          title={isolatedTheme.title ?? storeName ?? "Custom theme"}
+          assetOrigin={isolatedTheme.assetOrigin}
+          theme={{ name: isolatedTheme.name, version: isolatedTheme.version }}
+          granted={isolatedTheme.granted}
+          navigateAllowlist={isolatedTheme.navigateAllowlist ?? []}
+          onCall={isolatedTheme.onCall}
+        />
+      </>
+    );
+    return storeSlug ? (
+      <LiveCartScope slug={storeSlug}>{isolated}</LiveCartScope>
+    ) : (
+      isolated
     );
   }
   const base = isCustomHostPath(pathname)

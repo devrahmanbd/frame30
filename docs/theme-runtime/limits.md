@@ -6,6 +6,20 @@ controlled asset origin, `sandbox="allow-scripts"`, null origin). That buys
 containment, but an iframe boundary has real costs. This page states them
 plainly so nobody discovers them in production.
 
+## Activation (ThemeChrome mount)
+
+- A theme record flagged `runtime: "custom-isolated"` mounts here through
+  the `ThemeChrome` `isolatedTheme` prop (`shouldUseIsolatedTheme` in
+  `src/components/store/ThemeChrome.tsx`): version-pinned identity on the
+  controlled asset origin, the install's granted `theme:*` scopes (see
+  `buildThemeGrants`), and the host bridge handler.
+- Every other record — official/data-only themes, another runtime value, a
+  missing flag, a malformed descriptor — renders the classic `ThemeSurface`
+  path byte-identically. Host SEO is unchanged: route `head()`
+  (`src/lib/theme-seo.ts`) plus `SiteKitSurface` stay host-rendered, and
+  disabling the custom theme (prop absent again) reverts to the previous
+  renderer with no stranded frame.
+
 ## SEO limits
 
 - **Crawlers see the host page, not the frame.** The theme document is a
