@@ -15,11 +15,12 @@ import {
 } from "./official-plugins";
 
 describe("frame30 official plugins source-registered", () => {
-  it("names exactly the three official keys", () => {
+  it("names exactly the official keys", () => {
     expect([...OFFICIAL_PLUGIN_KEYS]).toEqual([
       "product-reviews",
       "store-analytics",
       "whatsapp-chat",
+      "fraud-shield",
     ]);
   });
   it("every official key resolves to a source manifest (no bytes built)", () => {

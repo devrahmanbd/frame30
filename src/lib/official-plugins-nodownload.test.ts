@@ -91,8 +91,11 @@ describe("official plugins have no downloadable artifact", () => {
     const OFFICIAL_ZIP_URL_ALLOWLIST = ["https://wa.me/"] as const;
     for (const key of OFFICIAL_PLUGIN_KEYS) {
       const source = officialPluginSource(key)!;
+      // Authored-manifest officials (store-analytics, fraud-shield) have no
+      // builtin ZIP: their manifest-only export carries the same content the
+      // source-backed install fingerprints.
       const bytes =
-        key === "store-analytics"
+        key === "store-analytics" || key === "fraud-shield"
           ? exportPluginManifestZip(source.manifest)
           : exportBuiltinPluginZip(key);
       const blob = extractPackageFiles(bytes, parseZip(bytes))

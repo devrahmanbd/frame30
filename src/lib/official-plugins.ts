@@ -3,18 +3,19 @@
  *
  * Theme-side parity (`OFFICIAL_THEME_KEYS` in `src/lib/themes/appearance.ts`):
  * the plugin catalogue names its official entries explicitly instead of
- * treating every builtin as official-by-convention. Exactly three entries —
- * Reviews, Analytics, WhatsApp Orders — each a catalogue row pointing at an
- * internally-built artifact (the exact ZIP `installPackage` installs; only
- * the serializable ref — checksum + version + fileName + `official:<key>`
- * pin — ever leaves the server, never the bytes, so there is nothing to
- * download).
+ * treating every builtin as official-by-convention. Exactly four entries —
+ * Reviews, Analytics, WhatsApp Orders, Fraud Shield — each a catalogue row
+ * pointing at an internally-built artifact (the exact ZIP `installPackage`
+ * installs; only the serializable ref — checksum + version + fileName +
+ * `official:<key>` pin — ever leaves the server, never the bytes, so there
+ * is nothing to download).
  *
- * Source verification (K1 context step): no dedicated Reviews / Analytics /
- * WhatsApp-Orders plugin sources exist anywhere in the repo — the only
- * official plugin sources are the six `BUILTIN_PLUGINS` manifests in
- * `src/lib/builtin-plugins.ts`. Per the brief fallback the entries below are
- * therefore backed by builtin-plugins manifest data:
+ * Source verification (K1 context step): no dedicated Reviews /
+ * Analytics / WhatsApp-Orders plugin sources exist anywhere in the repo —
+ * the only official plugin sources are the six `BUILTIN_PLUGINS` manifests
+ * in `src/lib/builtin-plugins.ts` plus authored manifest data validated by
+ * the same gates. Per the brief fallback the entries below are therefore
+ * backed by builtin-plugins manifest data:
  * - Reviews ......... `product-reviews` (Verified Product Reviews)
  * - Analytics ....... authored `store-analytics` manifest data in this file
  *                     (no analytics builtin exists; the data is validated by
@@ -23,23 +24,30 @@
  *                     the pipeline would refuse)
  * - WhatsApp Orders . `whatsapp-chat` (WhatsApp Quick Chat — the WhatsApp
  *                     channel entry, whose summary covers order inquiries)
+ * - Fraud Shield .... authored `fraud-shield` manifest data in
+ *                     `src/lib/fraud-shield.ts` (no fraud builtin exists;
+ *                     same gates, same guarantee — plus the pure scorer the
+ *                     host invokes in-process for `order.created` scoring
+ *                     and the `order.flagged` review-hold marker).
  *
  * No Supabase, no React — tests drive this file directly, and
  * `official-plugins.server.ts` builds the install bytes from these sources.
  */
 
 import { getBuiltinPlugin } from "./builtin-plugins";
+import { FRAUD_SHIELD_MANIFEST, FRAUD_SHIELD_META } from "./fraud-shield";
 
 /* ------------------------------------------------- official keys (K1) */
 
 /**
- * Framique-built plugins. Exactly these three — any other catalogue key
+ * Framique-built plugins. Exactly these four — any other catalogue key
  * (including the remaining builtins) is community, never official.
  */
 export const OFFICIAL_PLUGIN_KEYS = [
   "product-reviews",
   "store-analytics",
   "whatsapp-chat",
+  "fraud-shield",
 ] as const;
 
 export type OfficialPluginKey = (typeof OFFICIAL_PLUGIN_KEYS)[number];
@@ -53,7 +61,7 @@ export function officialPluginPinFor(key: string): string {
   return `${OFFICIAL_PLUGIN_PIN_PREFIX}${key}`;
 }
 
-/** True for the three official keys only — any other key is never official. */
+/** True for the four official keys only — any other key is never official. */
 export function isOfficialPluginKey(key: string): key is OfficialPluginKey {
   return (OFFICIAL_PLUGIN_KEYS as readonly string[]).includes(key);
 }
@@ -182,6 +190,14 @@ export function officialPluginSource(
       key,
       manifest: STORE_ANALYTICS_MANIFEST,
       ...STORE_ANALYTICS_META,
+      author: "Framique",
+    };
+  }
+  if (key === "fraud-shield") {
+    return {
+      key,
+      manifest: FRAUD_SHIELD_MANIFEST,
+      ...FRAUD_SHIELD_META,
       author: "Framique",
     };
   }

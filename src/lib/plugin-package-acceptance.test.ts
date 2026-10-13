@@ -938,11 +938,12 @@ describe("PLUGIN UPLOAD installs through the pipeline + host projection", () => 
 });
 
 describe("K1 official plugin catalogue shape", () => {
-  it("names exactly the three official keys, nothing else", () => {
+  it("names exactly the official keys, nothing else", () => {
     expect([...OFFICIAL_PLUGIN_KEYS]).toEqual([
       "product-reviews",
       "store-analytics",
       "whatsapp-chat",
+      "fraud-shield",
     ]);
     for (const key of OFFICIAL_PLUGIN_KEYS) {
       expect(isOfficialPluginKey(key)).toBe(true);
@@ -977,6 +978,7 @@ describe("K1 official plugin catalogue shape", () => {
       "product-reviews",
       "store-analytics",
       "whatsapp-chat",
+      "fraud-shield",
     ]);
     for (const entry of entries) {
       expect(entry.row.provenance).toBe("official");
@@ -1026,6 +1028,7 @@ describe("K1 official plugin catalogue shape", () => {
       expect(entries.map((e) => e.row.key)).toEqual([
         "product-reviews",
         "store-analytics",
+        "fraud-shield",
       ]);
     } finally {
       __setOfficialPluginArtifactProviderForTests(null);
