@@ -170,7 +170,7 @@ export function breakerState(code: string): "closed" | "open" | "half_open" {
   return "half_open";
 }
 
-function recordFailure(code: string) {
+function recordFailureState(code: string) {
   const now = Date.now();
   const b = breakers.get(code) ?? {
     failures: 0,
@@ -182,10 +182,6 @@ function recordFailure(code: string) {
   b.lastFailure = now;
   if (b.failures >= FAILURE_THRESHOLD) b.openedAt = now;
   breakers.set(code, b);
-  incr("framique_courier_breaker_total", {
-    carrier: code,
-    state: breakerState(code),
-  });
 }
 
 function recordSuccess(code: string) {
@@ -197,17 +193,41 @@ export function resetBreakers() {
   breakers.clear();
 }
 
-async function withTimeout<T>(ms: number, work: () => Promise<T>): Promise<T> {
+/**
+ * Bound one attempt. The signal is delivered to the work: fetch-based
+ * transports MUST observe it (pass it to fetch) so a timeout actually cancels
+ * the socket instead of leaving it running. The sandbox transports below are
+ * pure compute (HMAC + string assembly, no I/O handle exists to cancel), so
+ * for them the race only bounds the waiter and the microtask loser settles
+ * harmlessly — explicitly fire-and-forget, documented here because no abort
+ * target exists. The timer is unref'd and always cleared.
+ */
+async function withTimeout<T>(
+  ms: number,
+  work: (signal: AbortSignal) => Promise<T>,
+): Promise<T> {
+  const controller = new AbortController();
+  // Handled from the start: when the timeout wins, the loser's late rejection
+  // must never surface as an unhandled rejection.
+  const pending = work(controller.signal);
+  pending.catch(() => {});
   let timer: ReturnType<typeof setTimeout> | undefined;
   try {
     return await Promise.race([
-      work(),
+      pending,
       new Promise<T>((_, reject) => {
-        timer = setTimeout(
-          () =>
-            reject(new AdapterError("adapter_timeout", "Courier timed out")),
-          ms,
-        );
+        timer = setTimeout(() => {
+          const timeout = new AdapterError(
+            "adapter_timeout",
+            "Courier timed out",
+          );
+          // Reject first so the caller deterministically sees the timeout
+          // (not whatever the abort cascade rejects with), then cancel the
+          // work — the signal still reaches every observer.
+          reject(timeout);
+          controller.abort(timeout);
+        }, ms);
+        (timer as unknown as { unref?: () => void }).unref?.();
       }),
     ]);
   } finally {
@@ -218,7 +238,7 @@ async function withTimeout<T>(ms: number, work: () => Promise<T>): Promise<T> {
 export async function callCarrier<T>(
   code: string,
   op: string,
-  work: () => Promise<T>,
+  work: (signal: AbortSignal) => Promise<T>,
   opts: { timeoutMs?: number; retries?: number } = {},
 ): Promise<T> {
   if (breakerState(code) === "open") {
@@ -242,17 +262,26 @@ export async function callCarrier<T>(
       return value;
     } catch (err) {
       lastError = err;
-      recordFailure(code);
-      incr("framique_courier_call_total", {
-        carrier: code,
-        op,
-        outcome: "error",
-      });
+      // Attempts feed the breaker state only — observability fires exactly
+      // once per logical call below, so retries never triple-count samples.
+      recordFailureState(code);
       if (attempt === retries) break;
       const backoff = 120 * 2 ** attempt + Math.floor(Math.random() * 80);
       await new Promise((r) => setTimeout(r, backoff));
     }
   }
+  // One logical call = one breaker sample and one call sample, no matter how
+  // many attempts ran. Tripping still reacts to consecutive logical failures
+  // through the accumulated state above.
+  incr("framique_courier_breaker_total", {
+    carrier: code,
+    state: breakerState(code),
+  });
+  incr("framique_courier_call_total", {
+    carrier: code,
+    op,
+    outcome: "error",
+  });
   log("warn", "courier.call_failed", { carrier: code, op });
   if (lastError instanceof AdapterError) throw lastError;
   throw new AdapterError(

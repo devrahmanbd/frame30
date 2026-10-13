@@ -12,6 +12,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { incr, log } from "./observability.server";
 import { redisCommand, redisConfigured, redisKey } from "./redis.server";
+import { DbTimeoutError, withDbTimeout } from "./db-timeout.server";
 
 type Client = SupabaseClient<Database>;
 
@@ -81,13 +82,37 @@ export async function claimIdempotency(
       // Degrade to Postgres
     }
   }
-  const { error } = await admin.from("api_idempotency_keys").insert({
-    merchant_id: input.merchantId,
-    route: input.route,
-    idem_key: input.key,
-    request_hash: input.requestHash,
-    status: 0,
-  });
+  // The insert IS the lock and sits on the money path: bound so a stall
+  // fails closed with the existing idempotency_unavailable vocabulary (the
+  // caller returns 503 and the client retries with the same key) instead of
+  // hanging. A timeout has unknown outcome — the key may or may not have
+  // landed — but a retry replays safely: same hash returns the stored
+  // response, different hash is a conflict.
+  let error: { code?: string; message?: string } | null = null;
+  try {
+    ({ error } = (await withDbTimeout(
+      () =>
+        admin.from("api_idempotency_keys").insert({
+          merchant_id: input.merchantId,
+          route: input.route,
+          idem_key: input.key,
+          request_hash: input.requestHash,
+          status: 0,
+        }) as unknown as Promise<{
+          error: { code?: string; message?: string } | null;
+        }>,
+      { op: "idempotency.claim", timeoutMs: 5000 },
+    )) as { error: { code?: string; message?: string } | null });
+  } catch (err) {
+    if (err instanceof DbTimeoutError) {
+      log("error", "idempotency.claim_failed", {
+        route: input.route,
+        code: "db_timeout",
+      });
+      throw new Error("idempotency_unavailable");
+    }
+    throw err;
+  }
 
   if (!error) {
     incr("framique_idempotency_total", {

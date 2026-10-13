@@ -7,6 +7,7 @@
  */
 import { incr, log, observe } from "./observability.server";
 import { enforceRateLimit } from "./rate-limit.server";
+import { DbTimeoutError, withDbTimeout } from "./db-timeout.server";
 
 import { withTenantLock } from "./redis-lock.server";
 import type { EgressTransport } from "./plugin-hooks.server";
@@ -326,35 +327,83 @@ export async function consumeStock(
         await import("@/integrations/supabase/client.server");
       // Fail closed BEFORE the update: only live holds for THIS merchant may
       // converge. A foreign merchant's token matches zero rows here and is
-      // rejected below without touching anything.
-      const { data: live } = await supabaseAdmin
-        .from("stock_holds")
-        .select("variant_id")
-        .eq("checkout_token", checkoutToken)
-        .eq("merchant_id", merchantId)
-        .is("consumed_at", null);
+      // rejected below without touching anything. Both round trips are bounded
+      // (fail-closed to stock_consume_failed) so a stalled connection cannot
+      // hold the order open past the tenant lock.
+      let live: { variant_id: string }[] | null = null;
+      try {
+        ({ data: live } = await withDbTimeout(
+          () =>
+            supabaseAdmin
+              .from("stock_holds")
+              .select("variant_id")
+              .eq("checkout_token", checkoutToken)
+              .eq("merchant_id", merchantId)
+              .is("consumed_at", null) as unknown as Promise<{
+              data: { variant_id: string }[] | null;
+            }>,
+          { op: "checkout.consume.live", timeoutMs: 5000 },
+        ));
+      } catch (err) {
+        if (err instanceof DbTimeoutError) {
+          incr("framique_checkout_consume_total", { outcome: "error" });
+          log("error", "checkout.consume_failed", {
+            orderId,
+            reason: `db_timeout:${err.timeoutMs}ms`,
+          });
+          throw new CheckoutError(
+            "stock_consume_failed",
+            "Order placed but stock sync failed",
+          );
+        }
+        throw err;
+      }
       const liveRows = (live ?? []) as { variant_id: string }[];
       if (liveRows.length === 0) {
         reject(
           "rejected: no live holds for token+merchant scope; no rows touched",
         );
       }
-      const { error } = await supabaseAdmin
-        .from("stock_holds")
-        .update({ order_id: orderId, consumed_at: new Date().toISOString() })
-        .eq("checkout_token", checkoutToken)
-        .eq("merchant_id", merchantId)
-        .is("consumed_at", null);
-      if (error) {
-        incr("framique_checkout_consume_total", { outcome: "error" });
-        log("error", "checkout.consume_failed", {
-          orderId,
-          reason: error.message,
-        });
-        throw new CheckoutError(
-          "stock_consume_failed",
-          "Order placed but stock sync failed",
+      try {
+        const { error } = await withDbTimeout(
+          () =>
+            supabaseAdmin
+              .from("stock_holds")
+              .update({
+                order_id: orderId,
+                consumed_at: new Date().toISOString(),
+              })
+              .eq("checkout_token", checkoutToken)
+              .eq("merchant_id", merchantId)
+              .is("consumed_at", null) as unknown as Promise<{
+              error: { message: string } | null;
+            }>,
+          { op: "checkout.consume.link", timeoutMs: 5000 },
         );
+        if (error) {
+          incr("framique_checkout_consume_total", { outcome: "error" });
+          log("error", "checkout.consume_failed", {
+            orderId,
+            reason: error.message,
+          });
+          throw new CheckoutError(
+            "stock_consume_failed",
+            "Order placed but stock sync failed",
+          );
+        }
+      } catch (err) {
+        if (err instanceof DbTimeoutError) {
+          incr("framique_checkout_consume_total", { outcome: "error" });
+          log("error", "checkout.consume_failed", {
+            orderId,
+            reason: `db_timeout:${err.timeoutMs}ms`,
+          });
+          throw new CheckoutError(
+            "stock_consume_failed",
+            "Order placed but stock sync failed",
+          );
+        }
+        throw err;
       }
       incr("framique_checkout_consume_total", { outcome: "ok" });
       return liveRows.length;

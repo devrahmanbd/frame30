@@ -10,6 +10,7 @@ import type { Database } from "@/integrations/supabase/types";
 import { cached, invalidate } from "./cache.server";
 import { withSpan, incr, log } from "./observability.server";
 import { rateLimit, RateLimitError } from "./rate-limit.server";
+import { DbTimeoutError, withDbTimeout } from "./db-timeout.server";
 import {
   DEFAULT_ZONES,
   computeQuote,
@@ -68,20 +69,45 @@ function toRuleLike(row: RuleRow): RateRuleLike {
 async function seedDefaults(merchantId: string) {
   const { supabaseAdmin } =
     await import("@/integrations/supabase/client.server");
-  const { data: zones, error } = await supabaseAdmin
-    .from("shipping_zones")
-    .insert(
-      DEFAULT_ZONES.map((z) => ({
-        merchant_id: merchantId,
-        code: z.code,
-        name_en: z.nameEn,
-        name_bn: z.nameBn,
-        districts: [...z.districts],
-        is_default: z.isDefault,
-        priority: z.priority,
-      })),
-    )
-    .select("*");
+  // Bounded like the read path: a stall seeds nothing and fails closed as
+  // rates_unavailable (the caller quotes no rate) instead of hanging.
+  let zones: ZoneRow[] | null = null;
+  let error: { message?: string } | null = null;
+  try {
+    ({ data: zones, error } = (await withDbTimeout(
+      () =>
+        supabaseAdmin
+          .from("shipping_zones")
+          .insert(
+            DEFAULT_ZONES.map((z) => ({
+              merchant_id: merchantId,
+              code: z.code,
+              name_en: z.nameEn,
+              name_bn: z.nameBn,
+              districts: [...z.districts],
+              is_default: z.isDefault,
+              priority: z.priority,
+            })),
+          )
+          .select("*") as unknown as Promise<{
+          data: ZoneRow[] | null;
+          error: { message?: string } | null;
+        }>,
+      { op: "shipping.seed_zones", timeoutMs: 5000 },
+    )) as { data: ZoneRow[] | null; error: { message?: string } | null });
+  } catch (err) {
+    if (err instanceof DbTimeoutError) {
+      log("warn", "shipping.seed_timeout", {
+        merchantId,
+        timeoutMs: err.timeoutMs,
+      });
+      throw new ShippingError(
+        "rates_unavailable",
+        "Shipping rates are temporarily unavailable",
+      );
+    }
+    throw err;
+  }
   if (error) throw error;
 
   const rules = (zones ?? []).map((zone) => {
@@ -98,10 +124,33 @@ async function seedDefaults(merchantId: string) {
       priority: 100,
     };
   });
-  const { data: ruleRows, error: ruleError } = await supabaseAdmin
-    .from("shipping_rate_rules")
-    .insert(rules)
-    .select("*");
+  let ruleRows: RuleRow[] | null = null;
+  let ruleError: { message?: string } | null = null;
+  try {
+    ({ data: ruleRows, error: ruleError } = (await withDbTimeout(
+      () =>
+        supabaseAdmin
+          .from("shipping_rate_rules")
+          .insert(rules)
+          .select("*") as unknown as Promise<{
+          data: RuleRow[] | null;
+          error: { message?: string } | null;
+        }>,
+      { op: "shipping.seed_rules", timeoutMs: 5000 },
+    )) as { data: RuleRow[] | null; error: { message?: string } | null });
+  } catch (err) {
+    if (err instanceof DbTimeoutError) {
+      log("warn", "shipping.seed_timeout", {
+        merchantId,
+        timeoutMs: err.timeoutMs,
+      });
+      throw new ShippingError(
+        "rates_unavailable",
+        "Shipping rates are temporarily unavailable",
+      );
+    }
+    throw err;
+  }
   if (ruleError) throw ruleError;
   log("info", "shipping.defaults_seeded", { zones: zones?.length ?? 0 });
   return { zones: zones ?? [], rules: ruleRows ?? [] };
@@ -115,18 +164,49 @@ export async function loadRateTable(
     rateKey(merchantId),
     CACHE_TTL_SECONDS,
     async () => {
-      const [zonesRes, rulesRes] = await Promise.all([
-        supabase
-          .from("shipping_zones")
-          .select("*")
-          .eq("merchant_id", merchantId)
-          .order("priority"),
-        supabase
-          .from("shipping_rate_rules")
-          .select("*")
-          .eq("merchant_id", merchantId)
-          .order("priority"),
-      ]);
+      // Money-path reads (checkout previews price from this table): bounded
+      // so a stall fails closed as rates_unavailable instead of hanging the
+      // quote. Callers treat any throw as "no rate" — never a guessed price.
+      let zonesRes: { data: ZoneRow[] | null; error: unknown };
+      let rulesRes: { data: RuleRow[] | null; error: unknown };
+      try {
+        [zonesRes, rulesRes] = (await withDbTimeout(
+          () =>
+            Promise.all([
+              supabase
+                .from("shipping_zones")
+                .select("*")
+                .eq("merchant_id", merchantId)
+                .order("priority"),
+              supabase
+                .from("shipping_rate_rules")
+                .select("*")
+                .eq("merchant_id", merchantId)
+                .order("priority"),
+            ]) as unknown as Promise<
+              [
+                { data: ZoneRow[] | null; error: unknown },
+                { data: RuleRow[] | null; error: unknown },
+              ]
+            >,
+          { op: "shipping.rate_table", timeoutMs: 5000 },
+        )) as [
+          { data: ZoneRow[] | null; error: unknown },
+          { data: RuleRow[] | null; error: unknown },
+        ];
+      } catch (err) {
+        if (err instanceof DbTimeoutError) {
+          log("warn", "shipping.rate_table_timeout", {
+            merchantId,
+            timeoutMs: err.timeoutMs,
+          });
+          throw new ShippingError(
+            "rates_unavailable",
+            "Shipping rates are temporarily unavailable",
+          );
+        }
+        throw err;
+      }
       if (zonesRes.error) throw zonesRes.error;
       if (rulesRes.error) throw rulesRes.error;
       if ((zonesRes.data ?? []).length === 0) return seedDefaults(merchantId);

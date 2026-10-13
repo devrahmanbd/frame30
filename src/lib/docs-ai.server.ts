@@ -34,6 +34,8 @@ const GATEWAY =
 const MODEL =
   process.env["AI_MODEL"] || "nvidia/nemotron-3-ultra-550b-a55b:free";
 const CONTEXT_CHARS = 1600;
+/** Outbound deadline for the AI gateway: bounded so Ask AI cannot hang the route. */
+const DOCS_AI_TIMEOUT_MS = 20_000;
 
 const SYSTEM = [
   "You are the official support agent for Framique, the premier multi-tenant Cloud Commerce CMS and Platform for Bangladesh.",
@@ -106,16 +108,25 @@ export async function answerDocsQuestion(input: {
     },
   ];
 
-  const response = await fetch(GATEWAY, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-      "HTTP-Referer": "https://framique.com",
-      "X-Title": "Framique Support Agent",
-    },
-    body: JSON.stringify({ model: MODEL, messages }),
-  });
+  let response: Response;
+  try {
+    response = await fetch(GATEWAY, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+        "HTTP-Referer": "https://framique.com",
+        "X-Title": "Framique Support Agent",
+      },
+      body: JSON.stringify({ model: MODEL, messages }),
+      signal: AbortSignal.timeout(DOCS_AI_TIMEOUT_MS),
+    });
+  } catch (err) {
+    if ((err as Error)?.name === "TimeoutError") {
+      throw new Error("Ask AI timed out — try again in a moment.");
+    }
+    throw err;
+  }
 
   if (!response.ok) {
     const detail = await response.text().catch(() => "");

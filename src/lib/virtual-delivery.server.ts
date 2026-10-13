@@ -571,6 +571,9 @@ type SendResult = {
   providerId?: string;
 };
 
+/** Provider deadline: the queue already retries with backoff, so cap one attempt. */
+const VIRTUAL_SEND_TIMEOUT_MS = 10_000;
+
 /**
  * Hands the message to the configured provider. Kept as one seam so the queue,
  * retry and audit behaviour is identical no matter which provider a merchant
@@ -596,6 +599,7 @@ async function sendMessage(
         authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ to: recipient, body }),
+      signal: AbortSignal.timeout(VIRTUAL_SEND_TIMEOUT_MS),
     });
     if (!res.ok)
       return {

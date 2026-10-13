@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/integrations/supabase/types";
 import { incr, log } from "./observability.server";
 import { requirePlatformAdmin } from "./platform.server";
+import { DbTimeoutError, withDbTimeout } from "./db-timeout.server";
 
 type Client = SupabaseClient<Database>;
 
@@ -166,12 +167,45 @@ export async function ingestWebhook(
     return { http: 401, status: "dead_letter", reason: "hmac_invalid" };
   }
 
-  const { data: account, error: accountError } = await admin
-    .from("gateway_accounts")
-    .select("webhook_secret, active")
-    .eq("merchant_id", envelope.merchantId)
-    .eq("provider", provider)
-    .maybeSingle();
+  // Bounded like every money-path read: a stalled lookup fails closed as
+  // 503 (retryable) with the existing db_unavailable vocabulary — never a 401
+  // that would tell the provider to stop retrying a legitimate event.
+  let account: { webhook_secret: string; active: boolean } | null = null;
+  let accountError: { message?: unknown } | null = null;
+  try {
+    ({ data: account, error: accountError } = (await withDbTimeout(
+      () =>
+        admin
+          .from("gateway_accounts")
+          .select("webhook_secret, active")
+          .eq("merchant_id", envelope.merchantId)
+          .eq("provider", provider)
+          .maybeSingle() as unknown as Promise<{
+          data: {
+            webhook_secret: string;
+            active: boolean;
+          } | null;
+          error: { message?: unknown } | null;
+        }>,
+      { op: "gateway.account_lookup", timeoutMs: 5000 },
+    )) as {
+      data: { webhook_secret: string; active: boolean } | null;
+      error: { message?: unknown } | null;
+    });
+  } catch (err) {
+    if (err instanceof DbTimeoutError) {
+      log("error", "gateway.account_lookup_failed", {
+        provider,
+        message: `db_timeout:${err.timeoutMs}ms`,
+      });
+      incr("framique_gateway_ingest_total", {
+        provider,
+        outcome: "db_unavailable",
+      });
+      return { http: 503, status: "error", reason: "db_unavailable" };
+    }
+    throw err;
+  }
 
   if (accountError) {
     // DB fault, not an unknown account: a 401 would tell the provider to
@@ -238,17 +272,47 @@ export async function ingestWebhook(
     return { http: 400, status: "dead_letter", reason: "ts_out_of_window" };
   }
 
-  const { data, error } = await admin.rpc("gateway_apply_webhook", {
-    _provider: provider,
-    _webhook_id: envelope.webhookId,
-    _merchant_id: envelope.merchantId,
-    _order_id: (envelope.orderId ?? null) as string,
-    _event_type: envelope.type,
-    _amount_minor_int: envelope.amountMinorInt,
-    _currency_code: envelope.currencyCode ?? "BDT",
-    _attempt: envelope.attempt ?? 1,
-    _payload: safePayload as Json,
-  });
+  // The apply RPC is the money write: bound so a stall returns 503
+  // (provider retries) instead of hanging the webhook worker. A timeout has
+  // unknown outcome — the RPC is idempotent on (provider, webhook_id), so a
+  // provider retry converges rather than double-applies. No dead letter is
+  // written: the row must stay retryable, never parked as processed.
+  let data: unknown = null;
+  let error: { message?: unknown } | null = null;
+  try {
+    ({ data, error } = (await withDbTimeout(
+      () =>
+        admin.rpc("gateway_apply_webhook", {
+          _provider: provider,
+          _webhook_id: envelope.webhookId,
+          _merchant_id: envelope.merchantId,
+          _order_id: (envelope.orderId ?? null) as string,
+          _event_type: envelope.type,
+          _amount_minor_int: envelope.amountMinorInt,
+          _currency_code: envelope.currencyCode ?? "BDT",
+          _attempt: envelope.attempt ?? 1,
+          _payload: safePayload as Json,
+        }) as unknown as Promise<{
+          data: unknown;
+          error: { message?: unknown } | null;
+        }>,
+      { op: "gateway.apply_webhook", timeoutMs: 5000 },
+    )) as { data: unknown; error: { message?: unknown } | null });
+  } catch (err) {
+    if (err instanceof DbTimeoutError) {
+      log("error", "gateway.apply_timeout", {
+        provider,
+        webhookId: envelope.webhookId,
+        message: `db_timeout:${err.timeoutMs}ms`,
+      });
+      incr("framique_gateway_ingest_total", {
+        provider,
+        outcome: "db_unavailable",
+      });
+      return { http: 503, status: "error", reason: "db_unavailable" };
+    }
+    throw err;
+  }
 
   if (error) {
     await deadLetter(

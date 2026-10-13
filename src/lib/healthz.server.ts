@@ -40,21 +40,24 @@ export async function probeDatabase(
   timeoutMs = 3000,
 ): Promise<DependencyCheck> {
   const start = Date.now();
+  // AbortController owns the deadline: the signal aborts the query in flight
+  // (no fire-and-forget loser), the timer is unref'd so an idle isolate never
+  // waits on a probe, and it is always cleared before return.
+  const controller = new AbortController();
+  let timer: ReturnType<typeof setTimeout> | undefined;
   try {
     const { supabaseAdmin } =
       await import("@/integrations/supabase/client.server");
-    const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(
-        () =>
-          reject(new Error(`Database probe timed out after ${timeoutMs}ms`)),
-        timeoutMs,
-      ),
-    );
+    timer = setTimeout(() => controller.abort(), timeoutMs);
+    (timer as unknown as { unref?: () => void }).unref?.();
 
-    // Light-weight database query
-    const checkPromise = supabaseAdmin.from("merchants").select("id").limit(1);
-
-    const { error } = await Promise.race([checkPromise, timeoutPromise]);
+    // Light-weight database query. An aborted query resolves (not rejects)
+    // with an AbortError payload, which the error branch below reports.
+    const { error } = await supabaseAdmin
+      .from("merchants")
+      .select("id")
+      .limit(1)
+      .abortSignal(controller.signal);
     const latencyMs = Date.now() - start;
 
     if (error) {
@@ -68,6 +71,8 @@ export async function probeDatabase(
       latencyMs: Date.now() - start,
       message: (err as Error).message,
     };
+  } finally {
+    if (timer) clearTimeout(timer);
   }
 }
 
@@ -75,26 +80,27 @@ export async function probeDatabase(
 export async function probeRedis(timeoutMs = 2000): Promise<DependencyCheck> {
   const start = Date.now();
   try {
-    const { redisCommand } = await import("./redis.server");
-    const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(
-        () => reject(new Error(`Redis probe timed out after ${timeoutMs}ms`)),
-        timeoutMs,
-      ),
-    );
+    const { redisCommand, redisConfigured } = await import("./redis.server");
+    // Redis is an accelerator, never a correctness dependency: unconfigured
+    // means skipped, not failed.
+    if (!redisConfigured()) {
+      return { status: "skipped", latencyMs: 0 };
+    }
 
-    const checkPromise = redisCommand(["PING"]);
-    const res = (await Promise.race([checkPromise, timeoutPromise])) as unknown;
+    // The shared client already bounds the command — no second race here, so
+    // there is no loser to leak. The result is a status object, never a bare
+    // string: only ok+PONG counts as reachable.
+    const res = await redisCommand(["PING"], { timeoutMs });
     const latencyMs = Date.now() - start;
 
-    if (res === "PONG" || (typeof res === "string" && res.includes("PONG"))) {
+    if (res.ok && res.value === "PONG") {
       return { status: latencyMs > 300 ? "degraded" : "up", latencyMs };
     }
 
     return {
       status: "degraded",
       latencyMs,
-      message: `Unexpected response: ${String(res)}`,
+      message: `Unexpected response: ${res.ok ? String(res.value) : res.outcome}`,
     };
   } catch (err) {
     return {

@@ -173,6 +173,10 @@ export async function serveTransform(
           imgproxyUrl(transformer, spec, format, guard.url.toString()),
           {
             headers: { accept: contentTypeFor(format) },
+            // Same deadline as the passthrough branch's egress guard: the
+            // target is operator-configured infrastructure (not a
+            // caller-influenced URL), so a plain abort signal suffices.
+            signal: AbortSignal.timeout(IMAGE_FETCH_TIMEOUT_MS),
           },
         )
       : (

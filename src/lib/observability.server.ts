@@ -413,6 +413,9 @@ export function errorBackends(): ErrorTargetName[] {
   return errorTargets(process.env).map((t) => t.name);
 }
 
+/** Error-reporting POST budget: observability must never hold a request. */
+const SENTRY_POST_TIMEOUT_MS = 5_000;
+
 async function sendEnvelope(
   build: (dsnString: string) => string,
   kind: string,
@@ -448,6 +451,7 @@ async function sendEnvelope(
             "x-sentry-auth": sentryAuthHeader(target.dsn),
           },
           body: build(target.dsnString),
+          signal: AbortSignal.timeout(SENTRY_POST_TIMEOUT_MS),
         });
         incr("framique_sentry_events_total", {
           ...labels,
