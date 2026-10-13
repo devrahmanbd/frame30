@@ -1,0 +1,24 @@
+{
+  "id": "slice-spotlight",
+  "version": "0.1.0",
+  "runtime": "1.0.0",
+  "name": "Slice Spotlight",
+  "publisher": "Framique Dev Slice",
+  "capabilities": ["presentation", "animation", "commerce-read"],
+  "dependencies": [
+    {
+      "name": "gsap",
+      "version": "3.15.0",
+      "license": "MIT",
+      "integrity": "sha384-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    }
+  ],
+  "sections": [
+    { "key": "animated-spotlight", "slot": "main", "component": "AnimatedProductSection" }
+  ],
+  "settings": [
+    { "key": "heading", "label": "Heading", "type": "text" },
+    { "key": "products", "label": "Products", "type": "product-selection" },
+    { "key": "intensity", "label": "Animation intensity", "type": "animation" }
+  ]
+}
