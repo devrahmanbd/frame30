@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["node"],
+    "jsx": "react-jsx",
+    "resolveJsonModule": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "./*.ts",
+    "../../src/lib/dev-theme-manifest.ts",
+    "../../src/lib/dev-theme-bundle.ts",
+    "../../src/components/theme-runtime/bridge-v2.ts",
+    "../../src/components/theme-runtime/capabilities.ts",
+    "../../src/components/theme-runtime/ThemeRuntime.tsx"
+  ]
+}
