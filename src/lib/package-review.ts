@@ -44,11 +44,57 @@ function cleanUrl(raw: string): string | null {
 }
 
 /**
- * Sorted unique absolute http(s) URLs across package text files. Binary
- * assets, relative refs, and non-http schemes are never reported.
+ * Where an inventoried external URL was found. `templates` covers the
+ * package/template file bytes (first input); `tokens` covers the tokens
+ * JSON second input.
  */
-export function inventoryExternalUrls(files: ReviewFile[]): string[] {
-  const seen = new Set<string>();
+export type ExternalUrlSource = "templates" | "tokens";
+
+export type InventoriedExternalUrl = {
+  url: string;
+  sources: ExternalUrlSource[];
+};
+
+function collectUrls(
+  text: string,
+  into: Map<string, Set<ExternalUrlSource>>,
+  source: ExternalUrlSource,
+): void {
+  URL_RE.lastIndex = 0;
+  for (const match of text.matchAll(URL_RE)) {
+    const clean = cleanUrl(match[0]);
+    if (!clean) continue;
+    let set = into.get(clean);
+    if (!set) {
+      set = new Set<ExternalUrlSource>();
+      into.set(clean, set);
+    }
+    set.add(source);
+  }
+}
+
+function tokensBlob(tokens: unknown): string {
+  if (tokens === undefined || tokens === null) return "";
+  if (typeof tokens === "string") return tokens;
+  try {
+    const raw = JSON.stringify(tokens);
+    return typeof raw === "string" ? raw : "";
+  } catch {
+    return "";
+  }
+}
+
+/**
+ * Sorted unique inventoried external URLs with per-URL source labels.
+ * Files contribute under `templates`, the optional tokens JSON under
+ * `tokens`; a URL found in both carries both sources. Never throws —
+ * undecodable files and unserializable tokens scan as empty.
+ */
+export function inventoryExternalUrlsDetailed(
+  files: ReviewFile[],
+  tokens?: unknown,
+): InventoriedExternalUrl[] {
+  const seen = new Map<string, Set<ExternalUrlSource>>();
   for (const file of files) {
     if (!isReviewableText(file.path)) continue;
     let text: string;
@@ -57,13 +103,32 @@ export function inventoryExternalUrls(files: ReviewFile[]): string[] {
     } catch {
       continue;
     }
-    URL_RE.lastIndex = 0;
-    for (const match of text.matchAll(URL_RE)) {
-      const clean = cleanUrl(match[0]);
-      if (clean) seen.add(clean);
-    }
+    collectUrls(text, seen, "templates");
   }
-  return [...seen].sort();
+  const blob = tokensBlob(tokens);
+  if (blob) collectUrls(blob, seen, "tokens");
+  return [...seen.entries()]
+    .map(([url, sources]) => ({
+      url,
+      sources: [...sources].sort() as ExternalUrlSource[],
+    }))
+    .sort((a, b) => (a.url < b.url ? -1 : a.url > b.url ? 1 : 0));
+}
+
+/**
+ * Sorted unique absolute http(s) URLs across package text files, with an
+ * optional tokens JSON merged into the SAME set. Binary assets, relative
+ * refs, and non-http schemes are never reported.
+ *
+ * The return shape stays `string[]`: consent screens (`InstallConsent`)
+ * and audit rows read plain URL strings, so source labels live in
+ * `inventoryExternalUrlsDetailed` instead of here.
+ */
+export function inventoryExternalUrls(
+  files: ReviewFile[],
+  tokens?: unknown,
+): string[] {
+  return inventoryExternalUrlsDetailed(files, tokens).map((entry) => entry.url);
 }
 
 /* --------------------------------------- capability signals + diff */
@@ -87,7 +152,10 @@ export type CapabilityDiff = {
  * Consent coverage for a widening diff: every added item must appear in the
  * caller-supplied consent list by exact match. Absent list covers nothing.
  */
-export function coversWidening(added: string[], consentScopes?: string[]): boolean {
+export function coversWidening(
+  added: string[],
+  consentScopes?: string[],
+): boolean {
   if (added.length === 0) return true;
   const granted = new Set(consentScopes ?? []);
   return added.every((a) => granted.has(a));
@@ -112,7 +180,10 @@ function hasNonEmptyString(value: unknown): boolean {
   return false;
 }
 
-function walkSections(node: unknown, visit: (section: Record<string, unknown>) => void): void {
+function walkSections(
+  node: unknown,
+  visit: (section: Record<string, unknown>) => void,
+): void {
   if (Array.isArray(node)) {
     for (const item of node) walkSections(item, visit);
     return;

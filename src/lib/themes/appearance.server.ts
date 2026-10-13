@@ -567,12 +567,15 @@ export async function installCatalogTheme(
       key,
       version_id: (version as { id: string }).id,
       via: official ? "official" : "catalog",
-      externalUrls: inventoryExternalUrls([
-        {
-          path: "templates.json",
-          bytes: new TextEncoder().encode(JSON.stringify(pkg.templates)),
-        },
-      ]),
+      externalUrls: inventoryExternalUrls(
+        [
+          {
+            path: "templates.json",
+            bytes: new TextEncoder().encode(JSON.stringify(pkg.templates)),
+          },
+        ],
+        pkg.tokens,
+      ),
     },
   });
   return { id: themeId, alreadyInstalled: false };

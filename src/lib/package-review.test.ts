@@ -7,7 +7,10 @@
  * bytes are never reported.
  */
 import { describe, expect, it } from "vitest";
-import { inventoryExternalUrls } from "./package-review";
+import {
+  inventoryExternalUrls,
+  inventoryExternalUrlsDetailed,
+} from "./package-review";
 
 const file = (path: string, content: string) => ({
   path,
@@ -58,6 +61,103 @@ describe("inventoryExternalUrls", () => {
     ]);
     expect(urls).toEqual([]);
   });
+
+  it("merges tokens-only URLs into the same sorted set", () => {
+    const urls = inventoryExternalUrls([], {
+      banner: "see https://tok.example.com/a.png for details",
+    });
+    expect(urls).toEqual(["https://tok.example.com/a.png"]);
+  });
+
+  it("dedupes URLs shared across templates and tokens", () => {
+    const urls = inventoryExternalUrls(
+      [
+        file(
+          "templates.json",
+          JSON.stringify({ img: "https://cdn.example.com/a.png" }),
+        ),
+      ],
+      {
+        bg: "https://cdn.example.com/a.png",
+        extra: "https://tok.example.com/b.png",
+      },
+    );
+    expect(urls).toEqual([
+      "https://cdn.example.com/a.png",
+      "https://tok.example.com/b.png",
+    ]);
+  });
+
+  it("leaves the set unchanged when tokens carry no URLs", () => {
+    const files = [
+      file(
+        "templates.json",
+        JSON.stringify({ img: "https://cdn.example.com/a.png" }),
+      ),
+    ];
+    const base = inventoryExternalUrls(files);
+    expect(inventoryExternalUrls(files, { brand: "#0F766E" })).toEqual(base);
+    expect(inventoryExternalUrls(files, undefined)).toEqual(base);
+    expect(inventoryExternalUrls(files, null)).toEqual(base);
+  });
+
+  it("ignores non-http schemes and unserializable tokens without throwing", () => {
+    const urls = inventoryExternalUrls([], {
+      mail: "mailto:shop@example.com",
+      js: "javascript:alert(1)",
+      data: "data:image/png;base64,aaa",
+    });
+    expect(urls).toEqual([]);
+    const circular: Record<string, unknown> = {};
+    circular.self = circular;
+    expect(() => inventoryExternalUrls([], circular)).not.toThrow();
+    expect(inventoryExternalUrls([], circular)).toEqual([]);
+  });
+});
+
+describe("inventoryExternalUrlsDetailed", () => {
+  it("labels a tokens-only URL with the token source", () => {
+    const entries = inventoryExternalUrlsDetailed([], {
+      banner: "https://tok.example.com/a.png",
+    });
+    expect(entries).toEqual([
+      { url: "https://tok.example.com/a.png", sources: ["tokens"] },
+    ]);
+  });
+
+  it("labels template URLs with the template source", () => {
+    const entries = inventoryExternalUrlsDetailed([
+      file(
+        "templates.json",
+        JSON.stringify({ img: "https://cdn.example.com/a.png" }),
+      ),
+    ]);
+    expect(entries).toEqual([
+      { url: "https://cdn.example.com/a.png", sources: ["templates"] },
+    ]);
+  });
+
+  it("labels shared URLs with both sources, deduped and sorted", () => {
+    const entries = inventoryExternalUrlsDetailed(
+      [
+        file(
+          "templates.json",
+          JSON.stringify({ img: "https://cdn.example.com/a.png" }),
+        ),
+      ],
+      {
+        bg: "https://cdn.example.com/a.png",
+        extra: "https://tok.example.com/b.png",
+      },
+    );
+    expect(entries).toEqual([
+      {
+        url: "https://cdn.example.com/a.png",
+        sources: ["templates", "tokens"],
+      },
+      { url: "https://tok.example.com/b.png", sources: ["tokens"] },
+    ]);
+  });
 });
 
 describe("diffCapabilities", () => {
@@ -65,7 +165,11 @@ describe("diffCapabilities", () => {
     const { diffCapabilities } = await import("./package-review");
     const diff = diffCapabilities(
       { permissions: ["read_shop"], externalHosts: [], customHtml: false },
-      { permissions: ["read_shop", "write_orders"], externalHosts: [], customHtml: false },
+      {
+        permissions: ["read_shop", "write_orders"],
+        externalHosts: [],
+        customHtml: false,
+      },
     );
     expect(diff.widened).toBe(true);
     expect(diff.added).toEqual(["perm:write_orders"]);
@@ -75,7 +179,11 @@ describe("diffCapabilities", () => {
   it("removals alone never count as widening", async () => {
     const { diffCapabilities } = await import("./package-review");
     const diff = diffCapabilities(
-      { permissions: ["read_shop", "write_orders"], externalHosts: ["a.example.com"], customHtml: true },
+      {
+        permissions: ["read_shop", "write_orders"],
+        externalHosts: ["a.example.com"],
+        customHtml: true,
+      },
       { permissions: ["read_shop"], externalHosts: [], customHtml: false },
     );
     expect(diff.widened).toBe(false);
@@ -84,12 +192,19 @@ describe("diffCapabilities", () => {
 
   it("detects new external hosts and custom-html arrival", async () => {
     const { diffCapabilities, themeSignals } = await import("./package-review");
-    const oldS = themeSignals({ index: { main: [{ type: "heading", props: {} }] } });
+    const oldS = themeSignals({
+      index: { main: [{ type: "heading", props: {} }] },
+    });
     const newS = themeSignals({
       index: {
         main: [
           { type: "heading", props: {} },
-          { type: "html", props: { body: "<b>x</b><img src=\"https://new.example.com/p.png\">" } },
+          {
+            type: "html",
+            props: {
+              body: '<b>x</b><img src="https://new.example.com/p.png">',
+            },
+          },
         ],
       },
     });
@@ -105,8 +220,16 @@ describe("diffCapabilities", () => {
   it("identical signals are not widening", async () => {
     const { diffCapabilities } = await import("./package-review");
     const diff = diffCapabilities(
-      { permissions: ["a"], externalHosts: ["h.example.com"], customHtml: true },
-      { permissions: ["a"], externalHosts: ["h.example.com"], customHtml: true },
+      {
+        permissions: ["a"],
+        externalHosts: ["h.example.com"],
+        customHtml: true,
+      },
+      {
+        permissions: ["a"],
+        externalHosts: ["h.example.com"],
+        customHtml: true,
+      },
     );
     expect(diff).toEqual({ widened: false, added: [], removed: [] });
   });
