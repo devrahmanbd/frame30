@@ -103,7 +103,7 @@ export function themeFrameCSP(assetOrigin: string): string {
   return [
     "default-src 'none'",
     `script-src ${o}`,
-    `style-src ${o} 'unsafe-inline'`,
+    `style-src ${o} 'unsafe-inline'`, // sast-allow: csp-sandbox -- style-src only (no script-src inline): theme CSS sanitized at package+render lanes, document stays opaque-origin sandboxed regardless
     `img-src ${o} data:`,
     `font-src ${o}`,
     "connect-src 'none'",
