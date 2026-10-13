@@ -10,6 +10,11 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { z } from "zod";
 import { BlogArchiveTheme } from "@/components/store/BlogArchiveTheme";
 import { storeBlogIndexFn } from "@/lib/store-blog.functions";
+import {
+  StorefrontError,
+  isStorefrontInfrastructureError,
+  normalizeStorefrontLoaderError,
+} from "@/components/store/StorefrontError";
 import { storeBlogBasePath, storeListingHead } from "@/lib/store-blog-head";
 import { useLang } from "@/lib/i18n";
 
@@ -19,9 +24,17 @@ export const Route = createFileRoute("/store/$slug/blog/")({
   }),
   loaderDeps: ({ search }) => ({ page: search.page ?? 1 }),
   loader: async ({ params, deps }) => {
-    const store = await storeBlogIndexFn({
-      data: { slug: params.slug, page: deps.page },
-    });
+    let store;
+    try {
+      store = await storeBlogIndexFn({
+        data: { slug: params.slug, page: deps.page },
+      });
+    } catch (err) {
+      // Infrastructure blips (5xx/timeout) reach the shared errorComponent
+      // with retry; only a null payload below becomes a 404.
+      if (!isStorefrontInfrastructureError(err)) throw err;
+      throw normalizeStorefrontLoaderError(err);
+    }
     if (!store) throw notFound();
     return store;
   },
@@ -50,6 +63,7 @@ export const Route = createFileRoute("/store/$slug/blog/")({
     return { meta, links, scripts };
   },
   component: StoreBlogIndexPage,
+  errorComponent: StorefrontError,
 });
 
 function StoreBlogIndexPage() {

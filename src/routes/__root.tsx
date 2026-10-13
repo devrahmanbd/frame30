@@ -4,11 +4,12 @@ import {
   Outlet,
   Scripts,
   createRootRouteWithContext,
+  useRouter,
 } from "@tanstack/react-router";
 import type { QueryClient } from "@tanstack/react-query";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
-import { LanguageProvider } from "@/lib/i18n";
+import { LanguageProvider, useLang } from "@/lib/i18n";
 import { createIsomorphicFn } from "@tanstack/react-start";
 import { readClientBootLang, type BootLang } from "@/lib/lang-boot";
 import { readServerBootLang } from "@/lib/lang-boot.server";
@@ -83,6 +84,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
      */
     loader: (): { lang: BootLang } => ({ lang: resolveBootLang() }),
     component: RootDocument,
+    errorComponent: RootError,
   },
 );
 
@@ -130,5 +132,40 @@ function RootDocument() {
         <Scripts />
       </body>
     </html>
+  );
+}
+
+/**
+ * Document-level failure UI. The storefront routes each render the shared
+ * `StorefrontError`; this catches everything else (a route without its own
+ * boundary, a document failure) with the same localized message + retry
+ * shape, minus storefront-specific copy. `useLang` falls back to English
+ * when the provider never mounted.
+ */
+function RootError({ reset }: { error?: unknown; reset?: () => void }) {
+  const { t } = useLang();
+  const router = useRouter();
+  return (
+    <main className="mx-auto max-w-xl px-4 py-24 text-center" role="alert">
+      <h1 className="text-2xl font-semibold">
+        {t("This page didn't load", "এই পেজটি লোড হয়নি")}
+      </h1>
+      <p className="mt-2 text-sm text-muted-foreground">
+        {t(
+          "Something went wrong. Try again — nothing was lost.",
+          "কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করুন — কিছুই হারায়নি।",
+        )}
+      </p>
+      <button
+        type="button"
+        onClick={() => {
+          reset?.();
+          void router.invalidate();
+        }}
+        className="mt-6 inline-flex min-h-11 items-center justify-center rounded-md bg-primary px-5 text-sm font-medium text-primary-foreground"
+      >
+        {t("Try again", "আবার চেষ্টা করুন")}
+      </button>
+    </main>
   );
 }

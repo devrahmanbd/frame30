@@ -6,6 +6,11 @@ import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { PluginLayer } from "@/components/store/PluginLayer";
 import { SupportWidget } from "@/components/store/SupportWidget";
 import { getStoreProduct } from "@/lib/storefront.functions";
+import {
+  StorefrontError,
+  isStorefrontInfrastructureError,
+  normalizeStorefrontLoaderError,
+} from "@/components/store/StorefrontError";
 import { handleMissingStoreUrl } from "@/lib/missing-url";
 import { fmtMinor } from "@/lib/money";
 import { useCart } from "@/lib/cart";
@@ -18,9 +23,17 @@ import { ProductView, ProductNotFound } from "@/components/store/ProductView";
 
 export const Route = createFileRoute("/store/$slug/p/$productSlug")({
   loader: async ({ params }) => {
-    const data = await getStoreProduct({
-      data: { slug: params.slug, productSlug: params.productSlug },
-    });
+    let data;
+    try {
+      data = await getStoreProduct({
+        data: { slug: params.slug, productSlug: params.productSlug },
+      });
+    } catch (err) {
+      // Infrastructure blips (5xx/timeout) reach the shared errorComponent
+      // with retry; only a null payload below takes the missing-URL verdict.
+      if (!isStorefrontInfrastructureError(err)) throw err;
+      throw normalizeStorefrontLoaderError(err);
+    }
     if (!data)
       throw await handleMissingStoreUrl(
         params.slug,
@@ -79,5 +92,6 @@ export const Route = createFileRoute("/store/$slug/p/$productSlug")({
   component: function RouteComponent() {
     return <ProductView data={Route.useLoaderData()} />;
   },
+  errorComponent: StorefrontError,
   notFoundComponent: ProductNotFound,
 });

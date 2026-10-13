@@ -10,15 +10,28 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ArticleView } from "@/components/store/ArticleView";
 import { ShareControls } from "@/components/public/ShareControls";
 import { storeBlogArticleFn } from "@/lib/store-blog.functions";
+import {
+  StorefrontError,
+  isStorefrontInfrastructureError,
+  normalizeStorefrontLoaderError,
+} from "@/components/store/StorefrontError";
 import { storeArticleHead } from "@/lib/store-blog-head";
 import { articleOutline } from "@/lib/blog-reader";
 import { useLang } from "@/lib/i18n";
 
 export const Route = createFileRoute("/store/$slug/blog/$slug")({
   loader: async ({ params }) => {
-    const store = await storeBlogArticleFn({
-      data: { slug: params.slug, articleSlug: params.slug },
-    });
+    let store;
+    try {
+      store = await storeBlogArticleFn({
+        data: { slug: params.slug, articleSlug: params.slug },
+      });
+    } catch (err) {
+      // Infrastructure blips (5xx/timeout) reach the shared errorComponent
+      // with retry; only a null payload below becomes a 404.
+      if (!isStorefrontInfrastructureError(err)) throw err;
+      throw normalizeStorefrontLoaderError(err);
+    }
     if (!store) throw notFound();
     return store;
   },
@@ -41,6 +54,7 @@ export const Route = createFileRoute("/store/$slug/blog/$slug")({
     return { meta, links, scripts };
   },
   component: StoreBlogArticlePage,
+  errorComponent: StorefrontError,
   notFoundComponent: StoreBlogNotFound,
 });
 

@@ -5,6 +5,12 @@ import { PluginLayer } from "@/components/store/PluginLayer";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { CheckCircle, Clock, XCircle } from "@/components/icons/tabler";
 import { getOrder, getStoreChrome } from "@/lib/storefront.functions";
+import { StoreImage } from "@/components/store/StoreImage";
+import {
+  StorefrontError,
+  isStorefrontInfrastructureError,
+  normalizeStorefrontLoaderError,
+} from "@/components/store/StorefrontError";
 import { startCharge } from "@/lib/payments.functions";
 import { buildRetryKey } from "@/lib/payment-keys";
 import { fmtMinor } from "@/lib/money";
@@ -21,10 +27,21 @@ export const Route = createFileRoute("/store/$slug/order/$orderId")({
   }),
   loaderDeps: ({ search }) => ({ t: search.t }),
   loader: async ({ params, deps }) => {
-    const [data, chrome] = await Promise.all([
-      getOrder({ data: { orderId: params.orderId, token: deps.t } }),
-      getStoreChrome({ data: { slug: params.slug, template: "account" } }).catch(() => null),
-    ]);
+    let data;
+    let chrome;
+    try {
+      [data, chrome] = await Promise.all([
+        getOrder({ data: { orderId: params.orderId, token: deps.t } }),
+        getStoreChrome({
+          data: { slug: params.slug, template: "account" },
+        }).catch(() => null),
+      ]);
+    } catch (err) {
+      // Infrastructure blips (5xx/timeout) reach the shared errorComponent
+      // with retry; only a null order below becomes a 404.
+      if (!isStorefrontInfrastructureError(err)) throw err;
+      throw normalizeStorefrontLoaderError(err);
+    }
     if (!data) throw notFound();
     // Defense in depth: the path slug is decorative (token gates), but a
     // mismatched slug must never render another tenant's order page.
@@ -49,6 +66,7 @@ export const Route = createFileRoute("/store/$slug/order/$orderId")({
     ],
   }),
   component: OrderConfirmation,
+  errorComponent: StorefrontError,
   notFoundComponent: OrderNotFound,
 });
 
@@ -213,11 +231,14 @@ function OrderConfirmation() {
                   <li key={i.id} className="flex justify-between gap-4 py-4 first:pt-0 last:pb-0">
                     <div className="flex gap-4">
                        <div className="relative h-16 w-16 overflow-hidden rounded-md border border-border bg-muted/30 shrink-0 flex items-center justify-center">
-                         {i.image_url ? (
-                           <img src={i.image_url} alt="" className="absolute inset-0 h-full w-full object-cover" />
-                         ) : (
-                           <span className="text-xs text-muted-foreground">Img</span>
-                         )}
+                              <StoreImage
+                                image={null}
+                                fallbackSrc={i.image_url}
+                                alt={i.product_title}
+                                seed={i.id}
+                                sizes="128px"
+                                className="absolute inset-0 h-full w-full object-cover"
+                              />
                          <div className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-foreground text-[10px] font-bold text-background">{i.quantity}</div>
                        </div>
                        <div>

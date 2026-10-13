@@ -12,6 +12,11 @@ import { PluginLayer } from "@/components/store/PluginLayer";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { StoreImage } from "@/components/store/StoreImage";
 import { getStoreCollection } from "@/lib/storefront.functions";
+import {
+  StorefrontError,
+  isStorefrontInfrastructureError,
+  normalizeStorefrontLoaderError,
+} from "@/components/store/StorefrontError";
 import { fmtMinor } from "@/lib/money";
 import { flattenAst } from "@/lib/builder-ast";
 import { rebaseMenuHref } from "@/lib/menus/menu";
@@ -19,9 +24,17 @@ import { CollectionView } from "@/components/store/CollectionView";
 
 export const Route = createFileRoute("/store/$slug/c/$collectionSlug")({
   loader: async ({ params }) => {
-    const data = await getStoreCollection({
-      data: { slug: params.slug, collectionSlug: params.collectionSlug },
-    });
+    let data;
+    try {
+      data = await getStoreCollection({
+        data: { slug: params.slug, collectionSlug: params.collectionSlug },
+      });
+    } catch (err) {
+      // Infrastructure blips (5xx/timeout) reach the shared errorComponent
+      // with retry; only a null payload below becomes a 404.
+      if (!isStorefrontInfrastructureError(err)) throw err;
+      throw normalizeStorefrontLoaderError(err);
+    }
     if (!data) throw notFound();
     return data;
   },
@@ -55,6 +68,7 @@ export const Route = createFileRoute("/store/$slug/c/$collectionSlug")({
   component: function RouteComponent() {
     return <CollectionView data={Route.useLoaderData()} />;
   },
+  errorComponent: StorefrontError,
   notFoundComponent: () => (
     <main className="mx-auto max-w-xl px-4 py-24 text-center">
       <h1 className="text-2xl font-semibold">Collection not found</h1>

@@ -13,6 +13,11 @@ import {
   getStorefront,
   resolveStoreRedirectFn,
 } from "@/lib/storefront.functions";
+import {
+  StorefrontError,
+  isStorefrontInfrastructureError,
+  normalizeStorefrontLoaderError,
+} from "@/components/store/StorefrontError";
 import { useLang } from "@/lib/i18n";
 
 export const Route = createFileRoute("/store/$slug/")({
@@ -73,9 +78,17 @@ export const Route = createFileRoute("/store/$slug/")({
     } catch {
       previewToken = undefined;
     }
-    const data = await getStorefront({
-      data: { slug: params.slug as string, previewToken },
-    });
+    let data;
+    try {
+      data = await getStorefront({
+        data: { slug: params.slug as string, previewToken },
+      });
+    } catch (err) {
+      // Infrastructure blips (5xx/timeout) reach the shared errorComponent
+      // with retry; only a null payload below becomes a 404.
+      if (!isStorefrontInfrastructureError(err)) throw err;
+      throw normalizeStorefrontLoaderError(err);
+    }
     if (!data) throw notFound();
     return data;
   },
@@ -173,6 +186,7 @@ export const Route = createFileRoute("/store/$slug/")({
     };
   },
   component: StorefrontHome,
+  errorComponent: StorefrontError,
   notFoundComponent: StoreMissing,
 });
 

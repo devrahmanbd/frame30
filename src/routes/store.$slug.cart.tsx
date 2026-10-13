@@ -13,13 +13,26 @@ import { PluginLayer } from "@/components/store/PluginLayer";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { SupportWidget } from "@/components/store/SupportWidget";
 import { getStoreChrome } from "@/lib/storefront.functions";
+import {
+  StorefrontError,
+  isStorefrontInfrastructureError,
+  normalizeStorefrontLoaderError,
+} from "@/components/store/StorefrontError";
 import { useLang } from "@/lib/i18n";
 
 export const Route = createFileRoute("/store/$slug/cart")({
   loader: async ({ params }) => {
-    const chrome = await getStoreChrome({
-      data: { slug: params.slug, template: "cart" },
-    });
+    let chrome;
+    try {
+      chrome = await getStoreChrome({
+        data: { slug: params.slug, template: "cart" },
+      });
+    } catch (err) {
+      // Infrastructure blips (5xx/timeout) reach the shared errorComponent
+      // with retry; only a null payload below becomes a 404.
+      if (!isStorefrontInfrastructureError(err)) throw err;
+      throw normalizeStorefrontLoaderError(err);
+    }
     if (!chrome) throw notFound();
     return chrome;
   },
@@ -41,6 +54,7 @@ export const Route = createFileRoute("/store/$slug/cart")({
     };
   },
   component: CartPage,
+  errorComponent: StorefrontError,
   notFoundComponent: CartMissing,
 });
 
