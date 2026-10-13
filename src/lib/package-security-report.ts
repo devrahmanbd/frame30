@@ -128,10 +128,15 @@ async function themeReport(
   const t = theme as { id: string; name?: unknown };
   const sha256 = themeContentBinding(v.templates, v.tokens);
   // Same file shape the activation gate scans.
+  // Same file shapes the activation gate scans.
   const report = scanPackage([
     {
       path: "templates.json",
       bytes: new TextEncoder().encode(JSON.stringify(v.templates ?? {})),
+    },
+    {
+      path: "tokens.json",
+      bytes: new TextEncoder().encode(JSON.stringify(v.tokens ?? {})),
     },
   ]);
   const { data: approvals } = await db

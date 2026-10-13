@@ -1190,6 +1190,10 @@ export async function approveThemeVersion(
       path: "templates.json",
       bytes: new TextEncoder().encode(JSON.stringify(templates ?? {})),
     },
+    {
+      path: "tokens.json",
+      bytes: new TextEncoder().encode(JSON.stringify(tokens ?? {})),
+    },
   ]);
   if (hasSecretFinding(report)) {
     throw new ThemeDeskError(
@@ -1239,6 +1243,10 @@ async function assertVersionApproved(
     {
       path: "templates.json",
       bytes: new TextEncoder().encode(JSON.stringify(templates ?? {})),
+    },
+    {
+      path: "tokens.json",
+      bytes: new TextEncoder().encode(JSON.stringify(tokens ?? {})),
     },
   ]);
   if (report.verdict === "clean") return;

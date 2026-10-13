@@ -87,9 +87,10 @@ async function pendingThemes(
     const tokens =
       (draft as { tokens?: unknown } | null)?.tokens ?? latest?.tokens;
     if (templates === undefined || templates === null) continue;
-    // Same file shape the activation gate scans.
+    // Same file shapes the activation gate scans.
     const report = scanPackage([
       { path: "templates.json", bytes: encodeJson(templates) },
+      { path: "tokens.json", bytes: encodeJson(tokens) },
     ]);
     if (report.verdict === "clean") continue;
     // Nothing approvable without a version row to bind the approval to.

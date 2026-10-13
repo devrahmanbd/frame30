@@ -372,4 +372,33 @@ describe("theme approval binds full version content (templates + tokens)", () =>
       true,
     );
   });
+
+  it("secret-bearing tokens are forbidden even with clean templates", async () => {
+    const { activateTheme } = await import("./appearance.server");
+    const db = publishedPixelDb();
+    db.rows("theme_versions").find((r) => r.id === VERSION)!.tokens = {
+      "--leak": `leaked ${"sk-" + "abcdefghij0123456789ABCDEFGH0123"}`,
+    };
+    const err = await approveThemeVersion(
+      db.asClient(),
+      MERCHANT,
+      THEME,
+      VERSION,
+      ACTOR,
+    ).catch((e) => e);
+    expect(err).toBeInstanceOf(ThemeDeskError);
+    expect((err as InstanceType<typeof ThemeDeskError>).code).toBe(
+      "theme.approval_forbidden",
+    );
+    expect(db.rows("theme_audit")).toHaveLength(0);
+    const actErr = await activateTheme(
+      db.asClient(),
+      MERCHANT,
+      THEME,
+      ACTOR,
+    ).catch((e) => e);
+    expect((actErr as InstanceType<typeof ThemeDeskError>).code).toBe(
+      "theme.approval_forbidden",
+    );
+  });
 });
