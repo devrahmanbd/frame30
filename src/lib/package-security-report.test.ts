@@ -6,11 +6,10 @@
  * exact file shapes and hash bindings the activation/enable gates enforce.
  */
 import { describe, expect, it } from "vitest";
-import { createHash } from "node:crypto";
 import { fakeDb, type Row } from "./__fixtures__/fake-db";
 
 const { packageSecurityReport } = await import("./package-security-report");
-const { SCANNER_VERSION } = await import("./package-scan");
+const { SCANNER_VERSION, contentHash } = await import("./package-scan");
 
 const MERCHANT = "11111111-1111-4111-8111-111111111111";
 const OTHER = "33333333-3333-4333-8333-333333333333";
@@ -80,10 +79,9 @@ const CLEAN_MANIFEST = {
   i18n: { en: {}, bn: {} },
 };
 
-function sha256(value: unknown): string {
-  return createHash("sha256")
-    .update(JSON.stringify(value ?? {}))
-    .digest("hex");
+/** Expected report binding: canonical hash over templates+tokens. */
+function themeHash(templates: unknown): string {
+  return contentHash({ templates, tokens: {} });
 }
 
 function themeDb(templates: unknown, audit: Row[] = []) {
@@ -122,7 +120,10 @@ function approvalAudit() {
       actor: ACTOR,
       action: "theme.approved",
       before: null,
-      after: { version_id: VERSION, content_hash: sha256(PIXEL_TEMPLATES) },
+      after: {
+        version_id: VERSION,
+        content_hash: themeHash(PIXEL_TEMPLATES),
+      },
       created_at: "2026-10-01T00:00:00.000Z",
     },
   ];
@@ -161,7 +162,7 @@ describe("packageSecurityReport (theme)", () => {
       name: "Target",
     });
     expect(report.version).toBe("2");
-    expect(report.sha256).toBe(sha256(SECRET_TEMPLATES));
+    expect(report.sha256).toBe(themeHash(SECRET_TEMPLATES));
     expect(report.merchantId).toBe(MERCHANT);
     expect(report.uploader).toBe(ACTOR);
     expect(report.scannerVersion).toBe(SCANNER_VERSION);
@@ -179,7 +180,10 @@ describe("packageSecurityReport (theme)", () => {
         actor: ACTOR,
         action: "theme.approved",
         before: null,
-        after: { version_id: VERSION, content_hash: sha256(SECRET_TEMPLATES) },
+        after: {
+          version_id: VERSION,
+          content_hash: themeHash(SECRET_TEMPLATES),
+        },
         created_at: "2026-09-01T00:00:00.000Z",
       },
     ]);
@@ -201,7 +205,7 @@ describe("packageSecurityReport (theme)", () => {
       themeId: THEME,
       versionId: VERSION,
     });
-    expect(report.sha256).toBe(sha256(PIXEL_TEMPLATES));
+    expect(report.sha256).toBe(themeHash(PIXEL_TEMPLATES));
     expect(report.findings.some((f) => f.code === "secret")).toBe(false);
     expect(report.findings.length).toBeGreaterThan(0);
     expect(report.decision).toBe("pending");
@@ -263,7 +267,7 @@ describe("packageSecurityReport (plugin)", () => {
       name: "Audit Probe",
     });
     expect(report.version).toBe(MANIFEST_VERSION);
-    expect(report.sha256).toBe(sha256(SECRET_MANIFEST));
+    expect(report.sha256).toBe(contentHash(SECRET_MANIFEST));
     expect(report.merchantId).toBe(MERCHANT);
     expect(report.scannerVersion).toBe(SCANNER_VERSION);
     expect(report.findings.some((f) => f.code === "secret")).toBe(true);

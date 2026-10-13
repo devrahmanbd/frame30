@@ -9,7 +9,6 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { createHash } from "node:crypto";
 import {
   listRegistry,
   installRegistryTheme,
@@ -1171,7 +1170,7 @@ export async function approveThemeVersion(
   await requireRow(db, merchantId, themeId);
   const { data: version } = await db
     .from("theme_versions")
-    .select("id, templates")
+    .select("id, templates, tokens")
     .eq("merchant_id", merchantId)
     .eq("theme_id", themeId)
     .eq("id", versionId)
@@ -1183,7 +1182,9 @@ export async function approveThemeVersion(
     );
   }
   const templates = (version as { templates?: unknown }).templates;
-  const { scanPackage, hasSecretFinding } = await import("../package-scan");
+  const tokens = (version as { tokens?: unknown }).tokens;
+  const { scanPackage, hasSecretFinding, contentHash } =
+    await import("../package-scan");
   const report = scanPackage([
     {
       path: "templates.json",
@@ -1202,15 +1203,15 @@ export async function approveThemeVersion(
     actor: actorId ?? null,
     action: "theme.approved",
     before: null,
-    after: { version_id: versionId, content_hash: contentHash(templates) },
+    after: {
+      version_id: versionId,
+      content_hash: contentHash({
+        templates: templates ?? {},
+        tokens: tokens ?? {},
+      }),
+    },
   });
   return { ok: true };
-}
-
-function contentHash(value: unknown): string {
-  return createHash("sha256")
-    .update(JSON.stringify(value ?? {}))
-    .digest("hex");
 }
 
 /**
@@ -1226,12 +1227,14 @@ async function assertVersionApproved(
 ): Promise<void> {
   const { data: version } = await db
     .from("theme_versions")
-    .select("templates")
+    .select("templates, tokens")
     .eq("merchant_id", merchantId)
     .eq("id", versionId)
     .maybeSingle();
   const templates = (version as { templates?: unknown } | null)?.templates;
-  const { scanPackage, hasSecretFinding } = await import("../package-scan");
+  const tokens = (version as { tokens?: unknown } | null)?.tokens;
+  const { scanPackage, hasSecretFinding, contentHash } =
+    await import("../package-scan");
   const report = scanPackage([
     {
       path: "templates.json",
@@ -1254,12 +1257,14 @@ async function assertVersionApproved(
     .eq("merchant_id", merchantId)
     .eq("theme_id", themeId)
     .eq("action", "theme.approved");
-  const approved = ((approvals ?? []) as unknown as {
-    after?: unknown;
-  }[]).some(
+  const approved = (
+    (approvals ?? []) as unknown as {
+      after?: unknown;
+    }[]
+  ).some(
     (a) =>
       ((a.after ?? {}) as Record<string, unknown>).content_hash ===
-      contentHash(templates),
+      contentHash({ templates: templates ?? {}, tokens: tokens ?? {} }),
   );
   if (!approved) {
     throw new ThemeDeskError(

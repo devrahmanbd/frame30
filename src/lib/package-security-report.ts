@@ -4,9 +4,10 @@
  * No migration: every field recomputes from rows that already exist —
  * (`theme_versions` | `plugin_state`) content plus the (`theme_audit` |
  * `activity_log`) approval trail — using the exact file shapes
- * (`templates.json` / `plugin.json`), hash bindings
- * (`sha256(JSON.stringify(templates))` / `{ plugin, manifest_version }`),
- * and Tier-0 probe (`hasSecretFinding`) the activation/enable gates enforce.
+ * (`templates.json` / `plugin.json`), hash bindings (canonical content
+ * hash over templates+tokens / manifest — see `contentHash` in
+ * `package-scan.ts`), and Tier-0 probe (`hasSecretFinding`) the
+ * activation/enable gates enforce.
  * A reader therefore sees the same verdict the gates would reach, with the
  * recorded decision (`theme.approved` / `plugin.approved` + actor) attached.
  *
@@ -23,9 +24,9 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { createHash } from "node:crypto";
 import {
   SCANNER_VERSION,
+  contentHash,
   hasSecretFinding,
   scanPackage,
   type ScanFinding,
@@ -69,10 +70,8 @@ export type PackageSecurityReport = {
 };
 
 /** Same content binding `approveThemeVersion` records. */
-function contentHash(value: unknown): string {
-  return createHash("sha256")
-    .update(JSON.stringify(value ?? {}))
-    .digest("hex");
+function themeContentBinding(templates: unknown, tokens: unknown): string {
+  return contentHash({ templates: templates ?? {}, tokens: tokens ?? {} });
 }
 
 function decide(
@@ -114,7 +113,7 @@ async function themeReport(
   if (!theme) throw new Error("theme.missing");
   const { data: version } = await db
     .from("theme_versions")
-    .select("id, version, templates, created_by")
+    .select("id, version, templates, tokens, created_by")
     .eq("merchant_id", merchantId)
     .eq("theme_id", themeId)
     .eq("id", versionId)
@@ -123,10 +122,11 @@ async function themeReport(
   const v = version as {
     version?: unknown;
     templates?: unknown;
+    tokens?: unknown;
     created_by?: unknown;
   };
   const t = theme as { id: string; name?: unknown };
-  const sha256 = contentHash(v.templates);
+  const sha256 = themeContentBinding(v.templates, v.tokens);
   // Same file shape the activation gate scans.
   const report = scanPackage([
     {
@@ -218,7 +218,8 @@ async function pluginReport(
     const changed = (a.changed ?? {}) as Record<string, unknown>;
     return (
       changed.plugin === pluginId &&
-      changed.manifest_version === r.manifest_version
+      changed.manifest_version === r.manifest_version &&
+      changed.content_hash === sha256
     );
   });
   const manifest = (r.manifest ?? {}) as Record<string, unknown>;

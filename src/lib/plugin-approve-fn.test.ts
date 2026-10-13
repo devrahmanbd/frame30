@@ -20,9 +20,8 @@ import * as fs from "node:fs";
 import { fakeDb } from "./__fixtures__/fake-db";
 
 const { pluginApproveFn } = await import("./plugins.functions");
-const { approvePluginVersion, setPluginEnabled } = await import(
-  "./plugins.server"
-);
+const { approvePluginVersion, setPluginEnabled, isPluginVersionApproved } =
+  await import("./plugins.server");
 
 const MERCHANT = "22222222-2222-2222-2222-222222222222";
 const OTHER = "33333333-3333-4333-8333-333333333333";
@@ -230,5 +229,99 @@ describe("plugin approval delegation", () => {
     expect(
       db.rows("plugin_state").find((r) => r.plugin_id === PLUGIN)?.enabled,
     ).toBe(false);
+  });
+});
+
+describe("plugin approval binds manifest content hash", () => {
+  function manifestDb(manifest: unknown) {
+    return fakeDb({
+      tables: {
+        plugin_state: [
+          {
+            merchant_id: MERCHANT,
+            plugin_id: PLUGIN,
+            manifest,
+            manifest_version: VERSION,
+            enabled: false,
+          },
+        ],
+        activity_log: [],
+      },
+    });
+  }
+
+  it("approvePluginVersion records the canonical content hash", async () => {
+    const { contentHash } = await import("./package-scan");
+    const db = manifestDb(URL_MANIFEST);
+    await approvePluginVersion(db.asClient(), MERCHANT, PLUGIN, VERSION, ACTOR);
+    const rows = db
+      .rows("activity_log")
+      .filter((a) => a.action === "plugin.approved");
+    expect(rows).toHaveLength(1);
+    expect(rows[0].changed).toMatchObject({
+      plugin: PLUGIN,
+      manifest_version: VERSION,
+      content_hash: contentHash(URL_MANIFEST),
+    });
+  });
+
+  it("clean manifest update under the same version still enables (no clean-path regression)", async () => {
+    const db = manifestDb(URL_MANIFEST);
+    await approvePluginVersion(db.asClient(), MERCHANT, PLUGIN, VERSION, ACTOR);
+    // Same version string, different clean content: the enable gate scans
+    // clean and passes without consulting approvals.
+    db.rows("plugin_state").find((r) => r.plugin_id === PLUGIN)!.manifest = {
+      ...URL_MANIFEST,
+      description: "Updated help text.",
+    };
+    await setPluginEnabled(db.asClient(), MERCHANT, PLUGIN, true, ACTOR);
+    expect(
+      db.rows("plugin_state").find((r) => r.plugin_id === PLUGIN)?.enabled,
+    ).toBe(true);
+  });
+
+  it("legacy approval row without content hash never authorizes", () => {
+    // Pure matcher units: the gate consults approvals only for flagged
+    // content (unproducible for plugin.json without secrets, which are
+    // always forbidden), so the triple-match is pinned here directly.
+    // Rows nest fields under `changed`, exactly as the gate selects them.
+    const row = (changed: unknown) => ({ changed });
+    expect(
+      isPluginVersionApproved(
+        [row({ plugin: PLUGIN, manifest_version: VERSION })],
+        PLUGIN,
+        VERSION,
+        "abc123",
+      ),
+    ).toBe(false);
+    expect(isPluginVersionApproved([], PLUGIN, VERSION, "abc123")).toBe(false);
+    expect(
+      isPluginVersionApproved(
+        [
+          row({
+            plugin: PLUGIN,
+            manifest_version: VERSION,
+            content_hash: "wrong",
+          }),
+        ],
+        PLUGIN,
+        VERSION,
+        "abc123",
+      ),
+    ).toBe(false);
+    expect(
+      isPluginVersionApproved(
+        [
+          row({
+            plugin: PLUGIN,
+            manifest_version: VERSION,
+            content_hash: "abc123",
+          }),
+        ],
+        PLUGIN,
+        VERSION,
+        "abc123",
+      ),
+    ).toBe(true);
   });
 });

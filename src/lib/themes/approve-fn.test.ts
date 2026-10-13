@@ -263,15 +263,113 @@ describe("theme approval delegation", () => {
         ],
       },
     });
-    const err = await activateTheme(db.asClient(), MERCHANT, THEME, ACTOR).catch(
-      (e) => e,
-    );
+    const err = await activateTheme(
+      db.asClient(),
+      MERCHANT,
+      THEME,
+      ACTOR,
+    ).catch((e) => e);
     expect(err).toBeInstanceOf(ThemeDeskError);
     expect((err as InstanceType<typeof ThemeDeskError>).code).toBe(
       "theme.approval_forbidden",
     );
-    expect(
-      db.rows("store_themes").find((r) => r.id === THEME)?.is_active,
-    ).toBe(false);
+    expect(db.rows("store_themes").find((r) => r.id === THEME)?.is_active).toBe(
+      false,
+    );
+  });
+});
+
+describe("theme approval binds full version content (templates + tokens)", () => {
+  function publishedPixelDb() {
+    return fakeDb({
+      tables: {
+        store_themes: [
+          {
+            id: THEME,
+            merchant_id: MERCHANT,
+            name: "Target",
+            is_active: false,
+            published_version_id: VERSION,
+          },
+        ],
+        theme_versions: [
+          {
+            id: VERSION,
+            merchant_id: MERCHANT,
+            theme_id: THEME,
+            version: 2,
+            status: "published",
+            templates: PIXEL_TEMPLATES,
+            tokens: { "--ink": "#111111" },
+          },
+        ],
+        theme_audit: [],
+      },
+    });
+  }
+
+  it("token-only mutation voids a prior approval", async () => {
+    const { activateTheme } = await import("./appearance.server");
+    const db = publishedPixelDb();
+    const out = await approveThemeVersion(
+      db.asClient(),
+      MERCHANT,
+      THEME,
+      VERSION,
+      ACTOR,
+    );
+    expect(out).toEqual({ ok: true });
+    // Templates untouched — only design tokens change.
+    db.rows("theme_versions").find((r) => r.id === VERSION)!.tokens = {
+      "--ink": "#ff0000",
+    };
+    const err = await activateTheme(
+      db.asClient(),
+      MERCHANT,
+      THEME,
+      ACTOR,
+    ).catch((e) => e);
+    expect(err).toBeInstanceOf(ThemeDeskError);
+    expect((err as InstanceType<typeof ThemeDeskError>).code).toBe(
+      "theme.approval_required",
+    );
+  });
+
+  it("legacy templates-only approval no longer authorizes unchanged content", async () => {
+    const { activateTheme } = await import("./appearance.server");
+    // Pre-binding approval row: hash over templates alone (the old scheme).
+    const legacyHash = createHash("sha256")
+      .update(JSON.stringify(PIXEL_TEMPLATES))
+      .digest("hex");
+    const db = publishedPixelDb();
+    db.rows("theme_audit").push({
+      merchant_id: MERCHANT,
+      theme_id: THEME,
+      actor: ACTOR,
+      action: "theme.approved",
+      before: null,
+      after: { version_id: VERSION, content_hash: legacyHash },
+    });
+    const err = await activateTheme(
+      db.asClient(),
+      MERCHANT,
+      THEME,
+      ACTOR,
+    ).catch((e) => e);
+    expect(err).toBeInstanceOf(ThemeDeskError);
+    expect((err as InstanceType<typeof ThemeDeskError>).code).toBe(
+      "theme.approval_required",
+    );
+  });
+
+  it("unchanged content with a current approval still activates", async () => {
+    const { activateTheme } = await import("./appearance.server");
+    const db = publishedPixelDb();
+    await approveThemeVersion(db.asClient(), MERCHANT, THEME, VERSION, ACTOR);
+    const out = await activateTheme(db.asClient(), MERCHANT, THEME, ACTOR);
+    expect(out).toEqual({ id: THEME, applied: false });
+    expect(db.rows("store_themes").find((r) => r.id === THEME)?.is_active).toBe(
+      true,
+    );
   });
 });

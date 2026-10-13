@@ -317,7 +317,8 @@ export async function setPluginEnabled(
   // safe): a flagged manifest needs a recorded approval for its exact
   // version, else enabling is refused before any write.
   if (enabled) {
-    const { scanPackage, hasSecretFinding } = await import("./package-scan");
+    const { scanPackage, hasSecretFinding, contentHash } =
+      await import("./package-scan");
     const manifestJson = JSON.stringify(
       (row as { manifest?: unknown }).manifest ?? {},
     );
@@ -340,15 +341,12 @@ export async function setPluginEnabled(
         .select("changed")
         .eq("merchant_id", merchantId)
         .eq("action", "plugin.approved");
-      const approved = ((approvals ?? []) as unknown as {
-        changed?: unknown;
-      }[]).some((a) => {
-        const changed = (a.changed ?? {}) as Record<string, unknown>;
-        return (
-          changed.plugin === pluginId &&
-          changed.manifest_version === currentVersion
-        );
-      });
+      const approved = isPluginVersionApproved(
+        approvals,
+        pluginId,
+        currentVersion,
+        contentHash((row as { manifest?: unknown }).manifest ?? {}),
+      );
       if (!approved) {
         throw new Error(
           `plugin.approval_required:${report.findings.map((f) => f.code).join(",")}`,
@@ -382,6 +380,28 @@ export async function setPluginEnabled(
 }
 
 /**
+ * Pure approval matcher: an approval row authorizes a plugin version only
+ * when plugin id, manifest version AND the canonical manifest content hash
+ * all match. Legacy rows (no content hash) never authorize — a version
+ * string alone is not a content binding. The enable gate consults this only
+ * for flagged non-secret content; Tier-0 secrets are refused before lookup.
+ */
+export function isPluginVersionApproved(
+  approvals: unknown,
+  pluginId: string,
+  manifestVersion: unknown,
+  contentHash: string,
+): boolean {
+  return ((approvals ?? []) as unknown as { changed?: unknown }[]).some((a) => {
+    const changed = (a.changed ?? {}) as Record<string, unknown>;
+    return (
+      changed.plugin === pluginId &&
+      changed.manifest_version === manifestVersion &&
+      changed.content_hash === contentHash
+    );
+  });
+}
+/**
  * Threat-defense — record explicit merchant approval of a flagged plugin
  * version. The row must belong to the caller and the version must match the
  * installed manifest; approval covers that exact version only (a later
@@ -408,9 +428,9 @@ export async function approvePluginVersion(
     .maybeSingle();
   if (!row) throw new Error("plugin_not_found");
   const current = (row as { manifest_version?: unknown }).manifest_version;
-  if (current !== manifestVersion)
-    throw new Error("plugin_version_mismatch");
-  const { scanPackage, hasSecretFinding } = await import("./package-scan");
+  if (current !== manifestVersion) throw new Error("plugin_version_mismatch");
+  const { scanPackage, hasSecretFinding, contentHash } =
+    await import("./package-scan");
   const manifestJson = JSON.stringify(
     (row as { manifest?: unknown }).manifest ?? {},
   );
@@ -428,7 +448,11 @@ export async function approvePluginVersion(
     actorId ?? null,
     "plugin.approved",
     "plugin",
-    { plugin: pluginId, manifest_version: manifestVersion },
+    {
+      plugin: pluginId,
+      manifest_version: manifestVersion,
+      content_hash: contentHash((row as { manifest?: unknown }).manifest ?? {}),
+    },
     null,
   );
   return { ok: true };

@@ -16,7 +16,7 @@
  * | Tier | Findings | Merchant-approvable? |
  * | ---- | -------- | -------------------- |
  * | 0 — never | `secret` (credential theft) | NO — the approve fns refuse with `theme.approval_forbidden` / `plugin.approval_forbidden` and write no audit row; the gates refuse even when a legacy approval row exists. |
- * | 1 — gated | `svg-script`, `no-plugin-territory.*` (payments, tracking-pixel, auth-form, seo-write) | YES — with a recorded audit bound to the exact content hash / manifest version. |
+ * | 1 — gated | `svg-script`, `no-plugin-territory.*` (payments, tracking-pixel, auth-form, seo-write) | YES — with a recorded audit bound to the exact content hash: templates+tokens for themes, manifest for plugins (see `contentHash`). |
  * | 2 — informational | `external-urls`, `permissions` | n/a — verdict stays `clean`, no approval needed. |
  *
  * `svg-script` stays merchant-approvable: the upload lane already sanitizes
@@ -28,6 +28,7 @@
  * `scanSecrets` (custom-code.ts), `isSvgSafe` (media/library.ts),
  * `inventoryExternalUrls` (package-review.ts).
  */
+import { createHash } from "node:crypto";
 import { scanSecrets } from "./custom-code";
 import { isSvgSafe } from "./media/library";
 import { inventoryExternalUrls, scanThemeTrustContent } from "./package-review";
@@ -63,6 +64,44 @@ export const SCANNER_VERSION = "1";
  */
 export function hasSecretFinding(report: ScanReport): boolean {
   return report.findings.some((f) => f.code === "secret");
+}
+
+/**
+ * Canonical content hash shared by every approval binding (theme approve +
+ * activation gate + approval queue + security report, plugin approve + enable
+ * gate + report). Key-sorted JSON makes the digest independent of object
+ * construction order, so a DB round-trip can never change the identity of
+ * unchanged content. Approval rows store this digest; the gates recompute
+ * it over the CURRENT content and require an exact match — any mutation
+ * (templates, tokens, manifest) voids prior approval fail-closed. Legacy
+ * rows written under older schemes (templates-only hash, version-string
+ * match) never match and read as `approval_required`, never as pass.
+ */
+export function contentHash(value: unknown): string {
+  return createHash("sha256").update(stableJson(value)).digest("hex");
+}
+
+function stableJson(value: unknown): string {
+  if (value === null || value === undefined) return "null";
+  switch (typeof value) {
+    case "string":
+      return JSON.stringify(value);
+    case "number":
+      return Number.isFinite(value) ? String(value) : "null";
+    case "boolean":
+      return value ? "true" : "false";
+    case "object": {
+      if (Array.isArray(value)) return `[${value.map(stableJson).join(",")}]`;
+      const entries = Object.entries(value as Record<string, unknown>)
+        .filter(([, v]) => v !== undefined)
+        .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
+      return `{${entries
+        .map(([k, v]) => `${JSON.stringify(k)}:${stableJson(v)}`)
+        .join(",")}}`;
+    }
+    default:
+      return "null";
+  }
 }
 
 const TEXT_EXTS = new Set([

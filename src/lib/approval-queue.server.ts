@@ -10,14 +10,13 @@
  *
  * Read-only: selects only, never inserts/updates/deletes. Approval matching
  * mirrors the gates exactly — theme `theme.approved` audits bind to the
- * template content hash (`sha256(JSON.stringify(templates ?? {}))`, same as
+ * canonical content hash over templates+tokens (same as
  * `approveThemeVersion`), plugin `plugin.approved` audits bind to
- * `{ plugin, manifest_version }`. Every read is merchant-scoped.
+ * `{ plugin, manifest_version, content_hash }`. Every read is merchant-scoped.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { createHash } from "node:crypto";
-import { scanPackage, type ScanFinding } from "./package-scan";
+import { contentHash, scanPackage, type ScanFinding } from "./package-scan";
 
 type Client = SupabaseClient<Database>;
 
@@ -41,12 +40,6 @@ export type ApprovalQueue = {
 };
 
 /** Same content binding `approveThemeVersion` records (appearance.server.ts). */
-function contentHash(value: unknown): string {
-  return createHash("sha256")
-    .update(JSON.stringify(value ?? {}))
-    .digest("hex");
-}
-
 function encodeJson(value: unknown): Uint8Array {
   return new TextEncoder().encode(JSON.stringify(value ?? {}));
 }
@@ -71,13 +64,13 @@ async function pendingThemes(
     // identical templates, so the recorded hash clears the queue).
     const { data: draft } = await db
       .from("theme_drafts")
-      .select("templates")
+      .select("templates, tokens")
       .eq("merchant_id", merchantId)
       .eq("theme_id", row.id)
       .maybeSingle();
     const { data: versions } = await db
       .from("theme_versions")
-      .select("id, version, templates")
+      .select("id, version, templates, tokens")
       .eq("merchant_id", merchantId)
       .eq("theme_id", row.id)
       .order("version", { ascending: false })
@@ -86,10 +79,13 @@ async function pendingThemes(
       (versions ?? []) as unknown as {
         id: string;
         templates?: unknown;
+        tokens?: unknown;
       }[]
     )[0];
     const templates =
       (draft as { templates?: unknown } | null)?.templates ?? latest?.templates;
+    const tokens =
+      (draft as { tokens?: unknown } | null)?.tokens ?? latest?.tokens;
     if (templates === undefined || templates === null) continue;
     // Same file shape the activation gate scans.
     const report = scanPackage([
@@ -111,7 +107,7 @@ async function pendingThemes(
     ).some(
       (a) =>
         ((a.after ?? {}) as Record<string, unknown>).content_hash ===
-        contentHash(templates),
+        contentHash({ templates: templates ?? {}, tokens: tokens ?? {} }),
     );
     if (approved) continue;
     out.push({
@@ -141,7 +137,7 @@ async function pendingPlugins(
   const approved = new Set(
     ((approvals ?? []) as unknown as { changed?: unknown }[]).map((a) => {
       const changed = (a.changed ?? {}) as Record<string, unknown>;
-      return `${String(changed.plugin ?? "")}@${String(changed.manifest_version ?? "")}`;
+      return `${String(changed.plugin ?? "")}@${String(changed.manifest_version ?? "")}@${String(changed.content_hash ?? "")}`;
     }),
   );
   const out: ApprovalPlugin[] = [];
@@ -162,7 +158,12 @@ async function pendingPlugins(
         : typeof manifest.version === "string"
           ? manifest.version
           : "";
-    if (approved.has(`${row.plugin_id}@${manifestVersion}`)) continue;
+    if (
+      approved.has(
+        `${row.plugin_id}@${manifestVersion}@${contentHash(row.manifest ?? {})}`,
+      )
+    )
+      continue;
     out.push({
       pluginId: row.plugin_id,
       name:

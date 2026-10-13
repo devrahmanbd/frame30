@@ -18,7 +18,6 @@
  * not "fix" the test without a security review.
  */
 import { describe, expect, it, beforeEach } from "vitest";
-import { createHash } from "node:crypto";
 import { fakeDb } from "./__fixtures__/fake-db";
 import { isOfficialPluginKey, getOfficialPlugin } from "./official-plugins";
 import { isOfficialThemeKey } from "./themes/appearance";
@@ -26,6 +25,7 @@ import { parseManifest } from "./plugin-manifest";
 import { gateExportManifest, pkg1PluginValidator } from "./plugin-package";
 import { validateThemeManifest } from "./theme-package";
 import { resolvePolicy, resolveTierFromSignals } from "./risk-tier";
+import { contentHash } from "./package-scan";
 
 const { installOfficialPlugin } = await import("./official-plugins.server");
 const { approvePluginVersion, setPluginEnabled } =
@@ -624,10 +624,9 @@ const PIXEL_B = {
   },
 };
 
-function sha256(value: unknown): string {
-  return createHash("sha256")
-    .update(JSON.stringify(value ?? {}))
-    .digest("hex");
+/** Expected approval binding: canonical hash over templates+tokens. */
+function themeHash(templates: unknown): string {
+  return contentHash({ templates, tokens: {} });
 }
 
 function themeBindingDb(templates: unknown, versionId = THEME_VERSION) {
@@ -686,7 +685,7 @@ describe("approval binds exact content, never a neighbor", () => {
     expect(
       (db.rows("theme_audit")[0].after as { content_hash: string })
         .content_hash,
-    ).toBe(sha256(PIXEL_A));
+    ).toBe(themeHash(PIXEL_A));
 
     // Same version row, swapped content: the recorded hash no longer matches.
     const stored = db
