@@ -23,6 +23,122 @@ import { getMerchantRiskContext } from "./lib/risk-tier.server";
 import { buildCsp, newNonce } from "./lib/custom-code";
 import { setCurrentNonce, getCurrentNonce } from "./lib/ssr-nonce";
 
+/* ------------------------------------------------------------------ */
+/* Boot policy: fail fast on missing env, never die silently at runtime */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Supabase URL/keys are required — every Supabase client in this process
+ * lazy-throws on first request without them, so a misconfigured deploy must
+ * crash at boot instead of serving 500s. Redis/Resend degrade gracefully
+ * (warn-only): the rate limiter fails open and mail falls back to logging.
+ */
+const REQUIRED_BOOT_ENV = [
+  "SUPABASE_URL",
+  "SUPABASE_SERVICE_ROLE_KEY", // sast-allow: secret-access -- boot validation reads the key name to fail fast; the value is never logged or exposed
+  "SUPABASE_PUBLISHABLE_KEY",
+] as const;
+const WARN_BOOT_ENV = ["REDIS_URL", "RESEND_API_KEY"] as const;
+
+export function assertBootEnv(
+  env: Record<string, string | undefined> = process.env,
+): { warnings: string[] } {
+  const missing = REQUIRED_BOOT_ENV.filter((k) => !env[k]);
+  if (missing.length > 0) {
+    throw new Error(
+      `Missing required environment variable(s): ${missing.join(", ")}. Refusing to boot.`,
+    );
+  }
+  const warnings = WARN_BOOT_ENV.filter((k) => !env[k]).map(
+    (k) => `${k} unconfigured — running degraded.`,
+  );
+  for (const warning of warnings) console.warn(`[boot] ${warning}`);
+  return { warnings };
+}
+
+async function recordBootFault(
+  kind: "unhandledRejection" | "uncaughtException",
+  err: unknown,
+): Promise<void> {
+  const message =
+    err instanceof Error ? (err.stack ?? err.message) : String(err);
+  console.error(
+    JSON.stringify({
+      ts: new Date().toISOString(),
+      level: "error",
+      event: `boot.${kind}`,
+      message: String(message).slice(0, 2000),
+    }),
+  );
+  try {
+    const { incr, log } = await import("./lib/observability.server");
+    incr("framique_boot_fault_total", { kind });
+    log("error", `boot.${kind}`, { message: String(message).slice(0, 500) });
+  } catch {
+    // Observability must never break shutdown.
+  }
+  // Controlled shutdown: drain in-flight work, then exit non-zero so the
+  // orchestrator restarts a clean isolate instead of serving half-dead state.
+  process.exitCode = 1;
+}
+
+export function onUnhandledRejection(reason: unknown): void {
+  void recordBootFault("unhandledRejection", reason);
+}
+
+export function onUncaughtException(err: unknown): void {
+  void recordBootFault("uncaughtException", err);
+}
+
+let bootHandlersInstalled = false;
+
+export function installBootHandlers(): void {
+  if (bootHandlersInstalled) return;
+  bootHandlersInstalled = true;
+  process.on("unhandledRejection", onUnhandledRejection);
+  process.on("uncaughtException", onUncaughtException);
+}
+
+/**
+ * Alertmanager alertnames allowed to trip the canary breaker. Prometheus can
+ * route any rule into this webhook; an unknown firing alert must never roll
+ * back production traffic, so anything off the list is ignored (202, counted).
+ */
+export const CANARY_ALLOWED_ALERTS: ReadonlySet<string> = new Set([
+  "CanaryHigh5xxRate",
+  "CanaryHighLatencyP99",
+  "CanarySurge5xxErrors",
+]);
+
+/** Firing alerts whose alertname is allowlisted (unknown names never trip). */
+export function allowlistedFiringAlerts(payload: {
+  alerts?: Array<{
+    status?: string;
+    labels?: Record<string, string>;
+    annotations?: Record<string, string>;
+  }>;
+}): Array<{
+  status?: string;
+  labels?: Record<string, string>;
+  annotations?: Record<string, string>;
+}> {
+  if (!payload.alerts || !Array.isArray(payload.alerts)) return [];
+  return payload.alerts.filter(
+    (a) =>
+      a.status === "firing" &&
+      typeof a.labels?.["alertname"] === "string" &&
+      CANARY_ALLOWED_ALERTS.has(a.labels["alertname"] as string),
+  );
+}
+
+// Fail fast before traffic: a misconfigured deploy crashes at boot, not on
+// the first request. Skipped under vitest so unit tests can import this
+// module with stubbed env; production/dev always validate and arm handlers.
+if (!process.env["VITEST_WORKER_ID"] && process.env["NODE_ENV"] !== "test") {
+  assertBootEnv();
+  installBootHandlers();
+}
+
 type ServerEntry = {
   fetch: (
     request: Request,
@@ -742,11 +858,35 @@ export default {
 
       if (url.pathname === "/api/canary-alert" && request.method === "POST") {
         const webhookSecret = process.env["CANARY_WEBHOOK_SECRET"];
-        const auth =
+        // Fail closed: with no secret configured the endpoint stays shut
+        // (404), mirroring /api/public/metrics and /api/public/error-alert —
+        // an unconfigured deploy must expose nothing, not a free rollback.
+        if (!webhookSecret) {
+          return new Response("Not found", {
+            status: 404,
+            headers: { "cache-control": "no-store" },
+          });
+        }
+        const presented =
           request.headers.get("x-canary-secret") ||
-          request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
-        if (webhookSecret && auth !== webhookSecret) {
-          return new Response("Unauthorized", { status: 401 });
+          request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ||
+          "";
+        // Constant-time compare: a webhook secret must not be brute-forceable
+        // byte by byte (mirrors the error-alert bridge pattern).
+        let authDiff = Math.abs(presented.length - webhookSecret.length);
+        const shared = Math.min(presented.length, webhookSecret.length);
+        for (let i = 0; i < shared; i += 1) {
+          authDiff |= presented.charCodeAt(i) ^ webhookSecret.charCodeAt(i);
+        }
+        // Walk the full expected length so timing does not leak the length.
+        for (let i = shared; i < webhookSecret.length; i += 1) {
+          authDiff |= webhookSecret.charCodeAt(i) ^ 0xff;
+        }
+        if (authDiff !== 0) {
+          return new Response("Unauthorized", {
+            status: 401,
+            headers: { "cache-control": "no-store" },
+          });
         }
         const { processPrometheusAlertWebhook } =
           await import("./lib/circuit-breaker.server");
@@ -754,7 +894,43 @@ export default {
           string,
           unknown
         >;
-        const outcome = await processPrometheusAlertWebhook(payload);
+        // Allowlist before tripping: only expected canary alertnames may roll
+        // back traffic. Anything else is acknowledged (202) and counted, so a
+        // misrouted or malicious firing alert can never trip the breaker.
+        const allowlisted = allowlistedFiringAlerts(
+          payload as Parameters<typeof allowlistedFiringAlerts>[0],
+        );
+        if (allowlisted.length === 0) {
+          try {
+            const { incr, log } = await import("./lib/observability.server");
+            incr("framique_canary_alert_ignored_total", {});
+            log("info", "canary.alert_ignored", {
+              alerts: Array.isArray((payload as { alerts?: unknown }).alerts)
+                ? ((payload as { alerts: unknown[] }).alerts.length ?? 0)
+                : 0,
+            });
+          } catch {
+            // Observability must never break routing.
+          }
+          return new Response(
+            JSON.stringify(
+              { tripped: false, reason: "No allowlisted firing alerts" },
+              null,
+              2,
+            ),
+            {
+              status: 202,
+              headers: {
+                "content-type": "application/json; charset=utf-8",
+                "cache-control": "no-store",
+              },
+            },
+          );
+        }
+        const outcome = await processPrometheusAlertWebhook({
+          ...(payload as object),
+          alerts: allowlisted,
+        } as Parameters<typeof processPrometheusAlertWebhook>[0]);
         return new Response(JSON.stringify(outcome, null, 2), {
           status: outcome.tripped ? 200 : 202,
           headers: {

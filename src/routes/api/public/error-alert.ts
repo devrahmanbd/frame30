@@ -35,6 +35,15 @@ function safeEqual(a: string, b: string) {
 
 const NO_STORE = { "cache-control": "no-store" } as const;
 
+function clientIp(request: Request): string {
+  const header =
+    request.headers.get("cf-connecting-ip") ??
+    request.headers.get("x-forwarded-for") ??
+    request.headers.get("x-real-ip") ??
+    "";
+  return header.split(",")[0]!.trim().slice(0, 64) || "unknown";
+}
+
 export const Route = createFileRoute("/api/public/error-alert")({
   server: {
     handlers: {
@@ -42,6 +51,19 @@ export const Route = createFileRoute("/api/public/error-alert")({
         const secret = process.env["ERROR_ALERT_SECRET"];
         if (!secret)
           return new Response("Not found", { status: 404, headers: NO_STORE });
+
+        // The bridge forwards into Alertmanager, so a hostile caller must not
+        // be able to flood it at line rate (mirrors the errors/vitals pattern).
+        const { rateLimit } = await import("@/lib/rate-limit.server");
+        const limit = await rateLimit(
+          "ops.incident",
+          `error-alert:${clientIp(request)}`,
+        );
+        if (!limit.allowed)
+          return new Response("Rate limited", {
+            status: 429,
+            headers: NO_STORE,
+          });
 
         const presented =
           request.headers.get("x-error-alert-secret") ??

@@ -1,6 +1,7 @@
 import { createHmac, timingSafeEqual } from "crypto";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/integrations/supabase/types";
+import { incr, log } from "./observability.server";
 import { requirePlatformAdmin } from "./platform.server";
 
 type Client = SupabaseClient<Database>;
@@ -108,7 +109,7 @@ async function deadLetter(
 ) {
   // Never overwrite an already-ingested event: an unsigned replay of a known
   // webhookId must not flip a processed row into a dead letter.
-  await admin.from("webhook_events").upsert(
+  const { error } = await admin.from("webhook_events").upsert(
     {
       provider,
       webhook_id: webhookId,
@@ -120,6 +121,19 @@ async function deadLetter(
     },
     { onConflict: "provider,webhook_id", ignoreDuplicates: true },
   );
+  if (error) {
+    // The dead letter is our only record of a refused event — a silent
+    // write failure loses the event entirely, so count it distinctly.
+    log("error", "gateway.dead_letter_failed", {
+      provider,
+      reason,
+      message: String(error.message ?? error).slice(0, 160),
+    });
+    incr("framique_gateway_deadletter_write_failed_total", {
+      provider,
+      reason,
+    });
+  }
 }
 
 /**
@@ -152,12 +166,30 @@ export async function ingestWebhook(
     return { http: 401, status: "dead_letter", reason: "hmac_invalid" };
   }
 
-  const { data: account } = await admin
+  const { data: account, error: accountError } = await admin
     .from("gateway_accounts")
     .select("webhook_secret, active")
     .eq("merchant_id", envelope.merchantId)
     .eq("provider", provider)
     .maybeSingle();
+
+  if (accountError) {
+    // DB fault, not an unknown account: a 401 would tell the provider to
+    // stop retrying a legitimate event. 503 keeps the retry alive, and no
+    // dead letter is written — the write would fail with the same outage,
+    // and a transient row must never poison the idempotency key.
+    log("error", "gateway.account_lookup_failed", {
+      provider,
+      message: String(
+        (accountError as { message?: unknown }).message ?? accountError,
+      ).slice(0, 160),
+    });
+    incr("framique_gateway_ingest_total", {
+      provider,
+      outcome: "db_unavailable",
+    });
+    return { http: 503, status: "error", reason: "db_unavailable" };
+  }
 
   if (!account || !account.active) {
     await deadLetter(
