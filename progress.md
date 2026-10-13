@@ -26,7 +26,7 @@
 ## Loops
 
 - [ ] Loop A — extension AST node + tray adoption via unified registry
-- [ ] Loop B — inspector swap-in + server save-path validation
+- [x] Loop B — inspector swap-in + server save-path validation (38 tests, bespoke path byte-identical)
 - [ ] Loop C — namespaced presentations + theme-owned tray (needs A)
 - [ ] Loop D — E2E test plugin + 16-step workflow (needs A+B)
 - [ ] Loop E — mounted demo + browser proof (needs A+C)

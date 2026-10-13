@@ -19,7 +19,16 @@ import { inheritanceOf } from "@/lib/responsive";
 import { altKey, sizesKey } from "@/lib/media";
 import { taxonomyOptions } from "@/lib/taxonomy";
 import { unitLabel } from "@/lib/unit-format";
+import { getWidget } from "@/lib/unified-widget-registry";
+import {
+  controlStatus,
+  defaultsFor,
+  validateProps,
+  type PropSchema,
+  type WidgetProps,
+} from "@/lib/widget-props";
 import { MenuBuilder, EDITOR_RANGE_INPUT, rangeFillPct } from "./MenuBuilder";
+import { SchemaControls, type SchemaChangeHandler } from "./SchemaControls";
 import {
   dataEmptyState,
   missingBindings,
@@ -181,7 +190,358 @@ function fieldError(field: Field, value: PropValue | undefined): string | null {
 }
 
 /** Field editor for the selected widget, driven entirely by the AST catalog. */
-export function SectionInspector({
+export function SectionInspector(props: Props) {
+  const resolution = resolveSchemaForSection(props.section);
+  if (props.section && resolution.status === "schema") {
+    return (
+      <SchemaSectionInspector
+        {...props}
+        section={props.section}
+        label={resolution.label}
+        meta={resolution.meta}
+        schema={resolution.schema}
+      />
+    );
+  }
+  return <LegacySectionInspector {...props} />;
+}
+
+/* ---------------------------------------------------------------------------
+ * Frame30 Loop B — schema swap-in.
+ *
+ * A section whose widget carries a registry `propsSchema` (non-empty fields)
+ * renders generated controls through `SchemaControls`; every other section
+ * takes `LegacySectionInspector` below, which is the previous body of this
+ * component, byte-identical in behavior. Only the server/client registry copy
+ * is consulted — a schema embedded in the section payload is never trusted.
+ */
+
+export type InspectorSchemaResolution =
+  | { status: "legacy" }
+  | {
+      status: "schema";
+      widgetId: string;
+      label: string;
+      /** Static registry metadata line (`namespace · category · vX`). */
+      meta: string;
+      schema: PropSchema;
+    };
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    (Object.getPrototypeOf(value) === Object.prototype ||
+      Object.getPrototypeOf(value) === null)
+  );
+}
+
+/**
+ * Pure resolution behind the dispatcher. Candidates mirror the editor save
+ * path (`pluginKey` first for app blocks, then the bare type and the
+ * `builtin:` alias). The empty adapter shape (`{ fields: [] }`) means
+ * legacy-unvalidated and falls through to the bespoke path — it is never a
+ * validation bypass. Lookup failures fall through to legacy, never a crash.
+ */
+export function resolveSchemaForSection(
+  section: Section | null,
+): InspectorSchemaResolution {
+  if (!section || typeof section.type !== "string") return { status: "legacy" };
+  try {
+    const props = isRecord(section.props)
+      ? (section.props as Record<string, unknown>)
+      : {};
+    const candidates: string[] = [];
+    if (section.type === "plugin_block") {
+      const key = props["pluginKey"];
+      if (typeof key === "string" && key.trim()) candidates.push(key.trim());
+    }
+    candidates.push(section.type, `builtin:${section.type}`);
+    for (const id of candidates) {
+      const def = getWidget(id);
+      const fields = (def?.propsSchema as { fields?: unknown } | undefined)
+        ?.fields;
+      if (!Array.isArray(fields) || fields.length === 0) continue;
+      return {
+        status: "schema",
+        widgetId: def!.id,
+        label: def!.label,
+        meta: `${def!.namespace} · ${def!.category} · v${def!.version}`,
+        schema: def!.propsSchema as unknown as PropSchema,
+      };
+    }
+  } catch {
+    // Registry lookup must never break the inspector: legacy path below.
+  }
+  return { status: "legacy" };
+}
+
+/**
+ * True when a schema has at least one renderable field. Schemas that fail
+ * this check render the recoverable panel instead of a blank inspector; the
+ * check itself never throws on hostile shapes.
+ */
+export function hasRenderableFields(schema: PropSchema): boolean {
+  try {
+    const fields = Array.isArray(schema)
+      ? schema
+      : (schema as { fields?: unknown })?.fields;
+    if (!Array.isArray(fields)) return false;
+    return fields.some(
+      (entry) =>
+        isRecord(entry) &&
+        controlStatus(String((entry as { kind?: unknown }).kind)) !== "unknown",
+    );
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Reset-to-defaults entries: `defaultsFor(schema)` as per-key pairs so the
+ * reset flows through the existing `onChange(key, value, "desktop")` seam —
+ * one validated write per key, no new props plumbing. Fresh objects every
+ * call (see `defaultsFor`), so instances never share references.
+ */
+export function schemaDefaultEntries(
+  schema: PropSchema,
+): Array<[string, PropValue]> {
+  return Object.entries(defaultsFor(schema)).map(
+    ([key, value]) => [key, value as PropValue] as [string, PropValue],
+  );
+}
+
+/**
+ * Adapts the inspector `onChange` to the `SchemaControls` contract: values
+ * cross as `PropValue`, and an absent device tag falls back to the active
+ * breakpoint layer the inspector was opened on.
+ */
+export function schemaChangeAdapter(
+  onChange: (key: string, value: PropValue, device: Breakpoint) => void,
+  device: Breakpoint,
+): SchemaChangeHandler {
+  return (key, value, tagged) => {
+    onChange(
+      key,
+      value as PropValue,
+      (tagged as Breakpoint | undefined) ?? device,
+    );
+  };
+}
+
+/**
+ * Generated-controls inspector for schema-carrying widgets. Fully controlled
+ * (no module or instance state beyond the shared panel chrome), so two
+ * instances over one schema cannot cross-contaminate: every transition flows
+ * through `onChange` and the live `validateProps` error display.
+ */
+function SchemaSectionInspector({
+  section,
+  template,
+  device,
+  onChange,
+  onToggleHidden,
+  onDelete,
+  onDuplicate,
+  onWhenChange,
+  onAbChange,
+  contentOnly,
+  label,
+  meta,
+  schema,
+}: Props & {
+  section: Section;
+  label: string;
+  meta: string;
+  schema: PropSchema;
+}) {
+  const { t } = useLang();
+
+  // Malformed or fully-unknown schemas render the recoverable panel — never
+  // blank, and no schema-derived string is rendered anywhere on this path.
+  if (!hasRenderableFields(schema)) {
+    return (
+      <div className="space-y-3">
+        <p className="rounded-fq-md border border-danger bg-danger-soft p-3 text-sm text-danger-foreground">
+          {t(
+            "This widget's settings are unavailable. Remove it or reinstall the widget to keep editing.",
+            "এই উইজেটের সেটিংস পাওয়া যাচ্ছে না। মুছে ফেলুন বা উইজেটটি আবার ইনস্টল করুন।",
+          )}
+        </p>
+        <button
+          type="button"
+          onClick={onDelete}
+          className="text-sm text-danger-foreground underline"
+        >
+          {t("Remove section", "সেকশন মুছুন")}
+        </button>
+      </div>
+    );
+  }
+
+  const props = section.props as unknown as WidgetProps;
+  const overrides = section.bp as unknown as
+    Record<string, WidgetProps> | undefined;
+  let errors: string[] = [];
+  try {
+    errors = validateProps(schema, props).errors;
+  } catch {
+    errors = [];
+  }
+
+  const resetToDefaults = () => {
+    for (const [key, value] of schemaDefaultEntries(schema)) {
+      onChange(key, value, "desktop");
+    }
+  };
+
+  const hidden = section.hidden ?? [];
+  const mismatch = isContextMismatch(section.type, template);
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <h3 className="font-bangla-display text-sm font-semibold">{label}</h3>
+        <p className="text-xs text-muted-foreground">{section.id}</p>
+        <p className="text-[0.65rem] text-muted-foreground">{meta}</p>
+      </div>
+
+      {mismatch && (
+        <p className="rounded-fq-md border border-warning bg-warning-soft p-2 text-xs text-warning-foreground">
+          {t(
+            "This widget has no live data on this template and renders a placeholder.",
+            "এই টেমপ্লেটে এই উইজেটের লাইভ ডেটা নেই, প্লেসহোল্ডার দেখাবে।",
+          )}
+        </p>
+      )}
+
+      {device !== "desktop" && (
+        <p className="rounded-fq-md border border-border bg-muted p-2 text-xs text-muted-foreground">
+          {t(
+            `Editing the ${BP_LABEL[device].en.toLowerCase()} layer. Values inherit from desktop until overridden.`,
+            `${BP_LABEL[device].bn} লেয়ার এডিট করছেন। ওভাররাইড না করলে ডেস্কটপ থেকে মান আসবে।`,
+          )}
+        </p>
+      )}
+
+      {contentOnly && (
+        <p className="rounded-fq-md border border-info bg-info-soft p-2 text-xs text-info-foreground">
+          {t(
+            "Content-only mode — ask an admin to unlock design fields",
+            "শুধু কন্টেন্ট মোড — ডিজাইন ফিল্ড আনলক করতে অ্যাডমিনকে বলুন",
+          )}
+        </p>
+      )}
+
+      <SchemaControls
+        schema={schema}
+        props={props}
+        errors={errors}
+        device={device}
+        overrides={overrides}
+        onChange={schemaChangeAdapter(onChange, device)}
+      />
+
+      <div>
+        <button
+          type="button"
+          onClick={resetToDefaults}
+          className="rounded-fq-md border border-border px-3 py-2 text-sm hover:bg-muted"
+        >
+          {t("Reset to defaults", "ডিফল্টে ফিরুন")}
+        </button>
+      </div>
+
+      {onWhenChange && (
+        <VisibilityRules rules={section.when ?? []} onChange={onWhenChange} />
+      )}
+
+      {onAbChange && (
+        <fieldset className="space-y-2 rounded-fq-md border border-border p-3">
+          <legend className="px-1 text-xs font-medium">
+            {t("A/B variant", "A/B ভ্যারিয়েন্ট")}
+          </legend>
+          <input
+            type="text"
+            placeholder={t("Experiment key", "এক্সপেরিমেন্ট কী")}
+            value={section.ab?.experiment ?? ""}
+            onChange={(e) =>
+              onAbChange({
+                experiment: e.target.value,
+                variant: section.ab?.variant ?? "",
+              })
+            }
+            className="w-full rounded-fq-md border border-border bg-card px-2 py-1 text-xs"
+          />
+          <input
+            type="text"
+            placeholder={t("Variant key", "ভ্যারিয়েন্ট কী")}
+            value={section.ab?.variant ?? ""}
+            onChange={(e) =>
+              onAbChange({
+                experiment: section.ab?.experiment ?? "",
+                variant: e.target.value,
+              })
+            }
+            className="w-full rounded-fq-md border border-border bg-card px-2 py-1 text-xs"
+          />
+          <p className="text-[0.65rem] text-muted-foreground">
+            {t(
+              "Unassigned visitors always see this section.",
+              "অ্যাসাইন না হওয়া ভিজিটর সবসময় এটি দেখবে।",
+            )}
+          </p>
+        </fieldset>
+      )}
+
+      <fieldset className="space-y-2 rounded-fq-md border border-border p-3">
+        <legend className="px-1 text-xs font-medium">
+          {t("Visible on", "যেখানে দেখাবে")}
+        </legend>
+        {BREAKPOINTS.map((bp) => (
+          <label key={bp} className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={!hidden.includes(bp)}
+              onChange={() => onToggleHidden(bp)}
+              className="size-4 rounded border-border"
+            />
+            {t(BP_LABEL[bp].en, BP_LABEL[bp].bn)}
+          </label>
+        ))}
+        {hidden.length === BREAKPOINTS.length && (
+          <p className="text-xs text-warning-foreground">
+            {t(
+              "Hidden everywhere — shoppers will never see this section.",
+              "সব জায়গায় লুকানো — ক্রেতারা এটি দেখবে না।",
+            )}
+          </p>
+        )}
+      </fieldset>
+
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={onDuplicate}
+          className="rounded-fq-md border border-border px-3 py-2 text-sm hover:bg-muted"
+        >
+          {t("Duplicate", "কপি")}
+        </button>
+        <button
+          type="button"
+          onClick={onDelete}
+          className="rounded-fq-md border border-danger px-3 py-2 text-sm text-danger-foreground hover:bg-danger-soft"
+        >
+          {t("Delete", "মুছুন")}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/** Field editor for the selected widget, driven entirely by the AST catalog. */
+function LegacySectionInspector({
   section,
   template,
   device,

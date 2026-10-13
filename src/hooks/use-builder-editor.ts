@@ -16,6 +16,13 @@ import {
   type ThemeTokens,
 } from "@/lib/builder-ast";
 import type { VisibilityRule } from "@/lib/visibility";
+import { getWidget } from "@/lib/unified-widget-registry";
+import {
+  errorsForField,
+  fieldsOf,
+  validateProps,
+  type PropSchema,
+} from "@/lib/widget-props";
 import {
   canDrop,
   cloneNodes,
@@ -30,6 +37,162 @@ import {
 } from "@/lib/builder-tree";
 
 export type EditorDoc = { templates: ThemeTemplates; tokens: ThemeTokens };
+
+/* ---------------------------------------------------------------------------
+ * Frame30 Loop B — client save path: `setPropAt` validation.
+ *
+ * Schema-carrying widgets (a registry `propsSchema` with fields) validate
+ * every write through the SAME `validateProps` module the server save path
+ * (`commitVersion`) calls, so the two can never disagree. Legacy widgets (no
+ * def, or the empty legacy-unvalidated shape the adapters emit) pass values
+ * through exactly as before — the legacy AST pipeline owns them.
+ *
+ * Refusal contract: unknown keys (including `__proto__`/`constructor`
+ * injection) fail with `<key>.unknown_prop`; invalid values fail with the
+ * exact `validateProps` field codes. Valid writes store the CLEANED value
+ * (clamps, coercions, sanitised text), matching what the server stores.
+ * Nothing here throws: hostile shapes fail closed with field errors.
+ */
+
+export type SetPropAtVerdict =
+  { ok: true; value: unknown } | { ok: false; errors: string[] };
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    (Object.getPrototypeOf(value) === Object.prototype ||
+      Object.getPrototypeOf(value) === null)
+  );
+}
+
+/**
+ * Top-level known keys of a schema. Groups are presentation-only clusters
+ * that store flat (same convention as `validateProps` flattening), so the
+ * walk recurses through `group` fields only — repeater sub-keys are NOT
+ * top-level keys and stay refused at this layer.
+ */
+export function schemaTopLevelKeys(schema: PropSchema): Set<string> {
+  const out = new Set<string>();
+  const walk = (fields: readonly unknown[] | undefined) => {
+    for (const entry of fields ?? []) {
+      if (!isRecord(entry)) continue;
+      const field = entry as {
+        kind?: unknown;
+        key?: unknown;
+        fields?: readonly unknown[];
+      };
+      if (field.kind === "group") {
+        walk(field.fields);
+      } else if (typeof field.key === "string") {
+        out.add(field.key);
+      }
+    }
+  };
+  try {
+    walk(fieldsOf(schema) as readonly unknown[]);
+  } catch {
+    // Hostile schema shape: no keys are known, every write is refused below.
+  }
+  return out;
+}
+
+/**
+ * Non-empty registry schema for a section, or null for the legacy path.
+ * Candidates mirror the inspector resolution (pluginKey first, then the bare
+ * type and the `builtin:` alias); the empty adapter shape means
+ * legacy-unvalidated, never a bypass. Only the server/client registry copy
+ * is consulted — a schema embedded in the section payload is ignored.
+ */
+function schemaForSectionType(
+  section: Pick<Section, "type" | "props">,
+): PropSchema | null {
+  try {
+    const props = isRecord(section.props)
+      ? (section.props as Record<string, unknown>)
+      : {};
+    const candidates: string[] = [];
+    if (section.type === "plugin_block") {
+      const key = props["pluginKey"];
+      if (typeof key === "string" && key.trim()) candidates.push(key.trim());
+    }
+    if (typeof section.type === "string") {
+      candidates.push(section.type, `builtin:${section.type}`);
+    }
+    for (const id of candidates) {
+      const def = getWidget(id);
+      const fields = (def?.propsSchema as { fields?: unknown } | undefined)
+        ?.fields;
+      if (!Array.isArray(fields) || fields.length === 0) continue;
+      return def!.propsSchema as unknown as PropSchema;
+    }
+  } catch {
+    // Registry lookup must never break editing: fall through to legacy.
+  }
+  return null;
+}
+
+/**
+ * Pure field transition behind `setPropAt` for schema-carrying widgets.
+ * `props` supplies context (sibling values); only the edited key's cleaned
+ * value is returned, so unrelated properties are preserved by construction.
+ */
+export function validateSchemaPropEdit(
+  schema: PropSchema,
+  props: Record<string, unknown>,
+  key: string,
+  value: unknown,
+): SetPropAtVerdict {
+  if (!schemaTopLevelKeys(schema).has(key)) {
+    return { ok: false, errors: [`${key}.unknown_prop`] };
+  }
+  const base = isRecord(props) ? props : {};
+  let result: ReturnType<typeof validateProps>;
+  try {
+    result = validateProps(schema, { ...base, [key]: value });
+  } catch {
+    return { ok: false, errors: [`${key}.invalid`] };
+  }
+  const fieldErrors = errorsForField(result.errors, key);
+  if (fieldErrors.length > 0) return { ok: false, errors: fieldErrors };
+  return { ok: true, value: result.clean[key] };
+}
+
+/**
+ * Pure doc-level transition behind `setPropAt`: resolves the section, finds
+ * its schema (if any) and validates. Legacy sections, missing nodes and null
+ * docs pass the raw value through — the writer below then behaves exactly as
+ * before this change.
+ */
+export function checkSetPropAt(
+  doc: EditorDoc | null,
+  template: TemplateKey,
+  slot: Slot,
+  id: string,
+  key: string,
+  value: PropValue,
+  _device: Breakpoint,
+): SetPropAtVerdict {
+  try {
+    const ast = doc?.templates[template];
+    const sections = ast ? ast[slot] : undefined;
+    const found =
+      Array.isArray(sections) && typeof id === "string"
+        ? locate(sections, id)
+        : null;
+    const section = found?.node;
+    if (!section) return { ok: true, value };
+    const schema = schemaForSectionType(section);
+    if (!schema) return { ok: true, value };
+    const props = isRecord(section.props)
+      ? (section.props as Record<string, unknown>)
+      : {};
+    return validateSchemaPropEdit(schema, props, key, value);
+  } catch {
+    return { ok: false, errors: [`${key}.invalid`] };
+  }
+}
 
 const HISTORY_LIMIT = 50;
 
@@ -66,8 +229,18 @@ export function useBuilderEditor(
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // Loop B: last field-error codes refused by `setPropAt` validation.
+  // Autosave failures keep using `error`; schema refusals never touch it.
+  const [propErrors, setPropErrors] = useState<string[]>([]);
   const revision = useRef(opts.revision);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Latest doc for the synchronous `setPropAt` pre-check below. Synced in an
+  // effect so the render phase stays pure; event handlers always see post-
+  // effect state.
+  const docRef = useRef<EditorDoc | null>(initial);
+  useEffect(() => {
+    docRef.current = doc;
+  }, [doc]);
 
   // Adopt the server snapshot once it arrives (or when the theme changes).
   useEffect(() => {
@@ -289,6 +462,12 @@ export function useBuilderEditor(
        * Write a value at the active breakpoint. `desktop` is the base layer, so
        * editing there updates props directly; narrower devices write an
        * override layer that inherits every key it does not declare.
+       *
+       * Loop B: schema-carrying widgets (registry `propsSchema`) validate
+       * through the shared `validateProps` before writing. Refused writes
+       * change nothing, record field errors on `propErrors`, and return the
+       * verdict; callers that ignore the return value keep today's behavior
+       * for legacy widgets (which always pass validation).
        */
       setPropAt(
         template: TemplateKey,
@@ -297,13 +476,29 @@ export function useBuilderEditor(
         key: string,
         value: PropValue,
         device: Breakpoint,
-      ) {
+      ): SetPropAtVerdict {
+        const verdict = checkSetPropAt(
+          docRef.current,
+          template,
+          slot,
+          id,
+          key,
+          value,
+          device,
+        );
+        if (!verdict.ok) {
+          setPropErrors(verdict.errors);
+          return verdict;
+        }
+        setPropErrors([]);
+        const clean = verdict.value as PropValue;
         editNode(template, slot, id, (s) => {
           if (device === "desktop")
-            return { ...s, props: { ...s.props, [key]: value } };
-          const layer = { ...(s.bp?.[device] ?? {}), [key]: value };
+            return { ...s, props: { ...s.props, [key]: clean } };
+          const layer = { ...(s.bp?.[device] ?? {}), [key]: clean };
           return { ...s, bp: { ...(s.bp ?? {}), [device]: layer } };
         });
+        return verdict;
       },
       /** Phase 3.2: conditional visibility rules for one node. */
       setWhen(
@@ -448,6 +643,8 @@ export function useBuilderEditor(
     saving,
     savedAt,
     error,
+    /** Last `setPropAt` field-error codes (empty when the last write passed). */
+    propErrors,
     issues,
     canUndo: past.length > 0,
     canRedo: future.length > 0,

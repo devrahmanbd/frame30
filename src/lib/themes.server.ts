@@ -18,6 +18,7 @@ import {
   TEMPLATE_KEYS,
   assertPayloadWithinLimits,
   isSkinnableType,
+  isVariantTemplateKey,
   takeSanitiserRejects,
   lintTemplate,
   parseAst,
@@ -31,6 +32,7 @@ import {
   type ThemeTemplates,
   type ThemeTokens,
 } from "./builder-ast";
+import { validateProps, type PropSchema } from "./widget-props";
 import {
   MAX_VARIATION_KEY_LENGTH,
   VARIATION_KEY_RE,
@@ -385,6 +387,31 @@ export async function commitVersion(
 ) {
   await rateLimit("builder.commit", merchantId);
   const { templates, tokens } = parseUntrusted(input, "commit");
+  // Loop B trust boundary: extension props are re-validated server-side with
+  // the same `validateProps` module the client calls, before anything is
+  // stored. Invalid props reject the commit loudly (recoverable BuilderError,
+  // never a silent drop); legacy widgets are untouched by the gate.
+  const extensionIssues = await collectExtensionPropIssues(input.templates);
+  if (extensionIssues.length > 0) {
+    const detail = extensionIssues
+      .slice(0, 3)
+      .map(
+        (issue) =>
+          `${issue.nodeId} (${issue.widget}): ${issue.errors.slice(0, 3).join(", ")}`,
+      )
+      .join(" · ");
+    incr("framique_builder_extension_props_rejected_total", {
+      surface: "commit",
+    });
+    log("warn", "builder.extension_props_invalid", {
+      merchant_id: merchantId,
+      issues: extensionIssues.length,
+    });
+    throw new BuilderError(
+      "builder.extension_props_invalid",
+      `Section settings failed validation: ${detail}`,
+    );
+  }
   const versionId = await rpc<string>(db, "theme_commit", {
     _theme_id: input.themeId,
     _templates: templates as unknown as Json,
@@ -393,6 +420,154 @@ export async function commitVersion(
     _label: input.label ?? null,
   });
   return { versionId };
+}
+
+/* ---------------------------------- extension props trust boundary (Loop B)
+ *
+ * The commit payload is untrusted browser JSON. Sections that address a
+ * registry widget with a `propsSchema` (extension widgets: `pluginKey` first,
+ * then the bare type and the `builtin:` alias — the same candidates the
+ * inspector and `setPropAt` use) are validated here with `validateProps`,
+ * the SAME module both sides call, so client and server cannot disagree.
+ *
+ * - A schema embedded in the payload (`propsSchema` / `schema` members on
+ *   the node) is NEVER trusted: only the server registry copy counts.
+ * - Legacy widgets (no def, or the empty legacy-unvalidated shape) skip the
+ *   gate entirely — their save behavior is byte-identical to before.
+ * - The walk itself never throws on hostile shapes: malformed nodes are
+ *   reported as issues (fail closed), never a crash.
+ */
+
+type ExtensionPropIssue = {
+  nodeId: string;
+  widget: string;
+  errors: string[];
+};
+
+function isUnknownRecord(value: unknown): value is Record<string, unknown> {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    (Object.getPrototypeOf(value) === Object.prototype ||
+      Object.getPrototypeOf(value) === null)
+  );
+}
+
+function extensionSchemaFor(
+  lookup: (id: string) => { propsSchema?: unknown } | undefined,
+  type: unknown,
+  props: Record<string, unknown>,
+): PropSchema | null {
+  if (typeof type !== "string" || !type) return null;
+  const candidates: string[] = [];
+  if (type === "plugin_block") {
+    const key = props["pluginKey"];
+    if (typeof key === "string" && key.trim()) candidates.push(key.trim());
+  }
+  candidates.push(type, `builtin:${type}`);
+  for (const id of candidates) {
+    let def: { propsSchema?: unknown } | undefined;
+    try {
+      def = lookup(id);
+    } catch {
+      continue;
+    }
+    const fields = (def?.propsSchema as { fields?: unknown } | undefined)
+      ?.fields;
+    if (!Array.isArray(fields) || fields.length === 0) continue;
+    return def!.propsSchema as PropSchema;
+  }
+  return null;
+}
+
+/** Raw-payload walk for extension nodes (v2 flat + v3 nesting, depth-capped). */
+async function collectExtensionPropIssues(
+  rawTemplates: unknown,
+): Promise<ExtensionPropIssue[]> {
+  const issues: ExtensionPropIssue[] = [];
+  let lookup: (id: string) => { propsSchema?: unknown } | undefined = () =>
+    undefined;
+  try {
+    // Dynamic import: the registry's component maps stay off the server
+    // startup path and load only when a commit is validated.
+    const registry = await import("./unified-widget-registry");
+    lookup = (id: string) => registry.getWidget(id) ?? undefined;
+  } catch {
+    // Registry unavailable: legacy passthrough, never a crash.
+    return issues;
+  }
+
+  const MAX_WALK_DEPTH = 48;
+
+  const visitNode = (node: unknown, depth: number): void => {
+    if (depth > MAX_WALK_DEPTH || !isUnknownRecord(node)) return;
+    const type = node["type"];
+    const rawProps = node["props"];
+    const props = isUnknownRecord(rawProps) ? rawProps : {};
+    const schema = extensionSchemaFor(lookup, type, props);
+    if (schema) {
+      const input: Record<string, unknown> = { ...props };
+      if (isUnknownRecord(node["bp"])) input["bp"] = node["bp"];
+      let ok = false;
+      let errors: string[] = [];
+      try {
+        const result = validateProps(schema, input);
+        ok = result.ok;
+        errors = result.errors;
+      } catch {
+        errors = ["props.invalid"];
+      }
+      if (!ok) {
+        const rawId = node["id"];
+        issues.push({
+          nodeId:
+            typeof rawId === "string" && rawId
+              ? rawId.slice(0, 64)
+              : "(unknown)",
+          widget: typeof type === "string" ? type.slice(0, 80) : "?",
+          errors,
+        });
+      }
+    }
+    // v3 children always; legacy node-level `items`/`sections` only when
+    // every row is node-shaped (mirrors the AST upgrader) so repeater data
+    // rows are never misread as widget nodes.
+    const nested: unknown[] = [];
+    if (Array.isArray(node["children"])) nested.push(...node["children"]);
+    for (const key of ["items", "sections"] as const) {
+      const rows = node[key];
+      if (
+        Array.isArray(rows) &&
+        rows.length > 0 &&
+        rows.every(
+          (row) =>
+            isUnknownRecord(row) &&
+            (typeof row["type"] === "string" || typeof row["el"] === "string"),
+        )
+      ) {
+        nested.push(...rows);
+      }
+    }
+    for (const kid of nested) visitNode(kid, depth + 1);
+  };
+
+  if (!isUnknownRecord(rawTemplates)) return issues;
+  for (const [key, value] of Object.entries(rawTemplates)) {
+    if (!isUnknownRecord(value)) continue;
+    if (
+      !(TEMPLATE_KEYS as readonly string[]).includes(key) &&
+      !isVariantTemplateKey(key)
+    ) {
+      continue;
+    }
+    for (const slot of ["header", "main", "footer", "sections"] as const) {
+      const list = value[slot];
+      if (!Array.isArray(list)) continue;
+      for (const node of list) visitNode(node, 0);
+    }
+  }
+  return issues;
 }
 
 /**
