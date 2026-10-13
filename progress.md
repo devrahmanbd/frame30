@@ -1,3 +1,40 @@
+# Progress — Frame30 Extensible Builder Program (Oct 2026)
+
+> Mission: 9/10 parity in third-party widgets, custom-theme freedom, and
+> page-builder extensibility — no thin wrappers, no mocks. Score claimed only
+> with implementation + acceptance tests. Historical sections below (Biba
+> motion program) are untouched.
+
+## Gap map (verified in source, Oct 13)
+
+| Spec § | Area | Status | Evidence |
+|---|---|---|---|
+| 3 | Widget contract/registry | PARTIAL | `unified-widget-registry.ts` (157 builtin + 180 studio + plugin defs, versions, rollback, no-privilege proof) exists; missing: loading/empty/error states, a11y/reduced-motion expectations, SEO metadata per def |
+| 4 | propsSchema | PARTIAL | `widget-props.ts` validates all 22 kinds; only 11 fully render — image/media/video/product/collection pickers + typography/responsive/visibility/animation are placeholders |
+| 5 | Schema inspector | UNWIRED | `SchemaControls.tsx` built + tested; `SectionInspector`/`editor.setPropAt`/`commitVersion` still bespoke (swap-in points documented, not executed) |
+| 6 | Extension AST node | MISSING | Only legacy `plugin_block`; no generic typed extension node, no migration path |
+| 7 | Tray auto-discovery | PARTIAL | Old resolver auto-discovers plugin widgets; unified-registry adoption (`StudioAppBlock`, trays) listed, not done |
+| 8 | Theme presentations | PARTIAL | Per-theme built-in overrides + fallback exist; namespaced resolution, Class B themeable rendering, theme-owned resolution missing |
+| 9 | Custom runtime/SDK | PARTIAL | `ThemeRuntime` + bridge v2 mounted; reviewed-bundle lane pure-logic (no DB backing); no theme build pipeline |
+| 10 | Theme-owned tray widgets | MISSING | Depends on §6–§8 |
+| 11 | Builder parity | AUDIT-NEEDED | Undo/redo, DnD, responsive rules, reusable semantics — unverified against spec list |
+| 12 | Versioning/migration | PARTIAL | Registry rollback exists; extension update-migration rules missing |
+| 13 | Security tests | PARTIAL | Bridge/isolation/traversal covered; extension upgrade-migration, repeater bombs, duplicate-ID races need proof |
+| 14 | E2E test plugin | MISSING | No 2-widget editor-workflow plugin exists |
+| 15 | Mounted custom demo | MISSING | `examples/demo-theme` fixture-only, unmounted, no browser proof |
+
+## Loops
+
+- [ ] Loop A — extension AST node + tray adoption via unified registry
+- [ ] Loop B — inspector swap-in + server save-path validation
+- [ ] Loop C — namespaced presentations + theme-owned tray (needs A)
+- [ ] Loop D — E2E test plugin + 16-step workflow (needs A+B)
+- [ ] Loop E — mounted demo + browser proof (needs A+C)
+- [x] Loop F — builder parity audit (read-only, parallel) — DONE: ~90% present, top-5 gaps filed
+- [x] DynamicTagPicker component (34 tests) — swap-in pending Loop B landing
+- [x] Undo/redo + selection-sync pins (24 tests) — no bugs confirmed, 3 judgment calls flagged
+- [ ] Verification — full battery + browser + honest 3-score report
+
 # Progress — Biba-Parity Motion Program (Sept 25, 2026)
 
 > Source: `REPORT.md` (18-page Biba.in audit). Goal: kill the "static HTML+CSS"
