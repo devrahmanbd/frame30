@@ -577,12 +577,55 @@ export async function createOrder(
       note: `Risk ${verdict.score} — fulfilment held pending review`,
     });
 
+  // Post-order fake-order guard (advisory, fail-open): scores velocity /
+  // COD-over-limit / new-customer / address / failed-streak signals AFTER the
+  // order is committed. Precedence: commerce continuity beats detection — the
+  // guard never voids, charges, or blocks, only flags via audit + metrics,
+  // and any failure (including this cap) resolves to allow. Bounded by
+  // FAKE_ORDER_GUARD_CAP_MS so a slow read can never stall the response
+  // (mirrors the 2s email cap below).
+  let fakeOrderDisposition: "allow" | "review" = "allow";
+  try {
+    const { evaluateOrderForFraud, FAKE_ORDER_GUARD_CAP_MS } =
+      await import("./fake-order-guard.server");
+    const guardWork = evaluateOrderForFraud(supabaseAdmin as never, {
+      merchantId: merchant.id,
+      orderId: order.id,
+      orderNumber: order.order_number,
+      phone: input.customer.phone,
+      addressLine: input.customer.addressLine,
+      totalMinorInt: totals.totalMinor,
+      paymentMethod: input.paymentMethod,
+      createdAt: new Date().toISOString(),
+    });
+    let guardTimer: ReturnType<typeof setTimeout> | undefined;
+    const guardCap = new Promise<null>((resolve) => {
+      guardTimer = setTimeout(() => {
+        incr("framique_fake_order_guard_total", { outcome: "timeout" });
+        log("warn", "fake_order_guard.timeout", {
+          merchantId: merchant.id,
+          orderId: order.id,
+        });
+        resolve(null);
+      }, FAKE_ORDER_GUARD_CAP_MS);
+      (guardTimer as unknown as { unref?: () => void }).unref?.();
+    });
+    const guarded = await Promise.race([guardWork, guardCap]);
+    if (guardTimer) clearTimeout(guardTimer);
+    if (guarded) fakeOrderDisposition = guarded.disposition;
+  } catch {
+    /* guard must never fail order creation */
+  }
+
   // Last funnel step. Recorded here, server-side, so the paid count and its
   // value come from the order we just wrote rather than from the browser.
   // T1: only COD (confirmed, first-class tender) reports paid at placement;
   // online rails report paid from the verified settlement path instead, so an
   // unpaid order never counts as paid.
   // Failure is swallowed: telemetry may never fail a shopper's order.
+  // CAPI enrichment: the guard disposition rides additively in the payload
+  // (scalar allow/review, no PII — survives beacon scrubbing) for downstream
+  // ad-conversion filtering.
   try {
     if (input.paymentMethod === "cod") {
       const { ingestBeacons } = await import("./analytics-warehouse.server");
@@ -600,7 +643,10 @@ export async function createOrder(
             valueMinorInt: totals.totalMinor,
             currencyCode: totals.currency,
             dedupeKey: `order:paid:${order.id}`,
-            payload: { method: input.paymentMethod },
+            payload: {
+              method: input.paymentMethod,
+              fraud_disposition: fakeOrderDisposition,
+            },
           },
         ],
         geo,
@@ -610,23 +656,67 @@ export async function createOrder(
     /* analytics is best effort */
   }
 
-  // Automated transactional mail: purchase confirmation & welcome email
+  // Automated transactional mail: purchase confirmation & welcome email.
+  // Awaited (not fire-and-forget) so failures are observed, but bounded by a
+  // cap so a hung mailer can never stall the order response: the race settles
+  // at EMAIL_CAP_MS, the loser continues in the background, and the timeout
+  // is counted. Callees already catch internally and return booleans.
   if (input.customer.email) {
     try {
       const { sendOrderConfirmationEmail, sendCustomerWelcomeEmail } =
         await import("./transactional-mailer.server");
-      void sendOrderConfirmationEmail({
-        db: supabaseAdmin,
-        merchantId: merchant.id,
-        orderId: order.id,
-      });
-      if (customerId) {
-        void sendCustomerWelcomeEmail({
-          db: supabaseAdmin,
-          merchantId: merchant.id,
-          customerEmail: input.customer.email,
-          customerName: input.customer.name,
+      const EMAIL_CAP_MS = 2000;
+      const withEmailCap = (
+        send: Promise<boolean>,
+        kind: string,
+      ): Promise<boolean> => {
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        const cap = new Promise<boolean>((resolve) => {
+          timer = setTimeout(() => {
+            incr("framique_transactional_email_total", {
+              kind,
+              outcome: "timeout",
+            });
+            log("warn", "mail.order_flow_timeout", { kind });
+            resolve(false);
+          }, EMAIL_CAP_MS);
+          (timer as unknown as { unref?: () => void }).unref?.();
         });
+        return Promise.race([send, cap]).finally(() => {
+          if (timer) clearTimeout(timer);
+        });
+      };
+      const settled = await Promise.allSettled([
+        withEmailCap(
+          sendOrderConfirmationEmail({
+            db: supabaseAdmin,
+            merchantId: merchant.id,
+            orderId: order.id,
+          }),
+          "order_confirmation",
+        ),
+        ...(customerId
+          ? [
+              withEmailCap(
+                sendCustomerWelcomeEmail({
+                  db: supabaseAdmin,
+                  merchantId: merchant.id,
+                  customerEmail: input.customer.email,
+                  customerName: input.customer.name,
+                }),
+                "customer_welcome",
+              ),
+            ]
+          : []),
+      ]);
+      for (const s of settled) {
+        if (s.status === "rejected") {
+          incr("framique_transactional_email_total", {
+            kind: "order_flow",
+            outcome: "error",
+          });
+          log("warn", "mail.order_flow_failed", { orderId: order.id });
+        }
       }
     } catch {
       /* transactional email failure must never fail order creation */
