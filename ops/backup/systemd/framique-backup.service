@@ -7,6 +7,8 @@ Wants=network-online.target
 Type=oneshot
 WorkingDirectory=/opt/frame28
 Environment=BACKUP_DIR=/var/backups/framique
-# NOTE: --skip-rehearse until B3 lands the safe rehearsal sandbox.
-# Rehearsal then becomes mandatory and this flag is removed.
-ExecStart=/opt/frame28/ops/backup/backup.sh --label=nightly --skip-rehearse
+# NOTE: rehearsal gate runs inline (mandatory, fail-closed). Scratch-stack dry
+# run 6s; weekly live RTO 3-22s (rehearsals.jsonl). A rehearsal failure fails
+# the backup (exit 1) before off-site mirror/rotation — uncertified sets never
+# ship. BackupCertifiedStale pages if no certified set lands within 24h.
+ExecStart=/opt/frame28/ops/backup/backup.sh --label=nightly

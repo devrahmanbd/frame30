@@ -25,6 +25,11 @@ services:
     image: ${BLUE_IMAGE:-framique:blue}
     container_name: framique-blue
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     environment:
       - NODE_ENV=production
       - PORT=3000
@@ -69,6 +74,11 @@ services:
     image: ${GREEN_IMAGE:-framique:green}
     container_name: framique-green
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     environment:
       - NODE_ENV=production
       - PORT=3000
@@ -116,6 +126,11 @@ services:
     image: ${EDGE_ROUTER_IMAGE:-openresty/openresty:1.25.3.1-alpine}
     container_name: framique-edge-router
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     ports:
       - "80:80"
       - "443:443"

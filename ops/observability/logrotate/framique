@@ -1,0 +1,24 @@
+# Framique — host log rotation (disk-full precedent 2026-09-21: WAL 60G +
+# shared usage → postgres crash loop; journal vacuum freed 3.4G).
+#
+# Container stdout is capped at the source (docker compose `log-opts`
+# max-size/max-file on every service) and journald on the host is already
+# capped (SystemMaxUse=2G / SystemKeepFree=5G in /etc/systemd/journald.conf).
+# This file caps the remaining host-side growth surface: framique operational
+# logs written to /var/log/framique by timers, probes and gate scripts.
+#
+# Install (host, one-off):
+#   mkdir -p /var/log/framique
+#   cp ops/observability/logrotate/framique /etc/logrotate.d/framique
+#   logrotate -d /etc/logrotate.d/framique   # dry-run, no rotation performed
+/var/log/framique/*.log {
+    weekly
+    rotate 8
+    maxsize 100M
+    minsize 1M
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+}

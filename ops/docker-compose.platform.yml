@@ -25,6 +25,11 @@ services:
   redis:
     image: redis:7.4-alpine
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     command:
       - redis-server
       - --requirepass

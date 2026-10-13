@@ -35,6 +35,11 @@ services:
   prometheus:
     image: prom/prometheus:v2.55.1
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     user: "65534:65534"
     command:
       - --config.file=/etc/prometheus/prometheus.yml
@@ -58,6 +63,11 @@ services:
   alertmanager:
     image: prom/alertmanager:v0.27.0
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     command:
       - --config.file=/etc/alertmanager/alertmanager.yml
       - --storage.path=/alertmanager
@@ -73,6 +83,11 @@ services:
   loki:
     image: grafana/loki:3.2.1
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     user: "10001:10001"
     command: ["-config.file=/etc/loki/loki-config.yml"]
     volumes:
@@ -90,6 +105,11 @@ services:
   promtail:
     image: grafana/promtail:3.2.1
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     command: ["-config.file=/etc/promtail/promtail-config.yml"]
     volumes:
       - ./observability/promtail-config.yml:/etc/promtail/promtail-config.yml:ro
@@ -103,6 +123,11 @@ services:
   grafana:
     image: grafana/grafana:11.3.1
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     environment:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
       GF_SECURITY_ADMIN_PASSWORD__FILE: /run/secrets/grafana_admin_password
@@ -129,6 +154,11 @@ services:
   node-exporter:
     image: prom/node-exporter:v1.8.2
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     command:
       - --path.rootfs=/host
       - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
@@ -140,6 +170,11 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.49.1
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     privileged: true
     volumes:
       - /:/rootfs:ro
@@ -152,6 +187,11 @@ services:
   redis-exporter:
     image: oliver006/redis_exporter:v1.66.0
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     environment:
       REDIS_ADDR: redis://redis:6379
       REDIS_PASSWORD: ${REDIS_PASSWORD:?set REDIS_PASSWORD}
@@ -160,6 +200,11 @@ services:
   postgres-exporter:
     image: prometheuscommunity/postgres-exporter:v0.16.0
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     environment:
       # Self-hosted Supabase Postgres. Use a read-only monitoring role, never
       # the superuser: an exporter credential leak must not be a data breach.
@@ -170,6 +215,11 @@ services:
   blackbox-exporter:
     image: prom/blackbox-exporter:v0.25.0
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     volumes:
       - ./observability/blackbox.yml:/etc/blackbox_exporter/config.yml:ro
     networks: [framique]

@@ -53,6 +53,11 @@ services:
     image: postgres:16.4-alpine
     profiles: [glitchtip]
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     environment:
       POSTGRES_USER: glitchtip
       POSTGRES_PASSWORD: ${GLITCHTIP_DB_PASSWORD:-change-me}
@@ -69,6 +74,11 @@ services:
     image: redis:7.4-alpine
     profiles: [glitchtip]
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     volumes: [glitchtip-redis:/data]
     networks: [framique]
 
@@ -82,11 +92,21 @@ services:
         condition: service_healthy
     networks: [framique]
     restart: on-failure
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
 
   glitchtip-web:
     image: glitchtip/glitchtip:v4.1.4
     profiles: [glitchtip]
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     environment: *glitchtip-env
     volumes: [glitchtip-uploads:/code/uploads]
     depends_on:
@@ -104,6 +124,11 @@ services:
     image: glitchtip/glitchtip:v4.1.4
     profiles: [glitchtip]
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     command: ./bin/run-celery-with-beat.sh
     environment: *glitchtip-env
     volumes: [glitchtip-uploads:/code/uploads]
@@ -117,6 +142,11 @@ services:
     image: postgres:16.4-alpine
     profiles: [sentry]
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     environment:
       POSTGRES_USER: sentry
       POSTGRES_PASSWORD: ${SENTRY_DB_PASSWORD:-change-me}
@@ -133,6 +163,11 @@ services:
     image: redis:7.4-alpine
     profiles: [sentry]
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     volumes: [sentry-redis:/data]
     networks: [framique]
 
@@ -140,6 +175,11 @@ services:
     image: sentry:9.1.2
     profiles: [sentry]
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     environment: &sentry-env
       SENTRY_SECRET_KEY: ${SENTRY_SECRET_KEY:-change-me}
       SENTRY_POSTGRES_HOST: sentry-pg
@@ -163,6 +203,11 @@ services:
     image: sentry:9.1.2
     profiles: [sentry]
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     command: run worker
     environment: *sentry-env
     volumes: [sentry-data:/var/lib/sentry/files]
@@ -173,6 +218,11 @@ services:
     image: sentry:9.1.2
     profiles: [sentry]
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
     command: run cron
     environment: *sentry-env
     volumes: [sentry-data:/var/lib/sentry/files]
