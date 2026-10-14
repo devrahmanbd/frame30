@@ -32,6 +32,13 @@
 - [x] Loop E — mounted demo + browser proof (needs A+C) — 7/7 Chromium (GSAP animates, reduced-motion static, carousel lazy, bridge admit/deny, dispose clean)
 - [x] Final wiring — presentation/tray/gate/picker/insertion swap-ins live, DoD-5 supersession documented in-test
 - [x] Verification — full battery + browser + honest 3-score report
+- [x] Remaining gaps closed — breakpoint gate, global-insert mode, update affordance; deterministic bundle pipeline; three@0.186.1 vendored with SwiftShader render proof (mean-abs-diff 82.78); tsgo typecheck clean tree-wide
+
+## Scores (evidence-based, Oct 14)
+
+- **Third-party widget parity: 9/10.** Swap-ins live (renderer, tray, activation gate, picker mounts, insertion paths); 16-step + browser workflows green. −1: authenticated-editor half unprovable hermetically (session required; substitutes proven).
+- **Custom-theme developer freedom: 9/10.** Bundle pipeline (deterministic, byte-stable) → reviewed lane → isolated runtime → real render proof. −1: pipeline-to-install as one witnessed journey + real-GPU (SwiftShader stands in) proof outstanding.
+- **Overall page-builder parity: 9/10.** All three deferred audit gaps closed; undo/selection pinned; picker mounted. −1: micro-edges reported-unasserted (ghost slot scope, latent dropInto, no-op history pushes).
 
 ## Scores (evidence-based, Oct 14)
 
