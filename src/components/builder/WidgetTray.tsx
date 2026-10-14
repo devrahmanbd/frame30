@@ -12,7 +12,9 @@ import {
   fromBuiltinWidgets,
   fromPluginManifest,
   fromStudioCatalog,
+  listWidgets as listSingletonWidgets,
 } from "@/lib/unified-widget-registry";
+import { themeTrayEntries } from "@/lib/widget-presentation";
 import { insertPluginWidget } from "./studio/plugin-tray";
 import {
   VERTICALS,
@@ -168,6 +170,7 @@ export function WidgetTray({
   onAdd,
   onAddPlugin,
   onAddExtension,
+  themeKey,
 }: {
   slot: Slot;
   /** `presetKey` is `"default"` when the widget has no variants. */
@@ -181,6 +184,12 @@ export function WidgetTray({
    * existing callers stay unwired until their track adopts the node.
    */
   onAddExtension?: (node: ExtensionNode) => void;
+  /**
+   * Frame30 theme tray: active theme key for `themeTrayEntries`. Absent,
+   * blank or unknown/disabled themes append nothing — empty and disabled
+   * states stay byte-identical.
+   */
+  themeKey?: string | null;
 }) {
   const { t } = useLang();
   const [term, setTerm] = useState("");
@@ -227,8 +236,37 @@ export function WidgetTray({
     ]) {
       registry.registerWidget(def);
     }
+    // Frame30 theme defs ride the shared singleton when present (tests and
+    // theme lanes register there); absent keeps the legacy tray identical.
+    try {
+      for (const def of listSingletonWidgets()) {
+        try {
+          registry.registerWidget(def);
+        } catch {
+          // Hostile singleton entries are dropped, never stored.
+        }
+      }
+    } catch {
+      // Singleton unreadable — tier registry still stands.
+    }
     return registry;
   }, [plugins]);
+
+  // Frame30 theme tray: appended for the active theme only. Empty, disabled,
+  // incompatible and unknown themes yield no entries — never a throw, never
+  // a change to the legacy empty/disabled states.
+  const themeEntries = useMemo(() => {
+    try {
+      const key =
+        typeof themeKey === "string" ? themeKey.trim().slice(0, 64) : "";
+      if (!key) return [];
+      const out = themeTrayEntries(key, { registry: trayRegistry });
+      if (!out.ok) return [];
+      return out.entries;
+    } catch {
+      return [];
+    }
+  }, [themeKey, trayRegistry]);
 
   const appEntries = useMemo(() => {
     // Only the plugin slice is emitted. Disabled installs and incompatible
@@ -488,6 +526,36 @@ export function WidgetTray({
                 >
                   <span className="rounded-fq-xs bg-primary/15 px-1 py-0.5 text-[9px] font-bold uppercase text-primary">
                     {t("App", "অ্যাপ")}
+                  </span>
+                  <span className="truncate text-foreground font-medium">
+                    {entry.label}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* Frame30 theme widgets: appended for the active theme only. Empty or
+          inactive themes render nothing, so legacy trays stay identical. */}
+      {themeEntries.length > 0 && (
+        <section aria-label={t("Theme", "থিম")} className="space-y-1.5">
+          <h3 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+            {t("Theme", "থিম")}
+          </h3>
+          <ul className="grid grid-cols-2 gap-1.5">
+            {themeEntries.map((entry) => (
+              <li key={entry.id}>
+                <button
+                  type="button"
+                  onClick={() => insertPlugin(entry.id)}
+                  disabled={!onAddPlugin && !onAddExtension}
+                  title={entry.category}
+                  className="flex w-full items-center gap-1.5 rounded-fq-md border border-border/70 bg-card p-2 text-left text-xs hover:border-primary hover:bg-accent/60 transition-all cursor-pointer shadow-xs disabled:opacity-50"
+                >
+                  <span className="rounded-fq-xs bg-primary/15 px-1 py-0.5 text-[9px] font-bold uppercase text-primary">
+                    {t("Theme", "থিম")}
                   </span>
                   <span className="truncate text-foreground font-medium">
                     {entry.label}

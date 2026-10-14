@@ -47,7 +47,7 @@ import {
   saveBlock,
   type SavedBlock,
 } from "@/lib/saved-blocks";
-import type { Section } from "@/lib/builder-ast";
+import type { ExtensionNode, Section } from "@/lib/builder-ast";
 import { translationCoverage } from "@/lib/translation-coverage";
 import { DEVICE_PRESETS } from "@/lib/responsive";
 import {
@@ -1593,6 +1593,21 @@ function BuilderStudio() {
                       );
                       setSelectedIds([id]);
                     }
+                    setPanel("inspect");
+                    setLeftTab("layers");
+                  }}
+                  onAddExtension={(node: ExtensionNode) => {
+                    // Frame30 extension insert: canonical node via
+                    // `buildExtensionInsert` (tray) + `insertRaw` (reserved
+                    // props kept). Legacy `plugin_block` above stays as the
+                    // fallback when the tray reports a miss.
+                    const id = editor.insertRaw(
+                      template,
+                      slot,
+                      node as unknown as Section,
+                      { parentId: addParent },
+                    );
+                    if (id) setSelectedIds([id]);
                     setPanel("inspect");
                     setLeftTab("layers");
                   }}

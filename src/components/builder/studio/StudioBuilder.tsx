@@ -45,7 +45,19 @@ import {
   type StudioNode,
   type StudioSlot,
 } from "@/lib/studio/model";
-import { appBlockNodeForPlugin, type PluginTrayEntry } from "./plugin-tray";
+import {
+  appBlockNodeForPlugin,
+  buildExtensionInsert,
+  studioNodeForExtension,
+  type PluginTrayEntry,
+} from "./plugin-tray";
+import {
+  createWidgetRegistry,
+  fromBuiltinWidgets,
+  fromStudioCatalog,
+  listWidgets as listSingletonWidgets,
+  type UnifiedRegistry,
+} from "@/lib/unified-widget-registry";
 
 /**
  * Plugin element accepted on the seam. `pluginName` stays optional so both
@@ -173,6 +185,12 @@ export type StudioBuilderProps = {
    * `app-block` node pre-pointed at the namespaced widget key.
    */
   pluginEntries?: readonly StudioBuilderPluginEntry[] | null;
+  /**
+   * Frame30 extension registry for `addPluginNode`. Absent builds the
+   * builtin + studio + singleton fallback, so legacy callers stay
+   * byte-identical; registry misses keep the `app-block` fallback.
+   */
+  extensionRegistry?: UnifiedRegistry | null;
 };
 
 /** Elements panel shared by the plain and tabbed left-panel layouts. */
@@ -473,6 +491,7 @@ export function StudioBuilder({
   themeDoc = null,
   onRestoreRevision = null,
   pluginEntries = null,
+  extensionRegistry = null,
 }: StudioBuilderProps) {
   const studio = useStudio(initialDoc, resetKey);
 
@@ -578,13 +597,65 @@ export function StudioBuilder({
   const [addParent, setAddParent] = useState<string | null>(null);
   const addPluginNode = useCallback(
     (pluginKey: string) => {
+      // Frame30 extension insert: canonical node via `buildExtensionInsert`
+      // + `studio.addNode`. Registry misses keep the legacy `app-block`
+      // fallback — existing callers stay byte-identical when inactive.
+      try {
+        const key = (pluginKey ?? "").trim().slice(0, 120);
+        if (key) {
+          let registry = extensionRegistry;
+          if (!registry || typeof registry.resolveWidget !== "function") {
+            const fallback = createWidgetRegistry();
+            for (const def of [
+              ...fromBuiltinWidgets(),
+              ...fromStudioCatalog(),
+            ]) {
+              try {
+                fallback.registerWidget(def);
+              } catch {
+                // A single bad adapter def never breaks the insert.
+              }
+            }
+            try {
+              for (const def of listSingletonWidgets()) {
+                try {
+                  fallback.registerWidget(def);
+                } catch {
+                  // Hostile singleton entries are dropped, never stored.
+                }
+              }
+            } catch {
+              // Singleton unreadable — tier fallback still stands.
+            }
+            registry = fallback;
+          }
+          const targetSlot =
+            slot === "header" || slot === "main" || slot === "footer"
+              ? slot
+              : "main";
+          const built = buildExtensionInsert(registry, {
+            widgetKey: key,
+            slot: targetSlot,
+          });
+          if (built.ok) {
+            studio.addNode(
+              studioNodeForExtension(built.node),
+              addParent ? { id: addParent, position: "inside" } : undefined,
+            );
+            setAddParent(null);
+            return;
+          }
+        }
+      } catch {
+        // Extension insert never breaks the legacy path: fall through below.
+      }
       studio.addNode(
         appBlockNodeForPlugin(pluginKey),
         addParent ? { id: addParent, position: "inside" } : undefined,
       );
       setAddParent(null);
     },
-    [addParent, studio],
+    [addParent, extensionRegistry, slot, studio],
   );
 
   /** Detached insert of a shared block: fresh ids, appended at the cursor. */

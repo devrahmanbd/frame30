@@ -28,6 +28,7 @@ import {
   type WidgetProps,
 } from "@/lib/widget-props";
 import { MenuBuilder, EDITOR_RANGE_INPUT, rangeFillPct } from "./MenuBuilder";
+import { DynamicTagPicker } from "./DynamicTagPicker";
 import { SchemaControls, type SchemaChangeHandler } from "./SchemaControls";
 import {
   dataEmptyState,
@@ -127,6 +128,14 @@ function BiTextField({
       ) : (
         <input type="text" {...commonProps} />
       )}
+
+      {/* Frame30 dynamic-tag swap-in (bilingual text): current tab's value,
+          same onChange seam, bespoke tabs + validation untouched. */}
+      <DynamicTagPicker
+        value={value}
+        onChange={(next) => onChange(key, next)}
+        disabled={!editable}
+      />
 
       {tab === "bn" && !bn.trim() && en.trim() && (
         <p className="text-[0.65rem] text-muted-foreground">
@@ -695,12 +704,21 @@ function LegacySectionInspector({
                   ))}
                 </select>
               ) : sub.kind === "textarea" ? (
-                <textarea
-                  rows={3}
-                  value={String(row[sub.key] ?? "")}
-                  onChange={(e) => set(sub.key, e.target.value)}
-                  className={shared}
-                />
+                <div className="space-y-1">
+                  <textarea
+                    rows={3}
+                    value={String(row[sub.key] ?? "")}
+                    onChange={(e) => set(sub.key, e.target.value)}
+                    className={shared}
+                  />
+                  {/* Frame30 dynamic-tag swap-in (repeater textarea):
+                      insert-only, bespoke row controls untouched. */}
+                  <DynamicTagPicker
+                    value={String(row[sub.key] ?? "")}
+                    onChange={(next) => set(sub.key, next)}
+                    disabled={!editable}
+                  />
+                </div>
               ) : (
                 <input
                   type={
@@ -765,11 +783,12 @@ function LegacySectionInspector({
         kind: "bitext",
         max: 200,
       };
+      const imageUrl = typeof value === "string" ? value : "";
       return (
         <div key={field.key} className="space-y-2">
           <span className="block text-xs font-medium">{field.label}</span>
           <MediaPicker
-            value={typeof value === "string" ? value : ""}
+            value={imageUrl}
             sizesPreset={String(section.props[sizesKey(field.key)] ?? "full")}
             disabled={!editable}
             onPick={(url, meta) => {
@@ -788,6 +807,18 @@ function LegacySectionInspector({
               onChange(sizesKey(field.key), preset, "desktop")
             }
           />
+          {/* Frame30 dynamic-tag swap-in (image URL): plain-text splice, never
+              parsed as HTML. Bespoke MediaPicker + alt controls untouched. */}
+          <div className="flex items-center gap-2">
+            <span className="text-[0.65rem] text-muted-foreground">
+              {t("Dynamic", "ডাইনামিক")}
+            </span>
+            <DynamicTagPicker
+              value={imageUrl}
+              onChange={(next) => onChange(field.key, next, "desktop")}
+              disabled={!editable}
+            />
+          </div>
           <BiTextField
             field={altField}
             id={`${id}-alt`}
@@ -847,17 +878,26 @@ function LegacySectionInspector({
             </p>
           </div>
         ) : field.kind === "textarea" ? (
-          <textarea
-            id={id}
-            rows={4}
-            maxLength={field.max ?? 2000}
-            disabled={!editable}
-            aria-invalid={error ? true : undefined}
-            aria-describedby={error ? errorId : undefined}
-            value={typeof value === "string" ? value : ""}
-            onChange={(e) => onChange(field.key, e.target.value, device)}
-            className={shared}
-          />
+          <div className="space-y-1">
+            <textarea
+              id={id}
+              rows={4}
+              maxLength={field.max ?? 2000}
+              disabled={!editable}
+              aria-invalid={error ? true : undefined}
+              aria-describedby={error ? errorId : undefined}
+              value={typeof value === "string" ? value : ""}
+              onChange={(e) => onChange(field.key, e.target.value, device)}
+              className={shared}
+            />
+            {/* Frame30 dynamic-tag swap-in (textarea): insert-only, bespoke
+                textarea + validation untouched. */}
+            <DynamicTagPicker
+              value={typeof value === "string" ? value : ""}
+              onChange={(next) => onChange(field.key, next, device)}
+              disabled={!editable}
+            />
+          </div>
         ) : field.kind === "select" ? (
           <select
             id={id}
@@ -984,35 +1024,52 @@ function LegacySectionInspector({
             }
           />
         ) : (
-          <input
-            id={id}
-            type={
-              field.kind === "number"
-                ? "number"
-                : field.kind === "url"
-                  ? "url"
-                  : "text"
-            }
-            maxLength={field.max ?? 200}
-            disabled={!editable}
-            aria-invalid={error ? true : undefined}
-            aria-describedby={error ? errorId : undefined}
-            value={
-              typeof value === "number" || typeof value === "string"
-                ? String(value)
-                : ""
-            }
-            onChange={(e) =>
-              onChange(
-                field.key,
+          <div className="space-y-1">
+            <input
+              id={id}
+              type={
                 field.kind === "number"
-                  ? Number(e.target.value)
-                  : e.target.value,
-                device,
-              )
-            }
-            className={shared}
-          />
+                  ? "number"
+                  : field.kind === "url"
+                    ? "url"
+                    : "text"
+              }
+              maxLength={field.max ?? 200}
+              disabled={!editable}
+              aria-invalid={error ? true : undefined}
+              aria-describedby={error ? errorId : undefined}
+              value={
+                typeof value === "number" || typeof value === "string"
+                  ? String(value)
+                  : ""
+              }
+              onChange={(e) =>
+                onChange(
+                  field.key,
+                  field.kind === "number"
+                    ? Number(e.target.value)
+                    : e.target.value,
+                  device,
+                )
+              }
+              className={shared}
+            />
+            {/* Frame30 dynamic-tag swap-in (text + link/url): numbers never
+                get a picker; bespoke input + validation untouched. */}
+            {field.kind !== "number" && (
+              <DynamicTagPicker
+                value={
+                  typeof value === "string"
+                    ? value
+                    : typeof value === "number"
+                      ? String(value)
+                      : ""
+                }
+                onChange={(next) => onChange(field.key, next, device)}
+                disabled={!editable}
+              />
+            )}
+          </div>
         )}
 
         <div className="flex items-center justify-between gap-2">

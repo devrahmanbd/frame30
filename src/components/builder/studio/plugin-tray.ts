@@ -30,9 +30,11 @@ import {
   fromBuiltinWidgets,
   fromPluginManifest,
   fromStudioCatalog,
+  listWidgets as listSingletonWidgets,
   type UnifiedRegistry,
   type WidgetDef,
 } from "@/lib/unified-widget-registry";
+import { themeTrayEntries } from "@/lib/widget-presentation";
 import {
   defaultsFor,
   validateProps,
@@ -51,6 +53,7 @@ export type PluginTrayEntry = {
 /** Every app widget installed, enabled and compatible plugins contribute. */
 export function pluginTrayEntries(
   installed: readonly InstalledPlugin[],
+  themeKey?: string | null,
 ): PluginTrayEntry[] {
   // Listed from ONE unified registry seeded with every tier (builtin +
   // studio + installed-plugin defs); only the plugin slice is emitted here.
@@ -65,6 +68,19 @@ export function pluginTrayEntries(
     ...fromPluginManifest(installed),
   ]) {
     registry.registerWidget(def);
+  }
+  // Frame30 theme defs ride the shared singleton when present; absent keeps
+  // the legacy tray identical.
+  try {
+    for (const def of listSingletonWidgets()) {
+      try {
+        registry.registerWidget(def);
+      } catch {
+        // Hostile singleton entries are dropped, never stored.
+      }
+    }
+  } catch {
+    // Singleton unreadable — tier registry still stands.
   }
   const pluginNames = new Map(
     installed.map((item) => [item.manifest.id, item.manifest.name]),
@@ -84,6 +100,29 @@ export function pluginTrayEntries(
         pluginName: (parsed && pluginNames.get(parsed.pluginId)) ?? def.id,
       });
     }
+  }
+  // Frame30 theme tray: appended for the active theme only. Empty, disabled,
+  // incompatible and unknown themes append nothing — legacy empty/disabled
+  // states stay byte-identical.
+  try {
+    const key =
+      typeof themeKey === "string" ? themeKey.trim().slice(0, 64) : "";
+    if (key) {
+      const themed = themeTrayEntries(key, { registry });
+      if (themed.ok) {
+        for (const entry of themed.entries) {
+          if (seen.has(entry.id)) continue;
+          seen.add(entry.id);
+          out.push({
+            key: entry.id,
+            label: entry.label,
+            pluginName: entry.category || key,
+          });
+        }
+      }
+    }
+  } catch {
+    // Theme tray never breaks the plugin tray.
   }
   return out;
 }
@@ -120,6 +159,64 @@ export function appBlockNodeForPlugin(pluginKey: string): StudioNode {
   const node = newWidgetNode("app-block");
   node.settings = { ...node.settings, pluginKey };
   return node;
+}
+
+/**
+ * Frame30 studio bridge: an `ExtensionNode` (canonical insert) as the
+ * studio `app-block` twin the canvas already renders. Identity comes from
+ * the extension instance id; `pluginKey` stays the widget address so the
+ * existing `app-block` resolver renders byte-identically; canonical props
+ * ride in `settings` alongside the twin defaults, and the extension envelope
+ * (`extensionInstanceId` / `extensionApi` / `extensionVersion`) is preserved
+ * for the reverse port. Never throws; hostile props yield the legacy twin.
+ */
+export function studioNodeForExtension(node: ExtensionNode): StudioNode {
+  try {
+    const key =
+      typeof node.widgetKey === "string" && node.widgetKey.trim()
+        ? node.widgetKey.trim().slice(0, 120)
+        : "";
+    const base = appBlockNodeForPlugin(key);
+    const id =
+      (typeof node.instanceId === "string" && node.instanceId.trim()) ||
+      (typeof node.id === "string" && node.id.trim()) ||
+      base.id;
+    base.id = id.slice(0, 64);
+    const props =
+      node.props && typeof node.props === "object" && !Array.isArray(node.props)
+        ? (node.props as Record<string, unknown>)
+        : {};
+    const clean: Record<string, unknown> = {};
+    try {
+      for (const [k, v] of Object.entries(props)) {
+        if (k.length > 120) continue;
+        clean[k] = v as never;
+      }
+    } catch {
+      // Hostile props fall back to the twin defaults below.
+    }
+    base.settings = {
+      ...base.settings,
+      ...clean,
+      pluginKey: key,
+      extensionInstanceId: base.id,
+      extensionApi: (typeof node.apiVersion === "string" &&
+      node.apiVersion.trim()
+        ? node.apiVersion.trim()
+        : BUILDER_API_VERSION
+      ).slice(0, 32),
+      ...(typeof node.version === "string" && node.version.trim()
+        ? { extensionVersion: node.version.trim().slice(0, 32) }
+        : {}),
+    } as StudioNode["settings"];
+    return base;
+  } catch {
+    const fallbackKey =
+      typeof (node as { widgetKey?: unknown }).widgetKey === "string"
+        ? String((node as { widgetKey?: unknown }).widgetKey)
+        : "";
+    return appBlockNodeForPlugin(fallbackKey);
+  }
 }
 
 /* ---------------- Frame30 extension insertion contract -------------------

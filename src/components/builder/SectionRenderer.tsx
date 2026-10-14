@@ -13,7 +13,11 @@ import {
   resolveSkin,
   sectionStyle,
 } from "@/lib/builder-ast";
-import { advancedAttrs, isEntranceEffect, motionEffectOf } from "@/lib/builder-advanced";
+import {
+  advancedAttrs,
+  isEntranceEffect,
+  motionEffectOf,
+} from "@/lib/builder-advanced";
 import { resolveDynamicProps } from "@/lib/dynamic-tags";
 import { useDynamicContext } from "./DynamicContext";
 import type { Locale } from "@/lib/bitext";
@@ -27,6 +31,15 @@ import { useMotionFx } from "./motion-fx";
 import { widgetReader } from "./widgets";
 import { resolveWidgetComponent } from "./theme-widgets";
 import { resolveThemePresentation } from "@/lib/theme-presentations";
+import { isExtensionNode, type ExtensionNode } from "@/lib/builder-ast";
+import { resolvePresentation } from "@/lib/widget-presentation";
+import {
+  createWidgetRegistry,
+  fromBuiltinWidgets,
+  fromStudioCatalog,
+  listWidgets as listSingletonWidgets,
+  type UnifiedRegistry,
+} from "@/lib/unified-widget-registry";
 import { useNodeData } from "./WidgetDataContext";
 import { WidgetBoundary } from "./WidgetBoundary";
 import { WidgetIsland } from "./WidgetIsland";
@@ -82,7 +95,89 @@ type Props = {
   segments?: string[];
   /** Optional base path to prefix root-relative links with (e.g. `/store/foo`) */
   linkBase?: string;
+  /**
+   * Frame30 extension registry for namespaced `extension` nodes. Absent uses
+   * the builtin + studio fallback plus any singleton defs (tests), so legacy
+   * non-extension sections never touch it — byte-identical when inactive.
+   */
+  registry?: UnifiedRegistry;
 };
+
+/**
+ * Frame30 extension presentation for the renderer. Builds the fallback
+ * registry (builtin + studio + singleton defs) when the caller supplies
+ * none, then resolves via `resolvePresentation`. Never throws; null means
+ * the caller keeps the legacy path untouched.
+ */
+export function resolveExtensionForRender(
+  section: Section,
+  themeKey: string | null | undefined,
+  injected?: UnifiedRegistry,
+): ReturnType<typeof resolvePresentation> | null {
+  try {
+    if (!isExtensionNode(section)) return null;
+    const ext = section as unknown as ExtensionNode;
+    const widgetKey =
+      typeof ext.widgetKey === "string" ? ext.widgetKey.trim() : "";
+    if (!widgetKey) return null;
+    const props =
+      ext.props && typeof ext.props === "object" && !Array.isArray(ext.props)
+        ? (ext.props as Record<string, unknown>)
+        : {};
+    let registry = injected;
+    if (!registry || typeof registry.resolveWidget !== "function") {
+      const fallback = createWidgetRegistry();
+      for (const def of [...fromBuiltinWidgets(), ...fromStudioCatalog()]) {
+        try {
+          fallback.registerWidget(def);
+        } catch {
+          // A single bad adapter def never breaks the render.
+        }
+      }
+      try {
+        for (const def of listSingletonWidgets()) {
+          try {
+            fallback.registerWidget(def);
+          } catch {
+            // Hostile singleton entries are dropped, never stored.
+          }
+        }
+      } catch {
+        // Singleton unreadable — builtin/studio fallback still stands.
+      }
+      registry = fallback;
+    }
+    return resolvePresentation({
+      widgetId: ext.version
+        ? { ...ext, widgetKey, props }
+        : { ...ext, widgetKey, props },
+      themeKey: themeKey ?? null,
+      registry,
+      props,
+      ...(typeof ext.version === "string" && ext.version.trim()
+        ? { version: ext.version.trim() }
+        : {}),
+    });
+  } catch {
+    return null;
+  }
+}
+
+/** Builtin `SectionType` for a native-builtin hit, else null. */
+export function builtinTypeForPresentation(
+  result: ReturnType<typeof resolvePresentation>,
+): SectionType | null {
+  try {
+    if (!result.ok || result.mode !== "native-builtin") return null;
+    const id = result.def.id;
+    const bare = id.includes(":") ? id.slice(id.indexOf(":") + 1) : id;
+    const clean = bare.trim();
+    if (!clean || clean.includes(":") || clean.includes("/")) return null;
+    return clean as SectionType;
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Phase 5: visibility ranges match `LAYER_RANGE` exactly — mobile is < 768,
@@ -118,6 +213,7 @@ export function SectionRenderer({
   signedIn,
   segments,
   linkBase,
+  registry,
 }: Props) {
   const { lang } = useLang();
   const dynamic = useDynamicContext(editing);
@@ -205,8 +301,7 @@ export function SectionRenderer({
   // ref objects are stable, keeping this callback stable too.
   const wrapRef = useCallback(
     (node: HTMLDivElement | null) => {
-      (reveal.ref as React.MutableRefObject<HTMLElement | null>).current =
-        node;
+      (reveal.ref as React.MutableRefObject<HTMLElement | null>).current = node;
       (motionFx.ref as React.MutableRefObject<HTMLElement | null>).current =
         node;
     },
@@ -266,6 +361,89 @@ export function SectionRenderer({
     );
 
   const entry = catalogEntry(section.type);
+  // Frame30 extension swap-in (beside `resolveThemePresentation`): namespaced
+  // `extension` nodes resolve via `resolvePresentation`. Missing and
+  // recoverable-fallback outcomes reuse the EXISTING unavailable placeholder
+  // below — no new placeholder design. Non-extension sections skip this
+  // entirely, so the legacy built-in path stays byte-identical.
+  try {
+    const isExt = (isExtensionNode as (value: unknown) => boolean)(section);
+    if (isExt) {
+      const presentation = resolveExtensionForRender(
+        section,
+        themeKey,
+        registry,
+      );
+      // A null resolution (bad key, hostile shape) is a miss: placeholder.
+      if (!presentation || !presentation.ok) {
+        return editing ? (
+          <div className="rounded-fq-md border border-dashed border-border p-4 text-sm text-muted-foreground">
+            Widget preview unavailable
+          </div>
+        ) : null;
+      }
+      // Recoverable theme-owned fallback preserves data and placeholders.
+      if (
+        presentation.ok &&
+        presentation.mode === "theme-owned" &&
+        presentation.presentation === "recoverable-fallback"
+      ) {
+        return editing ? (
+          <div className="rounded-fq-md border border-dashed border-border p-4 text-sm text-muted-foreground">
+            Widget preview unavailable
+          </div>
+        ) : null;
+      }
+      // Native-builtin extensions render the SAME builtin component as the
+      // legacy path, via a tail recursion over an adapted section. Every
+      // other ok mode (official / isolated / themeable / owner-definition)
+      // stays placeholder until its renderer lane lands — fail-closed, never
+      // another owner's component.
+      if (presentation.ok && presentation.mode === "native-builtin") {
+        const builtinType = builtinTypeForPresentation(presentation);
+        if (builtinType) {
+          const adapted = {
+            ...(section as unknown as Record<string, unknown>),
+            type: builtinType,
+            props: { ...presentation.props },
+          } as unknown as Section;
+          return (
+            <SectionRenderer
+              section={adapted}
+              productSlot={productSlot}
+              collectionSlot={collectionSlot}
+              contextSlots={contextSlots}
+              template={template}
+              storeSlug={storeSlug}
+              themeKey={themeKey}
+              primary={primary}
+              editing={editing}
+              device={device}
+              locale={locale}
+              selectedIds={selectedIds}
+              onInlineEdit={onInlineEdit}
+              signedIn={signedIn}
+              segments={segments}
+              linkBase={linkBase}
+              registry={registry}
+            />
+          );
+        }
+        return editing ? (
+          <div className="rounded-fq-md border border-dashed border-border p-4 text-sm text-muted-foreground">
+            Widget preview unavailable
+          </div>
+        ) : null;
+      }
+      return editing ? (
+        <div className="rounded-fq-md border border-dashed border-border p-4 text-sm text-muted-foreground">
+          Widget preview unavailable
+        </div>
+      ) : null;
+    }
+  } catch {
+    // Presentation never breaks the legacy path: fall through below.
+  }
   // Per-widget theme presentations (REGISTRY CORE): a registered
   // themeKey × widgetType presentation wins; unregistered pairs fall back
   // to the existing theme-keyed resolution — byte-identical behavior.

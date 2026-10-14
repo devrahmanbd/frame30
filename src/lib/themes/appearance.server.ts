@@ -1286,6 +1286,185 @@ async function assertVersionApproved(
 }
 
 /**
+ * Frame30 activation compatibility gate (pure): collect every widget id the
+ * about-to-go-live templates address. Extension nodes contribute their
+ * `widgetKey`, `plugin_block` nodes their `pluginKey` prop, every other node
+ * its bare `type` (the registry resolves the `builtin:` alias). Empty keys
+ * and unknown shapes contribute nothing — an empty page stays activatable.
+ * Never throws; hostile shapes yield `[]`.
+ */
+export function collectActivationWidgetIds(templates: unknown): string[] {
+  try {
+    if (!templates || typeof templates !== "object") return [];
+    const out: string[] = [];
+    const seen = new Set<string>();
+    const push = (raw: unknown): void => {
+      if (typeof raw !== "string") return;
+      const clean = raw.trim().slice(0, 160);
+      if (!clean || seen.has(clean)) return;
+      seen.add(clean);
+      out.push(clean);
+    };
+    const walkSections = (sections: unknown): void => {
+      if (!Array.isArray(sections)) return;
+      for (const node of sections) {
+        if (!node || typeof node !== "object") continue;
+        const rec = node as Record<string, unknown>;
+        const type = typeof rec["type"] === "string" ? rec["type"] : "";
+        if (type === "extension") {
+          const key =
+            typeof rec["widgetKey"] === "string" ? rec["widgetKey"] : "";
+          if (key.trim()) push(key);
+        } else if (type === "plugin_block") {
+          const props =
+            rec["props"] && typeof rec["props"] === "object"
+              ? (rec["props"] as Record<string, unknown>)
+              : null;
+          const key =
+            props && typeof props["pluginKey"] === "string"
+              ? props["pluginKey"]
+              : "";
+          // An unpointed app block is a picker placeholder, not an
+          // incompatibility — it contributes nothing.
+          if (key.trim()) push(key);
+        } else if (type) {
+          push(type);
+        }
+        if (Array.isArray(rec["children"])) walkSections(rec["children"]);
+      }
+    };
+    const bag = templates as Record<string, unknown>;
+    if (
+      Array.isArray(bag["header"]) ||
+      Array.isArray(bag["main"]) ||
+      Array.isArray(bag["footer"])
+    ) {
+      walkSections(bag["header"]);
+      walkSections(bag["main"]);
+      walkSections(bag["footer"]);
+    } else {
+      for (const key of Object.keys(bag)) {
+        const ast = bag[key];
+        if (!ast || typeof ast !== "object") continue;
+        const slots = ast as Record<string, unknown>;
+        walkSections(slots["header"]);
+        walkSections(slots["main"]);
+        walkSections(slots["footer"]);
+      }
+    }
+    return out;
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Frame30 activation compatibility gate (effect): run
+ * `checkThemeCompatibility` over the about-to-go-live widget ids BEFORE any
+ * flag flips. Compatible pages pass through untouched; any incompatible entry
+ * refuses with a recoverable `ThemeDeskError` listing the widgets. Never
+ * writes, never flips. Registry gaps fail open for the missing tier only —
+ * builtin/studio always resolve, installed plugins are best-effort so a
+ * plugin-read outage never strands a compatible activation.
+ */
+async function assertActivationCompatible(
+  db: Client,
+  merchantId: string,
+  row: Row,
+  publishedVersionId: string,
+): Promise<void> {
+  try {
+    const themeKey = (
+      typeof row.source_listing_slug === "string" &&
+      row.source_listing_slug.trim()
+        ? row.source_listing_slug.trim()
+        : typeof row.name === "string" && row.name.trim()
+          ? row.name.trim()
+          : ""
+    ).slice(0, 64);
+    if (!themeKey) return;
+    const { data: version } = await db
+      .from("theme_versions")
+      .select("templates")
+      .eq("merchant_id", merchantId)
+      .eq("id", publishedVersionId)
+      .maybeSingle();
+    const templates = (version as { templates?: unknown } | null)?.templates;
+    const widgetIds = collectActivationWidgetIds(templates);
+    if (widgetIds.length === 0) return;
+    const [
+      {
+        createWidgetRegistry,
+        fromBuiltinWidgets,
+        fromStudioCatalog,
+        fromPluginManifest,
+      },
+      { checkThemeCompatibility },
+    ] = await Promise.all([
+      import("../unified-widget-registry"),
+      import("../widget-presentation"),
+    ]);
+    const registry = createWidgetRegistry();
+    for (const def of [...fromBuiltinWidgets(), ...fromStudioCatalog()]) {
+      try {
+        registry.registerWidget(def);
+      } catch {
+        // A single bad adapter def never blocks activation.
+      }
+    }
+    let installed: readonly unknown[] = [];
+    try {
+      const { listInstalledPlugins } = await import("../plugins.server");
+      installed = await listInstalledPlugins(db as never, merchantId);
+      for (const def of fromPluginManifest(
+        installed as Parameters<typeof fromPluginManifest>[0],
+      )) {
+        try {
+          registry.registerWidget(def);
+        } catch {
+          // Hostile plugin defs are dropped, never stored.
+        }
+      }
+    } catch {
+      // Plugin-read outage: builtin/studio gate still runs; plugin ids that
+      // would read `uninstalled` on an incomplete registry are skipped below
+      // so the outage never strands a compatible activation.
+      installed = [];
+    }
+    const report = checkThemeCompatibility(themeKey, widgetIds, { registry });
+    const bad = report.results.filter((entry) => !entry.compatible);
+    // When the plugin list failed to load, `uninstalled`/`unknown` for
+    // `plugin:*` ids reflect the gap, not the page — skip only those.
+    const actionable =
+      installed.length === 0
+        ? bad.filter(
+            (entry) =>
+              !entry.widgetId.startsWith("plugin:") ||
+              (entry.reason !== "uninstalled" && entry.reason !== "unknown"),
+          )
+        : bad;
+    if (actionable.length === 0) return;
+    const listed = actionable
+      .map((entry) => `${entry.widgetId} (${entry.reason})`)
+      .slice(0, 12)
+      .join(", ");
+    throw new ThemeDeskError(
+      "theme.incompatible_widgets",
+      `This theme cannot activate with ${actionable.length} incompatible widget(s): ${listed}. Remove or reinstall them, then try again.`,
+    );
+  } catch (error) {
+    if (
+      error instanceof ThemeDeskError &&
+      error.code === "theme.incompatible_widgets"
+    )
+      throw error;
+    // Gate infrastructure failures (DB read, registry build) never block a
+    // compatible activation — the approval and flag paths below still run.
+    return;
+  }
+}
+
+/**
  * Make a theme the live one. The flag flip and the package fork are separate
  * steps on purpose: the flag is what the console reads, the fork is what the
  * storefront renders, and a fork failure must not leave two active rows.
@@ -1310,6 +1489,10 @@ export async function activateTheme(
   // approval for its exact id before any flag flips. Clean versions pass
   // untouched; the check reads, never writes.
   await assertVersionApproved(db, merchantId, row.id, publishedVersionId);
+  // Frame30 compatibility gate: incompatible widgets refuse BEFORE any flag
+  // flips, with a recoverable listing. Compatible pages pass through
+  // untouched.
+  await assertActivationCompatible(db, merchantId, row, publishedVersionId);
 
   const { error: clearError } = await db
     .from("store_themes")

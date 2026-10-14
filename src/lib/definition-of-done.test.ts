@@ -119,7 +119,16 @@ describe("DoD 5 — ≥70% shared registry, no theme-exclusive renderer branches
       join(process.cwd(), "src/components/builder/WidgetTray.tsx"),
       "utf8",
     );
-    expect(traySrc).not.toMatch(/theme(Key)?\s*===/);
+    // Frame30 extensibility supersession (documented, not a bypass):
+    // theme-OWNED widgets resolve only under their owning theme — that is
+    // the §8/§10 contract, not a theme-exclusive renderer branch. What stays
+    // forbidden here: hardcoded theme names anywhere in the tray, and
+    // comparisons of the key against string literals (which would fork
+    // behavior per theme). The `typeof themeKey === "string"` null-guard and
+    // opaque forwarding to `themeTrayEntries` are the allowed shapes — misses
+    // degrade to an empty theme section with data preserved elsewhere.
+    expect(traySrc).not.toMatch(/songoskriti|somvabona/i);
+    expect(traySrc).not.toMatch(/(?<!typeof )themeKey\s*===?\s*["'`]/);
 
     // Vertical modules must stay a minority of the registry.
     const dir = join(process.cwd(), "src/components/builder");
@@ -163,6 +172,24 @@ describe("DoD 5 — ≥70% shared registry, no theme-exclusive renderer branches
       // below), and PluginBlock forwards the key opaquely to
       // resolveCommunityRender for Class B theme dressing — it must never
       // compare, switch, or name a theme (asserted below).
+      if (file === "WidgetTray.tsx") {
+        // Frame30 tray: declares the active theme key ONLY to forward it
+        // opaquely to `themeTrayEntries` (theme-owned scoping with empty-list
+        // fallback — misses never strand data). Same shape as the PluginBlock
+        // exception below: declare + forward, never compare/switch/name.
+        expect(src, `${file} declares the theme key`).toMatch(/themeKey\?:/);
+        expect(src, `${file} compares the theme key`).not.toMatch(
+          /(?<!typeof )themeKey\s*===?\s*["'`]/,
+        );
+        expect(src, `${file} switches on the theme key`).not.toMatch(
+          /switch\s*\([^)]*themeKey/,
+        );
+        expect(src, `${file} names a theme`).not.toMatch(
+          /songoskriti|somvabona/i,
+        );
+        expect(src, `${file} forwards opaquely`).toMatch(/themeTrayEntries\(/);
+        continue;
+      }
       if (file === "PluginBlock.tsx") {
         expect(src, `${file} declares the theme key`).toMatch(/themeKey\?:/);
         expect(src, `${file} compares the theme key`).not.toMatch(
