@@ -39,6 +39,32 @@ import {
 type Client = SupabaseClient<Database>;
 type Row = Record<string, unknown>;
 
+/** Minimal shape of the untyped query builder the client returns. */
+type LooseResult = {
+  data: unknown;
+  error: { message: string; code?: string } | null;
+  count?: number | null;
+};
+interface LooseQuery extends Promise<LooseResult> {
+  select: (
+    columns?: string,
+    options?: { count?: "exact" | "planned" | "estimated"; head?: boolean },
+  ) => LooseQuery;
+  eq: (column: string, value: unknown) => LooseQuery;
+  in: (column: string, values: unknown[]) => LooseQuery;
+  lte: (column: string, value: unknown) => LooseQuery;
+  order: (
+    column: string,
+    options?: { ascending?: boolean; nullsFirst?: boolean },
+  ) => LooseQuery;
+  range: (from: number, to: number) => LooseQuery;
+  limit: (count: number) => LooseQuery;
+  single: () => Promise<LooseResult>;
+  maybeSingle: () => Promise<LooseResult>;
+  insert: (values: unknown) => LooseQuery;
+  update: (values: unknown) => LooseQuery;
+}
+
 export class JobQueueError extends Error {
   constructor(
     readonly code: string,
@@ -56,7 +82,7 @@ async function admin(): Promise<Client> {
 }
 
 function table(client: Client, name: string) {
-  return (client as unknown as { from: (t: string) => any }).from(name);
+  return (client as unknown as { from: (t: string) => LooseQuery }).from(name);
 }
 
 /* ------------------------------------------------------------------ enqueue */

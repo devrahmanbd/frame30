@@ -179,8 +179,23 @@ export function behaviorScore(
   );
 }
 
+/** Minimal thenable query surface loadBehaviorSignals uses. Data stays
+ * unknown: rows cross the untyped Supabase boundary and callers cast after
+ * the null-coalescing below. */
+type BehaviorQuery = PromiseLike<{
+  data: unknown;
+  error: unknown;
+  count?: number;
+}> & {
+  select(columns: string): BehaviorQuery;
+  eq(column: string, value: unknown): BehaviorQuery;
+  in(column: string, values: unknown[]): BehaviorQuery;
+  order(column: string, opts?: { ascending?: boolean }): BehaviorQuery;
+  limit(n: number): BehaviorQuery;
+};
+
 type BehaviorAdmin = {
-  from: (table: string) => any;
+  from: (table: string) => BehaviorQuery;
   rpc?: (
     fn: string,
     args?: Record<string, unknown>,
@@ -250,8 +265,7 @@ async function loadRpcBehaviorScores(
     const signals = emptyBehaviorSignals();
     for (const row of data as RailScoreRow[]) {
       const raw = row?.product_id;
-      const id =
-        typeof raw === "string" ? raw : raw == null ? "" : String(raw);
+      const id = typeof raw === "string" ? raw : raw == null ? "" : String(raw);
       if (!id) continue;
       signals.scores.set(id, Math.max(0, Number(row.score) || 0));
       const velocity = Math.max(0, Number(row.velocity) || 0);
@@ -323,11 +337,13 @@ export async function loadBehaviorSignals(
       }
     }
 
-    const itemRows = ((items ?? []) as {
-      order_id: string;
-      variant_id: string | null;
-      quantity: number | string | null;
-    }[]).filter((r) => typeof r.variant_id === "string" && r.variant_id);
+    const itemRows = (
+      (items ?? []) as {
+        order_id: string;
+        variant_id: string | null;
+        quantity: number | string | null;
+      }[]
+    ).filter((r) => typeof r.variant_id === "string" && r.variant_id);
     const variantIds = [
       ...new Set([
         ...cartVariantIds,
@@ -446,7 +462,7 @@ export function rankRailRows<T extends { id: string }>(
  */
 async function loadMerchantCurrency(
   merchantId: string,
-  db: { from: (table: string) => any },
+  db: ReturnType<typeof publicClient>,
 ): Promise<string> {
   try {
     const { data } = await db
@@ -570,36 +586,34 @@ const loadCollectionSource: SourceLoader = async (
     if (merchSource === "recommended" || merchSource === "bestsellers") {
       ordered = rankRailRows(ordered, signals, merchSource).rows;
     }
-    out[request.key] = ordered
-      .slice(0, limit)
-      .map((p) => {
-        const variants = p.product_variants ?? [];
-        const compare = variants
-          .map((v) => Number(v.compare_at_amount_minor_int) || 0)
-          .filter((n) => n > 0);
-        const firstInStock = variants.find((v) => v.stock_quantity > 0);
-        return {
-          id: p.id,
-          title: p.title,
-          href: storeHref(base, "product", p.slug),
-          imageUrl: p.image_url,
-          priceMinor: minPrice(variants),
-          currency,
-          ...(compare.length ? { compareAtMinor: Math.max(...compare) } : {}),
-          inStock: variants.some((v) => v.stock_quantity > 0),
-          // Phase1-T1: total stock powers the low-stock chip; tags power the
-          // online-exclusive chip. Demo rows get no handle/variantId so their
-          // cards render without the wishlist heart or Quick View trigger.
-          stockCount: variants.reduce(
-            (sum, v) => sum + Math.max(0, v.stock_quantity),
-            0,
-          ),
-          tags: p.tags ?? [],
-          ...(p.demo
-            ? { variantId: undefined }
-            : { handle: p.slug, variantId: firstInStock?.id }),
-        } satisfies WidgetRow;
-      });
+    out[request.key] = ordered.slice(0, limit).map((p) => {
+      const variants = p.product_variants ?? [];
+      const compare = variants
+        .map((v) => Number(v.compare_at_amount_minor_int) || 0)
+        .filter((n) => n > 0);
+      const firstInStock = variants.find((v) => v.stock_quantity > 0);
+      return {
+        id: p.id,
+        title: p.title,
+        href: storeHref(base, "product", p.slug),
+        imageUrl: p.image_url,
+        priceMinor: minPrice(variants),
+        currency,
+        ...(compare.length ? { compareAtMinor: Math.max(...compare) } : {}),
+        inStock: variants.some((v) => v.stock_quantity > 0),
+        // Phase1-T1: total stock powers the low-stock chip; tags power the
+        // online-exclusive chip. Demo rows get no handle/variantId so their
+        // cards render without the wishlist heart or Quick View trigger.
+        stockCount: variants.reduce(
+          (sum, v) => sum + Math.max(0, v.stock_quantity),
+          0,
+        ),
+        tags: p.tags ?? [],
+        ...(p.demo
+          ? { variantId: undefined }
+          : { handle: p.slug, variantId: firstInStock?.id }),
+      } satisfies WidgetRow;
+    });
   }
   return out;
 };
@@ -670,7 +684,7 @@ const loadTaxonomySource: SourceLoader = async (merchantId, requests, ctx) => {
       name: c.name,
       slug: c.slug,
       collection_products: [],
-    })) as any;
+    }));
   }
   const out: Record<string, WidgetRow[]> = {};
   for (const request of requests) {

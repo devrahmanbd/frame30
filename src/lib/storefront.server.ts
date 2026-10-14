@@ -30,6 +30,23 @@ export type PublicVariant = {
   stock_quantity: number;
 };
 
+/**
+ * Demo-catalogue fallback variant: same money/stock fields as a
+ * PublicVariant, minus the database identity (product_id/sku) demo rows
+ * never had. The index loader serves DB rows or demo rows, never a mix.
+ */
+export type DemoFallbackVariant = Omit<PublicVariant, "product_id" | "sku">;
+
+export type StorefrontIndexProduct = {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  image_url: string | null;
+  category_id: string | null;
+  product_variants: (PublicVariant | DemoFallbackVariant)[];
+};
+
 export function mergePublicVariants<
   P extends { id: string; product_variants?: unknown },
 >(
@@ -465,7 +482,10 @@ async function loadStorefrontUncached(
       (settings as { setup_steps?: unknown } | null)?.setup_steps,
     ),
   ]);
-  let resolvedProducts = mergePublicVariants(products ?? [], variantRows);
+  let resolvedProducts: StorefrontIndexProduct[] = mergePublicVariants(
+    products ?? [],
+    variantRows,
+  );
   let resolvedCategories = categories ?? [];
   let resolvedCollections = collections ?? [];
 
@@ -491,14 +511,14 @@ async function loadStorefrontUncached(
           compare_at_amount_minor_int: v.compare_at ?? null,
           stock_quantity: v.stock ?? 10,
         })),
-      })) as any;
+      }));
     }
     if (resolvedCategories.length === 0) {
       resolvedCategories = demo.categories.map((c) => ({
         id: `demo-${c.slug}`,
         name: c.name,
         slug: c.slug,
-      })) as any;
+      }));
     }
     if (resolvedCollections.length === 0) {
       resolvedCollections = demo.collections.map((c) => ({
@@ -506,7 +526,7 @@ async function loadStorefrontUncached(
         name: c.name,
         slug: c.slug,
         collection_products: [],
-      })) as any;
+      }));
     }
   }
 
