@@ -194,6 +194,9 @@ export function ThemeChrome({
   useLangScope(storeSlug ?? null);
   let pathname = "";
   try {
+    // Intentional: without a RouterProvider this hook throws; the catch is
+    // the provider-absent resilience path (BlogArchiveTheme tests pin it).
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     pathname = useRouterState().location.pathname;
   } catch {
     pathname = "";
