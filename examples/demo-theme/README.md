@@ -16,18 +16,20 @@ Validators (used, never reimplemented): `src/lib/dev-theme-manifest.ts`,
 
 | File | Role |
 |---|---|
-| `dev.theme.json` | Shippable manifest: `presentation` + `animation` + `commerce-read` + `cart-write`, one GSAP dependency (pinned + integrity shape), three sections on `main`, fourteen merchant settings from the closed field set. No `webgl`, no forbidden keys. |
+| `dev.theme.json` | Shippable manifest: `presentation` + `animation` + `webgl` + `commerce-read` + `cart-write`, two pinned dependencies (GSAP + Three.js, each with version + license + integrity shape), four sections on `main`, sixteen merchant settings from the closed field set. No forbidden keys. |
 | `manifest.ts` | Re-exports the manifest and validates it via `parseDevThemeManifest`. |
 | `commerce.ts` | Read-scoped commerce context (§5): ids, titles, handles, images, options, variant readiness. Figure display is host-owned, so no figure fields exist here by construction. |
 | `shared.ts` | Shared presentation helpers: HTML escaping, reduced-motion probe, merchant input clamps, motion presets under the page budget. |
 | `story-block.ts` | Section 1 — animated storytelling block: static-first render, GSAP mount reached only via dynamic `import("gsap")`, reduced-motion static fallback, unmount cleanup via a live-timeline registry. |
 | `media-carousel.ts` | Section 2 — lazy media carousel (image + video slides): `data-src` placeholders while hidden, a single `requestSlideLoad` gate, still-frame fallback without video support, empty-list note, gate destroy on unmount. |
 | `product-cards.ts` | Section 3 — bespoke product cards + variant selector: strict `variant.select` / `cart.add` envelope builders (throw on weak input, attach only schema fields), source-scanned for commerce purity. |
+| `webgl-scene.ts` | Section 4 — isolated WebGL orbit scene: static-first render (canvas placeholder + poster still), real Three.js frame reached only via dynamic `import("three")` behind the `webgl` capability + reduced-motion + context gates, single-frame render, dispose forces context loss. |
 | `fixture-bundles.ts` | Test support (not shipped code): fixture install grants, catalogue + carousel fixtures, the ThemeRuntime frame identity. Excluded from the bundle mapping. |
 | `demo-manifest.test.ts` | Manifest gates (17 tests). |
 | `story-block.test.ts` | Story proof: settings render, motion, cleanup (13 tests). |
 | `media-carousel.test.ts` | Carousel proof: render, lazy gate, fallbacks, cleanup (12 tests). |
 | `product-cards.test.ts` | Cards proof: render, selectors, builders, source scans (17 tests). |
+| `webgl-scene.test.ts` | WebGL proof: static render, capability/reduced-motion/no-GL gates without the engine, real `import("three")` resolution + manifest pin equality, one-frame mount and full dispose (13 tests). |
 | `commerce-bridge.test.ts` | Bridge + runtime proof against the real validators (16 tests). |
 | `vitest.config.ts` | Local runner — same precedent as `starter-plugin` (the root config does not include this fixture; adding it there is the integrator's call). |
 | `tsconfig.json` | Local typecheck scope (fixture + referenced core gates only). |
@@ -43,9 +45,9 @@ node scripts/secret-scan.mjs
 
 ## What the fixture proves
 
-1. The manifest passes the real validator with the commerce pair declared
-   and `webgl` absent.
-2. All three sections render from fixture commerce data through the
+1. The manifest passes the real validator with the commerce pair plus
+   `webgl` declared.
+2. All four sections render from fixture commerce data through the
    ThemeRuntime SSR shell identity (`demo-atelier/0.1.0`), with merchant
    settings drawn only from the closed builder-field set.
 3. Motion follows the single-engine policy (dynamic GSAP import only),
@@ -62,14 +64,14 @@ node scripts/secret-scan.mjs
 6. The mapped fixture bundle (`dev.theme.json` + section sources under
    `sections/` + context under `components/`) passes the real
    `validateDevThemeBundle` gate with a stable fingerprint.
+7. The orbit scene renders one real Three.js frame in the browser behind
+   the `webgl` capability gate (pixels differ measurably from the poster
+   still), stays on the poster still under reduced motion or without GL,
+   and dispose forces context loss with zero live scenes.
 
 ## Explicitly out of scope (follow-ups)
 
-- **WebGL/Three.js:** `webgl` is declared in the closed capability allowlist
-  but this fixture does not implement it. Next: an isolated-canvas scene
-  with a static-image fallback when WebGL is unavailable, plus the
-  capability-gated review checklist proof.
-- **Mounted E2E:** these tests pin the host-side contract under node
+- **Mounted E2E for the first three sections:** these tests pin the
   (validators, SSR shell, gate behaviour). Real-frame behaviour — null-origin
   isolation, GSAP paint timing, video decode, IntersectionObserver wiring —
   needs a mounted browser E2E plus the bundle pipeline (build/ship/review
@@ -80,7 +82,7 @@ node scripts/secret-scan.mjs
 ## Deviations
 
 - None from the contract. One structural note: the fixture adds `shared.ts`
-  (presentation helpers shared by all three sections) beyond the
+  (presentation helpers shared by all four sections) beyond the
   manifest + section + commerce + tests pattern, so escaping, motion
   presets, and budget caps stay identical across sections; it is covered by
   the same source scans and bundle mapping as the sections.

@@ -37,6 +37,7 @@ const THEME_SOURCE_FILES = [
   "story-block.ts",
   "media-carousel.ts",
   "product-cards.ts",
+  "webgl-scene.ts",
   "fixture-bundles.ts",
 ];
 const themeSource = () =>
@@ -247,7 +248,7 @@ describe("product cards — commerce-context purity (source scan)", () => {
     }
   });
 
-  it("the single-engine policy holds: no static gsap import, dynamic only", () => {
+  it("the single-engine policy holds: no static gsap/three import, dynamic only", () => {
     for (const { file, text } of themeSource()) {
       expect(text, `${file} must not statically import gsap`).not.toMatch(
         /^\s*import\s+(?!type\b).*from\s*["']gsap["']/m,
@@ -255,11 +256,21 @@ describe("product cards — commerce-context purity (source scan)", () => {
       expect(text, `${file} must not require gsap`).not.toMatch(
         /require\(\s*["']gsap["']\s*\)/,
       );
+      expect(text, `${file} must not statically import three`).not.toMatch(
+        /^\s*import\s+(?!type\b).*from\s*["']three["']/m,
+      );
+      expect(text, `${file} must not require three`).not.toMatch(
+        /require\(\s*["']three["']\s*\)/,
+      );
     }
     const story = themeSource().find(
       (entry) => entry.file === "story-block.ts",
     )!;
     expect(story.text).toMatch(/await\s+import\(\s*["']gsap["']\s*\)/);
+    const webgl = themeSource().find(
+      (entry) => entry.file === "webgl-scene.ts",
+    )!;
+    expect(webgl.text).toMatch(/await\s+import\(\s*["']three["']\s*\)/);
   });
 
   it("theme source performs no network access", () => {
@@ -295,6 +306,8 @@ describe("product cards — commerce-context purity (source scan)", () => {
         "shared.ts",
         "story-block.test.ts",
         "story-block.ts",
+        "webgl-scene.test.ts",
+        "webgl-scene.ts",
         "tsconfig.json",
         "vitest.config.ts",
       ].sort(),

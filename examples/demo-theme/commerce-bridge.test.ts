@@ -43,6 +43,7 @@ import {
 } from "./fixture-bundles";
 import { demoManifest } from "./manifest";
 import { renderMediaCarousel } from "./media-carousel";
+import { renderWebglScene } from "./webgl-scene";
 import {
   buildCartAddEnvelope,
   buildVariantSelectEnvelope,
@@ -274,7 +275,8 @@ describe("demo runtime — sections render through the fixture shell", () => {
       products: ["prod-1", "prod-3"],
       commerce,
     });
-    const rendered = [story.html, carousel.html, cards.html];
+    const webgl = renderWebglScene({ settings: {} });
+    const rendered = [story.html, carousel.html, cards.html, webgl.html];
     for (const section of demoManifest().sections) {
       expect(
         rendered.some((html) => html.includes(`data-demo="${section.key}"`)),

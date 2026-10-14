@@ -8,9 +8,10 @@
  * storytelling block and the carousel; `commerce-read` covers catalogue
  * reads through `commerce.ts`; `cart-write` covers scoped cart lines through
  * the `product-cards.ts` envelope builders only (the host re-checks every
- * write server-side). `webgl` is deliberately NOT declared — an
- * isolated-canvas scene with a static fallback is the documented follow-up
- * (see README.md).
+ * write server-side). `webgl` IS declared: the isolated-canvas orbit
+ * scene (`webgl-scene.ts`) renders one real Three.js frame behind the
+ * capability + reduced-motion + context gates, with the poster still as
+ * the static fallback (see README.md).
  */
 
 import {

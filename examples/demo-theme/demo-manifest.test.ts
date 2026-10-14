@@ -21,6 +21,7 @@ import { DEMO_MANIFEST_SOURCE, demoManifest } from "./manifest";
 import { CAROUSEL_SETTINGS_SCHEMA } from "./media-carousel";
 import { CARDS_SETTINGS_SCHEMA } from "./product-cards";
 import { STORY_SETTINGS_SCHEMA } from "./story-block";
+import { WEBGL_SETTINGS_SCHEMA } from "./webgl-scene";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const manifestJson: unknown = JSON.parse(
@@ -51,15 +52,16 @@ describe("demo theme — manifest validates", () => {
     );
   });
 
-  it("declares NO webgl capability (isolated canvas is a follow-up)", () => {
-    expect(demoManifest().capabilities).not.toContain("webgl");
+  it("declares the webgl capability for the isolated canvas scene", () => {
+    expect(demoManifest().capabilities).toContain("webgl");
   });
 
-  it("binds all three demo sections to the main slot", () => {
+  it("binds all four demo sections to the main slot", () => {
     expect(demoManifest().sections).toEqual([
       { key: "story-arc", slot: "main", component: "StoryArc" },
       { key: "media-carousel", slot: "main", component: "MediaCarousel" },
       { key: "curated-cards", slot: "main", component: "CuratedCards" },
+      { key: "webgl-scene", slot: "main", component: "WebglScene" },
     ]);
   });
 
@@ -79,6 +81,7 @@ describe("demo theme — manifest validates", () => {
       STORY_SETTINGS_SCHEMA,
       CAROUSEL_SETTINGS_SCHEMA,
       CARDS_SETTINGS_SCHEMA,
+      WEBGL_SETTINGS_SCHEMA,
     ]) {
       for (const field of schema) {
         expect(byKey.get(field.key), `setting ${field.key}`).toBe(field.type);

@@ -146,11 +146,11 @@ async function themeReport(
     .eq("theme_id", themeId)
     .eq("action", "theme.approved");
   const approval = (
-    ((approvals ?? []) as unknown as {
+    (approvals ?? []) as unknown as {
       actor?: unknown;
       after?: unknown;
       created_at?: unknown;
-    }[]) ?? []
+    }[]
   ).find(
     (a) => ((a.after ?? {}) as Record<string, unknown>).content_hash === sha256,
   );
@@ -214,11 +214,11 @@ async function pluginReport(
     .eq("merchant_id", merchantId)
     .eq("action", "plugin.approved");
   const approval = (
-    ((approvals ?? []) as unknown as {
+    (approvals ?? []) as unknown as {
       actor?: unknown;
       changed?: unknown;
       created_at?: unknown;
-    }[]) ?? []
+    }[]
   ).find((a) => {
     const changed = (a.changed ?? {}) as Record<string, unknown>;
     return (

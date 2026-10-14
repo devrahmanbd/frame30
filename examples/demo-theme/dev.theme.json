@@ -4,19 +4,26 @@
   "runtime": "1.0.0",
   "name": "Demo Atelier",
   "publisher": "Framique Demo Studio",
-  "capabilities": ["presentation", "animation", "commerce-read", "cart-write"],
+  "capabilities": ["presentation", "animation", "webgl", "commerce-read", "cart-write"],
   "dependencies": [
     {
       "name": "gsap",
       "version": "3.15.0",
       "license": "MIT",
       "integrity": "sha384-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    },
+    {
+      "name": "three",
+      "version": "0.186.1",
+      "license": "MIT",
+      "integrity": "sha512-blFeqb49wRCSGUGj7gtpfnSGHy2lwDk94RhUmS1c/hTby70kvChbWpkJ4Pm1390LqzzvTmzgXKHPEafJwCb8jA=="
     }
   ],
   "sections": [
     { "key": "story-arc", "slot": "main", "component": "StoryArc" },
     { "key": "media-carousel", "slot": "main", "component": "MediaCarousel" },
-    { "key": "curated-cards", "slot": "main", "component": "CuratedCards" }
+    { "key": "curated-cards", "slot": "main", "component": "CuratedCards" },
+    { "key": "webgl-scene", "slot": "main", "component": "WebglScene" }
   ],
   "settings": [
     { "key": "story-heading", "label": "Story heading", "type": "text" },
@@ -32,6 +39,8 @@
     { "key": "cards-products", "label": "Cards products", "type": "product-selection" },
     { "key": "cards-accent", "label": "Cards accent", "type": "color" },
     { "key": "cards-gap", "label": "Cards spacing", "type": "spacing" },
-    { "key": "cards-motion", "label": "Cards motion", "type": "animation" }
+    { "key": "cards-motion", "label": "Cards motion", "type": "animation" },
+    { "key": "webgl-caption", "label": "WebGL caption", "type": "text" },
+    { "key": "webgl-poster", "label": "WebGL poster", "type": "image" }
   ]
 }
