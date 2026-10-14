@@ -150,8 +150,8 @@ function looksLikeRawApiKey(value: string): boolean {
   return (
     v.includes("sk-or-v1-") ||
     v.includes("sk-or-") ||
-    /^sk-[A-Za-z0-9_\-]{10,}$/.test(v) ||
-    /^[A-Za-z0-9_\-]{32,}$/.test(v.replace(/\s+/g, ""))
+    /^sk-[A-Za-z0-9_]{10,}$/.test(v) ||
+    /^[A-Za-z0-9_]{32,}$/.test(v.replace(/\s+/g, ""))
   );
 }
 

@@ -103,6 +103,22 @@ describe("Phase 9.3 — Intent Detection: create_ticket", () => {
   });
 });
 
+describe("Intent Detection: complaint (incl. Bangla combining marks)", () => {
+  it.each(["this is a scam", "terrible service, I want to sue"])(
+    "detects complaint intent from English phrase: %s",
+    (phrase) => {
+      expect(detectIntent(phrase)).toBe("complaint");
+    },
+  );
+
+  it.each(["সার্ভিস বাজে", "খারাপ সার্ভিসের জন্য অভিযোগ"])(
+    "detects complaint intent from Bangla phrase (vowel-sign dependent): %s",
+    (phrase) => {
+      expect(detectIntent(phrase)).toBe("complaint");
+    },
+  );
+});
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Phase 9.3 — Intent Detection: refund auto-escalation
 // ─────────────────────────────────────────────────────────────────────────────
