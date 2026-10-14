@@ -299,6 +299,102 @@ function StudioAppBlock({
   );
 }
 
+/**
+ * Hero slide deck. Split out of `StudioWidget` so the slide-index state hook
+ * runs unconditionally in its own component instead of inside a `switch`
+ * case. Renders exactly what the inline case rendered.
+ */
+function StudioHero({ s }: { s: NodeSettings }) {
+  const fromItems = rows(s, "items")
+    .map((row) => ({
+      heading: String(row.heading ?? ""),
+      image: String(row.image ?? ""),
+      subheading: String(row.subheading ?? ""),
+      ctaLabel: String(row.ctaLabel ?? ""),
+      ctaHref: String(row.ctaHref ?? ""),
+    }))
+    .filter((slide) => slide.heading || slide.image);
+  const slides =
+    fromItems.length > 0
+      ? fromItems
+      : [
+          {
+            heading: str(s, "heading"),
+            image: str(s, "image"),
+            subheading: str(s, "subheading"),
+            ctaLabel: str(s, "ctaLabel"),
+            ctaHref: str(s, "ctaHref"),
+          },
+          {
+            heading: str(s, "s2Heading"),
+            image: str(s, "s2Image"),
+            subheading: "",
+            ctaLabel: str(s, "ctaLabel"),
+            ctaHref: str(s, "ctaHref"),
+          },
+          {
+            heading: str(s, "s3Heading"),
+            image: str(s, "s3Image"),
+            subheading: "",
+            ctaLabel: str(s, "ctaLabel"),
+            ctaHref: str(s, "ctaHref"),
+          },
+        ].filter((slide, index) => index === 0 || slide.heading || slide.image);
+  const [index, setIndex] = useState(0);
+  const active = slides[Math.min(index, slides.length - 1)]!;
+  const center = str(s, "align", "left") === "center";
+  return (
+    <section
+      className={`overflow-hidden rounded-fq-lg border border-border bg-info-soft ${center ? "text-center" : ""}`}
+    >
+      {active.image && (
+        <img
+          src={active.image}
+          alt={active.heading}
+          loading="lazy"
+          className="aspect-[21/9] w-full object-cover"
+        />
+      )}
+      <div className="p-8">
+        <h3 className="font-bangla-display text-3xl font-bold sm:text-4xl">
+          {active.heading || "Welcome to our store"}
+        </h3>
+        {index === 0 && active.subheading && (
+          <p className="mt-2 max-w-xl text-muted-foreground">
+            {active.subheading}
+          </p>
+        )}
+        {active.ctaLabel && (
+          <p className="mt-4">
+            <a
+              href={active.ctaHref || "#"}
+              className="inline-block rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+            >
+              {active.ctaLabel}
+            </a>
+          </p>
+        )}
+        {slides.length > 1 && (
+          <div className="mt-4 flex gap-2" role="group" aria-label="Slides">
+            {slides.map((slide, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setIndex(i)}
+                aria-current={i === index}
+                aria-label={`Slide ${i + 1}`}
+                className={`h-11 w-11 rounded-fq-md border border-border text-xs tabular-nums ${i === index ? "bg-primary text-primary-foreground" : "bg-card"}`}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
 export function StudioWidget({ node, device, editing, menus }: RenderProps) {
   const s = node.settings;
   const align = str(s, "textAlign", "left");
@@ -1291,96 +1387,7 @@ export function StudioWidget({ node, device, editing, menus }: RenderProps) {
     }
 
     case "hero": {
-      const fromItems = rows(s, "items")
-        .map((row) => ({
-          heading: String(row.heading ?? ""),
-          image: String(row.image ?? ""),
-          subheading: String(row.subheading ?? ""),
-          ctaLabel: String(row.ctaLabel ?? ""),
-          ctaHref: String(row.ctaHref ?? ""),
-        }))
-        .filter((slide) => slide.heading || slide.image);
-      const slides =
-        fromItems.length > 0
-          ? fromItems
-          : [
-              {
-                heading: str(s, "heading"),
-                image: str(s, "image"),
-                subheading: str(s, "subheading"),
-                ctaLabel: str(s, "ctaLabel"),
-                ctaHref: str(s, "ctaHref"),
-              },
-              {
-                heading: str(s, "s2Heading"),
-                image: str(s, "s2Image"),
-                subheading: "",
-                ctaLabel: str(s, "ctaLabel"),
-                ctaHref: str(s, "ctaHref"),
-              },
-              {
-                heading: str(s, "s3Heading"),
-                image: str(s, "s3Image"),
-                subheading: "",
-                ctaLabel: str(s, "ctaLabel"),
-                ctaHref: str(s, "ctaHref"),
-              },
-            ].filter(
-              (slide, index) => index === 0 || slide.heading || slide.image,
-            );
-      const [index, setIndex] = useState(0);
-      const active = slides[Math.min(index, slides.length - 1)]!;
-      const center = str(s, "align", "left") === "center";
-      return (
-        <section
-          className={`overflow-hidden rounded-fq-lg border border-border bg-info-soft ${center ? "text-center" : ""}`}
-        >
-          {active.image && (
-            <img
-              src={active.image}
-              alt={active.heading}
-              loading="lazy"
-              className="aspect-[21/9] w-full object-cover"
-            />
-          )}
-          <div className="p-8">
-            <h3 className="font-bangla-display text-3xl font-bold sm:text-4xl">
-              {active.heading || "Welcome to our store"}
-            </h3>
-            {index === 0 && active.subheading && (
-              <p className="mt-2 max-w-xl text-muted-foreground">
-                {active.subheading}
-              </p>
-            )}
-            {active.ctaLabel && (
-              <p className="mt-4">
-                <a
-                  href={active.ctaHref || "#"}
-                  className="inline-block rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
-                >
-                  {active.ctaLabel}
-                </a>
-              </p>
-            )}
-            {slides.length > 1 && (
-              <div className="mt-4 flex gap-2" role="group" aria-label="Slides">
-                {slides.map((slide, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => setIndex(i)}
-                    aria-current={i === index}
-                    aria-label={`Slide ${i + 1}`}
-                    className={`h-11 w-11 rounded-fq-md border border-border text-xs tabular-nums ${i === index ? "bg-primary text-primary-foreground" : "bg-card"}`}
-                  >
-                    {i + 1}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </section>
-      );
+      return <StudioHero s={s} />;
     }
 
     case "textile_showcase": {

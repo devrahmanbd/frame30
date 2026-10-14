@@ -252,6 +252,22 @@ export function SectionRenderer({
   const conditional = !!section.when?.length || !!section.ab;
   const gatedOut = conditional && (!gate.visible || !abOk);
   useExposure(section.ab, section.id, !editing && abOk && gate.visible);
+  // Hooks run unconditionally in the same order on every render, so the
+  // motion inputs are resolved here, above every early return. Rendered
+  // output is unchanged — the returns below are untouched.
+  const resolved = resolveProps(dynSection, device);
+  const fx = motionEffectOf(resolved["advMotion"]);
+  const motionFx = useMotionFx(fx, !editing);
+  // Both observers share one wrapper node, so both refs attach here. The
+  // ref objects are stable, keeping this callback stable too.
+  const wrapRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      (reveal.ref as React.MutableRefObject<HTMLElement | null>).current = node;
+      (motionFx.ref as React.MutableRefObject<HTMLElement | null>).current =
+        node;
+    },
+    [reveal.ref, motionFx.ref],
+  );
 
   if (section.invalid) {
     // A bad widget never breaks the page: it is skipped in production and
@@ -275,7 +291,6 @@ export function SectionRenderer({
   const hideClasses = editing ? "" : hidden.map((b) => HIDE_CLASS[b]).join(" ");
   // Phase 0.4: the universal style layer is applied here, once, so no widget
   // hand-rolls padding, background, radius or reveal.
-  const resolved = resolveProps(dynSection, device);
   const chrome = sectionStyle(resolved);
   // Widget skins (spec 2026-09-25 §3): the resolved skin rides on the chrome
   // wrapper alongside data-fq-node, so theme skin sheets can key on
@@ -292,21 +307,7 @@ export function SectionRenderer({
   // Theme-motion manifest: a theme requests a named effect via advMotion and
   // the engine executes it here — no renderer fork, no theme import.
   // Entrance effects park behind the shared observer like reveals do.
-  const fx = motionEffectOf(resolved["advMotion"]);
   const fxParked = fx !== "none" && isEntranceEffect(fx) && !reveal.shown;
-  // JS-executed motion (count-up, scroll-scrub) runs through the shared
-  // executor: IntersectionObserver-gated, engine-lazy, settled by default.
-  const motionFx = useMotionFx(fx, !editing);
-  // Both observers share one wrapper node, so both refs attach here. The
-  // ref objects are stable, keeping this callback stable too.
-  const wrapRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      (reveal.ref as React.MutableRefObject<HTMLElement | null>).current = node;
-      (motionFx.ref as React.MutableRefObject<HTMLElement | null>).current =
-        node;
-    },
-    [reveal.ref, motionFx.ref],
-  );
   // In the studio every node carries a handle so a click anywhere on the
   // canvas can select the deepest widget under the pointer, Webflow-style.
   const selected = editing && !!selectedIds?.includes(section.id);

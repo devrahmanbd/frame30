@@ -97,7 +97,7 @@ const CONSENTS = [
 ] as const;
 
 function AccountPage() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { slug } = Route.useParams();
   const { chrome } = Route.useLoaderData();
   const search = Route.useSearch();
@@ -121,7 +121,7 @@ function AccountPage() {
 
   const invalidate = () =>
     void qc.invalidateQueries({ queryKey: ["store-account", slug] });
-  const mutate = <T,>(
+  const useAccountMutation = <T,>(
     fn: (input: { data: T }) => Promise<unknown>,
     done: string,
   ) =>
@@ -145,23 +145,23 @@ function AccountPage() {
         ),
     });
 
-  const saveAddress = mutate(
+  const saveAddress = useAccountMutation(
     useServerFn(accountSaveAddressFn),
     t("Address saved", "ঠিকানা সংরক্ষিত"),
   );
-  const delAddress = mutate(
+  const delAddress = useAccountMutation(
     useServerFn(accountDeleteAddressFn),
     t("Address removed", "ঠিকানা মুছে ফেলা হয়েছে"),
   );
-  const saveProfile = mutate(
+  const saveProfile = useAccountMutation(
     useServerFn(accountUpsertSelfFn),
     t("Profile saved", "প্রোফাইল সংরক্ষিত"),
   );
-  const setConsent = mutate(
+  const setConsent = useAccountMutation(
     useServerFn(accountSetConsentFn),
     t("Preference saved", "পছন্দ সংরক্ষিত"),
   );
-  const toggleWish = mutate(
+  const toggleWish = useAccountMutation(
     useServerFn(accountToggleWishlistFn),
     t("Wishlist updated", "উইশলিস্ট হালনাগাদ"),
   );
@@ -175,6 +175,48 @@ function AccountPage() {
       m.set(`${c.channel}:${c.purpose}`, c.granted);
     return m;
   }, [data?.consents]);
+
+  const overview = account.data?.overview;
+  // Theme account template: feed merchant orders_list / profile_card
+  // sections live session rows. The widgets fall back to their sign-in
+  // prompt when signed out (rows undefined, not pending).
+  // (Above the signed-out early return so hooks run unconditionally in the
+  // same order on every render; rendered output is unchanged.)
+  const accountSlots = useMemo(() => {
+    const sections = chrome?.ast ? flattenAst(chrome.ast) : [];
+    const out: Partial<Record<string, ReactNode>> = {};
+    const pending = account.isPending;
+    const o = sections.find((s) => s.type === "orders_list");
+    if (o) {
+      out.orders_list = (
+        <OrdersList
+          {...accountSlotCtx(o, {
+            rows: overview ? mapOrdersToRows(overview.orders ?? []) : undefined,
+            pending,
+            locale: lang,
+            storeSlug: slug,
+          })}
+        />
+      );
+    }
+    const p = sections.find((s) => s.type === "profile_card");
+    if (p) {
+      const row = overview?.profile
+        ? mapProfileToRow(overview.profile)
+        : undefined;
+      out.profile_card = (
+        <ProfileCard
+          {...accountSlotCtx(p, {
+            rows: row ? [row] : undefined,
+            pending,
+            locale: lang,
+            storeSlug: slug,
+          })}
+        />
+      );
+    }
+    return out;
+  }, [chrome, account.data, account.isPending, lang, slug]);
 
   if (!signedIn) {
     return <ShopperOrderLookup slug={slug} />;
@@ -445,47 +487,6 @@ function AccountPage() {
       )}
     </>
   );
-
-  const { lang } = useLang();
-  // Theme account template: feed merchant orders_list / profile_card
-  // sections live session rows. The widgets fall back to their sign-in
-  // prompt when signed out (rows undefined, not pending).
-  const overview = account.data?.overview;
-  const accountSlots = useMemo(() => {
-    const sections = chrome?.ast ? flattenAst(chrome.ast) : [];
-    const out: Partial<Record<string, ReactNode>> = {};
-    const pending = account.isPending;
-    const o = sections.find((s) => s.type === "orders_list");
-    if (o) {
-      out.orders_list = (
-        <OrdersList
-          {...accountSlotCtx(o, {
-            rows: overview ? mapOrdersToRows(overview.orders ?? []) : undefined,
-            pending,
-            locale: lang,
-            storeSlug: slug,
-          })}
-        />
-      );
-    }
-    const p = sections.find((s) => s.type === "profile_card");
-    if (p) {
-      const row = overview?.profile
-        ? mapProfileToRow(overview.profile)
-        : undefined;
-      out.profile_card = (
-        <ProfileCard
-          {...accountSlotCtx(p, {
-            rows: row ? [row] : undefined,
-            pending,
-            locale: lang,
-            storeSlug: slug,
-          })}
-        />
-      );
-    }
-    return out;
-  }, [chrome, account.data, account.isPending, lang, slug]);
 
   return (
     <PluginLayer plugins={chrome?.installedPlugins ?? []}>

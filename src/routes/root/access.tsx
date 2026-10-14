@@ -67,7 +67,7 @@ function AccessDesk() {
   const reinstateFn = useServerFn(ownerReinstateFn);
   const requestFn = useServerFn(ownerImpersonateRequestFn);
   const revokeFn = useServerFn(ownerImpersonateRevokeFn);
-  const useGrantFn = useServerFn(ownerImpersonateUseFn);
+  const grantFn = useServerFn(ownerImpersonateUseFn);
 
   const suspensions = useQuery({
     queryKey: ["owner-suspensions"],
@@ -150,7 +150,7 @@ function AccessDesk() {
   });
   const enter = useMutation({
     mutationFn: (grantId: string) =>
-      useGrantFn({ data: { grantId, action: "console.open" } }),
+      grantFn({ data: { grantId, action: "console.open" } }),
     onSuccess: () => {
       toast.success(
         t(
