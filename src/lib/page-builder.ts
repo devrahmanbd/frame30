@@ -298,9 +298,7 @@ export function parseBuilderBody(raw: string | null | undefined): BuilderDoc {
   }
 }
 
-export function serializeBuilderBody(
-  doc: BuilderDoc | StarterDocBody,
-): string {
+export function serializeBuilderBody(doc: BuilderDoc | StarterDocBody): string {
   return JSON.stringify(doc);
 }
 

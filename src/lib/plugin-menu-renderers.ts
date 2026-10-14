@@ -144,8 +144,7 @@ export function selectPluginMenuRenderer<P>(
     if (decision.slot !== slot) return undefined;
     // Same single boundary as resolveMenuRenderer above.
     return RENDERERS.get(decision.pluginId)?.get(slot) as
-      | PluginMenuRendererComponent<P>
-      | undefined;
+      PluginMenuRendererComponent<P> | undefined;
   } catch {
     return undefined;
   }
@@ -205,8 +204,11 @@ export class PluginMenuBoundary extends Component<
 
   override componentDidCatch(error: Error, _info: ErrorInfo): void {
     try {
-      (this.props.onError ?? ((cause: unknown) =>
-        reportMenuRendererError(this.props.pluginId, cause)))(error);
+      (
+        this.props.onError ??
+        ((cause: unknown) =>
+          reportMenuRendererError(this.props.pluginId, cause))
+      )(error);
     } catch {
       // Reporting never breaks navigation.
     }
