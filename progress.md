@@ -11,7 +11,7 @@
 
 ## CI failure inventory (verified locally, mirrors CI jobs 1:1)
 
-- [ ] `lint-typecheck/eslint`: ~1300 errors, all but 15 auto-fixable prettier drift; 14 rules-of-hooks + 1 unknown-property across 10 files need hands
+- [x] `lint-typecheck/eslint`: prettier drift swept repo-wide (behavior-safe per full suite); hooks/prop errors fixed except in-flight lanes; one resilience-vs-rule conflict resolved via documented disable (`ThemeChrome` provider-absent catch — a prior hoist broke 2 tests, reverted)
 - [ ] `unit-contract/vitest`: 1 pre-existing env failure (`site.server` missing-env guard)
 - [ ] `e2e-critical`: references 8 `*_loop` suites that exist only as docs → "No tests found" exit 1
 - [ ] `scan`: green (secret/sast/diff+full/dep-audit all pass)
@@ -20,10 +20,11 @@
 
 ## Loops
 
-- [ ] Format sweep: `prettier --write .` + full-suite proof of no behavior change
-- [ ] Manual lint fixes (10 files, hooks/prop only)
-- [ ] site.server env guard: determine impl-bug vs test-bug, fix the right side
-- [ ] e2e-critical rewire to runnable specs (loop suites never built — say so in docs)
+- [x] Format sweep: `prettier --write .` + full-suite proof of no behavior change
+- [x] Manual lint fixes (10 files, hooks/prop only)
+- [x] site.server env guard: LOCAL-ONLY failure (checked-in `.env.local` dummy leaks into per-module `import.meta.env`; CI has no env files) — test left pristine, documented
+- [x] Deferred `any` closes: starter-doc duality typed honestly (pre-existing bare-factory lie now annotated, behavior identical); heterogeneous menu registry via `never`-storage + generic resolution (single documented boundary)
+- [x] e2e-critical rewire to runnable specs (loop suites never built — said in docs)
 - [ ] Full local CI mirror → commit → push → GitHub Checks green
 
 # Progress — Frame30 Extensible Builder Program (Oct 2026)
