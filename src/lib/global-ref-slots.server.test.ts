@@ -32,7 +32,12 @@ const node = (
   props: Record<string, unknown>,
   children?: Section[],
 ): Section =>
-  ({ id, type, props, ...(children ? { children } : {}) }) as unknown as Section;
+  ({
+    id,
+    type,
+    props,
+    ...(children ? { children } : {}),
+  }) as unknown as Section;
 
 const block: GlobalRefBlock = {
   id: "block-1",

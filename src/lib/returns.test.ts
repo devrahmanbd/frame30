@@ -12,7 +12,8 @@ import {
   allowAllRateLimits,
 } from "./__fixtures__/test-doubles";
 
-const rec = vi.hoisted(() => ({ holder: null as any }));
+type Recorder = ReturnType<typeof metricRecorder>;
+const rec = vi.hoisted(() => ({ holder: null as Recorder | null }));
 const recorder = metricRecorder();
 rec.holder = recorder;
 
@@ -54,8 +55,10 @@ describe("openReturn", () => {
       ],
       subject: "s",
     });
-    const args = db.rpcCalls("return_open")[0]!.args as any;
-    expect(args._items.map((i: any) => i.quantity)).toEqual([1, 1]);
+    const args = db.rpcCalls("return_open")[0]!.args as {
+      _items: { quantity: number }[];
+    };
+    expect(args._items.map((i) => i.quantity)).toEqual([1, 1]);
   });
 
   it("denies a return without a reason", async () => {
@@ -98,7 +101,10 @@ describe("openReturn", () => {
       items: [{ orderItemId: "oi-1", quantity: 2.9 }],
       subject: "s",
     });
-    const args = db.rpcCalls("return_open")[0]!.args as any;
+    const args = db.rpcCalls("return_open")[0]!.args as {
+      _reason: string;
+      _items: { order_item_id: string; quantity: number; restock: boolean }[];
+    };
     expect(args._reason).toHaveLength(200);
     expect(args._items).toEqual([
       { order_item_id: "oi-1", quantity: 2, restock: true },
@@ -160,7 +166,7 @@ describe("disputes", () => {
       orderId: "o-1",
       reason: "chargeback",
       amountMinorInt: 1500,
-    } as any);
+    });
     expect(recorder.of("framique_dispute_total").length).toBeGreaterThan(0);
   });
 
@@ -172,7 +178,7 @@ describe("disputes", () => {
       advanceDispute(db.asClient(), MERCHANT, "staff-1", {
         disputeId: "d-1",
         status: "won",
-      } as any),
+      }),
     ).rejects.toBeTruthy();
   });
 });
@@ -188,6 +194,6 @@ describe("tenant scoping", () => {
       },
     });
     const rows = await loadReturns(db.asClient(), MERCHANT);
-    expect(rows.map((r: any) => r.id)).toEqual(["r1"]);
+    expect(rows.map((r: { id: string }) => r.id)).toEqual(["r1"]);
   });
 });

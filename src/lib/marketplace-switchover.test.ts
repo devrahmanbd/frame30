@@ -182,17 +182,20 @@ describe("SWITCHOVER-2 exact-artifact install", () => {
   });
 
   it("installs the pinned version's bytes when versionId points at a full-manifest source", async () => {
-    const db = shopDb([exactRow()], [
-      {
-        id: "v-2",
-        kind: "widget",
-        listing_id: LISTING_EXACT,
-        version: "1.1.0",
-        status: "active",
-        scopes: GRANTED,
-        source: exactManifest("1.1.0"),
-      },
-    ]);
+    const db = shopDb(
+      [exactRow()],
+      [
+        {
+          id: "v-2",
+          kind: "widget",
+          listing_id: LISTING_EXACT,
+          version: "1.1.0",
+          status: "active",
+          scopes: GRANTED,
+          source: exactManifest("1.1.0"),
+        },
+      ],
+    );
     const out = (await installListing(db.asClient(), MERCHANT, {
       kind: "widget",
       listingId: LISTING_EXACT,
@@ -201,7 +204,10 @@ describe("SWITCHOVER-2 exact-artifact install", () => {
       versionId: "v-2",
       grantedScopes: GRANTED,
       consentedBy: ACTOR,
-    })) as unknown as { installId: string; artifact: { checksum: string; version: string; pinned: string } | null };
+    })) as unknown as {
+      installId: string;
+      artifact: { checksum: string; version: string; pinned: string } | null;
+    };
 
     const expected = sha256(exportPluginManifestZip(exactManifest("1.1.0")));
     expect(out.artifact).toMatchObject({
@@ -223,17 +229,20 @@ describe("SWITCHOVER-2 exact-artifact install", () => {
   });
 
   it("falls back to the listing manifest when the pinned version has no usable source", async () => {
-    const db = shopDb([exactRow()], [
-      {
-        id: "v-bundle",
-        kind: "widget",
-        listing_id: LISTING_EXACT,
-        version: "1.0.0",
-        status: "active",
-        scopes: ["read_shop"],
-        source: { entry: "framique.mount()", assets: {} },
-      },
-    ]);
+    const db = shopDb(
+      [exactRow()],
+      [
+        {
+          id: "v-bundle",
+          kind: "widget",
+          listing_id: LISTING_EXACT,
+          version: "1.0.0",
+          status: "active",
+          scopes: ["read_shop"],
+          source: { entry: "framique.mount()", assets: {} },
+        },
+      ],
+    );
     const out = (await installListing(db.asClient(), MERCHANT, {
       kind: "widget",
       listingId: LISTING_EXACT,
@@ -365,12 +374,18 @@ describe("SWITCHOVER-2 catalog artifact refs", () => {
     for (const [i, entry] of catalog.widgets
       .filter((w) => (w as { builtin?: boolean }).builtin)
       .entries()) {
-      const art = (entry as { artifact: { checksum: string; version: string; pinned: string } | null }).artifact;
+      const art = (
+        entry as {
+          artifact: {
+            checksum: string;
+            version: string;
+            pinned: string;
+          } | null;
+        }
+      ).artifact;
       expect(art?.checksum).toMatch(/^[a-f0-9]{64}$/);
       expect(art?.version).toBe(BUILTIN_PLUGINS[i]!.manifest.version);
-      expect(art?.pinned).toBe(
-        `builtin:${BUILTIN_PLUGINS[i]!.manifest.id}`,
-      );
+      expect(art?.pinned).toBe(`builtin:${BUILTIN_PLUGINS[i]!.manifest.id}`);
     }
 
     const dbRows = catalog.widgets.filter(
@@ -510,7 +525,11 @@ describe("FOLLOW-UP marketplace install artifact persistence", () => {
       preMigrationClient(db),
       MERCHANT,
       exactInput("switch-key-artifact-absent"),
-    )) as unknown as { installId: string; replayed: boolean; artifact: unknown };
+    )) as unknown as {
+      installId: string;
+      replayed: boolean;
+      artifact: unknown;
+    };
     expect(out.replayed).toBe(false);
     // The in-memory artifact ref still reports (bytes were hashed); only the
     // persisted columns degrade.
@@ -584,14 +603,12 @@ describe("FOLLOW-UP marketplace install artifact persistence", () => {
         ),
     ).toHaveLength(0);
     // …sibling + other-tenant rows intact.
-    expect(
-      db.rows("theme_assets").some((a) => a.id === "sibling-asset"),
-    ).toBe(true);
-    expect(
-      db.rows("theme_assets").some((a) => a.id === "tenant-asset"),
-    ).toBe(true);
-    expect(
-      db.rows("marketplace_installs")[0]!.status,
-    ).toBe("removed");
+    expect(db.rows("theme_assets").some((a) => a.id === "sibling-asset")).toBe(
+      true,
+    );
+    expect(db.rows("theme_assets").some((a) => a.id === "tenant-asset")).toBe(
+      true,
+    );
+    expect(db.rows("marketplace_installs")[0]!.status).toBe("removed");
   });
 });

@@ -5,7 +5,10 @@
  * host does any work.
  */
 import { describe, expect, it } from "vitest";
-import { WIDGET_API, authorizeWidgetCall } from "../../../src/lib/marketplace-scopes";
+import {
+  WIDGET_API,
+  authorizeWidgetCall,
+} from "../../../src/lib/marketplace-scopes";
 import manifestJson from "../manifest.json";
 
 const granted = (manifestJson as { permissions: string[] }).permissions;
@@ -67,9 +70,10 @@ describe("starter bridge calls stay inside the granted scopes", () => {
     expect(
       authorizeWidgetCall({ v: 2, id: "1", method: "shop.info" }, granted),
     ).toEqual({ allowed: false, reason: "malformed" });
-    expect(
-      authorizeWidgetCall({ v: 1, id: "1" }, granted),
-    ).toEqual({ allowed: false, reason: "malformed" });
+    expect(authorizeWidgetCall({ v: 1, id: "1" }, granted)).toEqual({
+      allowed: false,
+      reason: "malformed",
+    });
   });
 
   it("every WIDGET_API method resolves against a known scope", () => {

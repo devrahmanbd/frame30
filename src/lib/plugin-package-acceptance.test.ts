@@ -928,7 +928,9 @@ describe("PLUGIN UPLOAD installs through the pipeline + host projection", () => 
     const mine = await uploadPlugin(db, MERCHANT_A, { key: key() });
     await uploadPlugin(db, MERCHANT_B, { key: key() });
     expect(
-      db.rows("marketplace_installs").filter((r) => r.merchant_id === MERCHANT_A),
+      db
+        .rows("marketplace_installs")
+        .filter((r) => r.merchant_id === MERCHANT_A),
     ).toHaveLength(1);
     expect(
       db.rows("marketplace_installs").find((r) => r.id === mine.installId)
@@ -961,13 +963,9 @@ describe("K1 official plugin catalogue shape", () => {
       key: "product-reviews",
       author: "Framique",
     });
-    expect(
-      (reviews.manifest as { id: string }).id,
-    ).toBe("product-reviews");
+    expect((reviews.manifest as { id: string }).id).toBe("product-reviews");
     const wa = officialPluginSource("whatsapp-chat")!;
-    expect(
-      (wa.manifest as { id: string }).id,
-    ).toBe("whatsapp-chat");
+    expect((wa.manifest as { id: string }).id).toBe("whatsapp-chat");
     expect(officialPluginSource("loyalty-lite")).toBeNull();
     expect(officialPluginSource("vapor")).toBeNull();
   });
@@ -1037,9 +1035,9 @@ describe("K1 official plugin catalogue shape", () => {
 
   it("refuses unknown keys without writing anything", async () => {
     const db = pkgDb();
-    expect(await codeOf(installOfficialPlugin(db.asClient(), MERCHANT_A, "vapor"))).toMatch(
-      /plugin\.official_unknown/,
-    );
+    expect(
+      await codeOf(installOfficialPlugin(db.asClient(), MERCHANT_A, "vapor")),
+    ).toMatch(/plugin\.official_unknown/);
     expect(db.rows("marketplace_installs")).toHaveLength(0);
     expect(db.rows("theme_assets")).toHaveLength(0);
     expect(db.rows("plugin_state")).toHaveLength(0);
@@ -1176,7 +1174,8 @@ describe("K1 official install runs the source-backed path (no archive lane)", ()
       MERCHANT_A,
     );
     expect(
-      resolvePluginWidget("plugin:store-analytics/sales_overview", installed).ok,
+      resolvePluginWidget("plugin:store-analytics/sales_overview", installed)
+        .ok,
     ).toBe(true);
   });
 

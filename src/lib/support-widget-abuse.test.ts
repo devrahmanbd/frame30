@@ -26,8 +26,7 @@ import { createTicket } from "./support-tickets.server";
 // the switch to prove a blocked verdict rejects the request.
 const limiter = vi.hoisted(() => ({ deny: false }));
 vi.mock("./rate-limit.server", async (importOriginal) => {
-  const actual =
-    await importOriginal<typeof import("./rate-limit.server")>();
+  const actual = await importOriginal<typeof import("./rate-limit.server")>();
   return {
     ...actual,
     enforceRateLimit: async (bucket: BucketName, subject: string) => {
@@ -108,9 +107,7 @@ describe("createCallback — duplicate collapse (abuse sink)", () => {
   });
 
   it("allows a fresh request once the earlier one is no longer pending", async () => {
-    const { updateCallbackStatus } = await import(
-      "./support-callbacks.server"
-    );
+    const { updateCallbackStatus } = await import("./support-callbacks.server");
     const first = await createCallback(req());
     await updateCallbackStatus(MERCHANT, first.id, "contacted");
     const second = await createCallback(req());

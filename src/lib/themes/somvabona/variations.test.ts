@@ -72,7 +72,9 @@ describe("somvabona variation preview render", () => {
       "collection",
       s as never,
     )!;
-    const railOf = (main: { type: string; props: Record<string, PropValue> }[]) =>
+    const railOf = (
+      main: { type: string; props: Record<string, PropValue> }[],
+    ) =>
       (main as { type: string; props: Record<string, PropValue> }[]).find(
         (x) => x.type === "product_rail",
       )!.props;

@@ -36,7 +36,10 @@ const base = {
   onDuplicate: noop,
 };
 
-function section(type: string, props: Record<string, never | string | number | object> = {}): Section {
+function section(
+  type: string,
+  props: Record<string, never | string | number | object> = {},
+): Section {
   return { id: "s1", type: type as never, props: props as never } as Section;
 }
 
@@ -46,7 +49,10 @@ afterEach(() => clearRegistry());
 describe("SectionInspector dynamic-tag mounts", () => {
   it("mounts a picker on text (bilingual) controls", () => {
     const out = html(
-      <SectionInspector {...base} section={section("banner", { text: "Sale" })} />,
+      <SectionInspector
+        {...base}
+        section={section("banner", { text: "Sale" })}
+      />,
     );
     expect(out).toContain("Announcement banner");
     expect(out).toContain("data-dynamic-tag-picker");
@@ -93,7 +99,10 @@ describe("SectionInspector dynamic-tag mounts", () => {
 
   it("keeps bespoke values and chrome intact", () => {
     const out = html(
-      <SectionInspector {...base} section={section("banner", { text: "Sale" })} />,
+      <SectionInspector
+        {...base}
+        section={section("banner", { text: "Sale" })}
+      />,
     );
     expect(out).toContain("Sale");
     expect(out).toContain("Visible on");

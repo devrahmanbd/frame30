@@ -28,8 +28,7 @@ const CRC_TABLE: number[] = (() => {
   const table: number[] = [];
   for (let n = 0; n < 256; n++) {
     let c = n;
-    for (let k = 0; k < 8; k++)
-      c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+    for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
     table.push(c >>> 0);
   }
   return table;
@@ -212,8 +211,7 @@ test("hostile preview URL renders nothing executable", async ({ page }) => {
   ).toHaveCount(0);
   // … and nothing executed.
   const executed = await page.evaluate(
-    (key) =>
-      (window as unknown as Record<string, unknown>)[key] ?? null,
+    (key) => (window as unknown as Record<string, unknown>)[key] ?? null,
     marker,
   );
   expect(executed).toBeNull();

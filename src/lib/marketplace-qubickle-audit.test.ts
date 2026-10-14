@@ -146,7 +146,7 @@ describe("H7 — install itself is audited", () => {
       consentedBy: ACTOR,
     });
     recorder.reset();
-    const installId = db.rows("marketplace_installs")[0].id;
+    const installId = db.rows("marketplace_installs")[0].id as string;
     const wrapped = auditDownDb(db);
     const out = await setInstallStatus(
       wrapped.asClient(),

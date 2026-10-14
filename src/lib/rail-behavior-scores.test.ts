@@ -136,9 +136,7 @@ describe("rail_behavior_scores RPC path", () => {
     ]);
 
     expect(await recommendedIds(m, "recommended")).toEqual(["p-old", "p-new"]);
-    expect(
-      current.admin.rpcCalls("rail_behavior_scores"),
-    ).toHaveLength(1);
+    expect(current.admin.rpcCalls("rail_behavior_scores")).toHaveLength(1);
     // The aggregate came from the RPC: no analytics/order/variant selects.
     expect(current.admin.selects()).toHaveLength(0);
   });
@@ -154,14 +152,12 @@ describe("rail_behavior_scores RPC path", () => {
 
     // Same ranking as the inline path would produce on its own.
     expect(await recommendedIds(m, "recommended")).toEqual(["p-old", "p-new"]);
-    expect(
-      current.admin.rpcCalls("rail_behavior_scores"),
-    ).toHaveLength(1);
+    expect(current.admin.rpcCalls("rail_behavior_scores")).toHaveLength(1);
     // Fallback issued the current inline reads.
     expect(current.admin.selects().length).toBeGreaterThan(0);
-    expect(
-      current.admin.selects().map((s) => s.table),
-    ).toContain("analytics_events");
+    expect(current.admin.selects().map((s) => s.table)).toContain(
+      "analytics_events",
+    );
   });
 
   it("keeps the bestseller fallback from RPC velocity when scores are cold", async () => {
@@ -226,8 +222,7 @@ describe("isMissingRailScoresError", () => {
     expect(
       isMissingRailScoresError({
         code: "42883",
-        message:
-          "function public.rail_behavior_scores(uuid) does not exist",
+        message: "function public.rail_behavior_scores(uuid) does not exist",
       }),
     ).toBe(true);
     expect(

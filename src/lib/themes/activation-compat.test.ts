@@ -16,7 +16,8 @@ import {
   allowAllRateLimits,
 } from "../__fixtures__/test-doubles";
 
-const rec = vi.hoisted(() => ({ holder: null as any }));
+type Recorder = ReturnType<typeof metricRecorder>;
+const rec = vi.hoisted(() => ({ holder: null as Recorder | null }));
 const recorder = metricRecorder();
 rec.holder = recorder;
 
@@ -70,14 +71,30 @@ describe("collectActivationWidgetIds", () => {
       index: {
         header: [],
         main: [
-          { id: "e1", type: "extension", widgetKey: "plugin:acme/reviews", props: {} },
-          { id: "p1", type: "plugin_block", props: { pluginKey: "plugin:acme/other" } },
+          {
+            id: "e1",
+            type: "extension",
+            widgetKey: "plugin:acme/reviews",
+            props: {},
+          },
+          {
+            id: "p1",
+            type: "plugin_block",
+            props: { pluginKey: "plugin:acme/other" },
+          },
           { id: "h1", type: "hero", props: {} },
           {
             id: "c1",
             type: "container",
             props: {},
-            children: [{ id: "e2", type: "extension", widgetKey: "builtin:faq", props: {} }],
+            children: [
+              {
+                id: "e2",
+                type: "extension",
+                widgetKey: "builtin:faq",
+                props: {},
+              },
+            ],
           },
         ],
         footer: [],
@@ -121,12 +138,16 @@ describe("activation compatibility gate", () => {
       },
     };
     const db = dbWithTemplates(templates);
-    const err = await activateTheme(db.asClient(), MERCHANT, THEME).catch((e) => e);
+    const err = await activateTheme(db.asClient(), MERCHANT, THEME).catch(
+      (e) => e,
+    );
     expect(err).toBeInstanceOf(ThemeDeskError);
     expect(err?.code).toBe("theme.incompatible_widgets");
     expect(String(err?.message)).toContain("theme:other-party/secret");
     // Refusal flips nothing and audits nothing.
-    expect(db.rows("store_themes").find((r) => r.id === THEME)!.is_active).toBe(false);
+    expect(db.rows("store_themes").find((r) => r.id === THEME)!.is_active).toBe(
+      false,
+    );
     expect(
       db.rows("theme_audit").filter((r) => r.action === "theme.activated"),
     ).toHaveLength(0);
@@ -136,6 +157,8 @@ describe("activation compatibility gate", () => {
     const db = dbWithTemplates({ index: { header: [], main: [], footer: [] } });
     const out = await activateTheme(db.asClient(), MERCHANT, THEME);
     expect(out.id).toBe(THEME);
-    expect(db.rows("store_themes").find((r) => r.id === THEME)!.is_active).toBe(true);
+    expect(db.rows("store_themes").find((r) => r.id === THEME)!.is_active).toBe(
+      true,
+    );
   });
 });

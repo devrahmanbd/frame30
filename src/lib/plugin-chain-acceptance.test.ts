@@ -39,10 +39,7 @@ import {
   resolvePluginWidget,
   validateSettings,
 } from "./plugin-manifest";
-import {
-  authorizeWidgetCall,
-  validateBundle,
-} from "./marketplace-scopes";
+import { authorizeWidgetCall, validateBundle } from "./marketplace-scopes";
 import {
   DEFAULT_TOKENS,
   flattenAst,
@@ -84,7 +81,9 @@ const COMMUNITY_MANIFEST = {
     },
   ],
   hooks: [],
-  settings: [{ key: "title", label: "Title", kind: "text", default: "Reviews" }],
+  settings: [
+    { key: "title", label: "Title", kind: "text", default: "Reviews" },
+  ],
   i18n: { en: { title: "Title" }, bn: { title: "শিরোনাম" } },
 };
 
@@ -192,9 +191,9 @@ describe("T2.3 chained community-plugin acceptance", () => {
       (s) => s.type === "plugin_block",
     );
     expect(nodes).toHaveLength(1);
-    expect(
-      (nodes[0]!.props as Record<string, unknown>)["pluginKey"],
-    ).toBe(PLUGIN_KEY);
+    expect((nodes[0]!.props as Record<string, unknown>)["pluginKey"]).toBe(
+      PLUGIN_KEY,
+    );
     // Template lookup (the persistence read path) finds the same node.
     const viaTemplate = templateOf(
       parseTemplates({ index: chain.ast }),
@@ -278,8 +277,9 @@ describe("T2.3 chained community-plugin acceptance", () => {
     }
     const verdict = parseManifest(COMMUNITY_MANIFEST);
     if (!verdict.ok) throw new Error("fixture broke");
-    expect(validateSettings(verdict.manifest.settings, { title: "Reviews" }))
-      .toMatchObject({ values: { title: "Reviews" }, errors: [] });
+    expect(
+      validateSettings(verdict.manifest.settings, { title: "Reviews" }),
+    ).toMatchObject({ values: { title: "Reviews" }, errors: [] });
     expect(
       authorizeWidgetCall({ v: 1, id: "1", method: "shop.info" }, [
         "read_shop",

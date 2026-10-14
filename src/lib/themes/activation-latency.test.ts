@@ -17,7 +17,8 @@ import {
   allowAllRateLimits,
 } from "../__fixtures__/test-doubles";
 
-const rec = vi.hoisted(() => ({ holder: null as any }));
+type Recorder = ReturnType<typeof metricRecorder>;
+const rec = vi.hoisted(() => ({ holder: null as Recorder | null }));
 const recorder = metricRecorder();
 rec.holder = recorder;
 
@@ -68,13 +69,10 @@ const {
   resolveLiveVariation,
   setVariation,
 } = await import("../themes.server");
-const { persistedVariationKeyFromSettings } = await import(
-  "../theme-variations"
-);
+const { persistedVariationKeyFromSettings } =
+  await import("../theme-variations");
 const { registerStaticPreviewSource } = await import("../preview-sources");
-const { songoskritiPreviewSource } = await import(
-  "./songoskriti/preview"
-);
+const { songoskritiPreviewSource } = await import("./songoskriti/preview");
 const { somvabonaPreviewSource } = await import("./somvabona/preview");
 
 // O2: static theme sources are build-time-only — this test file is a
@@ -270,7 +268,7 @@ describe("T6 purge is awaited, not fire-and-forget", () => {
     expect(shared.invalidateCalls).toContain(tenantCachePrefix(MERCHANT));
 
     release();
-    const out: any = await pending;
+    const out = await pending;
     expect(settled).toBe(true);
     expect(out.id).toBe(THEME);
     expect(db.rows("store_themes").find((r) => r.id === THEME)!.is_active).toBe(
@@ -394,11 +392,8 @@ describe("live theme variation follow-through", () => {
         .variationKey,
     ).toBe("minimal");
     expect(
-      resolveLiveVariation(
-        { variation: "minimal" },
-        "songoskriti",
-        "festive",
-      ).variationKey,
+      resolveLiveVariation({ variation: "minimal" }, "songoskriti", "festive")
+        .variationKey,
     ).toBe("festive");
     expect(resolveLiveVariation({}, "songoskriti").variationKey).toBeNull();
     expect(
@@ -428,9 +423,9 @@ describe("variation persistence through the builder write path", () => {
     });
     const call = seen.find((c) => c.fn === "theme_autosave");
     expect(call).toBeDefined();
-    expect(
-      (call!.args._tokens as Record<string, unknown>).variation,
-    ).toBe("minimal");
+    expect((call!.args._tokens as Record<string, unknown>).variation).toBe(
+      "minimal",
+    );
     expect((call!.args._tokens as Record<string, unknown>).brand).toBe(
       "#123456",
     );
@@ -608,7 +603,9 @@ describe("T2.1 last-good auto-serve", () => {
     const live = await publishedTheme(db.asClient(), MERCHANT);
     expect(live?.versionId).toBe("v2");
 
-    const events = recorder.logs.filter((l) => l.event === "theme.serve_fallback");
+    const events = recorder.logs.filter(
+      (l) => l.event === "theme.serve_fallback",
+    );
     expect(events).toHaveLength(1);
     expect(events[0]).toMatchObject({
       level: "warn",
@@ -620,8 +617,9 @@ describe("T2.1 last-good auto-serve", () => {
         via: "prior_pin",
       }),
     });
-    expect(recorder.of("framique_theme_serve_fallback", ["result", "prior_pin"]))
-      .toHaveLength(1);
+    expect(
+      recorder.of("framique_theme_serve_fallback", ["result", "prior_pin"]),
+    ).toHaveLength(1);
 
     const audits = db
       .rows("theme_audit")
@@ -641,15 +639,18 @@ describe("T2.1 last-good auto-serve", () => {
     const live = await publishedTheme(db.asClient(), MERCHANT);
     expect(live).toBeNull();
 
-    const events = recorder.logs.filter((l) => l.event === "theme.serve_fallback");
+    const events = recorder.logs.filter(
+      (l) => l.event === "theme.serve_fallback",
+    );
     expect(events).toHaveLength(1);
     expect(events[0]?.fields).toMatchObject({
       broken_version_id: "v-broken",
       fallback_version_id: null,
       via: "builtin",
     });
-    expect(recorder.of("framique_theme_serve_fallback", ["result", "builtin"]))
-      .toHaveLength(1);
+    expect(
+      recorder.of("framique_theme_serve_fallback", ["result", "builtin"]),
+    ).toHaveLength(1);
     const audits = db
       .rows("theme_audit")
       .filter((r) => r.action === "theme.serve_fallback");

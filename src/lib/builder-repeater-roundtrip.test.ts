@@ -142,7 +142,11 @@ function bnScalar(field: Field, idx: number): string {
 function buildRawProps(entry: CatalogEntry): Record<string, unknown> {
   const props: Record<string, unknown> = {};
   for (const field of flattenFields(entry.fields)) {
-    if (field.kind === "array" || field.kind === "group" || field.kind === "menu")
+    if (
+      field.kind === "array" ||
+      field.kind === "group" ||
+      field.kind === "menu"
+    )
       continue;
     // Universal style base: a non-default presentation value for every widget.
     if (field.key === "padY") {
@@ -220,7 +224,10 @@ function docFor(
   };
 }
 
-function sectionOf(ast: { header: Section[]; main: Section[]; footer: Section[] }, entry: CatalogEntry): Section {
+function sectionOf(
+  ast: { header: Section[]; main: Section[]; footer: Section[] },
+  entry: CatalogEntry,
+): Section {
   const slot = slotFor(entry);
   const found = (ast[slot] as Section[])[0];
   if (!found) throw new Error(`missing section for ${entry.type} in ${slot}`);
@@ -261,8 +268,14 @@ describe("R5 — repeater/complex-widget round-trip regression", () => {
 
       // --- items + nested props survive exactly, both parses agree ---
       for (const arrayField of arrayFieldsOf(entry)) {
-        const prevRows = prevSection.props[arrayField.key] as Record<string, unknown>[];
-        const pubRows = pubSection.props[arrayField.key] as Record<string, unknown>[];
+        const prevRows = prevSection.props[arrayField.key] as Record<
+          string,
+          unknown
+        >[];
+        const pubRows = pubSection.props[arrayField.key] as Record<
+          string,
+          unknown
+        >[];
         const rawRows = rawProps[arrayField.key] as Record<string, unknown>[];
         expect(Array.isArray(prevRows)).toBe(true);
         expect(Array.isArray(pubRows)).toBe(true);
@@ -274,9 +287,10 @@ describe("R5 — repeater/complex-widget round-trip regression", () => {
           // Declared repeater fields (incl. _bn twins) survive verbatim.
           for (const sub of schema) {
             if (sub.kind === "array" || sub.kind === "group") continue;
-            expect(row[sub.key], `${entry.type}.${arrayField.key}[${i}].${sub.key}`).toBe(
-              syntheticScalar(sub, i + 1),
-            );
+            expect(
+              row[sub.key],
+              `${entry.type}.${arrayField.key}[${i}].${sub.key}`,
+            ).toBe(syntheticScalar(sub, i + 1));
             if (sub.kind === "bitext") {
               expect(row[bnKey(sub.key)]).toBe(bnScalar(sub, i + 1));
             }
@@ -293,16 +307,30 @@ describe("R5 — repeater/complex-widget round-trip regression", () => {
       // --- scalar + bilingual + presentation props survive exactly ---
       const flat = flattenFields(entry.fields);
       for (const field of flat) {
-        if (field.kind === "array" || field.kind === "group" || field.kind === "menu")
+        if (
+          field.kind === "array" ||
+          field.kind === "group" ||
+          field.kind === "menu"
+        )
           continue;
         const expected =
-          field.key === "padY" ? clampNum(field, 24) : syntheticScalar(field, 1);
-        expect(pubSection.props[field.key], `${entry.type}.${field.key}`).toBe(expected);
-        expect(prevSection.props[field.key], `${entry.type}.${field.key}`).toBe(expected);
+          field.key === "padY"
+            ? clampNum(field, 24)
+            : syntheticScalar(field, 1);
+        expect(pubSection.props[field.key], `${entry.type}.${field.key}`).toBe(
+          expected,
+        );
+        expect(prevSection.props[field.key], `${entry.type}.${field.key}`).toBe(
+          expected,
+        );
         if (field.kind === "bitext") {
           const key = bnKey(field.key);
-          expect(prevSection.props[key], `${entry.type}.${key}`).toBe(bnScalar(field, 1));
-          expect(pubSection.props[key], `${entry.type}.${key}`).toBe(bnScalar(field, 1));
+          expect(prevSection.props[key], `${entry.type}.${key}`).toBe(
+            bnScalar(field, 1),
+          );
+          expect(pubSection.props[key], `${entry.type}.${key}`).toBe(
+            bnScalar(field, 1),
+          );
         }
       }
 
@@ -315,7 +343,9 @@ describe("R5 — repeater/complex-widget round-trip regression", () => {
         expect(typeof chosen).toBe("string");
         expect(resolveSkin(entry.type, chosen)).toBe(chosen);
         const used = usedWidgetSkins([pubSection]);
-        expect(used.some((u) => u.type === entry.type && u.skin === chosen)).toBe(true);
+        expect(
+          used.some((u) => u.type === entry.type && u.skin === chosen),
+        ).toBe(true);
       } else {
         expect(resolveSkin(entry.type, pubSection.props["skin"])).toBe("");
       }
@@ -344,7 +374,8 @@ describe("R5 — repeater/complex-widget round-trip regression", () => {
       expect(pubSection.props["advAnimation"]).toBe("rise");
 
       // --- responsive overrides survive exactly (storefront cascade) ---
-      const mobileLayer = (rawBp["mobile"] as Record<string, unknown> | undefined) ?? {};
+      const mobileLayer =
+        (rawBp["mobile"] as Record<string, unknown> | undefined) ?? {};
       if (mobileLayer["padY"] !== undefined) {
         expect(pubSection.bp?.["mobile"]?.["padY"]).toBe(8);
         expect(resolveProps(pubSection, "mobile")["padY"]).toBe(8);
@@ -362,7 +393,10 @@ describe("R5 — repeater/complex-widget round-trip regression", () => {
       expect(pubSection.props).not.toHaveProperty(BOGUS_TOP);
       expect(prevSection.props).not.toHaveProperty(BOGUS_TOP);
       for (const arrayField of arrayFieldsOf(entry)) {
-        const rows = pubSection.props[arrayField.key] as Record<string, unknown>[];
+        const rows = pubSection.props[arrayField.key] as Record<
+          string,
+          unknown
+        >[];
         for (const row of rows) {
           expect(row).not.toHaveProperty(BOGUS_ROW);
         }
@@ -371,7 +405,9 @@ describe("R5 — repeater/complex-widget round-trip regression", () => {
       // --- publish is stable: preview and storefront agree byte-for-byte ---
       expect(pubSection.props).toEqual(prevSection.props);
       expect(pubSection.bp ?? {}).toEqual(prevSection.bp ?? {});
-      expect(JSON.parse(JSON.stringify(published))).toEqual(JSON.parse(JSON.stringify(preview)));
+      expect(JSON.parse(JSON.stringify(published))).toEqual(
+        JSON.parse(JSON.stringify(preview)),
+      );
     });
   }
 
@@ -390,11 +426,18 @@ describe("R5 — repeater/complex-widget round-trip regression", () => {
           return row;
         });
         const ast = parseAst(
-          docFor(entry, { ...buildRawProps(entry), [arrayField.key]: overflowing }, {}),
+          docFor(
+            entry,
+            { ...buildRawProps(entry), [arrayField.key]: overflowing },
+            {},
+          ),
         );
         const section = sectionOf(ast, entry);
         const rows = section.props[arrayField.key] as unknown[];
-        expect(rows.length, `${entry.type}.${arrayField.key}`).toBeLessThanOrEqual(cap);
+        expect(
+          rows.length,
+          `${entry.type}.${arrayField.key}`,
+        ).toBeLessThanOrEqual(cap);
       }
     }
   });

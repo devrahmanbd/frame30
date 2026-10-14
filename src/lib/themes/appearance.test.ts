@@ -375,9 +375,9 @@ describe("B2 catalogue sections (Official / Community / Upload)", () => {
 describe("gallery keys (installed authoritative, K2)", () => {
   it("lists installed only when merchant context present (no source fallback)", () => {
     // K2: installed array present → installed ONLY; catalogue/source fails closed.
-    expect(galleryKeys(["songoskriti", "somvabona"], [{ key: "acme-pack" }])).toEqual([
-      "acme-pack",
-    ]);
+    expect(
+      galleryKeys(["songoskriti", "somvabona"], [{ key: "acme-pack" }]),
+    ).toEqual(["acme-pack"]);
     // Legacy: no merchant context (null/undefined installed) lists catalogue.
     expect(galleryKeys(["songoskriti", "somvabona"], null)).toEqual([
       "songoskriti",
@@ -391,11 +391,10 @@ describe("gallery keys (installed authoritative, K2)", () => {
 
   it("accepts bare slugs and keyed rows in the installed list, without duplicating", () => {
     expect(
-      galleryKeys(["songoskriti", { key: "somvabona" }], [
-        "songoskriti",
-        { key: "somvabona" },
-        { key: "acme-pack" },
-      ]),
+      galleryKeys(
+        ["songoskriti", { key: "somvabona" }],
+        ["songoskriti", { key: "somvabona" }, { key: "acme-pack" }],
+      ),
     ).toEqual(["songoskriti", "somvabona", "acme-pack"]);
   });
 

@@ -29,7 +29,9 @@ import { SectionRenderer } from "@/components/builder/SectionRenderer";
 import { WidgetBoundary } from "@/components/builder/WidgetBoundary";
 
 function shell(section: Section): string {
-  return renderToStaticMarkup(<SectionRenderer section={section} locale="en" />);
+  return renderToStaticMarkup(
+    <SectionRenderer section={section} locale="en" />,
+  );
 }
 
 describe("T4.3 lifecycle — built-in widget builder→save→preview→publish→render", () => {
@@ -85,7 +87,10 @@ describe("T4.3 lifecycle — built-in widget builder→save→preview→publish�
     // Two h1 claimants is an error → publish gate must refuse.
     const a = { ...newSection("hero"), id: "lc-a" };
     const b = { ...newSection("hero"), id: "lc-b" };
-    const errors = lintTemplate({ header: [], main: [a, b], footer: [] }, "index");
+    const errors = lintTemplate(
+      { header: [], main: [a, b], footer: [] },
+      "index",
+    );
     expect(
       errors.some((i) => i.level === "error" && /<h1>/.test(i.message)),
     ).toBe(true);
@@ -93,14 +98,22 @@ describe("T4.3 lifecycle — built-in widget builder→save→preview→publish�
     // An empty container is a warning only — publish stays open.
     const empty = { ...newSection("container"), id: "lc-empty" };
     const warns = lintTemplate(
-      { header: [], main: [{ ...newSection("heading"), id: "lc-h" }, empty], footer: [] },
+      {
+        header: [],
+        main: [{ ...newSection("heading"), id: "lc-h" }, empty],
+        footer: [],
+      },
       "index",
     );
-    expect(warns.some((i) => i.level === "warn" && /Empty container/.test(i.message))).toBe(
-      true,
-    );
     expect(
-      warns.filter((i) => i.level === "error" && /Empty container/.test(i.message)),
+      warns.some(
+        (i) => i.level === "warn" && /Empty container/.test(i.message),
+      ),
+    ).toBe(true);
+    expect(
+      warns.filter(
+        (i) => i.level === "error" && /Empty container/.test(i.message),
+      ),
     ).toEqual([]);
   });
 });
@@ -157,7 +170,11 @@ describe("T4.3 lifecycle — broken widget → placeholder, page still renders",
       header: [],
       main: [
         { id: "lc-broken", type: "nope_widget", props: {} },
-        { ...newSection("heading"), id: "lc-ok", props: { ...newSection("heading").props, text: "Still here" } },
+        {
+          ...newSection("heading"),
+          id: "lc-ok",
+          props: { ...newSection("heading").props, text: "Still here" },
+        },
       ],
       footer: [],
     });

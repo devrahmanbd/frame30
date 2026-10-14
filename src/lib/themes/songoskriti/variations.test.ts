@@ -16,7 +16,10 @@ import { validateThemeVariations } from "../../theme-variations";
 
 function stub() {
   let n = 0;
-  return (type: SectionType, props: Record<string, PropValue> = {}): Section => ({
+  return (
+    type: SectionType,
+    props: Record<string, PropValue> = {},
+  ): Section => ({
     id: `${type}-${n++}`,
     type,
     props: { ...props },
@@ -37,7 +40,9 @@ describe("SONGOSKRITI_VARIATIONS", () => {
 
   it("passes validation (unique keys, token keys + skin names only)", () => {
     expect(SONGOSKRITI_VARIATIONS_CHECK).toEqual({ ok: true });
-    expect(validateThemeVariations("songoskriti", SONGOSKRITI_VARIATIONS)).toEqual({
+    expect(
+      validateThemeVariations("songoskriti", SONGOSKRITI_VARIATIONS),
+    ).toEqual({
       ok: true,
     });
   });
@@ -87,12 +92,12 @@ describe("songoskriti variation preview render", () => {
     const home = songoskritiPreviewSource("minimal").main("index", s)!;
     // The homepage authors an explicit fullbleed hero + carousel quotes:
     // variation defaults must not clobber them.
-    expect(
-      home.find((x) => x.type === "hero_carousel")!.props.skin,
-    ).toBe("fullbleed");
-    expect(
-      home.find((x) => x.type === "testimonials")!.props.skin,
-    ).toBe("carousel");
+    expect(home.find((x) => x.type === "hero_carousel")!.props.skin).toBe(
+      "fullbleed",
+    );
+    expect(home.find((x) => x.type === "testimonials")!.props.skin).toBe(
+      "carousel",
+    );
     // Unauthored rails take the variation skin.
     for (const rail of home.filter((x) => x.type === "product_rail")) {
       expect(rail.props.skin).toBe("minimal");

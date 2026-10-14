@@ -117,7 +117,9 @@ describe("songoskriti wiring", () => {
       ({ id: type, type, props }) as never;
     const footer = buildFooterMain(s as never);
     const forms = footer.filter(
-      (n) => typeof n.props.newsletterHeading === "string" && n.props.newsletterHeading,
+      (n) =>
+        typeof n.props.newsletterHeading === "string" &&
+        n.props.newsletterHeading,
     );
     expect(forms.map((n) => n.type)).toEqual(["footer_sitemap"]);
   });

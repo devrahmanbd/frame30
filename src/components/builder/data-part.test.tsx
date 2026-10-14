@@ -317,8 +317,16 @@ describe("Phase 4 picker binding round-trip", () => {
   });
 
   it("catalog declares each picker field in the content panel", () => {
-    const fieldOf = (type: "compare_table" | "blog_archive" | "footer_sitemap" | "search_command" | "nav_menu" | "mega_menu", key: string) =>
-      catalogEntry(type)!.fields.find((f) => f.key === key)!;
+    const fieldOf = (
+      type:
+        | "compare_table"
+        | "blog_archive"
+        | "footer_sitemap"
+        | "search_command"
+        | "nav_menu"
+        | "mega_menu",
+      key: string,
+    ) => catalogEntry(type)!.fields.find((f) => f.key === key)!;
     expect(fieldOf("compare_table", "handles").kind).toBe("text");
     expect(fieldOf("blog_archive", "handles").kind).toBe("text");
     expect(fieldOf("footer_sitemap", "pages").kind).toBe("text");
@@ -330,9 +338,27 @@ describe("Phase 4 picker binding round-trip", () => {
 
 describe("Phase 4 picked-rows degradation", () => {
   const productRows: WidgetRow[] = [
-    { id: "a", handle: "first", title: "First", priceMinor: 100, currency: "BDT" },
-    { id: "b", handle: "second", title: "Second", priceMinor: 200, currency: "BDT" },
-    { id: "c", handle: "third", title: "Third", priceMinor: 300, currency: "BDT" },
+    {
+      id: "a",
+      handle: "first",
+      title: "First",
+      priceMinor: 100,
+      currency: "BDT",
+    },
+    {
+      id: "b",
+      handle: "second",
+      title: "Second",
+      priceMinor: 200,
+      currency: "BDT",
+    },
+    {
+      id: "c",
+      handle: "third",
+      title: "Third",
+      priceMinor: 300,
+      currency: "BDT",
+    },
   ];
 
   it("compare_table renders picks in pick order and drops unknown handles", () => {

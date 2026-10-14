@@ -10,7 +10,7 @@ const FLAME = "b47532e5-9649-4ebd-93a9-06fa2917c00e";
 const OTHER = "11111111-1111-4111-8111-111111111111";
 const NOBODY = "00000000-0000-0000-0000-000000000000";
 
-type Row = Record<string, any>;
+type Row = Record<string, unknown>;
 
 const ARTICLES: Row[] = [
   {
@@ -68,7 +68,7 @@ function fakeDb() {
     cols: "",
     countMode: false,
   };
-  const api: any = {};
+  const api: { from?: (name: string) => FakeQuery } = {};
   const apply = (rows: Row[]) => {
     let out = rows.filter((r) => state.filters.every((f) => f(r)));
     if (state.orderKey)
@@ -84,6 +84,23 @@ function fakeDb() {
     out = out.slice(state.rangeFrom, state.rangeTo + 1).slice(0, state.limitN);
     return out;
   };
+  /** Fake query builder shape: chainable filters over in-memory rows. */
+  type FakeQuery = {
+    select: (c: string, opts?: Record<string, unknown>) => FakeQuery;
+    eq: (k: string, v: unknown) => FakeQuery;
+    lte: (k: string, v: string) => FakeQuery;
+    is: (k: string, v: null) => FakeQuery;
+    in: (k: string, vs: unknown[]) => FakeQuery;
+    gt: (k: string, v: number) => FakeQuery;
+    order: (k: string, o?: { ascending?: boolean }) => FakeQuery;
+    range: (f: number, t: number) => FakeQuery;
+    limit: (n: number) => FakeQuery;
+    maybeSingle: () => Promise<{ data: Row | null }>;
+    then: (
+      res: (value: { data: Row[]; count: number }) => unknown,
+      rej?: unknown,
+    ) => Promise<unknown>;
+  };
   const table = (name: string) => {
     const rows =
       name === "articles"
@@ -94,14 +111,15 @@ function fakeDb() {
               { id: OTHER, name: "Other", slug: "other" },
             ]
           : [];
-    const q: any = {
-      select: (_c: string, _opts?: any) => q,
+    const q: FakeQuery = {
+      select: (_c: string, _opts?: Record<string, unknown>) => q,
       eq: (k: string, v: unknown) => {
         state.filters.push((r) => r[k] === v);
         return q;
       },
       lte: (k: string, v: string) => {
-        state.filters.push((r) => (r[k] ?? "") <= v);
+        // The suite only ever floors ISO timestamps through here.
+        state.filters.push((r) => ((r[k] as string) ?? "") <= v);
         return q;
       },
       is: (k: string, v: null) => {
@@ -116,7 +134,7 @@ function fakeDb() {
         state.filters.push((r) => Number(r[k] ?? 0) > v);
         return q;
       },
-      order: (k: string, o?: any) => {
+      order: (k: string, o?: { ascending?: boolean }) => {
         state.orderKey = k;
         state.orderAsc = o?.ascending !== false;
         return q;
@@ -131,7 +149,10 @@ function fakeDb() {
         return thenable();
       },
       maybeSingle: () => Promise.resolve({ data: apply(rows)[0] ?? null }),
-      then: (res: any, _rej: any) =>
+      then: (
+        res: (value: { data: Row[]; count: number }) => unknown,
+        _rej?: unknown,
+      ) =>
         Promise.resolve({ data: apply(rows), count: apply(rows).length }).then(
           res,
         ),

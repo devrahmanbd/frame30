@@ -141,8 +141,11 @@ describe("R2-8 step 2 — hook→scope gate matrix (full grant → delivered)", 
     "%s with every required scope delivers (fetch POSTs)",
     async (hook) => {
       const fetchMock = stubFetchOk();
-      const out = await runHook([subscriber(hook, HOOK_SCOPE[hook])], hook, {
-        merchantId: MERCHANT,
+      const out = await runHook(
+        [subscriber(hook, HOOK_SCOPE[hook])],
+        hook,
+        {
+          merchantId: MERCHANT,
         },
         undefined,
         fetchMock,
@@ -165,8 +168,11 @@ describe("R2-8 step 2 — hook→scope gate matrix (missing one scope → deny)"
         const fetchMock = stubFetchOk();
         fetchMock.mockClear();
         const granted = required.filter((s) => s !== dropped);
-        const out = await runHook([subscriber(hook, granted)], hook, {
-          merchantId: MERCHANT,
+        const out = await runHook(
+          [subscriber(hook, granted)],
+          hook,
+          {
+            merchantId: MERCHANT,
           },
           undefined,
           fetchMock,

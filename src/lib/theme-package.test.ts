@@ -7,10 +7,7 @@
  * no DB, no network, no React.
  */
 import { describe, expect, it } from "vitest";
-import {
-  THEME_CAPABILITIES,
-  validateThemeManifest,
-} from "./theme-package";
+import { THEME_CAPABILITIES, validateThemeManifest } from "./theme-package";
 
 const SHA256_EMPTY =
   "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
@@ -35,7 +32,13 @@ function validManifest() {
     pluginDependencies: [
       { ref: "plugin:loyalty-lite/points_bar", version: "^1.0.0" },
     ],
-    presentationSurfaces: ["widget", "header", "menu", "announcement", "footer"],
+    presentationSurfaces: [
+      "widget",
+      "header",
+      "menu",
+      "announcement",
+      "footer",
+    ],
     locales: ["en", "bn"],
     assetManifest: [{ path: "images/hero.webp", sha256: SHA256_EMPTY }],
     capabilities: [
@@ -159,9 +162,7 @@ describe("validateThemeManifest malformed input (never throws)", () => {
 describe("validateThemeManifest identity fields", () => {
   it("rejects bad keys", () => {
     expect(errorsOf({ ...validManifest(), key: "" })).toContain("key");
-    expect(errorsOf({ ...validManifest(), key: "my theme!" })).toContain(
-      "key",
-    );
+    expect(errorsOf({ ...validManifest(), key: "my theme!" })).toContain("key");
     expect(errorsOf({ ...validManifest(), key: "ab-" })).toContain("key");
     expect(errorsOf({ ...validManifest(), key: "a".repeat(61) })).toContain(
       "key",
@@ -246,9 +247,9 @@ describe("validateThemeManifest executable-content ban (data-only format)", () =
         description: "see javascript:alert(1)",
       }),
     ).toContain("description.executable");
-    expect(
-      errorsOf({ ...validManifest(), author: "x eval('y')" }),
-    ).toContain("author.executable");
+    expect(errorsOf({ ...validManifest(), author: "x eval('y')" })).toContain(
+      "author.executable",
+    );
   });
 
   it("rejects executable asset extensions at the boundary", () => {
@@ -271,9 +272,9 @@ describe("validateThemeManifest templates + widgets", () => {
   it("rejects missing/empty/unknown/duplicate templates", () => {
     const { templates: _t, ...noTemplates } = validManifest();
     expect(errorsOf(noTemplates)).toContain("templates");
-    expect(
-      errorsOf({ ...validManifest(), templates: [] }),
-    ).toContain("templates");
+    expect(errorsOf({ ...validManifest(), templates: [] })).toContain(
+      "templates",
+    );
     expect(
       errorsOf({ ...validManifest(), templates: ["index", "checkout2"] }),
     ).toContain("templates:checkout2");
@@ -329,9 +330,9 @@ describe("validateThemeManifest plugin dependencies", () => {
         ],
       }),
     ).toContain("dependencies.duplicate:plugin:loyalty-lite");
-    expect(
-      errorsOf({ ...validManifest(), pluginDependencies: {} }),
-    ).toContain("pluginDependencies");
+    expect(errorsOf({ ...validManifest(), pluginDependencies: {} })).toContain(
+      "pluginDependencies",
+    );
   });
 });
 
@@ -360,9 +361,9 @@ describe("validateThemeManifest surfaces + locales", () => {
     const { locales: _l, ...noLocales } = validManifest();
     expect(errorsOf(noLocales)).toContain("locales");
     expect(errorsOf({ ...validManifest(), locales: [] })).toContain("locales");
-    expect(
-      errorsOf({ ...validManifest(), locales: ["en", "fr"] }),
-    ).toContain("locales:fr");
+    expect(errorsOf({ ...validManifest(), locales: ["en", "fr"] })).toContain(
+      "locales:fr",
+    );
     expect(errorsOf({ ...validManifest(), locales: ["en", "en"] })).toContain(
       "locales.duplicate:en",
     );
@@ -423,8 +424,8 @@ describe("validateThemeManifest capabilities (closed allowlist)", () => {
     expect(
       errorsOf({ ...validManifest(), capabilities: ["read_customers"] }),
     ).toContain("capabilities.forbidden:read_customers");
-    expect(errorsOf({ ...validManifest(), capabilities: ["read_shop"] })).toContain(
-      "capabilities.render_storefront_required",
-    );
+    expect(
+      errorsOf({ ...validManifest(), capabilities: ["read_shop"] }),
+    ).toContain("capabilities.render_storefront_required");
   });
 });

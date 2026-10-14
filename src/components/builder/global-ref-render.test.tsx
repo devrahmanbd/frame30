@@ -66,7 +66,10 @@ describe("global_ref renderer branch", () => {
   });
 
   it("surfaces the resolver invalid marker through the invalid path", () => {
-    const section: Section = { ...placement("gone"), invalid: GLOBAL_REF_MISSING };
+    const section: Section = {
+      ...placement("gone"),
+      invalid: GLOBAL_REF_MISSING,
+    };
     const html = render(section, true);
     expect(html).toContain(GLOBAL_REF_MISSING);
     expect(render(section, false)).toBe("");

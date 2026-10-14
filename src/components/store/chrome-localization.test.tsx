@@ -129,7 +129,12 @@ function renderHeader({
   const ui: ReactElement = (
     <QueryClientProvider client={client}>
       <LanguageProvider initialLang={initialLang}>
-        <StoreHeader slug={slug} name={name} menus={menus} themeKey={themeKey} />
+        <StoreHeader
+          slug={slug}
+          name={name}
+          menus={menus}
+          themeKey={themeKey}
+        />
       </LanguageProvider>
     </QueryClientProvider>
   );
@@ -171,7 +176,9 @@ function renderWidget({
   return renderToStaticMarkup(ui);
 }
 
-function renderToggle({ initialLang = "en" }: { initialLang?: "en" | "bn" } = {}) {
+function renderToggle({
+  initialLang = "en",
+}: { initialLang?: "en" | "bn" } = {}) {
   const ui: ReactElement = (
     <LanguageProvider initialLang={initialLang}>
       <LanguageToggle />
@@ -246,7 +253,9 @@ describe("chrome-localization: header long-label rendering (en + bn)", () => {
 describe("chrome-localization: header structural guards (no fixed widths, wrap, overflow)", () => {
   it("desktop nav container is fluid (flex-1 + min-w-0) with a wrapping nav list", () => {
     const src = HEADER_SRC();
-    const centerLine = src.split("\n").find((l) => l.includes("hidden md:flex"));
+    const centerLine = src
+      .split("\n")
+      .find((l) => l.includes("hidden md:flex"));
     expect(centerLine).toBeDefined();
     expect(centerLine!).toContain("flex-1");
     expect(centerLine!).toContain("min-w-0");
@@ -295,9 +304,9 @@ describe("chrome-localization: header structural guards (no fixed widths, wrap, 
     expect(src).toContain("window.scrollY > 40");
     // Announcement collapse lives in shared code; expanded heights are
     // theme-owned since R1b (no fixed h-[36px] in shared chrome).
-    expect(src).toContain('h-0 opacity-0');
-    expect(src).toContain('h-[72px]');
-    expect(src).toContain('h-[64px]');
+    expect(src).toContain("h-0 opacity-0");
+    expect(src).toContain("h-[72px]");
+    expect(src).toContain("h-[64px]");
     expect(src).toContain('top: scrolled ? "64px" : "108px"');
     // Server paint is the expanded state: full chrome, never pre-collapsed.
     const html = renderHeader({
@@ -427,7 +436,9 @@ describe("chrome-localization: support widget (bn chrome, wrap, bounds)", () => 
       expect(BN_RE.test(bn)).toBe(true);
     }
     expect(getInitialGreeting(tEn, "store")).toContain("order status");
-    expect(getInitialGreeting(tEn, "platform")).toContain("Welcome to Framique");
+    expect(getInitialGreeting(tEn, "platform")).toContain(
+      "Welcome to Framique",
+    );
     expect(getInitialGreeting(tEn, "dashboard")).toContain("Copilot");
   });
 
@@ -456,7 +467,9 @@ describe("chrome-localization: page overflow (theme chrome + storefront page)", 
   it("theme chrome zones are max-w-bounded with gutters and keep footer chrome", () => {
     const src = CHROME_SRC();
     expect(src).toContain('containerClassName = "mx-auto max-w-6xl px-4 py-8"');
-    expect(src).toContain("mx-auto max-w-7xl space-y-2 px-4 sm:px-6 lg:px-8 pt-4");
+    expect(src).toContain(
+      "mx-auto max-w-7xl space-y-2 px-4 sm:px-6 lg:px-8 pt-4",
+    );
     expect(src).toContain(
       "mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8 pb-16",
     );

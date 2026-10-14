@@ -445,16 +445,18 @@ describe("R2-4 product.saved emission (catalog)", () => {
           : { data: null, error: { message: `rpc_not_stubbed:${fn}` } },
     });
     listInstalledPluginsMock.mockResolvedValue([subscriber("product.saved")]);
-    const out = await saveKindConfig(db.asClient(), {
-      merchantId: "m1",
-      productId: "p1",
-      kind: "digital",
-      digital: {
-        fileName: "f.zip",
-        storagePath: "p/f.zip",
-        maxDownloads: 3,
-        expiryHours: 48,
-      },
+    const out = await saveKindConfig(
+      db.asClient(),
+      {
+        merchantId: "m1",
+        productId: "p1",
+        kind: "digital",
+        digital: {
+          fileName: "f.zip",
+          storagePath: "p/f.zip",
+          maxDownloads: 3,
+          expiryHours: 48,
+        },
       },
       fetchMock,
     );
@@ -481,16 +483,18 @@ describe("R2-4 product.saved emission (catalog)", () => {
           : { data: null, error: { message: `rpc_not_stubbed:${fn}` } },
     });
     listInstalledPluginsMock.mockResolvedValue([subscriber("product.saved")]);
-    const out = await saveKindConfig(db.asClient(), {
-      merchantId: "m1",
-      productId: "p1",
-      kind: "digital",
-      digital: {
-        fileName: "f.zip",
-        storagePath: "p/f.zip",
-        maxDownloads: 3,
-        expiryHours: 48,
-      },
+    const out = await saveKindConfig(
+      db.asClient(),
+      {
+        merchantId: "m1",
+        productId: "p1",
+        kind: "digital",
+        digital: {
+          fileName: "f.zip",
+          storagePath: "p/f.zip",
+          maxDownloads: 3,
+          expiryHours: 48,
+        },
       },
       fetchMock,
     );

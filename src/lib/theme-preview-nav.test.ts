@@ -311,9 +311,7 @@ describe("demo focus (slug-aware collection preview)", () => {
       (s) => s.type === "product_media",
     )!;
     const out = applyDemoFocus(preset.templates.product.main, focus);
-    const media = flattenSections(out).find(
-      (s) => s.type === "product_media",
-    )!;
+    const media = flattenSections(out).find((s) => s.type === "product_media")!;
     // Static media stays untouched so the frame gallery owns focused art.
     expect(media.props).toMatchObject({ ...before.props });
     expect(media.props).not.toHaveProperty("image1");
@@ -330,9 +328,7 @@ describe("demo focus (slug-aware collection preview)", () => {
       "no-such-product-xyz",
     )!;
     const out = applyDemoFocus(preset.templates.product.main, focus);
-    const media = flattenSections(out).find(
-      (s) => s.type === "product_media",
-    )!;
+    const media = flattenSections(out).find((s) => s.type === "product_media")!;
     expect(media.props).toMatchObject({ ...before.props });
   });
 });
@@ -499,7 +495,9 @@ describe("resolveThemePreview installed packages (SWITCHOVER-4)", () => {
     expect(resolveThemePreview("acme-pack", "minimal", [])).toBeNull();
     // K2: source keys do NOT resolve when a merchant installed set is present
     // but the key is not installed — fail closed, never source fallback.
-    expect(resolveThemePreview("songoskriti", undefined, [ARTIFACT])).toBeNull();
+    expect(
+      resolveThemePreview("songoskriti", undefined, [ARTIFACT]),
+    ).toBeNull();
     // Legacy: no merchant context (null/undefined) still resolves the
     // registered build-time statics.
     expect(resolveThemePreview("songoskriti", undefined, undefined)?.key).toBe(

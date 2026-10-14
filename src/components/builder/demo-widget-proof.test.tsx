@@ -76,17 +76,17 @@ function demoSection() {
   };
 }
 
-function renderUnderTheme(section: ReturnType<typeof demoSection>, themeKey: string) {
+function renderUnderTheme(
+  section: ReturnType<typeof demoSection>,
+  themeKey: string,
+) {
   const bundle = {
     requests: [{ key: "demo", source: "collection", params: {} }],
     byNode: { [section.id]: "demo" },
   };
   const map = { demo: ROWS };
   return renderToStaticMarkup(
-    <WidgetDataProvider
-      bundle={bundle as never}
-      map={map as never}
-    >
+    <WidgetDataProvider bundle={bundle as never} map={map as never}>
       <SectionRenderer section={section} themeKey={themeKey} locale="en" />
     </WidgetDataProvider>,
   );
@@ -196,9 +196,7 @@ describe("T2.2 two-theme proof: same widget data, two presentations", () => {
       expect(src, `${file} branches on songoskriti`).not.toContain(
         '"songoskriti"',
       );
-      expect(src, `${file} branches on somvabona`).not.toContain(
-        '"somvabona"',
-      );
+      expect(src, `${file} branches on somvabona`).not.toContain('"somvabona"');
     }
   });
 });

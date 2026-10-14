@@ -192,10 +192,7 @@ describe("same section, two presentations", () => {
 
 describe("shared-code theme independence", () => {
   it("names no theme and branches on no theme", () => {
-    const src = readFileSync(
-      "src/lib/theme-presentations.ts",
-      "utf8",
-    );
+    const src = readFileSync("src/lib/theme-presentations.ts", "utf8");
     expect(src).not.toMatch(/songoskriti|somvabona/i);
     expect(src).not.toMatch(/theme-widgets/);
     expect(src).not.toMatch(/from\s+["'][^"']*songoskriti[^"']*["']/i);

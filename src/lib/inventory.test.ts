@@ -11,7 +11,8 @@ import {
   allowAllRateLimits,
 } from "./__fixtures__/test-doubles";
 
-const rec = vi.hoisted(() => ({ holder: null as any }));
+type Recorder = ReturnType<typeof metricRecorder>;
+const rec = vi.hoisted(() => ({ holder: null as Recorder | null }));
 const recorder = metricRecorder();
 rec.holder = recorder;
 
@@ -91,18 +92,10 @@ describe("receiveTransfer", () => {
         };
       },
     });
-    const first: any = await receiveTransfer(
-      db.asClient(),
-      MERCHANT,
-      "staff-1",
-      "trf-1",
-    );
-    const second: any = await receiveTransfer(
-      db.asClient(),
-      MERCHANT,
-      "staff-1",
-      "trf-1",
-    );
+    const first: { ok: boolean; status: string; replayed: boolean } =
+      await receiveTransfer(db.asClient(), MERCHANT, "staff-1", "trf-1");
+    const second: { ok: boolean; status: string; replayed: boolean } =
+      await receiveTransfer(db.asClient(), MERCHANT, "staff-1", "trf-1");
     expect(first.status).toBe("received");
     expect(second.status).toBe("received");
     expect(second.replayed).toBe(true);
@@ -146,6 +139,6 @@ describe("tenant scoping", () => {
       },
     });
     const rows = await loadLevels(db.asClient(), MERCHANT);
-    expect(rows.map((r: any) => r.id)).toEqual(["l1"]);
+    expect(rows.map((r: { id: string }) => r.id)).toEqual(["l1"]);
   });
 });

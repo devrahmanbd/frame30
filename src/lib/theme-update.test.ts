@@ -158,7 +158,10 @@ describe("publish payload resolution (installed artifact authoritative, K2)", ()
     expect(out.templates).toEqual(artifact.templates);
     expect(out.tokens).toEqual(artifact.tokens);
     expect(out.origin).toBe("artifact");
-    const mixed = resolvePublishPayload({ templates: { index: null } }, artifact);
+    const mixed = resolvePublishPayload(
+      { templates: { index: null } },
+      artifact,
+    );
     expect(mixed.templates).toEqual({ index: null });
     expect(mixed.tokens).toEqual(artifact.tokens);
     expect(mixed.origin).toBe("input");

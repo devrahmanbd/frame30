@@ -284,7 +284,13 @@ describe("per-device overrides persist through parse", () => {
   // string in the same layer is still dropped.
   it.each([
     { type: "divider", key: "padY", base: 24, mobile: 8, drop: "label" },
-    { type: "product_grid", key: "limit", base: 12, mobile: 4, drop: "heading" },
+    {
+      type: "product_grid",
+      key: "limit",
+      base: 12,
+      mobile: 4,
+      drop: "heading",
+    },
     {
       type: "collection_grid",
       key: "limit",
@@ -361,9 +367,8 @@ describe("per-device overrides persist through parse", () => {
 
 describe("theme-motion manifest", () => {
   it("resolves known effects and collapses unknown to none", async () => {
-    const { motionEffectOf, isEntranceEffect } = await import(
-      "./builder-advanced"
-    );
+    const { motionEffectOf, isEntranceEffect } =
+      await import("./builder-advanced");
     expect(motionEffectOf("stagger-grid")).toBe("stagger-grid");
     expect(motionEffectOf("marquee")).toBe("marquee");
     expect(motionEffectOf("line-reveal")).toBe("line-reveal");
@@ -392,9 +397,8 @@ describe("theme-motion manifest", () => {
   });
 
   it("resolves the JS-executor effects and classifies them", async () => {
-    const { motionEffectOf, isEntranceEffect, isJsEffect } = await import(
-      "./builder-advanced"
-    );
+    const { motionEffectOf, isEntranceEffect, isJsEffect } =
+      await import("./builder-advanced");
     expect(motionEffectOf("count-up")).toBe("count-up");
     expect(motionEffectOf("scroll-scrub")).toBe("scroll-scrub");
     expect(isJsEffect("count-up")).toBe(true);
@@ -420,8 +424,9 @@ describe("theme-motion manifest", () => {
 
   it("declares the JS effects in the advMotion inspector options", async () => {
     const { ADVANCED_FIELDS } = await import("./builder-advanced");
-    const values = ADVANCED_FIELDS.find((f) => f.key === "advMotion")
-      ?.options?.map((o) => o.value);
+    const values = ADVANCED_FIELDS.find(
+      (f) => f.key === "advMotion",
+    )?.options?.map((o) => o.value);
     expect(values).toContain("count-up");
     expect(values).toContain("scroll-scrub");
   });

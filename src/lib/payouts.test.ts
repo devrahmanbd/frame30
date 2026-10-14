@@ -15,20 +15,26 @@
  *    ledger and reserved by in-flight instructions.
  */
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { fakeDb, type FakeDb } from "./__fixtures__/fake-db";
+import { fakeDb, type FakeDb, type Row } from "./__fixtures__/fake-db";
+import type { LedgerEntryInput } from "./ledger.server";
 import {
   metricRecorder,
   allowAllRateLimits,
 } from "./__fixtures__/test-doubles";
 
-const rec = vi.hoisted(() => ({ holder: null as any }));
+type Recorder = ReturnType<typeof metricRecorder>;
+const rec = vi.hoisted(() => ({ holder: null as Recorder | null }));
 const recorder = metricRecorder();
 rec.holder = recorder;
 
-const shared = vi.hoisted(() => ({
-  db: null as any,
+const shared: {
+  db: FakeDb | null;
+  live: string[];
+  ledger: LedgerEntryInput[];
+} = vi.hoisted(() => ({
+  db: null,
   live: ["bkash"] as string[],
-  ledger: [] as any[],
+  ledger: [],
 }));
 
 vi.mock("./observability.server", () => rec.holder!.observability);
@@ -45,7 +51,7 @@ vi.mock("./provider-gate.server", () => ({
   liveProviders: async () => shared.live,
 }));
 vi.mock("./ledger.server", () => ({
-  postLedgerEntry: async (_c: unknown, entry: any) => {
+  postLedgerEntry: async (_c: unknown, entry: LedgerEntryInput) => {
     if (shared.ledger.some((e) => e.idempotencyKey === entry.idempotencyKey)) {
       throw new Error("ledger.duplicate_idempotency_key");
     }
@@ -72,9 +78,9 @@ type Opts = {
   admin?: boolean;
   creditMinor?: number;
   accountState?: string;
-  payouts?: any[];
-  holds?: any[];
-  approvals?: any[];
+  payouts?: Row[];
+  holds?: Row[];
+  approvals?: Row[];
 };
 
 function db(opts: Opts = {}): FakeDb {

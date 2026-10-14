@@ -116,7 +116,9 @@ describe("pkg serving — merchant isolation", () => {
   });
 
   it("a disabled row is not served", () => {
-    expect(resolvePkgAsset(target(), VERSION, cssRow({ enabled: false }))).toEqual({
+    expect(
+      resolvePkgAsset(target(), VERSION, cssRow({ enabled: false })),
+    ).toEqual({
       status: 404,
       reason: "disabled",
     });

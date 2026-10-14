@@ -38,7 +38,10 @@ function renderConsent(externalUrls?: string[]) {
 
 describe("InstallConsent external-URL inventory", () => {
   it("lists contacted addresses when provided", () => {
-    const html = renderConsent(["https://api.example.com/", "https://cdn.example.com/x.js"]);
+    const html = renderConsent([
+      "https://api.example.com/",
+      "https://cdn.example.com/x.js",
+    ]);
     expect(html).toContain("https://api.example.com/");
     expect(html).toContain("https://cdn.example.com/x.js");
   });

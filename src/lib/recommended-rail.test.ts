@@ -43,10 +43,7 @@ vi.mock("@/integrations/supabase/client.server", () => ({
 
 const ast = (main: Section[]): ThemeAst => ({ header: [], main, footer: [] });
 
-function rail(
-  id: string,
-  props: Record<string, unknown> = {},
-): Section {
+function rail(id: string, props: Record<string, unknown> = {}): Section {
   const section = newSection("product_rail");
   return {
     ...section,
@@ -282,11 +279,18 @@ describe("behavior snapshot bounds", () => {
   it("issues a constant, bounded read set per snapshot", async () => {
     const m = "m-laneh-bounds";
     seedMerchant(current.pub, m);
-    current.pub.tables["products"] = [product(m, "p-1", "2026-01-01T00:00:00Z")];
+    current.pub.tables["products"] = [
+      product(m, "p-1", "2026-01-01T00:00:00Z"),
+    ];
     // More events than the window: the snapshot must still scan bounded.
     current.admin.tables["analytics_events"] = Array.from(
       { length: BEHAVIOR_BOUNDS.events + 50 },
-      (_, i) => viewEvent(m, "p-1", `2026-07-${String((i % 28) + 1).padStart(2, "0")}T00:00:00Z`),
+      (_, i) =>
+        viewEvent(
+          m,
+          "p-1",
+          `2026-07-${String((i % 28) + 1).padStart(2, "0")}T00:00:00Z`,
+        ),
     );
 
     await recommendedIds(m, "recommended");
@@ -294,10 +298,9 @@ describe("behavior snapshot bounds", () => {
     expect(selects.length).toBeGreaterThan(0);
     expect(selects.length).toBeLessThanOrEqual(3);
     for (const s of selects) {
-      expect(
-        s.limit !== null || s.single,
-        `unbounded read: ${s.table}`,
-      ).toBe(true);
+      expect(s.limit !== null || s.single, `unbounded read: ${s.table}`).toBe(
+        true,
+      );
       expect(s.returned).toBeLessThanOrEqual(
         Math.max(BEHAVIOR_BOUNDS.events, BEHAVIOR_BOUNDS.items),
       );
@@ -307,7 +310,9 @@ describe("behavior snapshot bounds", () => {
   it("second rail reuses the cached snapshot instead of re-querying", async () => {
     const m = "m-laneh-cache";
     seedMerchant(current.pub, m);
-    current.pub.tables["products"] = [product(m, "p-1", "2026-01-01T00:00:00Z")];
+    current.pub.tables["products"] = [
+      product(m, "p-1", "2026-01-01T00:00:00Z"),
+    ];
     current.admin.tables["analytics_events"] = [
       viewEvent(m, "p-1", "2026-07-01T00:00:00Z"),
     ];
@@ -323,7 +328,9 @@ describe("behavior snapshot bounds", () => {
     const m = "m-laneh-nopii";
     const sessionKey = "abc123def456ghi789";
     seedMerchant(current.pub, m);
-    current.pub.tables["products"] = [product(m, "p-1", "2026-01-01T00:00:00Z")];
+    current.pub.tables["products"] = [
+      product(m, "p-1", "2026-01-01T00:00:00Z"),
+    ];
 
     const key = behaviorCacheKey(m);
     expect(key).toContain(m);
@@ -369,7 +376,9 @@ describe("merchant currency passthrough", () => {
   it("stamps rail rows with the merchant currency for formatDisplayMoney", async () => {
     const m = "m-laneh-usd";
     seedMerchant(current.pub, m, "USD");
-    current.pub.tables["products"] = [product(m, "p-1", "2026-01-01T00:00:00Z")];
+    current.pub.tables["products"] = [
+      product(m, "p-1", "2026-01-01T00:00:00Z"),
+    ];
 
     const rows = await recommendedRows(m, "collection");
     expect(rows[0]!.currency).toBe("USD");
@@ -384,7 +393,9 @@ describe("merchant currency passthrough", () => {
   it("falls back to BDT when the merchant row carries none", async () => {
     const m = "m-laneh-nocur";
     current.pub.tables["merchants"] = [{ id: m }];
-    current.pub.tables["products"] = [product(m, "p-1", "2026-01-01T00:00:00Z")];
+    current.pub.tables["products"] = [
+      product(m, "p-1", "2026-01-01T00:00:00Z"),
+    ];
 
     const rows = await recommendedRows(m, "collection");
     expect(rows[0]!.currency).toBe("BDT");

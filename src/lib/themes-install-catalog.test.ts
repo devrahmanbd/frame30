@@ -225,7 +225,11 @@ describe("installUploadedTheme (upload server path)", () => {
           content: JSON.stringify({
             header: [],
             main: [
-              { id: "m1", type: "hero", props: { image: "assets/missing.png" } },
+              {
+                id: "m1",
+                type: "hero",
+                props: { image: "assets/missing.png" },
+              },
             ],
             footer: [],
           }),
@@ -236,7 +240,11 @@ describe("installUploadedTheme (upload server path)", () => {
     const err = await installUploadedTheme(
       db.asClient(),
       MERCHANT,
-      { fileName: "dangle.zip", fileBase64: dangling, idempotencyKey: "k-dangle" },
+      {
+        fileName: "dangle.zip",
+        fileBase64: dangling,
+        idempotencyKey: "k-dangle",
+      },
       "user-9",
     ).catch((e) => e);
     expect(err?.code ?? err?.message).toMatch(/upload/);
@@ -635,7 +643,13 @@ describe("upload audit inventory (threat-defense)", () => {
           name: "templates/index.json",
           content: JSON.stringify({
             header: [],
-            main: [{ id: "m1", type: "hero", props: { pixel: "https://track.example.com/p.gif" } }],
+            main: [
+              {
+                id: "m1",
+                type: "hero",
+                props: { pixel: "https://track.example.com/p.gif" },
+              },
+            ],
             footer: [],
           }),
         },
@@ -668,7 +682,15 @@ describe("upload untrusted content refusal (threat-defense)", () => {
           name: "templates/index.json",
           content: JSON.stringify({
             header: [],
-            main: [{ id: "m1", type: "html", props: { body: '<img src="https://track.example.com/p.gif" width="1" height="1">' } }],
+            main: [
+              {
+                id: "m1",
+                type: "html",
+                props: {
+                  body: '<img src="https://track.example.com/p.gif" width="1" height="1">',
+                },
+              },
+            ],
             footer: [],
           }),
         },

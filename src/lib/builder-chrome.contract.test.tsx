@@ -41,7 +41,12 @@ import { BREAKPOINT_PX, LAYER_RANGE } from "./responsive";
 import { responsiveClassOf } from "./responsive-css";
 import { SectionRenderer } from "@/components/builder/SectionRenderer";
 
-function item(id: string, label: string, url: string, extra: Partial<MenuItem> = {}): MenuItem {
+function item(
+  id: string,
+  label: string,
+  url: string,
+  extra: Partial<MenuItem> = {},
+): MenuItem {
   return {
     id,
     parentId: null,
@@ -57,16 +62,25 @@ function item(id: string, label: string, url: string, extra: Partial<MenuItem> =
   };
 }
 
-function menu(id: string, locations: NavMenu["locations"], labels: string[]): NavMenu {
+function menu(
+  id: string,
+  locations: NavMenu["locations"],
+  labels: string[],
+): NavMenu {
   return {
     id,
     name: id,
     handle: id,
     locations,
     items: labels.map((label, i) =>
-      item(`${id}-${i}`, label, `/${label.toLowerCase().replace(/\s+/g, "-")}`, {
-        position: i,
-      }),
+      item(
+        `${id}-${i}`,
+        label,
+        `/${label.toLowerCase().replace(/\s+/g, "-")}`,
+        {
+          position: i,
+        },
+      ),
     ),
   };
 }
@@ -90,24 +104,32 @@ describe("T4.3 chrome — menu dashboard→assign→theme render", () => {
 
   it("assign/unassign flows through toggleLocation into the render shape", () => {
     const draft = menu("m", [], ["Home"]);
-    const assigned = { ...draft, locations: toggleLocation(draft.locations, "header") };
+    const assigned = {
+      ...draft,
+      locations: toggleLocation(draft.locations, "header"),
+    };
     expect(shapeStoreMenus([assigned]).header).toHaveLength(1);
-    const removed = { ...assigned, locations: toggleLocation(assigned.locations, "header") };
+    const removed = {
+      ...assigned,
+      locations: toggleLocation(assigned.locations, "header"),
+    };
     expect(shapeStoreMenus([removed]).header).toEqual([]);
   });
 
   it("mobile drawer falls back to the header menu when no mobile menu is claimed", () => {
     const shaped = shapeStoreMenus([menu("m", ["header"], ["Home"])]);
     expect(selectMobileMenu(shaped).map((n) => n.label)).toEqual(["Home"]);
-    const both = shapeStoreMenus([
-      menu("m", ["header", "mobile"], ["Home"]),
-    ]);
+    const both = shapeStoreMenus([menu("m", ["header", "mobile"], ["Home"])]);
     expect(selectMobileMenu(both).map((n) => n.label)).toEqual(["Home"]);
   });
 
   it("rebases root-relative hrefs onto the path host, leaves the rest alone", () => {
-    expect(rebaseMenuHref("/pages/about", "/store/foo")).toBe("/store/foo/pages/about");
-    expect(rebaseMenuHref("https://x.example/", "/store/foo")).toBe("https://x.example/");
+    expect(rebaseMenuHref("/pages/about", "/store/foo")).toBe(
+      "/store/foo/pages/about",
+    );
+    expect(rebaseMenuHref("https://x.example/", "/store/foo")).toBe(
+      "https://x.example/",
+    );
     expect(rebaseMenuHref("#top", "/store/foo")).toBe("#top");
     expect(rebaseMenuHref("tel:+8801", "/store/foo")).toBe("tel:+8801");
   });
@@ -202,7 +224,11 @@ describe("T4.3 chrome — footer global edit reaches all templates", () => {
       {
         ...newSection("heading"),
         id: "gf-h",
-        props: { ...newSection("heading").props, text: "Shop", text_bn: "দোকান" },
+        props: {
+          ...newSection("heading").props,
+          text: "Shop",
+          text_bn: "দোকান",
+        },
       },
     ],
   };
@@ -217,14 +243,25 @@ describe("T4.3 chrome — footer global edit reaches all templates", () => {
 
   it("one block edit resolves into every template footer", () => {
     for (const placement of ["index", "product"]) {
-      const { sections, missing } = resolveGlobalRef(footerRef(`gf-${placement}`), [block]);
+      const { sections, missing } = resolveGlobalRef(
+        footerRef(`gf-${placement}`),
+        [block],
+      );
       expect(missing).toBe(false);
       expect(sections[0]!.props["text"]).toBe("Shop");
       // Grafted copies are detached: editing the block never mutates placements.
       expect(sections[0]!.id).toContain(`gf-${placement}~`);
     }
     // The block edit itself: new copy lands everywhere on next resolve.
-    const renamed = { ...block, nodes: [{ ...block.nodes[0]!, props: { ...block.nodes[0]!.props, text: "Shop all" } }] };
+    const renamed = {
+      ...block,
+      nodes: [
+        {
+          ...block.nodes[0]!,
+          props: { ...block.nodes[0]!.props, text: "Shop all" },
+        },
+      ],
+    };
     const { sections } = resolveGlobalRef(footerRef("gf-index"), [renamed]);
     expect(sections[0]!.props["text"]).toBe("Shop all");
   });
@@ -307,7 +344,11 @@ describe("T4.3 chrome — bn integrity across menu, header, footer, widget", () 
         {
           ...newSection("heading"),
           id: "bn-h",
-          props: { ...newSection("heading").props, text: "New", text_bn: "নতুন" },
+          props: {
+            ...newSection("heading").props,
+            text: "New",
+            text_bn: "নতুন",
+          },
         },
       ],
       footer: [],

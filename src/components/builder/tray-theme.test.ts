@@ -38,7 +38,9 @@ function registryWithTheme() {
     registry.registerWidget(def);
   }
   expect(
-    registry.registerWidget(themeDef("theme:songoskriti/finder", ["songoskriti"])).ok,
+    registry.registerWidget(
+      themeDef("theme:songoskriti/finder", ["songoskriti"]),
+    ).ok,
   ).toBe(true);
   return registry;
 }
@@ -51,7 +53,13 @@ function installedStub(): InstalledPlugin[] {
     api: "^3.0.0",
     permissions: ["render_storefront"],
     widgets: [
-      { key: "reviews", label: "Reviews", slots: ["main"], entry: "e.js", height: 320 },
+      {
+        key: "reviews",
+        label: "Reviews",
+        slots: ["main"],
+        entry: "e.js",
+        height: 320,
+      },
     ],
     hooks: [],
     settings: [],
@@ -71,16 +79,17 @@ function installedStub(): InstalledPlugin[] {
 
 describe("theme tray append", () => {
   it("lists the active theme's widgets (new path engages)", () => {
-    const out = themeTrayEntries("songoskriti", { registry: registryWithTheme() });
+    const out = themeTrayEntries("songoskriti", {
+      registry: registryWithTheme(),
+    });
     expect(out.ok).toBe(true);
     if (!out.ok) throw new Error("expected entries");
     expect(out.entries.map((e) => e.id)).toContain("theme:songoskriti/finder");
   });
 
   it("pluginTrayEntries appends theme widgets only when themed", async () => {
-    const { registerWidget, clearRegistry } = await import(
-      "@/lib/unified-widget-registry"
-    );
+    const { registerWidget, clearRegistry } =
+      await import("@/lib/unified-widget-registry");
     expect(
       registerWidget(themeDef("theme:songoskriti/finder", ["songoskriti"])).ok,
     ).toBe(true);
@@ -90,7 +99,9 @@ describe("theme tray append", () => {
       expect(themed.map((e) => e.key)).toContain("theme:songoskriti/finder");
       const legacy = pluginTrayEntries(installedStub());
       expect(legacy.map((e) => e.key)).toContain("plugin:acme/reviews");
-      expect(legacy.map((e) => e.key)).not.toContain("theme:songoskriti/finder");
+      expect(legacy.map((e) => e.key)).not.toContain(
+        "theme:songoskriti/finder",
+      );
     } finally {
       clearRegistry();
     }

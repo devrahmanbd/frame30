@@ -185,7 +185,9 @@ function proofMenus(): { header: MenuNode[]; mobile: MenuNode[] } {
       children: [
         {
           ...dbNode({ id: "m-sarees", label: "Sarees", url: "/c/sarees" }),
-          children: [dbNode({ id: "m-jamdani", label: "Jamdani", url: "/c/jamdani" })],
+          children: [
+            dbNode({ id: "m-jamdani", label: "Jamdani", url: "/c/jamdani" }),
+          ],
         },
       ],
     },
@@ -308,7 +310,10 @@ function renderPresentation(
 ): string {
   const Cmp = resolveThemePresentation(themeKey, widgetType)!;
   return renderToStaticMarkup(
-    createElement(Cmp as (p: WidgetCtx) => React.ReactElement, ctxFor(section, locale, data)),
+    createElement(
+      Cmp as (p: WidgetCtx) => React.ReactElement,
+      ctxFor(section, locale, data),
+    ),
   );
 }
 
@@ -322,10 +327,19 @@ function renderEngine(
   const node =
     map && byNode ? (
       <WidgetDataProvider
-        bundle={{ requests: [{ key: "acc", source: "collection", params: {} }], byNode } as never}
+        bundle={
+          {
+            requests: [{ key: "acc", source: "collection", params: {} }],
+            byNode,
+          } as never
+        }
         map={map as never}
       >
-        <SectionRenderer section={section} themeKey={themeKey} locale={locale} />
+        <SectionRenderer
+          section={section}
+          themeKey={themeKey}
+          locale={locale}
+        />
       </WidgetDataProvider>
     ) : (
       <SectionRenderer section={section} themeKey={themeKey} locale={locale} />
@@ -336,11 +350,21 @@ function renderEngine(
 function renderShell(
   Shell: typeof SongoskritiHeaderShell,
   themeKey: string | null,
-  opts: { locale?: "en" | "bn"; mobileOpen?: boolean; expandedMobileMenu?: string | null } = {},
+  opts: {
+    locale?: "en" | "bn";
+    mobileOpen?: boolean;
+    expandedMobileMenu?: string | null;
+  } = {},
 ): string {
-  const { locale = "en", mobileOpen = true, expandedMobileMenu = "m-shop" } = opts;
+  const {
+    locale = "en",
+    mobileOpen = true,
+    expandedMobileMenu = "m-shop",
+  } = opts;
   const t =
-    locale === "bn" ? (en: string, bn?: string) => bn ?? en : (en: string) => en;
+    locale === "bn"
+      ? (en: string, bn?: string) => bn ?? en
+      : (en: string) => en;
   const data = assembleHeaderData({
     slug: "demo",
     menus: proofMenus(),
@@ -378,12 +402,32 @@ function renderShell(
 beforeEach(() => {
   mockPathname.current = "/store/demo";
   clearThemePresentations();
-  registerThemePresentation(THEME_A, "mega_menu", SongoskritiHeaderPresentation);
+  registerThemePresentation(
+    THEME_A,
+    "mega_menu",
+    SongoskritiHeaderPresentation,
+  );
   registerThemePresentation(THEME_B, "mega_menu", SomvabonaHeaderPresentation);
-  registerThemePresentation(THEME_A, "announcement_bar", SongoskritiAnnouncementPresentation);
-  registerThemePresentation(THEME_B, "announcement_bar", SomvabonaAnnouncementPresentation);
-  registerThemePresentation(THEME_A, "footer_sitemap", SongoskritiFooterProofPresentation);
-  registerThemePresentation(THEME_B, "footer_sitemap", SomvabonaFooterProofPresentation);
+  registerThemePresentation(
+    THEME_A,
+    "announcement_bar",
+    SongoskritiAnnouncementPresentation,
+  );
+  registerThemePresentation(
+    THEME_B,
+    "announcement_bar",
+    SomvabonaAnnouncementPresentation,
+  );
+  registerThemePresentation(
+    THEME_A,
+    "footer_sitemap",
+    SongoskritiFooterProofPresentation,
+  );
+  registerThemePresentation(
+    THEME_B,
+    "footer_sitemap",
+    SomvabonaFooterProofPresentation,
+  );
 });
 
 /* ── 1. builder → save → reload → publish → storefront ── */
@@ -392,8 +436,15 @@ describe("R6 acceptance — builder → save → reload → publish → storefro
   it("builds the acceptance page, saves + reloads byte-stable, publishes clean", () => {
     // BUILD (editor): merchant drops the acceptance sections on the canvas.
     const draft = acceptanceAst();
-    expect(draft.header.map((s) => s.type)).toEqual(["announcement_bar", "mega_menu"]);
-    expect(draft.main.map((s) => s.type)).toEqual(["heading", "product_grid", "plugin_block"]);
+    expect(draft.header.map((s) => s.type)).toEqual([
+      "announcement_bar",
+      "mega_menu",
+    ]);
+    expect(draft.main.map((s) => s.type)).toEqual([
+      "heading",
+      "product_grid",
+      "plugin_block",
+    ]);
     expect(draft.footer.map((s) => s.type)).toEqual(["footer_sitemap"]);
 
     // SAVE: serialise → parse (the server path). Authored copy survives,
@@ -405,16 +456,18 @@ describe("R6 acceptance — builder → save → reload → publish → storefro
     expect(saved.main.find((s) => s.id === "acc-heading")!.props["text"]).toBe(
       "Acceptance headline",
     );
-    expect(saved.main.find((s) => s.id === "acc-community")!.props["pluginKey"]).toBe(
-      "plugin:reviews/wall",
-    );
+    expect(
+      saved.main.find((s) => s.id === "acc-community")!.props["pluginKey"],
+    ).toBe("plugin:reviews/wall");
 
     // RELOAD: serialise → parse again is byte-stable.
     const reloaded = parseAst(JSON.parse(JSON.stringify(saved)));
     expect(JSON.stringify(reloaded)).toBe(JSON.stringify(saved));
 
     // PUBLISH: lint gate is clean (no errors), template resolves, never blank.
-    const errors = lintTemplate(reloaded, "index").filter((i) => i.level === "error");
+    const errors = lintTemplate(reloaded, "index").filter(
+      (i) => i.level === "error",
+    );
     expect(errors).toEqual([]);
     const templates = parseTemplates({ index: reloaded });
     const { ast, match } = resolveTemplate(templates, "index");
@@ -435,18 +488,31 @@ describe("R6 acceptance — builder → save → reload → publish → storefro
   });
 
   it("storefront renders the published page under BOTH themes with authored copy", () => {
-    const { ast } = resolveTemplate(parseTemplates({ index: parseAst(acceptanceAst()) }), "index");
+    const { ast } = resolveTemplate(
+      parseTemplates({ index: parseAst(acceptanceAst()) }),
+      "index",
+    );
     const byNode = { "acc-grid": "acc", "acc-mega-menu": "acc" };
     const map = { acc: ROWS };
     const renderPage = (themeKey: string) =>
       renderToStaticMarkup(
         <WidgetDataProvider
-          bundle={{ requests: [{ key: "acc", source: "collection", params: {} }], byNode } as never}
+          bundle={
+            {
+              requests: [{ key: "acc", source: "collection", params: {} }],
+              byNode,
+            } as never
+          }
           map={map as never}
         >
           <>
             {[...ast.header, ...ast.main, ...ast.footer].map((s) => (
-              <SectionRenderer key={s.id} section={s} themeKey={themeKey} locale="en" />
+              <SectionRenderer
+                key={s.id}
+                section={s}
+                themeKey={themeKey}
+                locale="en"
+              />
             ))}
           </>
         </WidgetDataProvider>,
@@ -573,8 +639,18 @@ describe("R6 acceptance — switch: announcement", () => {
 
   it("same bilingual copy in the bn locale", () => {
     const section = announcementSection();
-    const htmlA = renderPresentation(THEME_A, "announcement_bar", section, "bn");
-    const htmlB = renderPresentation(THEME_B, "announcement_bar", section, "bn");
+    const htmlA = renderPresentation(
+      THEME_A,
+      "announcement_bar",
+      section,
+      "bn",
+    );
+    const htmlB = renderPresentation(
+      THEME_B,
+      "announcement_bar",
+      section,
+      "bn",
+    );
     expect(htmlA).not.toBe(htmlB);
     for (const html of [htmlA, htmlB]) {
       expect(html).toContain(MSG1_BN);
@@ -586,7 +662,13 @@ describe("R6 acceptance — switch: announcement", () => {
 describe("R6 acceptance — switch: widgets (product_grid)", () => {
   function renderGrid(themeKey: string): string {
     const section = productGridSection();
-    return renderEngine(section, themeKey, "en", { acc: ROWS }, { "acc-grid": "acc" });
+    return renderEngine(
+      section,
+      themeKey,
+      "en",
+      { acc: ROWS },
+      { "acc-grid": "acc" },
+    );
   }
 
   it("same section + same rows: identical data, different presentation", () => {
@@ -636,7 +718,13 @@ describe("R6 acceptance — switch: footer", () => {
 
     // Content identical: same columns, labels, hrefs, nav label.
     for (const html of [htmlA, htmlB]) {
-      for (const label of ["Shop", "Help", "New in", "Best sellers", "Contact"]) {
+      for (const label of [
+        "Shop",
+        "Help",
+        "New in",
+        "Best sellers",
+        "Contact",
+      ]) {
         expect(html).toContain(label);
       }
       for (const href of ["/c/new-in", "/c/best-sellers", "/pages/contact"]) {
@@ -695,10 +783,18 @@ describe("R6 acceptance — switch: menu", () => {
     expect(desktopA).not.toBe(desktopB);
 
     const drawerA = renderToStaticMarkup(
-      <SongoskritiMobileDrawer items={CANONICAL_MENU} base="/store/demo" defaultExpandedId="shop" />,
+      <SongoskritiMobileDrawer
+        items={CANONICAL_MENU}
+        base="/store/demo"
+        defaultExpandedId="shop"
+      />,
     );
     const drawerB = renderToStaticMarkup(
-      <SomvabonaMobileDrawer items={CANONICAL_MENU} base="/store/demo" defaultExpandedId="shop" />,
+      <SomvabonaMobileDrawer
+        items={CANONICAL_MENU}
+        base="/store/demo"
+        defaultExpandedId="shop"
+      />,
     );
     for (const html of [drawerA, drawerB]) {
       expect(html).toContain(">Shop<");

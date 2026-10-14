@@ -45,15 +45,16 @@ const node = (id: string, type: string, props: Record<string, unknown>) =>
 
 describe("template suffix candidates", () => {
   it("orders most-specific first: suffix → base → page → index", () => {
-    expect(
-      resolveTemplateCandidates("product", { suffix: "summer" }),
-    ).toEqual(["product_summer", "product", "page", "index"]);
+    expect(resolveTemplateCandidates("product", { suffix: "summer" })).toEqual([
+      "product_summer",
+      "product",
+      "page",
+      "index",
+    ]);
   });
 
   it("adds slug variants incl. the old page_<slug> package shape", () => {
-    expect(
-      resolveTemplateCandidates("blog", { slug: "our-craft" }),
-    ).toEqual([
+    expect(resolveTemplateCandidates("blog", { slug: "our-craft" })).toEqual([
       "blog_our_craft",
       "page_our_craft",
       "blog",
@@ -252,9 +253,9 @@ describe("global_ref section type", () => {
       footer: [],
     });
     expect(globalRefTarget(ast.header[0]!)).toBe("block-1");
-    expect(lintTemplate(ast, "index").filter((i) => /slot/.test(i.message))).toEqual(
-      [],
-    );
+    expect(
+      lintTemplate(ast, "index").filter((i) => /slot/.test(i.message)),
+    ).toEqual([]);
   });
 
   it("flags a global_ref dropped into main as an illegal slot", () => {
@@ -313,11 +314,15 @@ describe("preview fallback resolution", () => {
       product: body("base", "Base"),
       product_summer: body("suffix", "Summer"),
     });
-    const hit = resolvePreviewAst(templates, {
-      template: "product",
-      slug: null,
-      query: null,
-    }, { suffix: "summer" });
+    const hit = resolvePreviewAst(
+      templates,
+      {
+        template: "product",
+        slug: null,
+        query: null,
+      },
+      { suffix: "summer" },
+    );
     expect(hit.key).toBe("product_summer");
     expect(hit.match).toBe("suffix");
   });

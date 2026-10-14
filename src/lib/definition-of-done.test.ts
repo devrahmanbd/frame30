@@ -206,13 +206,13 @@ describe("DoD 5 — ≥70% shared registry, no theme-exclusive renderer branches
       if (file === "TokenEditor.tsx") {
         // Studio editor chrome, never a storefront renderer. It takes the
         // installed theme key ONLY to
-      // build a preview link (`/theme-preview/${themeKey}?variation=...`,
-      // fed by the studio host in `builder.tsx:2323`) while the
-      // merchant-pickable variation list arrives as data (`variations[]`,
-      // resolved by the host's `VARIATIONS_BY_THEME_KEY` so shared builder
-      // chrome holds zero theme imports). Empty/unknown lists hide the
-      // picker, and it must never fork rendering on the key nor resolve
-      // storefront widgets.
+        // build a preview link (`/theme-preview/${themeKey}?variation=...`,
+        // fed by the studio host in `builder.tsx:2323`) while the
+        // merchant-pickable variation list arrives as data (`variations[]`,
+        // resolved by the host's `VARIATIONS_BY_THEME_KEY` so shared builder
+        // chrome holds zero theme imports). Empty/unknown lists hide the
+        // picker, and it must never fork rendering on the key nor resolve
+        // storefront widgets.
         expect(src, `${file} declares the theme key`).toMatch(/themeKey\?:/);
         expect(src, `${file} compares the theme key`).not.toMatch(
           /themeKey\s*(===|!==|==|!=)/,

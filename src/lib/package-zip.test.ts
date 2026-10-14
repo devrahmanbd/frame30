@@ -73,21 +73,45 @@ function buildRawZip(
     const flags = e.flags ?? 0x0800;
     const localOffset = out.length;
     out.push(
-      0x50, 0x4b, 0x03, 0x04,
-      ...u16(20), ...u16(flags), ...u16(e.localMethod ?? method),
-      ...u16(0), ...u16(0),
-      ...u32(crc32(e.data)), ...u32(payload.length), ...u32(e.data.length),
-      ...u16(nameBytes.length), ...u16(0),
-      ...nameBytes, ...payload,
+      0x50,
+      0x4b,
+      0x03,
+      0x04,
+      ...u16(20),
+      ...u16(flags),
+      ...u16(e.localMethod ?? method),
+      ...u16(0),
+      ...u16(0),
+      ...u32(crc32(e.data)),
+      ...u32(payload.length),
+      ...u32(e.data.length),
+      ...u16(nameBytes.length),
+      ...u16(0),
+      ...nameBytes,
+      ...payload,
     );
     central.push(
-      0x50, 0x4b, 0x01, 0x02,
-      ...u16(20), ...u16(20), ...u16(flags), ...u16(method),
-      ...u16(0), ...u16(0),
-      ...u32(crc32(e.data)), ...u32(payload.length), ...u32(e.data.length),
-      ...u16(nameBytes.length), ...u16(0), ...u16(0),
-      ...u16(e.diskStart ?? 0), ...u16(0), ...u32(e.externalAttrs ?? 0),
-      ...u32(localOffset), ...nameBytes,
+      0x50,
+      0x4b,
+      0x01,
+      0x02,
+      ...u16(20),
+      ...u16(20),
+      ...u16(flags),
+      ...u16(method),
+      ...u16(0),
+      ...u16(0),
+      ...u32(crc32(e.data)),
+      ...u32(payload.length),
+      ...u32(e.data.length),
+      ...u16(nameBytes.length),
+      ...u16(0),
+      ...u16(0),
+      ...u16(e.diskStart ?? 0),
+      ...u16(0),
+      ...u32(e.externalAttrs ?? 0),
+      ...u32(localOffset),
+      ...nameBytes,
     );
   }
   const centralOffset = out.length;
@@ -95,10 +119,17 @@ function buildRawZip(
   const centralSize = out.length - centralOffset;
   const count = opts.countOverride ?? entries.length;
   out.push(
-    0x50, 0x4b, 0x05, 0x06,
-    ...u16(opts.diskNumber ?? 0), ...u16(opts.cdDisk ?? 0),
-    ...u16(count), ...u16(count),
-    ...u32(centralSize), ...u32(centralOffset), ...u16(0),
+    0x50,
+    0x4b,
+    0x05,
+    0x06,
+    ...u16(opts.diskNumber ?? 0),
+    ...u16(opts.cdDisk ?? 0),
+    ...u16(count),
+    ...u16(count),
+    ...u32(centralSize),
+    ...u32(centralOffset),
+    ...u16(0),
   );
   return new Uint8Array(out);
 }
@@ -140,7 +171,9 @@ describe("PKG-2 reader", () => {
   });
 
   it("extracts a single entry by handle", () => {
-    const zip = buildRawZip([{ name: "theme.json", data: str("{}"), method: 8 }]);
+    const zip = buildRawZip([
+      { name: "theme.json", data: str("{}"), method: 8 },
+    ]);
     const [entry] = parseZip(zip) as [ZipEntry];
     expect(new TextDecoder().decode(extractEntry(zip, entry!))).toBe("{}");
   });
@@ -157,7 +190,9 @@ describe("PKG-2 reader", () => {
   });
 
   it("rejects encrypted entries with a reason code", () => {
-    const zip = buildRawZip([{ name: "theme.json", data: str("{}"), flags: 0x0801 }]);
+    const zip = buildRawZip([
+      { name: "theme.json", data: str("{}"), flags: 0x0801 },
+    ]);
     expect(codeOfSync(() => parseZip(zip))).toBe("zip.encrypted");
   });
 
@@ -170,13 +205,17 @@ describe("PKG-2 reader", () => {
   });
 
   it("rejects per-entry disk numbers as spanned", () => {
-    const zip = buildRawZip([{ name: "theme.json", data: str("{}"), diskStart: 2 }]);
+    const zip = buildRawZip([
+      { name: "theme.json", data: str("{}"), diskStart: 2 },
+    ]);
     expect(codeOfSync(() => parseZip(zip))).toBe("zip.spanned");
   });
 
   it("rejects unknown compression methods with a reason code", () => {
     // method 12 (bzip2): local + central agree, so the method gate fires.
-    const zip = buildRawZip([{ name: "theme.json", data: str("{}"), method: 12 }]);
+    const zip = buildRawZip([
+      { name: "theme.json", data: str("{}"), method: 12 },
+    ]);
     expect(codeOfSync(() => parseZip(zip))).toBe("zip.unsupported_method");
   });
 
@@ -221,12 +260,19 @@ describe("PKG-2 zip-slip suite", () => {
   ];
   for (const bad of BAD) {
     it(`rejects ${JSON.stringify(bad)}`, () => {
-      expect(codeOfSync(() => assertSafePackagePath(bad))).toBe("zip.unsafe_path");
+      expect(codeOfSync(() => assertSafePackagePath(bad))).toBe(
+        "zip.unsafe_path",
+      );
     });
   }
 
   it("rejects slip entries end-to-end even with a valid manifest", () => {
-    for (const bad of ["../../evil.json", "/abs.json", "C:/evil.json", "a\\b.json"]) {
+    for (const bad of [
+      "../../evil.json",
+      "/abs.json",
+      "C:/evil.json",
+      "a\\b.json",
+    ]) {
       const zip = buildRawZip([
         { name: "theme.json", data: str(JSON.stringify({ name: "T" })) },
         { name: bad, data: str("{}") },
@@ -303,9 +349,14 @@ describe("PKG-2 size caps", () => {
 
 /* -------------------------------------------------------------------- layout */
 
-function themeFiles(extra: [string, string][] = []): { path: string; bytes: Uint8Array }[] {
+function themeFiles(
+  extra: [string, string][] = [],
+): { path: string; bytes: Uint8Array }[] {
   return [
-    { path: "theme.json", bytes: str(JSON.stringify({ name: "T", version: "1.0.0" })) },
+    {
+      path: "theme.json",
+      bytes: str(JSON.stringify({ name: "T", version: "1.0.0" })),
+    },
     { path: "templates/index.json", bytes: str("{}") },
     { path: "styles/main.css", bytes: str("a{}") },
     { path: "assets/logo.png", bytes: str("png") },
@@ -332,7 +383,12 @@ describe("PKG-2 package layout", () => {
     expect(
       codeOfSync(() =>
         validatePackageLayout(
-          [{ path: "sub/theme.json", bytes: str(JSON.stringify({ name: "T" })) }],
+          [
+            {
+              path: "sub/theme.json",
+              bytes: str(JSON.stringify({ name: "T" })),
+            },
+          ],
           "theme",
         ),
       ),
@@ -348,7 +404,9 @@ describe("PKG-2 package layout", () => {
       "evil.py",
     ]) {
       expect(
-        codeOfSync(() => validatePackageLayout(themeFiles([[bad, "x"]]), "theme")),
+        codeOfSync(() =>
+          validatePackageLayout(themeFiles([[bad, "x"]]), "theme"),
+        ),
       ).toBe("zip.blocked_extension");
     }
   });
@@ -356,7 +414,10 @@ describe("PKG-2 package layout", () => {
   it("refuses files outside their package area", () => {
     expect(
       codeOfSync(() =>
-        validatePackageLayout(themeFiles([["templates/style.css", "x"]]), "theme"),
+        validatePackageLayout(
+          themeFiles([["templates/style.css", "x"]]),
+          "theme",
+        ),
       ),
     ).toBe("zip.disallowed_location");
     expect(
@@ -369,7 +430,10 @@ describe("PKG-2 package layout", () => {
   it("rejects a manifest that is not a JSON object", () => {
     expect(
       codeOfSync(() =>
-        validatePackageLayout([{ path: "theme.json", bytes: str("[1,2]") }], "theme"),
+        validatePackageLayout(
+          [{ path: "theme.json", bytes: str("[1,2]") }],
+          "theme",
+        ),
       ),
     ).toBe("zip.manifest_invalid");
   });
@@ -457,13 +521,19 @@ describe("PKG-2 hostile entry strictness (threat-defense)", () => {
 });
 
 describe("PKG-2 inner-file content authenticity (threat-defense)", () => {
-  const PNG = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00]);
-  const HTML = new TextEncoder().encode("<!doctype html><script>alert(1)</script>");
+  const PNG = new Uint8Array([
+    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00,
+  ]);
+  const HTML = new TextEncoder().encode(
+    "<!doctype html><script>alert(1)</script>",
+  );
   const pagan = (path: string, bytes: Uint8Array) => ({ path, bytes });
   it("rejects HTML masquerading as a PNG asset", () => {
-    expect(codeOfSync(() => assertPackageContentAuthentic([pagan("assets/logo.png", HTML)]))).toBe(
-      "zip.content_mismatch",
-    );
+    expect(
+      codeOfSync(() =>
+        assertPackageContentAuthentic([pagan("assets/logo.png", HTML)]),
+      ),
+    ).toBe("zip.content_mismatch");
   });
   it("accepts real PNG bytes under a .png name", () => {
     expect(() =>
@@ -484,8 +554,16 @@ describe("PKG-2 inner-file content authenticity (threat-defense)", () => {
       ["assets/a.woff", "wOFF"],
       ["assets/b.woff2", "wOF2"],
     ] as const) {
-      const bytes = new Uint8Array([...new TextEncoder().encode(magic), 0, 0, 0, 0]);
-      expect(() => assertPackageContentAuthentic([pagan(name, bytes)])).not.toThrow();
+      const bytes = new Uint8Array([
+        ...new TextEncoder().encode(magic),
+        0,
+        0,
+        0,
+        0,
+      ]);
+      expect(() =>
+        assertPackageContentAuthentic([pagan(name, bytes)]),
+      ).not.toThrow();
     }
   });
   it("rejects null bytes in text files", () => {

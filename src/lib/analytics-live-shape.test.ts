@@ -14,7 +14,8 @@ import {
   allowAllRateLimits,
 } from "./__fixtures__/test-doubles";
 
-const rec = vi.hoisted(() => ({ holder: null as any }));
+type Recorder = ReturnType<typeof metricRecorder>;
+const rec = vi.hoisted(() => ({ holder: null as Recorder | null }));
 const recorder = metricRecorder();
 rec.holder = recorder;
 
@@ -77,8 +78,8 @@ beforeEach(() => recorder.reset());
 describe("live-shape adapters", () => {
   it("builds a funnel from flat daily rows without touching events", async () => {
     const db = warehouseDb();
-    const out: any = await loadFunnel(db.asClient(), MERCHANT, 30);
-    const byKey = new Map(out.stages.map((s: any) => [s.key, s.count]));
+    const out = await loadFunnel(db.asClient(), MERCHANT, 30);
+    const byKey = new Map(out.stages.map((s) => [s.key, s.count]));
     expect(byKey.get("visit")).toBe(100);
     expect(byKey.get("paid")).toBe(5);
     expect(out.channels).toEqual([]);
@@ -86,7 +87,7 @@ describe("live-shape adapters", () => {
 
   it("maps weekly cohort rows to a single honest offset", async () => {
     const db = warehouseDb();
-    const matrix: any = await loadCohorts(db.asClient(), MERCHANT);
+    const matrix = await loadCohorts(db.asClient(), MERCHANT);
     expect(matrix.rows).toHaveLength(1);
     expect(matrix.rows[0].size).toBe(10);
     expect(matrix.rows[0].cells[0].active).toBe(4);
@@ -94,7 +95,7 @@ describe("live-shape adapters", () => {
 
   it("serves traffic from flat geo+daily rows with empty splits", async () => {
     const db = warehouseDb();
-    const out: any = await loadTraffic(db.asClient(), MERCHANT, 30);
+    const out = await loadTraffic(db.asClient(), MERCHANT, 30);
     expect(out.totals.visitors).toBe(80);
     expect(out.countries[0]).toMatchObject({ key: "BD", visitors: 80 });
     expect(out.series).toHaveLength(1);
@@ -105,7 +106,7 @@ describe("live-shape adapters", () => {
 
   it("audits the flat batch ledger without raw event counts", async () => {
     const db = warehouseDb();
-    const out: any = await loadPipelineHealth(db.asClient(), MERCHANT);
+    const out = await loadPipelineHealth(db.asClient(), MERCHANT);
     expect(out.healthy).toBe(true);
     expect(out.rawRows).toBe(0);
     expect(out.totalEvents).toBe(42);
@@ -120,11 +121,11 @@ describe("live-shape adapters", () => {
         analytics_batches: [],
       },
     });
-    const funnel: any = await loadFunnel(db.asClient(), MERCHANT, 30);
-    expect(funnel.stages.every((s: any) => s.count === 0)).toBe(true);
-    const traffic: any = await loadTraffic(db.asClient(), MERCHANT, 30);
+    const funnel = await loadFunnel(db.asClient(), MERCHANT, 30);
+    expect(funnel.stages.every((s) => s.count === 0)).toBe(true);
+    const traffic = await loadTraffic(db.asClient(), MERCHANT, 30);
     expect(traffic.totals.visitors).toBe(0);
-    const health: any = await loadPipelineHealth(db.asClient(), MERCHANT);
+    const health = await loadPipelineHealth(db.asClient(), MERCHANT);
     expect(health.healthy).toBe(true);
   });
 });

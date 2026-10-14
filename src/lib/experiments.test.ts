@@ -8,13 +8,27 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { metricRecorder } from "./__fixtures__/test-doubles";
 
-const rec = vi.hoisted(() => ({ holder: null as any, rpc: null as any }));
+type Recorder = ReturnType<typeof metricRecorder>;
+type Rpc = (
+  fn: string,
+  args?: Record<string, unknown>,
+) => Promise<{ data: unknown; error: unknown }>;
+const rec: { holder: Recorder | null; rpc: Rpc } = vi.hoisted(() => ({
+  holder: null,
+  // Every test below installs its own stub before calling; this only guards
+  // against a test that forgets to, failing loudly instead of on `null`.
+  rpc: async () => {
+    throw new Error("rpc_not_stubbed");
+  },
+}));
 const recorder = metricRecorder();
 rec.holder = recorder;
 
 vi.mock("./observability.server", () => rec.holder!.observability);
 vi.mock("./pricing.server", () => ({
-  publicClient: () => ({ rpc: (fn: string, args: any) => rec.rpc(fn, args) }),
+  publicClient: () => ({
+    rpc: (fn: string, args?: Record<string, unknown>) => rec.rpc(fn, args),
+  }),
 }));
 
 const { assignVariant, recordConversion, CONTROL } =
@@ -46,8 +60,8 @@ describe("assignVariant", () => {
     // The DB persists the assignment; the server only reads it back. Even
     // across many calls the subject must see one variant.
     const assignments = new Map<string, string>();
-    rec.rpc = async (_fn: string, args: any) => {
-      const key = `${args._key}:${args._subject_key}`;
+    rec.rpc = async (_fn: string, args?: Record<string, unknown>) => {
+      const key = `${args?._key}:${args?._subject_key}`;
       if (!assignments.has(key))
         assignments.set(key, assignments.size % 2 ? "b" : "a");
       return {
@@ -66,9 +80,9 @@ describe("assignVariant", () => {
   });
 
   it("passes the subject key through untouched so assignment cannot be spoofed by casing", async () => {
-    const calls: any[] = [];
-    rec.rpc = async (_fn: string, args: any) => {
-      calls.push(args);
+    const calls: Record<string, unknown>[] = [];
+    rec.rpc = async (_fn: string, args?: Record<string, unknown>) => {
+      calls.push(args as Record<string, unknown>);
       return { data: { variant: "a", reason: "assigned" }, error: null };
     };
     await assignVariant(MERCHANT, "checkout_cta", "Subject-1");
@@ -100,9 +114,9 @@ describe("assignVariant", () => {
 
 describe("recordConversion", () => {
   it("truncates the value to non-negative integer minor units (money guard)", async () => {
-    const calls: any[] = [];
-    rec.rpc = async (_fn: string, args: any) => {
-      calls.push(args);
+    const calls: Record<string, unknown>[] = [];
+    rec.rpc = async (_fn: string, args?: Record<string, unknown>) => {
+      calls.push(args as Record<string, unknown>);
       return { data: true, error: null };
     };
     await recordConversion(

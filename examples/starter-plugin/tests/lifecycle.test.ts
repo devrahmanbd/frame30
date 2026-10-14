@@ -19,9 +19,7 @@ import {
 import manifestJson from "../manifest.json";
 import { NAMESPACED_KEY } from "../src/widget";
 
-function installed(
-  overrides: Partial<InstalledPlugin> = {},
-): InstalledPlugin {
+function installed(overrides: Partial<InstalledPlugin> = {}): InstalledPlugin {
   const verdict = parseManifest(manifestJson);
   if (!verdict.ok) throw new Error(verdict.errors.join(","));
   return {
@@ -81,18 +79,20 @@ describe("starter lifecycle through the shared resolver", () => {
   });
 
   it("unknown widget and unknown plugin fail with labels", () => {
-    expect(resolvePluginWidget("plugin:starter-hello/ghost", [installed()]))
-      .toEqual({
-        ok: false,
-        reason: "unknown_widget",
-        pluginId: "starter-hello",
-      });
-    expect(resolvePluginWidget("plugin:ghost-app/greeting", [installed()]))
-      .toEqual({
-        ok: false,
-        reason: "not_installed",
-        pluginId: "ghost-app",
-      });
+    expect(
+      resolvePluginWidget("plugin:starter-hello/ghost", [installed()]),
+    ).toEqual({
+      ok: false,
+      reason: "unknown_widget",
+      pluginId: "starter-hello",
+    });
+    expect(
+      resolvePluginWidget("plugin:ghost-app/greeting", [installed()]),
+    ).toEqual({
+      ok: false,
+      reason: "not_installed",
+      pluginId: "ghost-app",
+    });
     expect(resolvePluginWidget("greeting", [installed()])).toEqual({
       ok: false,
       reason: "bad_key",

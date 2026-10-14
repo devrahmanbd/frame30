@@ -374,11 +374,11 @@ describe("Phase 4 search-driven rows", () => {
   it("a picked query prefills the search term", () => {
     // The palette input mounts only when the dialog opens, so the binding
     // is pinned at the source-contract level like the other cases here.
-    expect(SRC).toContain("useState(str(\"query\"))");
+    expect(SRC).toContain('useState(str("query"))');
   });
 
   it("blank query keeps the empty-box initial state", () => {
-    expect(SRC).toContain("useState(str(\"query\"))");
+    expect(SRC).toContain('useState(str("query"))');
     expect(newSection("search_command").props["query"]).toBe("");
   });
 

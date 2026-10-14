@@ -368,9 +368,7 @@ describe("Phase 5 — publish and release wiring", () => {
 
 describe("Phase 1A — reduced-motion verdicts block publish", () => {
   const page = (
-    over: Partial<
-      import("./motion-choreography").MotionPageMeasurement
-    > = {},
+    over: Partial<import("./motion-choreography").MotionPageMeasurement> = {},
   ): import("./motion-choreography").MotionPageMeasurement => ({
     route: "home",
     viewportPx: 1440,
@@ -392,7 +390,9 @@ describe("Phase 1A — reduced-motion verdicts block publish", () => {
       motion: {
         pages: [
           page({
-            counters: [{ label: "orders", rendered: "12,004", settled: "128,400" }],
+            counters: [
+              { label: "orders", rendered: "12,004", settled: "128,400" },
+            ],
           }),
         ],
       },
@@ -440,9 +440,7 @@ describe("Phase 1A — reduced-motion verdicts block publish", () => {
     expect(codes).toContain("motion.reduced.loop");
     expect(codes).toContain("motion.reduced.duration");
     // Blocking, never advisory.
-    expect(
-      gate.warnings.some((w) => w.code.startsWith("motion.")),
-    ).toBe(false);
+    expect(gate.warnings.some((w) => w.code.startsWith("motion."))).toBe(false);
   });
 
   it("passes a clean reduced pass and ignores full-intent pages", () => {

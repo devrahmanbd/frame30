@@ -107,7 +107,10 @@ function renderDirect(
   locale: "en" | "bn" = "en",
 ): string {
   return renderToStaticMarkup(
-    createElement(Cmp as (p: WidgetCtx) => React.ReactElement, ctxFor(section, locale)),
+    createElement(
+      Cmp as (p: WidgetCtx) => React.ReactElement,
+      ctxFor(section, locale),
+    ),
   );
 }
 
@@ -133,7 +136,10 @@ beforeEach(() => {
 
 describe("same announcement data, two theme presentations", () => {
   it("resolves distinct presentations per theme through the registry", () => {
-    const songoskriti = resolveThemePresentation("songoskriti", "announcement_bar");
+    const songoskriti = resolveThemePresentation(
+      "songoskriti",
+      "announcement_bar",
+    );
     const somvabona = resolveThemePresentation("somvabona", "announcement_bar");
     expect(songoskriti).toBe(SongoskritiAnnouncementPresentation);
     expect(somvabona).toBe(SomvabonaAnnouncementPresentation);
@@ -154,7 +160,9 @@ describe("same announcement data, two theme presentations", () => {
     );
 
     // Structurally distinct chrome per theme.
-    expect(songoskriti).toContain('data-announcement-presentation="songoskriti"');
+    expect(songoskriti).toContain(
+      'data-announcement-presentation="songoskriti"',
+    );
     expect(somvabona).toContain('data-announcement-presentation="somvabona"');
     expect(songoskriti).toContain("<div");
     expect(somvabona).toContain("<section");
@@ -261,7 +269,9 @@ describe("theme-owned inner presentation (R2 — beyond the wrapper)", () => {
 
   it("reads identical data through the shared platform row reader", () => {
     const section = proofSection();
-    expect(announcementItemsOf(section.props as Record<string, unknown>)).toEqual([
+    expect(
+      announcementItemsOf(section.props as Record<string, unknown>),
+    ).toEqual([
       { text: MESSAGE_EN, text_bn: MESSAGE_BN },
       { text: MESSAGE_2_EN, text_bn: "" },
     ]);
@@ -289,7 +299,8 @@ describe("dismissal behavior preserved per theme", () => {
 
   it("renders the same bilingual close affordance when dismissible", () => {
     for (const locale of ["en", "bn"] as const) {
-      const expected = locale === "bn" ? "ঘোষণা বন্ধ করুন" : "Dismiss announcement";
+      const expected =
+        locale === "bn" ? "ঘোষণা বন্ধ করুন" : "Dismiss announcement";
       for (const themeKey of ["songoskriti", "somvabona"]) {
         const Cmp = resolveThemePresentation(themeKey, "announcement_bar")!;
         const html = renderDirect(Cmp, dismissibleSection(true), locale);

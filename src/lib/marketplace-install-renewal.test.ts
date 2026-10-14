@@ -28,9 +28,12 @@ const shared = vi.hoisted(() => ({
 vi.mock("./observability.server", () => rec.holder!.observability);
 vi.mock("./rate-limit.server", () => allowAllRateLimits());
 vi.mock("./ledger.server", () => ({
-  postLedgerEntry: async (_c: unknown, entry: {
-    idempotencyKey: string;
-  }) => {
+  postLedgerEntry: async (
+    _c: unknown,
+    entry: {
+      idempotencyKey: string;
+    },
+  ) => {
     if (shared.fail) throw new Error("card_declined");
     const hit = shared.entries.find(
       (e) => e.idempotencyKey === entry.idempotencyKey,
@@ -126,7 +129,8 @@ function preMigrationDb(inner: FakeDb): FakeDb {
         const v = Reflect.get(target as object, prop, target);
         if (typeof v !== "function") return v;
         return (...args: unknown[]) => {
-          const str = (a: unknown) => typeof a === "string" && RECURRING.test(a);
+          const str = (a: unknown) =>
+            typeof a === "string" && RECURRING.test(a);
           if (prop === "select" && args.some(str)) missing("renews_at");
           if (
             ["eq", "neq", "in", "lte", "gte", "is", "order"].includes(
@@ -148,10 +152,7 @@ function preMigrationDb(inner: FakeDb): FakeDb {
             })
           )
             missing("billing_interval");
-          const out = (v as (...a: unknown[]) => unknown).apply(
-            target,
-            args,
-          );
+          const out = (v as (...a: unknown[]) => unknown).apply(target, args);
           // Chainable methods return the raw query — re-wrap so the rest of
           // the chain stays intercepted.
           return out === target ? receiver : out;
@@ -161,8 +162,12 @@ function preMigrationDb(inner: FakeDb): FakeDb {
   const wrapped = Object.create(inner) as FakeDb;
   wrapped.from = ((t: string) =>
     t === "marketplace_installs"
-      ? wrapQuery((inner as unknown as { from: (t: string) => unknown }).from(t))
-      : (inner as unknown as { from: (t: string) => unknown }).from(t)) as FakeDb["from"];
+      ? wrapQuery(
+          (inner as unknown as { from: (t: string) => unknown }).from(t),
+        )
+      : (inner as unknown as { from: (t: string) => unknown }).from(
+          t,
+        )) as FakeDb["from"];
   (wrapped as unknown as { asClient: () => unknown }).asClient = () => wrapped;
   return wrapped;
 }
@@ -188,9 +193,13 @@ describe("G1 — renewal date math", () => {
 describe("G2 — purchase opens a schedule", () => {
   it("paid monthly purchase stores the interval and a +30d renews_at", async () => {
     const db = paidWidgetDb([]);
-    const out = await installListing(db.asClient(), MERCHANT, paidInput({
-      billingInterval: "monthly",
-    }));
+    const out = await installListing(
+      db.asClient(),
+      MERCHANT,
+      paidInput({
+        billingInterval: "monthly",
+      }),
+    );
     expect(out.replayed).toBe(false);
     const row = db
       .rows("marketplace_installs")
@@ -262,9 +271,7 @@ describe("G3 — renewal processing", () => {
     expect(row.renews_at).toBe(verdict.renewsAt);
     expect(row.last_renewed_at).toBe(new Date(NOW).toISOString());
     expect(
-      db
-        .rows("activity_log")
-        .some((r) => r.action === "market.renewed"),
+      db.rows("activity_log").some((r) => r.action === "market.renewed"),
     ).toBe(true);
   });
 
@@ -659,9 +666,7 @@ describe("G8 — listing term pricing (PRICING lane)", () => {
     };
   }
   function chargeOf(db: FakeDb, action: string): number {
-    const audit = db
-      .rows("activity_log")
-      .find((r) => r.action === action)!;
+    const audit = db.rows("activity_log").find((r) => r.action === action)!;
     return (audit.changed as { charge_minor_int: number }).charge_minor_int;
   }
   function listingInput(extra: Record<string, unknown> = {}) {
@@ -695,8 +700,7 @@ describe("G8 — listing term pricing (PRICING lane)", () => {
           const v = Reflect.get(target as object, prop, target);
           if (typeof v !== "function") return v;
           return (...args: unknown[]) => {
-            const str = (a: unknown) =>
-              typeof a === "string" && TERM.test(a);
+            const str = (a: unknown) => typeof a === "string" && TERM.test(a);
             if (prop === "select" && args.some(str)) missing();
             if (
               (prop === "insert" || prop === "upsert" || prop === "update") &&
@@ -711,10 +715,7 @@ describe("G8 — listing term pricing (PRICING lane)", () => {
               })
             )
               missing();
-            const out = (v as (...a: unknown[]) => unknown).apply(
-              target,
-              args,
-            );
+            const out = (v as (...a: unknown[]) => unknown).apply(target, args);
             return out === target ? receiver : out;
           };
         },
@@ -725,8 +726,9 @@ describe("G8 — listing term pricing (PRICING lane)", () => {
         ? wrapQuery(
             (inner as unknown as { from: (t: string) => unknown }).from(t),
           )
-        : (inner as unknown as { from: (t: string) => unknown }).from(t)
-    ) as FakeDb["from"];
+        : (inner as unknown as { from: (t: string) => unknown }).from(
+            t,
+          )) as FakeDb["from"];
     (wrapped as unknown as { asClient: () => unknown }).asClient = () =>
       wrapped;
     return wrapped;
@@ -746,9 +748,9 @@ describe("G8 — listing term pricing (PRICING lane)", () => {
     expect(resolveListingTermPrice(bare, "annual")).toBe(3000);
     expect(getListingTermPrice(bare, "monthly")).toBeNull();
     expect(getListingTermPrice(termed, "one_time")).toBeNull();
-    expect(() =>
-      resolveListingTermPrice(termed, "weekly" as never),
-    ).toThrow("market_listing_terms_invalid");
+    expect(() => resolveListingTermPrice(termed, "weekly" as never)).toThrow(
+      "market_listing_terms_invalid",
+    );
   });
 
   it("saveListing validates term amounts and persists valid terms", async () => {
@@ -773,9 +775,7 @@ describe("G8 — listing term pricing (PRICING lane)", () => {
       listingInput({ priceMonthlyMinor: 2000, priceAnnualMinor: 20000 }),
     );
     expect(out.ok).toBe(true);
-    const row = db
-      .rows("marketplace_widgets")
-      .find((r) => r.id === out.id)!;
+    const row = db.rows("marketplace_widgets").find((r) => r.id === out.id)!;
     expect(row.price_monthly_minor_int).toBe(2000);
     expect(row.price_annual_minor_int).toBe(20000);
   });
@@ -812,9 +812,14 @@ describe("G8 — listing term pricing (PRICING lane)", () => {
   it("conversion charges the term price; falls back to base when absent", async () => {
     const db = paidWidgetDb([trialRow()]);
     db.rows("marketplace_widgets")[0]!.price_monthly_minor_int = 2500;
-    const verdict = await convertTrialToPaid(db.asClient(), MERCHANT, TERM_TRIAL, {
-      nowMs: NOW,
-    });
+    const verdict = await convertTrialToPaid(
+      db.asClient(),
+      MERCHANT,
+      TERM_TRIAL,
+      {
+        nowMs: NOW,
+      },
+    );
     expect(verdict.converted).toBe(true);
     expect(chargeOf(db, "market.converted")).toBe(2500);
 
@@ -880,9 +885,14 @@ describe("G8 — listing term pricing (PRICING lane)", () => {
   it("pre-migration listing table degrades term reads/writes without failing", async () => {
     const inner = paidWidgetDb([trialRow()]);
     const db = termPreMigrationDb(inner);
-    const verdict = await convertTrialToPaid(db.asClient(), MERCHANT, TERM_TRIAL, {
-      nowMs: NOW,
-    });
+    const verdict = await convertTrialToPaid(
+      db.asClient(),
+      MERCHANT,
+      TERM_TRIAL,
+      {
+        nowMs: NOW,
+      },
+    );
     expect(verdict.converted).toBe(true);
     expect(chargeOf(inner, "market.converted")).toBe(3000);
     expect(
@@ -910,18 +920,20 @@ describe("G6 — missing-column degradation (pre-migration DB)", () => {
   it("purchase still completes; schedule write degrades", async () => {
     const inner = paidWidgetDb([]);
     const db = preMigrationDb(inner);
-    const out = await installListing(db.asClient(), MERCHANT, paidInput({
-      billingInterval: "monthly",
-    }));
+    const out = await installListing(
+      db.asClient(),
+      MERCHANT,
+      paidInput({
+        billingInterval: "monthly",
+      }),
+    );
     expect(out.replayed).toBe(false);
     const row = inner
       .rows("marketplace_installs")
       .find((r) => r.id === out.installId)!;
     expect(row.billing_interval).toBeUndefined();
     expect(
-      recorder.logs.some(
-        (l) => l.event === "market.recurring_columns_missing",
-      ),
+      recorder.logs.some((l) => l.event === "market.recurring_columns_missing"),
     ).toBe(true);
   });
 

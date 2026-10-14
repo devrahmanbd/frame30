@@ -29,7 +29,10 @@ function headingSection(text: string): Section {
   return { ...base, id: "h-legacy", props: { ...base.props, text } };
 }
 
-function builtinExtension(widgetKey: string, props: Record<string, unknown> = {}): Section {
+function builtinExtension(
+  widgetKey: string,
+  props: Record<string, unknown> = {},
+): Section {
   return {
     id: "ext-1",
     type: "extension",
@@ -58,7 +61,9 @@ describe("SectionRenderer extension swap-in", () => {
 
   it("renders a builtin extension like its legacy twin", () => {
     const legacy = render(headingSection("Hello ext"));
-    const ext = render(builtinExtension("builtin:heading", { text: "Hello ext" }));
+    const ext = render(
+      builtinExtension("builtin:heading", { text: "Hello ext" }),
+    );
     // Same component, same data — markup carries the authored text both ways.
     expect(ext).toContain("Hello ext");
     expect(legacy).toContain("Hello ext");

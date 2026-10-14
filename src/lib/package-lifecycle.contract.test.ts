@@ -324,9 +324,9 @@ describe("LIFECYCLE official theme: source install → console activate/delete",
     expect(JSON.stringify(vrow)).toContain("/ph/songoskriti/");
 
     // 2. Activate through the ADMIN fn (the console path) — inert until here.
-    expect(
-      db.rows("store_themes").find((r) => r.id === v1.id)?.is_active,
-    ).toBe(false);
+    expect(db.rows("store_themes").find((r) => r.id === v1.id)?.is_active).toBe(
+      false,
+    );
     const activated = await activateTheme(
       db.asClient(),
       MERCHANT_A,
@@ -334,9 +334,9 @@ describe("LIFECYCLE official theme: source install → console activate/delete",
       ACTOR,
     );
     expect(activated.id).toBe(v1.id);
-    expect(
-      db.rows("store_themes").find((r) => r.id === v1.id)?.is_active,
-    ).toBe(true);
+    expect(db.rows("store_themes").find((r) => r.id === v1.id)?.is_active).toBe(
+      true,
+    );
 
     // 3. Delete through the ADMIN fn: activate a spare line first (active
     // rows are refused), then the source row is gone and its ledger line
@@ -348,16 +348,9 @@ describe("LIFECYCLE official theme: source install → console activate/delete",
       ACTOR,
     );
     await activateTheme(db.asClient(), MERCHANT_A, spare.id, ACTOR);
-    const deleted = await deleteTheme(
-      db.asClient(),
-      MERCHANT_A,
-      v1.id,
-      ACTOR,
-    );
+    const deleted = await deleteTheme(db.asClient(), MERCHANT_A, v1.id, ACTOR);
     expect(deleted.id).toBe(v1.id);
-    expect(
-      db.rows("store_themes").find((r) => r.id === v1.id),
-    ).toBeUndefined();
+    expect(db.rows("store_themes").find((r) => r.id === v1.id)).toBeUndefined();
     expect(ledger[0]?.status).toBe("removed");
     expect(
       db.rows("theme_audit").filter((a) => a.action === "theme.deleted"),
@@ -474,7 +467,9 @@ describe("LIFECYCLE official plugin: install → enable → render → update �
         (r) => r.listing_slug === "product-reviews" && r.status === "installed",
       );
     expect(live).toHaveLength(1);
-    expect(live[0]!.previous_snapshot.rollback_of).toBe(v1.packageId);
+    expect(
+      (live[0]!.previous_snapshot as { rollback_of: string }).rollback_of,
+    ).toBe(v1.packageId);
     expect(
       db.rows("theme_audit").filter((a) => a.action === "package.rolled_back"),
     ).toHaveLength(1);
@@ -487,7 +482,10 @@ describe("LIFECYCLE official plugin: install → enable → render → update �
       {
         kind: "plugin",
         fileName: "sibling.zip",
-        bytes: pluginZip(strictPlugin("sibling-widget", "1.0.0"), pngBytes("sib")),
+        bytes: pluginZip(
+          strictPlugin("sibling-widget", "1.0.0"),
+          pngBytes("sib"),
+        ),
         idempotencyKey: key(),
       },
       ACTOR,
@@ -533,7 +531,10 @@ describe("LIFECYCLE custom plugin: upload → disable → render → enable → 
       {
         kind: "plugin",
         fileName: "acme.zip",
-        bytes: pluginZip(strictPlugin("acme-reviews", "1.0.0"), pngBytes("icon-v1")),
+        bytes: pluginZip(
+          strictPlugin("acme-reviews", "1.0.0"),
+          pngBytes("icon-v1"),
+        ),
         idempotencyKey: key(),
       },
       ACTOR,
@@ -595,7 +596,10 @@ describe("LIFECYCLE custom plugin: upload → disable → render → enable → 
       {
         kind: "plugin",
         fileName: "acme.zip",
-        bytes: pluginZip(strictPlugin("acme-reviews", "1.1.0"), pngBytes("icon-v2")),
+        bytes: pluginZip(
+          strictPlugin("acme-reviews", "1.1.0"),
+          pngBytes("icon-v2"),
+        ),
         idempotencyKey: key(),
       },
       ACTOR,
@@ -717,7 +721,7 @@ describe("LIFECYCLE uploaded theme shell: upload → preview → activate → de
     const preview = await previewPackage(
       db.asClient(),
       MERCHANT_A,
-      shellVersion.id,
+      shellVersion.id as string,
     );
     expect(preview.packageId).toBe(first.id);
     expect(

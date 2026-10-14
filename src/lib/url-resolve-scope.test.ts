@@ -17,12 +17,24 @@ type Row = Record<string, unknown>;
 
 /** Minimal thenable query builder over in-memory tables. */
 function fakeDb(tables: Record<string, Row[]>) {
+  type FakeBuilder = {
+    select: (...args: unknown[]) => FakeBuilder;
+    eq: (col: string, val: unknown) => FakeBuilder;
+    is: (col: string, val: unknown) => FakeBuilder;
+    limit: () => FakeBuilder;
+    maybeSingle: () => Promise<{ data: Row | null }>;
+    update: () => { eq: (...args: unknown[]) => Promise<unknown> };
+  };
   const query = (table: string, filters: ((r: Row) => boolean)[] = []) => {
     const rows = () => tables[table]!.filter((r) => filters.every((f) => f(r)));
-    const builder: Record<string, (...a: never[]) => unknown> = {
+    const builder: FakeBuilder = {
       select: () => builder,
       eq: (col: string, val: unknown) =>
         query(table, [...filters, (r) => r[col] === val]),
+      // Present so page lookups (`.is("deleted_at", null)`) resolve through
+      // the same builder; the seed rows carry no deleted marker, so it is
+      // intentionally a no-op filter.
+      is: () => builder,
       limit: () => builder,
       maybeSingle: async () => ({ data: rows()[0] ?? null }),
       // Best-effort hit accounting: `.update({...}).eq("id", …)` thenable.

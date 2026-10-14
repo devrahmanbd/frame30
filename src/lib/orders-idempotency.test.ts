@@ -113,7 +113,10 @@ function baseTotals(coupons: Row[] = []): Totals {
   return {
     currency: "BDT",
     subtotalMinor: 1000,
-    discountMinor: coupons.reduce((s, c) => s + (c.discountMinor ?? 0), 0),
+    discountMinor: coupons.reduce(
+      (s, c) => s + ((c.discountMinor as number | undefined) ?? 0),
+      0,
+    ),
     shippingMinor: 0,
     codSurchargeMinor: 0,
     vatMinor: 0,

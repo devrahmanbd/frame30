@@ -77,10 +77,8 @@ describe("Support Canned Responses & Macro Engine", () => {
 
 describe("TODO-5 — advisory-only /refund macro (HITL approvals UI)", () => {
   it("uses the shared guardrail advisory templates for EN+BN bodies", async () => {
-    const {
-      ADVISORY_REFUND_TEMPLATE_EN,
-      ADVISORY_REFUND_TEMPLATE_BN,
-    } = await import("./support-guardrails");
+    const { ADVISORY_REFUND_TEMPLATE_EN, ADVISORY_REFUND_TEMPLATE_BN } =
+      await import("./support-guardrails");
     const macro = findMacroByShortcut("/refund")!;
     expect(macro.templateEn).toBe(ADVISORY_REFUND_TEMPLATE_EN);
     expect(macro.templateBn).toBe(ADVISORY_REFUND_TEMPLATE_BN);
@@ -91,9 +89,8 @@ describe("TODO-5 — advisory-only /refund macro (HITL approvals UI)", () => {
   });
 
   it("interpolates ticket + order references with no initiated-claim", async () => {
-    const { checkRefundCopy, screenOutbound } = await import(
-      "./support-guardrails"
-    );
+    const { checkRefundCopy, screenOutbound } =
+      await import("./support-guardrails");
     const macro = findMacroByShortcut("/refund")!;
     const en = interpolateMacro(macro.templateEn, {
       ticketId: "#TKT-ABCD1234",

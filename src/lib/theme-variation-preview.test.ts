@@ -3,7 +3,10 @@
  * resolver metadata, and per-store persistence fallback.
  */
 import { describe, expect, it } from "vitest";
-import { previewSourceFor, registerStaticPreviewSource } from "./preview-sources";
+import {
+  previewSourceFor,
+  registerStaticPreviewSource,
+} from "./preview-sources";
 import { songoskritiPreviewSource } from "./themes/songoskriti/preview";
 import { somvabonaPreviewSource } from "./themes/somvabona/preview";
 import {
@@ -31,7 +34,9 @@ describe("preview ?variation= param", () => {
     expect(
       validateThemePreviewSearch({ variation: "festive-refresh" }).variation,
     ).toBe("festive-refresh");
-    expect(validateThemePreviewSearch({ variation: "Minimal!" }).variation).toBeUndefined();
+    expect(
+      validateThemePreviewSearch({ variation: "Minimal!" }).variation,
+    ).toBeUndefined();
     expect(validateThemePreviewSearch({}).variation).toBeUndefined();
     expect(
       validateThemePreviewSearch({ variation: "x".repeat(41) }).variation,
@@ -99,8 +104,6 @@ describe("per-store persistence fallback in preview selection", () => {
       })?.key,
     ).toBe("minimal");
     // Neither: base theme.
-    expect(
-      resolveActiveVariationKey(SONGOSKRITI_VARIATIONS, {}),
-    ).toBeNull();
+    expect(resolveActiveVariationKey(SONGOSKRITI_VARIATIONS, {})).toBeNull();
   });
 });

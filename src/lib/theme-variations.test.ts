@@ -59,7 +59,12 @@ describe("validateThemeVariations", () => {
   });
 
   it("rejects malformed keys with a reason", () => {
-    for (const key of ["", "Minimal", "has space", "x".repeat(MAX_VARIATION_KEY_LENGTH + 1)]) {
+    for (const key of [
+      "",
+      "Minimal",
+      "has space",
+      "x".repeat(MAX_VARIATION_KEY_LENGTH + 1),
+    ]) {
       const result = validateThemeVariations("demo", [variation({ key })]);
       expect(result.ok).toBe(false);
       if (!result.ok) expect(result.reason).toMatch(/slug/i);
@@ -165,11 +170,10 @@ describe("variation resolution precedence", () => {
     const raw = (type: never, props: Record<string, never> = {}) =>
       ({ id: `${String(type)}-${n++}`, type, props: { ...props } }) as never;
     const base: SkinPropDefaults = { product_rail: { skin: "editorial" } };
-    const build = withVariationSkinDefaults(
-      raw as never,
-      list[0]!,
-      base,
-    ) as (type: string, props?: Record<string, unknown>) => { props: Record<string, unknown> };
+    const build = withVariationSkinDefaults(raw as never, list[0]!, base) as (
+      type: string,
+      props?: Record<string, unknown>,
+    ) => { props: Record<string, unknown> };
     // Absent skin takes the variation.
     expect(build("product_rail", {}).props.skin).toBe("minimal");
     // Base-equal skin (merged by an inner base wrap) takes the variation.
@@ -188,7 +192,15 @@ describe("variation resolution precedence", () => {
 });
 
 describe("per-store variation persistence", () => {
-  const list = [variation(), variation({ ...variation(), key: "festive", label: "Festive", label_bn: "উৎসবমুখর" })];
+  const list = [
+    variation(),
+    variation({
+      ...variation(),
+      key: "festive",
+      label: "Festive",
+      label_bn: "উৎসবমুখর",
+    }),
+  ];
 
   it("round-trips the key through the theme settings document", () => {
     const stored = settingsWithVariationKey({ brand: "#111" }, "minimal");
@@ -205,7 +217,9 @@ describe("per-store variation persistence", () => {
   it("rejects malformed persisted values", () => {
     expect(persistedVariationKeyFromSettings(null)).toBeNull();
     expect(persistedVariationKeyFromSettings({})).toBeNull();
-    expect(persistedVariationKeyFromSettings({ variation: "Nope!" })).toBeNull();
+    expect(
+      persistedVariationKeyFromSettings({ variation: "Nope!" }),
+    ).toBeNull();
     expect(persistedVariationKeyFromSettings({ variation: 42 })).toBeNull();
   });
 
@@ -224,9 +238,7 @@ describe("per-store variation persistence", () => {
       })?.key,
     ).toBe("minimal");
     // Unknown persisted falls back to the base theme (null).
-    expect(
-      resolveActiveVariationKey(list, { persisted: "nope" }),
-    ).toBeNull();
+    expect(resolveActiveVariationKey(list, { persisted: "nope" })).toBeNull();
     expect(resolveActiveVariationKey(list, {})).toBeNull();
   });
 });

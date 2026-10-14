@@ -89,9 +89,8 @@ describe("TODO-5 — presence-gated approval routing hints", () => {
   });
 
   it("routes approvals to the live queue when an operator heartbeat is active", async () => {
-    const { getApprovalRoutingHint } = await import(
-      "./support-presence.server"
-    );
+    const { getApprovalRoutingHint } =
+      await import("./support-presence.server");
     const merchantId = "00000000-0000-4000-8000-000000000001";
     recordOperatorHeartbeat(merchantId, "op-1");
 
@@ -106,9 +105,8 @@ describe("TODO-5 — presence-gated approval routing hints", () => {
   });
 
   it("holds approvals as async tasks when no operator is online", async () => {
-    const { getApprovalRoutingHint } = await import(
-      "./support-presence.server"
-    );
+    const { getApprovalRoutingHint } =
+      await import("./support-presence.server");
     const merchantId = "00000000-0000-4000-8000-000000000001";
 
     const hint = await getApprovalRoutingHint(merchantId);

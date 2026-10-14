@@ -125,7 +125,10 @@ function renderDirect(
   locale: "en" | "bn" = "en",
 ): string {
   return renderToStaticMarkup(
-    createElement(Cmp as (p: WidgetCtx) => React.ReactElement, ctxFor(section, locale)),
+    createElement(
+      Cmp as (p: WidgetCtx) => React.ReactElement,
+      ctxFor(section, locale),
+    ),
   );
 }
 
@@ -183,7 +186,10 @@ beforeEach(() => {
 
 describe("same footer data, two theme presentations", () => {
   it("resolves distinct presentations per theme through the registry", () => {
-    const songoskriti = resolveThemePresentation("songoskriti", "footer_sitemap");
+    const songoskriti = resolveThemePresentation(
+      "songoskriti",
+      "footer_sitemap",
+    );
     const somvabona = resolveThemePresentation("somvabona", "footer_sitemap");
     expect(songoskriti).toBe(SongoskritiFooterProofPresentation);
     expect(somvabona).toBe(SomvabonaFooterProofPresentation);
@@ -202,7 +208,9 @@ describe("same footer data, two theme presentations", () => {
     );
 
     // Structurally distinct presentations per theme.
-    expect(songoskriti).toContain('data-footer-presentation="songoskriti-proof"');
+    expect(songoskriti).toContain(
+      'data-footer-presentation="songoskriti-proof"',
+    );
     expect(somvabona).toContain('data-footer-presentation="somvabona-proof"');
     expect(songoskriti).toContain("grid");
     expect(somvabona).not.toContain("grid max-w-6xl gap-12");
@@ -227,7 +235,9 @@ describe("same footer data, two theme presentations", () => {
       section,
     );
 
-    expect(songoskriti).toContain('data-footer-presentation="songoskriti-proof"');
+    expect(songoskriti).toContain(
+      'data-footer-presentation="songoskriti-proof"',
+    );
     expect(somvabona).toContain('data-footer-presentation="somvabona-proof"');
     expect(songoskriti).not.toBe(somvabona);
     // Both adapters derive the same merchant data: identical labels/hrefs.
@@ -243,7 +253,9 @@ describe("same footer data, two theme presentations", () => {
     const songoskriti = renderEngine(section, "songoskriti");
     const somvabona = renderEngine(section, "somvabona");
 
-    expect(songoskriti).toContain('data-footer-presentation="songoskriti-proof"');
+    expect(songoskriti).toContain(
+      'data-footer-presentation="songoskriti-proof"',
+    );
     expect(somvabona).toContain('data-footer-presentation="somvabona-proof"');
     expect(songoskriti).not.toBe(somvabona);
     expectSectionContent(songoskriti);
@@ -281,7 +293,9 @@ describe("R3 canonical footer presentation path", () => {
     );
 
     // Heritage grid: one <section> per column inside the grid wrapper.
-    expect(songoskriti).toContain('data-footer-presentation="songoskriti-proof"');
+    expect(songoskriti).toContain(
+      'data-footer-presentation="songoskriti-proof"',
+    );
     expect(songoskriti.match(/<section/g) ?? []).toHaveLength(
       data.columns.length,
     );
@@ -334,7 +348,9 @@ describe("R3 canonical footer presentation path", () => {
       expect(html).not.toContain("Best sellers");
     }
     // Still exactly one path per theme: structures stay distinct.
-    expect(songoskriti).toContain('data-footer-presentation="songoskriti-proof"');
+    expect(songoskriti).toContain(
+      'data-footer-presentation="songoskriti-proof"',
+    );
     expect(somvabona).toContain('data-footer-presentation="somvabona-proof"');
     expect(songoskriti).not.toBe(somvabona);
   });

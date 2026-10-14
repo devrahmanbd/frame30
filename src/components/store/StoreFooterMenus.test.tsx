@@ -28,7 +28,10 @@ import {
   ThemeFooterRenderer,
   type FooterData,
 } from "./StoreFooterMenus";
-import { FooterGlobalBlockControl, GlobalBlockBar } from "../builder/GlobalBlockBar";
+import {
+  FooterGlobalBlockControl,
+  GlobalBlockBar,
+} from "../builder/GlobalBlockBar";
 import type { MenuNode } from "@/lib/menus/menu";
 
 function dbNode(
@@ -208,7 +211,13 @@ describe("same FooterData under two presentations", () => {
     );
     // Same merchant data everywhere: identical hrefs and labels.
     expect(hrefsOf(stacked).sort()).toEqual(hrefsOf(columns).sort());
-    for (const text of ["Shop", "New arrivals", "Women", "Customer Care", "FAQ"]) {
+    for (const text of [
+      "Shop",
+      "New arrivals",
+      "Women",
+      "Customer Care",
+      "FAQ",
+    ]) {
       expect(stacked).toContain(text);
       expect(columns).toContain(text);
     }

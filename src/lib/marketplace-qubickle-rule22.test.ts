@@ -145,9 +145,9 @@ describe("Rule 22 — cross-merchant attack paths fail closed", () => {
       expect(Number.isInteger(entry[field])).toBe(true);
     }
     expect(entry.gross_minor_int).toBe(999);
-    expect(entry.seller_minor_int + entry.platform_minor_int).toBe(
-      entry.gross_minor_int,
-    );
+    expect(
+      (entry.seller_minor_int as number) + (entry.platform_minor_int as number),
+    ).toBe(entry.gross_minor_int);
     expect(entry.idempotency_key).toBe("paid-key-1");
   });
 });

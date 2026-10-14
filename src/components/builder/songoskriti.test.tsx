@@ -462,10 +462,7 @@ describe("songoskriti mega_menu live-data tiers (REPORT-THEMES §4/§7.1)", () =
       3: "grid-cols-3",
       4: "grid-cols-4",
     });
-    const src = readFileSync(
-      "src/components/builder/songoskriti.tsx",
-      "utf8",
-    );
+    const src = readFileSync("src/components/builder/songoskriti.tsx", "utf8");
     expect(src).toContain("MEGA_PANEL_COLS[columns]");
     const withPanels = buildSongoskritiFallbackEntries("en").filter(
       (entry) => entry.sections.length > 0,
@@ -476,10 +473,7 @@ describe("songoskriti mega_menu live-data tiers (REPORT-THEMES §4/§7.1)", () =
   it("keeps the image-panel dropdown design (featured image + shop-all)", () => {
     // Hover-gated like the grid above: pin the design at the source so a
     // refactor cannot silently drop the panel's signature elements.
-    const src = readFileSync(
-      "src/components/builder/songoskriti.tsx",
-      "utf8",
-    );
+    const src = readFileSync("src/components/builder/songoskriti.tsx", "utf8");
     expect(src).toContain("featuredImage");
     expect(src).toContain("shopAllHref");
     expect(src).toContain("SHOP ALL");
@@ -593,10 +587,7 @@ describe("songoskriti categories rhythm (browser-verified 2026-09-24)", () => {
 
 describe("lane B renderer paths", () => {
   it("mega_menu wires widget promo props into the panel (hover-gated: pinned at source)", () => {
-    const src = readFileSync(
-      "src/components/builder/songoskriti.tsx",
-      "utf8",
-    );
+    const src = readFileSync("src/components/builder/songoskriti.tsx", "utf8");
     expect(src).toContain('str("promoImage")');
     expect(src).toContain('str("promoHref")');
     expect(src).toContain('str("promoTitle")');
@@ -736,17 +727,14 @@ describe("lane B typographic scale + quiet eyebrows", () => {
   });
 
   it("quiets eyebrows to one treatment (small, untracked, muted)", () => {
-    const craft = render(
-      SONGOSKRITI_WIDGETS["craft_story"],
-      {
-        ...newSection("craft_story"),
-        props: {
-          headline: "Made slowly",
-          body: "Cotton.",
-          eyebrow: "Heritage",
-        },
+    const craft = render(SONGOSKRITI_WIDGETS["craft_story"], {
+      ...newSection("craft_story"),
+      props: {
+        headline: "Made slowly",
+        body: "Cotton.",
+        eyebrow: "Heritage",
       },
-    );
+    });
     expect(craft).toContain("tracking-[0.08em]");
     expect(craft).not.toContain("tracking-[0.35em]");
     const locator = render(SONGOSKRITI_WIDGETS["store_locator"], {

@@ -7,17 +7,15 @@
  * the cron wrapper turns into a failed tick, a streak, and a page.
  */
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import {
-  normaliseSweepResult,
-  runSupportSweep,
-} from "./support-cron.server";
+import { normaliseSweepResult, runSupportSweep } from "./support-cron.server";
 import { cronJob } from "./cron-registry";
 
 const rpc = vi.hoisted(() => ({ fn: vi.fn() }));
 
 vi.mock("@/integrations/supabase/client.server", () => ({
   supabaseAdmin: {
-    rpc: (...args: unknown[]) => (rpc.fn as (...a: unknown[]) => unknown)(...args),
+    rpc: (...args: unknown[]) =>
+      (rpc.fn as (...a: unknown[]) => unknown)(...args),
   },
 }));
 // Inline allow-all double (top-level imports are not visible in factories).

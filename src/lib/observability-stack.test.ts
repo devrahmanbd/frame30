@@ -53,7 +53,7 @@ describe("stack composition", () => {
     const images = [...compose.matchAll(/image:\s*(\S+)/g)].map((m) => m[1]);
     expect(images.length).toBeGreaterThan(8);
     for (const image of images) {
-      expect(image).toMatch(/:[\w.\-]+$/);
+      expect(image).toMatch(/:[\w.-]+$/);
       expect(image.endsWith(":latest")).toBe(false);
     }
   });

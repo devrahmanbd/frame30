@@ -62,7 +62,10 @@ const ACTOR = "99999999-9999-4999-8999-999999999999";
 const enc = new TextEncoder();
 const u16 = (v: number) => [v & 0xff, (v >>> 8) & 0xff];
 const u32 = (v: number) => [
-  v & 0xff, (v >>> 8) & 0xff, (v >>> 16) & 0xff, (v >>> 24) & 0xff,
+  v & 0xff,
+  (v >>> 8) & 0xff,
+  (v >>> 16) & 0xff,
+  (v >>> 24) & 0xff,
 ];
 
 type Entry = { name: string; content: string; method?: 0 | 8 };
@@ -77,24 +80,62 @@ function buildZip(entries: Entry[]): Uint8Array {
     const payload = Array.from(method === 8 ? deflateRawSync(raw) : raw);
     const localOffset = out.length;
     out.push(
-      0x50, 0x4b, 0x03, 0x04, ...u16(20), ...u16(0x0800), ...u16(method),
-      ...u16(0), ...u16(0), ...u32(0), ...u32(payload.length), ...u32(raw.length),
-      ...u16(nameBytes.length), ...u16(0), ...nameBytes, ...payload,
+      0x50,
+      0x4b,
+      0x03,
+      0x04,
+      ...u16(20),
+      ...u16(0x0800),
+      ...u16(method),
+      ...u16(0),
+      ...u16(0),
+      ...u32(0),
+      ...u32(payload.length),
+      ...u32(raw.length),
+      ...u16(nameBytes.length),
+      ...u16(0),
+      ...nameBytes,
+      ...payload,
     );
     central.push(
-      0x50, 0x4b, 0x01, 0x02, ...u16(20), ...u16(20), ...u16(0x0800), ...u16(method),
-      ...u16(0), ...u16(0), ...u32(0), ...u32(payload.length), ...u32(raw.length),
-      ...u16(nameBytes.length), ...u16(0), ...u16(0), ...u16(0), ...u16(0),
-      ...u32(0), ...u32(localOffset), ...nameBytes,
+      0x50,
+      0x4b,
+      0x01,
+      0x02,
+      ...u16(20),
+      ...u16(20),
+      ...u16(0x0800),
+      ...u16(method),
+      ...u16(0),
+      ...u16(0),
+      ...u32(0),
+      ...u32(payload.length),
+      ...u32(raw.length),
+      ...u16(nameBytes.length),
+      ...u16(0),
+      ...u16(0),
+      ...u16(0),
+      ...u16(0),
+      ...u32(0),
+      ...u32(localOffset),
+      ...nameBytes,
     );
   }
   const centralOffset = out.length;
   out.push(...central);
   const centralSize = out.length - centralOffset;
   out.push(
-    0x50, 0x4b, 0x05, 0x06, ...u16(0), ...u16(0),
-    ...u16(entries.length), ...u16(entries.length),
-    ...u32(centralSize), ...u32(centralOffset), ...u16(0),
+    0x50,
+    0x4b,
+    0x05,
+    0x06,
+    ...u16(0),
+    ...u16(0),
+    ...u16(entries.length),
+    ...u16(entries.length),
+    ...u32(centralSize),
+    ...u32(centralOffset),
+    ...u16(0),
   );
   return new Uint8Array(out);
 }
@@ -110,7 +151,10 @@ function themeZip(
   ]);
 }
 
-function pluginZip(manifest: Record<string, unknown>, extra: Entry[] = []): Uint8Array {
+function pluginZip(
+  manifest: Record<string, unknown>,
+  extra: Entry[] = [],
+): Uint8Array {
   return buildZip([
     { name: "plugin.json", content: JSON.stringify(manifest) },
     ...extra,
@@ -192,7 +236,12 @@ function claimPkg(
   kind: "theme" | "plugin",
   claims: Partial<NamespaceClaims>,
 ): ConflictPackage {
-  return { slug, kind, version: "1.0.0", claims: { ...emptyClaims(), ...claims } };
+  return {
+    slug,
+    kind,
+    version: "1.0.0",
+    claims: { ...emptyClaims(), ...claims },
+  };
 }
 
 beforeEach(() => {
@@ -208,11 +257,13 @@ describe("CONFLICT claim extraction", () => {
       pluginDependencies: [{ ref: "plugin:acme/reviews", version: "^1.0.0" }],
       templates: ["index", "product"],
       presentationSurfaces: ["widget", "menu"],
-      assetManifest: [
-        { path: "assets/hero.webp", sha256: "a".repeat(64) },
-      ],
+      assetManifest: [{ path: "assets/hero.webp", sha256: "a".repeat(64) }],
     });
-    expect(claims.widget).toEqual(["plugin:acme/reviews", "widget:heading", "widget:hero"]);
+    expect(claims.widget).toEqual([
+      "plugin:acme/reviews",
+      "widget:heading",
+      "widget:hero",
+    ]);
     expect(claims.template).toEqual(["index", "product"]);
     expect(claims.presentation).toEqual(["surface:menu", "surface:widget"]);
     expect(claims.route).toEqual(["route:index", "route:product"]);
@@ -230,7 +281,10 @@ describe("CONFLICT claim extraction", () => {
       ],
       hooks: ["cart.calculate", "order.created"],
     });
-    expect(claims.widget).toEqual(["plugin:acme-nav/nav", "plugin:acme-nav/rail"]);
+    expect(claims.widget).toEqual([
+      "plugin:acme-nav/nav",
+      "plugin:acme-nav/rail",
+    ]);
     // Swap intent (replace_menus + menu slot) is the claim; main-slot is not.
     expect(claims.menu).toEqual(["menu:menu_bar"]);
     // Exclusive hooks claim the route pipeline; notifications fan out.
@@ -267,7 +321,11 @@ describe("CONFLICT claim extraction", () => {
     expect(extractFileClaims(null as never)).toEqual(emptyClaims());
     const merged = mergeClaims(
       { ...emptyClaims(), menu: ["menu:menu_bar"] },
-      { ...emptyClaims(), menu: ["menu:menu_bar"], route: ["hook:cart.calculate"] },
+      {
+        ...emptyClaims(),
+        menu: ["menu:menu_bar"],
+        route: ["hook:cart.calculate"],
+      },
     );
     expect(merged.menu).toEqual(["menu:menu_bar"]);
     expect(merged.route).toEqual(["hook:cart.calculate"]);
@@ -279,7 +337,9 @@ describe("CONFLICT claim extraction", () => {
 describe("CONFLICT pairwise scan", () => {
   it("fails closed on a menu-swap collision with holder + code", () => {
     const candidate = claimPkg("swap-b", "plugin", { menu: ["menu:menu_bar"] });
-    const installed = [claimPkg("swap-a", "plugin", { menu: ["menu:menu_bar"] })];
+    const installed = [
+      claimPkg("swap-a", "plugin", { menu: ["menu:menu_bar"] }),
+    ];
     const verdict = scanNamespaceConflicts(candidate, installed);
     expect(verdict.ok).toBe(false);
     if (!verdict.ok) {
@@ -295,12 +355,18 @@ describe("CONFLICT pairwise scan", () => {
   });
 
   it("fails closed on an exclusive-hook collision but not on notifications", () => {
-    const candidate = claimPkg("calc-b", "plugin", { route: ["hook:cart.calculate"] });
-    const installed = [claimPkg("calc-a", "plugin", { route: ["hook:cart.calculate"] })];
+    const candidate = claimPkg("calc-b", "plugin", {
+      route: ["hook:cart.calculate"],
+    });
+    const installed = [
+      claimPkg("calc-a", "plugin", { route: ["hook:cart.calculate"] }),
+    ];
     const verdict = scanNamespaceConflicts(candidate, installed);
     expect(verdict.ok).toBe(false);
     if (!verdict.ok) {
-      expect(verdict.conflicts[0]!.code).toBe("conflict.route:hook:cart.calculate");
+      expect(verdict.conflicts[0]!.code).toBe(
+        "conflict.route:hook:cart.calculate",
+      );
     }
     // Notification hooks are never claims: nothing to collide on.
     const quiet = scanNamespaceConflicts(
@@ -311,18 +377,28 @@ describe("CONFLICT pairwise scan", () => {
   });
 
   it("flags plugin widget ownership collisions across slugs", () => {
-    const candidate = claimPkg("other", "plugin", { widget: ["plugin:acme/reviews"] });
-    const installed = [claimPkg("acme", "plugin", { widget: ["plugin:acme/reviews"] })];
+    const candidate = claimPkg("other", "plugin", {
+      widget: ["plugin:acme/reviews"],
+    });
+    const installed = [
+      claimPkg("acme", "plugin", { widget: ["plugin:acme/reviews"] }),
+    ];
     const verdict = scanNamespaceConflicts(candidate, installed);
     expect(verdict.ok).toBe(false);
     if (!verdict.ok) {
-      expect(verdict.conflicts[0]!.code).toBe("conflict.widget:plugin:acme/reviews");
+      expect(verdict.conflicts[0]!.code).toBe(
+        "conflict.widget:plugin:acme/reviews",
+      );
     }
   });
 
   it("never blocks theme dressing of an installed plugin (dress != own)", () => {
-    const theme = claimPkg("my-theme", "theme", { widget: ["plugin:acme/reviews"] });
-    const plugin = claimPkg("acme", "plugin", { widget: ["plugin:acme/reviews"] });
+    const theme = claimPkg("my-theme", "theme", {
+      widget: ["plugin:acme/reviews"],
+    });
+    const plugin = claimPkg("acme", "plugin", {
+      widget: ["plugin:acme/reviews"],
+    });
     const verdict = scanNamespaceConflicts(theme, [plugin]);
     expect(verdict.ok).toBe(true);
     expect(verdict.shared).toHaveLength(1);
@@ -358,7 +434,9 @@ describe("CONFLICT pairwise scan", () => {
     const candidate = claimPkg("swap-a", "plugin", { menu: ["menu:menu_bar"] });
     expect(scanNamespaceConflicts(candidate, []).ok).toBe(true);
     expect(
-      scanNamespaceConflicts(candidate, [claimPkg("swap-a", "plugin", { menu: ["menu:menu_bar"] })]).ok,
+      scanNamespaceConflicts(candidate, [
+        claimPkg("swap-a", "plugin", { menu: ["menu:menu_bar"] }),
+      ]).ok,
     ).toBe(true);
   });
 
@@ -406,7 +484,9 @@ describe("CONFLICT version-range solver", () => {
     expect(verdict.ok).toBe(false);
     if (!verdict.ok) {
       expect(verdict.missing).toEqual(["gone"]);
-      expect(verdict.mismatched).toEqual([{ slug: "stale", want: "^2.0.0", got: "1.0.0" }]);
+      expect(verdict.mismatched).toEqual([
+        { slug: "stale", want: "^2.0.0", got: "1.0.0" },
+      ]);
     }
     expect(dependencyConflictCodes(verdict)).toEqual([
       "dependency.missing:gone",
@@ -427,7 +507,9 @@ describe("CONFLICT version-range solver", () => {
 
   it("never throws on malformed solver input", () => {
     expect(checkDependencyRanges(null as never, null as never).ok).toBe(true);
-    expect(dependencyConflictCodes({ ok: true, missing: [], mismatched: [] })).toEqual([]);
+    expect(
+      dependencyConflictCodes({ ok: true, missing: [], mismatched: [] }),
+    ).toEqual([]);
   });
 });
 
@@ -456,7 +538,12 @@ describe("CONFLICT install-path gates", () => {
     return installPackage(
       db.asClient(),
       MERCHANT_A,
-      { kind: "plugin", fileName: "p.zip", bytes: zip, idempotencyKey: opts.key ?? key() },
+      {
+        kind: "plugin",
+        fileName: "p.zip",
+        bytes: zip,
+        idempotencyKey: opts.key ?? key(),
+      },
       ACTOR,
     );
   }
@@ -469,7 +556,12 @@ describe("CONFLICT install-path gates", () => {
     return installPackage(
       db.asClient(),
       MERCHANT_A,
-      { kind: "theme", fileName: "t.zip", bytes: zip, idempotencyKey: opts.key ?? key() },
+      {
+        kind: "theme",
+        fileName: "t.zip",
+        bytes: zip,
+        idempotencyKey: opts.key ?? key(),
+      },
       ACTOR,
     );
   }
@@ -477,7 +569,14 @@ describe("CONFLICT install-path gates", () => {
   it("installs a theme whose dependency range is satisfied", async () => {
     const db = pkgDb();
     seedLedger(db, [
-      { id: "dep-1", merchant_id: MERCHANT_A, kind: "widget", listing_slug: "chat-widget", version: "1.5.0", status: "installed" },
+      {
+        id: "dep-1",
+        merchant_id: MERCHANT_A,
+        kind: "widget",
+        listing_slug: "chat-widget",
+        version: "1.5.0",
+        status: "installed",
+      },
     ]);
     const zip = themeZip(
       strictTheme("1.0.0", {
@@ -492,7 +591,14 @@ describe("CONFLICT install-path gates", () => {
   it("fails closed on a proven dependency version mismatch", async () => {
     const db = pkgDb();
     seedLedger(db, [
-      { id: "dep-1", merchant_id: MERCHANT_A, kind: "widget", listing_slug: "chat-widget", version: "1.0.0", status: "installed" },
+      {
+        id: "dep-1",
+        merchant_id: MERCHANT_A,
+        kind: "widget",
+        listing_slug: "chat-widget",
+        version: "1.0.0",
+        status: "installed",
+      },
     ]);
     const zip = themeZip(
       strictTheme("1.0.0", {
@@ -500,14 +606,22 @@ describe("CONFLICT install-path gates", () => {
         pluginDependencies: [{ ref: "plugin:chat-widget", version: "^2.0.0" }],
       }),
     );
-    expect(await codeOf(installTheme(db, zip))).toBe("package.dependency_conflict");
+    expect(await codeOf(installTheme(db, zip))).toBe(
+      "package.dependency_conflict",
+    );
     expect(db.rows("store_themes")).toHaveLength(0);
   });
 
   it("keeps legacy version-less ledger rows on presence-only (no mismatch)", async () => {
     const db = pkgDb();
     seedLedger(db, [
-      { id: "dep-1", merchant_id: MERCHANT_A, kind: "widget", listing_slug: "chat-widget", status: "installed" },
+      {
+        id: "dep-1",
+        merchant_id: MERCHANT_A,
+        kind: "widget",
+        listing_slug: "chat-widget",
+        status: "installed",
+      },
     ]);
     const zip = themeZip(
       strictTheme("1.0.0", {
@@ -522,13 +636,30 @@ describe("CONFLICT install-path gates", () => {
   it("fails closed on a garbage plugin dependency range via the stub seam", async () => {
     const db = pkgDb();
     seedLedger(db, [
-      { id: "dep-1", merchant_id: MERCHANT_A, kind: "widget", listing_slug: "dep-x", version: "1.0.0", status: "installed" },
+      {
+        id: "dep-1",
+        merchant_id: MERCHANT_A,
+        kind: "widget",
+        listing_slug: "dep-x",
+        version: "1.0.0",
+        status: "installed",
+      },
     ]);
-    const zip = pluginZip({ name: "P", version: "1.0.0", dependencies: [{ slug: "dep-x", version: "someday" }] });
+    const zip = pluginZip({
+      name: "P",
+      version: "1.0.0",
+      dependencies: [{ slug: "dep-x", version: "someday" }],
+    });
     const promise = installPackage(
       db.asClient(),
       MERCHANT_A,
-      { kind: "plugin", fileName: "p.zip", bytes: zip, idempotencyKey: key(), validator: stubManifestValidator },
+      {
+        kind: "plugin",
+        fileName: "p.zip",
+        bytes: zip,
+        idempotencyKey: key(),
+        validator: stubManifestValidator,
+      },
       ACTOR,
     );
     expect(await codeOf(promise)).toBe("package.dependency_conflict");
@@ -551,9 +682,9 @@ describe("CONFLICT install-path gates", () => {
       installs: db.rows("marketplace_installs").length,
       assets: db.rows("theme_assets").length,
     };
-    expect(await codeOf(installPlugin(db, pluginZip(swapPlugin("swap-b"))))).toBe(
-      "package.namespace_conflict",
-    );
+    expect(
+      await codeOf(installPlugin(db, pluginZip(swapPlugin("swap-b")))),
+    ).toBe("package.namespace_conflict");
     expect(db.rows("marketplace_installs")).toHaveLength(before.installs);
     expect(db.rows("theme_assets")).toHaveLength(before.assets);
   });
@@ -617,11 +748,20 @@ describe("CONFLICT install-path gates", () => {
       strictTheme("1.0.0", {
         key: "dresses-reviews",
         supportedWidgets: ["hero"],
-        pluginDependencies: [{ ref: "plugin:acme-reviews/main", version: "^1.0.0" }],
+        pluginDependencies: [
+          { ref: "plugin:acme-reviews/main", version: "^1.0.0" },
+        ],
       }),
     );
     seedLedger(db, [
-      { id: "dep-1", merchant_id: MERCHANT_A, kind: "widget", listing_slug: "acme-reviews", version: "1.0.0", status: "installed" },
+      {
+        id: "dep-1",
+        merchant_id: MERCHANT_A,
+        kind: "widget",
+        listing_slug: "acme-reviews",
+        version: "1.0.0",
+        status: "installed",
+      },
     ]);
     const res = await installTheme(db, zip);
     expect(res.alreadyInstalled).toBe(false);
@@ -651,28 +791,64 @@ describe("CONFLICT activate-path gates", () => {
     });
     seedProjection(db, [
       {
-        id: "proj-a", merchant_id: MERCHANT_A, plugin_id: "swap-a",
+        id: "proj-a",
+        merchant_id: MERCHANT_A,
+        plugin_id: "swap-a",
         manifest: {
-          id: "swap-a", name: "swap-a", version: "1.0.0", api: "^3.0.0",
+          id: "swap-a",
+          name: "swap-a",
+          version: "1.0.0",
+          api: "^3.0.0",
           permissions: ["render_storefront", "replace_menus"],
-          widgets: [{ key: "nav", label: "Nav", slots: ["menu_bar"], entry: "mount(el)" }],
+          widgets: [
+            {
+              key: "nav",
+              label: "Nav",
+              slots: ["menu_bar"],
+              entry: "mount(el)",
+            },
+          ],
           hooks: [],
         },
-        scopes: ["render_storefront", "replace_menus"], enabled: true, suspended: null,
+        scopes: ["render_storefront", "replace_menus"],
+        enabled: true,
+        suspended: null,
       },
       {
-        id: "proj-b", merchant_id: MERCHANT_A, plugin_id: "swap-b",
+        id: "proj-b",
+        merchant_id: MERCHANT_A,
+        plugin_id: "swap-b",
         manifest: {
-          id: "swap-b", name: "swap-b", version: "1.0.0", api: "^3.0.0",
+          id: "swap-b",
+          name: "swap-b",
+          version: "1.0.0",
+          api: "^3.0.0",
           permissions: ["render_storefront", "replace_menus"],
-          widgets: [{ key: "nav", label: "Nav", slots: ["menu_bar"], entry: "mount(el)" }],
+          widgets: [
+            {
+              key: "nav",
+              label: "Nav",
+              slots: ["menu_bar"],
+              entry: "mount(el)",
+            },
+          ],
           hooks: [],
         },
-        scopes: ["render_storefront", "replace_menus"], enabled: true, suspended: null,
+        scopes: ["render_storefront", "replace_menus"],
+        enabled: true,
+        suspended: null,
       },
     ]);
     expect(
-      await codeOf(setPluginPackageEnabled(db.asClient(), MERCHANT_A, installId, true, ACTOR)),
+      await codeOf(
+        setPluginPackageEnabled(
+          db.asClient(),
+          MERCHANT_A,
+          installId,
+          true,
+          ACTOR,
+        ),
+      ),
     ).toBe("package.namespace_conflict");
     expect(
       db.rows("marketplace_installs").find((r) => r.id === installId)!.status,
@@ -692,27 +868,61 @@ describe("CONFLICT activate-path gates", () => {
     });
     seedProjection(db, [
       {
-        id: "proj-a", merchant_id: MERCHANT_A, plugin_id: "swap-a",
+        id: "proj-a",
+        merchant_id: MERCHANT_A,
+        plugin_id: "swap-a",
         manifest: {
-          id: "swap-a", name: "swap-a", version: "1.0.0", api: "^3.0.0",
+          id: "swap-a",
+          name: "swap-a",
+          version: "1.0.0",
+          api: "^3.0.0",
           permissions: ["render_storefront", "replace_menus"],
-          widgets: [{ key: "nav", label: "Nav", slots: ["menu_bar"], entry: "mount(el)" }],
+          widgets: [
+            {
+              key: "nav",
+              label: "Nav",
+              slots: ["menu_bar"],
+              entry: "mount(el)",
+            },
+          ],
           hooks: [],
         },
-        scopes: ["render_storefront", "replace_menus"], enabled: false, suspended: null,
+        scopes: ["render_storefront", "replace_menus"],
+        enabled: false,
+        suspended: null,
       },
       {
-        id: "proj-b", merchant_id: MERCHANT_A, plugin_id: "swap-b",
+        id: "proj-b",
+        merchant_id: MERCHANT_A,
+        plugin_id: "swap-b",
         manifest: {
-          id: "swap-b", name: "swap-b", version: "1.0.0", api: "^3.0.0",
+          id: "swap-b",
+          name: "swap-b",
+          version: "1.0.0",
+          api: "^3.0.0",
           permissions: ["render_storefront", "replace_menus"],
-          widgets: [{ key: "nav", label: "Nav", slots: ["menu_bar"], entry: "mount(el)" }],
+          widgets: [
+            {
+              key: "nav",
+              label: "Nav",
+              slots: ["menu_bar"],
+              entry: "mount(el)",
+            },
+          ],
           hooks: [],
         },
-        scopes: ["render_storefront", "replace_menus"], enabled: true, suspended: null,
+        scopes: ["render_storefront", "replace_menus"],
+        enabled: true,
+        suspended: null,
       },
     ]);
-    const res = await setPluginPackageEnabled(db.asClient(), MERCHANT_A, installId, true, ACTOR);
+    const res = await setPluginPackageEnabled(
+      db.asClient(),
+      MERCHANT_A,
+      installId,
+      true,
+      ACTOR,
+    );
     expect(res.status).toBe("installed");
   });
 
@@ -729,17 +939,37 @@ describe("CONFLICT activate-path gates", () => {
     });
     seedProjection(db, [
       {
-        id: "proj-a", merchant_id: MERCHANT_A, plugin_id: "swap-a",
+        id: "proj-a",
+        merchant_id: MERCHANT_A,
+        plugin_id: "swap-a",
         manifest: {
-          id: "swap-a", name: "swap-a", version: "1.0.0", api: "^3.0.0",
+          id: "swap-a",
+          name: "swap-a",
+          version: "1.0.0",
+          api: "^3.0.0",
           permissions: ["render_storefront", "replace_menus"],
-          widgets: [{ key: "nav", label: "Nav", slots: ["menu_bar"], entry: "mount(el)" }],
+          widgets: [
+            {
+              key: "nav",
+              label: "Nav",
+              slots: ["menu_bar"],
+              entry: "mount(el)",
+            },
+          ],
           hooks: [],
         },
-        scopes: ["render_storefront", "replace_menus"], enabled: true, suspended: null,
+        scopes: ["render_storefront", "replace_menus"],
+        enabled: true,
+        suspended: null,
       },
     ]);
-    const res = await setPluginPackageEnabled(db.asClient(), MERCHANT_A, installId, false, ACTOR);
+    const res = await setPluginPackageEnabled(
+      db.asClient(),
+      MERCHANT_A,
+      installId,
+      false,
+      ACTOR,
+    );
     expect(res.status).toBe("paused");
   });
 });
@@ -789,7 +1019,12 @@ describe("CONFLICT capability matrix across versions", () => {
         installPackage(
           db.asClient(),
           MERCHANT_A,
-          { kind: "plugin", fileName: "p.zip", bytes: zip, idempotencyKey: key() },
+          {
+            kind: "plugin",
+            fileName: "p.zip",
+            bytes: zip,
+            idempotencyKey: key(),
+          },
           ACTOR,
         ),
       ),
@@ -817,37 +1052,48 @@ describe("CONFLICT capability matrix across versions", () => {
         entry: "mount(el)",
       },
     } as unknown as Extract<PluginResolution, { ok: true }>;
-    expect(resolveCommunityRender(resolution, { themeKey: "t", pluginKey: "plugin:acme-reviews/reviews" }).kind).toBe(
-      "sandbox",
-    );
+    expect(
+      resolveCommunityRender(resolution, {
+        themeKey: "t",
+        pluginKey: "plugin:acme-reviews/reviews",
+      }).kind,
+    ).toBe("sandbox");
   });
 
   it("scope allow/deny matrix at the sandbox gate", () => {
     const call = (method: string) => ({ v: 1, id: "m1", method });
-    expect(authorizeWidgetCall(call("products.list"), ["read_products"])).toMatchObject({
+    expect(
+      authorizeWidgetCall(call("products.list"), ["read_products"]),
+    ).toMatchObject({
       allowed: true,
     });
     expect(authorizeWidgetCall(call("products.list"), [])).toMatchObject({
       allowed: false,
       reason: "scope_denied",
     });
-    expect(authorizeWidgetCall(call("nope.call"), ["read_products"])).toMatchObject({
+    expect(
+      authorizeWidgetCall(call("nope.call"), ["read_products"]),
+    ).toMatchObject({
       allowed: false,
       reason: "unknown_method",
     });
-    expect(authorizeWidgetCall({ v: 2, id: "m1", method: "products.list" }, ["read_products"])).toMatchObject(
-      {
-        allowed: false,
-        reason: "malformed",
-      },
-    );
+    expect(
+      authorizeWidgetCall({ v: 2, id: "m1", method: "products.list" }, [
+        "read_products",
+      ]),
+    ).toMatchObject({
+      allowed: false,
+      reason: "malformed",
+    });
   });
 
   it("menu reads keep working for pre-menu-track grants (bridge compat, not scope rewrite)", () => {
     // The raw gate is scope-exact: render_storefront alone does NOT satisfy
     // the read_menus binding at this layer…
     expect(
-      authorizeWidgetCall({ v: 1, id: "m1", method: "menus.list" }, ["render_storefront"]),
+      authorizeWidgetCall({ v: 1, id: "m1", method: "menus.list" }, [
+        "render_storefront",
+      ]),
     ).toMatchObject({ allowed: false, reason: "scope_denied" });
     // …while the bridge-level implication preserves older installs without
     // a fresh consent screen (menus.list stays readable).
@@ -867,9 +1113,15 @@ describe("CONFLICT capability matrix across versions", () => {
       presentationSurfaces: ["widget"],
       locales: ["en"],
     };
-    expect(validateThemeManifest({ ...base, capabilities: ["render_storefront"] }).ok).toBe(true);
     expect(
-      validateThemeManifest({ ...base, capabilities: ["render_storefront", "read_products"] }).ok,
+      validateThemeManifest({ ...base, capabilities: ["render_storefront"] })
+        .ok,
+    ).toBe(true);
+    expect(
+      validateThemeManifest({
+        ...base,
+        capabilities: ["render_storefront", "read_products"],
+      }).ok,
     ).toBe(true);
     const forbidden = validateThemeManifest({
       ...base,
@@ -877,24 +1129,33 @@ describe("CONFLICT capability matrix across versions", () => {
     });
     expect(forbidden.ok).toBe(false);
     if (!forbidden.ok) {
-      expect(forbidden.errors).toContain("capabilities.forbidden:write_products");
+      expect(forbidden.errors).toContain(
+        "capabilities.forbidden:write_products",
+      );
     }
     const pii = validateThemeManifest({
       ...base,
       capabilities: ["render_storefront", "read_orders"],
     });
     expect(pii.ok).toBe(false);
-    if (!pii.ok) expect(pii.errors).toContain("capabilities.forbidden:read_orders");
+    if (!pii.ok)
+      expect(pii.errors).toContain("capabilities.forbidden:read_orders");
     const unknown = validateThemeManifest({
       ...base,
       capabilities: ["render_storefront", "nuke_everything"],
     });
     expect(unknown.ok).toBe(false);
-    if (!unknown.ok) expect(unknown.errors).toContain("capabilities:nuke_everything");
-    const missing = validateThemeManifest({ ...base, capabilities: ["read_products"] });
+    if (!unknown.ok)
+      expect(unknown.errors).toContain("capabilities:nuke_everything");
+    const missing = validateThemeManifest({
+      ...base,
+      capabilities: ["read_products"],
+    });
     expect(missing.ok).toBe(false);
     if (!missing.ok) {
-      expect(missing.errors).toContain("capabilities.render_storefront_required");
+      expect(missing.errors).toContain(
+        "capabilities.render_storefront_required",
+      );
     }
   });
 

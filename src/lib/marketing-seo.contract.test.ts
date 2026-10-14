@@ -174,7 +174,7 @@ describe("buildMarketingHead", () => {
   });
 
   it("emits bn, en and x-default alternates that are distinct and reciprocal", () => {
-    const alts = head.links.filter((l) => l.rel === "alternate") as any[];
+    const alts = head.links.filter((l) => l.rel === "alternate");
     expect(alts.map((a) => a.hreflang ?? a.hrefLang).sort()).toEqual([
       "bn-BD",
       "en",
@@ -329,28 +329,35 @@ describe("structured data", () => {
     };
     const ids = new Set(graph["@graph"].map((n) => n["@id"]).filter(Boolean));
     expect(ids).toContain(`${ORIGIN}/#organization`);
-    const website = graph["@graph"].find(
-      (n) => n["@type"] === "WebSite",
-    ) as Record<string, any>;
-    expect(website["publisher"]["@id"]).toBe(`${ORIGIN}/#organization`);
+    const website = graph["@graph"].find((n) => n["@type"] === "WebSite") as {
+      publisher?: { "@id"?: unknown };
+    };
+    expect(website?.publisher?.["@id"]).toBe(`${ORIGIN}/#organization`);
   });
 
   it("points SearchAction at a URL the site actually serves", () => {
-    const site = websiteNode(ORIGIN) as Record<string, any>;
-    expect(site["potentialAction"].target.urlTemplate).toBe(
+    const site = websiteNode(ORIGIN) as {
+      potentialAction?: { target?: { urlTemplate?: unknown } };
+    };
+    expect(site.potentialAction?.target?.urlTemplate).toBe(
       `${ORIGIN}/blog?q={search_term_string}`,
     );
-    expect(websiteNode(null)["potentialAction"]).toBeUndefined();
+    expect(websiteNode(null).potentialAction).toBeUndefined();
   });
 
   it("keeps Organization and LocalBusiness on the single NAP source", () => {
-    const org = organizationNode(ORIGIN) as Record<string, any>;
-    const local = localBusinessNode(ORIGIN) as Record<string, any>;
-    expect(org["telephone"]).toBe(ORG_NAP.phone);
-    expect(local["telephone"]).toBe(ORG_NAP.phone);
-    expect(local["address"].postalCode).toBe(ORG_NAP.postalCode);
-    expect(org["address"].streetAddress).toBe(local["address"].streetAddress);
-    expect(local["name"]).toBe(ORG_NAP.legalName);
+    type NapNode = {
+      telephone?: unknown;
+      address?: Record<string, unknown>;
+      name?: unknown;
+    };
+    const org = organizationNode(ORIGIN) as NapNode;
+    const local = localBusinessNode(ORIGIN) as NapNode;
+    expect(org.telephone).toBe(ORG_NAP.phone);
+    expect(local.telephone).toBe(ORG_NAP.phone);
+    expect(local.address?.postalCode).toBe(ORG_NAP.postalCode);
+    expect(org.address?.streetAddress).toBe(local.address?.streetAddress);
+    expect(local.name).toBe(ORG_NAP.legalName);
   });
 
   it("drops empty FAQ entries instead of emitting blank questions", () => {
@@ -362,34 +369,35 @@ describe("structured data", () => {
         { question: "x", answer: "" },
       ],
       ORIGIN,
-    ) as any;
-    expect(node.mainEntity).toHaveLength(1);
+    );
+    expect(node?.mainEntity).toHaveLength(1);
   });
 
   it("only emits priced Offers, never an invented number", () => {
     const app = softwareApplicationNode(ORIGIN, [
       { name: "Launch", price: "0" },
       { name: "Broken", price: "contact us" },
-    ]) as Record<string, any>;
-    expect(app["offers"]).toHaveLength(1);
-    expect(app["offers"][0].priceCurrency).toBe(ORG_NAP.currency);
-    expect(softwareApplicationNode(ORIGIN)["offers"]).toBeUndefined();
+    ]);
+    const offers = app.offers as { priceCurrency?: unknown }[];
+    expect(offers).toHaveLength(1);
+    expect(offers[0]?.priceCurrency).toBe(ORG_NAP.currency);
+    expect(softwareApplicationNode(ORIGIN).offers).toBeUndefined();
   });
 
   it("builds a breadcrumb trail that starts at home and ends at the leaf", () => {
     const crumbs = breadcrumbNode("legal", ORIGIN, "en", {
       name: "Terms",
       path: "/legal/terms",
-    }) as any;
-    expect(crumbs.itemListElement.map((c: any) => c.name)).toEqual([
+    }) as {
+      itemListElement?: { name: string; position: number; item: string }[];
+    } | null;
+    expect(crumbs?.itemListElement?.map((c) => c.name)).toEqual([
       "Home",
       "Legal",
       "Terms",
     ]);
-    expect(crumbs.itemListElement.map((c: any) => c.position)).toEqual([
-      1, 2, 3,
-    ]);
-    expect(crumbs.itemListElement.at(-1).item).toBe(`${ORIGIN}/legal/terms`);
+    expect(crumbs?.itemListElement?.map((c) => c.position)).toEqual([1, 2, 3]);
+    expect(crumbs?.itemListElement?.at(-1)?.item).toBe(`${ORIGIN}/legal/terms`);
     expect(breadcrumbNode("home", ORIGIN)).toBeNull();
     expect(breadcrumbNode("legal", null)).toBeNull();
   });
@@ -400,10 +408,14 @@ describe("structured data", () => {
       path: "/blog/x",
       headline: "H".repeat(200),
       image: "/relative.png",
-    }) as Record<string, any>;
-    expect(node["headline"].length).toBeLessThanOrEqual(110);
-    expect(node["image"]).toBeUndefined();
-    expect(node["author"]["name"]).toBe(ORG_NAP.brand);
+    }) as {
+      headline?: string;
+      image?: unknown;
+      author?: { name?: unknown };
+    } | null;
+    expect(node?.headline?.length).toBeLessThanOrEqual(110);
+    expect(node?.image).toBeUndefined();
+    expect(node?.author?.name).toBe(ORG_NAP.brand);
     expect(
       articleNode({ origin: ORIGIN, path: "/blog/x", headline: "  " }),
     ).toBeNull();
@@ -445,7 +457,12 @@ describe("sitemap and robots", () => {
     for (const entry of entries) {
       expect(entry.lastmod).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       expect(
-        entry.alternates?.map((a: any) => a.hreflang ?? a.hrefLang).sort(),
+        entry.alternates
+          ?.map(
+            (a: { hreflang?: string; hrefLang?: string }) =>
+              a.hreflang ?? a.hrefLang,
+          )
+          .sort(),
       ).toEqual(["bn-BD", "en", "x-default"]);
     }
   });

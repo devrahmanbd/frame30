@@ -59,9 +59,9 @@ describe("starter-theme gates", () => {
     expect(t("product_rail", { heading: "X" }).props["skin"]).toBe("compact");
     expect(t("hero_carousel", {}).props["skin"]).toBe("minimal");
     // … but an explicit inspector value always wins.
-    expect(t("product_rail", { heading: "X", skin: "editorial" }).props["skin"]).toBe(
-      "editorial",
-    );
+    expect(
+      t("product_rail", { heading: "X", skin: "editorial" }).props["skin"],
+    ).toBe("editorial");
     // Unknown values fall back to the widget default, never a crash.
     expect(resolveStarterSkin("product_rail", "nope")).toBe("compact");
     expect(resolveStarterSkin("product_rail", "")).toBe("compact");

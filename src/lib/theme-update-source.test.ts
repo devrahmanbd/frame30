@@ -45,7 +45,11 @@ function sourceDb() {
 describe("Frame30 official update check from source", () => {
   it("previewThemeUpdate resolves official keys without a registry row", async () => {
     const db = sourceDb();
-    const out = await previewThemeUpdate(db.asClient(), MERCHANT, "songoskriti");
+    const out = await previewThemeUpdate(
+      db.asClient(),
+      MERCHANT,
+      "songoskriti",
+    );
     expect(out).not.toBeNull();
     expect(out!.key).toBe("songoskriti");
     expect(out!.latestVersion).toBe("1.0.0");

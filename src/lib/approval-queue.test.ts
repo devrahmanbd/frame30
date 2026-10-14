@@ -298,7 +298,12 @@ describe("pendingApprovals", () => {
     const db = fakeDb({
       tables: {
         store_themes: [
-          { id: THEME, merchant_id: MERCHANT, name: "Pixel Theme", is_active: false },
+          {
+            id: THEME,
+            merchant_id: MERCHANT,
+            name: "Pixel Theme",
+            is_active: false,
+          },
         ],
         theme_drafts: [
           {

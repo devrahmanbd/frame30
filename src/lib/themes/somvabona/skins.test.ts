@@ -9,7 +9,7 @@
  */
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import type { PropValue, Section } from "../../builder-ast";
+import type { PropValue, Section, SectionType } from "../../builder-ast";
 import { buildHomepageMain } from "./homepage";
 import { buildFooterMain, buildHeaderMain } from "./chrome";
 import { somvabonaPreviewSource } from "./preview";
@@ -80,7 +80,7 @@ describe("builder application", () => {
   it("preview collection rail carries the compact default", () => {
     const source = somvabonaPreviewSource();
     let n = 0;
-    const s = (type: any, props: any = {}) => ({
+    const s = (type: SectionType, props: Record<string, PropValue> = {}) => ({
       id: `${String(type)}-${n++}`,
       type,
       props: { ...props },

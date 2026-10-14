@@ -12,7 +12,8 @@ import {
   allowAllRateLimits,
 } from "./__fixtures__/test-doubles";
 
-const rec = vi.hoisted(() => ({ holder: null as any }));
+type Recorder = ReturnType<typeof metricRecorder>;
+const rec = vi.hoisted(() => ({ holder: null as Recorder | null }));
 
 const recorder = metricRecorder();
 rec.holder = recorder;
@@ -221,6 +222,6 @@ describe("tenant scoping", () => {
       },
     });
     const rows = await loadGiftCards(db.asClient(), MERCHANT);
-    expect(rows.map((r: any) => r.id)).toEqual(["a"]);
+    expect(rows.map((r: { id: string }) => r.id)).toEqual(["a"]);
   });
 });

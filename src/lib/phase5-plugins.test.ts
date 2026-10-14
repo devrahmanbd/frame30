@@ -281,13 +281,13 @@ describe("settings schema", () => {
 
   it("validates textarea/color/media/url/date kinds", () => {
     const schema = [
-      { key: "bio", kind: "textarea", max: 50 },
-      { key: "accent", kind: "color" },
-      { key: "logo", kind: "media" },
-      { key: "site", kind: "url" },
-      { key: "launch", kind: "date" },
+      { key: "bio", label: "Bio", kind: "textarea", max: 50 },
+      { key: "accent", label: "Accent", kind: "color" },
+      { key: "logo", label: "Logo", kind: "media" },
+      { key: "site", label: "Site", kind: "url" },
+      { key: "launch", label: "Launch", kind: "date" },
     ] as const;
-    const { values, errors } = validateSettings(schema as any, {
+    const { values, errors } = validateSettings(schema, {
       bio: "x".repeat(99),
       accent: "#ff0000",
       logo: "https://cdn/x.png",
@@ -302,10 +302,10 @@ describe("settings schema", () => {
   it("rejects bad color/date/url with error codes", () => {
     const { errors } = validateSettings(
       [
-        { key: "c", kind: "color" },
-        { key: "u", kind: "url" },
-        { key: "d", kind: "date" },
-      ] as any,
+        { key: "c", label: "C", kind: "color" },
+        { key: "u", label: "U", kind: "url" },
+        { key: "d", label: "D", kind: "date" },
+      ] as const,
       { c: "red", u: "notaurl", d: "yesterday" },
     );
     expect(errors).toEqual(
@@ -695,13 +695,20 @@ describe("TRACK M — menu slot vocabulary (shape 1: fill)", () => {
 
   it("accepts menu slots in slot validation, alone and mixed with block slots", () => {
     for (const slot of MENU_SLOTS) {
-      const verdict = parseManifest({ ...MANIFEST, widgets: [menuWidget(slot)] });
+      const verdict = parseManifest({
+        ...MANIFEST,
+        widgets: [menuWidget(slot)],
+      });
       expect(verdict.ok, slot).toBe(true);
     }
     const mixed = parseManifest({
       ...MANIFEST,
       widgets: [
-        { ...menuWidget("menu_bar"), key: "nav_a", slots: ["main", "menu_bar"] },
+        {
+          ...menuWidget("menu_bar"),
+          key: "nav_a",
+          slots: ["main", "menu_bar"],
+        },
       ],
     });
     expect(mixed.ok).toBe(true);
@@ -784,9 +791,11 @@ describe("TRACK M — full renderer swap (shape 2: review-gated, fail-open)", ()
 
   it("gates the swap: approval AND replace_menus scope, first claim wins", () => {
     const granted = ["render_storefront", "replace_menus"];
-    expect(
-      decideMenuRenderer([claim()], "menu_bar", granted),
-    ).toEqual({ kind: "plugin", pluginId: "nav-pro", slot: "menu_bar" });
+    expect(decideMenuRenderer([claim()], "menu_bar", granted)).toEqual({
+      kind: "plugin",
+      pluginId: "nav-pro",
+      slot: "menu_bar",
+    });
     // No claim for the slot → theme default.
     expect(decideMenuRenderer([claim()], "menu_drawer", granted)).toEqual({
       kind: "theme_default",
@@ -794,7 +803,11 @@ describe("TRACK M — full renderer swap (shape 2: review-gated, fail-open)", ()
     });
     // Unapproved → theme default, plugin named for the review queue.
     expect(
-      decideMenuRenderer([claim({ reviewApproved: false })], "menu_bar", granted),
+      decideMenuRenderer(
+        [claim({ reviewApproved: false })],
+        "menu_bar",
+        granted,
+      ),
     ).toEqual({
       kind: "theme_default",
       reason: "not_approved",
@@ -834,11 +847,9 @@ describe("TRACK M — full renderer swap (shape 2: review-gated, fail-open)", ()
   });
 
   it("falls back to the theme renderer when the plugin renderer throws", () => {
-    const decision = decideMenuRenderer(
-      [claim()],
-      "menu_bar",
-      ["replace_menus"],
-    );
+    const decision = decideMenuRenderer([claim()], "menu_bar", [
+      "replace_menus",
+    ]);
     expect(decision.kind).toBe("plugin");
     const seen: unknown[] = [];
     const out = renderMenuWithFallback(
@@ -854,23 +865,21 @@ describe("TRACK M — full renderer swap (shape 2: review-gated, fail-open)", ()
     expect(out).toBe("theme");
     expect(seen).toHaveLength(1);
     expect((seen[0] as [Error, { reason: string }])[0].message).toBe("boom");
-    expect((seen[0] as [unknown, { kind: string; reason: string }])[1]).toEqual({
-      kind: "theme_default",
-      reason: "renderer_failed",
-      pluginId: "nav-pro",
-    });
+    expect((seen[0] as [unknown, { kind: string; reason: string }])[1]).toEqual(
+      {
+        kind: "theme_default",
+        reason: "renderer_failed",
+        pluginId: "nav-pro",
+      },
+    );
   });
 
   it("logs a tagged console.error by default on renderer failure", () => {
-    const errorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     try {
-      const decision = decideMenuRenderer(
-        [claim()],
-        "menu_bar",
-        ["replace_menus"],
-      );
+      const decision = decideMenuRenderer([claim()], "menu_bar", [
+        "replace_menus",
+      ]);
       const out = renderMenuWithFallback(
         decision,
         () => {
@@ -898,29 +907,41 @@ describe("TRACK M — full renderer swap (shape 2: review-gated, fail-open)", ()
       reason: "not_claimed",
     });
     // Plugin decision with rows → plugin rows.
-    const won = resolveMenuSwapRows(theme, {
-      claims: [claim()],
-      grantedScopes: ["replace_menus"],
-      pluginRows: ["p1"],
-    }, "menu_bar");
+    const won = resolveMenuSwapRows(
+      theme,
+      {
+        claims: [claim()],
+        grantedScopes: ["replace_menus"],
+        pluginRows: ["p1"],
+      },
+      "menu_bar",
+    );
     expect(won.rows).toEqual(["p1"]);
     // Approved but empty → theme rows (never blanks navigation).
-    const empty = resolveMenuSwapRows(theme, {
-      claims: [claim()],
-      grantedScopes: ["replace_menus"],
-      pluginRows: [],
-    }, "menu_bar");
+    const empty = resolveMenuSwapRows(
+      theme,
+      {
+        claims: [claim()],
+        grantedScopes: ["replace_menus"],
+        pluginRows: [],
+      },
+      "menu_bar",
+    );
     expect(empty.rows).toBe(theme);
     // Throwing renderRows → theme rows + onError.
     const onError = vi.fn();
-    const failed = resolveMenuSwapRows(theme, {
-      claims: [claim()],
-      grantedScopes: ["replace_menus"],
-      renderRows: () => {
-        throw new Error("render down");
+    const failed = resolveMenuSwapRows(
+      theme,
+      {
+        claims: [claim()],
+        grantedScopes: ["replace_menus"],
+        renderRows: () => {
+          throw new Error("render down");
+        },
+        onError,
       },
-      onError,
-    }, "menu_bar");
+      "menu_bar",
+    );
     expect(failed.rows).toBe(theme);
     expect(onError).toHaveBeenCalledTimes(1);
   });
@@ -928,13 +949,24 @@ describe("TRACK M — full renderer swap (shape 2: review-gated, fail-open)", ()
   it("selectMenuSwapRows never blanks navigation on empty plugin rows", () => {
     const theme = ["a"];
     expect(
-      selectMenuSwapRows(theme, [], { kind: "plugin", pluginId: "x", slot: "menu_bar" }),
+      selectMenuSwapRows(theme, [], {
+        kind: "plugin",
+        pluginId: "x",
+        slot: "menu_bar",
+      }),
     ).toBe(theme);
     expect(
-      selectMenuSwapRows(theme, ["p"], { kind: "plugin", pluginId: "x", slot: "menu_bar" }),
+      selectMenuSwapRows(theme, ["p"], {
+        kind: "plugin",
+        pluginId: "x",
+        slot: "menu_bar",
+      }),
     ).toEqual(["p"]);
     expect(
-      selectMenuSwapRows(theme, ["p"], { kind: "theme_default", reason: "not_approved" }),
+      selectMenuSwapRows(theme, ["p"], {
+        kind: "theme_default",
+        reason: "not_approved",
+      }),
     ).toBe(theme);
   });
 });
@@ -952,11 +984,7 @@ describe("MENU RUNTIME — plugin renderer replacement (registry + boundary)", (
   const granted = ["render_storefront", "replace_menus"];
 
   const PluginNav = ({ rows, pluginId }: PluginMenuRendererProps<string>) =>
-    createElement(
-      "nav",
-      { "data-plugin-nav": pluginId },
-      rows.join("|"),
-    );
+    createElement("nav", { "data-plugin-nav": pluginId }, rows.join("|"));
 
   it("approved + scoped swaps resolve the registered renderer with the winning rows", () => {
     registerMenuRenderer("nav-pro", "menu_bar", PluginNav);
@@ -966,11 +994,15 @@ describe("MENU RUNTIME — plugin renderer replacement (registry + boundary)", (
     expect(Selected).toBe(PluginNav);
     // The renderer receives the winning rows (theme rows unless the swap
     // carried rows) — the plugin owns presentation, never row selection.
-    const { rows } = resolveMenuSwapRows(["a", "b"], {
-      claims: [claim()],
-      grantedScopes: granted,
-      pluginRows: ["p1"],
-    }, "menu_bar");
+    const { rows } = resolveMenuSwapRows(
+      ["a", "b"],
+      {
+        claims: [claim()],
+        grantedScopes: granted,
+        pluginRows: ["p1"],
+      },
+      "menu_bar",
+    );
     const html = renderToStaticMarkup(
       createElement(Selected!, {
         rows,
@@ -1017,14 +1049,24 @@ describe("MENU RUNTIME — plugin renderer replacement (registry + boundary)", (
     expect(barDecision.kind).toBe("plugin");
     // Same plugin, same registry — but the verdict approved menu_bar, so
     // the drawer slot stays on the theme default (fail-open, no bleed).
-    expect(selectPluginMenuRenderer(barDecision, "menu_drawer")).toBeUndefined();
+    expect(
+      selectPluginMenuRenderer(barDecision, "menu_drawer"),
+    ).toBeUndefined();
     expect(selectPluginMenuRenderer(barDecision, "menu_bar")).toBe(PluginNav);
     // And the mirror: a drawer verdict never unlocks the desktop slot.
     const drawerClaim = { ...claim(), slot: "menu_drawer" as const };
-    const drawerDecision = decideMenuRenderer([drawerClaim], "menu_drawer", granted);
+    const drawerDecision = decideMenuRenderer(
+      [drawerClaim],
+      "menu_drawer",
+      granted,
+    );
     expect(drawerDecision.kind).toBe("plugin");
-    expect(selectPluginMenuRenderer(drawerDecision, "menu_bar")).toBeUndefined();
-    expect(selectPluginMenuRenderer(drawerDecision, "menu_drawer")).toBe(PluginNav);
+    expect(
+      selectPluginMenuRenderer(drawerDecision, "menu_bar"),
+    ).toBeUndefined();
+    expect(selectPluginMenuRenderer(drawerDecision, "menu_drawer")).toBe(
+      PluginNav,
+    );
   });
 
   it("approved + scoped but unregistered keeps rows swapping through theme markup", () => {
@@ -1032,11 +1074,15 @@ describe("MENU RUNTIME — plugin renderer replacement (registry + boundary)", (
     expect(decision.kind).toBe("plugin");
     // No renderer registered → no replacement; rows still resolve fail-open.
     expect(selectPluginMenuRenderer(decision, "menu_bar")).toBeUndefined();
-    const { rows } = resolveMenuSwapRows(["a"], {
-      claims: [claim()],
-      grantedScopes: granted,
-      pluginRows: ["p1"],
-    }, "menu_bar");
+    const { rows } = resolveMenuSwapRows(
+      ["a"],
+      {
+        claims: [claim()],
+        grantedScopes: granted,
+        pluginRows: ["p1"],
+      },
+      "menu_bar",
+    );
     expect(rows).toEqual(["p1"]);
   });
 
@@ -1052,9 +1098,7 @@ describe("MENU RUNTIME — plugin renderer replacement (registry + boundary)", (
     }
     const decision = decideMenuRenderer([claim()], "menu_bar", granted);
     expect(selectPluginMenuRenderer(decision, "menu_bar")).toBe(PluginNav);
-    expect(() =>
-      registerMenuRenderer("", "menu_bar", PluginNav),
-    ).not.toThrow();
+    expect(() => registerMenuRenderer("", "menu_bar", PluginNav)).not.toThrow();
     expect(() =>
       registerMenuRenderer("nav-pro", "sidebar" as never, PluginNav),
     ).not.toThrow();
@@ -1130,9 +1174,7 @@ describe("MENU RUNTIME — plugin renderer replacement (registry + boundary)", (
     });
     boundary.componentDidCatch(new Error("renderer down"), {} as never);
     expect(onError).toHaveBeenCalledTimes(1);
-    expect((onError.mock.calls[0]![0] as Error).message).toBe(
-      "renderer down",
-    );
+    expect((onError.mock.calls[0]![0] as Error).message).toBe("renderer down");
     // Default seam: one tagged console.error line, mirroring the sync gate.
     const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     try {

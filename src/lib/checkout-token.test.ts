@@ -26,7 +26,7 @@ import { mintCheckoutToken as mintCheckoutToken } from "../routes/checkout";
 
 const minters = {
   "store.$slug.checkout": mintStoreCheckoutToken,
-  "checkout": mintCheckoutToken,
+  checkout: mintCheckoutToken,
 } as const;
 
 for (const [name, mint] of Object.entries(minters)) {
@@ -76,9 +76,7 @@ describe("mint source pins", () => {
   it("both route minters use crypto.randomUUID, never Math.random", () => {
     for (const path of routes) {
       const src = readFileSync(path, "utf8");
-      const minter = src.match(
-        /export function mintCheckoutToken[\s\S]*?\n\}/,
-      );
+      const minter = src.match(/export function mintCheckoutToken[\s\S]*?\n\}/);
       expect(minter?.[0], `${path} must export mintCheckoutToken`).toBeTruthy();
       expect(minter![0]).toContain("randomUUID");
       // Date.now beacons elsewhere in these files are fine — the HOLD minter

@@ -45,7 +45,10 @@ const ACTOR = "99999999-9999-4999-8999-999999999999";
 const enc = new TextEncoder();
 const u16 = (v: number) => [v & 0xff, (v >>> 8) & 0xff];
 const u32 = (v: number) => [
-  v & 0xff, (v >>> 8) & 0xff, (v >>> 16) & 0xff, (v >>> 24) & 0xff,
+  v & 0xff,
+  (v >>> 8) & 0xff,
+  (v >>> 16) & 0xff,
+  (v >>> 24) & 0xff,
 ];
 
 type Entry = {
@@ -58,7 +61,14 @@ type Entry = {
 /** Valid-PNG payload so image fixtures pass content-authenticity gates. */
 const png = (marker: string) =>
   new Uint8Array([
-    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
+    0x89,
+    0x50,
+    0x4e,
+    0x47,
+    0x0d,
+    0x0a,
+    0x1a,
+    0x0a,
     ...enc.encode(marker),
   ]);
 
@@ -73,24 +83,62 @@ function buildZip(entries: Entry[]): Uint8Array {
     const payload = Array.from(method === 8 ? deflateRawSync(raw) : raw);
     const localOffset = out.length;
     out.push(
-      0x50, 0x4b, 0x03, 0x04, ...u16(20), ...u16(0x0800), ...u16(method),
-      ...u16(0), ...u16(0), ...u32(0), ...u32(payload.length), ...u32(raw.length),
-      ...u16(nameBytes.length), ...u16(0), ...nameBytes, ...payload,
+      0x50,
+      0x4b,
+      0x03,
+      0x04,
+      ...u16(20),
+      ...u16(0x0800),
+      ...u16(method),
+      ...u16(0),
+      ...u16(0),
+      ...u32(0),
+      ...u32(payload.length),
+      ...u32(raw.length),
+      ...u16(nameBytes.length),
+      ...u16(0),
+      ...nameBytes,
+      ...payload,
     );
     central.push(
-      0x50, 0x4b, 0x01, 0x02, ...u16(20), ...u16(20), ...u16(0x0800), ...u16(method),
-      ...u16(0), ...u16(0), ...u32(0), ...u32(payload.length), ...u32(raw.length),
-      ...u16(nameBytes.length), ...u16(0), ...u16(0), ...u16(0), ...u16(0),
-      ...u32(e.externalAttrs ?? 0), ...u32(localOffset), ...nameBytes,
+      0x50,
+      0x4b,
+      0x01,
+      0x02,
+      ...u16(20),
+      ...u16(20),
+      ...u16(0x0800),
+      ...u16(method),
+      ...u16(0),
+      ...u16(0),
+      ...u32(0),
+      ...u32(payload.length),
+      ...u32(raw.length),
+      ...u16(nameBytes.length),
+      ...u16(0),
+      ...u16(0),
+      ...u16(0),
+      ...u16(0),
+      ...u32(e.externalAttrs ?? 0),
+      ...u32(localOffset),
+      ...nameBytes,
     );
   }
   const centralOffset = out.length;
   out.push(...central);
   const centralSize = out.length - centralOffset;
   out.push(
-    0x50, 0x4b, 0x05, 0x06, ...u16(0), ...u16(0),
-    ...u16(entries.length), ...u16(entries.length),
-    ...u32(centralSize), ...u32(centralOffset), ...u16(0),
+    0x50,
+    0x4b,
+    0x05,
+    0x06,
+    ...u16(0),
+    ...u16(0),
+    ...u16(entries.length),
+    ...u16(entries.length),
+    ...u32(centralSize),
+    ...u32(centralOffset),
+    ...u16(0),
   );
   return new Uint8Array(out);
 }
@@ -110,7 +158,10 @@ function themeZip(
   ]);
 }
 
-function pluginZip(manifest: Record<string, unknown>, extra: Entry[] = []): Uint8Array {
+function pluginZip(
+  manifest: Record<string, unknown>,
+  extra: Entry[] = [],
+): Uint8Array {
   return buildZip([
     { name: "plugin.json", content: JSON.stringify(manifest) },
     ...extra,
@@ -227,7 +278,12 @@ describe("PKG-2 valid install", () => {
 
     // Asset isolation: per-version namespace, versioned collision-safe URLs.
     const prefix = themeVersionPrefix(res.versionId);
-    const assets = db.rows("theme_assets");
+    const assets = db.rows("theme_assets") as {
+      merchant_id: string;
+      theme_id: string;
+      name: string;
+      url: string;
+    }[];
     expect(assets.length).toBeGreaterThan(0);
     for (const a of assets) {
       expect(a.merchant_id).toBe(MERCHANT_A);
@@ -257,7 +313,11 @@ describe("PKG-2 valid install", () => {
   it("previews an owned version without touching the live pointer", async () => {
     const db = pkgDb();
     const res = await installTheme(db, MERCHANT_A, themeZip(STRICT_THEME_V1));
-    const preview = await previewPackage(db.asClient(), MERCHANT_A, res.versionId);
+    const preview = await previewPackage(
+      db.asClient(),
+      MERCHANT_A,
+      res.versionId,
+    );
     expect(preview.packageId).toBe(res.packageId);
     expect(preview.assets.length).toBeGreaterThan(0);
     const theme = db.rows("store_themes")[0]!;
@@ -306,7 +366,9 @@ describe("PKG-2 rejections", () => {
       { name: "theme.json", content: JSON.stringify(MANIFEST_V1) },
       { name: "../../evil.json", content: "{}" },
     ]);
-    expect(await codeOf(installTheme(db, MERCHANT_A, zip))).toBe("zip.unsafe_path");
+    expect(await codeOf(installTheme(db, MERCHANT_A, zip))).toBe(
+      "zip.unsafe_path",
+    );
     expect(db.rows("store_themes")).toHaveLength(0);
   });
 
@@ -342,21 +404,29 @@ describe("PKG-2 rejections", () => {
 
   it("rejects bad structure (executables anywhere)", async () => {
     const db = pkgDb();
-    const zip = themeZip(MANIFEST_V1, [{ name: "assets/app.js", content: "evil()" }]);
-    expect(await codeOf(installTheme(db, MERCHANT_A, zip))).toBe("zip.blocked_extension");
+    const zip = themeZip(MANIFEST_V1, [
+      { name: "assets/app.js", content: "evil()" },
+    ]);
+    expect(await codeOf(installTheme(db, MERCHANT_A, zip))).toBe(
+      "zip.blocked_extension",
+    );
     expect(db.rows("store_themes")).toHaveLength(0);
   });
 
   it("rejects missing root manifests", async () => {
     const db = pkgDb();
     const zip = buildZip([{ name: "templates/index.json", content: "{}" }]);
-    expect(await codeOf(installTheme(db, MERCHANT_A, zip))).toBe("zip.missing_manifest");
+    expect(await codeOf(installTheme(db, MERCHANT_A, zip))).toBe(
+      "zip.missing_manifest",
+    );
   });
 
   it("rejects bad versions", async () => {
     const db = pkgDb();
     const zip = themeZip({ name: "Test Theme", version: "banana" });
-    expect(await codeOf(installTheme(db, MERCHANT_A, zip))).toBe("package.bad_version");
+    expect(await codeOf(installTheme(db, MERCHANT_A, zip))).toBe(
+      "package.bad_version",
+    );
     expect(db.rows("store_themes")).toHaveLength(0);
   });
 
@@ -376,7 +446,11 @@ describe("PKG-2 rejections", () => {
         installPackage(db.asClient(), MERCHANT_A, {
           kind: "theme",
           fileName: "theme.zip",
-          bytes: themeZip({ name: "Test Theme", version: "1.0.0", api: "^99.0.0" }),
+          bytes: themeZip({
+            name: "Test Theme",
+            version: "1.0.0",
+            api: "^99.0.0",
+          }),
           idempotencyKey: key(),
           validator: stubManifestValidator,
         }),
@@ -414,7 +488,9 @@ describe("PKG-2 rejections", () => {
       [{ name: "styles/main.css", content: "a{}" }],
       { templates: { hero: "assets/missing.png" } },
     );
-    expect(await codeOf(installTheme(db, MERCHANT_A, zip))).toBe("package.broken_ref");
+    expect(await codeOf(installTheme(db, MERCHANT_A, zip))).toBe(
+      "package.broken_ref",
+    );
     expect(db.rows("store_themes")).toHaveLength(0);
   });
 });
@@ -468,7 +544,13 @@ describe("PKG-2 update v1→v2 + rollback v2→v1", () => {
   it("rolls back v2→v1 as a new published version carrying v1 content", async () => {
     const db = pkgDb();
     const { v1, v2 } = await twoVersions(db);
-    await activatePackage(db.asClient(), MERCHANT_A, v2.packageId, v2.versionId, ACTOR);
+    await activatePackage(
+      db.asClient(),
+      MERCHANT_A,
+      v2.packageId,
+      v2.versionId,
+      ACTOR,
+    );
     const rolled = await rollbackPackage(
       db.asClient(),
       MERCHANT_A,
@@ -496,9 +578,17 @@ describe("PKG-2 uninstall isolation", () => {
   it("refuses to uninstall the active package", async () => {
     const db = pkgDb();
     const res = await installTheme(db, MERCHANT_A, themeZip(STRICT_THEME_V1));
-    await activatePackage(db.asClient(), MERCHANT_A, res.packageId, res.versionId, ACTOR);
+    await activatePackage(
+      db.asClient(),
+      MERCHANT_A,
+      res.packageId,
+      res.versionId,
+      ACTOR,
+    );
     expect(
-      await codeOf(uninstallPackage(db.asClient(), MERCHANT_A, res.packageId, ACTOR)),
+      await codeOf(
+        uninstallPackage(db.asClient(), MERCHANT_A, res.packageId, ACTOR),
+      ),
     ).toBe("package.active");
   });
 
@@ -520,19 +610,38 @@ describe("PKG-2 uninstall isolation", () => {
         [{ name: "assets/b.png", content: png("b") }],
       ),
     );
-    await activatePackage(db.asClient(), MERCHANT_A, second.packageId, second.versionId, ACTOR);
-    const out = await uninstallPackage(db.asClient(), MERCHANT_A, first.packageId, ACTOR);
+    await activatePackage(
+      db.asClient(),
+      MERCHANT_A,
+      second.packageId,
+      second.versionId,
+      ACTOR,
+    );
+    const out = await uninstallPackage(
+      db.asClient(),
+      MERCHANT_A,
+      first.packageId,
+      ACTOR,
+    );
     expect(out.ok).toBe(true);
     expect(out.removedAssets).toBeGreaterThan(0);
     // Sibling package fully intact: theme, versions, namespaced assets.
-    expect(db.rows("store_themes").map((r) => r.id)).toEqual([second.packageId]);
+    expect(db.rows("store_themes").map((r) => r.id)).toEqual([
+      second.packageId,
+    ]);
     expect(
-      db.rows("theme_assets").every((a) => (a.name as string).includes(second.versionId)),
+      db
+        .rows("theme_assets")
+        .every((a) => (a.name as string).includes(second.versionId)),
     ).toBe(true);
     // Ledger: the removed line is terminal, the sibling stays installed.
     const ledger = db.rows("marketplace_installs");
-    expect(ledger.find((r) => r.listing_slug === "alpha")?.status).toBe("removed");
-    expect(ledger.find((r) => r.listing_slug === "beta")?.status).toBe("installed");
+    expect(ledger.find((r) => r.listing_slug === "alpha")?.status).toBe(
+      "removed",
+    );
+    expect(ledger.find((r) => r.listing_slug === "beta")?.status).toBe(
+      "installed",
+    );
   });
 });
 
@@ -543,21 +652,35 @@ describe("PKG-2 tenant A/B isolation", () => {
     const db = pkgDb();
     const res = await installTheme(db, MERCHANT_A, themeZip(STRICT_THEME_V1));
     // B cannot see or mutate A's package through any entry point.
-    expect(await codeOf(previewPackage(db.asClient(), MERCHANT_B, res.versionId))).toBe(
-      "package.not_found",
-    );
+    expect(
+      await codeOf(previewPackage(db.asClient(), MERCHANT_B, res.versionId)),
+    ).toBe("package.not_found");
     expect(
       await codeOf(
-        activatePackage(db.asClient(), MERCHANT_B, res.packageId, res.versionId, ACTOR),
+        activatePackage(
+          db.asClient(),
+          MERCHANT_B,
+          res.packageId,
+          res.versionId,
+          ACTOR,
+        ),
       ),
     ).toBe("package.not_found");
     expect(
       await codeOf(
-        rollbackPackage(db.asClient(), MERCHANT_B, res.packageId, res.versionId, ACTOR),
+        rollbackPackage(
+          db.asClient(),
+          MERCHANT_B,
+          res.packageId,
+          res.versionId,
+          ACTOR,
+        ),
       ),
     ).toBe("package.not_found");
     expect(
-      await codeOf(uninstallPackage(db.asClient(), MERCHANT_B, res.packageId, ACTOR)),
+      await codeOf(
+        uninstallPackage(db.asClient(), MERCHANT_B, res.packageId, ACTOR),
+      ),
     ).toBe("package.not_found");
     // A's rows are untouched by B's attempts.
     expect(db.rows("store_themes")).toHaveLength(1);
@@ -570,7 +693,9 @@ describe("PKG-2 tenant A/B isolation", () => {
     expect(names.some((n) => n.includes(bRes.versionId))).toBe(true);
     // Uninstalling B removes only B's namespace.
     await uninstallPackage(db.asClient(), MERCHANT_B, bRes.packageId, ACTOR);
-    expect(db.rows("store_themes").map((r) => r.merchant_id)).toEqual([MERCHANT_A]);
+    expect(db.rows("store_themes").map((r) => r.merchant_id)).toEqual([
+      MERCHANT_A,
+    ]);
     expect(
       db.rows("theme_assets").every((a) => a.merchant_id === MERCHANT_A),
     ).toBe(true);
@@ -614,11 +739,15 @@ describe("PKG-2 plugin packages", () => {
     expect(res.version).toBe("1.0.0");
     const prefix = `plugins/chat/${res.artifactId.slice(0, 8)}/assets/`;
     expect(
-      db.rows("theme_assets").every((a) => (a.name as string).startsWith("plugins/")),
+      db
+        .rows("theme_assets")
+        .every((a) => (a.name as string).startsWith("plugins/")),
     ).toBe(true);
-    expect(db.rows("theme_assets").some((a) => (a.name as string).startsWith(prefix))).toBe(
-      true,
-    );
+    expect(
+      db
+        .rows("theme_assets")
+        .some((a) => (a.name as string).startsWith(prefix)),
+    ).toBe(true);
 
     const disabled = await setPluginPackageEnabled(
       db.asClient(),
@@ -640,11 +769,22 @@ describe("PKG-2 plugin packages", () => {
     // Cross-tenant enable is refused.
     expect(
       await codeOf(
-        setPluginPackageEnabled(db.asClient(), MERCHANT_B, res.packageId, false, ACTOR),
+        setPluginPackageEnabled(
+          db.asClient(),
+          MERCHANT_B,
+          res.packageId,
+          false,
+          ACTOR,
+        ),
       ),
     ).toBe("package.not_found");
 
-    const out = await uninstallPluginPackage(db.asClient(), MERCHANT_A, res.packageId, ACTOR);
+    const out = await uninstallPluginPackage(
+      db.asClient(),
+      MERCHANT_A,
+      res.packageId,
+      ACTOR,
+    );
     expect(out.ok).toBe(true);
     expect(out.removedAssets).toBeGreaterThan(0);
     // Sibling plugin namespace untouched; other install row intact.
@@ -652,13 +792,19 @@ describe("PKG-2 plugin packages", () => {
       db.rows("theme_assets").map((a) => a.name),
     );
     expect(
-      db.rows("theme_assets").every((a) =>
-        (a.name as string).startsWith(`plugins/other/${other.artifactId.slice(0, 8)}/`),
-      ),
+      db
+        .rows("theme_assets")
+        .every((a) =>
+          (a.name as string).startsWith(
+            `plugins/other/${other.artifactId.slice(0, 8)}/`,
+          ),
+        ),
     ).toBe(true);
     const ledger = db.rows("marketplace_installs");
     expect(ledger.find((r) => r.id === res.packageId)?.status).toBe("removed");
-    expect(ledger.find((r) => r.id === other.packageId)?.status).toBe("installed");
+    expect(ledger.find((r) => r.id === other.packageId)?.status).toBe(
+      "installed",
+    );
   });
 });
 
@@ -700,22 +846,34 @@ function preMigrationClient(db: ReturnType<typeof fakeDb>): never {
           >;
           if (table !== "marketplace_installs") return q;
           return new Proxy(q, {
-            get(qt: Record<string, (...args: never[]) => unknown>, qp: string | symbol) {
+            get(
+              qt: Record<string, (...args: never[]) => unknown>,
+              qp: string | symbol,
+            ) {
               if (qp === "select")
                 return (cols?: string, ...rest: never[]) =>
                   typeof cols === "string" && ART.test(cols)
                     ? failTerminal
-                    : (qt.select as (...a: never[]) => unknown)(cols as never, ...(rest as never[]));
+                    : (qt.select as (...a: never[]) => unknown)(
+                        cols as never,
+                        ...(rest as never[]),
+                      );
               if (qp === "insert" || qp === "upsert")
                 return (rows: unknown, ...rest: never[]) =>
                   ART.test(JSON.stringify(rows))
                     ? failTerminal
-                    : (qt[qp as string] as (...a: never[]) => unknown)(rows as never, ...(rest as never[]));
+                    : (qt[qp as string] as (...a: never[]) => unknown)(
+                        rows as never,
+                        ...(rest as never[]),
+                      );
               if (qp === "update")
                 return (patch: unknown, ...rest: never[]) =>
                   ART.test(JSON.stringify(patch))
                     ? failTerminal
-                    : (qt.update as (...a: never[]) => unknown)(patch as never, ...(rest as never[]));
+                    : (qt.update as (...a: never[]) => unknown)(
+                        patch as never,
+                        ...(rest as never[]),
+                      );
               const v = qt[qp as string];
               return typeof v === "function" ? v.bind(qt) : v;
             },
@@ -826,9 +984,10 @@ describe("FOLLOW-UP plugin uninstall GC (manifest slug vs ledger listing slug)",
       {
         kind: "plugin",
         fileName: "sticky-cart.zip",
-        bytes: pluginZip(strictPlugin("acme-reviews", "1.0.0", { name: "Acme" }), [
-          { name: "assets/icon.png", content: png("icon") },
-        ]),
+        bytes: pluginZip(
+          strictPlugin("acme-reviews", "1.0.0", { name: "Acme" }),
+          [{ name: "assets/icon.png", content: png("icon") }],
+        ),
         idempotencyKey: key(),
       },
       ACTOR,
@@ -910,9 +1069,7 @@ describe("FOLLOW-UP plugin uninstall GC (manifest slug vs ledger listing slug)",
     // Sibling + other-tenant rows intact.
     expect(names).toContain("plugins/other/12345678/assets/widget.js");
     expect(
-      db
-        .rows("theme_assets")
-        .filter((a) => a.merchant_id === MERCHANT_B),
+      db.rows("theme_assets").filter((a) => a.merchant_id === MERCHANT_B),
     ).toHaveLength(1);
     expect(db.rows("marketplace_installs")[0]!.status).toBe("removed");
   });
@@ -939,7 +1096,9 @@ describe("FOLLOW-UP plugin uninstall GC (manifest slug vs ledger listing slug)",
     const names = db.rows("theme_assets").map((a) => a.name as string);
     // Manifest-slug namespace survives (documented legacy best-effort)…
     expect(
-      names.some((n) => n.startsWith(`plugins/acme-reviews/${res.artifactId.slice(0, 8)}/`)),
+      names.some((n) =>
+        n.startsWith(`plugins/acme-reviews/${res.artifactId.slice(0, 8)}/`),
+      ),
     ).toBe(true);
     // …listing-slug seed wiped, sibling + tenant intact.
     expect(
@@ -950,9 +1109,7 @@ describe("FOLLOW-UP plugin uninstall GC (manifest slug vs ledger listing slug)",
     ).not.toContain("plugins/sticky-cart/deadbeef/assets/widget.js");
     expect(names).toContain("plugins/other/12345678/assets/widget.js");
     expect(
-      db
-        .rows("theme_assets")
-        .filter((a) => a.merchant_id === MERCHANT_B),
+      db.rows("theme_assets").filter((a) => a.merchant_id === MERCHANT_B),
     ).toHaveLength(1);
   });
 });
@@ -1087,9 +1244,9 @@ describe("PKG-2 PKG-1 validator boundary", () => {
   it("uses the process-wide validator once PKG-1 registers itself", async () => {
     const db = pkgDb();
     setPackageManifestValidator(() => ({ ok: false, errors: ["pkg1_global"] }));
-    expect(await codeOf(installTheme(db, MERCHANT_A, themeZip(MANIFEST_V1)))).toBe(
-      "package.manifest_invalid",
-    );
+    expect(
+      await codeOf(installTheme(db, MERCHANT_A, themeZip(MANIFEST_V1))),
+    ).toBe("package.manifest_invalid");
   });
 
   it("adapts the real PKG-1 theme gate end-to-end (accept)", async () => {
@@ -1236,10 +1393,9 @@ function k3InstallPluginVersion(
     {
       kind: "plugin",
       fileName: "acme.zip",
-      bytes: pluginZip(
-        opts.manifest ?? k3FullPluginManifest(version),
-        [{ name: "assets/icon.png", content: png(icon) }],
-      ),
+      bytes: pluginZip(opts.manifest ?? k3FullPluginManifest(version), [
+        { name: "assets/icon.png", content: png(icon) },
+      ]),
       idempotencyKey: opts.key ?? key(),
     },
     ACTOR,
@@ -1288,15 +1444,15 @@ describe("K3 plugin rollback-to-prior-artifact", () => {
     expect(live[0]!.artifact_version).toBe("1.0.0");
     expect(live[0]!.version).toBe("1.0.0");
     // Explicit previous/rollback relationship — not just an enable flip.
-    expect(live[0]!.previous_snapshot.rollback_of).toBe(v1.packageId);
-    expect(
-      (live[0]!.previous_snapshot.rolled_from as { id: string }[]).map(
-        (s) => s.id,
-      ),
-    ).toEqual(expect.arrayContaining([v1.packageId, v2.packageId]));
-    expect(
-      rows.find((r) => r.id === v2.packageId)?.status,
-    ).toBe("paused");
+    const snapshot = live[0]!.previous_snapshot as {
+      rollback_of: string;
+      rolled_from: { id: string }[];
+    };
+    expect(snapshot.rollback_of).toBe(v1.packageId);
+    expect(snapshot.rolled_from.map((s) => s.id)).toEqual(
+      expect.arrayContaining([v1.packageId, v2.packageId]),
+    );
+    expect(rows.find((r) => r.id === v2.packageId)?.status).toBe("paused");
     expect(rb.superseded).toEqual(
       expect.arrayContaining([v1.packageId, v2.packageId]),
     );
@@ -1392,12 +1548,13 @@ describe("K3 plugin rollback-to-prior-artifact", () => {
     const live = db
       .rows("marketplace_installs")
       .filter(
-        (r) =>
-          r.listing_slug === "acme-reviews" && r.status === "installed",
+        (r) => r.listing_slug === "acme-reviews" && r.status === "installed",
       );
     expect(live).toHaveLength(1);
     expect(live[0]!.version).toBe("1.0.0");
-    expect(live[0]!.previous_snapshot.rollback_of).toBe(v1.packageId);
+    expect(
+      (live[0]!.previous_snapshot as { rollback_of: string }).rollback_of,
+    ).toBe(v1.packageId);
   });
 });
 
@@ -1451,7 +1608,10 @@ function k3KillProxy(
         if (table === "theme_assets" && kill.assetsAfter !== undefined) {
           const after = kill.assetsAfter;
           return new Proxy(q, {
-            get(qt: Record<string, (...args: never[]) => unknown>, qp: string | symbol) {
+            get(
+              qt: Record<string, (...args: never[]) => unknown>,
+              qp: string | symbol,
+            ) {
               if (qp === "insert")
                 return (rows: unknown, ...rest: never[]) => {
                   assetInserts += 1;
@@ -1469,7 +1629,10 @@ function k3KillProxy(
         }
         if (table === "marketplace_installs" && kill.ledger) {
           return new Proxy(q, {
-            get(qt: Record<string, (...args: never[]) => unknown>, qp: string | symbol) {
+            get(
+              qt: Record<string, (...args: never[]) => unknown>,
+              qp: string | symbol,
+            ) {
               if (qp === "insert" || qp === "upsert")
                 return () => terminalError("injected_ledger_failure");
               const v = qt[qp as string];
@@ -1479,7 +1642,10 @@ function k3KillProxy(
         }
         if (table === "theme_audit" && kill.auditThrows) {
           return new Proxy(q, {
-            get(qt: Record<string, (...args: never[]) => unknown>, qp: string | symbol) {
+            get(
+              qt: Record<string, (...args: never[]) => unknown>,
+              qp: string | symbol,
+            ) {
               if (qp === "insert")
                 return () => {
                   throw new Error("injected_audit_throw");
@@ -1511,9 +1677,10 @@ async function k3SeedSibling(db: ReturnType<typeof fakeDb>): Promise<K3Seed> {
     {
       kind: "plugin",
       fileName: "sibling.zip",
-      bytes: pluginZip(strictPlugin("sibling-widget", "1.0.0", { name: "Sib" }), [
-        { name: "assets/icon.png", content: png("sib") },
-      ]),
+      bytes: pluginZip(
+        strictPlugin("sibling-widget", "1.0.0", { name: "Sib" }),
+        [{ name: "assets/icon.png", content: png("sib") }],
+      ),
       idempotencyKey: key(),
     },
     ACTOR,
@@ -1624,8 +1791,7 @@ describe("K3 plugin install atomicity (failure-injection, each stage)", () => {
     },
     {
       stage: "missing_manifest",
-      bytes: () =>
-        buildZip([{ name: "templates/index.json", content: "{}" }]),
+      bytes: () => buildZip([{ name: "templates/index.json", content: "{}" }]),
       code: "zip.missing_manifest",
     },
     {
@@ -1884,7 +2050,11 @@ describe("PKG-2 update widening consent (threat-defense)", () => {
     index: {
       header: [],
       main: [
-        { id: "m1", type: "hero", props: { pixel: "https://track.example.com/p.gif" } },
+        {
+          id: "m1",
+          type: "hero",
+          props: { pixel: "https://track.example.com/p.gif" },
+        },
       ],
       footer: [],
     },
@@ -1893,7 +2063,9 @@ describe("PKG-2 update widening consent (threat-defense)", () => {
     return installTheme(db, MERCHANT_A, themeZip(STRICT_THEME_V1));
   }
   function v2zip(extraVersion = "1.1.0") {
-    return themeZip(strictTheme(extraVersion), [], { templates: beaconTemplates });
+    return themeZip(strictTheme(extraVersion), [], {
+      templates: beaconTemplates,
+    });
   }
   it("update adding external hosts requires consent, writing nothing", async () => {
     const db = pkgDb();
@@ -2047,14 +2219,15 @@ describe("PKG-2 flagged activation approval (threat-defense)", () => {
   const secretTemplates = {
     index: {
       header: [],
-      main: [{ id: "m1", type: "heading", props: { text: `leaked ${SECRET}` } }],
+      main: [
+        { id: "m1", type: "heading", props: { text: `leaked ${SECRET}` } },
+      ],
       footer: [],
     },
   };
   async function installFlagged(db: ReturnType<typeof fakeDb>) {
-    const { activateTheme, approveThemeVersion } = await import(
-      "./themes/appearance.server"
-    );
+    const { activateTheme, approveThemeVersion } =
+      await import("./themes/appearance.server");
     const res = await installTheme(
       db,
       MERCHANT_A,
@@ -2080,7 +2253,8 @@ describe("PKG-2 flagged activation approval (threat-defense)", () => {
   });
   it("approval of secret content is forbidden, then activation still refused", async () => {
     const db = pkgDb();
-    const { res, activateTheme, approveThemeVersion } = await installFlagged(db);
+    const { res, activateTheme, approveThemeVersion } =
+      await installFlagged(db);
     // Tier-0 (secret) is never merchant-approvable: refusal writes no audit.
     const err = await approveThemeVersion(
       db.asClient(),
@@ -2108,7 +2282,13 @@ describe("PKG-2 flagged activation approval (threat-defense)", () => {
     const db = pkgDb();
     const { res, approveThemeVersion } = await installFlagged(db);
     await expect(
-      approveThemeVersion(db.asClient(), MERCHANT_B, res.packageId, res.versionId, ACTOR),
+      approveThemeVersion(
+        db.asClient(),
+        MERCHANT_B,
+        res.packageId,
+        res.versionId,
+        ACTOR,
+      ),
     ).rejects.toThrow();
     expect(
       db.rows("theme_audit").filter((a) => a.action === "theme.approved"),
@@ -2153,7 +2333,13 @@ describe("PKG-2 untrusted template content refusal (threat-defense)", () => {
     index: {
       header: [],
       main: [
-        { id: "p1", type: "html", props: { body: '<img src="https://track.example.com/p.gif" width="1" height="1">' } },
+        {
+          id: "p1",
+          type: "html",
+          props: {
+            body: '<img src="https://track.example.com/p.gif" width="1" height="1">',
+          },
+        },
       ],
       footer: [],
     },
@@ -2161,7 +2347,11 @@ describe("PKG-2 untrusted template content refusal (threat-defense)", () => {
   it("refuses tracking pixels in templates, writing nothing", async () => {
     const db = pkgDb();
     const code = await codeOf(
-      installTheme(db, MERCHANT_A, themeZip(strictTheme("1.0.0"), [], { templates: pixelTemplates })),
+      installTheme(
+        db,
+        MERCHANT_A,
+        themeZip(strictTheme("1.0.0"), [], { templates: pixelTemplates }),
+      ),
     );
     expect(code).toBe("package.untrusted_content");
     expect(db.rows("store_themes")).toHaveLength(0);
@@ -2173,12 +2363,24 @@ describe("PKG-2 untrusted template content refusal (threat-defense)", () => {
     const payTemplates = {
       index: {
         header: [],
-        main: [{ id: "p1", type: "html", props: { body: '<form action="https://pay.example.com/charge"><input name="card_number"></form>' } }],
+        main: [
+          {
+            id: "p1",
+            type: "html",
+            props: {
+              body: '<form action="https://pay.example.com/charge"><input name="card_number"></form>',
+            },
+          },
+        ],
         footer: [],
       },
     };
     const code = await codeOf(
-      installTheme(db, MERCHANT_A, themeZip(strictTheme("1.0.0"), [], { templates: payTemplates })),
+      installTheme(
+        db,
+        MERCHANT_A,
+        themeZip(strictTheme("1.0.0"), [], { templates: payTemplates }),
+      ),
     );
     expect(code).toBe("package.untrusted_content");
     expect(db.rows("store_themes")).toHaveLength(0);

@@ -162,9 +162,8 @@ describe("CollectionView header-fallback de-theming (HEADER DE-THEMING lane)", (
     // header-presentation side effects (storefront routes dynamically
     // import preview-sources in prod).
     await import("@/lib/preview-sources");
-    const { resolveThemePresentation } = await import(
-      "@/lib/theme-presentations"
-    );
+    const { resolveThemePresentation } =
+      await import("@/lib/theme-presentations");
     expect(
       resolveThemePresentation("songoskriti", "mega_menu"),
       "songoskriti mega_menu must be registered via the prod graph",

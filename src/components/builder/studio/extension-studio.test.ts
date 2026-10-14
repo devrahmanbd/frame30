@@ -11,7 +11,10 @@
  *   studio bridge).
  */
 import { describe, expect, it } from "vitest";
-import { BUILDER_API_VERSION, type InstalledPlugin } from "@/lib/plugin-manifest";
+import {
+  BUILDER_API_VERSION,
+  type InstalledPlugin,
+} from "@/lib/plugin-manifest";
 import {
   createWidgetRegistry,
   type WidgetDef,
@@ -39,7 +42,9 @@ function schemaDef(id: string): WidgetDef {
 
 function registryWithPlugin(): ReturnType<typeof createWidgetRegistry> {
   const registry = createWidgetRegistry();
-  expect(registry.registerWidget(schemaDef("plugin:acme/reviews")).ok).toBe(true);
+  expect(registry.registerWidget(schemaDef("plugin:acme/reviews")).ok).toBe(
+    true,
+  );
   return registry;
 }
 

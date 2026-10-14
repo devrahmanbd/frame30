@@ -10,11 +10,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import {
-  newSection,
-  type PropValue,
-  type Section,
-} from "@/lib/builder-ast";
+import { newSection, type PropValue, type Section } from "@/lib/builder-ast";
 import type { Locale } from "@/lib/bitext";
 import {
   AnnouncementBar,
@@ -29,12 +25,12 @@ import {
   useAnnouncementState,
 } from "./AnnouncementBar";
 import { CHROME_WIDGETS } from "@/components/builder/chrome";
-import {
-  widgetReader,
-  type WidgetCtx,
-} from "@/components/builder/widgets";
+import { widgetReader, type WidgetCtx } from "@/components/builder/widgets";
 
-const SURFACE_SRC = readFileSync(join(__dirname, "AnnouncementBar.tsx"), "utf8");
+const SURFACE_SRC = readFileSync(
+  join(__dirname, "AnnouncementBar.tsx"),
+  "utf8",
+);
 
 function surfaceHtml(
   props: React.ComponentProps<typeof AnnouncementBar>,
@@ -169,9 +165,9 @@ describe("announcement surface — dismissal persisted", () => {
   });
 
   it("no close button unless dismissible", () => {
-    expect(
-      surfaceHtml({ items: [{ text: "X" }] }),
-    ).not.toContain("Dismiss announcement");
+    expect(surfaceHtml({ items: [{ text: "X" }] })).not.toContain(
+      "Dismiss announcement",
+    );
     expect(
       surfaceHtml({ items: [{ text: "X" }], dismissible: true }),
     ).toContain('aria-label="Dismiss announcement"');
@@ -378,7 +374,13 @@ describe("announcement platform data contract (R2 — shared by every theme)", (
       }),
     ).toEqual([{ text: "Row", text_bn: "সারি" }]);
     expect(
-      announcementItemsOf({ items: [], m1: "Hello", m1_bn: "হ্যালো", m2: "", m3: "" }),
+      announcementItemsOf({
+        items: [],
+        m1: "Hello",
+        m1_bn: "হ্যালো",
+        m2: "",
+        m3: "",
+      }),
     ).toEqual([{ text: "Hello", text_bn: "হ্যালো" }]);
     expect(announcementItemsOf({ items: [], m1: "", m2: "", m3: "" })).toEqual(
       [],

@@ -66,7 +66,10 @@ function gridSection() {
   };
 }
 
-function renderUnderTheme(section: ReturnType<typeof gridSection>, themeKey: string) {
+function renderUnderTheme(
+  section: ReturnType<typeof gridSection>,
+  themeKey: string,
+) {
   const bundle = {
     requests: [{ key: "t43", source: "collection", params: {} }],
     byNode: { [section.id]: "t43" },

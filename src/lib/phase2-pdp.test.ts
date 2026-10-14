@@ -211,9 +211,7 @@ describe("variant channel selection (Track V)", () => {
   });
 
   it("no-selection-falls-back: empty and unknown payloads keep today's default", () => {
-    expect(resolveChannelVariant(rows, [])?.id).toBe(
-      defaultVariant(rows)?.id,
-    );
+    expect(resolveChannelVariant(rows, [])?.id).toBe(defaultVariant(rows)?.id);
     expect(resolveChannelVariant(rows, undefined)?.id).toBe(
       defaultVariant(rows)?.id,
     );
@@ -253,7 +251,9 @@ describe("variant channel selection (Track V)", () => {
       src.indexOf("const VariantPicker"),
       src.indexOf("const DeliveryPromise"),
     );
-    expect(picker).toContain('useSectionChannel(storeSlug ?? "demo", "variant")');
+    expect(picker).toContain(
+      'useSectionChannel(storeSlug ?? "demo", "variant")',
+    );
     expect(picker).toContain("variantChannelIndex");
     // dropdown, matrix, shade, swatch and chip all route through select():
     // no event handler writes the raw state setter anymore.

@@ -6,13 +6,14 @@
  * payout must settle once.
  */
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { fakeDb } from "./__fixtures__/fake-db";
+import { fakeDb, type Row } from "./__fixtures__/fake-db";
 import {
   metricRecorder,
   allowAllRateLimits,
 } from "./__fixtures__/test-doubles";
 
-const rec = vi.hoisted(() => ({ holder: null as any }));
+type Recorder = ReturnType<typeof metricRecorder>;
+const rec = vi.hoisted(() => ({ holder: null as Recorder | null }));
 const recorder = metricRecorder();
 rec.holder = recorder;
 
@@ -32,7 +33,7 @@ const source = {
   assets: {},
 };
 
-function vaultDb(versions: any[] = []) {
+function vaultDb(versions: Row[] = []) {
   return fakeDb({
     tables: {
       marketplace_widgets: [
@@ -207,15 +208,15 @@ describe("installListing consent gate", () => {
 
   it("denies an install whose version needs a scope the merchant never granted (deny)", async () => {
     const db = installDb(["read_products", "read_orders"]);
-    await expect(
-      installListing(db.asClient(), BUYER, input as any),
-    ).rejects.toThrow(/market_consent_required:read_orders/);
+    await expect(installListing(db.asClient(), BUYER, input)).rejects.toThrow(
+      /market_consent_required:read_orders/,
+    );
     expect(db.rows("marketplace_installs")).toHaveLength(0);
   });
 
   it("records the install identity for audit (consent enforced at gate)", async () => {
     const db = installDb(["read_products"]);
-    const out: any = await installListing(db.asClient(), BUYER, input as any);
+    const out = await installListing(db.asClient(), BUYER, input);
     expect(out.replayed).toBe(false);
     const row = db.rows("marketplace_installs")[0]!;
     // marketplace_installs has no granted_scopes/consented_at/consented_by
@@ -229,12 +230,8 @@ describe("installListing consent gate", () => {
 
   it("is idempotent on the install key (replay)", async () => {
     const db = installDb(["read_products"]);
-    const first: any = await installListing(db.asClient(), BUYER, input as any);
-    const second: any = await installListing(
-      db.asClient(),
-      BUYER,
-      input as any,
-    );
+    const first = await installListing(db.asClient(), BUYER, input);
+    const second = await installListing(db.asClient(), BUYER, input);
     expect(second.replayed).toBe(true);
     expect(second.installId).toBe(first.installId);
     expect(db.rows("marketplace_installs")).toHaveLength(1);
@@ -243,9 +240,9 @@ describe("installListing consent gate", () => {
   it("denies pinning a version that is still in review", async () => {
     const db = installDb(["read_products"]);
     db.rows("marketplace_versions")[0]!["status"] = "review";
-    await expect(
-      installListing(db.asClient(), BUYER, input as any),
-    ).rejects.toThrow("market_version_not_published");
+    await expect(installListing(db.asClient(), BUYER, input)).rejects.toThrow(
+      "market_version_not_published",
+    );
   });
 });
 

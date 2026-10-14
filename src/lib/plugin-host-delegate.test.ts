@@ -39,7 +39,9 @@ function onCallBodies(src: string): string[] {
     // first balancing close at column 2.
     const start = m.index;
     const end = src.indexOf("\n  }, []);", start);
-    out.push(end === -1 ? src.slice(start, start + 800) : src.slice(start, end));
+    out.push(
+      end === -1 ? src.slice(start, start + 800) : src.slice(start, end),
+    );
   }
   return out;
 }
@@ -52,9 +54,10 @@ describe("host onCall delegates serve no scoped data", () => {
       expect(bodies.length).toBeGreaterThan(0);
       for (const body of bodies) {
         for (const marker of DATA_MARKERS) {
-          expect(body, `${file} onCall must not reference ${marker}`).not.toContain(
-            marker,
-          );
+          expect(
+            body,
+            `${file} onCall must not reference ${marker}`,
+          ).not.toContain(marker);
         }
         expect(body).toContain("WIDGET_API[method]");
       }

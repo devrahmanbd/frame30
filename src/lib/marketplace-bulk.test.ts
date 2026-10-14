@@ -10,7 +10,8 @@ import {
   allowAllRateLimits,
 } from "./__fixtures__/test-doubles";
 
-const rec = vi.hoisted(() => ({ holder: null as any }));
+type Recorder = ReturnType<typeof metricRecorder>;
+const rec = vi.hoisted(() => ({ holder: null as Recorder | null }));
 const recorder = metricRecorder();
 rec.holder = recorder;
 
@@ -98,7 +99,7 @@ beforeEach(() => recorder.reset());
 describe("bulkInstallStatus", () => {
   it("enables paused rows and reports each result", async () => {
     const db = bulkDb();
-    const out: any = await bulkInstallStatus(
+    const out = await bulkInstallStatus(
       db.asClient(),
       MERCHANT,
       ACTOR,
@@ -106,14 +107,14 @@ describe("bulkInstallStatus", () => {
       "enable",
     );
     expect(out.results).toHaveLength(2);
-    expect(out.results.every((r: any) => r.ok)).toBe(true);
+    expect(out.results.every((r) => r.ok)).toBe(true);
     const rows = db.rows("marketplace_installs");
     expect(rows.find((r) => r.id === W1)!.status).toBe("installed");
   });
 
   it("pauses installed rows", async () => {
     const db = bulkDb();
-    const out: any = await bulkInstallStatus(
+    const out = await bulkInstallStatus(
       db.asClient(),
       MERCHANT,
       ACTOR,
@@ -128,7 +129,7 @@ describe("bulkInstallStatus", () => {
 
   it("isolates failures per row instead of aborting the batch", async () => {
     const db = bulkDb();
-    const out: any = await bulkInstallStatus(
+    const out = await bulkInstallStatus(
       db.asClient(),
       MERCHANT,
       ACTOR,
@@ -151,7 +152,7 @@ describe("bulkInstallStatus", () => {
 
   it("deletes widget installs end to end (R2-6 two-phase: uninstalling → purged)", async () => {
     const db = bulkDb();
-    const out: any = await bulkInstallStatus(
+    const out = await bulkInstallStatus(
       db.asClient(),
       MERCHANT,
       ACTOR,
@@ -195,7 +196,7 @@ describe("bulkInstallStatus", () => {
       ACTOR,
     );
     expect(
-      db.rows("plugin_state").find((r: any) => r.plugin_id === "whatsapp-chat")
+      db.rows("plugin_state").find((r) => r.plugin_id === "whatsapp-chat")
         ?.auto_updates,
     ).toBe(true);
   });

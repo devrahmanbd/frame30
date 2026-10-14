@@ -85,9 +85,21 @@ describe("installed package discovery (SWITCHOVER-3)", () => {
     expect(source.key).toBe("acme-pack");
     expect(source.themeName).toBe("Acme Pack");
     expect(source.tokens.surface).toBe("#112233");
-    expect(source.main("index", ((t: string, p = {}) => ({ id: "x", type: t, props: p })) as never)).toHaveLength(1);
+    expect(
+      source.main("index", ((t: string, p = {}) => ({
+        id: "x",
+        type: t,
+        props: p,
+      })) as never),
+    ).toHaveLength(1);
     // Un-authored templates return null so the engine generic fallback applies.
-    expect(source.main("product", ((t: string, p = {}) => ({ id: "x", type: t, props: p })) as never)).toBeNull();
+    expect(
+      source.main("product", ((t: string, p = {}) => ({
+        id: "x",
+        type: t,
+        props: p,
+      })) as never),
+    ).toBeNull();
     expect((source.variations ?? []).map((v) => v.key)).toEqual(["minimal"]);
   });
 
@@ -102,9 +114,9 @@ describe("installed package discovery (SWITCHOVER-3)", () => {
     // K2: installed artifact authoritative — a colliding installed row shadows
     // the static source (never a silent wrong theme).
     const shadow = { ...ARTIFACT, key: "songoskriti", themeName: "Shadow" };
-    expect(previewSourceFor("songoskriti", undefined, [shadow])?.themeName).toBe(
-      "Shadow",
-    );
+    expect(
+      previewSourceFor("songoskriti", undefined, [shadow])?.themeName,
+    ).toBe("Shadow");
     expect(previewSourceKeys([shadow])).toEqual(["songoskriti"]);
   });
 
@@ -124,7 +136,9 @@ describe("installed package discovery (SWITCHOVER-3)", () => {
     // K2: merchant context (array) fails closed to [] on garbage — never source.
     expect(previewSourceKeys(garbage)).toEqual([]);
     expect(previewSourceFor("acme-pack", undefined, garbage)).toBeNull();
-    expect(previewSourceFor("acme-pack", undefined, [{ key: "acme-pack" }])).not.toBeNull();
+    expect(
+      previewSourceFor("acme-pack", undefined, [{ key: "acme-pack" }]),
+    ).not.toBeNull();
   });
 
   it("malformed artifact payloads resolve to safe defaults, never throw", () => {
@@ -134,7 +148,11 @@ describe("installed package discovery (SWITCHOVER-3)", () => {
     expect(source.themeName).toBe("bad-pack");
     expect(typeof source.tokens.surface).toBe("string");
     expect(
-      source.main("index", ((t: string, p = {}) => ({ id: "x", type: t, props: p })) as never),
+      source.main("index", ((t: string, p = {}) => ({
+        id: "x",
+        type: t,
+        props: p,
+      })) as never),
     ).toBeNull();
   });
 

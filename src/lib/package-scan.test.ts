@@ -21,7 +21,10 @@ describe("scanPackage", () => {
   it("reports clean for ordinary content", () => {
     const report = scanPackage([
       file("theme.json", JSON.stringify({ key: "t", version: "1.0.0" })),
-      file("templates/index.json", JSON.stringify({ header: [], main: [], footer: [] })),
+      file(
+        "templates/index.json",
+        JSON.stringify({ header: [], main: [], footer: [] }),
+      ),
       file("styles/main.css", "a{color:red}"),
     ]);
     expect(report.verdict).toBe("clean");
@@ -30,7 +33,10 @@ describe("scanPackage", () => {
 
   it("flags embedded secrets", () => {
     const report = scanPackage([
-      file("templates/index.json", JSON.stringify({ note: `key ${OPENAI_KEY}` })),
+      file(
+        "templates/index.json",
+        JSON.stringify({ note: `key ${OPENAI_KEY}` }),
+      ),
     ]);
     expect(report.verdict).toBe("flagged");
     expect(report.findings.map((f) => f.code)).toContain("secret");
@@ -38,7 +44,10 @@ describe("scanPackage", () => {
 
   it("flags script-bearing SVG", () => {
     const report = scanPackage([
-      file("assets/logo.svg", `<svg xmlns="http://www.w3.org/2000/svg"><g onload="evil()"></g></svg>`),
+      file(
+        "assets/logo.svg",
+        `<svg xmlns="http://www.w3.org/2000/svg"><g onload="evil()"></g></svg>`,
+      ),
     ]);
     expect(report.verdict).toBe("flagged");
     expect(report.findings.map((f) => f.code)).toContain("svg-script");
@@ -46,7 +55,12 @@ describe("scanPackage", () => {
 
   it("treats external URLs as informational, still clean", () => {
     const report = scanPackage(
-      [file("templates/index.json", JSON.stringify({ img: "https://cdn.example.com/a.png" }))],
+      [
+        file(
+          "templates/index.json",
+          JSON.stringify({ img: "https://cdn.example.com/a.png" }),
+        ),
+      ],
       { permissions: ["read_shop"] },
     );
     expect(report.verdict).toBe("clean");

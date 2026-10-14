@@ -309,12 +309,13 @@ describe("NAP consistency", () => {
   });
 
   it("emits Organization JSON-LD with support and sales contact points", () => {
-    const schema = organizationSchema("https://framique.com") as any;
+    const schema = organizationSchema("https://framique.com");
     expect(schema["@type"]).toBe("Organization");
     expect(schema.url).toBe("https://framique.com");
     expect(schema.telephone).toBe(ORG_NAP.phone);
     expect(schema.address).toEqual(napPostalAddress());
-    const types = schema.contactPoint.map((c: any) => c.contactType);
+    type ContactPoint = (typeof schema.contactPoint)[number];
+    const types = schema.contactPoint.map((c: ContactPoint) => c.contactType);
     expect(types).toContain("customer support");
     expect(types).toContain("sales");
     for (const point of schema.contactPoint) {

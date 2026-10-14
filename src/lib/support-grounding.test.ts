@@ -104,10 +104,12 @@ describe("grounded-answer kernel", () => {
   });
 
   it("degraded env is detected via placeholder key or mock llm", () => {
-    expect(isDegradedEnvironment({ apiKey: "sk-or-v1-" + "REDACTED" })).toBe(true);
-    expect(isDegradedEnvironment({ apiKey: "sk-or-v1-" + "real1234567890" })).toBe(
-      false,
+    expect(isDegradedEnvironment({ apiKey: "sk-or-v1-" + "REDACTED" })).toBe(
+      true,
     );
+    expect(
+      isDegradedEnvironment({ apiKey: "sk-or-v1-" + "real1234567890" }),
+    ).toBe(false);
     expect(DEGRADED_BANNER_EN).toMatch(/extractive/i);
   });
 });

@@ -433,10 +433,7 @@ describe("T4.1 canonical menu type", () => {
 });
 
 describe("T4.1 toCanonicalMenu", () => {
-  function node(
-    id: string,
-    over: Partial<MenuNode> = {},
-  ): MenuNode {
+  function node(id: string, over: Partial<MenuNode> = {}): MenuNode {
     return {
       id,
       parentId: null,
@@ -491,8 +488,7 @@ describe("T4.1 toCanonicalMenu", () => {
       url: "/c/shop",
       children: [node("b", { label: "Sarees", url: "/c/sarees" })],
     }) as unknown as MenuNode;
-    (enriched as unknown as Record<string, unknown>)["label_bn"] =
-      "কেনাকাটা";
+    (enriched as unknown as Record<string, unknown>)["label_bn"] = "কেনাকাটা";
     (enriched as unknown as Record<string, unknown>)["badge"] = "New";
     (enriched as unknown as Record<string, unknown>)["image"] = "/ph/nav.jpg";
     (enriched as unknown as Record<string, unknown>)["promo"] = {

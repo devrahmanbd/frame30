@@ -204,7 +204,8 @@ describe("ingestChannelEvent — HMAC + idempotency", () => {
     expect(holder.admin.events[0]).toHaveProperty("payload_digest");
     expect(
       holder.admin.updates.some(
-        (u) => u.table === "ai_channel_events" && u.patch.status === "processed",
+        (u) =>
+          u.table === "ai_channel_events" && u.patch.status === "processed",
       ),
     ).toBe(true);
   });

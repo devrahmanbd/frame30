@@ -91,17 +91,10 @@ import {
 } from "@/lib/plugin-menu-renderers";
 import { SectionRenderer } from "@/components/builder/SectionRenderer";
 import { newSection, type Section } from "@/lib/builder-ast";
-import {
-  widgetReader,
-  type WidgetCtx,
-} from "@/components/builder/widgets";
+import { widgetReader, type WidgetCtx } from "@/components/builder/widgets";
 import type { WidgetRow } from "@/lib/widget-data";
 import { songoskritiMenuLabel } from "@/lib/themes/songoskriti/header-fallback";
-import type {
-  CanonicalMenuItem,
-  MenuNode,
-  StoreMenus,
-} from "@/lib/menus/menu";
+import type { CanonicalMenuItem, MenuNode, StoreMenus } from "@/lib/menus/menu";
 import { LanguageProvider } from "@/lib/i18n";
 
 const HEADER_SRC = () =>
@@ -333,7 +326,9 @@ describe("StoreHeader songoskriti data-driven menus (REPORT-THEMES §4/§7.1)", 
     // `announcement_bar` presentation (registry) with the generic surface as
     // fallback. Message copy (`center`) renders; `left` is layout chrome,
     // never message copy, so it stays out (see `headerChromeAnnouncementItems`).
-    expect(html).toContain("Free delivery across Bangladesh on orders over BDT 5000");
+    expect(html).toContain(
+      "Free delivery across Bangladesh on orders over BDT 5000",
+    );
     expect(html).not.toContain("w-1/3 text-left");
     // Header fallback renders the mega panel affordance for entries with children.
     expect(html).toContain("Shop Women");
@@ -486,7 +481,9 @@ describe("StoreHeader menu swap — TRACK M review gate (fail-open, logged)", ()
     entry: "framique.mount(document.createTextNode('nav'))",
     reviewApproved: true,
   };
-  const pluginRows = [dbNode({ id: "plug-1", label: "Plugin Nav", url: "/c/plug" })];
+  const pluginRows = [
+    dbNode({ id: "plug-1", label: "Plugin Nav", url: "/c/plug" }),
+  ];
 
   it("an unapproved swap renders byte-identical markup to no swap", () => {
     const plain = renderHeader(base);
@@ -549,14 +546,14 @@ describe("StoreHeader menu swap — TRACK M review gate (fail-open, logged)", ()
     expect(html).toContain("Women");
     expect(html).toContain("/store/songoskriti/c/women");
     expect(onError).toHaveBeenCalledTimes(1);
-    expect((onError.mock.calls[0]![0] as Error).message).toBe(
-      "renderer down",
-    );
+    expect((onError.mock.calls[0]![0] as Error).message).toBe("renderer down");
   });
 
   it("dashboard rows still win over an unapproved swap on generic stores", () => {
     const menus = {
-      header: [dbNode({ id: "db-1", label: "Dashboard Custom", url: "/c/custom" })],
+      header: [
+        dbNode({ id: "db-1", label: "Dashboard Custom", url: "/c/custom" }),
+      ],
       mobile: [],
     };
     const plain = renderHeader({ slug: "demo", name: "Demo", menus });
@@ -725,7 +722,9 @@ describe("StoreHeader T3.1 layer boundaries (HeaderData + Behavior + Renderer)",
 
   it("HeaderData: dashboard header rows win over the theme fallback", () => {
     const menus = {
-      header: [dbNode({ id: "db-1", label: "Dashboard Custom", url: "/c/custom" })],
+      header: [
+        dbNode({ id: "db-1", label: "Dashboard Custom", url: "/c/custom" }),
+      ],
       mobile: [],
     };
     const data = assembleHeaderData({
@@ -963,12 +962,8 @@ describe("theme-owned nav modes (HEADER OWNERSHIP — canonical row model, per-t
   });
 
   it("desktops render nothing for an empty menu", () => {
-    expect(
-      renderToStaticMarkup(<SongoskritiDesktopNav items={[]} />),
-    ).toBe("");
-    expect(renderToStaticMarkup(<SomvabonaDesktopNav items={[]} />)).toBe(
-      "",
-    );
+    expect(renderToStaticMarkup(<SongoskritiDesktopNav items={[]} />)).toBe("");
+    expect(renderToStaticMarkup(<SomvabonaDesktopNav items={[]} />)).toBe("");
   });
 
   it("songoskriti drawer hides nested children and the promo until expanded", () => {
@@ -1049,12 +1044,10 @@ describe("theme-owned nav modes (HEADER OWNERSHIP — canonical row model, per-t
   });
 
   it("drawers render nothing for an empty menu", () => {
-    expect(
-      renderToStaticMarkup(<SongoskritiMobileDrawer items={[]} />),
-    ).toBe("");
-    expect(renderToStaticMarkup(<SomvabonaMobileDrawer items={[]} />)).toBe(
+    expect(renderToStaticMarkup(<SongoskritiMobileDrawer items={[]} />)).toBe(
       "",
     );
+    expect(renderToStaticMarkup(<SomvabonaMobileDrawer items={[]} />)).toBe("");
   });
 
   it("same menu renders two markups with identical links, labels and hrefs", () => {
@@ -1168,9 +1161,7 @@ describe("header presentations — theme-owned canonical modes (HEADER DE-THEMIN
     expect(resolveThemePresentation("somvabona", "mega_menu")).toBe(
       SomvabonaHeaderPresentation,
     );
-    expect(SongoskritiHeaderPresentation).not.toBe(
-      SomvabonaHeaderPresentation,
-    );
+    expect(SongoskritiHeaderPresentation).not.toBe(SomvabonaHeaderPresentation);
   });
 
   it("same section data renders distinct header markup with identical content", () => {
@@ -1235,7 +1226,11 @@ describe("header presentations — theme-owned canonical modes (HEADER DE-THEMIN
       resolveThemePresentation("mystery-theme", section.type, existing),
     ).toBe(existing);
     const mystery = renderToStaticMarkup(
-      <SectionRenderer section={section} themeKey="mystery-theme" locale="en" />,
+      <SectionRenderer
+        section={section}
+        themeKey="mystery-theme"
+        locale="en"
+      />,
     );
     expect(mystery).not.toContain("data-header-presentation");
   });
@@ -1256,7 +1251,11 @@ describe("header presentations — theme-owned canonical modes (HEADER DE-THEMIN
 
 describe("header theme presentation runtime (R1 — same menu + state → distinct markup)", () => {
   function proofMenus(): Pick<StoreMenus, "header" | "mobile"> {
-    const jamdani = dbNode({ id: "m-jamdani", label: "Jamdani", url: "/c/jamdani" });
+    const jamdani = dbNode({
+      id: "m-jamdani",
+      label: "Jamdani",
+      url: "/c/jamdani",
+    });
     // Nested dashboard tree: shells read the nested shape (never the flat
     // editor rows) and render as-authored labels in every locale.
     const tree: MenuNode[] = [
@@ -1415,7 +1414,9 @@ describe("header theme presentation runtime (R1 — same menu + state → distin
     expect(songoBn).toContain('aria-label="স্টোর মেনু"');
     expect(somvaBn).toContain('aria-label="স্টোর মেনু"');
     // Luxury announcement copy localises; the everyday shell ships none.
-    expect(songoBn).toContain("৫০০০ টাকার উপরে অর্ডারে সারা দেশে ফ্রি ডেলিভারি");
+    expect(songoBn).toContain(
+      "৫০০০ টাকার উপরে অর্ডারে সারা দেশে ফ্রি ডেলিভারি",
+    );
     expect(somvaBn).not.toContain("EASY 7-DAY EXCHANGE");
   });
 
@@ -1489,8 +1490,8 @@ describe("header theme presentation runtime (R1 — same menu + state → distin
     });
     expect(mystery).toContain('data-header-shell="generic"');
     expect(mystery).toContain("Demo");
-    expect(mystery).not.toContain("data-header-shell=\"songoskriti\"");
-    expect(mystery).not.toContain("data-header-shell=\"somvabona\"");
+    expect(mystery).not.toContain('data-header-shell="songoskriti"');
+    expect(mystery).not.toContain('data-header-shell="somvabona"');
   });
 });
 

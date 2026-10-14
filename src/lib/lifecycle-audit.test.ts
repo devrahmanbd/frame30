@@ -9,7 +9,8 @@ import {
   allowAllRateLimits,
 } from "./__fixtures__/test-doubles";
 
-const rec = vi.hoisted(() => ({ holder: null as any }));
+type Recorder = ReturnType<typeof metricRecorder>;
+const rec = vi.hoisted(() => ({ holder: null as Recorder | null }));
 const recorder = metricRecorder();
 rec.holder = recorder;
 
@@ -238,7 +239,7 @@ describe("plugin lifecycle audit", () => {
       true,
       ACTOR,
     );
-    const actions = db.rows("activity_log").map((r: any) => r.action);
+    const actions = db.rows("activity_log").map((r) => r.action);
     expect(actions).toContain("plugin.settings_saved");
     expect(actions).toContain("plugin.auto_updates_enabled");
   });
@@ -252,7 +253,9 @@ describe("plugin flagged enable approval (threat-defense)", () => {
         key: "probe",
         label: "Probe",
         slots: ["main"],
-        entry: "framique.mount(document.createElement('div')) // sk-" + "abcdefghij0123456789ABCDEFGH0123",
+        entry:
+          "framique.mount(document.createElement('div')) // sk-" +
+          "abcdefghij0123456789ABCDEFGH0123",
       },
     ],
   };
@@ -263,7 +266,13 @@ describe("plugin flagged enable approval (threat-defense)", () => {
       grantedScopes: ["render_storefront"],
       actorId: ACTOR,
     });
-    await setPluginEnabled(db.asClient(), MERCHANT, "audit-probe", false, ACTOR);
+    await setPluginEnabled(
+      db.asClient(),
+      MERCHANT,
+      "audit-probe",
+      false,
+      ACTOR,
+    );
     return { approvePluginVersion };
   }
   it("enabling a flagged plugin requires approval, staying disabled", async () => {
@@ -275,7 +284,8 @@ describe("plugin flagged enable approval (threat-defense)", () => {
       setPluginEnabled(db.asClient(), MERCHANT, "audit-probe", true, ACTOR),
     ).rejects.toThrow(/approval_(required|forbidden)/);
     expect(
-      db.rows("plugin_state").find((r) => r.plugin_id === "audit-probe")?.enabled,
+      db.rows("plugin_state").find((r) => r.plugin_id === "audit-probe")
+        ?.enabled,
     ).toBe(false);
   });
   it("approval of secret content is forbidden, then enable still refused", async () => {
@@ -283,7 +293,13 @@ describe("plugin flagged enable approval (threat-defense)", () => {
     const { approvePluginVersion } = await installFlagged(db);
     // Tier-0 (secret) is never merchant-approvable: refusal writes no audit.
     await expect(
-      approvePluginVersion(db.asClient(), MERCHANT, "audit-probe", "1.0.0", ACTOR),
+      approvePluginVersion(
+        db.asClient(),
+        MERCHANT,
+        "audit-probe",
+        "1.0.0",
+        ACTOR,
+      ),
     ).rejects.toThrow(/approval_forbidden/);
     expect(
       db.rows("activity_log").filter((a) => a.action === "plugin.approved"),
@@ -292,7 +308,8 @@ describe("plugin flagged enable approval (threat-defense)", () => {
       setPluginEnabled(db.asClient(), MERCHANT, "audit-probe", true, ACTOR),
     ).rejects.toThrow(/approval_forbidden/);
     expect(
-      db.rows("plugin_state").find((r) => r.plugin_id === "audit-probe")?.enabled,
+      db.rows("plugin_state").find((r) => r.plugin_id === "audit-probe")
+        ?.enabled,
     ).toBe(false);
   });
   it("a legacy approval does not unlock secret content", async () => {
@@ -311,7 +328,8 @@ describe("plugin flagged enable approval (threat-defense)", () => {
       setPluginEnabled(db.asClient(), MERCHANT, "audit-probe", true, ACTOR),
     ).rejects.toThrow(/approval_forbidden/);
     expect(
-      db.rows("plugin_state").find((r) => r.plugin_id === "audit-probe")?.enabled,
+      db.rows("plugin_state").find((r) => r.plugin_id === "audit-probe")
+        ?.enabled,
     ).toBe(false);
   });
   it("foreign approval writes nothing", async () => {

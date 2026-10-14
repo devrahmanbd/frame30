@@ -130,7 +130,10 @@ function tree(main: Section[]): ThemeAst {
 }
 
 function gateFor(main: Section[]) {
-  return composePublishGate({ tokens: DEFAULT_TOKENS, a11y: { ast: tree(main) } });
+  return composePublishGate({
+    tokens: DEFAULT_TOKENS,
+    a11y: { ast: tree(main) },
+  });
 }
 
 describe("Phase 1A — interactive elements are reachable and named", () => {
@@ -143,9 +146,7 @@ describe("Phase 1A — interactive elements are reachable and named", () => {
       gate.failures.some((f) => f.code === "a11y.interactive.unnamed"),
     ).toBe(true);
     // Blocking means failures, never warnings.
-    expect(
-      gate.warnings.some((w) => w.code.startsWith("a11y.")),
-    ).toBe(false);
+    expect(gate.warnings.some((w) => w.code.startsWith("a11y."))).toBe(false);
     expect(gate.a11y?.ok).toBe(false);
   });
 
@@ -157,16 +158,16 @@ describe("Phase 1A — interactive elements are reachable and named", () => {
     const failures = interactiveGate(
       tree([node("newsletter", "n1", { buttonLabel: "" })]),
     );
-    expect(
-      failures.some((f) => f.code === "a11y.interactive.unnamed"),
-    ).toBe(true);
+    expect(failures.some((f) => f.code === "a11y.interactive.unnamed")).toBe(
+      true,
+    );
   });
 
   it("blocks a form input with no label, but only demands the phone label when the field is shown", () => {
     expect(
-      interactiveGate(
-        tree([node("form", "f1", { nameLabel: "" })]),
-      ).some((f) => f.code === "a11y.interactive.unnamed"),
+      interactiveGate(tree([node("form", "f1", { nameLabel: "" })])).some(
+        (f) => f.code === "a11y.interactive.unnamed",
+      ),
     ).toBe(true);
     // Phone field hidden: an empty phone label is dead copy, not an unnamed control.
     expect(
@@ -175,9 +176,9 @@ describe("Phase 1A — interactive elements are reachable and named", () => {
       ),
     ).toEqual([]);
     expect(
-      interactiveGate(
-        tree([node("form", "f3", { phoneLabel: "" })]),
-      ).some((f) => f.code === "a11y.interactive.unnamed"),
+      interactiveGate(tree([node("form", "f3", { phoneLabel: "" })])).some(
+        (f) => f.code === "a11y.interactive.unnamed",
+      ),
     ).toBe(true);
   });
 
@@ -191,9 +192,9 @@ describe("Phase 1A — interactive elements are reachable and named", () => {
         }),
       ]),
     );
-    expect(
-      parsed.some((f) => f.code === "a11y.interactive.unnamed"),
-    ).toBe(true);
+    expect(parsed.some((f) => f.code === "a11y.interactive.unnamed")).toBe(
+      true,
+    );
     // Menu rows are `menu`-kind (parse restores catalog defaults), so the
     // same loop is pinned against the authored tree directly.
     const raw: ThemeAst = {
@@ -215,7 +216,12 @@ describe("Phase 1A — interactive elements are reachable and named", () => {
 
   it("blocks keyboard-unreachable interactives hidden on every breakpoint", () => {
     const gate = gateFor([
-      node("button", "b1", { label: "Shop now", href: "/sale" }, { hidden: ["mobile", "tablet", "desktop"] }),
+      node(
+        "button",
+        "b1",
+        { label: "Shop now", href: "/sale" },
+        { hidden: ["mobile", "tablet", "desktop"] },
+      ),
     ]);
     expect(gate.ok).toBe(false);
     expect(
@@ -226,7 +232,9 @@ describe("Phase 1A — interactive elements are reachable and named", () => {
   it("leaves hidden-everywhere non-interactive content alone", () => {
     expect(
       interactiveGate(
-        tree([node("hero", "h1", {}, { hidden: ["mobile", "tablet", "desktop"] })]),
+        tree([
+          node("hero", "h1", {}, { hidden: ["mobile", "tablet", "desktop"] }),
+        ]),
       ),
     ).toEqual([]);
   });
@@ -245,33 +253,33 @@ describe("Phase 1A — interactive elements are reachable and named", () => {
 describe("Phase 1A — status is never colour-only", () => {
   it("blocks a toned banner with no message", () => {
     const failures = statusGate(tree([node("banner", "b1", { text: "" })]));
-    expect(
-      failures.some((f) => f.code === "a11y.status.color_only"),
-    ).toBe(true);
+    expect(failures.some((f) => f.code === "a11y.status.color_only")).toBe(
+      true,
+    );
   });
 
   it("blocks progress stages with no stage names", () => {
     const failures = statusGate(
       tree([node("checkout_steps", "c1", { step2: "" })]),
     );
-    expect(
-      failures.some((f) => f.code === "a11y.status.color_only"),
-    ).toBe(true);
-    expect(
-      statusGate(tree([node("checkout_steps", "c2")])),
-    ).toEqual([]);
+    expect(failures.some((f) => f.code === "a11y.status.color_only")).toBe(
+      true,
+    );
+    expect(statusGate(tree([node("checkout_steps", "c2")]))).toEqual([]);
   });
 
   it("blocks a chart with no text alternative", () => {
     // The catalog default ships an empty summary, so this pins the rule,
     // not the fixture: a trend visible only to sighted visitors blocks.
     const failures = statusGate(tree([node("price_sparkline", "p1")]));
-    expect(
-      failures.some((f) => f.code === "a11y.status.color_only"),
-    ).toBe(true);
+    expect(failures.some((f) => f.code === "a11y.status.color_only")).toBe(
+      true,
+    );
     expect(
       statusGate(
-        tree([node("price_sparkline", "p2", { summary: "Fell 12% in 90 days" })]),
+        tree([
+          node("price_sparkline", "p2", { summary: "Fell 12% in 90 days" }),
+        ]),
       ),
     ).toEqual([]);
   });
@@ -302,20 +310,16 @@ describe("Phase 1A — status is never colour-only", () => {
         ]),
       ).some((f) => f.code === "a11y.status.color_only"),
     ).toBe(true);
-    expect(
-      statusGate(tree([node("free_shipping_bar", "f2")])),
-    ).toEqual([]);
+    expect(statusGate(tree([node("free_shipping_bar", "f2")]))).toEqual([]);
   });
 
   it("fails the publish on status breaches — blocking, not advisory", () => {
     const gate = gateFor([node("banner", "b1", { text: "" })]);
     expect(gate.ok).toBe(false);
-    expect(
-      gate.failures.some((f) => f.code === "a11y.status.color_only"),
-    ).toBe(true);
-    expect(
-      gate.warnings.some((w) => w.code.startsWith("a11y.")),
-    ).toBe(false);
+    expect(gate.failures.some((f) => f.code === "a11y.status.color_only")).toBe(
+      true,
+    );
+    expect(gate.warnings.some((w) => w.code.startsWith("a11y."))).toBe(false);
   });
 
   it("passes a clean template", () => {
@@ -365,7 +369,9 @@ describe("B6 — per-theme motion budgets", () => {
       ),
     ).toBe(true);
     expect(
-      motionBudgetGate(tree(over.slice(0, MOTION_THEME_BUDGET.maxAnimatedNodes))),
+      motionBudgetGate(
+        tree(over.slice(0, MOTION_THEME_BUDGET.maxAnimatedNodes)),
+      ),
     ).toEqual([]);
   });
 
@@ -391,12 +397,12 @@ describe("B6 — per-theme motion budgets", () => {
     );
     const gate = gateFor(main);
     expect(gate.ok).toBe(false);
-    expect(
-      gate.failures.some((f) => f.code === "motion.budget.tweens"),
-    ).toBe(true);
-    expect(
-      gate.warnings.some((w) => w.code.startsWith("motion.budget")),
-    ).toBe(false);
+    expect(gate.failures.some((f) => f.code === "motion.budget.tweens")).toBe(
+      true,
+    );
+    expect(gate.warnings.some((w) => w.code.startsWith("motion.budget"))).toBe(
+      false,
+    );
   });
 
   it("skips the budget when no AST is supplied", () => {
