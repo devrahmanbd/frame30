@@ -76,7 +76,7 @@ export async function executeZeroDowntimeRelease(
   console.log(`  ✓ Image Tag Verified: ${imageTag}`);
 
   // Step 2: Time-Machine Snapshot Hook
-  let snapshotTag = `snap_pre_deploy_${opts.gitSha}_${Date.now()}`;
+  const snapshotTag = `snap_pre_deploy_${opts.gitSha}_${Date.now()}`;
   console.log(
     "\n[STEP 2/7] Triggering Pre-Deployment Time-Machine Snapshot Hook...",
   );

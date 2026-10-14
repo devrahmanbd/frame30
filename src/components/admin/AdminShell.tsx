@@ -548,6 +548,10 @@ function SectionTabs({
 
 const COLLAPSE_KEY = "fq.admin.sidebar.collapsed";
 
+// Single-store MVP: the store switcher stays off. One account = one
+// storefront. Kept as a named flag (off) for a future multi-store return.
+const MULTI_STORE_SWITCHER_ENABLED = false;
+
 export function AdminShell({ children }: { children: ReactNode }) {
   const [drawer, setDrawer] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -654,7 +658,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
               one storefront, so the header always shows the current store
               name with no dropdown. The multi-membership switching code
               below is kept (flagged off) for a future multi-store return. */}
-          {false && memberships.length > 1 ? (
+          {MULTI_STORE_SWITCHER_ENABLED && memberships.length > 1 ? (
             <div className="relative">
               <button
                 type="button"
