@@ -215,9 +215,10 @@ jobs:
               src/lib/plugin-acceptance.test.ts \
               src/lib/phase5-plugins.test.ts
 
-  # Adversarial browser specs: every file named here EXISTS and passes cold
-  # (unlike the aspirational *_loop suites in e2e:critical, which have docs
-  # but no Playwright implementation yet). Do not add a spec here until it
+  # Adversarial browser specs: every file named here EXISTS and passes cold.
+  # (The aspirational *_loop suites have docs but no Playwright implementation;
+  # `e2e:critical`/`e2e:golden` were rewired to runnable specs for the same
+  # reason — see package.json.) Do not add a spec here until it
   # passes from cold locally.
   e2e-security:
     executor: e2e-executor

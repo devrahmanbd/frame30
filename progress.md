@@ -1,3 +1,31 @@
+# Progress — CI Green Program (Oct 14)
+
+> Goal: first green CircleCI build on `frame30` (none since CI began), then
+> keep it green. CHECKLIST.md absorbed: its 5/4/6.5 scores and most "not
+> implemented" rows are stale — registry, propsSchema, inspector swap-in,
+> extension AST, presentations, runtime mount, demo, E2E plugin all landed
+> with tests since. Remaining CHECKLIST truths: authenticated-editor E2E
+> (blocked, no creds), pipeline-to-install single journey, real-GPU proof.
+> `.env` hygiene: root `.env` + `.circleci/.env` present locally,
+> git-ignored, untracked — as required.
+
+## CI failure inventory (verified locally, mirrors CI jobs 1:1)
+
+- [ ] `lint-typecheck/eslint`: ~1300 errors, all but 15 auto-fixable prettier drift; 14 rules-of-hooks + 1 unknown-property across 10 files need hands
+- [ ] `unit-contract/vitest`: 1 pre-existing env failure (`site.server` missing-env guard)
+- [ ] `e2e-critical`: references 8 `*_loop` suites that exist only as docs → "No tests found" exit 1
+- [ ] `scan`: green (secret/sast/diff+full/dep-audit all pass)
+- [ ] `build`: green (`vite build` verified)
+- [ ] `e2e-security` + nightly: wired and green locally
+
+## Loops
+
+- [ ] Format sweep: `prettier --write .` + full-suite proof of no behavior change
+- [ ] Manual lint fixes (10 files, hooks/prop only)
+- [ ] site.server env guard: determine impl-bug vs test-bug, fix the right side
+- [ ] e2e-critical rewire to runnable specs (loop suites never built — say so in docs)
+- [ ] Full local CI mirror → commit → push → GitHub Checks green
+
 # Progress — Frame30 Extensible Builder Program (Oct 2026)
 
 > Mission: 9/10 parity in third-party widgets, custom-theme freedom, and
@@ -7,21 +35,21 @@
 
 ## Gap map (verified in source, Oct 13)
 
-| Spec § | Area | Status | Evidence |
-|---|---|---|---|
-| 3 | Widget contract/registry | PARTIAL | `unified-widget-registry.ts` (157 builtin + 180 studio + plugin defs, versions, rollback, no-privilege proof) exists; missing: loading/empty/error states, a11y/reduced-motion expectations, SEO metadata per def |
-| 4 | propsSchema | PARTIAL | `widget-props.ts` validates all 22 kinds; only 11 fully render — image/media/video/product/collection pickers + typography/responsive/visibility/animation are placeholders |
-| 5 | Schema inspector | UNWIRED | `SchemaControls.tsx` built + tested; `SectionInspector`/`editor.setPropAt`/`commitVersion` still bespoke (swap-in points documented, not executed) |
-| 6 | Extension AST node | MISSING | Only legacy `plugin_block`; no generic typed extension node, no migration path |
-| 7 | Tray auto-discovery | PARTIAL | Old resolver auto-discovers plugin widgets; unified-registry adoption (`StudioAppBlock`, trays) listed, not done |
-| 8 | Theme presentations | PARTIAL | Per-theme built-in overrides + fallback exist; namespaced resolution, Class B themeable rendering, theme-owned resolution missing |
-| 9 | Custom runtime/SDK | PARTIAL | `ThemeRuntime` + bridge v2 mounted; reviewed-bundle lane pure-logic (no DB backing); no theme build pipeline |
-| 10 | Theme-owned tray widgets | MISSING | Depends on §6–§8 |
-| 11 | Builder parity | AUDIT-NEEDED | Undo/redo, DnD, responsive rules, reusable semantics — unverified against spec list |
-| 12 | Versioning/migration | PARTIAL | Registry rollback exists; extension update-migration rules missing |
-| 13 | Security tests | PARTIAL | Bridge/isolation/traversal covered; extension upgrade-migration, repeater bombs, duplicate-ID races need proof |
-| 14 | E2E test plugin | MISSING | No 2-widget editor-workflow plugin exists |
-| 15 | Mounted custom demo | MISSING | `examples/demo-theme` fixture-only, unmounted, no browser proof |
+| Spec § | Area                     | Status       | Evidence                                                                                                                                                                                                          |
+| ------ | ------------------------ | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 3      | Widget contract/registry | PARTIAL      | `unified-widget-registry.ts` (157 builtin + 180 studio + plugin defs, versions, rollback, no-privilege proof) exists; missing: loading/empty/error states, a11y/reduced-motion expectations, SEO metadata per def |
+| 4      | propsSchema              | PARTIAL      | `widget-props.ts` validates all 22 kinds; only 11 fully render — image/media/video/product/collection pickers + typography/responsive/visibility/animation are placeholders                                       |
+| 5      | Schema inspector         | UNWIRED      | `SchemaControls.tsx` built + tested; `SectionInspector`/`editor.setPropAt`/`commitVersion` still bespoke (swap-in points documented, not executed)                                                                |
+| 6      | Extension AST node       | MISSING      | Only legacy `plugin_block`; no generic typed extension node, no migration path                                                                                                                                    |
+| 7      | Tray auto-discovery      | PARTIAL      | Old resolver auto-discovers plugin widgets; unified-registry adoption (`StudioAppBlock`, trays) listed, not done                                                                                                  |
+| 8      | Theme presentations      | PARTIAL      | Per-theme built-in overrides + fallback exist; namespaced resolution, Class B themeable rendering, theme-owned resolution missing                                                                                 |
+| 9      | Custom runtime/SDK       | PARTIAL      | `ThemeRuntime` + bridge v2 mounted; reviewed-bundle lane pure-logic (no DB backing); no theme build pipeline                                                                                                      |
+| 10     | Theme-owned tray widgets | MISSING      | Depends on §6–§8                                                                                                                                                                                                  |
+| 11     | Builder parity           | AUDIT-NEEDED | Undo/redo, DnD, responsive rules, reusable semantics — unverified against spec list                                                                                                                               |
+| 12     | Versioning/migration     | PARTIAL      | Registry rollback exists; extension update-migration rules missing                                                                                                                                                |
+| 13     | Security tests           | PARTIAL      | Bridge/isolation/traversal covered; extension upgrade-migration, repeater bombs, duplicate-ID races need proof                                                                                                    |
+| 14     | E2E test plugin          | MISSING      | No 2-widget editor-workflow plugin exists                                                                                                                                                                         |
+| 15     | Mounted custom demo      | MISSING      | `examples/demo-theme` fixture-only, unmounted, no browser proof                                                                                                                                                   |
 
 ## Loops
 
