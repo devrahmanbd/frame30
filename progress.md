@@ -27,9 +27,9 @@
 
 - [x] Loop A — extension AST node + tray adoption via unified registry (57 tests; SectionType untouched by constraint, serializability lesson: no `unknown` in server-fn types)
 - [x] Loop B — inspector swap-in + server save-path validation (38 tests, bespoke path byte-identical)
-- [ ] Loop C — namespaced presentations + theme-owned tray (needs A)
-- [ ] Loop D — E2E test plugin + 16-step workflow (needs A+B)
-- [ ] Loop E — mounted demo + browser proof (needs A+C)
+- [x] Loop C — namespaced presentations + theme-owned tray (needs A)
+- [x] Loop D — E2E test plugin + 16-step workflow (needs A+B)
+- [x] Loop E — mounted demo + browser proof (needs A+C) — 7/7 Chromium (GSAP animates, reduced-motion static, carousel lazy, bridge admit/deny, dispose clean)
 - [x] Loop F — builder parity audit (read-only, parallel) — DONE: ~90% present, top-5 gaps filed
 - [x] DynamicTagPicker component (34 tests) — swap-in pending Loop B landing
 - [x] Undo/redo + selection-sync pins (24 tests) — no bugs confirmed, 3 judgment calls flagged
