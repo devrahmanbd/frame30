@@ -154,7 +154,38 @@ export function newWidget(kind: WidgetType = "text"): Widget {
 
 // ── constants ────────────────────────────────────────────────────────
 
-export const starterDoc: any = (title?: string) => ({
+/** Widget shape the starter factory emits: no `id` (callers assign on insert). */
+export interface StarterWidget {
+  type: string;
+  settings: Record<string, unknown>;
+}
+export interface StarterColumn {
+  id: string;
+  span: number;
+  widgets: StarterWidget[];
+}
+export interface StarterSection {
+  id: string;
+  width: string;
+  paddingY: number;
+  paddingX: number;
+  columns: StarterColumn[];
+}
+export interface StarterDocBody {
+  sections: StarterSection[];
+}
+/**
+ * Dual nature (pre-existing, preserved exactly): callable factory used by
+ * editor entry points AND a bare fallback object (via the `Object.assign`
+ * below) returned by `parseBuilderBody` for null/invalid input. The bare
+ * form intentionally carries no widget ids — id assignment happens on
+ * insert, so the factory must not mint them here.
+ */
+export type StarterDoc = ((title?: string) => StarterDocBody) & {
+  sections: StarterSection[];
+};
+
+const makeStarterDoc = (title?: string): StarterDocBody => ({
   sections: [
     {
       id: "1",
@@ -185,7 +216,9 @@ export const starterDoc: any = (title?: string) => ({
     },
   ],
 });
-Object.assign(starterDoc, { sections: [] });
+export const starterDoc: StarterDoc = Object.assign(makeStarterDoc, {
+  sections: [],
+});
 export const emptyDoc = (): BuilderDoc => ({ sections: [] });
 
 export const COLUMN_PRESETS: { key: string; label: string; spans: number[] }[] =
@@ -249,16 +282,25 @@ export function isBuilderBody(body: unknown): body is BuilderDoc {
 }
 
 export function parseBuilderBody(raw: string | null | undefined): BuilderDoc {
-  if (!raw) return starterDoc;
+  // Pre-existing quirk preserved exactly: the bare factory object doubles as
+  // the invalid-input fallback (it carries `sections: []` from the
+  // Object.assign above, so shape guards pass downstream). The cast documents
+  // the lie instead of hiding it behind `any`; do not "fix" by changing what
+  // is returned without auditing every caller of this function.
+  if (!raw) return starterDoc as unknown as BuilderDoc;
   try {
     const parsed = JSON.parse(raw);
-    return isBuilderBody(parsed) ? parsed : starterDoc;
+    return isBuilderBody(parsed)
+      ? parsed
+      : (starterDoc as unknown as BuilderDoc);
   } catch {
-    return starterDoc;
+    return starterDoc as unknown as BuilderDoc;
   }
 }
 
-export function serializeBuilderBody(doc: BuilderDoc): string {
+export function serializeBuilderBody(
+  doc: BuilderDoc | StarterDocBody,
+): string {
   return JSON.stringify(doc);
 }
 

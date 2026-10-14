@@ -402,7 +402,10 @@ export function PageBuilder({
               <button
                 type="button"
                 className={`${btn} justify-center`}
-                onClick={() => commit(starterDoc(title))}
+                // Pre-existing: the starter factory emits id-less widgets by
+                // design (ids are assigned on insert); the cast documents the
+                // boundary instead of hiding it behind `any`.
+                onClick={() => commit(starterDoc(title) as unknown as BuilderDoc)}
               >
                 {t("Start from template", "টেমপ্লেট থেকে শুরু")}
               </button>

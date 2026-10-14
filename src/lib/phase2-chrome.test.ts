@@ -154,7 +154,10 @@ describe("mega_menu plugin renderer replacement (MENU RUNTIME)", () => {
       createElement(
         "nav",
         { "data-plugin-nav": "nav-pro" },
-        (rows as WidgetRow[]).map((row) => row.title).join("|"),
+        // Registry types rows as readonly never[] (heterogeneous registry:
+        // each plugin narrows its own rows); spread restores mutability for
+        // the test-local assertion without touching the contract.
+        ([...rows] as WidgetRow[]).map((row) => row.title).join("|"),
       ),
     );
     try {

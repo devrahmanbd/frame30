@@ -40,8 +40,19 @@ export type PluginMenuRendererComponent<T = unknown> = ComponentType<
   PluginMenuRendererProps<T>
 >;
 
+/**
+ * Heterogeneous storage: registered renderers take different row shapes per
+ * plugin (`Props<string>`, `Props<MenuNode>`, zero-arg components). `never`
+ * is the only honest container — every narrowed component assigns into it
+ * (`never` is assignable to every row type), while resolution is generic so
+ * each render site recovers its own row type without casts at the boundary
+ * (the single documented `as` lives inside the resolvers below, where the
+ * runtime review gate — not the type system — authorizes cross-owner use).
+ */
+type StoredMenuRenderer = PluginMenuRendererComponent<never>;
+
 /** pluginId → (slot → renderer Component). */
-const RENDERERS = new Map<string, Map<MenuSlot, PluginMenuRendererComponent<any>>>();
+const RENDERERS = new Map<string, Map<MenuSlot, StoredMenuRenderer>>();
 
 /**
  * Claim one pluginId × slot pair for a nav renderer Component.
@@ -51,7 +62,7 @@ const RENDERERS = new Map<string, Map<MenuSlot, PluginMenuRendererComponent<any>
 export function registerMenuRenderer(
   pluginId: string,
   slot: MenuSlot,
-  Component: PluginMenuRendererComponent<any>,
+  Component: StoredMenuRenderer,
 ): void {
   if (typeof pluginId !== "string" || pluginId.length === 0) {
     console.warn(
@@ -73,7 +84,7 @@ export function registerMenuRenderer(
   }
   let bySlot = RENDERERS.get(pluginId);
   if (!bySlot) {
-    bySlot = new Map<MenuSlot, PluginMenuRendererComponent<any>>();
+    bySlot = new Map<MenuSlot, StoredMenuRenderer>();
     RENDERERS.set(pluginId, bySlot);
   }
   if (bySlot.has(slot)) {
@@ -91,14 +102,17 @@ export function registerMenuRenderer(
  * unknown plugins, null keys and missing slots all fall back instead of
  * leaking another plugin's renderer.
  */
-export function resolveMenuRenderer(
+export function resolveMenuRenderer<P>(
   pluginId: string | null | undefined,
   slot: MenuSlot,
-  fallback?: PluginMenuRendererComponent<any> | undefined,
-): PluginMenuRendererComponent<any> | undefined {
+  fallback?: PluginMenuRendererComponent<P> | undefined,
+): PluginMenuRendererComponent<P> | undefined {
   try {
     const hit = RENDERERS.get(pluginId ?? "")?.get(slot);
-    return hit ?? fallback;
+    // Single documented boundary: the stored heterogeneous component
+    // regains the caller's row type here. Cross-owner use is authorized by
+    // the runtime review gate, never by this cast.
+    return (hit as PluginMenuRendererComponent<P> | undefined) ?? fallback;
   } catch {
     return fallback;
   }
@@ -117,10 +131,10 @@ export function clearMenuRenderers(): void {
  * for a different slot — is undefined, so the caller renders
  * the theme default (fail-open). Never throws.
  */
-export function selectPluginMenuRenderer(
+export function selectPluginMenuRenderer<P>(
   decision: MenuRendererDecision | null | undefined,
   slot: MenuSlot,
-): PluginMenuRendererComponent<any> | undefined {
+): PluginMenuRendererComponent<P> | undefined {
   try {
     if (!decision || typeof decision !== "object") return undefined;
     if (decision.kind !== "plugin") return undefined;
@@ -128,7 +142,10 @@ export function selectPluginMenuRenderer(
     // Slot-scoped approval: a verdict for another slot never unlocks this
     // slot's renderer, even for the same plugin.
     if (decision.slot !== slot) return undefined;
-    return RENDERERS.get(decision.pluginId)?.get(slot);
+    // Same single boundary as resolveMenuRenderer above.
+    return RENDERERS.get(decision.pluginId)?.get(slot) as
+      | PluginMenuRendererComponent<P>
+      | undefined;
   } catch {
     return undefined;
   }
