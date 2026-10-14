@@ -286,7 +286,24 @@ export function PageBuilder({
         >
           <Redo2 className="size-3.5" aria-hidden /> {t("Redo", "পরেরটা")}
         </button>
-        <div className="flex items-center gap-1 rounded-fq-md border border-border p-0.5">
+        <div
+          role="group"
+          aria-label={t(
+            "Preview width (preview only — responsive layers live in Studio)",
+            "প্রিভিউ প্রস্থ (শুধু প্রিভিউ — রেসপন্সিভ লেয়ার স্টুডিওতে)",
+          )}
+          title={t(
+            "Preview width only — edits here apply to every size. Responsive layers live in Studio.",
+            "শুধু প্রিভিউ প্রস্থ — এখানকার এডিট সব সাইজে প্রযোজ্য। রেসপন্সিভ লেয়ার স্টুডিওতে।",
+          )}
+          className="flex items-center gap-1 rounded-fq-md border border-border p-0.5"
+        >
+          <span
+            aria-hidden="true"
+            className="px-1 text-[10px] font-medium uppercase tracking-wide text-muted-foreground"
+          >
+            {t("Preview width", "প্রিভিউ প্রস্থ")}
+          </span>
           {(
             [
               ["desktop", Monitor],
@@ -297,7 +314,14 @@ export function PageBuilder({
             <button
               key={d}
               type="button"
-              aria-label={d}
+              aria-label={t(
+                `${d} preview width (preview only)`,
+                `${d} প্রিভিউ প্রস্থ (শুধু প্রিভিউ)`,
+              )}
+              title={t(
+                `${d} preview — preview only; edits apply to every size. Responsive layers live in Studio.`,
+                `${d} প্রিভিউ — শুধু প্রিভিউ; এডিট সব সাইজে প্রযোজ্য। রেসপন্সিভ লেয়ার স্টুডিওতে।`,
+              )}
               aria-pressed={device === d}
               onClick={() => setDevice(d)}
               className={`grid size-8 place-items-center rounded-fq-sm ${device === d ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}

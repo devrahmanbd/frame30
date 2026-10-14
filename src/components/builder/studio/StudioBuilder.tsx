@@ -34,7 +34,7 @@ import {
   updateNode,
   type DropTarget,
 } from "@/lib/studio/tree";
-import { widgetLabel } from "@/lib/studio/catalog";
+import { newWidgetNode, widgetLabel } from "@/lib/studio/catalog";
 import {
   isContainerNode,
   resolveStudioSlots,
@@ -69,6 +69,33 @@ export type StudioBuilderPluginEntry = Pick<
   "key" | "label"
 > & {
   pluginName?: string;
+  /**
+   * `resolvePluginWidget` failure reason for this widget key. Shown inline
+   * in the Elements Plugins group so a merchant can tell a disabled plugin
+   * from an incompatible one. Absent = usable (legacy entries stay
+   * byte-identical). Display-only: no install/update pipeline reads this.
+   */
+  resolveReason?:
+    | "bad_key"
+    | "not_installed"
+    | "unknown_widget"
+    | "incompatible"
+    | "disabled";
+  /**
+   * Pinned widget version (`plugin_state.version_pin`). Absent/null tracks
+   * the registry latest. Display-only.
+   */
+  versionPin?: string | null;
+  /**
+   * Per-install auto-updates flag (`plugin_state.auto_updates`). Absent =
+   * unknown (nothing rendered). Display-only: the toggle lives in the
+   * plugin manager, never here.
+   */
+  autoUpdates?: boolean;
+  /** Deep-link to the host's update flow for this entry, when offered. */
+  updateHref?: string;
+  /** Deep-link to the host's enable flow for this entry, when offered. */
+  enableHref?: string;
 };
 import {
   builtInTemplates,
@@ -141,11 +168,11 @@ export type StudioBuilderProps = {
    */
   resetKey?: string | null;
   /**
-   * Shared (global) blocks available for detached insertion. Each insert
-   * clones with fresh ids, so placing the same block twice never collides.
-   * Detached on purpose: the studio model has no linked-placement concept,
-   * so edits stay local to this page (the theme studio owns live-linked
-   * globals).
+   * Shared (global) blocks for the Globals tab. The default `copy` insert
+   * clones with fresh ids, so placing the same block twice never collides
+   * and edits stay local to this page; the opt-in `linked` insert places a
+   * `global_ref` pointer instead, so block edits update every placement
+   * (resolved live via `resolveGlobalRef` at render-data time).
    */
   globalBlocks?: { id: string; name: string; nodes: StudioNode[] }[];
   /**
@@ -200,6 +227,8 @@ function ElementsPanelInner({
   dragWidget,
   globals,
   onInsertGlobal,
+  globalInsertMode,
+  onGlobalInsertMode,
   addParent,
   pluginEntries,
   onAddPlugin,
@@ -208,7 +237,10 @@ function ElementsPanelInner({
   templates: StudioTemplate[];
   dragWidget: { current: string | null };
   globals: { id: string; name: string }[];
-  onInsertGlobal: (id: string) => void;
+  onInsertGlobal: (id: string, mode?: GlobalInsertMode) => void;
+  /** Globals-tab insert behaviour; `copy` (default) never surprises. */
+  globalInsertMode: GlobalInsertMode;
+  onGlobalInsertMode: (mode: GlobalInsertMode) => void;
   /** Container-scoped add: widget clicks land inside this node when set. */
   addParent?: string | null;
   pluginEntries?: readonly StudioBuilderPluginEntry[];
@@ -216,6 +248,37 @@ function ElementsPanelInner({
 }) {
   return (
     <>
+      {globals.length > 0 && (
+        <div
+          role="group"
+          aria-label="Global insert mode"
+          className="flex items-center gap-1 border-b border-border px-3 py-2"
+        >
+          <span className="mr-auto text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            Global insert
+          </span>
+          {(["copy", "linked"] as const).map((mode) => (
+            <button
+              key={mode}
+              type="button"
+              aria-pressed={globalInsertMode === mode}
+              title={
+                mode === "copy"
+                  ? "Insert an editable copy (edits stay on this page)"
+                  : "Insert a linked reference (edits update everywhere)"
+              }
+              onClick={() => onGlobalInsertMode(mode)}
+              className={
+                globalInsertMode === mode
+                  ? "min-h-9 rounded-fq-sm bg-primary px-2 text-xs font-medium text-primary-foreground"
+                  : "min-h-9 rounded-fq-sm px-2 text-xs text-muted-foreground hover:text-foreground"
+              }
+            >
+              {mode === "copy" ? "Copy" : "Linked"}
+            </button>
+          ))}
+        </div>
+      )}
       <ElementsPanel
         onAdd={(key) =>
           studio.addWidget(
@@ -243,26 +306,82 @@ function ElementsPanelInner({
             Plugins
           </p>
           <div className="flex flex-col gap-1.5">
-            {pluginEntries.map((entry) => (
-              <button
-                key={entry.key}
-                type="button"
-                onClick={() => onAddPlugin(entry.key)}
-                title={
-                  entry.pluginName
-                    ? `${entry.label} — ${entry.pluginName}`
-                    : entry.label
-                }
-                className="min-h-11 rounded-fq-md border border-border px-3 text-left text-sm hover:border-primary"
-              >
-                <span className="block truncate">{entry.label}</span>
-                {entry.pluginName && (
-                  <span className="block truncate text-[11px] text-muted-foreground">
-                    {entry.pluginName}
-                  </span>
-                )}
-              </button>
-            ))}
+            {pluginEntries.map((entry) => {
+              const status = pluginEntryStatus(entry);
+              if (!status) {
+                return (
+                  <button
+                    key={entry.key}
+                    type="button"
+                    onClick={() => onAddPlugin(entry.key)}
+                    title={
+                      entry.pluginName
+                        ? `${entry.label} — ${entry.pluginName}`
+                        : entry.label
+                    }
+                    className="min-h-11 rounded-fq-md border border-border px-3 text-left text-sm hover:border-primary"
+                  >
+                    <span className="block truncate">{entry.label}</span>
+                    {entry.pluginName && (
+                      <span className="block truncate text-[11px] text-muted-foreground">
+                        {entry.pluginName}
+                      </span>
+                    )}
+                  </button>
+                );
+              }
+              return (
+                <div
+                  key={entry.key}
+                  className="rounded-fq-md border border-border px-3 py-2"
+                >
+                  <button
+                    type="button"
+                    onClick={() => onAddPlugin(entry.key)}
+                    title={
+                      entry.pluginName
+                        ? `${entry.label} — ${entry.pluginName}`
+                        : entry.label
+                    }
+                    className="block w-full text-left"
+                  >
+                    <span className="block truncate text-sm">
+                      {entry.label}
+                    </span>
+                    {entry.pluginName && (
+                      <span className="block truncate text-[11px] text-muted-foreground">
+                        {entry.pluginName}
+                      </span>
+                    )}
+                  </button>
+                  <div className="mt-1 space-y-0.5 text-[11px] text-muted-foreground">
+                    {status.reasonLabel && <p>{status.reasonLabel}</p>}
+                    {status.pinLabel && <p>{status.pinLabel}</p>}
+                    {status.autoLabel && <p>{status.autoLabel}</p>}
+                    {(status.updateHref || status.enableHref) && (
+                      <p className="flex gap-3">
+                        {status.updateHref && (
+                          <a
+                            href={status.updateHref}
+                            className="font-medium text-primary hover:underline"
+                          >
+                            Update
+                          </a>
+                        )}
+                        {status.enableHref && (
+                          <a
+                            href={status.enableHref}
+                            className="font-medium text-primary hover:underline"
+                          >
+                            Enable
+                          </a>
+                        )}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
@@ -474,6 +593,119 @@ export function handleStudioKeyDown(
   return handled;
 }
 
+/* ---------------- global insert mode (unit-tested) ----------------
+ *
+ * The Globals tab offers two placements for a shared block. `copy`
+ * (default) clones with fresh ids — edits stay on this page. `linked`
+ * inserts a `global_ref` pointer that resolves live at render-data time
+ * (`resolveGlobalRef` / `resolveGlobalRefSlots`), so block edits update
+ * every placement. Pure helpers below are the testable contract; the
+ * `insertGlobalBlock` callback defaults to `copy` so current merchants
+ * see no surprise.
+ */
+
+/** Globals-tab placement: detached snapshot or live pointer. */
+export type GlobalInsertMode = "copy" | "linked";
+
+/** Coerce unknown input to a global-insert mode; unknown stays `copy`. */
+export function normalizeGlobalInsertMode(value: unknown): GlobalInsertMode {
+  return value === "linked" ? "linked" : "copy";
+}
+
+/**
+ * Linked-insert pointer for a shared block: a `global_ref` node carrying
+ * only the block id (trimmed + clamped like the builder-ast pointer), no
+ * snapshot children — resolution stays live. Never throws; blank/hostile
+ * ids yield an unpointed node that renders the pick-a-block placeholder.
+ */
+export function globalRefNodeForBlock(blockId: string): StudioNode {
+  try {
+    const ref = (typeof blockId === "string" ? blockId : "")
+      .trim()
+      .slice(0, 120);
+    const node = newWidgetNode("global_ref");
+    node.settings = { ...node.settings, ref };
+    return node;
+  } catch {
+    return {
+      id: `global-${Math.random().toString(36).slice(2, 10)}`,
+      el: "global_ref",
+      settings: { ref: "" },
+    };
+  }
+}
+
+/* ---------------- plugin entry status (unit-tested) ----------------
+ *
+ * Display-only affordance for the Elements Plugins group: the
+ * `resolvePluginWidget` failure reason plus the `version_pin` /
+ * `auto_updates` install state, with host-owned Update/Enable deep-links.
+ * No install/update pipeline reads this — entries without any status
+ * field return null and render the legacy button byte-identically.
+ */
+
+export type PluginEntryStatus = {
+  reasonLabel: string | null;
+  pinLabel: string | null;
+  autoLabel: string | null;
+  updateHref: string | null;
+  enableHref: string | null;
+};
+
+const PLUGIN_REASON_LABEL: Record<
+  NonNullable<StudioBuilderPluginEntry["resolveReason"]>,
+  string
+> = {
+  bad_key: "Unavailable — bad widget key.",
+  not_installed: "Not installed.",
+  unknown_widget: "Widget unavailable in the installed version.",
+  incompatible: "Needs update — incompatible with this builder.",
+  disabled: "Disabled — enable to use.",
+};
+
+function cleanHref(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const href = value.trim();
+  return href ? href : null;
+}
+
+/**
+ * Merchant-facing status for one plugin entry, or null when the entry is
+ * a legacy `{ key, label, pluginName }` row with nothing to surface.
+ * Never throws; hostile fields fall back to safe labels/omission.
+ */
+export function pluginEntryStatus(
+  entry: StudioBuilderPluginEntry,
+): PluginEntryStatus | null {
+  try {
+    const reason = entry.resolveReason;
+    const pin =
+      typeof entry.versionPin === "string" && entry.versionPin.trim()
+        ? entry.versionPin.trim().slice(0, 32)
+        : null;
+    const auto =
+      typeof entry.autoUpdates === "boolean" ? entry.autoUpdates : null;
+    const updateHref = cleanHref(entry.updateHref);
+    const enableHref = cleanHref(entry.enableHref);
+    if (!reason && pin === null && auto === null && !updateHref && !enableHref)
+      return null;
+    return {
+      reasonLabel: reason
+        ? (PLUGIN_REASON_LABEL[
+            reason as NonNullable<StudioBuilderPluginEntry["resolveReason"]>
+          ] ?? "Unavailable.")
+        : null,
+      pinLabel: pin ? `Pinned v${pin}` : null,
+      autoLabel:
+        auto === null ? null : auto ? "Auto-updates on" : "Auto-updates off",
+      updateHref,
+      enableHref,
+    };
+  } catch {
+    return null;
+  }
+}
+
 export function StudioBuilder({
   doc: initialDoc,
   onChange,
@@ -658,12 +890,28 @@ export function StudioBuilder({
     [addParent, extensionRegistry, slot, studio],
   );
 
-  /** Detached insert of a shared block: fresh ids, appended at the cursor. */
+  /** Globals-tab insert: editable copy (default) or linked `global_ref`. */
+  const [globalInsertMode, setGlobalInsertMode] =
+    useState<GlobalInsertMode>("copy");
   const insertGlobalBlock = useCallback(
-    (id: string) => {
+    (id: string, mode: GlobalInsertMode = globalInsertMode) => {
       const block = globalBlocks.find((candidate) => candidate.id === id);
       if (!block || block.nodes.length === 0) {
         toast.error("That block is empty.");
+        return;
+      }
+      if (normalizeGlobalInsertMode(mode) === "linked") {
+        const pointer =
+          slot === "main"
+            ? globalRefNodeForBlock(block.id)
+            : withSlot(globalRefNodeForBlock(block.id), slot);
+        studio.addNode(
+          pointer,
+          addParent ? { id: addParent, position: "inside" } : undefined,
+        );
+        toast.success(
+          `Inserted “${block.name}” (linked — edits update everywhere).`,
+        );
         return;
       }
       block.nodes.forEach((node) => {
@@ -675,7 +923,7 @@ export function StudioBuilder({
       });
       toast.success(`Inserted “${block.name}” (editable copy).`);
     },
-    [addParent, globalBlocks, slot, studio],
+    [addParent, globalBlocks, globalInsertMode, slot, studio],
   );
 
   const [platform, setPlatform] = useState<StudioPlatform>("pc");
@@ -1161,6 +1409,8 @@ export function StudioBuilder({
                         name,
                       }))}
                       onInsertGlobal={insertGlobalBlock}
+                      globalInsertMode={globalInsertMode}
+                      onGlobalInsertMode={setGlobalInsertMode}
                       addParent={addParent}
                       pluginEntries={pluginEntries ?? undefined}
                       onAddPlugin={addPluginNode}
@@ -1175,6 +1425,8 @@ export function StudioBuilder({
                 dragWidget={dragWidget}
                 globals={globalBlocks.map(({ id, name }) => ({ id, name }))}
                 onInsertGlobal={insertGlobalBlock}
+                globalInsertMode={globalInsertMode}
+                onGlobalInsertMode={setGlobalInsertMode}
                 addParent={addParent}
                 pluginEntries={pluginEntries ?? undefined}
                 onAddPlugin={addPluginNode}
