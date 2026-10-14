@@ -1,4 +1,10 @@
-import type { PropValue, Section, SectionType } from "../../builder-ast";
+import type {
+  PropValue,
+  Section,
+  SectionBuilder,
+  SectionType,
+} from "../../builder-ast";
+import type { SomvabonaBuilder } from "./types";
 
 /**
  * Somvabona widget skin presets (widget-skins spec §4, lane C).
@@ -111,7 +117,7 @@ export function applySomvabonaWidgetDefaults(
  * `(type, props?) => Section` at runtime.
  */
 export function withSomvabonaWidgetDefaults<
-  S extends (type: any, props?: any) => Section,
+  S extends SomvabonaBuilder | SectionBuilder,
 >(s: S): S {
   const wrapped = (
     type: string,

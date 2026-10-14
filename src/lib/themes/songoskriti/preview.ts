@@ -55,18 +55,17 @@ export function songoskritiPreviewSource(
     author: "Framique",
     tokens: songoskritiTokensFor(variationKey),
     variations: SONGOSKRITI_VARIATIONS,
-    header: (template, s) => template === "checkout" ? [] : buildHeaderMain(s),
-    footer: (template, s) => template === "checkout" ? [] : buildFooterMain(s),
+    header: (template, s) =>
+      template === "checkout" ? [] : buildHeaderMain(s),
+    footer: (template, s) =>
+      template === "checkout" ? [] : buildFooterMain(s),
     main: (template, s) => {
       // Non-homepage templates author sections directly (not through the
       // homepage builder), so they get the same skin-default wrap here.
       // The variation layer sits OUTSIDE the base wrap: base < variation <
       // authored. The homepage builder wraps internally the same way, so it
       // receives the variation-layered builder directly.
-      s = withSongoskritiVariation(
-        withSongoskritiDefaults(s),
-        variationKey,
-      );
+      s = withSongoskritiVariation(withSongoskritiDefaults(s), variationKey);
       switch (template) {
         case "index":
           return buildHomepageMain(s);
@@ -242,15 +241,11 @@ export function songoskritiPreviewSource(
               children: [
                 {
                   ...s("container", {}),
-                  children: [
-                    s("cart_lines", {}),
-                  ],
+                  children: [s("cart_lines", {})],
                 },
                 {
                   ...s("container", {}),
-                  children: [
-                    s("cart_summary", {}),
-                  ],
+                  children: [s("cart_summary", {})],
                 },
               ],
             },
@@ -281,23 +276,23 @@ export function songoskritiPreviewSource(
                       heading: "Contact & Shipping",
                       heading_bn: "যোগাযোগ ও শিপিং",
                       body: "Provide your delivery address and contact details.",
-                      body_bn: "আপনার ডেলিভারি ঠিকানা এবং যোগাযোগের তথ্য প্রদান করুন।",
+                      body_bn:
+                        "আপনার ডেলিভারি ঠিকানা এবং যোগাযোগের তথ্য প্রদান করুন।",
                     }),
                     s("payment_icons", {
                       heading: "Payment Method",
                       heading_bn: "পেমেন্ট পদ্ধতি",
-                      marks: "bKash, Nagad, Rocket, Visa, Mastercard, Cash on delivery",
+                      marks:
+                        "bKash, Nagad, Rocket, Visa, Mastercard, Cash on delivery",
                     }),
                   ],
                 },
                 {
                   ...s("container", {}),
-                  children: [
-                    s("cart_summary", {}),
-                  ],
-                }
-              ]
-            }
+                  children: [s("cart_summary", {})],
+                },
+              ],
+            },
           ];
         case "account":
           return [

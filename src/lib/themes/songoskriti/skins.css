@@ -72,14 +72,16 @@
   border: none;
   box-shadow: none;
 }
-[data-widget="product_rail"][data-skin="editorial"] button[data-part="rail-nav"] {
+[data-widget="product_rail"][data-skin="editorial"]
+  button[data-part="rail-nav"] {
   min-height: 44px;
   min-width: 44px;
   border: 1px solid var(--theme-border);
   border-radius: var(--theme-radius);
   color: var(--theme-ink);
 }
-[data-widget="product_rail"][data-skin="editorial"] button[data-part="rail-nav"]:hover {
+[data-widget="product_rail"][data-skin="editorial"]
+  button[data-part="rail-nav"]:hover {
   border-color: var(--theme-brand);
   color: var(--theme-brand);
 }
@@ -150,7 +152,8 @@
 [data-widget="hero_carousel"][data-skin="split"] button[aria-current="true"] {
   background: var(--theme-brand);
 }
-[data-widget="hero_carousel"][data-skin="split"] button:not([data-part="wishlist"]) {
+[data-widget="hero_carousel"][data-skin="split"]
+  button:not([data-part="wishlist"]) {
   min-height: 44px;
   min-width: 44px;
 }
@@ -260,7 +263,8 @@
   font-size: 0.85rem;
 }
 
-[data-widget="product_grid"][data-skin="cards"] button:not([data-part="wishlist"]),
+[data-widget="product_grid"][data-skin="cards"]
+  button:not([data-part="wishlist"]),
 [data-widget="product_grid"][data-skin="cards"] a[data-cta] {
   min-height: 44px;
 }
@@ -354,7 +358,8 @@
   text-align: center;
   text-wrap: pretty;
 }
-[data-widget="testimonials"][data-skin="carousel"] button:not([data-part="wishlist"]) {
+[data-widget="testimonials"][data-skin="carousel"]
+  button:not([data-part="wishlist"]) {
   min-height: 44px;
   min-width: 44px;
 }
@@ -454,10 +459,18 @@ footer {
 }
 
 footer * {
-  border-color: color-mix(in srgb, var(--theme-surface) 10%, transparent) !important;
+  border-color: color-mix(
+    in srgb,
+    var(--theme-surface) 10%,
+    transparent
+  ) !important;
 }
 
-footer p, footer h1, footer h2, footer h3, footer span {
+footer p,
+footer h1,
+footer h2,
+footer h3,
+footer span {
   color: var(--theme-surface) !important;
 }
 
@@ -484,7 +497,8 @@ article h1 {
   border-top: 2px solid var(--theme-brand);
   padding-top: var(--theme-space);
 }
-article .article-body, article p {
+article .article-body,
+article p {
   line-height: 1.8;
   max-width: 68ch;
 }

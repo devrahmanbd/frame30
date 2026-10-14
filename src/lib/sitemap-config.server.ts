@@ -47,7 +47,48 @@ type Client = SupabaseClient<Database>;
  * types in some environments. One narrow escape hatch, declared here, keeps
  * every call site below honest instead of scattering `as any`.
  */
-type LooseClient = SupabaseClient<Database> & { from: (table: string) => any };
+type LooseClient = SupabaseClient<Database> & {
+  from: (table: string) => LooseQuery;
+};
+
+/** Minimal shape of the untyped query builder the client returns. */
+type LooseResult = {
+  data: unknown;
+  error: { message: string; code?: string } | null;
+  count?: number | null;
+};
+interface LooseQuery extends Promise<LooseResult> {
+  select: (
+    columns?: string,
+    options?: { count?: "exact" | "planned" | "estimated"; head?: boolean },
+  ) => LooseQuery;
+  eq: (column: string, value: unknown) => LooseQuery;
+  is: (column: string, value: unknown) => LooseQuery;
+  lte: (column: string, value: unknown) => LooseQuery;
+  or: (expression: string) => LooseQuery;
+  order: (
+    column: string,
+    options?: { ascending?: boolean; nullsFirst?: boolean },
+  ) => LooseQuery;
+  range: (from: number, to: number) => LooseQuery;
+  limit: (count: number) => LooseQuery;
+  maybeSingle: () => Promise<LooseResult>;
+  upsert: (values: unknown, options?: { onConflict?: string }) => LooseQuery;
+}
+
+/** One `seo_meta` row exclusion-flagged for the sitemap. */
+type ExclusionRow = { entity_type: string; entity_id: string | null };
+
+/** One shard row, all kinds: kind-specific columns stay optional. */
+type ShardRow = {
+  id: string;
+  slug: string;
+  updated_at: string | null;
+  published_at?: string | null;
+  robots?: string | null;
+  image_url?: string | null;
+  cover_image_url?: string | null;
+};
 
 const SETTINGS_KEY = (merchantId: string) => `crawl-settings|${merchantId}`;
 const STORE_KEY = (slug: string) => `crawl-store|${slug}`;
@@ -301,8 +342,8 @@ async function readStoreContext(slug: string): Promise<StoreContext | null> {
         .or("robots_index.eq.false,sitemap_exclude.eq.true")
         .limit(EXCLUSION_LIMIT),
     )
-      .then((r: { data: any[] | null }) => r.data ?? [])
-      .catch(() => [] as any[]),
+      .then((r) => (r.data ?? []) as ExclusionRow[])
+      .catch(() => [] as ExclusionRow[]),
 
     import("./template-seo.server")
       .then((m) => m.hiddenTemplates(merchant.id))
@@ -310,9 +351,7 @@ async function readStoreContext(slug: string): Promise<StoreContext | null> {
   ]);
 
   const excluded = new Set<string>(
-    (exclusionRows as any[]).map(
-      (row) => `${row.entity_type}:${row.entity_id ?? "-"}`,
-    ),
+    exclusionRows.map((row) => `${row.entity_type}:${row.entity_id ?? "-"}`),
   );
   return {
     merchantId: merchant.id,
@@ -338,9 +377,9 @@ export async function storeCrawlContext(
 type CountMap = Partial<Record<SitemapKind, number>>;
 
 async function countRows(
-  db: LooseClient,
+  db: { from: (table: string) => LooseQuery },
   table: string,
-  apply: (q: any) => any,
+  apply: (q: LooseQuery) => LooseQuery,
 ): Promise<number> {
   const { count, error } = await apply(
     db.from(table).select("id", { count: "exact", head: true }),
@@ -504,7 +543,7 @@ export async function loadSitemapShardEntries(
             .is("deleted_at", null)
             .order("id", { ascending: true })
             .range(from, to);
-          for (const row of (data ?? []) as any[]) {
+          for (const row of (data ?? []) as ShardRow[]) {
             if (isExcluded(ctx, "page", row.id, row.robots)) continue;
             entries.push(
               decorate({
@@ -524,7 +563,7 @@ export async function loadSitemapShardEntries(
             .is("deleted_at", null)
             .order("id", { ascending: true })
             .range(from, to);
-          for (const row of (data ?? []) as any[]) {
+          for (const row of (data ?? []) as ShardRow[]) {
             if (isExcluded(ctx, "product", row.id)) continue;
             entries.push(
               decorate({
@@ -546,7 +585,7 @@ export async function loadSitemapShardEntries(
             .is("deleted_at", null)
             .order("id", { ascending: true })
             .range(from, to);
-          for (const row of (data ?? []) as any[]) {
+          for (const row of (data ?? []) as ShardRow[]) {
             if (isExcluded(ctx, "collection", row.id)) continue;
             entries.push(
               decorate({
@@ -573,7 +612,7 @@ export async function loadSitemapShardEntries(
             .lte("published_at", nowIso)
             .order("id", { ascending: true })
             .range(from, to);
-          for (const row of (data ?? []) as any[]) {
+          for (const row of (data ?? []) as ShardRow[]) {
             if (isExcluded(ctx, "article", row.id, row.robots)) continue;
             entries.push(
               decorate({

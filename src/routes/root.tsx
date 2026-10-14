@@ -85,17 +85,18 @@ function RootLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isLoginRoute = pathname === "/root/login" || pathname === "/root/auth";
 
-  // Login route renders without RootShell
-  if (isLoginRoute) {
-    return <Outlet />;
-  }
-
   const isAdmin = useServerFn(platformIsAdminFn);
   const { data, isPending } = useQuery({
     queryKey: ["root", "gate"],
     queryFn: () => isAdmin(),
     staleTime: 60_000,
+    enabled: !isLoginRoute,
   });
+
+  // Login route renders without RootShell
+  if (isLoginRoute) {
+    return <Outlet />;
+  }
 
   if (isPending) {
     return (

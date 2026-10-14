@@ -77,12 +77,12 @@ function fail(code: string, message: string): never {
 }
 
 /** Magic check only — full validation happens in {@link parseZip}. */
-export function assertZipMagic(bytes: Uint8Array, maxArchiveBytes?: number): void {
+export function assertZipMagic(
+  bytes: Uint8Array,
+  maxArchiveBytes?: number,
+): void {
   if (bytes.length === 0) fail("zip.malformed", "That file is empty.");
-  if (
-    maxArchiveBytes !== undefined &&
-    bytes.length > maxArchiveBytes
-  ) {
+  if (maxArchiveBytes !== undefined && bytes.length > maxArchiveBytes) {
     fail(
       "zip.archive_too_large",
       `Package exceeds the ${Math.round(maxArchiveBytes / (1024 * 1024))} MB archive limit.`,
@@ -104,7 +104,8 @@ export function assertZipMagic(bytes: Uint8Array, maxArchiveBytes?: number): voi
  * sanitised — callers must not guess where a hostile path "meant" to go.
  */
 export function assertSafePackagePath(rawName: string): string {
-  if (!rawName) fail("zip.unsafe_path", "Archive contains an empty entry name.");
+  if (!rawName)
+    fail("zip.unsafe_path", "Archive contains an empty entry name.");
   const name = rawName as string;
   if (name.includes("\0"))
     fail("zip.unsafe_path", "Archive entry contains a null byte.");
@@ -121,10 +122,7 @@ export function assertSafePackagePath(rawName: string): string {
       `Unsafe entry path (drive prefix): ${name.slice(0, 80)}`,
     );
   if (name.startsWith("/") || name.startsWith("~"))
-    fail(
-      "zip.unsafe_path",
-      `Unsafe absolute entry path: ${name.slice(0, 80)}`,
-    );
+    fail("zip.unsafe_path", `Unsafe absolute entry path: ${name.slice(0, 80)}`);
   const isDir = name.endsWith("/");
   const inner = isDir ? name.slice(0, -1) : name;
   // Strip harmless leading `./` segments, then judge what remains.
@@ -158,7 +156,8 @@ const UNIX_DIRECTORY = 0x4000;
 export function parseZip(bytes: Uint8Array, over?: ZipLimits): ZipEntry[] {
   const lim = limitsOf(over);
   assertZipMagic(bytes, lim.maxArchiveBytes);
-  if (bytes.length < 22) fail("zip.malformed", "Archive is too small to be a zip file.");
+  if (bytes.length < 22)
+    fail("zip.malformed", "Archive is too small to be a zip file.");
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   let eocd = -1;
   const floor = Math.max(0, bytes.length - 22 - 65557);
@@ -187,10 +186,7 @@ export function parseZip(bytes: Uint8Array, over?: ZipLimits): ZipEntry[] {
     fail("zip.unsupported_feature", "Zip64 archives are not supported.");
   }
   if (diskNumber !== 0 || cdDisk !== 0 || entriesThisDisk !== totalEntries) {
-    fail(
-      "zip.spanned",
-      "Multi-disk / spanned archives are not supported.",
-    );
+    fail("zip.spanned", "Multi-disk / spanned archives are not supported.");
   }
   const count = totalEntries;
   if (count > lim.maxFiles) {
@@ -270,7 +266,10 @@ export function parseZip(bytes: Uint8Array, over?: ZipLimits): ZipEntry[] {
       );
     }
     if (localHeaderOffset + 30 > bytes.length)
-      fail("zip.malformed", "Local header offset runs past the end of the file.");
+      fail(
+        "zip.malformed",
+        "Local header offset runs past the end of the file.",
+      );
     if (view.getUint32(localHeaderOffset, true) !== 0x04034b50)
       fail("zip.malformed", "Local header signature mismatch.");
     if (!isDirectory) {
@@ -308,14 +307,16 @@ export function extractEntry(
   over?: ZipLimits,
 ): Uint8Array {
   const lim = limitsOf(over);
-  if (entry.isDirectory) fail("zip.malformed", "Refusing to extract a directory.");
+  if (entry.isDirectory)
+    fail("zip.malformed", "Refusing to extract a directory.");
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   const lh = entry.localHeaderOffset;
   if (lh + 30 > bytes.length || view.getUint32(lh, true) !== 0x04034b50)
     fail("zip.malformed", "Local header is missing or corrupt.");
   if (view.getUint16(lh + 8, true) !== entry.method)
     fail("zip.malformed", "Local header disagrees with the directory.");
-  const dataOff = lh + 30 + view.getUint16(lh + 26, true) + view.getUint16(lh + 28, true);
+  const dataOff =
+    lh + 30 + view.getUint16(lh + 26, true) + view.getUint16(lh + 28, true);
   if (dataOff + entry.compSize > bytes.length)
     fail("zip.malformed", "Entry data runs past the end of the file.");
   const raw = bytes.subarray(dataOff, dataOff + entry.compSize);
@@ -323,7 +324,10 @@ export function extractEntry(
   try {
     inflated = entry.method === 8 ? inflateRawSync(raw) : raw.slice();
   } catch {
-    fail("zip.malformed", `Entry could not be decompressed: ${entry.name.slice(0, 80)}`);
+    fail(
+      "zip.malformed",
+      `Entry could not be decompressed: ${entry.name.slice(0, 80)}`,
+    );
   }
   // `fail` never returns; the assignment below satisfies the type checker.
   inflated = inflated as Uint8Array;
@@ -369,20 +373,58 @@ export function extractPackageFiles(
 /* ------------------------------------------------------- layout + manifest */
 
 const BLOCKED_EXTS = new Set([
-  ".js", ".mjs", ".cjs", ".jsx", ".ts", ".tsx",
-  ".exe", ".msi", ".com", ".scr", ".dll", ".so", ".dylib",
-  ".sh", ".bash", ".bat", ".cmd", ".ps1", ".py", ".rb", ".php", ".pl",
-  ".jar", ".war",
+  ".js",
+  ".mjs",
+  ".cjs",
+  ".jsx",
+  ".ts",
+  ".tsx",
+  ".exe",
+  ".msi",
+  ".com",
+  ".scr",
+  ".dll",
+  ".so",
+  ".dylib",
+  ".sh",
+  ".bash",
+  ".bat",
+  ".cmd",
+  ".ps1",
+  ".py",
+  ".rb",
+  ".php",
+  ".pl",
+  ".jar",
+  ".war",
 ]);
 
 const IMAGE_FONT_EXTS = new Set([
-  ".png", ".jpg", ".jpeg", ".gif", ".webp", ".avif", ".svg", ".ico",
-  ".woff", ".woff2", ".ttf", ".otf", ".eot",
+  ".png",
+  ".jpg",
+  ".jpeg",
+  ".gif",
+  ".webp",
+  ".avif",
+  ".svg",
+  ".ico",
+  ".woff",
+  ".woff2",
+  ".ttf",
+  ".otf",
+  ".eot",
 ]);
 
 const ROOT_EXTRAS = new Set([
-  "screenshot.png", "screenshot.jpg", "screenshot.jpeg", "screenshot.webp",
-  "screenshot.gif", "readme.md", "license", "license.md", "license.txt",
+  "screenshot.png",
+  "screenshot.jpg",
+  "screenshot.jpeg",
+  "screenshot.webp",
+  "screenshot.gif",
+  "readme.md",
+  "license",
+  "license.md",
+  "license.txt",
 ]);
 
 export function extOf(path: string): string {
@@ -473,7 +515,11 @@ export function validatePackageLayout(
       );
     }
   }
-  return { manifest: manifest as Record<string, unknown>, manifestRaw: manifestBytes, files };
+  return {
+    manifest: manifest as Record<string, unknown>,
+    manifestRaw: manifestBytes,
+    files,
+  };
 }
 
 import { sanitiseSvg, validateMagicBytes } from "./media/library";
@@ -503,7 +549,9 @@ function fontMagicOk(bytes: Uint8Array): boolean {
     .join("");
   const ascii4 = (() => {
     try {
-      return new TextDecoder("utf-8", { fatal: true }).decode(bytes.slice(0, 4));
+      return new TextDecoder("utf-8", { fatal: true }).decode(
+        bytes.slice(0, 4),
+      );
     } catch {
       return "";
     }
@@ -567,7 +615,13 @@ export function assertPackageContentAuthentic(files: PackageFile[]): void {
       }
       continue;
     }
-    if (ext === ".woff" || ext === ".woff2" || ext === ".ttf" || ext === ".otf" || ext === ".eot") {
+    if (
+      ext === ".woff" ||
+      ext === ".woff2" ||
+      ext === ".ttf" ||
+      ext === ".otf" ||
+      ext === ".eot"
+    ) {
       if (!fontMagicOk(file.bytes)) {
         fail(
           "zip.content_mismatch",
@@ -576,7 +630,13 @@ export function assertPackageContentAuthentic(files: PackageFile[]): void {
       }
       continue;
     }
-    if (ext === ".json" || ext === ".css" || ext === ".md" || ext === ".txt" || ext === "") {
+    if (
+      ext === ".json" ||
+      ext === ".css" ||
+      ext === ".md" ||
+      ext === ".txt" ||
+      ext === ""
+    ) {
       const text = decodeTextStrict(file.bytes);
       if (text === null) {
         fail(
@@ -620,7 +680,8 @@ export function collectBrokenAssetRefs(files: PackageFile[]): string[] {
       return;
     }
     if (value && typeof value === "object") {
-      for (const item of Object.values(value as Record<string, unknown>)) visit(item);
+      for (const item of Object.values(value as Record<string, unknown>))
+        visit(item);
     }
   };
   for (const file of files) {

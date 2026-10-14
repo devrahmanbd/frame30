@@ -707,7 +707,7 @@ ${css}</style></head><body>${body}
 <script>(function(){function post(){parent.postMessage({type:"fq:html-height",height:document.documentElement.scrollHeight},"*")}// SECURITY: Wildcard target is safe — the iframe is sandboxed without
 // allow-same-origin so it has no cookies/storage/DOM access to the parent.
 // The message contains only a height number.
-new ResizeObserver(post).observe(document.documentElement);addEventListener("load",post);post();})();<\/script>
+new ResizeObserver(post).observe(document.documentElement);addEventListener("load",post);post();})();</script>
 </body></html>`;
 }
 

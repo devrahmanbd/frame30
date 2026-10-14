@@ -15,6 +15,7 @@ import {
   ScarcityBadge,
 } from "@/components/store/ConversionSurfaces";
 import type { getStoreProduct } from "@/lib/storefront.functions";
+import type { ResponsiveImage } from "@/lib/image-transform";
 import { WishlistHeart } from "@/components/builder/primitives/ProductCard";
 import { ChevronDown } from "lucide-react";
 
@@ -50,7 +51,17 @@ export function ProductGallery({
 export function ProductInfo({
   product,
 }: {
-  product: ProductPayload["product"];
+  /**
+   * Minimal read-shape: the gallery reads identity/media/copy only, so
+   * preview mocks (which lack variants/slug) satisfy this without casts.
+   */
+  product: {
+    id: string;
+    title: string;
+    description?: string | null;
+    image?: ResponsiveImage | null;
+    image_url?: string | null;
+  };
 }) {
   const shortDesc = product.description
     ?.split("\n")
@@ -73,8 +84,16 @@ export function PriceBlock({
   variant,
   currencyCode,
 }: {
+  /**
+   * Minimal read-shape: price/compare/stock only, so preview mocks (which
+   * lack `product_id`/`sku`) satisfy this without casts.
+   */
   variant:
-    | NonNullable<ProductPayload["product"]["product_variants"]>[number]
+    | {
+        price_amount_minor_int: number;
+        compare_at_amount_minor_int?: number | null;
+        stock_quantity: number;
+      }
     | undefined;
   currencyCode: string;
 }) {
@@ -106,7 +125,11 @@ export function VariantSelector({
   variantId,
   setVariantId,
 }: {
-  variants: NonNullable<ProductPayload["product"]["product_variants"]>;
+  /** Minimal read-shape: the picker renders id-keyed name buttons only. */
+  variants: Pick<
+    NonNullable<ProductPayload["product"]["product_variants"]>[number],
+    "id" | "name"
+  >[];
   variantId: string;
   setVariantId: (id: string) => void;
 }) {
@@ -146,10 +169,18 @@ export function AddToCart({
   setAdded,
   settings,
 }: {
+  /**
+   * Minimal read-shape: stock gating plus the bought/wishlisted id only, so
+   * preview mocks (which lack `product_id`/`sku`) satisfy this without casts.
+   */
   variant:
-    | NonNullable<ProductPayload["product"]["product_variants"]>[number]
+    | Pick<
+        NonNullable<ProductPayload["product"]["product_variants"]>[number],
+        "id" | "stock_quantity"
+      >
     | undefined;
-  merchant: ProductPayload["merchant"];
+  /** Minimal read-shape: only the wishlist tenant slug is read. */
+  merchant: Pick<ProductPayload["merchant"], "slug">;
   custom: boolean;
   add: (id: string, qty: number) => void;
   added: boolean;
@@ -480,8 +511,8 @@ export function ProductView({ data }: { data: ProductPayload }) {
     <ProductDetails
       product={{
         description: product.description,
-        tags: (product as any).tags,
-        category_id: (product as any).category_id,
+        tags: product.tags,
+        category_id: product.category_id,
       }}
     />
   );

@@ -148,7 +148,13 @@ function parseProperness(
     nested && typeof nested === "object"
       ? (nested as Record<string, unknown>)
       : obj;
-  const keys = ["clarity", "courtesy", "bn_fluency", "humility", "no_overclaim"];
+  const keys = [
+    "clarity",
+    "courtesy",
+    "bn_fluency",
+    "humility",
+    "no_overclaim",
+  ];
   const hasNested = nested && typeof nested === "object";
   if (!hasNested && !keys.some((k) => k in src)) return null;
   return {
@@ -186,11 +192,7 @@ export function parseRevisionScore(raw: unknown): RevisionScore | null {
     } else {
       return null;
     }
-    if (
-      !("groundedness" in obj) &&
-      !("tone" in obj) &&
-      !("policy" in obj)
-    ) {
+    if (!("groundedness" in obj) && !("tone" in obj) && !("policy" in obj)) {
       return null;
     }
     const sevRaw = String(obj["severity"] ?? "none").toLowerCase();
@@ -409,7 +411,9 @@ export async function fetchRecentQaTurns(
     return (data as Array<Record<string, unknown>>).map((r) => ({
       id: String(r["id"] ?? ""),
       merchantId:
-        typeof r["merchant_id"] === "string" ? (r["merchant_id"] as string) : null,
+        typeof r["merchant_id"] === "string"
+          ? (r["merchant_id"] as string)
+          : null,
       conversationId:
         typeof r["conversation_id"] === "string"
           ? (r["conversation_id"] as string)
@@ -418,7 +422,9 @@ export async function fetchRecentQaTurns(
       question: String(r["user_turn"] ?? ""),
       answer: String(r["agent_reply"] ?? ""),
       csatRating:
-        typeof r["csat_rating"] === "number" ? (r["csat_rating"] as number) : null,
+        typeof r["csat_rating"] === "number"
+          ? (r["csat_rating"] as number)
+          : null,
       grounded: r["grounded"] !== false,
       createdAt: String(r["created_at"] ?? ""),
     }));
@@ -488,20 +494,25 @@ async function defaultSaveKbCandidate(
   const { supabaseAdmin } =
     await import("@/integrations/supabase/client.server");
   const { saveDoc } = await import("./support-kb.server");
-  await saveDoc(supabaseAdmin as never, turn.merchantId, REVISION_SYSTEM_ACTOR, {
-    title: `Candidate: ${redactPii(turn.question).text.slice(0, 120)}`,
-    body: [
-      `Recurring unanswered question (seen ${recurrenceCount}x in revision batch).`,
-      "",
-      `Question: ${redactPii(turn.question).text.slice(0, 1000)}`,
-      "",
-      "Operator: draft the approved answer here, then publish.",
-    ].join("\n"),
-    locale: "en",
-    status: KB_CANDIDATE_STATUS,
-    tags: ["revision-candidate", "unanswered"],
-    sourceUrl: null,
-  });
+  await saveDoc(
+    supabaseAdmin as never,
+    turn.merchantId,
+    REVISION_SYSTEM_ACTOR,
+    {
+      title: `Candidate: ${redactPii(turn.question).text.slice(0, 120)}`,
+      body: [
+        `Recurring unanswered question (seen ${recurrenceCount}x in revision batch).`,
+        "",
+        `Question: ${redactPii(turn.question).text.slice(0, 1000)}`,
+        "",
+        "Operator: draft the approved answer here, then publish.",
+      ].join("\n"),
+      locale: "en",
+      status: KB_CANDIDATE_STATUS,
+      tags: ["revision-candidate", "unanswered"],
+      sourceUrl: null,
+    },
+  );
 }
 
 async function defaultTouchCsat(turn: QaTurn): Promise<void> {
@@ -519,9 +530,8 @@ async function defaultPersistReview(
   turn: QaTurn,
   score: RevisionScore,
 ): Promise<void> {
-  const { persistRevisionReview } = await import(
-    "./support-revision-review.server"
-  );
+  const { persistRevisionReview } =
+    await import("./support-revision-review.server");
   await persistRevisionReview({
     merchantId: turn.merchantId,
     conversationId: turn.conversationId,
@@ -584,8 +594,7 @@ export async function runRevisionJob(
   const fetchTurns = deps.fetchTurns ?? fetchRecentQaTurns;
   const scorer =
     deps.scorer ??
-    ((q, a) =>
-      scoreTurnWithInkling(q, a, { apiKey: apiKey ?? undefined }));
+    ((q, a) => scoreTurnWithInkling(q, a, { apiKey: apiKey ?? undefined }));
   const saveKbDoc = deps.saveKbDoc ?? defaultSaveKbCandidate;
   const createTicketFn = deps.createTicketFn ?? defaultCreateTicket;
   const recordGuardrailFn = deps.recordGuardrailFn ?? defaultRecordGuardrail;
@@ -649,10 +658,7 @@ export async function runRevisionJob(
       ) {
         try {
           const persisted = await persistReviewFn(turn, score);
-          if (
-            !persisted ||
-            (persisted as { ok?: unknown }).ok !== false
-          ) {
+          if (!persisted || (persisted as { ok?: unknown }).ok !== false) {
             result.persistedReviews += 1;
           }
         } catch (err) {

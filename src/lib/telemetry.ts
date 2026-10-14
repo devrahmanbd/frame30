@@ -41,7 +41,15 @@ export function escapeLabelValue(value: string) {
  */
 export function normalizeLabelValue(value: unknown, max = 48) {
   const raw = value === null || value === undefined ? "" : String(value);
-  const cleaned = raw.replace(/[\u0000-\u001f]/g, " ").trim();
+  const cleaned = raw
+    .replace(
+      new RegExp(
+        "[" + String.fromCharCode(0) + "-" + String.fromCharCode(31) + "]",
+        "g",
+      ),
+      " ",
+    )
+    .trim();
   return cleaned.length > max ? `${cleaned.slice(0, max - 1)}…` : cleaned;
 }
 

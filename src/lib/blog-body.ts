@@ -168,7 +168,18 @@ export function escapeHtml(value: string): string {
 export function safeUrl(raw: string): string | null {
   const value = decodeEntities(raw)
     .trim()
-    .replace(/[\u0000-\u001f\u007f]/g, "");
+    .replace(
+      new RegExp(
+        "[" +
+          String.fromCharCode(0) +
+          "-" +
+          String.fromCharCode(31) +
+          String.fromCharCode(127) +
+          "]",
+        "g",
+      ),
+      "",
+    );
   if (!value || value.length > BODY_LIMITS.maxHrefChars) return null;
   if (/^(https?:|mailto:|tel:)/i.test(value)) return value;
   if (value.startsWith("/") || value.startsWith("#") || value.startsWith("?"))

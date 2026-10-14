@@ -69,13 +69,7 @@ export const Route = createFileRoute("/_authenticated/dashboard/support")({
 });
 
 type Tab =
-  | "tickets"
-  | "callbacks"
-  | "kb"
-  | "channels"
-  | "sla"
-  | "trust"
-  | "revisions";
+  "tickets" | "callbacks" | "kb" | "channels" | "sla" | "trust" | "revisions";
 type TicketPatch = {
   ticketId: string;
   status?: (typeof STATUSES)[number];
@@ -111,9 +105,8 @@ const supportPresenceRoutingFn = createServerFn({ method: "GET" })
       context.supabase as never,
       context.userId,
     );
-    const { getApprovalRoutingHint } = await import(
-      "@/lib/support-presence.server"
-    );
+    const { getApprovalRoutingHint } =
+      await import("@/lib/support-presence.server");
     return getApprovalRoutingHint(merchantId);
   });
 
@@ -1269,13 +1262,14 @@ function Trust({
     },
     onError: () =>
       toast.error(
-        t("Could not create the follow-up task", "ফলো-আপ টাস্ক তৈরি করা যায়নি"),
+        t(
+          "Could not create the follow-up task",
+          "ফলো-আপ টাস্ক তৈরি করা যায়নি",
+        ),
       ),
   });
 
-  const lowCsat = (csatData.recentReviews ?? []).filter(
-    (r) => r.rating <= 2,
-  );
+  const lowCsat = (csatData.recentReviews ?? []).filter((r) => r.rating <= 2);
 
   return (
     <div className="space-y-4">

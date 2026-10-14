@@ -18,6 +18,49 @@ async function scope(db: SupabaseClient<Database>, userId: string) {
   return currentMerchantId(db, userId);
 }
 
+/** Minimal shape of the untyped query builder the client returns. */
+type LooseResult = {
+  data: unknown;
+  error: { message: string; code?: string } | null;
+  count?: number | null;
+};
+interface LooseQuery extends Promise<LooseResult> {
+  select: (columns?: string) => LooseQuery;
+  eq: (column: string, value: unknown) => LooseQuery;
+  order: (column: string, options?: { ascending?: boolean }) => LooseQuery;
+  limit: (count: number) => LooseQuery;
+  maybeSingle: () => Promise<LooseResult>;
+  insert: (values: unknown) => LooseQuery;
+}
+type LooseClient = { from: (t: string) => LooseQuery };
+
+/** Mirrors the UI contract (`JobRow`): the select list matches it 1:1. */
+type InfraJobRow = {
+  id: string;
+  queue: string;
+  name: string;
+  state: string;
+  attempts: number;
+  max_attempts: number;
+  run_after: string;
+  last_error_code: string | null;
+  last_error_message: string | null;
+  created_at: string;
+};
+
+/** Mirrors the UI contract (`LoadTestRow`): written whole by the recorder. */
+type InfraLoadTestRow = {
+  id: string;
+  scenario: string;
+  concurrency: number;
+  requests: number;
+  failures: number;
+  p95_ms: number;
+  rps: number;
+  verdict: string;
+  created_at: string;
+};
+
 export const infraOverviewFn = createServerFn({ method: "GET" })
   .middleware([requirePermission("staff.manage_grants")])
   .handler(async ({ context }) => {
@@ -34,9 +77,7 @@ export const infraOverviewFn = createServerFn({ method: "GET" })
       queueDepths(),
       loadBackend(merchantId),
     ]);
-    const { data: jobs } = await (
-      context.supabase as unknown as { from: (t: string) => any }
-    )
+    const { data: jobs } = await (context.supabase as unknown as LooseClient)
       .from("job_queue")
       .select(
         "id,queue,name,state,attempts,max_attempts,run_after,last_error_code,last_error_message,created_at",
@@ -45,7 +86,7 @@ export const infraOverviewFn = createServerFn({ method: "GET" })
       .order("created_at", { ascending: false })
       .limit(50);
     const { data: loadTests } = await (
-      context.supabase as unknown as { from: (t: string) => any }
+      context.supabase as unknown as LooseClient
     )
       .from("load_test_runs")
       .select("*")
@@ -55,8 +96,8 @@ export const infraOverviewFn = createServerFn({ method: "GET" })
     return {
       merchantId,
       queues,
-      jobs: jobs ?? [],
-      loadTests: loadTests ?? [],
+      jobs: (jobs ?? []) as InfraJobRow[],
+      loadTests: (loadTests ?? []) as InfraLoadTestRow[],
       search: {
         ...backend.config,
         hasApiKey: Boolean(backend.apiKeySealed),
@@ -102,9 +143,7 @@ export const infraReindexFn = createServerFn({ method: "POST" })
     const merchantId = await scope(context.supabase, context.userId);
     await enforceRateLimit("infra.reindex", merchantId);
 
-    const { data } = await (
-      context.supabase as unknown as { from: (t: string) => any }
-    )
+    const { data } = await (context.supabase as unknown as LooseClient)
       .from("products")
       .select("id")
       .eq("merchant_id", merchantId)
@@ -136,9 +175,7 @@ export const infraJobActionFn = createServerFn({ method: "POST" })
 
     // RLS lets a member read only their own jobs; re-check ownership before a
     // service-role mutation so the control plane cannot cross tenants.
-    const { data: owned } = await (
-      context.supabase as unknown as { from: (t: string) => any }
-    )
+    const { data: owned } = await (context.supabase as unknown as LooseClient)
       .from("job_queue")
       .select("id")
       .eq("id", data.jobId)
@@ -185,7 +222,7 @@ export const infraRecordLoadTestFn = createServerFn({ method: "POST" })
 
     const { supabaseAdmin } =
       await import("@/integrations/supabase/client.server");
-    await (supabaseAdmin as unknown as { from: (t: string) => any })
+    await (supabaseAdmin as unknown as LooseClient)
       .from("load_test_runs")
       .insert({
         merchant_id: merchantId,

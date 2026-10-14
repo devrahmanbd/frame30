@@ -66,7 +66,7 @@ export function inlineMarkdownToHtml(source: string): string {
   text = text.replace(/(^|[^_\w])_([^_\n]+?)_(?!\w)/g, "$1<em>$2</em>");
   text = text.replace(/ {2,}\n/g, "<br />");
   text = text.replace(
-    /\u0000(\d+)\u0000/g,
+    new RegExp(String.fromCharCode(0) + "(\\d+)" + String.fromCharCode(0), "g"),
     (_m, i: string) => kept[Number(i)] ?? "",
   );
   return text;

@@ -128,7 +128,8 @@ function execFileAsync(
 ): Promise<{ stdout: string; stderr: string }> {
   return new Promise((resolve, reject) => {
     // eslint-disable-next-line prettier/prettier -- keeps sast-allow on the execFile finding line: prettier would move a trailing comment down and break SAST suppression
-    execFile( // sast-allow: shell-exec -- fixed argv from buildIssueCommand (isProvisionableHost validated), execFile without shell, pinned script path
+    execFile(
+      // sast-allow: shell-exec -- fixed argv from buildIssueCommand (isProvisionableHost validated), execFile without shell, pinned script path
       file,
       args,
       { timeout: timeoutMs, maxBuffer: 1024 * 1024 },

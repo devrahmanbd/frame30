@@ -294,37 +294,47 @@ export function exportToCsv(
 /**
  * Helper to normalize conversation metadata from either camelCase or snake_case.
  */
-function normalizeConv(c: any): ExportConversationMetadata {
+function normalizeConv(
+  c: ExportConversationMetadata | Record<string, unknown>,
+): ExportConversationMetadata {
+  const row = c as Record<string, string | null | undefined>;
   return {
-    id: c.id,
-    merchantId: c.merchantId ?? c.merchant_id ?? "",
-    merchantName: c.merchantName ?? c.merchant_name,
-    channel: c.channel ?? "chat",
-    status: c.status ?? "open",
-    priority: c.priority ?? "normal",
-    takeoverMode: c.takeoverMode ?? c.takeover_mode ?? "ai",
-    orderNumber: c.orderNumber ?? c.order_number,
-    createdAt: c.createdAt ?? c.created_at ?? new Date().toISOString(),
-    resolvedAt: c.resolvedAt ?? c.resolved_at,
+    // `id` is required by the contract: every producer (DB row or metadata)
+    // carries a string id, so this only satisfies the checker, not a fallback.
+    id: row.id as string,
+    merchantId: row.merchantId ?? row.merchant_id ?? "",
+    merchantName: row.merchantName ?? row.merchant_name,
+    channel: row.channel ?? "chat",
+    status: row.status ?? "open",
+    priority: row.priority ?? "normal",
+    takeoverMode: row.takeoverMode ?? row.takeover_mode ?? "ai",
+    orderNumber: row.orderNumber ?? row.order_number,
+    createdAt: row.createdAt ?? row.created_at ?? new Date().toISOString(),
+    resolvedAt: row.resolvedAt ?? row.resolved_at,
     lastCustomerMessageAt:
-      c.lastCustomerMessageAt ?? c.last_customer_message_at,
+      row.lastCustomerMessageAt ?? row.last_customer_message_at,
     lastOperatorMessageAt:
-      c.lastOperatorMessageAt ?? c.last_operator_message_at,
-    operatorNotes: c.operatorNotes ?? c.operator_notes,
+      row.lastOperatorMessageAt ?? row.last_operator_message_at,
+    operatorNotes: row.operatorNotes ?? row.operator_notes,
   };
 }
 
 /**
  * Helper to normalize message items from either camelCase or snake_case.
  */
-function normalizeMessage(m: any): ExportMessageItem {
+function normalizeMessage(
+  m: ExportMessageItem | Record<string, unknown>,
+): ExportMessageItem {
+  const row = m as Record<string, string | null | undefined>;
+  const flag = m as { isInternalNote?: unknown; is_internal_note?: unknown };
   return {
-    id: m.id,
-    role: m.role,
-    body: m.body,
-    createdAt: m.createdAt ?? m.created_at ?? new Date().toISOString(),
-    sentByOperatorId: m.sentByOperatorId ?? m.sent_by_operator_id,
-    isInternalNote: m.isInternalNote ?? m.is_internal_note ?? false,
+    id: row.id as string,
+    role: row.role as string,
+    body: row.body as string,
+    createdAt: row.createdAt ?? row.created_at ?? new Date().toISOString(),
+    sentByOperatorId: row.sentByOperatorId ?? row.sent_by_operator_id,
+    isInternalNote: (flag.isInternalNote ?? flag.is_internal_note ?? false) as
+      boolean | undefined,
   };
 }
 

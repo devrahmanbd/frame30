@@ -76,10 +76,34 @@ const EMPTY_LISTING = (
 
 type Db = Awaited<ReturnType<typeof anonDb>>;
 
+/** Minimal shape of the untyped query builder the anon client returns. */
+type LooseResult = {
+  data: unknown;
+  error: { message: string; code?: string } | null;
+  count?: number | null;
+};
+interface LooseQuery extends Promise<LooseResult> {
+  select: (
+    columns?: string,
+    options?: { count?: "exact" | "planned" | "estimated"; head?: boolean },
+  ) => LooseQuery;
+  eq: (column: string, value: unknown) => LooseQuery;
+  in: (column: string, values: unknown[]) => LooseQuery;
+  is: (column: string, value: unknown) => LooseQuery;
+  gt: (column: string, value: unknown) => LooseQuery;
+  lte: (column: string, value: unknown) => LooseQuery;
+  order: (
+    column: string,
+    options?: { ascending?: boolean; nullsFirst?: boolean },
+  ) => LooseQuery;
+  range: (from: number, to: number) => LooseQuery;
+  limit: (count: number) => LooseQuery;
+}
+
 async function anonDb() {
   const { publicClient } = await import("./pricing.server");
   return publicClient() as unknown as {
-    from: (table: string) => any;
+    from: (table: string) => LooseQuery;
   };
 }
 
@@ -131,14 +155,14 @@ async function decorate(db: Db, rows: ArticleRow[]): Promise<BlogCard[]> {
       .from("merchants")
       .select("id, name, slug")
       .in("id", merchantIds)
-      .then((r: any) => (r.data ?? []) as MerchantChip[])
+      .then((r) => (r.data ?? []) as MerchantChip[])
       .catch(() => [] as MerchantChip[]),
     db
       .from("article_terms")
       .select("article_id, term_id, is_primary")
       .in("article_id", articleIds)
       .eq("is_primary", true)
-      .then((r: any) => (r.data ?? []) as PrimaryLink[])
+      .then((r) => (r.data ?? []) as PrimaryLink[])
       .catch(() => [] as PrimaryLink[]),
     authorIds.length
       ? db
@@ -147,7 +171,7 @@ async function decorate(db: Db, rows: ArticleRow[]): Promise<BlogCard[]> {
           .in("id", authorIds)
           .eq("is_public", true)
           .limit(BLOG_PAGE_SIZE)
-          .then((r: any) => (r.data ?? []) as AuthorChip[])
+          .then((r) => (r.data ?? []) as AuthorChip[])
           .catch(() => [] as AuthorChip[])
       : Promise.resolve([] as AuthorChip[]),
   ])) as [MerchantChip[], PrimaryLink[], AuthorChip[]];
@@ -159,7 +183,7 @@ async function decorate(db: Db, rows: ArticleRow[]): Promise<BlogCard[]> {
         .from("blog_terms")
         .select("id, slug, name")
         .in("id", termIds)
-        .then((r: any) => (r.data ?? []) as TermChip[])
+        .then((r) => (r.data ?? []) as TermChip[])
         .catch(() => [] as TermChip[])
     : [];
 
@@ -360,7 +384,7 @@ export async function loadTermArchive(
           .eq("kind", term.kind)
           .order("sort_order", { ascending: true })
           .limit(400)
-          .then((r: any) => (r.data ?? []) as TermRow[])
+          .then((r) => (r.data ?? []) as TermRow[])
           .catch(() => [] as TermRow[]),
       ]);
 

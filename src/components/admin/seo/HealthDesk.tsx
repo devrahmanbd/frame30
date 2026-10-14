@@ -16,6 +16,7 @@ import {
   btnGhost,
 } from "@/components/admin/MarketingUi";
 import { useLang } from "@/lib/i18n";
+import type { Json } from "@/integrations/supabase/types";
 import {
   FINDING_LABELS,
   FINDING_CODES,
@@ -32,6 +33,58 @@ const textError = (error: unknown) =>
   error instanceof Error ? error.message : String(error);
 
 type StateFilter = "open" | "ignored" | "resolved";
+
+/**
+ * Finding list row: mirrors the `loadFindings` row shape (the query resolves
+ * through the loose client, so the columns are declared here). `detail` is
+ * the raw JSON column — bilingual messages are read through `detailMessage`.
+ */
+type FindingRow = {
+  id: string;
+  code: string;
+  severity: string;
+  entity_title: string | null;
+  entity_path: string | null;
+  target: string | null;
+  detail: Json;
+  state: string;
+  occurrences: number | null;
+};
+
+/**
+ * Bilingual message from a finding's JSON detail. Non-object details (or an
+ * object without message keys) yield no message so the caller renders the
+ * target — the same fallback the untyped read had. Producers always write
+ * message strings or omit the keys, so filtering to strings changes nothing
+ * they can produce.
+ */
+function detailMessage(detail: Json): {
+  messageBn?: string;
+  message_bn?: string;
+} {
+  if (!detail || typeof detail !== "object" || Array.isArray(detail)) return {};
+  const messageBn = detail["messageBn"];
+  const message_bn = detail["message_bn"];
+  return {
+    ...(typeof messageBn === "string" ? { messageBn } : {}),
+    ...(typeof message_bn === "string" ? { message_bn } : {}),
+  };
+}
+
+/**
+ * Scan history row: the run columns the desk reads (`loadContentHealthState`
+ * selects them). All display-nullable fields stay nullable — the render
+ * already coalesces each one.
+ */
+type ScanHistoryItem = {
+  id: string;
+  started_at: string | null;
+  trigger: string | null;
+  status: string | null;
+  findings_opened: number | null;
+  findings_resolved: number | null;
+  duration_ms: number | null;
+};
 
 /**
  * Content health desk (§6). Shows what the last scan found, lets the merchant
@@ -290,8 +343,9 @@ export function HealthDesk() {
             {textError(findings.error)}
           </li>
         )}
-        {(findings.data?.rows ?? []).map((finding: any) => {
+        {(findings.data?.rows ?? []).map((finding: FindingRow) => {
           const label = FINDING_LABELS[finding.code as FindingCode];
+          const message = detailMessage(finding.detail);
           return (
             <li
               key={finding.id}
@@ -312,8 +366,8 @@ export function HealthDesk() {
               <div className="min-w-0">
                 <p>
                   {lang === "bn"
-                    ? (finding.detail?.messageBn ??
-                      finding.detail?.message_bn ??
+                    ? (message.messageBn ??
+                      message.message_bn ??
                       finding.target)
                     : finding.target}
                 </p>
@@ -321,7 +375,7 @@ export function HealthDesk() {
                   <Link2 className="mr-1 inline size-3" aria-hidden />
                   {finding.entity_title || finding.entity_path}
                   {finding.entity_path ? ` · ${finding.entity_path}` : ""}
-                  {finding.occurrences > 1
+                  {(finding.occurrences ?? 0) > 1
                     ? ` · ${t("seen", "দেখা গেছে")} ${finding.occurrences}×`
                     : ""}
                 </p>
@@ -369,10 +423,13 @@ export function HealthDesk() {
           {t("Scan history", "স্ক্যান ইতিহাস")}
         </summary>
         <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
-          {(state.data?.history ?? []).map((item: any) => (
+          {(state.data?.history ?? []).map((item: ScanHistoryItem) => (
             <li key={item.id} className="flex justify-between gap-3">
               <span>
-                {new Date(item.started_at).toLocaleString()} · {item.trigger}
+                {/* `?? 0` keeps the epoch a null timestamp renders today:
+                    `new Date(null)` is the epoch, and so is `new Date(0)`. */}
+                {new Date(item.started_at ?? 0).toLocaleString()} ·{" "}
+                {item.trigger}
               </span>
               <span>
                 {item.status} · +{item.findings_opened ?? 0}/-

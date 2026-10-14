@@ -26,7 +26,9 @@ export async function handleMissingStoreUrl(
     return redirect({ href: verdict.location, statusCode: 301, throw: false });
   }
 
-  if (false) {
+  // Document-status sync stays disabled (kept for a future status-code pass).
+  const syncDocumentStatus = false;
+  if (syncDocumentStatus) {
     const { setDocumentStatus } = await import("./response-status.server");
     setDocumentStatus(verdict.kind === "gone" ? 410 : 404);
   }

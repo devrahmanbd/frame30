@@ -76,10 +76,7 @@ export function songoskritiVariationFor(
 
 /** Base tokens with the named variation merged over them (base on unknown). */
 export function songoskritiTokensFor(key: string | null | undefined) {
-  return applyVariationTokens(
-    SONGOSKRITI_TOKENS,
-    songoskritiVariationFor(key),
-  );
+  return applyVariationTokens(SONGOSKRITI_TOKENS, songoskritiVariationFor(key));
 }
 
 /**

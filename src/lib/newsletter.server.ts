@@ -58,8 +58,46 @@ export class NewsletterError extends Error {
 }
 
 /** Untyped admin handle: these tables are service-role only by design. */
+type LooseResult = {
+  data: unknown;
+  error: { message: string; code?: string } | null;
+  count?: number | null;
+};
+interface LooseQuery extends Promise<LooseResult> {
+  select: (
+    columns?: string,
+    options?: { count?: "exact" | "planned" | "estimated"; head?: boolean },
+  ) => LooseQuery;
+  eq: (column: string, value: unknown) => LooseQuery;
+  lte: (column: string, value: unknown) => LooseQuery;
+  order: (
+    column: string,
+    options?: { ascending?: boolean; nullsFirst?: boolean },
+  ) => LooseQuery;
+  limit: (count: number) => LooseQuery;
+  single: () => Promise<LooseResult>;
+  maybeSingle: () => Promise<LooseResult>;
+  insert: (values: unknown) => LooseQuery;
+  update: (values: unknown) => LooseQuery;
+}
 type Db = {
-  from: (table: string) => any;
+  from: (table: string) => LooseQuery;
+};
+
+/** One `newsletter_subscribers` row, as selected by the flows below. */
+type SubscriberRow = {
+  id: string;
+  email: string;
+  status: string;
+  locale: string | null;
+  resend_count: number | null;
+  last_resend_at: string | null;
+  verify_token: string | null;
+  verify_expires_at: string | null;
+  // Always populated by the insert path (DB default) and required downstream
+  // by `QueueInput.unsubscribeToken`, so non-nullable here.
+  unsubscribe_token: string;
+  bounce_count: number | null;
 };
 
 async function admin(): Promise<Db> {
@@ -249,7 +287,7 @@ export async function subscribeNewsletter(
     }
 
     const db = await admin();
-    const { data: existing, error: readError } = await db
+    const { data: existingData, error: readError } = await db
       .from("newsletter_subscribers")
       .select(
         "id, email, status, locale, resend_count, last_resend_at, verify_token, verify_expires_at, unsubscribe_token, bounce_count",
@@ -257,6 +295,7 @@ export async function subscribeNewsletter(
       .eq("email", email)
       .limit(1)
       .maybeSingle();
+    const existing = existingData as SubscriberRow | null;
     if (readError) {
       await captureError(readError, { scope: "newsletter.subscribe.read" });
       throw new NewsletterError(
@@ -270,7 +309,7 @@ export async function subscribeNewsletter(
     // 3a. Never seen before → pending row + confirmation mail.
     if (!existing) {
       const verifyToken = generateToken();
-      const { data: created, error: insertError } = await db
+      const { data: createdData, error: insertError } = await db
         .from("newsletter_subscribers")
         .insert({
           email,
@@ -290,6 +329,7 @@ export async function subscribeNewsletter(
         })
         .select("id, unsubscribe_token")
         .single();
+      const created = createdData as SubscriberRow;
 
       if (insertError) {
         // A unique-violation here means two submits raced. That is a success
@@ -460,12 +500,13 @@ export async function verifyNewsletter(token: string): Promise<VerifyResult> {
     await enforceRateLimit("newsletter.verify", await sha256(ip));
 
     const db = await admin();
-    const { data: row } = await db
+    const { data: verifyData } = await db
       .from("newsletter_subscribers")
       .select("id, email, status, locale, verify_expires_at, unsubscribe_token")
       .eq("verify_token", clean)
       .limit(1)
       .maybeSingle();
+    const row = verifyData as SubscriberRow | null;
 
     if (!row) {
       // Either a bad link, or a token already spent. An already-active address
@@ -555,12 +596,13 @@ export async function unsubscribeNewsletter(
     await enforceRateLimit("newsletter.unsubscribe", await sha256(ip));
 
     const db = await admin();
-    const { data: row } = await db
+    const { data: unsubData } = await db
       .from("newsletter_subscribers")
       .select("id, email, status, locale")
       .eq("unsubscribe_token", clean)
       .limit(1)
       .maybeSingle();
+    const row = unsubData as SubscriberRow | null;
     if (!row) return { status: "invalid" };
 
     if (row.status === "unsubscribed") {
@@ -616,12 +658,13 @@ export async function recordDeliveryFeedback(input: {
   if (!email) return { status: "unknown", suppressed: false };
 
   const db = await admin();
-  const { data: row } = await db
+  const { data: feedbackData } = await db
     .from("newsletter_subscribers")
     .select("id, status, bounce_count, locale")
     .eq("email", email)
     .limit(1)
     .maybeSingle();
+  const row = feedbackData as SubscriberRow | null;
   if (!row) return { status: "unknown", suppressed: false };
 
   const now = new Date();
@@ -710,7 +753,7 @@ async function queueAndFlush(input: QueueInput) {
     origin: input.origin,
   });
 
-  const { data: queued, error } = await db
+  const { data: queuedData, error } = await db
     .from("newsletter_outbox")
     .insert({
       subscriber_id: input.subscriberId,
@@ -724,6 +767,7 @@ async function queueAndFlush(input: QueueInput) {
     })
     .select("id")
     .single();
+  const queued = queuedData as { id: string } | null;
   if (error || !queued) {
     // Queueing failed: the subscription still stands, and we shout, because a
     // person is now waiting for an email that has no row behind it.

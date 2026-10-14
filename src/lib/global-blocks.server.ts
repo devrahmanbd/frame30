@@ -382,7 +382,11 @@ export function resolveGlobalRefAst(
     return out.sections;
   };
   return {
-    ast: { header: run(ast.header), main: run(ast.main), footer: run(ast.footer) },
+    ast: {
+      header: run(ast.header),
+      main: run(ast.main),
+      footer: run(ast.footer),
+    },
     missing,
   };
 }

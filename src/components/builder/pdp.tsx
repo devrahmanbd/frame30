@@ -835,11 +835,7 @@ const StickyBuyBar: WidgetComponent = (ctx) => {
           : str("label") || "Add to cart"}
       </button>
       {soldOut && (
-        <p
-          id="fq-sticky-variant-stock"
-          role="status"
-          className="sr-only"
-        >
+        <p id="fq-sticky-variant-stock" role="status" className="sr-only">
           {locale === "bn"
             ? "এই প্রোডাক্ট ভ্যারিয়েন্টটি স্টকে নেই"
             : "This product variant is out of stock"}

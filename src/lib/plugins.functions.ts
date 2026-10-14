@@ -198,8 +198,7 @@ export class PluginUploadError extends Error {
 }
 
 export type PluginUploadCheck =
-  | { ok: true; name: string }
-  | { ok: false; reason: string };
+  { ok: true; name: string } | { ok: false; reason: string };
 
 /** Front-of-house validation for the `.zip` drop-zone on the plugins desk. */
 export function validatePluginUpload(file: {
@@ -298,10 +297,9 @@ export async function installUploadedPlugin(
       fileName: rawName,
       bytes,
       idempotencyKey: input.idempotencyKey,
-      validator:
-        pluginPackage.pkg1PluginValidator as Parameters<
-          typeof installPackage
-        >[2]["validator"],
+      validator: pluginPackage.pkg1PluginValidator as Parameters<
+        typeof installPackage
+      >[2]["validator"],
     },
     actorId,
   );
@@ -326,9 +324,8 @@ export async function installUploadedPlugin(
       // Mirror the official-install compensation: no orphan pipeline rows
       // strand behind a success response.
       try {
-        const { deleteVersionAssets, pluginVersionPrefix } = await import(
-          "./package-store.server"
-        );
+        const { deleteVersionAssets, pluginVersionPrefix } =
+          await import("./package-store.server");
         await deleteVersionAssets(
           db,
           merchantId,

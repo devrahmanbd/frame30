@@ -78,7 +78,10 @@ export function GlobalsEditor({ globals, onChange }: Props) {
     });
 
   const removeColor = (id: string) =>
-    commit({ ...globals, colors: globals.colors.filter((row) => row.id !== id) });
+    commit({
+      ...globals,
+      colors: globals.colors.filter((row) => row.id !== id),
+    });
 
   const addColor = () => {
     if (globals.colors.length >= MAX_GLOBAL_COLORS) return;
@@ -149,7 +152,10 @@ export function GlobalsEditor({ globals, onChange }: Props) {
       </div>
 
       {/* Colours */}
-      <section aria-label={t("Global colours", "গ্লোবাল রং")} className="space-y-2">
+      <section
+        aria-label={t("Global colours", "গ্লোবাল রং")}
+        className="space-y-2"
+      >
         {globals.colors.map((color) => (
           <div
             key={color.id}
@@ -166,7 +172,9 @@ export function GlobalsEditor({ globals, onChange }: Props) {
                 value={color.name}
                 aria-label={t("Colour name", "রঙের নাম")}
                 onChange={(event) =>
-                  updateColor(color.id, { name: event.target.value.slice(0, 40) })
+                  updateColor(color.id, {
+                    name: event.target.value.slice(0, 40),
+                  })
                 }
                 className="min-w-0 flex-1 rounded-fq-sm border border-border/60 bg-background px-2 py-1 text-xs text-foreground"
               />
@@ -184,13 +192,17 @@ export function GlobalsEditor({ globals, onChange }: Props) {
                 type="color"
                 value={HEX.test(color.value) ? color.value : "#0F766E"}
                 aria-label={t("Colour value", "রঙের মান")}
-                onChange={(event) => updateColor(color.id, { value: event.target.value })}
+                onChange={(event) =>
+                  updateColor(color.id, { value: event.target.value })
+                }
                 className="size-8 shrink-0 cursor-pointer rounded-fq-sm border border-border/60 bg-background"
               />
               <input
                 type="text"
                 value={color.value}
-                onChange={(event) => updateColor(color.id, { value: event.target.value })}
+                onChange={(event) =>
+                  updateColor(color.id, { value: event.target.value })
+                }
                 spellCheck={false}
                 className="w-24 shrink-0 rounded-fq-sm border border-border/60 bg-background px-2 py-1 font-mono text-xs text-foreground uppercase"
               />
@@ -231,7 +243,10 @@ export function GlobalsEditor({ globals, onChange }: Props) {
       </section>
 
       {/* Fonts */}
-      <section aria-label={t("Global fonts", "গ্লোবাল ফন্ট")} className="space-y-2">
+      <section
+        aria-label={t("Global fonts", "গ্লোবাল ফন্ট")}
+        className="space-y-2"
+      >
         {globals.fonts.map((font) => (
           <div
             key={font.id}
@@ -268,14 +283,18 @@ export function GlobalsEditor({ globals, onChange }: Props) {
                 type="text"
                 value={font.family}
                 aria-label={t("Font family", "ফন্ট ফ্যামিলি")}
-                onChange={(event) => updateFont(font.id, { family: event.target.value })}
+                onChange={(event) =>
+                  updateFont(font.id, { family: event.target.value })
+                }
                 spellCheck={false}
                 className="min-w-0 flex-1 rounded-fq-sm border border-border/60 bg-background px-2 py-1 text-xs text-foreground"
               />
               <select
                 value={font.weight}
                 aria-label={t("Font weight", "ফন্ট ওজন")}
-                onChange={(event) => updateFont(font.id, { weight: event.target.value })}
+                onChange={(event) =>
+                  updateFont(font.id, { weight: event.target.value })
+                }
                 className="shrink-0 rounded-fq-sm border border-border/60 bg-background px-2 py-1 text-xs text-foreground"
               >
                 {WEIGHTS.map((weight) => (

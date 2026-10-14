@@ -106,7 +106,11 @@ function parseArgs(argv) {
   return opts;
 }
 
-function run(cmd, args, { timeoutMs = 120000, maxBuffer = 64 * 1024 * 1024 } = {}) {
+function run(
+  cmd,
+  args,
+  { timeoutMs = 120000, maxBuffer = 64 * 1024 * 1024 } = {},
+) {
   try {
     const r = spawnSync(cmd, args, {
       cwd: ROOT,
@@ -152,7 +156,9 @@ function blameLine(file, line) {
     file,
   ]);
   if (!r.ok || r.code !== 0)
-    return { nullReason: `git blame failed (${r.error ?? `exit ${r.code}`}) — file may be untracked or outside git` };
+    return {
+      nullReason: `git blame failed (${r.error ?? `exit ${r.code}`}) — file may be untracked or outside git`,
+    };
   const lines = r.stdout.split("\n");
   const first = lines[0] ?? "";
   const sha = first.split(" ")[0] ?? "";
@@ -172,29 +178,38 @@ function blameLine(file, line) {
     else if (l.startsWith("author-time ")) time = l.slice(12).trim();
   }
   if (!author && !mail)
-    return { commit: sha, nullReason: "blame gives no author identity — refusing to substitute git config user" };
+    return {
+      commit: sha,
+      nullReason:
+        "blame gives no author identity — refusing to substitute git config user",
+    };
   const who =
     author && mail && mail !== "<>"
       ? `${author} ${mail}`
       : (author ?? mail ?? null);
   let at = null;
   let atReason = null;
-  if (time && /^\d+$/.test(time)) at = new Date(Number(time) * 1000).toISOString();
+  if (time && /^\d+$/.test(time))
+    at = new Date(Number(time) * 1000).toISOString();
   else atReason = "blame gives no author timestamp";
   return { commit: sha, by: who, at, atReason };
 }
 
 function commitSubject(sha) {
   const r = run("git", ["show", "-s", "--format=%s", sha]);
-  if (!r.ok || r.code !== 0) return { value: null, reason: "commit subject unreadable" };
+  if (!r.ok || r.code !== 0)
+    return { value: null, reason: "commit subject unreadable" };
   const s = (r.stdout ?? "").trim().slice(0, 200);
-  return s ? { value: s, reason: null } : { value: null, reason: "empty commit subject" };
+  return s
+    ? { value: s, reason: null }
+    : { value: null, reason: "empty commit subject" };
 }
 
 /** Owner/repo from the origin URL WITHOUT ever exposing embedded credentials. */
 function repoSlug() {
   const r = run("git", ["config", "--get", "remote.origin.url"]);
-  if (!r.ok || r.code !== 0) return { slug: null, reason: "no origin remote configured" };
+  if (!r.ok || r.code !== 0)
+    return { slug: null, reason: "no origin remote configured" };
   const raw = (r.stdout ?? "").trim();
   const m = raw.match(/github\.com[:/]([^/]+)\/([^/]+?)(?:\.git)?\s*$/);
   if (!m) return { slug: null, reason: "origin is not a github.com remote" };
@@ -222,7 +237,13 @@ async function fetchJson(url, token, timeoutMs = 15000) {
     }
     return { status: res.status, ok: res.ok, limited, body };
   } catch (e) {
-    return { status: null, ok: false, limited: false, body: null, error: String(e) };
+    return {
+      status: null,
+      ok: false,
+      limited: false,
+      body: null,
+      error: String(e),
+    };
   } finally {
     clearTimeout(t);
   }
@@ -230,7 +251,10 @@ async function fetchJson(url, token, timeoutMs = 15000) {
 
 function loadJsonFile(path) {
   try {
-    return { value: JSON.parse(readFileSync(resolve(ROOT, path), "utf8")), error: null };
+    return {
+      value: JSON.parse(readFileSync(resolve(ROOT, path), "utf8")),
+      error: null,
+    };
   } catch (e) {
     return { value: null, error: String(e) };
   }
@@ -298,8 +322,12 @@ async function main() {
               : null,
           reviewers: Array.isArray(c.reviewers) ? c.reviewers : null,
           reasons: {
-            ...(c.number || c.url || c.author ? {} : { pr: "fixture entry has no PR identity" }),
-            ...(Array.isArray(c.reviewers) ? {} : { reviewers: "fixture entry has no reviewers" }),
+            ...(c.number || c.url || c.author
+              ? {}
+              : { pr: "fixture entry has no PR identity" }),
+            ...(Array.isArray(c.reviewers)
+              ? {}
+              : { reviewers: "fixture entry has no reviewers" }),
           },
           source: "prs-json fixture",
         };
@@ -307,7 +335,10 @@ async function main() {
       return {
         pr: null,
         reviewers: null,
-        reasons: { pr: "fixture marks this commit as having no PR", reviewers: "fixture marks this commit as having no PR" },
+        reasons: {
+          pr: "fixture marks this commit as having no PR",
+          reviewers: "fixture marks this commit as having no PR",
+        },
         source: "prs-json fixture",
       };
     }
@@ -336,7 +367,12 @@ async function main() {
       const why = list.limited
         ? "GitHub API rate-limited — retry later; never read absence as no-PR"
         : `GitHub API unavailable (status ${list.status ?? list.error}) — best-effort lookup, not evidence of no-PR`;
-      return { pr: null, reviewers: null, reasons: { pr: why, reviewers: why }, source: "api" };
+      return {
+        pr: null,
+        reviewers: null,
+        reasons: { pr: why, reviewers: why },
+        source: "api",
+      };
     }
     const pulls = Array.isArray(list.body) ? list.body : [];
     if (pulls.length === 0)
@@ -363,7 +399,9 @@ async function main() {
         token,
       );
       if (rev.ok && Array.isArray(rev.body)) {
-        reviewers = [...new Set(rev.body.map((r) => r?.user?.login).filter(Boolean))];
+        reviewers = [
+          ...new Set(rev.body.map((r) => r?.user?.login).filter(Boolean)),
+        ];
         if (reviewers.length === 0) reviewersReason = "PR has no reviews yet";
       } else {
         reviewersReason = rev.limited
@@ -403,7 +441,8 @@ async function main() {
       entry.reasons.introducedBy = b.nullReason;
       entry.reasons.introducedAt = b.nullReason;
       entry.reasons.pr = "no introducing commit — cannot join to a PR";
-      entry.reasons.reviewers = "no introducing commit — cannot join to reviewers";
+      entry.reasons.reviewers =
+        "no introducing commit — cannot join to reviewers";
     } else {
       entry.introducingCommit = b.commit;
       if (b.by) entry.introducedBy = b.by;
@@ -460,7 +499,9 @@ async function main() {
     const dest = resolve(ROOT, opts.out);
     mkdirSync(dirname(dest), { recursive: true });
     writeFileSync(dest, text);
-    console.error(`attribution-report: wrote ${opts.out} (${findings.length} finding(s), ${packages.length} package(s))`);
+    console.error(
+      `attribution-report: wrote ${opts.out} (${findings.length} finding(s), ${packages.length} package(s))`,
+    );
   }
 }
 

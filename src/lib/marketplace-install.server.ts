@@ -130,7 +130,7 @@ export async function lapseExpiredTrials(
       .eq("status", "past_due")
       .lte("renews_at", nowIso);
     if (error) throw error;
-    for (const row of ((pastDue ?? []) as { id: string }[])) ids.push(row.id);
+    for (const row of (pastDue ?? []) as { id: string }[]) ids.push(row.id);
   } catch (err) {
     if (!isMissingRecurringColumnError(err)) throw err;
     recurringDegraded = true;
@@ -292,9 +292,8 @@ async function patchInstallMarketplaceShape(
   shape: Record<string, unknown>,
   artifact: Record<string, unknown>,
 ): Promise<{ degraded: boolean }> {
-  const { isMissingArtifactColumnError } = await import(
-    "./package-install.server"
-  );
+  const { isMissingArtifactColumnError } =
+    await import("./package-install.server");
   try {
     const { error } = await db
       .from("marketplace_installs")
@@ -501,9 +500,8 @@ export async function installListing(
     // compensated, never silent.
     if (pkg.artifactId !== widgetArtifact.checksum) {
       try {
-        const { deleteVersionAssets, pluginVersionPrefix } = await import(
-          "./package-store.server"
-        );
+        const { deleteVersionAssets, pluginVersionPrefix } =
+          await import("./package-store.server");
         await deleteVersionAssets(
           db,
           merchantId,
@@ -558,9 +556,8 @@ export async function installListing(
       );
     } catch {
       try {
-        const { deleteVersionAssets, pluginVersionPrefix } = await import(
-          "./package-store.server"
-        );
+        const { deleteVersionAssets, pluginVersionPrefix } =
+          await import("./package-store.server");
         await deleteVersionAssets(
           db,
           merchantId,
@@ -1080,7 +1077,10 @@ export async function saveListing(
       return { ok: true, id: (data as unknown as { id: string }).id };
     } catch (err) {
       if (!isMissingTermColumnError(err)) {
-        if (err instanceof Error && err.message === "market_listing_save_failed")
+        if (
+          err instanceof Error &&
+          err.message === "market_listing_save_failed"
+        )
           throw err;
         throw new Error("market_listing_save_failed");
       }
@@ -1596,9 +1596,9 @@ const DAY_MS = 86_400_000;
 /** True when the failure is "the recurring columns don't exist yet" — never for real errors. */
 export function isMissingRecurringColumnError(err: unknown): boolean {
   const msg =
-    err instanceof Error ? err.message : (
-      (err as { message?: string } | null)?.message ?? String(err ?? "")
-    );
+    err instanceof Error
+      ? err.message
+      : ((err as { message?: string } | null)?.message ?? String(err ?? ""));
   if (!/billing_interval|renews_at|last_renewed_at/i.test(msg)) return false;
   return /column|schema cache|PGRST204|42703|does not exist/i.test(msg);
 }
@@ -1642,9 +1642,9 @@ const LISTING_TERM_PRICE_MAX = 100_000_000;
 /** True when the failure is "the listing term columns don't exist yet" — never for real errors. */
 export function isMissingTermColumnError(err: unknown): boolean {
   const msg =
-    err instanceof Error ? err.message : (
-      (err as { message?: string } | null)?.message ?? String(err ?? "")
-    );
+    err instanceof Error
+      ? err.message
+      : ((err as { message?: string } | null)?.message ?? String(err ?? ""));
   if (!/price_monthly_minor_int|price_annual_minor_int/i.test(msg))
     return false;
   return /column|schema cache|PGRST204|42703|does not exist/i.test(msg);
@@ -1740,7 +1740,9 @@ export function computeRenewsAt(
   fromMs: number = Date.now(),
 ): string | null {
   if (interval === "one_time") return null;
-  return new Date(fromMs + RENEWAL_PERIOD_DAYS[interval] * DAY_MS).toISOString();
+  return new Date(
+    fromMs + RENEWAL_PERIOD_DAYS[interval] * DAY_MS,
+  ).toISOString();
 }
 
 /**
@@ -1887,8 +1889,7 @@ export async function processInstallRenewal(
   if (!seller)
     return { renewed: false, installId, reason: "listing_not_found" };
   const price =
-    getListingTermPrice(seller, interval) ??
-    Number(row.price_minor_int ?? 0);
+    getListingTermPrice(seller, interval) ?? Number(row.price_minor_int ?? 0);
   // Free recurring installs extend without touching the ledger.
   if (!Number.isFinite(price) || price <= 0) {
     const renewsAt = computeRenewsAt(interval, nowMs) as string;
@@ -2081,7 +2082,9 @@ export async function convertTrialToPaid(
         merchantId,
         counterpartyMerchantId: seller.seller_merchant_id,
         source:
-          kind === "theme" ? "market.theme.installed" : "market.widget.installed",
+          kind === "theme"
+            ? "market.theme.installed"
+            : "market.widget.installed",
         referenceId: installId,
         direction: "debit",
         gross: money(price, row.currency_code),
@@ -2268,7 +2271,8 @@ export async function applyInstallUpgrade(
     nowMs,
   });
   if (quote.dueMinorInt > 0) {
-    const kind = row.kind === "theme" ? ("theme" as const) : ("widget" as const);
+    const kind =
+      row.kind === "theme" ? ("theme" as const) : ("widget" as const);
     const { data: listing } = await db
       .from(table(kind))
       .select("id, seller_merchant_id")

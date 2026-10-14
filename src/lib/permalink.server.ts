@@ -51,7 +51,39 @@ type Client = SupabaseClient<Database>;
  * added in Phase 3). A single narrow escape hatch here is honest and keeps the
  * rest of the module fully typed, rather than sprinkling casts at call sites.
  */
-type LooseClient = SupabaseClient<Database> & { from: (table: string) => any };
+type LooseClient = SupabaseClient<Database> & {
+  from: (table: string) => LooseQuery;
+};
+
+/** Minimal shape of the untyped query builder the client returns. */
+type LooseResult = {
+  data: unknown;
+  error: { message: string; code?: string } | null;
+  count?: number | null;
+};
+interface LooseQuery extends Promise<LooseResult> {
+  select: (
+    columns?: string,
+    options?: { count?: "exact" | "planned" | "estimated"; head?: boolean },
+  ) => LooseQuery;
+  eq: (column: string, value: unknown) => LooseQuery;
+  neq: (column: string, value: unknown) => LooseQuery;
+  in: (column: string, values: unknown[]) => LooseQuery;
+  is: (column: string, value: unknown) => LooseQuery;
+  or: (expression: string) => LooseQuery;
+  order: (
+    column: string,
+    options?: { ascending?: boolean; nullsFirst?: boolean },
+  ) => LooseQuery;
+  range: (from: number, to: number) => LooseQuery;
+  limit: (count: number) => LooseQuery;
+  single: () => Promise<LooseResult>;
+  maybeSingle: () => Promise<LooseResult>;
+  insert: (values: unknown) => LooseQuery;
+  update: (values: unknown) => LooseQuery;
+  upsert: (values: unknown, options?: { onConflict?: string }) => LooseQuery;
+  delete: () => LooseQuery;
+}
 
 const SETTINGS_KEY = (merchantId: string) => `permalinks|${merchantId}`;
 const SLUG_KEY = (storeSlug: string) => `permalinks-slug|${storeSlug}`;
@@ -196,11 +228,11 @@ type Row = {
 };
 
 async function pull(
-  db: LooseClient,
+  db: { from: (table: string) => LooseQuery },
   table: string,
   merchantId: string,
   columns: string,
-  filters: (query: any) => any,
+  filters: (query: LooseQuery) => LooseQuery,
 ): Promise<Row[]> {
   const out: Row[] = [];
   const page = 1_000;
@@ -616,7 +648,7 @@ export type RedirectQuery = {
   pageSize?: number;
 };
 
-function mapRedirect(row: Record<string, any>): RedirectRow {
+function mapRedirect(row: Record<string, unknown>): RedirectRow {
   const code = Number(row["status_code"] ?? 301);
   return {
     id: String(row["id"]),
@@ -775,7 +807,7 @@ export async function upsertRedirect(
   incr("framique_permalink_redirects_written_total", {
     origin: input.origin ?? "manual",
   });
-  return mapRedirect(data as Record<string, any>);
+  return mapRedirect(data as Record<string, unknown>);
 }
 
 export async function deleteRedirects(
@@ -900,7 +932,7 @@ export async function exportRedirectCsv(
   if (error)
     throw new PermalinkServerError("settings_read_failed", error.message);
   return toRedirectCsv(
-    (data ?? []).map((row: Record<string, any>) => ({
+    ((data ?? []) as Record<string, unknown>[]).map((row) => ({
       from: String(row["from_path"]),
       to: String(row["to_path"] ?? ""),
       status: Number(row["status_code"] ?? 301),
@@ -983,7 +1015,7 @@ export async function listMissingPaths(
     .limit(Math.min(Math.max(limit, 1), 500));
   if (error)
     throw new PermalinkServerError("settings_read_failed", error.message);
-  return (data ?? []).map((row: Record<string, any>) => ({
+  return ((data ?? []) as Record<string, unknown>[]).map((row) => ({
     id: String(row["id"]),
     path: String(row["path"]),
     hits: Number(row["hits"] ?? 0),

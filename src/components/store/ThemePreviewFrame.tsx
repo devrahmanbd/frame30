@@ -27,7 +27,11 @@ import {
   ProductCraftStory,
 } from "@/components/store/ProductView";
 
-import { DEMO_CATALOGS } from "@/lib/demo-catalog";
+import {
+  DEMO_CATALOGS,
+  type DemoProduct,
+  type DemoVariant,
+} from "@/lib/demo-catalog";
 import { ThemeSurface } from "@/components/builder/ThemeSurface";
 import { CheckoutMock } from "@/components/store/CheckoutMock";
 import { OrderConfirmationMock } from "@/components/store/OrderConfirmationMock";
@@ -61,6 +65,7 @@ import {
 } from "@/lib/builder-ast";
 import {
   applyDemoFocus,
+  type DemoFocus,
   handlePreviewCanvasClick,
   handlePreviewCanvasSubmit,
   previewSearchForSwitch,
@@ -114,7 +119,7 @@ function DemoProductMediaGallery({
 }: {
   images: string[];
   blueprintKey: string;
-  variants?: any[];
+  variants?: DemoVariant[];
 }) {
   const variantChannel = useSectionChannel(blueprintKey, "variant");
   const selectedVariantIndex = !isNaN(parseInt(variantChannel.ids[0] || "", 10))
@@ -122,8 +127,9 @@ function DemoProductMediaGallery({
     : 0;
 
   const selectedVariant = variants[selectedVariantIndex];
+  const selectedImages = selectedVariant?.images;
   const validImages = (
-    selectedVariant?.images?.length > 0 ? selectedVariant.images : images
+    selectedImages && selectedImages.length > 0 ? selectedImages : images
   ).filter(Boolean);
   console.log(
     "DemoProductMediaGallery validImages:",
@@ -223,9 +229,33 @@ function DemoProductMediaGallery({
   );
 }
 
+/**
+ * Demo catalogue variant as rendered: the catalogue shape plus the optional
+ * row id carried by `_catalog` payloads (absent in the static presets, where
+ * the variant name is the identity).
+ */
+type PreviewVariant = DemoVariant & { id?: string };
+
+/** Mapped preview variant: the minor-unit price/stock shape the PDP product
+ *  components read (`PriceBlock` / `VariantSelector` / `AddToCart`). */
+type MappedPreviewVariant = {
+  id: string;
+  name: string;
+  sku?: string;
+  price_amount_minor_int: number;
+  compare_at_amount_minor_int?: number;
+  stock_quantity: number;
+};
+
+/** Debug handle the preview exposes on `window` for failing renders. */
+type PreviewDebugWindow = Window & {
+  __DEBUG_PRODUCT?: unknown;
+  __DEBUG_FOCUS?: unknown;
+};
+
 function useMockProductSlots(
   template: TemplateKey,
-  demoFocus: any,
+  demoFocus: DemoFocus | null,
   themeName: string,
   blueprintKey: string,
 ) {
@@ -237,11 +267,11 @@ function useMockProductSlots(
     template === "product" && demoFocus
       ? DEMO_CATALOGS[
           blueprintKey as keyof typeof DEMO_CATALOGS
-        ]?.products.find((p: any) => p.slug === demoFocus.slug)
+        ]?.products.find((p: DemoProduct) => p.slug === demoFocus.slug)
       : null;
 
-  const mappedVariants = demoProduct
-    ? demoProduct.variants.map((v: any) => ({
+  const mappedVariants: MappedPreviewVariant[] = demoProduct
+    ? demoProduct.variants.map((v: PreviewVariant) => ({
         id: v.id ?? v.name,
         name: v.name,
         sku: v.sku,
@@ -255,7 +285,7 @@ function useMockProductSlots(
   useEffect(() => {
     if (demoProduct) {
       setVariantId(
-        (demoProduct.variants[0] as any)?.id ??
+        (demoProduct.variants[0] as PreviewVariant | undefined)?.id ??
           demoProduct.variants[0]?.name ??
           "",
       );
@@ -266,7 +296,9 @@ function useMockProductSlots(
   const variantChannel = useSectionChannel(blueprintKey, "variant");
   useEffect(() => {
     if (!demoProduct || mappedVariants.length === 0) return;
-    const idx = mappedVariants.findIndex((v: any) => v.id === variantId);
+    const idx = mappedVariants.findIndex(
+      (v: MappedPreviewVariant) => v.id === variantId,
+    );
     variantChannel.clear();
     if (idx >= 0) {
       variantChannel.push(idx.toString());
@@ -301,7 +333,7 @@ function useMockProductSlots(
   };
 
   const mappedVariant =
-    mappedVariants.find((v: any) => v.id === variantId) ??
+    mappedVariants.find((v: MappedPreviewVariant) => v.id === variantId) ??
     mappedVariants[0] ??
     null;
 
@@ -321,35 +353,35 @@ function useMockProductSlots(
   // NOTE: product_media is intentionally NOT in the return — the AST widget handles
   // the gallery using the images injected by applyDemoFocus, and the channel push above
   // drives variant→gallery binding reactively.
-  const meta = <ProductInfo product={productPayload as any} />;
+  const meta = <ProductInfo product={productPayload} />;
   const priceBlock = mappedVariant ? (
-    <PriceBlock variant={mappedVariant as any} currencyCode="BDT" />
+    <PriceBlock variant={mappedVariant} currencyCode="BDT" />
   ) : null;
 
   const addToCart = mappedVariant ? (
     <div>
       <VariantSelector
-        variants={mappedVariants as any}
+        variants={mappedVariants}
         variantId={variantId}
         setVariantId={setVariantId}
       />
       <AddToCart
-        variant={mappedVariant as any}
-        merchant={merchantPayload as any}
+        variant={mappedVariant}
+        merchant={merchantPayload}
         custom={false}
         add={(id, qty) => {
           console.log("Mock add to cart", id, qty);
         }}
         added={added}
         setAdded={setAdded}
-        settings={settingsPayload as any}
+        settings={settingsPayload}
       />
     </div>
   ) : null;
 
   const pageContent = (
     <>
-      <ProductDetails product={productPayload as any} />
+      <ProductDetails product={productPayload} />
       <ProductCraftStory
         description={demoProduct.description}
         themeKey={blueprintKey}
@@ -362,8 +394,9 @@ function useMockProductSlots(
     demoProduct?.images ??
     (demoProduct?.image_url ? [demoProduct.image_url] : []);
   if (typeof window !== "undefined") {
-    (window as any).__DEBUG_PRODUCT = demoProduct;
-    (window as any).__DEBUG_FOCUS = demoFocus;
+    const debugWindow = window as PreviewDebugWindow;
+    debugWindow.__DEBUG_PRODUCT = demoProduct;
+    debugWindow.__DEBUG_FOCUS = demoFocus;
   }
   const media = (
     <DemoProductMediaGallery

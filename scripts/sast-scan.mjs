@@ -375,7 +375,13 @@ const FORM_VAR_NAMES = new Set([
   "sp",
   "fd",
 ]);
-const FORM_PROPS = new Set(["body", "query", "params", "formdata", "searchparams"]);
+const FORM_PROPS = new Set([
+  "body",
+  "query",
+  "params",
+  "formdata",
+  "searchparams",
+]);
 const PRIV_PROPS = new Set([
   "role",
   "roles",
@@ -515,9 +521,7 @@ function boundIdents(lhs) {
     const keys = new Set(
       [...inner.matchAll(/\b([A-Za-z_$][\w$]*)\s*:/g)].map((m) => m[1]),
     );
-    const all = [...inner.matchAll(/\b([A-Za-z_$][\w$]*)\b/g)].map(
-      (m) => m[1],
-    );
+    const all = [...inner.matchAll(/\b([A-Za-z_$][\w$]*)\b/g)].map((m) => m[1]);
     return [...new Set(all.filter((id) => !keys.has(id)))];
   }
   if (s.startsWith("[")) {
@@ -583,8 +587,7 @@ const REQ_ATTR_RE =
   /\b(?:req|request|ctx|context|Astro|event)(?:\s*\.\s*(?:req|request))?\s*\.\s*(query|body|params|formData)\b/;
 const FORM_TRACK_RE =
   /new\s+FormData\s*\(|new\s+URLSearchParams\s*\(|\.\s*formData\s*\(|useSearchParams\s*\(|\.\s*searchParams\b/;
-const FORM_GET_RECV_RE =
-  /([A-Za-z_$][\w$]*)\s*\.\s*(?:get|getAll|has)\s*\(/g;
+const FORM_GET_RECV_RE = /([A-Za-z_$][\w$]*)\s*\.\s*(?:get|getAll|has)\s*\(/g;
 const FORM_GET_HINT_RE =
   /searchParams\s*\.\s*(?:get|getAll)\s*\(|formData\s*\.\s*(?:get|getAll)\s*\(/;
 const NON_TAINT_GET_RE =
@@ -863,10 +866,7 @@ function summarizeFunctions(funcTable, req, db) {
     const flow = new Set();
     for (const r of e.returns) {
       const ids = [...readIdents(r)];
-      if (
-        directReqOn(r) ||
-        ids.some((id) => req.has(id) && !pset.has(id))
-      )
+      if (directReqOn(r) || ids.some((id) => req.has(id) && !pset.has(id)))
         reqRet = true;
       if (DB_SRC_RE.test(r) || ids.some((id) => db.has(id) && !pset.has(id)))
         dbRet = true;
@@ -1134,10 +1134,7 @@ function analyzeTaintInner(rawLines, baseDir, depth) {
   const useCount = new Map();
   for (const e of funcTable.values()) {
     if (e.stub) continue;
-    for (const p of [
-      ...e.names.filter(Boolean),
-      ...(e.rest ? [e.rest] : []),
-    ]) {
+    for (const p of [...e.names.filter(Boolean), ...(e.rest ? [e.rest] : [])]) {
       useCount.set(p, (useCount.get(p) ?? 0) + 1);
     }
   }
@@ -1164,10 +1161,7 @@ function analyzeTaintInner(rawLines, baseDir, depth) {
           const recv = m[1];
           const before = rhs.slice(0, m.index);
           if (/[.\w]$/.test(before)) continue; // (no `$`: `${x}` interpolation must still read `x`)
-          if (
-            formish.has(recv) ||
-            FORM_VAR_NAMES.has(recv.toLowerCase())
-          ) {
+          if (formish.has(recv) || FORM_VAR_NAMES.has(recv.toLowerCase())) {
             formGets = true;
             break;
           }
@@ -1187,9 +1181,7 @@ function analyzeTaintInner(rawLines, baseDir, depth) {
         }
         continue;
       }
-      const dm = lhsRaw.match(
-        /^(?:const|let|var)\s*\{([^}]*)\}\s*$/,
-      );
+      const dm = lhsRaw.match(/^(?:const|let|var)\s*\{([^}]*)\}\s*$/);
       if (dm && /^(req|request|ctx|context)$/.test(rhs.trim())) {
         for (const idm of dm[1].matchAll(/\b([A-Za-z_$][\w$]*)\b/g)) {
           const after = dm[1].slice(idm.index + idm[0].length);
@@ -1340,8 +1332,7 @@ function urlValueFinding(rawArg, taint, what, depth = 0) {
     // authority (`${base}/...`, env consts) is not attacker-steered.
     // Unresolvable tainted identifiers (unknown provenance) still fire.
     const defs = depth < 4 ? varDefs(taint.codes, t) : [];
-    if (defs.length === 0)
-      return `${what} from tainted variable \`${t}\``;
+    if (defs.length === 0) return `${what} from tainted variable \`${t}\``;
     for (const def of defs.slice(-3)) {
       const inner = def.trim();
       const callee = inner.match(/^([A-Za-z_$][\w$]*)\s*\(/);
@@ -1420,8 +1411,7 @@ function taintedEgress(line, taint) {
 
 const REDIRECT_CALL_RE =
   /Response\s*\.\s*redirect\s*\(|(?<![\w$.])redirect\s*\(/;
-const REDIRECT_ASSIGN_RE =
-  /(?:window\s*\.\s*)?location(?:\s*\.\s*href)?\s*=/;
+const REDIRECT_ASSIGN_RE = /(?:window\s*\.\s*)?location(?:\s*\.\s*href)?\s*=/;
 
 function taintedRedirect(line, taint) {
   if (!taint) return null;
@@ -1470,7 +1460,8 @@ function taintedFs(line, taint) {
   return null;
 }
 
-const AUTH_DECISION_RE = /\bif\s*\(|\bwhile\s*\(|\breturn\b|\?[^;]*:|&&|\|\||===|!==|==|!=/;
+const AUTH_DECISION_RE =
+  /\bif\s*\(|\bwhile\s*\(|\breturn\b|\?[^;]*:|&&|\|\||===|!==|==|!=/;
 const PRIV_PROP_RE =
   /(?:^|[^.\w$])([A-Za-z_$][\w$]*)(?:\s*\.\s*[A-Za-z_$][\w$]*)*\s*\.\s*(role|roles|isAdmin|is_admin|isSuperuser|is_superuser|permissions|permission|scope|scopes|privilege|privileges)\b/;
 const PRIV_NAME_RE = /(admin|role|privileg|permission|scope)/i;
@@ -1553,7 +1544,11 @@ function taintedUrlAttr(line, taint) {
   if (/^[A-Za-z_$][\w$]*$/.test(expr)) {
     // Bare alias: resolve through in-file definitions first, so a tainted
     // alias of a safe authority stays silent (mirrors tainted-egress).
-    if (!taint.req.has(expr) || (taint.params.has(expr) && !taint.called?.has(expr))) return null;
+    if (
+      !taint.req.has(expr) ||
+      (taint.params.has(expr) && !taint.called?.has(expr))
+    )
+      return null;
     const defs = varDefs(taint.codes, expr);
     if (defs.length === 0)
       return `URL attribute from request-derived \`${expr}\``;
@@ -1808,7 +1803,9 @@ for (const [rel, lines] of [...targets.entries()].sort()) {
   const content = readFileSync(join(ROOT, rel), "utf8").split("\n");
   // Taint rules need whole-file context (sources live outside the diff),
   // but findings stay scoped to the scanned lines by the loop below.
-  const taintScope = RULES.some((r) => r.id.startsWith("tainted-") && r.scope(rel));
+  const taintScope = RULES.some(
+    (r) => r.id.startsWith("tainted-") && r.scope(rel),
+  );
   const taint = taintScope ? analyzeTaint(content, rel) : null;
   for (const ln of [...lines].sort((a, b) => a - b)) {
     const line = content[ln - 1];

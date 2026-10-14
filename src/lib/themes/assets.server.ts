@@ -23,8 +23,25 @@ import {
 } from "./assets";
 
 type Client = SupabaseClient<Database>;
+/** Minimal shape of the untyped query builder the client returns. */
+type LooseResult = {
+  data: unknown;
+  error: { message: string; code?: string } | null;
+  count?: number | null;
+};
+interface LooseQuery extends Promise<LooseResult> {
+  select: (columns?: string) => LooseQuery;
+  eq: (column: string, value: unknown) => LooseQuery;
+  order: (column: string, options?: { ascending?: boolean }) => LooseQuery;
+  limit: (count: number) => LooseQuery;
+  maybeSingle: () => Promise<LooseResult>;
+  insert: (values: unknown) => LooseQuery;
+  update: (values: unknown) => LooseQuery;
+  delete: () => LooseQuery;
+}
+type LooseClient = Client & { from: (table: string) => LooseQuery };
 // The generated types do not know Phase 17 tables until the next codegen pass.
-const loose = (db: Client) => db as unknown as SupabaseClient<any>;
+const loose = (db: Client) => db as LooseClient;
 
 export class ThemeAssetError extends Error {
   constructor(

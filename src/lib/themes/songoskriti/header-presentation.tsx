@@ -183,10 +183,7 @@ export function SongoskritiDesktopNav({
     >
       <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 lg:gap-x-9">
         {items.map((item) => (
-          <li
-            key={item.id}
-            className="group relative flex h-full items-center"
-          >
+          <li key={item.id} className="group relative flex h-full items-center">
             <SongoskritiLink
               item={item}
               base={base}
@@ -302,10 +299,7 @@ export function SongoskritiMobileDrawer({
           const kids = item.children ?? [];
           const open = expanded === item.id;
           return (
-            <li
-              key={item.id}
-              className="border-b border-[var(--theme-border)]"
-            >
+            <li key={item.id} className="border-b border-[var(--theme-border)]">
               <div className="flex w-full items-center justify-between">
                 <SongoskritiLink
                   item={item}
@@ -465,11 +459,9 @@ function toShellItems(
       label: localize ? localize(label) : label,
       href,
       children: toShellItems(rawKids as MenuNode[], localize),
-      badge:
-        typeof badgeRaw === "string" && badgeRaw.trim() ? badgeRaw : null,
+      badge: typeof badgeRaw === "string" && badgeRaw.trim() ? badgeRaw : null,
       metadata,
-      image:
-        typeof imageRaw === "string" && imageRaw ? imageRaw : null,
+      image: typeof imageRaw === "string" && imageRaw ? imageRaw : null,
       promo: null,
     };
   });

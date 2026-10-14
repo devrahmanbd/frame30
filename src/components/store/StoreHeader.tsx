@@ -29,10 +29,7 @@ import {
   selectPluginMenuRenderer,
 } from "@/lib/plugin-menu-renderers";
 import { resolveThemePresentation } from "@/lib/theme-presentations";
-import type {
-  WidgetComponent,
-  WidgetCtx,
-} from "@/components/builder/widgets";
+import type { WidgetComponent, WidgetCtx } from "@/components/builder/widgets";
 import {
   AnnouncementBar as AnnouncementBarSurface,
   headerChromeAnnouncementItems,
@@ -105,6 +102,14 @@ export const STORE_DRAWER_MENU_SLOT: MenuSlot = "menu_drawer";
 
 /** Review-gated nav swap request for `StoreHeader` (`menuSwap` prop). */
 export type StoreMenuSwap = MenuSwapRequest<MenuNode>;
+
+/**
+ * Fallback-tree node with promo art: `HEADER_FALLBACK_MENU` rows carry an
+ * optional `image` that dashboard `MenuItem` rows never have (the tree is
+ * cast to `MenuNode[]` at the theme-chrome boundary, so the field is read
+ * through this additive type at the two render sites that show it).
+ */
+export type MenuNodeWithPromo = MenuNode & { image?: string | null };
 
 /* ─────────────────────────────────────────────────────────────
  * LAYER 1 — HeaderData: pure state assembly (no hooks, no JSX).
@@ -300,9 +305,7 @@ export type HeaderShellProps = {
   t: (en: string, bn?: string) => string;
 };
 
-export type HeaderShellComponent = (
-  props: HeaderShellProps,
-) => React.ReactNode;
+export type HeaderShellComponent = (props: HeaderShellProps) => React.ReactNode;
 
 /** Registered presentation carrying a store-header shell (theme-owned). */
 type HeaderShellCarrier = WidgetComponent & {
@@ -505,7 +508,7 @@ export function HeaderDesktopNav({
                 <div className="w-full bg-[var(--theme-surface)] shadow-xl border-t border-[var(--theme-border)] max-h-[85vh] overflow-y-auto">
                   <div className="mx-auto flex max-w-[1440px] px-10 py-12 gap-16">
                     <ul className="flex-1 grid grid-cols-4 gap-x-8 gap-y-10">
-                      {node.children.map((child: any) => (
+                      {node.children.map((child: MenuNode) => (
                         <li key={child.id}>
                           <HeaderMenuLink
                             node={child}
@@ -517,15 +520,13 @@ export function HeaderDesktopNav({
                           />
                           {child.children && child.children.length > 0 && (
                             <ul className="space-y-3">
-                              {child.children.map((grandchild: any) => (
+                              {child.children.map((grandchild: MenuNode) => (
                                 <li key={grandchild.id}>
                                   <HeaderMenuLink
                                     node={grandchild}
                                     base={base}
                                     localizeLabel={
-                                      headerFallback
-                                        ? fallbackLabel
-                                        : undefined
+                                      headerFallback ? fallbackLabel : undefined
                                     }
                                     className="flex min-h-[44px] items-center font-sans text-[13px] text-[var(--theme-ink)]/60 hover:text-[var(--theme-ink)] motion-safe:transition-colors text-left"
                                   />
@@ -536,11 +537,11 @@ export function HeaderDesktopNav({
                         </li>
                       ))}
                     </ul>
-                    {(node as any).image && (
+                    {(node as MenuNodeWithPromo).image && (
                       <div className="w-[320px] shrink-0">
                         <div className="aspect-[3/4] w-full overflow-hidden bg-[var(--theme-muted)]">
                           <img
-                            src={(node as any).image}
+                            src={(node as MenuNodeWithPromo).image ?? undefined}
                             alt={
                               headerFallback
                                 ? fallbackLabel(node.label)
@@ -569,7 +570,7 @@ export function HeaderDesktopNav({
             {!isLuxury && node.children && node.children.length > 0 && (
               <div className="absolute left-1/2 -translate-x-1/2 min-w-[200px] top-[100%] pt-0 hidden group-hover:block group-focus-within:block z-50">
                 <ul className="bg-white py-4 shadow-xl border border-gray-100 rounded-sm">
-                  {node.children.map((child: any) => (
+                  {node.children.map((child: MenuNode) => (
                     <li key={child.id}>
                       <HeaderMenuLink
                         node={child}
@@ -693,11 +694,7 @@ export function HeaderUtilityIcons({
           aria-label={`${t("Cart", "কার্ট")}, ${hydratedCount(cartHydrated, cartCount)}`}
           className={`${iconLinkCls} relative`}
         >
-          <ShoppingBag
-            className="size-[20px]"
-            strokeWidth={1}
-            aria-hidden
-          />
+          <ShoppingBag className="size-[20px]" strokeWidth={1} aria-hidden />
           {cartHydrated && cartCount > 0 && (
             <span className="absolute right-1 top-1.5 flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[var(--theme-ink)] text-[9px] font-bold text-white">
               {cartCount}
@@ -711,11 +708,7 @@ export function HeaderUtilityIcons({
           aria-label={`${t("Cart", "কার্ট")}, ${hydratedCount(cartHydrated, cartCount)}`}
           className={`${iconLinkCls} relative`}
         >
-          <ShoppingBag
-            className="size-[20px]"
-            strokeWidth={1}
-            aria-hidden
-          />
+          <ShoppingBag className="size-[20px]" strokeWidth={1} aria-hidden />
           {cartHydrated && cartCount > 0 && (
             <span className="absolute right-1 top-1.5 flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[var(--theme-ink)] text-[9px] font-bold text-white">
               {cartCount}
@@ -762,7 +755,7 @@ export function HeaderMobileDrawer({
       style={{ top: scrolled ? "64px" : "108px" }}
     >
       <ul className="px-4 py-2 pb-24">
-        {mobileMenu.map((node: any) => (
+        {mobileMenu.map((node: MenuNode) => (
           <li key={node.id} className="border-b border-[var(--theme-border)]">
             <div className="flex justify-between items-center w-full">
               <HeaderMenuLink
@@ -793,7 +786,7 @@ export function HeaderMobileDrawer({
               node.children.length > 0 &&
               expandedMobileMenu === node.id && (
                 <ul className="ml-4 my-2 pb-4 space-y-1 border-t border-transparent">
-                  {node.children.map((child: any) => (
+                  {node.children.map((child: MenuNode) => (
                     <li key={child.id}>
                       <HeaderMenuLink
                         node={child}
@@ -806,7 +799,7 @@ export function HeaderMobileDrawer({
                       />
                       {child.children && child.children.length > 0 && (
                         <ul className="ml-4 mt-2 mb-4 space-y-2 border-l border-[var(--theme-border)] pl-4">
-                          {child.children.map((gc: any) => (
+                          {child.children.map((gc: MenuNode) => (
                             <li key={gc.id}>
                               <HeaderMenuLink
                                 node={gc}

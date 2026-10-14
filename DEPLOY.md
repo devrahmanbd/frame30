@@ -175,7 +175,7 @@ platform path. Never point merchants at `edge.framique.*` or `76.76.21.21`
   `.deploy-lock-audit.log`. `ops/deploy-from-git.sh --steal <branch>` forces it.
 - **Bundle marker.** The deployed SHA is stamped into `.output/DEPLOYED_SHA`
   and asserted live before lock release; success prints `git rev-parse HEAD`
-  + live marker (the CHANGELOG shared-server proof).
+  - live marker (the CHANGELOG shared-server proof).
 
 ## Edge custom-cert flapping runbook (diagnosed 2026-09-25)
 

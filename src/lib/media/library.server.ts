@@ -54,7 +54,7 @@ type Row = {
   created_at: string;
 };
 
-function toAttachment(row: any): Attachment {
+function toAttachment(row: Row): Attachment {
   const fileName = row.file_name || "untitled";
   const storagePath = row.storage_path || "";
   return {
@@ -109,11 +109,13 @@ export async function listAttachments(
     }
     if (error) throw new MediaLibraryError("list_failed", error.message);
     return ((data ?? []) as unknown as Row[]).map(toAttachment);
-  } catch (e: any) {
+  } catch (e) {
     if (e instanceof MediaLibraryError) throw e;
     throw new MediaLibraryError(
       "list_failed",
-      e?.message || "Failed to load media",
+      // Only Error instances carry a message here (query failures surface as
+      // `{ error }`, not throws); anything else means "unknown failure".
+      e instanceof Error && e.message ? e.message : "Failed to load media",
     );
   }
 }

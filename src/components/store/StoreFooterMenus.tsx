@@ -63,9 +63,7 @@ export type FooterBrandArea = {
 
 /** Where the newsletter CTA sits relative to the columns. */
 export type FooterNewsletterPlacement =
-  | "above-columns"
-  | "below-columns"
-  | "none";
+  "above-columns" | "below-columns" | "none";
 
 /** Contact block lines (phone, email, flagship rows). */
 export type FooterContact = {
@@ -108,10 +106,7 @@ export type FooterPresentation = "columns" | "stacked";
  * Caps mirror the legacy render exactly (12 columns, 24 links each) so the
  * default presentation is byte-identical to before the split.
  */
-export function buildFooterData(
-  nodes: MenuNode[],
-  base: string,
-): FooterData {
+export function buildFooterData(nodes: MenuNode[], base: string): FooterData {
   return {
     columns: nodes.slice(0, 12).map((node) => ({
       id: node.id,
@@ -154,7 +149,10 @@ export function ThemeFooterRenderer({
 }) {
   if (presentation === "stacked") {
     return (
-      <nav aria-label={label} className="border-t border-[#eaeaea] bg-transparent">
+      <nav
+        aria-label={label}
+        className="border-t border-[#eaeaea] bg-transparent"
+      >
         <div
           data-footer-presentation="stacked"
           className="mx-auto max-w-6xl space-y-10 px-4 py-16"
@@ -198,7 +196,10 @@ export function ThemeFooterRenderer({
     );
   }
   return (
-    <nav aria-label={label} className="border-t border-[#eaeaea] bg-transparent">
+    <nav
+      aria-label={label}
+      className="border-t border-[#eaeaea] bg-transparent"
+    >
       <ul className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:grid-cols-2 lg:grid-cols-4">
         {data.columns.map((column) => (
           <li key={column.id} className="min-w-0">

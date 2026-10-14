@@ -142,7 +142,9 @@ export type ValidatedPackageManifest = {
 export type ManifestValidator = (
   manifest: unknown,
   kind: PackageKind,
-) => { ok: true; manifest: ValidatedPackageManifest } | { ok: false; errors: string[] };
+) =>
+  | { ok: true; manifest: ValidatedPackageManifest }
+  | { ok: false; errors: string[] };
 
 const SEMVER_RE = /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$/;
 
@@ -199,14 +201,23 @@ export function stubManifestValidator(
       : slugifyPackageName(name);
   return {
     ok: true,
-    manifest: { slug, name: name.slice(0, 80), version, api, dependencies, raw },
+    manifest: {
+      slug,
+      name: name.slice(0, 80),
+      version,
+      api,
+      dependencies,
+      raw,
+    },
   };
 }
 
 let globalValidator: ManifestValidator | null = null;
 
 /** PKG-1 startup seam: registers the real validators once that lane lands. */
-export function setPackageManifestValidator(fn: ManifestValidator | null): void {
+export function setPackageManifestValidator(
+  fn: ManifestValidator | null,
+): void {
   globalValidator = fn;
 }
 
@@ -337,13 +348,18 @@ async function requireOwnedTheme(
 ): Promise<ThemeRow> {
   const { data } = await db
     .from("store_themes")
-    .select("id, name, is_active, source_install_id, source_listing_slug, source_version, published_version_id")
+    .select(
+      "id, name, is_active, source_install_id, source_listing_slug, source_version, published_version_id",
+    )
     .eq("merchant_id", merchantId)
     .eq("id", themeId)
     .maybeSingle();
   const row = data as unknown as ThemeRow | null;
   if (!row) {
-    throw new PackageInstallError("package.not_found", "Package not found for this merchant.");
+    throw new PackageInstallError(
+      "package.not_found",
+      "Package not found for this merchant.",
+    );
   }
   return row;
 }
@@ -359,14 +375,22 @@ async function requireOwnedVersion(
     .eq("merchant_id", merchantId)
     .eq("id", versionId)
     .maybeSingle();
-  const row = data as unknown as (VersionRow & { theme_id: string; merchant_id: string }) | null;
+  const row = data as unknown as
+    (VersionRow & { theme_id: string; merchant_id: string }) | null;
   if (!row) {
-    throw new PackageInstallError("package.not_found", "Package version not found for this merchant.");
+    throw new PackageInstallError(
+      "package.not_found",
+      "Package version not found for this merchant.",
+    );
   }
   return row;
 }
 
-async function nextVersionNumber(db: Client, merchantId: string, themeId: string): Promise<number> {
+async function nextVersionNumber(
+  db: Client,
+  merchantId: string,
+  themeId: string,
+): Promise<number> {
   const { data } = await db
     .from("theme_versions")
     .select("version")
@@ -396,10 +420,15 @@ async function upsertDraft(
   if (found) {
     const { error } = await db
       .from("theme_drafts")
-      .update({ templates: templates as never, tokens: tokens as never, revision: found.revision + 1 } as never)
+      .update({
+        templates: templates as never,
+        tokens: tokens as never,
+        revision: found.revision + 1,
+      } as never)
       .eq("merchant_id", merchantId)
       .eq("theme_id", themeId);
-    if (error) throw new PackageInstallError("package.install_failed", error.message);
+    if (error)
+      throw new PackageInstallError("package.install_failed", error.message);
     return;
   }
   const { error } = await db.from("theme_drafts").insert({
@@ -409,7 +438,8 @@ async function upsertDraft(
     templates: templates as never,
     tokens: tokens as never,
   });
-  if (error) throw new PackageInstallError("package.install_failed", error.message);
+  if (error)
+    throw new PackageInstallError("package.install_failed", error.message);
 }
 
 async function audit(
@@ -445,9 +475,9 @@ async function audit(
 /** True when the failure is "the artifact columns don't exist yet" — never for real errors. */
 export function isMissingArtifactColumnError(err: unknown): boolean {
   const msg =
-    err instanceof Error ? err.message : (
-      (err as { message?: string } | null)?.message ?? String(err ?? "")
-    );
+    err instanceof Error
+      ? err.message
+      : ((err as { message?: string } | null)?.message ?? String(err ?? ""));
   if (!/artifact_(checksum|version|pinned)/i.test(msg)) return false;
   return /column|schema cache|PGRST204|42703|does not exist/i.test(msg);
 }
@@ -615,10 +645,16 @@ export async function installPackage(
     return installPluginPackage(db, merchantId, input, actorId);
   }
   if (!/\.zip$/iu.test((input.fileName ?? "").trim())) {
-    throw new PackageInstallError("package.bad_name", "Packages must be a .zip file.");
+    throw new PackageInstallError(
+      "package.bad_name",
+      "Packages must be a .zip file.",
+    );
   }
   if (!input.idempotencyKey) {
-    throw new PackageInstallError("package.bad_key", "An idempotency key is required.");
+    throw new PackageInstallError(
+      "package.bad_key",
+      "An idempotency key is required.",
+    );
   }
   const bytes = inputBytes(input);
 
@@ -693,9 +729,15 @@ export async function installPackage(
       .eq("merchant_id", merchantId)
       .eq("source_install_id", hit.id)
       .maybeSingle();
-    const theme = linked as unknown as { id: string; source_version: string } | null;
+    const theme = linked as unknown as {
+      id: string;
+      source_version: string;
+    } | null;
     if (!theme) {
-      throw new PackageInstallError("package.install_conflict", "Install recorded but the package row is missing.");
+      throw new PackageInstallError(
+        "package.install_conflict",
+        "Install recorded but the package row is missing.",
+      );
     }
     const { data: vrow } = await db
       .from("theme_versions")
@@ -727,12 +769,17 @@ export async function installPackage(
   // incoming inflated total must fit the merchant quota first.
   const { data: existingTheme } = await db
     .from("store_themes")
-    .select("id, name, is_active, source_install_id, source_listing_slug, source_version, published_version_id")
+    .select(
+      "id, name, is_active, source_install_id, source_listing_slug, source_version, published_version_id",
+    )
     .eq("merchant_id", merchantId)
     .eq("source_listing_slug", manifest.slug)
     .maybeSingle();
   const prev = existingTheme as unknown as ThemeRow | null;
-  if (prev?.source_version && compareSemver(manifest.version, prev.source_version) <= 0) {
+  if (
+    prev?.source_version &&
+    compareSemver(manifest.version, prev.source_version) <= 0
+  ) {
     throw new PackageInstallError(
       "package.bad_version",
       `Version ${manifest.version} is not newer than installed ${prev.source_version}.`,
@@ -782,10 +829,14 @@ export async function installPackage(
     themeId = prev.id;
     const { error } = await db
       .from("store_themes")
-      .update({ name: manifest.name, source_version: manifest.version } as never)
+      .update({
+        name: manifest.name,
+        source_version: manifest.version,
+      } as never)
       .eq("merchant_id", merchantId)
       .eq("id", themeId);
-    if (error) throw new PackageInstallError("package.install_failed", error.message);
+    if (error)
+      throw new PackageInstallError("package.install_failed", error.message);
   } else {
     const { data, error } = await db
       .from("store_themes")
@@ -800,7 +851,10 @@ export async function installPackage(
       .select("id")
       .single();
     if (error || !data) {
-      throw new PackageInstallError("package.install_failed", error instanceof Error ? error.message : "Install failed.");
+      throw new PackageInstallError(
+        "package.install_failed",
+        error instanceof Error ? error.message : "Install failed.",
+      );
     }
     themeId = (data as unknown as { id: string }).id;
   }
@@ -823,9 +877,16 @@ export async function installPackage(
     .single();
   if (versionError || !version) {
     if (!prev) {
-      await db.from("store_themes").delete().eq("merchant_id", merchantId).eq("id", themeId);
+      await db
+        .from("store_themes")
+        .delete()
+        .eq("merchant_id", merchantId)
+        .eq("id", themeId);
     }
-    throw new PackageInstallError("package.install_failed", "Version registration failed.");
+    throw new PackageInstallError(
+      "package.install_failed",
+      "Version registration failed.",
+    );
   }
   const versionId = (version as unknown as { id: string }).id;
 
@@ -839,11 +900,17 @@ export async function installPackage(
       relPath: f.path,
       bytes: f.bytes,
       text:
-        f.path.startsWith("templates/") || f.path.startsWith("locales/") || f.path.endsWith(".css")
+        f.path.startsWith("templates/") ||
+        f.path.startsWith("locales/") ||
+        f.path.endsWith(".css")
           ? decodeText(f.bytes)
           : null,
     }));
-  const stored = await saveVersionAssets(db, merchantId, { themeId, prefix, files: assetFiles });
+  const stored = await saveVersionAssets(db, merchantId, {
+    themeId,
+    prefix,
+    files: assetFiles,
+  });
 
   let ledgerId: string;
   try {
@@ -868,7 +935,10 @@ export async function installPackage(
       artifact_pinned: "upload",
     }));
   } catch {
-    throw new PackageInstallError("package.install_failed", "Ledger write failed.");
+    throw new PackageInstallError(
+      "package.install_failed",
+      "Ledger write failed.",
+    );
   }
   if (!prev) {
     await db
@@ -877,13 +947,20 @@ export async function installPackage(
       .eq("merchant_id", merchantId)
       .eq("id", themeId);
   }
-  await audit(db, merchantId, themeId, actorId, prev ? "package.updated" : "package.installed", {
-    slug: manifest.slug,
-    version: manifest.version,
-    version_id: versionId,
-    artifact: artifactId.slice(0, 12),
-    assets: stored.length,
-  });
+  await audit(
+    db,
+    merchantId,
+    themeId,
+    actorId,
+    prev ? "package.updated" : "package.installed",
+    {
+      slug: manifest.slug,
+      version: manifest.version,
+      version_id: versionId,
+      artifact: artifactId.slice(0, 12),
+      assets: stored.length,
+    },
+  );
   return {
     packageId: themeId,
     versionId,
@@ -915,9 +992,9 @@ async function assertDependencies(
     .eq("merchant_id", merchantId)
     .in("listing_slug", slugs)
     .in("status", ["installed", "trial"]);
-  const installed = ((data ?? []) as unknown as { listing_slug: string; version: string }[]).map(
-    (r) => ({ slug: r.listing_slug, version: r.version }),
-  );
+  const installed = (
+    (data ?? []) as unknown as { listing_slug: string; version: string }[]
+  ).map((r) => ({ slug: r.listing_slug, version: r.version }));
   const verdict = checkDependencyRanges(deps, installed);
   if (verdict.ok) return;
   if (verdict.missing.length) {
@@ -945,18 +1022,33 @@ type ProjectedPluginRow = {
 /** True when the failure is "plugin_state is not migrated yet" — scan skips, never blocks legacy DBs. */
 function isMissingProjectionTableError(err: unknown): boolean {
   const msg =
-    err instanceof Error ? err.message : ((err as { message?: string } | null)?.message ?? String(err ?? ""));
+    err instanceof Error
+      ? err.message
+      : ((err as { message?: string } | null)?.message ?? String(err ?? ""));
   if (!/plugin_state/i.test(msg)) return false;
-  return /column|schema cache|PGRST204|42703|does not exist|relation.*not exist/i.test(msg);
+  return /column|schema cache|PGRST204|42703|does not exist|relation.*not exist/i.test(
+    msg,
+  );
 }
 
-function claimsOfProjected(row: ProjectedPluginRow, versionFallback: string): ConflictPackage | null {
+function claimsOfProjected(
+  row: ProjectedPluginRow,
+  versionFallback: string,
+): ConflictPackage | null {
   try {
-    if (!row || typeof row.plugin_id !== "string" || !row.plugin_id) return null;
+    if (!row || typeof row.plugin_id !== "string" || !row.plugin_id)
+      return null;
     const raw = (row.manifest ?? {}) as Record<string, unknown>;
     const version =
-      typeof raw.version === "string" && raw.version.trim() ? raw.version.trim() : versionFallback;
-    return { slug: row.plugin_id, kind: "plugin", version, claims: extractPluginClaims(raw) };
+      typeof raw.version === "string" && raw.version.trim()
+        ? raw.version.trim()
+        : versionFallback;
+    return {
+      slug: row.plugin_id,
+      kind: "plugin",
+      version,
+      claims: extractPluginClaims(raw),
+    };
   } catch {
     return null;
   }
@@ -997,10 +1089,18 @@ async function assertNoNamespaceConflicts(
     );
   } catch (err) {
     if (isMissingProjectionTableError(err)) return;
-    throw new PackageInstallError("package.install_failed", "Plugin projection read failed.");
+    throw new PackageInstallError(
+      "package.install_failed",
+      "Plugin projection read failed.",
+    );
   }
   const installed = rows
-    .filter((r) => r.plugin_id !== candidate.slug && r.enabled !== false && r.suspended !== true)
+    .filter(
+      (r) =>
+        r.plugin_id !== candidate.slug &&
+        r.enabled !== false &&
+        r.suspended !== true,
+    )
     .map((r) => claimsOfProjected(r, ""))
     .filter((c): c is ConflictPackage => c !== null);
   const verdict = scanNamespaceConflicts(candidate, installed);
@@ -1031,10 +1131,16 @@ async function installPluginPackage(
   actorId?: string | null,
 ): Promise<InstallPackageResult> {
   if (!/\.zip$/iu.test((input.fileName ?? "").trim())) {
-    throw new PackageInstallError("package.bad_name", "Packages must be a .zip file.");
+    throw new PackageInstallError(
+      "package.bad_name",
+      "Packages must be a .zip file.",
+    );
   }
   if (!input.idempotencyKey) {
-    throw new PackageInstallError("package.bad_key", "An idempotency key is required.");
+    throw new PackageInstallError(
+      "package.bad_key",
+      "An idempotency key is required.",
+    );
   }
   const bytes = inputBytes(input);
   const entries = parseZip(bytes, input.limits);
@@ -1054,7 +1160,8 @@ async function installPluginPackage(
   }
   const manifest = verdict.manifest;
   const api = checkApiCompatibility(manifest.api);
-  if (!api.ok) throw new PackageInstallError("package.api_incompatible", api.message);
+  if (!api.ok)
+    throw new PackageInstallError("package.api_incompatible", api.message);
   await assertDependencies(db, merchantId, manifest.dependencies);
   // CONFLICT lane: candidate (manifest + file claims) vs live projected
   // holders. Runs before any side effect (assets/ledger below) — a
@@ -1063,7 +1170,10 @@ async function installPluginPackage(
     slug: manifest.slug,
     kind: "plugin",
     version: manifest.version,
-    claims: mergeClaims(extractPluginClaims(manifest.raw), extractFileClaims(files)),
+    claims: mergeClaims(
+      extractPluginClaims(manifest.raw),
+      extractFileClaims(files),
+    ),
   });
   const broken = collectBrokenAssetRefs(files);
   if (broken.length) {
@@ -1110,9 +1220,7 @@ async function installPluginPackage(
       .eq("plugin_id", manifest.slug)
       .maybeSingle();
     const raw = (installed as { manifest?: unknown } | null)?.manifest as
-      | { permissions?: unknown }
-      | null
-      | undefined;
+      { permissions?: unknown } | null | undefined;
     const oldPerms = Array.isArray(raw?.permissions)
       ? raw.permissions.filter((p): p is string => typeof p === "string")
       : null;
@@ -1138,17 +1246,17 @@ async function installPluginPackage(
   // the prefix it just wrote (best-effort) before the original stage error
   // propagates — the failure-injection suite pins each stage to clean state.
   try {
-    await saveVersionAssets(
-      db,
-      merchantId,
-      {
-        themeId: null,
-        prefix,
-        files: files
-          .filter((f) => f.path !== manifestNameFor("plugin"))
-          .map((f) => ({ relPath: f.path, bytes: f.bytes, text: decodeText(f.bytes) })),
-      },
-    );
+    await saveVersionAssets(db, merchantId, {
+      themeId: null,
+      prefix,
+      files: files
+        .filter((f) => f.path !== manifestNameFor("plugin"))
+        .map((f) => ({
+          relPath: f.path,
+          bytes: f.bytes,
+          text: decodeText(f.bytes),
+        })),
+    });
   } catch (e) {
     await deleteVersionAssets(db, merchantId, prefix).catch(() => null);
     throw e;
@@ -1175,7 +1283,10 @@ async function installPluginPackage(
     }));
   } catch {
     await deleteVersionAssets(db, merchantId, prefix).catch(() => null);
-    throw new PackageInstallError("package.install_failed", "Ledger write failed.");
+    throw new PackageInstallError(
+      "package.install_failed",
+      "Ledger write failed.",
+    );
   }
   // K3 atomicity: the audit write is part of the install transaction. A
   // thrown audit failure compensates ledger + assets so a surfaced error
@@ -1227,9 +1338,16 @@ export async function setPluginPackageEnabled(
     .eq("merchant_id", merchantId)
     .eq("id", installId)
     .maybeSingle();
-  const row = data as unknown as { id: string; kind: string; listing_slug: string } | null;
+  const row = data as unknown as {
+    id: string;
+    kind: string;
+    listing_slug: string;
+  } | null;
   if (!row || row.kind !== "widget") {
-    throw new PackageInstallError("package.not_found", "Plugin install not found for this merchant.");
+    throw new PackageInstallError(
+      "package.not_found",
+      "Plugin install not found for this merchant.",
+    );
   }
   // CONFLICT lane (activate): enabling re-scans — the candidate's projected
   // manifest (when the marketplace lane projected one via upsertPlugin)
@@ -1245,10 +1363,16 @@ export async function setPluginPackageEnabled(
           .eq("plugin_id", row.listing_slug)
           .maybeSingle();
         if (error) throw error;
-        return claimsOfProjected((prow ?? null) as unknown as ProjectedPluginRow, "");
+        return claimsOfProjected(
+          (prow ?? null) as unknown as ProjectedPluginRow,
+          "",
+        );
       } catch (err) {
         if (isMissingProjectionTableError(err)) return null;
-        throw new PackageInstallError("package.install_failed", "Plugin projection read failed.");
+        throw new PackageInstallError(
+          "package.install_failed",
+          "Plugin projection read failed.",
+        );
       }
     })();
     if (projected) await assertNoNamespaceConflicts(db, merchantId, projected);
@@ -1259,10 +1383,18 @@ export async function setPluginPackageEnabled(
     .update({ status } as never)
     .eq("merchant_id", merchantId)
     .eq("id", installId);
-  if (error) throw new PackageInstallError("package.install_failed", error.message);
-  await audit(db, merchantId, null, actorId, enabled ? "package.enabled" : "package.disabled", {
-    slug: row.listing_slug,
-  });
+  if (error)
+    throw new PackageInstallError("package.install_failed", error.message);
+  await audit(
+    db,
+    merchantId,
+    null,
+    actorId,
+    enabled ? "package.enabled" : "package.disabled",
+    {
+      slug: row.listing_slug,
+    },
+  );
   return { ok: true, status };
 }
 
@@ -1338,9 +1470,9 @@ export async function rollbackPluginPackage(
     .eq("merchant_id", merchantId)
     .eq("listing_slug", slug)
     .eq("kind", "widget");
-  const live = ((siblings ?? []) as unknown as { id: string; status?: string }[]).filter(
-    (r) => r.status === "installed" || r.status === "trial",
-  );
+  const live = (
+    (siblings ?? []) as unknown as { id: string; status?: string }[]
+  ).filter((r) => r.status === "installed" || r.status === "trial");
   const parkedPrior = live.map((r) => ({ id: r.id, status: r.status ?? null }));
 
   if (live.length) {
@@ -1351,7 +1483,8 @@ export async function rollbackPluginPackage(
       .eq("listing_slug", slug)
       .eq("kind", "widget")
       .in("status", ["installed", "trial"]);
-    if (error) throw new PackageInstallError("package.install_failed", error.message);
+    if (error)
+      throw new PackageInstallError("package.install_failed", error.message);
   }
 
   const restoreSiblings = async (): Promise<void> => {
@@ -1401,7 +1534,10 @@ export async function rollbackPluginPackage(
   } catch (e) {
     await restoreSiblings();
     if (e instanceof PackageInstallError) throw e;
-    throw new PackageInstallError("package.install_failed", "Ledger write failed.");
+    throw new PackageInstallError(
+      "package.install_failed",
+      "Ledger write failed.",
+    );
   }
 
   try {
@@ -1459,7 +1595,11 @@ export async function previewPackage(
   assertTenantId(merchantId, "previewPackage");
   const version = await requireOwnedVersion(db, merchantId, versionId);
   const theme = await requireOwnedTheme(db, merchantId, version.theme_id);
-  const assets = await listVersionAssets(db, merchantId, themeVersionPrefix(versionId));
+  const assets = await listVersionAssets(
+    db,
+    merchantId,
+    themeVersionPrefix(versionId),
+  );
   return {
     packageId: theme.id,
     versionId,
@@ -1484,33 +1624,50 @@ export async function activatePackage(
   let target = versionId;
   if (!target) {
     if (!theme.published_version_id) {
-      throw new PackageInstallError("package.not_found", "No published version to activate.");
+      throw new PackageInstallError(
+        "package.not_found",
+        "No published version to activate.",
+      );
     }
     target = theme.published_version_id;
   }
   const version = await requireOwnedVersion(db, merchantId, target);
   if (version.theme_id !== themeId) {
-    throw new PackageInstallError("package.not_found", "Version does not belong to this package.");
+    throw new PackageInstallError(
+      "package.not_found",
+      "Version does not belong to this package.",
+    );
   }
   const { error: clearError } = await db
     .from("store_themes")
     .update({ is_active: false } as never)
     .eq("merchant_id", merchantId)
     .neq("id", themeId);
-  if (clearError) throw new PackageInstallError("package.install_failed", clearError.message);
+  if (clearError)
+    throw new PackageInstallError("package.install_failed", clearError.message);
   const { error } = await db
     .from("store_themes")
     .update({ is_active: true, published_version_id: target } as never)
     .eq("merchant_id", merchantId)
     .eq("id", themeId);
-  if (error) throw new PackageInstallError("package.install_failed", error.message);
+  if (error)
+    throw new PackageInstallError("package.install_failed", error.message);
   const { error: statusError } = await db
     .from("theme_versions")
-    .update({ status: "published", published_at: new Date().toISOString() } as never)
+    .update({
+      status: "published",
+      published_at: new Date().toISOString(),
+    } as never)
     .eq("merchant_id", merchantId)
     .eq("id", target);
-  if (statusError) throw new PackageInstallError("package.install_failed", statusError.message);
-  await audit(db, merchantId, themeId, actorId, "package.activated", { version_id: target });
+  if (statusError)
+    throw new PackageInstallError(
+      "package.install_failed",
+      statusError.message,
+    );
+  await audit(db, merchantId, themeId, actorId, "package.activated", {
+    version_id: target,
+  });
   return { packageId: themeId, versionId: target };
 }
 
@@ -1527,7 +1684,10 @@ export async function rollbackPackage(
   const theme = await requireOwnedTheme(db, merchantId, themeId);
   const target = await requireOwnedVersion(db, merchantId, targetVersionId);
   if (target.theme_id !== themeId) {
-    throw new PackageInstallError("package.not_found", "Version does not belong to this package.");
+    throw new PackageInstallError(
+      "package.not_found",
+      "Version does not belong to this package.",
+    );
   }
   // History is append-only: the rollback is a NEW version carrying the
   // target's content (theme_versions.rollback_of), never a pointer rewind —
@@ -1550,7 +1710,10 @@ export async function rollbackPackage(
     .select("id")
     .single();
   if (error || !data) {
-    throw new PackageInstallError("package.install_failed", "Rollback version failed.");
+    throw new PackageInstallError(
+      "package.install_failed",
+      "Rollback version failed.",
+    );
   }
   const newId = (data as unknown as { id: string }).id;
   const { error: clearError } = await db
@@ -1558,13 +1721,15 @@ export async function rollbackPackage(
     .update({ is_active: false } as never)
     .eq("merchant_id", merchantId)
     .neq("id", themeId);
-  if (clearError) throw new PackageInstallError("package.install_failed", clearError.message);
+  if (clearError)
+    throw new PackageInstallError("package.install_failed", clearError.message);
   const { error: pointError } = await db
     .from("store_themes")
     .update({ is_active: true, published_version_id: newId } as never)
     .eq("merchant_id", merchantId)
     .eq("id", themeId);
-  if (pointError) throw new PackageInstallError("package.install_failed", pointError.message);
+  if (pointError)
+    throw new PackageInstallError("package.install_failed", pointError.message);
   await upsertDraft(db, merchantId, themeId, target.templates, target.tokens);
   void theme;
   await audit(db, merchantId, themeId, actorId, "package.rolled_back", {
@@ -1596,13 +1761,23 @@ export async function uninstallPackage(
     .eq("merchant_id", merchantId)
     .eq("theme_id", themeId);
   let removedAssets = 0;
-  for (const v of ((versions ?? []) as unknown as { id: string }[])) {
+  for (const v of (versions ?? []) as unknown as { id: string }[]) {
     // Artifact removal is namespace-scoped: other packages' `themes/<other>/`
     // rows and other tenants' rows are never matched.
-    removedAssets += (await deleteVersionAssets(db, merchantId, themeVersionPrefix(v.id))).removed;
+    removedAssets += (
+      await deleteVersionAssets(db, merchantId, themeVersionPrefix(v.id))
+    ).removed;
   }
-  await db.from("theme_drafts").delete().eq("merchant_id", merchantId).eq("theme_id", themeId);
-  await db.from("theme_versions").delete().eq("merchant_id", merchantId).eq("theme_id", themeId);
+  await db
+    .from("theme_drafts")
+    .delete()
+    .eq("merchant_id", merchantId)
+    .eq("theme_id", themeId);
+  await db
+    .from("theme_versions")
+    .delete()
+    .eq("merchant_id", merchantId)
+    .eq("theme_id", themeId);
   await db
     .from("marketplace_installs")
     .update({ status: "removed" } as never)
@@ -1614,7 +1789,8 @@ export async function uninstallPackage(
     .delete()
     .eq("merchant_id", merchantId)
     .eq("id", themeId);
-  if (error) throw new PackageInstallError("package.install_failed", error.message);
+  if (error)
+    throw new PackageInstallError("package.install_failed", error.message);
   await audit(db, merchantId, null, actorId, "package.uninstalled", {
     slug: theme.source_listing_slug,
     removed_assets: removedAssets,
@@ -1632,7 +1808,10 @@ export async function uninstallPluginPackage(
   assertTenantId(merchantId, "uninstallPluginPackage");
   const row = await readPluginInstallRow(db, merchantId, installId);
   if (!row || row.kind !== "widget") {
-    throw new PackageInstallError("package.not_found", "Plugin install not found for this merchant.");
+    throw new PackageInstallError(
+      "package.not_found",
+      "Plugin install not found for this merchant.",
+    );
   }
   if ((row as unknown as { status?: string }).status === "removed") {
     return { ok: true, removedAssets: 0 };
@@ -1660,7 +1839,9 @@ export async function uninstallPluginPackage(
     .select("id, name")
     .eq("merchant_id", merchantId)
     .limit(1000);
-  const mine = ((assets ?? []) as unknown as { id: string; name: string }[]).filter(
+  const mine = (
+    (assets ?? []) as unknown as { id: string; name: string }[]
+  ).filter(
     (a) =>
       a.name.startsWith(ledgerPrefix) ||
       (artifact8 !== null && pluginAssetArtifact8(a.name) === artifact8),
@@ -1677,7 +1858,8 @@ export async function uninstallPluginPackage(
     .update({ status: "removed" } as never)
     .eq("merchant_id", merchantId)
     .eq("id", installId);
-  if (error) throw new PackageInstallError("package.install_failed", error.message);
+  if (error)
+    throw new PackageInstallError("package.install_failed", error.message);
   await audit(db, merchantId, null, actorId, "package.uninstalled", {
     slug: row.listing_slug,
     removed_assets: mine.length,

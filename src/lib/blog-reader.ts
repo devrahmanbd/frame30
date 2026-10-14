@@ -80,7 +80,18 @@ export function articleHeadingIds(blocks: Block[]): Map<number, string> {
 export function normalizeBlogSearch(raw: unknown): string {
   return String(raw ?? "")
     .normalize("NFC")
-    .replace(/[\u0000-\u001f\u007f]/g, "")
+    .replace(
+      new RegExp(
+        "[" +
+          String.fromCharCode(0) +
+          "-" +
+          String.fromCharCode(31) +
+          String.fromCharCode(127) +
+          "]",
+        "g",
+      ),
+      "",
+    )
     .replace(/[%_\\]/g, " ")
     .replace(/\s+/g, " ")
     .trim()

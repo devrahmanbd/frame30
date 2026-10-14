@@ -8,7 +8,12 @@
  * empty list rather than touching `window`.
  */
 
-export const CHANNEL_SLOTS = ["compare", "recentlyViewed", "wishlist", "variant"] as const;
+export const CHANNEL_SLOTS = [
+  "compare",
+  "recentlyViewed",
+  "wishlist",
+  "variant",
+] as const;
 export type ChannelSlot = (typeof CHANNEL_SLOTS)[number];
 
 /** Hard caps: a channel is a UI convenience, never a data store. */
@@ -21,7 +26,12 @@ export const SLOT_LIMIT: Record<ChannelSlot, number> = {
 
 type ChannelState = Record<ChannelSlot, string[]>;
 
-const EMPTY: ChannelState = { compare: [], recentlyViewed: [], wishlist: [], variant: [] };
+const EMPTY: ChannelState = {
+  compare: [],
+  recentlyViewed: [],
+  wishlist: [],
+  variant: [],
+};
 
 const memory = new Map<string, ChannelState>();
 const listeners = new Map<string, Set<() => void>>();

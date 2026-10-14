@@ -336,7 +336,9 @@ function parseUntrusted(
   // parsing; malformed values stay dropped (base theme).
   const variationKey = persistedVariationKeyFromSettings(input.tokens);
   const tokens = (
-    variationKey ? settingsWithVariationKey(baseTokens, variationKey) : baseTokens
+    variationKey
+      ? settingsWithVariationKey(baseTokens, variationKey)
+      : baseTokens
   ) as ThemeTokens;
   const rejects = takeSanitiserRejects();
   if (rejects) {
@@ -612,8 +614,7 @@ export type PublishArtifact = {
 };
 
 function isAuthoredRecord(value: unknown): boolean {
-  if (!value || typeof value !== "object" || Array.isArray(value))
-    return false;
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
   return Object.keys(value as Record<string, unknown>).length > 0;
 }
 
@@ -635,7 +636,12 @@ export function resolvePublishPayload(
   const artifactTokens = isAuthoredRecord(artifact?.tokens)
     ? artifact!.tokens
     : null;
-  if (!inputTemplates && !inputTokens && !artifactTemplates && !artifactTokens) {
+  if (
+    !inputTemplates &&
+    !inputTokens &&
+    !artifactTemplates &&
+    !artifactTokens
+  ) {
     throw new BuilderError(
       "builder.artifact_missing",
       "No installed artifact for this theme. Install the theme first — publish never falls back to source.",
@@ -777,8 +783,11 @@ export async function publishVersion(
   // K2: installed artifact authoritative — omitted payloads resolve ONLY from
   // the newest version row; no source fallback. Missing/malformed rows fail
   // closed with `builder.artifact_missing`. Explicit input still wins.
-  const artifact = await loadPublishArtifact(db, merchantId, input.themeId)
-    .catch(() => null);
+  const artifact = await loadPublishArtifact(
+    db,
+    merchantId,
+    input.themeId,
+  ).catch(() => null);
   const resolved = resolvePublishPayload(input, artifact);
   const { templates } = parseUntrusted(
     { templates: resolved.templates, tokens: resolved.tokens },
@@ -834,8 +843,11 @@ export async function publishVersion(
 
   // Idempotent replay: identical content re-publishes the live version
   // instead of stacking a duplicate — same versionId, still audited.
-  const published = await loadPublishedPayload(db, merchantId, input.themeId)
-    .catch(() => null);
+  const published = await loadPublishedPayload(
+    db,
+    merchantId,
+    input.themeId,
+  ).catch(() => null);
   if (published && publishPayloadsEqual(published, resolved)) {
     await auditPublish(
       db,
@@ -1150,10 +1162,7 @@ export async function loadRegistryPackage(
     preset: { tokens?: unknown; templates?: unknown } | null;
   };
   const preset = row.preset ?? {};
-  if (
-    !isAuthoredRecord(preset.templates) &&
-    !isAuthoredRecord(preset.tokens)
-  ) {
+  if (!isAuthoredRecord(preset.templates) && !isAuthoredRecord(preset.tokens)) {
     throw new BuilderError(
       "builder.artifact_missing",
       `No usable installed artifact for theme "${clean}" — refusing rather than falling back to source.`,
@@ -1165,7 +1174,7 @@ export async function loadRegistryPackage(
     version:
       typeof row.version === "string" && row.version ? row.version : "1.0.0",
   };
-};
+}
 
 /**
  * Install an official theme as a draft version *and* fork it into the editable
@@ -1481,9 +1490,7 @@ export function variationsForThemeKey(
   return previewSourceFor(themeKey)?.variations ?? [];
 }
 
-type WidgetDefaults = Partial<
-  Record<SectionType, Record<string, PropValue>>
->;
+type WidgetDefaults = Partial<Record<SectionType, Record<string, PropValue>>>;
 
 const VARIATION_BASE_DEFAULTS: Record<string, WidgetDefaults> = {
   songoskriti: SONGOSKRITI_WIDGET_DEFAULTS,

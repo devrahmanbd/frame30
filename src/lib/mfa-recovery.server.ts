@@ -15,8 +15,13 @@ import { incr, withSpan } from "./observability.server";
 import { enforceRateLimit } from "./rate-limit.server";
 
 type Client = SupabaseClient<Database>;
+/** Minimal shape of the untyped query builder the client returns. */
+interface LooseQuery extends Promise<{ data: unknown; error: unknown }> {
+  select: (c: string) => LooseQuery;
+  eq: (col: string, val: unknown) => LooseQuery;
+}
 type LooseDb = {
-  from: (t: string) => { select: (c: string) => any };
+  from: (t: string) => LooseQuery;
   rpc: (
     fn: string,
     args?: Record<string, unknown>,

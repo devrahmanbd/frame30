@@ -49,11 +49,7 @@ export async function slaPolicies(
 }
 
 export type TicketStatus =
-  | "open"
-  | "pending"
-  | "pending_approval"
-  | "resolved"
-  | "closed";
+  "open" | "pending" | "pending_approval" | "resolved" | "closed";
 
 export type CreateTicketInput = {
   merchantId: string;
@@ -95,7 +91,9 @@ export function needsApprovalReview(input: {
   }
   const { hits } = redactPii(text);
   if (
-    hits.some((h) => h === "nid" || h === "passport" || h === "card" || h === "pin_otp") &&
+    hits.some(
+      (h) => h === "nid" || h === "passport" || h === "card" || h === "pin_otp",
+    ) &&
     !signals.includes("sensitive_pii")
   ) {
     signals.push("sensitive_pii");
@@ -126,7 +124,11 @@ export async function createTicket(input: CreateTicketInput) {
   const status: TicketStatus = input.requiresApproval
     ? "pending_approval"
     : "open";
-  const reason = input.reason ?? (input.requiresApproval ? "support.pending_approval_review" : "support.ticket_created");
+  const reason =
+    input.reason ??
+    (input.requiresApproval
+      ? "support.pending_approval_review"
+      : "support.ticket_created");
   const { firstResponseDueAt, resolutionDueAt } = dueDates(priority, []);
 
   try {
@@ -171,7 +173,11 @@ export async function createTicket(input: CreateTicketInput) {
       reason,
     });
 
-    incr("framique_support_ticket_total", { action: "created", priority, status });
+    incr("framique_support_ticket_total", {
+      action: "created",
+      priority,
+      status,
+    });
     log("info", "support.ticket_created", {
       merchant_id: input.merchantId,
       ticket_id: data.id,
@@ -184,7 +190,11 @@ export async function createTicket(input: CreateTicketInput) {
     // In-memory fallback for offline tests / local dev without Supabase
     if (err instanceof TicketError) throw err;
     const fallbackId = `ticket_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-    incr("framique_support_ticket_total", { action: "created", priority, status });
+    incr("framique_support_ticket_total", {
+      action: "created",
+      priority,
+      status,
+    });
     return {
       id: fallbackId,
       subject: input.subject.slice(0, 180),

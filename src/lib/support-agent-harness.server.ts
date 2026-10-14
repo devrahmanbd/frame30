@@ -35,11 +35,7 @@ export type BenchmarkTurn = {
   expectedIntent?: string;
   csatRating?: number | null;
   expectedOutcome?:
-    | "grounded"
-    | "ticket"
-    | "callback"
-    | "blocked"
-    | "loop_interrupted";
+    "grounded" | "ticket" | "callback" | "blocked" | "loop_interrupted";
 };
 
 export type BenchmarkScenario = {

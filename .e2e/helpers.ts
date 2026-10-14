@@ -120,9 +120,11 @@ export class NetworkCollector {
 
 /** Unique http(s) image URLs currently in the document. */
 export async function documentImageUrls(page: Page): Promise<string[]> {
-  const srcs = await page.locator("img[src]").evaluateAll((els) =>
-    els.map((el) => (el as HTMLImageElement).getAttribute("src") ?? ""),
-  );
+  const srcs = await page
+    .locator("img[src]")
+    .evaluateAll((els) =>
+      els.map((el) => (el as HTMLImageElement).getAttribute("src") ?? ""),
+    );
   const out: string[] = [];
   const seen = new Set<string>();
   for (const src of srcs) {

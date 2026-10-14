@@ -92,7 +92,11 @@ export function normalizeHostname(input: string): string {
 
   // Unicode domains are stored as punycode so DNS lookups and certificates match.
   let ascii = value;
-  if (/[^\u0000-\u007f]/.test(value)) {
+  if (
+    new RegExp(
+      "[^" + String.fromCharCode(0) + "-" + String.fromCharCode(127) + "]",
+    ).test(value)
+  ) {
     try {
       ascii = new URL(`https://${value}`).hostname;
     } catch {

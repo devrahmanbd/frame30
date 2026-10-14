@@ -167,7 +167,13 @@ export type NeutralQuery = {
 
 export function normalizeQuery(input: Partial<NeutralQuery>): NeutralQuery {
   const term = (input.term ?? "")
-    .replace(/[\u0000-\u001f]/g, " ")
+    .replace(
+      new RegExp(
+        "[" + String.fromCharCode(0) + "-" + String.fromCharCode(31) + "]",
+        "g",
+      ),
+      " ",
+    )
     .trim()
     .slice(0, 120);
   return {

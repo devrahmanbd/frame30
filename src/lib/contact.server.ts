@@ -19,7 +19,43 @@ import {
   type ContactTopic,
 } from "./contact";
 
-type Db = { from: (table: string) => any };
+/** Minimal shape of the untyped query builder the admin client returns. */
+type LooseResult = {
+  data: unknown;
+  error: { message: string; code?: string } | null;
+  count?: number | null;
+};
+interface LooseQuery extends Promise<LooseResult> {
+  select: (
+    columns?: string,
+    options?: { count?: "exact" | "planned" | "estimated"; head?: boolean },
+  ) => LooseQuery;
+  eq: (column: string, value: unknown) => LooseQuery;
+  in: (column: string, values: unknown[]) => LooseQuery;
+  lte: (column: string, value: unknown) => LooseQuery;
+  order: (
+    column: string,
+    options?: { ascending?: boolean; nullsFirst?: boolean },
+  ) => LooseQuery;
+  limit: (count: number) => LooseQuery;
+  single: () => Promise<LooseResult>;
+  insert: (values: unknown) => LooseQuery;
+  update: (values: unknown) => LooseQuery;
+}
+
+type Db = { from: (table: string) => LooseQuery };
+
+type OutboxRow = {
+  id: string;
+  submission_id: string;
+  kind: string;
+  recipient: string;
+  subject: string;
+  text_body: string;
+  html_body: string | null;
+  attempts: number | null;
+  contact_submissions: { reference: string } | { reference: string }[] | null;
+};
 
 async function admin(): Promise<Db> {
   const { supabaseAdmin } =
@@ -195,9 +231,10 @@ export async function submitContact(
       });
       throw new Error("contact_unavailable");
     }
+    const submissionId = (row as { id: string }).id;
 
     await recordEvent({
-      submissionId: row.id,
+      submissionId,
       reference,
       eventType: "accepted",
       metadata: {
@@ -207,7 +244,7 @@ export async function submitContact(
       },
     });
     await queueContactMail({
-      submissionId: row.id,
+      submissionId,
       reference,
       locale,
       topic: input.topic,
@@ -268,7 +305,7 @@ async function queueContactMail(input: {
   const db = await admin();
 
   for (const message of messages) {
-    const { data: queued, error } = await db
+    const { data: queuedData, error } = await db
       .from("contact_outbox")
       .insert({
         submission_id: input.submissionId,
@@ -281,7 +318,7 @@ async function queueContactMail(input: {
       })
       .select("id")
       .single();
-    if (error || !queued) {
+    if (error || !queuedData) {
       log("error", "contact.outbox_queue_failed", {
         reference: input.reference,
         kind: message.kind,
@@ -292,6 +329,7 @@ async function queueContactMail(input: {
       });
       continue;
     }
+    const queued = queuedData as { id: string };
     await recordEvent({
       submissionId: input.submissionId,
       reference: input.reference,
@@ -397,8 +435,9 @@ export async function flushContactOutbox(
     .order("created_at", { ascending: true })
     .limit(capped);
   if (error) throw error;
+  const outboxRows = (rows ?? []) as OutboxRow[];
   let processed = 0;
-  for (const row of rows ?? []) {
+  for (const row of outboxRows) {
     const reference = Array.isArray(row.contact_submissions)
       ? row.contact_submissions[0]?.reference
       : row.contact_submissions?.reference;

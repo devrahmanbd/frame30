@@ -168,10 +168,13 @@ export async function sendSupportNotifications(
     const safeAgent = sanitiseMailBody(input.agentReply);
     const userMessage = safeUser.text;
     const agentReply = safeAgent.text;
-    const piiRedacted = [...new Set([...safeUser.piiHits, ...safeAgent.piiHits])];
-    const withheldRules = [safeUser.withheldRule, safeAgent.withheldRule].filter(
-      (r): r is string => r !== null,
-    );
+    const piiRedacted = [
+      ...new Set([...safeUser.piiHits, ...safeAgent.piiHits]),
+    ];
+    const withheldRules = [
+      safeUser.withheldRule,
+      safeAgent.withheldRule,
+    ].filter((r): r is string => r !== null);
     if (withheldRules.length > 0) {
       log("warn", "support.mail_body_withheld", {
         conversationId: convId,

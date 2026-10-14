@@ -19,6 +19,18 @@ export type CollectionPayload = Exclude<
   null
 >;
 
+/**
+ * Subcategory rail row: dashboard `MenuNode` rows and fallback-tree nodes
+ * (`HEADER_FALLBACK_MENU` authoring shape) both flow here — only
+ * id/label/url/children are read below.
+ */
+type SubnavNode = {
+  id: string;
+  label: string;
+  url: string;
+  children?: SubnavNode[];
+};
+
 export function CollectionView({ data }: { data: CollectionPayload }) {
   const { t } = useLang();
   const {
@@ -93,10 +105,13 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
   }
 
   // 2. Subnav Resolution
-  let subnavItems: any[] = [];
+  let subnavItems: SubnavNode[] = [];
   if (hasSubnav && isSongoskriti) {
     // Try to find this category in the mega menu
-    const findInMenu = (items: any[], targetUrl: string): any => {
+    const findInMenu = (
+      items: SubnavNode[],
+      targetUrl: string,
+    ): SubnavNode | null => {
       for (const item of items) {
         if (item.url === targetUrl) return item;
         if (item.children) {

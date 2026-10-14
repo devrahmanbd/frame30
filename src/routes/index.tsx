@@ -30,7 +30,7 @@ export const Route = createFileRoute("/")({
   // - Every other host (platform origins, unknown, inactive) → the platform
   //   landing. The landing path is failure-tolerant exactly as before:
   //   `loadLanding` never throws, so prerender and SSR cannot 500.
-  loader: async ({ location }: any) => {
+  loader: async ({ location }) => {
     let host: Awaited<ReturnType<typeof resolveStorefrontHostFn>> = null;
     try {
       host = await resolveStorefrontHostFn();

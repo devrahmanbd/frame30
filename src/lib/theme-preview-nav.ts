@@ -290,8 +290,10 @@ export function validateThemePreviewSearch(search: Record<string, unknown>): {
       VARIATION_KEY_RE.test(search.variation)
         ? search.variation
         : undefined,
-    mock_order: 
-      search.mock_order === "success" || search.mock_order === "pending" || search.mock_order === "failed"
+    mock_order:
+      search.mock_order === "success" ||
+      search.mock_order === "pending" ||
+      search.mock_order === "failed"
         ? search.mock_order
         : undefined,
   };

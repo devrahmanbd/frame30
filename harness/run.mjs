@@ -290,7 +290,8 @@ function armSignals() {
       for (const dir of [...activeWorktrees]) {
         try {
           // eslint-disable-next-line prettier/prettier -- keeps sast-allow on the finding line: prettier moves trailing comments inside open calls down and breaks SAST suppression
-          spawnSync("git", ["worktree", "remove", "--force", dir], { // sast-allow: shell-exec -- worktree cleanup with runner-generated path, no shell
+          spawnSync("git", ["worktree", "remove", "--force", dir], {
+            // sast-allow: shell-exec -- worktree cleanup with runner-generated path, no shell
             stdio: "ignore",
           });
         } catch {
@@ -475,7 +476,8 @@ async function runVerifier(task, envInfo) {
     `harness-verifier-${process.pid}-${Date.now()}.log`,
   );
   // eslint-disable-next-line prettier/prettier -- keeps sast-allow on the finding line: prettier moves trailing comments inside open calls down and breaks SAST suppression
-  const child = spawn(resolved.exe, command.slice(1), { // sast-allow: shell-exec -- verifier execution is the runner's job; exe resolved from task-declared command, no shell
+  const child = spawn(resolved.exe, command.slice(1), {
+    // sast-allow: shell-exec -- verifier execution is the runner's job; exe resolved from task-declared command, no shell
     cwd,
     env: { ...process.env, ...envInfo.env },
     stdio: ["ignore", "pipe", "pipe"],
@@ -814,7 +816,8 @@ function sh(cmd, args, opts = {}) {
 
 function selfTestChild(args, extraEnv) {
   // eslint-disable-next-line prettier/prettier -- keeps sast-allow on the finding line: prettier moves trailing comments inside open calls down and breaks SAST suppression
-  return spawnSync(process.execPath, [SCRIPT_PATH, ...args], { // sast-allow: shell-exec -- self-test re-invokes this same script by absolute path, no shell
+  return spawnSync(process.execPath, [SCRIPT_PATH, ...args], {
+    // sast-allow: shell-exec -- self-test re-invokes this same script by absolute path, no shell
     encoding: "utf8",
     env: { ...process.env, ...extraEnv },
   });

@@ -148,7 +148,6 @@ export function UiStill({
               sizes={stillSizes(spec)}
               loading={eager ? "eager" : "lazy"}
               decoding={eager ? "sync" : "async"}
-              // eslint-disable-next-line react/no-unknown-property
               fetchPriority={eager ? "high" : "auto"}
               draggable={false}
               onError={onError}

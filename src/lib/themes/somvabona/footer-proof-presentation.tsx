@@ -57,13 +57,19 @@ export function SomvabonaFooterProof({
   label: string;
 }) {
   return (
-    <nav aria-label={label} className="border-t border-[#eaeaea] bg-transparent">
+    <nav
+      aria-label={label}
+      className="border-t border-[#eaeaea] bg-transparent"
+    >
       <ul
         data-footer-presentation="somvabona-proof"
         className="mx-auto max-w-6xl space-y-10 px-4 py-16"
       >
         {data.columns.map((column) => (
-          <li key={column.id} className="min-w-0 border-b border-dashed border-[var(--theme-border)] pb-8 last:border-0">
+          <li
+            key={column.id}
+            className="min-w-0 border-b border-dashed border-[var(--theme-border)] pb-8 last:border-0"
+          >
             {column.href && column.href !== "#" ? (
               <a
                 href={column.href}
@@ -124,8 +130,7 @@ function proofRowLinksOf(
 ): { label: string; href: string }[] {
   const linksRaw = typeof row.links === "string" ? row.links : "";
   const linksBnRaw = typeof row.links_bn === "string" ? row.links_bn : "";
-  const raw =
-    ctx.locale === "bn" && linksBnRaw.trim() ? linksBnRaw : linksRaw;
+  const raw = ctx.locale === "bn" && linksBnRaw.trim() ? linksBnRaw : linksRaw;
   return proofLinksOf(raw);
 }
 

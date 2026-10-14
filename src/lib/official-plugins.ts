@@ -112,7 +112,12 @@ export const STORE_ANALYTICS_MANIFEST = {
   name: "Store Analytics",
   version: "1.0.0",
   api: "^3.0.0",
-  permissions: ["read_orders", "read_shop", "render_storefront", "write_analytics"],
+  permissions: [
+    "read_orders",
+    "read_shop",
+    "render_storefront",
+    "write_analytics",
+  ],
   widgets: [
     {
       key: "sales_overview",
@@ -181,9 +186,7 @@ export type OfficialPluginSource = {
  * builtin that went missing — a catalogue entry must never render without
  * installable bytes behind it).
  */
-export function officialPluginSource(
-  key: string,
-): OfficialPluginSource | null {
+export function officialPluginSource(key: string): OfficialPluginSource | null {
   if (!isOfficialPluginKey(key)) return null;
   if (key === "store-analytics") {
     return {
@@ -222,9 +225,7 @@ export function officialPluginSource(
  * server builds official install material from this source at install time
  * (never a checked-in or downloadable archive).
  */
-export function getOfficialPlugin(
-  key: string,
-): OfficialPluginSource | null {
+export function getOfficialPlugin(key: string): OfficialPluginSource | null {
   return officialPluginSource(key);
 }
 

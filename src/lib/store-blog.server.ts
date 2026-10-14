@@ -22,7 +22,50 @@ const ARTICLE_COLUMNS =
   "id, merchant_id, title, title_en, slug, excerpt, body, cover_image_url, published_at, updated_at, meta_title, meta_description, canonical, robots";
 
 type Db = {
-  from: (table: string) => any;
+  from: (table: string) => LooseQuery;
+};
+
+/** Minimal shape of the untyped query builder the anon client returns. */
+type LooseResult = {
+  data: unknown;
+  error: { message: string; code?: string } | null;
+  count?: number | null;
+};
+interface LooseQuery extends Promise<LooseResult> {
+  select: (
+    columns?: string,
+    options?: { count?: "exact" | "planned" | "estimated"; head?: boolean },
+  ) => LooseQuery;
+  eq: (column: string, value: unknown) => LooseQuery;
+  in: (column: string, values: unknown[]) => LooseQuery;
+  is: (column: string, value: unknown) => LooseQuery;
+  lte: (column: string, value: unknown) => LooseQuery;
+  order: (
+    column: string,
+    options?: { ascending?: boolean; nullsFirst?: boolean },
+  ) => LooseQuery;
+  range: (from: number, to: number) => LooseQuery;
+  limit: (count: number) => LooseQuery;
+  maybeSingle: () => Promise<LooseResult>;
+}
+
+/** One `articles` row as selected by `loadStoreArticle`. */
+type StoreArticleRow = {
+  id: string;
+  merchant_id: string;
+  slug: string;
+  title: string;
+  title_en: string | null;
+  excerpt: string | null;
+  body: string | null;
+  cover_image_url: string | null;
+  published_at: string | null;
+  updated_at: string | null;
+  meta_title: string | null;
+  meta_description: string | null;
+  canonical: string | null;
+  robots: string | null;
+  reading_minutes: number | null;
 };
 
 async function anonDb(): Promise<Db> {
@@ -148,7 +191,10 @@ export async function loadStoreBlogIndex(
         .range(pageInfo.from, pageInfo.to);
       const rows = (data ?? []) as CardRow[];
       let merchant: { name: string; slug: string } | null = null;
-      let categoryByArticle = new Map<string, { slug: string; name: string }>();
+      const categoryByArticle = new Map<
+        string,
+        { slug: string; name: string }
+      >();
       if (rows.length > 0) {
         const { data: m } = await db
           .from("merchants")
@@ -242,7 +288,7 @@ export async function loadStoreArticle(
         .limit(1)
         .maybeSingle();
       if (!article) return null;
-      const row = article as Record<string, any>;
+      const row = article as StoreArticleRow;
       const { data: merchant } = await database
         .from("merchants")
         .select("name, slug")

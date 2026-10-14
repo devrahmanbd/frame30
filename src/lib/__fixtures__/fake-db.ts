@@ -9,7 +9,7 @@
  * because the fake quietly did nothing.
  */
 
-export type Row = Record<string, any>;
+export type Row = Record<string, unknown>;
 
 export type RpcHandler = (
   fn: string,
@@ -70,8 +70,11 @@ function matches(row: Row, filters: Filter[]) {
     if (f.op === "eq") return actual === f.value;
     if (f.op === "neq") return actual !== f.value;
     if (f.op === "in") return (f.value as unknown[]).includes(actual);
-    if (f.op === "gte") return actual >= (f.value as never);
-    if (f.op === "lte") return actual <= (f.value as never);
+    // Scalar comparison mirrors PostgREST ordering on the stored raw value
+    // (numbers and ISO timestamps). The assertions only satisfy the type
+    // checker — they erase at runtime, so the comparison is untouched.
+    if (f.op === "gte") return (actual as number) >= (f.value as number);
+    if (f.op === "lte") return (actual as number) <= (f.value as number);
     // `not`/`or` are recorded for assertions but not evaluated: the fake exists
     // to measure query shape, and pretending to implement PostgREST predicate
     // syntax would make a passing test meaningless.
@@ -171,7 +174,11 @@ export class FakeDb {
   }
 }
 
-class Query implements PromiseLike<{ data: any; error: any; count?: number }> {
+class Query implements PromiseLike<{
+  data: unknown;
+  error: unknown;
+  count?: number;
+}> {
   private readonly filters: Filter[] = [];
   private mode: "select" | "insert" | "update" | "delete" | "upsert" = "select";
   private upsertConflict = "";
@@ -179,7 +186,7 @@ class Query implements PromiseLike<{ data: any; error: any; count?: number }> {
   private patch: Row = {};
   private limitN: number | null = null;
   private orderBy: { column: string; ascending: boolean } | null = null;
-  private error: any = null;
+  private error: { message: string } | null = null;
   private columns = "*";
   private wantCount = false;
   private headOnly = false;
@@ -277,7 +284,7 @@ class Query implements PromiseLike<{ data: any; error: any; count?: number }> {
     return this;
   }
 
-  private run(): { data: any; error: any; count?: number } {
+  private run(): { data: unknown; error: unknown; count?: number } {
     if (this.error) return { data: null, error: this.error };
     const store = this.db.rows(this.table);
 
@@ -354,7 +361,11 @@ class Query implements PromiseLike<{ data: any; error: any; count?: number }> {
         const av = a[column];
         const bv = b[column];
         if (av === bv) return 0;
-        return (av > bv ? 1 : -1) * (ascending ? 1 : -1);
+        // Raw-value ordering like the comparisons in `matches` above: the
+        // assertions erase, so the sort order is exactly what it was.
+        return (
+          ((av as number) > (bv as number) ? 1 : -1) * (ascending ? 1 : -1)
+        );
       });
     }
     if (this.rangeWindow)
@@ -396,11 +407,11 @@ class Query implements PromiseLike<{ data: any; error: any; count?: number }> {
     return { data: row, error: null };
   }
 
-  then<R1 = { data: any; error: any; count?: number }, R2 = never>(
+  then<R1 = { data: unknown; error: unknown; count?: number }, R2 = never>(
     onfulfilled?:
       | ((value: {
-          data: any;
-          error: any;
+          data: unknown;
+          error: unknown;
           count?: number;
         }) => R1 | PromiseLike<R1>)
       | null,

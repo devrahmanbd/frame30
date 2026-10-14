@@ -240,6 +240,21 @@ export type SummaryOptions = {
 type CacheEntry = { at: number; value: VitalsSummary };
 const cache = new Map<string, CacheEntry>();
 
+/** Minimal shape of the untyped query builder the admin client returns. */
+type LooseResult = {
+  data: unknown;
+  error: { message: string; code?: string } | null;
+  count?: number | null;
+};
+interface LooseQuery extends Promise<LooseResult> {
+  select: (columns?: string) => LooseQuery;
+  eq: (column: string, value: unknown) => LooseQuery;
+  gte: (column: string, value: unknown) => LooseQuery;
+  order: (column: string, options?: { ascending?: boolean }) => LooseQuery;
+  limit: (count: number) => LooseQuery;
+}
+type LooseClient = { from: (t: string) => LooseQuery };
+
 function cacheKey(merchantId: string, opts: Required<SummaryOptions>) {
   return `${merchantId}|${opts.hours}|${opts.template ?? "*"}`;
 }
@@ -274,7 +289,7 @@ export async function vitalsSummary(
     await import("@/integrations/supabase/client.server");
   const since = new Date(now - opts.hours * 3_600_000).toISOString();
 
-  const db = supabaseAdmin as unknown as { from: (t: string) => any };
+  const db = supabaseAdmin as unknown as LooseClient;
   let query = db
     .from("web_vitals_sample")
     .select("metric, value_num, device_class, path")

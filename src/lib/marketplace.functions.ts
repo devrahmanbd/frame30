@@ -34,7 +34,9 @@ export const marketInstallFn = createServerFn({ method: "POST" })
         listingId: z.string().min(1).max(80),
         trial: z.boolean().default(false),
         idempotencyKey: z.string().min(8).max(80),
-        billingInterval: z.enum(["one_time", "monthly", "annual"]).default("one_time"),
+        billingInterval: z
+          .enum(["one_time", "monthly", "annual"])
+          .default("one_time"),
         versionId: z.string().uuid().nullable().default(null),
         grantedScopes: z
           .array(z.string().trim().min(2).max(40))
@@ -269,8 +271,20 @@ export const marketSaveListingFn = createServerFn({ method: "POST" })
         category: z.string().trim().min(2).max(40).default("general"),
         version: z.string().trim().max(20).default("1.0.0"),
         priceMinor: z.number().int().min(0).max(100_000_000),
-        priceMonthlyMinor: z.number().int().min(0).max(100_000_000).nullable().optional(),
-        priceAnnualMinor: z.number().int().min(0).max(100_000_000).nullable().optional(),
+        priceMonthlyMinor: z
+          .number()
+          .int()
+          .min(0)
+          .max(100_000_000)
+          .nullable()
+          .optional(),
+        priceAnnualMinor: z
+          .number()
+          .int()
+          .min(0)
+          .max(100_000_000)
+          .nullable()
+          .optional(),
         trialAllowed: z.boolean().default(false),
         manifest: z.record(z.string(), z.unknown()).default({}),
       })

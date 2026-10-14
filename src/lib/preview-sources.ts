@@ -69,11 +69,7 @@ export type InstalledPreviewArtifact = {
  * ignored — discovery never throws on untrusted input.
  */
 export type InstalledThemeRef =
-  | string
-  | { key?: unknown }
-  | InstalledPreviewArtifact
-  | null
-  | undefined;
+  string | { key?: unknown } | InstalledPreviewArtifact | null | undefined;
 
 /** Normalized discovery key for one installed entry, or null to skip it. */
 export function installedThemeKeyOf(entry: unknown): string | null {

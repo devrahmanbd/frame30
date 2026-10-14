@@ -908,34 +908,36 @@ const CircleCategories: WidgetComponent = ({ str, bool, section, Heading }) => {
           const showImage = imageFirst && c.imageUrl;
           const round = aspect === "1/1";
           return (
-          <a
-            key={idx}
-            href={c.href}
-            className="group flex flex-col items-center text-center snap-start shrink-0 w-20 sm:w-auto transition-transform duration-200 hover:-translate-y-1"
-          >
-            <div
-              className={`relative size-18 sm:size-22 md:size-24 overflow-hidden p-0.5 ring-2 ring-primary/30 ring-offset-2 ring-offset-background transition-all duration-300 group-hover:ring-primary group-hover:shadow-md bg-muted ${round ? "rounded-full" : "rounded-fq-lg w-full"}`}
-              style={round ? undefined : { aspectRatio: aspect }}
+            <a
+              key={idx}
+              href={c.href}
+              className="group flex flex-col items-center text-center snap-start shrink-0 w-20 sm:w-auto transition-transform duration-200 hover:-translate-y-1"
             >
-              {showImage ? (
-                <img
-                  src={c.imageUrl}
-                  // Decorative: the adjacent label names the link, so a
-                  // titled alt would announce "Women Women".
-                  alt=""
-                  className={`size-full ${round ? "rounded-full" : "rounded-fq-md"} object-cover transition-transform duration-500 group-hover:scale-110`}
-                  loading="lazy"
-                />
-              ) : (
-                <div className={`size-full ${round ? "rounded-full" : "rounded-fq-md"} bg-primary/10 flex items-center justify-center font-bold text-primary text-base sm:text-lg`}>
-                  {c.title.charAt(0)}
-                </div>
-              )}
-            </div>
-            <span className="mt-2.5 text-xs font-semibold text-foreground tracking-tight line-clamp-2 leading-tight group-hover:text-primary transition-colors">
-              {c.title}
-            </span>
-          </a>
+              <div
+                className={`relative size-18 sm:size-22 md:size-24 overflow-hidden p-0.5 ring-2 ring-primary/30 ring-offset-2 ring-offset-background transition-all duration-300 group-hover:ring-primary group-hover:shadow-md bg-muted ${round ? "rounded-full" : "rounded-fq-lg w-full"}`}
+                style={round ? undefined : { aspectRatio: aspect }}
+              >
+                {showImage ? (
+                  <img
+                    src={c.imageUrl}
+                    // Decorative: the adjacent label names the link, so a
+                    // titled alt would announce "Women Women".
+                    alt=""
+                    className={`size-full ${round ? "rounded-full" : "rounded-fq-md"} object-cover transition-transform duration-500 group-hover:scale-110`}
+                    loading="lazy"
+                  />
+                ) : (
+                  <div
+                    className={`size-full ${round ? "rounded-full" : "rounded-fq-md"} bg-primary/10 flex items-center justify-center font-bold text-primary text-base sm:text-lg`}
+                  >
+                    {c.title.charAt(0)}
+                  </div>
+                )}
+              </div>
+              <span className="mt-2.5 text-xs font-semibold text-foreground tracking-tight line-clamp-2 leading-tight group-hover:text-primary transition-colors">
+                {c.title}
+              </span>
+            </a>
           );
         })}
       </div>

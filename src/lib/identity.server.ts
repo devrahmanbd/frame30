@@ -19,13 +19,20 @@ import {
 } from "./rate-limit.server";
 
 type Client = SupabaseClient<Database>;
+/** Minimal shape of the untyped query builder the admin client returns. */
+interface LooseQuery extends Promise<{ data: unknown; error: unknown }> {
+  insert: (rows: unknown) => Promise<{ error: unknown }>;
+  upsert: (rows: unknown, opts?: unknown) => Promise<{ error: unknown }>;
+  select: (cols: string) => LooseQuery;
+  update: (patch: unknown) => LooseQuery;
+  eq: (col: string, val: unknown) => LooseQuery;
+  neq: (col: string, val: unknown) => LooseQuery;
+  is: (col: string, val: unknown) => LooseQuery;
+  order: (col: string, opts?: { ascending?: boolean }) => LooseQuery;
+  limit: (n: number) => LooseQuery;
+}
 type LooseDb = {
-  from: (table: string) => {
-    insert: (rows: unknown) => Promise<{ error: unknown }>;
-    upsert: (rows: unknown, opts?: unknown) => Promise<{ error: unknown }>;
-    select: (cols: string) => any;
-    update: (patch: unknown) => any;
-  };
+  from: (table: string) => LooseQuery;
   rpc: (
     fn: string,
     args?: Record<string, unknown>,

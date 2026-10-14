@@ -55,11 +55,7 @@
  * `dependency.version:<slug>`.
  */
 
-import {
-  MENU_SLOTS,
-  compareSemver,
-  parseSemver,
-} from "./marketplace-scopes";
+import { MENU_SLOTS, compareSemver, parseSemver } from "./marketplace-scopes";
 
 /* ------------------------------------------------------------ namespaces */
 
@@ -86,11 +82,20 @@ export type ConflictPackage = {
 };
 
 export function emptyClaims(): NamespaceClaims {
-  return { widget: [], template: [], presentation: [], route: [], asset: [], menu: [] };
+  return {
+    widget: [],
+    template: [],
+    presentation: [],
+    route: [],
+    asset: [],
+    menu: [],
+  };
 }
 
 function uniqSorted(ids: string[]): string[] {
-  return [...new Set(ids.map((s) => s.trim()).filter((s) => s.length > 0))].sort();
+  return [
+    ...new Set(ids.map((s) => s.trim()).filter((s) => s.length > 0)),
+  ].sort();
 }
 
 function strList(value: unknown): string[] {
@@ -113,8 +118,11 @@ export function extractThemeClaims(raw: unknown): NamespaceClaims {
   try {
     const r = (raw ?? {}) as Record<string, unknown>;
     const widgets: string[] = [];
-    for (const w of strList(r.supportedWidgets)) widgets.push(`widget:${w.trim()}`);
-    const deps = Array.isArray(r.pluginDependencies) ? r.pluginDependencies : [];
+    for (const w of strList(r.supportedWidgets))
+      widgets.push(`widget:${w.trim()}`);
+    const deps = Array.isArray(r.pluginDependencies)
+      ? r.pluginDependencies
+      : [];
     for (const d of deps) {
       const ref =
         typeof (d as Record<string, unknown> | null)?.ref === "string"
@@ -123,7 +131,9 @@ export function extractThemeClaims(raw: unknown): NamespaceClaims {
       if (ref) widgets.push(ref);
     }
     out.widget = uniqSorted(widgets);
-    out.template = uniqSorted(strList(r.templates).map((t) => String(t).trim()));
+    out.template = uniqSorted(
+      strList(r.templates).map((t) => String(t).trim()),
+    );
     out.presentation = uniqSorted(
       strList(r.presentationSurfaces).map((s) => `surface:${String(s).trim()}`),
     );
@@ -163,8 +173,7 @@ export function extractPluginClaims(raw: unknown): NamespaceClaims {
   const out = emptyClaims();
   try {
     const r = (raw ?? {}) as Record<string, unknown>;
-    const id =
-      typeof r.id === "string" ? r.id.trim().toLowerCase() : "";
+    const id = typeof r.id === "string" ? r.id.trim().toLowerCase() : "";
     const widgets: string[] = [];
     const menuSlots = new Set<string>(MENU_SLOTS as readonly string[]);
     const swapSlots: string[] = [];
@@ -188,7 +197,10 @@ export function extractPluginClaims(raw: unknown): NamespaceClaims {
     const hooks = new Set<string>(EXCLUSIVE_HOOKS as readonly string[]);
     const claimed = Array.isArray(r.hooks) ? r.hooks.map(String) : [];
     out.route = uniqSorted(
-      claimed.map((h) => h.trim()).filter((h) => hooks.has(h)).map((h) => `hook:${h}`),
+      claimed
+        .map((h) => h.trim())
+        .filter((h) => hooks.has(h))
+        .map((h) => `hook:${h}`),
     );
   } catch {
     return emptyClaims();
@@ -202,7 +214,9 @@ export function extractPluginClaims(raw: unknown): NamespaceClaims {
  * where the file list is in hand; installed-side file lists are not
  * persisted, so this runs candidate-side only in the pipeline.
  */
-export function extractFileClaims(files: readonly { path: string }[]): NamespaceClaims {
+export function extractFileClaims(
+  files: readonly { path: string }[],
+): NamespaceClaims {
   const out = emptyClaims();
   try {
     const templates: string[] = [];
@@ -225,9 +239,13 @@ export function extractFileClaims(files: readonly { path: string }[]): Namespace
 }
 
 /** Merge two claim sets (e.g. manifest + file claims candidate-side). */
-export function mergeClaims(a: NamespaceClaims, b: NamespaceClaims): NamespaceClaims {
+export function mergeClaims(
+  a: NamespaceClaims,
+  b: NamespaceClaims,
+): NamespaceClaims {
   const out = emptyClaims();
-  for (const ns of CONFLICT_NAMESPACES) out[ns] = uniqSorted([...a[ns], ...b[ns]]);
+  for (const ns of CONFLICT_NAMESPACES)
+    out[ns] = uniqSorted([...a[ns], ...b[ns]]);
   return out;
 }
 
@@ -249,7 +267,11 @@ export type ConflictVerdict =
   | { ok: true; conflicts: []; shared: NamespaceConflict[] }
   | { ok: false; conflicts: NamespaceConflict[]; shared: NamespaceConflict[] };
 
-function isBlocking(ns: ConflictNamespace, candidateKind: string, holderKind: string): boolean {
+function isBlocking(
+  ns: ConflictNamespace,
+  candidateKind: string,
+  holderKind: string,
+): boolean {
   // Globally-exclusive surfaces block only between two plugin owners.
   // Theme dressing refs, template/route/presentation overlaps and
   // per-version-namespaced assets are isolated by design (module header).
@@ -386,11 +408,15 @@ export function checkDependencyRanges(
       }
       const range = (want.version ?? "").trim();
       if (!range) continue;
-      const known = rows.filter((row) => parseSemver((row.version ?? "").trim()) !== null);
+      const known = rows.filter(
+        (row) => parseSemver((row.version ?? "").trim()) !== null,
+      );
       // No parseable version anywhere for this slug = legacy unknown:
       // presence suffices (proven mismatch is the only fail-closed trigger).
       if (known.length === 0) continue;
-      const hit = known.some((row) => satisfiesVersionRange((row.version ?? "").trim(), range));
+      const hit = known.some((row) =>
+        satisfiesVersionRange((row.version ?? "").trim(), range),
+      );
       if (!hit) {
         const got = known
           .map((row) => (row.version ?? "").trim())

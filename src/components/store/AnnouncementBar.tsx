@@ -126,13 +126,19 @@ export function resolveAnnouncementItems(
  * by `StoreHeader`) to surface items. `left` is layout chrome, not message
  * copy, so it stays out.
  */
-export function headerChromeAnnouncementItems(announcement: {
-  left?: string;
-  center?: string;
-  center_bn?: string;
-} | null | undefined): AnnouncementItem[] {
+export function headerChromeAnnouncementItems(
+  announcement:
+    | {
+        left?: string;
+        center?: string;
+        center_bn?: string;
+      }
+    | null
+    | undefined,
+): AnnouncementItem[] {
   if (!announcement) return [];
-  const text = typeof announcement.center === "string" ? announcement.center : "";
+  const text =
+    typeof announcement.center === "string" ? announcement.center : "";
   const textBn =
     typeof announcement.center_bn === "string" ? announcement.center_bn : "";
   if (!text.trim() && !textBn.trim()) return [];
@@ -154,11 +160,15 @@ export function announcementAlignOf(
     : undefined;
 }
 
-export function announcementSizeOf(value: unknown): AnnouncementSize | undefined {
+export function announcementSizeOf(
+  value: unknown,
+): AnnouncementSize | undefined {
   return value === "sm" || value === "md" ? value : undefined;
 }
 
-export function announcementToneOf(value: unknown): AnnouncementTone | undefined {
+export function announcementToneOf(
+  value: unknown,
+): AnnouncementTone | undefined {
   return value === "brand" || value === "muted" || value === "ink"
     ? value
     : undefined;
@@ -344,7 +354,8 @@ export function useAnnouncementState({
     return () => window.clearInterval(id);
   }, [canRotate, rotateEvery, visible.length]);
 
-  const active = visible.length === 0 ? null : visible[Math.min(index, visible.length - 1)]!;
+  const active =
+    visible.length === 0 ? null : visible[Math.min(index, visible.length - 1)]!;
   const globalHref = (href ?? "").trim();
   const target = active ? active.href || globalHref : "";
   const linkHref = link ? link(target) : target;
@@ -442,9 +453,7 @@ export function AnnouncementBar({
       role="region"
       aria-label={regionLabel}
       className={`flex items-center gap-1 font-medium motion-safe:transition-colors sm:gap-3 ${
-        size === "sm"
-          ? "px-4 py-1 text-[11px]"
-          : "px-4 py-2 text-xs sm:px-6"
+        size === "sm" ? "px-4 py-1 text-[11px]" : "px-4 py-2 text-xs sm:px-6"
       } ${ALIGN_CLASS[align]} ${
         variant === "integrated" ? "text-current" : TONE_CLASS[tone]
       }`}
@@ -459,7 +468,10 @@ export function AnnouncementBar({
           <span aria-hidden="true">‹</span>
         </button>
       )}
-      <p aria-live="polite" className="min-w-0 flex-1 truncate sm:whitespace-normal">
+      <p
+        aria-live="polite"
+        className="min-w-0 flex-1 truncate sm:whitespace-normal"
+      >
         {target ? (
           <a
             href={linkHref}

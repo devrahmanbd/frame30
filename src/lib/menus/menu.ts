@@ -559,7 +559,10 @@ export function canonicalPromoTitle(
 }
 
 /** Href rebased onto a path host; absolute/hash/contact hrefs pass through. */
-export function canonicalHref(item: Pick<CanonicalMenuItem, "href">, base: string): string {
+export function canonicalHref(
+  item: Pick<CanonicalMenuItem, "href">,
+  base: string,
+): string {
   return rebaseMenuHref(item.href, base);
 }
 

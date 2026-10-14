@@ -105,12 +105,14 @@ const themePreviewInstalledFn = createServerFn({ method: "GET" }).handler(
         .eq("merchant_id", merchantId)
         .not("source_listing_slug", "is", null)
         .limit(100);
-      const rows = ((themes ?? []) as {
-        id: string;
-        name: string;
-        author: string | null;
-        source_listing_slug: string | null;
-      }[]).filter((t) => t.source_listing_slug?.trim());
+      const rows = (
+        (themes ?? []) as {
+          id: string;
+          name: string;
+          author: string | null;
+          source_listing_slug: string | null;
+        }[]
+      ).filter((t) => t.source_listing_slug?.trim());
       if (!rows.length) return [];
       const { data: versions } = await supabase
         .from("theme_versions")
@@ -123,11 +125,11 @@ const themePreviewInstalledFn = createServerFn({ method: "GET" }).handler(
         .order("version", { ascending: false })
         .limit(500);
       const latest = new Map<string, { templates: Json; tokens: Json }>();
-      for (const v of ((versions ?? []) as {
+      for (const v of (versions ?? []) as {
         theme_id: string;
         templates: Json;
         tokens: Json;
-      }[])) {
+      }[]) {
         if (!latest.has(v.theme_id))
           latest.set(v.theme_id, { templates: v.templates, tokens: v.tokens });
       }

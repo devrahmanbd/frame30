@@ -27,9 +27,8 @@ export const themeInstallFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("themes.update")])
   .inputValidator((d: unknown) => z.object({ key: themeKey }).parse(d))
   .handler(async ({ data, context }) => {
-    const { installCatalogTheme, installOfficialTheme } = await import(
-      "./appearance.server"
-    );
+    const { installCatalogTheme, installOfficialTheme } =
+      await import("./appearance.server");
     // Frame30: official keys initialize from the built-in source registry
     // (via installOfficialTheme); community keys install from DB rows.
     // Either way the merchant's records are created tenant-scoped.

@@ -11,6 +11,8 @@
  */
 import { publicClient } from "./pricing.server";
 import { incr, log, withSpan } from "./observability.server";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
 
 type Rpc = {
   rpc: (
@@ -100,9 +102,32 @@ export async function recordConversion(
 
 /* --------------------------------- admin ---------------------------------- */
 
-type Client = {
-  from: (table: string) => any;
+type Client = SupabaseClient<Database>;
+
+/** Minimal shape of the untyped query builder the client returns. */
+type LooseResult = {
+  data: unknown;
+  error: { message: string; code?: string } | null;
+  count?: number | null;
 };
+interface LooseQuery extends Promise<LooseResult> {
+  select: (
+    columns?: string,
+    options?: { count?: "exact" | "planned" | "estimated"; head?: boolean },
+  ) => LooseQuery;
+  eq: (column: string, value: unknown) => LooseQuery;
+  order: (
+    column: string,
+    options?: { ascending?: boolean; nullsFirst?: boolean },
+  ) => LooseQuery;
+  limit: (count: number) => LooseQuery;
+  single: () => Promise<LooseResult>;
+  maybeSingle: () => Promise<LooseResult>;
+  insert: (values: unknown) => LooseQuery;
+  update: (values: unknown) => LooseQuery;
+  delete: () => LooseQuery;
+}
+type LooseClient = Client & { from: (table: string) => LooseQuery };
 
 export type ExperimentRow = {
   id: string;
@@ -130,12 +155,13 @@ export async function listExperiments(
   db: Client,
   merchantId: string,
 ): Promise<ExperimentRow[]> {
+  const loose = db as LooseClient;
   const [
     { data: experiments, error },
     { data: variants },
     { data: exposures },
   ] = await Promise.all([
-    db
+    loose
       .from("experiments")
       .select(
         "id, key, name, hypothesis, surface, status, traffic_pct, started_at, stopped_at",
@@ -143,11 +169,11 @@ export async function listExperiments(
       .eq("merchant_id", merchantId)
       .order("created_at", { ascending: false })
       .limit(100),
-    db
+    loose
       .from("experiment_variants")
       .select("id, experiment_id, key, is_control, weight_pct")
       .eq("merchant_id", merchantId),
-    db
+    loose
       .from("experiment_exposures")
       .select("experiment_id, variant_id, metric, hits, value_minor_int")
       .eq("merchant_id", merchantId),
@@ -240,17 +266,18 @@ export async function saveExperiment(
     surface: input.surface,
     traffic_pct: input.trafficPct,
   };
+  const loose = db as LooseClient;
 
   let experimentId = input.id;
   if (experimentId) {
-    const { error } = await db
+    const { error } = await loose
       .from("experiments")
       .update(row)
       .eq("id", experimentId)
       .eq("merchant_id", merchantId);
     if (error) throw error;
   } else {
-    const { data, error } = await db
+    const { data, error } = await loose
       .from("experiments")
       .insert(row)
       .select("id")
@@ -261,14 +288,14 @@ export async function saveExperiment(
 
   // Replace the variant set wholesale; assignments cascade off variant rows, so
   // this is only safe while the experiment is not yet running.
-  const { error: delError } = await db
+  const { error: delError } = await loose
     .from("experiment_variants")
     .delete()
     .eq("experiment_id", experimentId)
     .eq("merchant_id", merchantId);
   if (delError) throw delError;
 
-  const { error: insError } = await db.from("experiment_variants").insert(
+  const { error: insError } = await loose.from("experiment_variants").insert(
     input.variants.map((v) => ({
       merchant_id: merchantId,
       experiment_id: experimentId,
@@ -293,7 +320,8 @@ export async function setExperimentStatus(
   experimentId: string,
   status: "draft" | "running" | "paused" | "stopped",
 ) {
-  const { data: current, error: readError } = await db
+  const loose = db as LooseClient;
+  const { data: current, error: readError } = await loose
     .from("experiments")
     .select("status")
     .eq("id", experimentId)
@@ -309,7 +337,7 @@ export async function setExperimentStatus(
   if (status === "running") patch["started_at"] = new Date().toISOString();
   if (status === "stopped") patch["stopped_at"] = new Date().toISOString();
 
-  const { error } = await db
+  const { error } = await loose
     .from("experiments")
     .update(patch)
     .eq("id", experimentId)

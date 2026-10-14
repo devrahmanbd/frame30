@@ -745,11 +745,14 @@ export async function createOrder(
       supabaseAdmin as never,
       merchant.id,
     );
-    const outcomes = await runHook(installed, "order.created", {
-      merchantId: merchant.id,
-      orderId: order.id,
-      totalMinor: totals.totalMinor,
-      currency: totals.currency,
+    const outcomes = await runHook(
+      installed,
+      "order.created",
+      {
+        merchantId: merchant.id,
+        orderId: order.id,
+        totalMinor: totals.totalMinor,
+        currency: totals.currency,
       },
       undefined,
       transport,
@@ -883,9 +886,11 @@ export async function loadOrder(
   const { access_token: _t, idempotency_key: _k, ...publicOrder } = row;
   return {
     order: publicOrder,
-    items: (items ?? []).map((i: any) => {
-      const img = i.product_variants?.products?.image_url;
-      delete i.product_variants;
+    items: (items ?? []).map((i) => {
+      const img = (
+        i as { product_variants?: { products?: { image_url?: string } } }
+      ).product_variants?.products?.image_url;
+      delete (i as { product_variants?: unknown }).product_variants;
       return { ...i, image_url: img ?? null };
     }) as (Row<"order_items"> & { image_url?: string | null })[],
     events: (events ?? []) as {

@@ -216,10 +216,7 @@ export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
     },
     onError: () =>
       toast.error(
-        t(
-          "That plugin could not be uploaded",
-          "সেই প্লাগইন আপলোড করা যায়নি",
-        ),
+        t("That plugin could not be uploaded", "সেই প্লাগইন আপলোড করা যায়নি"),
       ),
   });
 

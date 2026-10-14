@@ -428,8 +428,15 @@ export type QueuedParkReason =
  * can assert the raw redelivery contract without install state.
  */
 export type QueuedHookDb = {
-  from: (table: string) => any;
+  from: (table: string) => LooseQuery;
 };
+
+/** Minimal shape of the untyped query builder the db handle returns. */
+interface LooseQuery extends Promise<{ data: unknown; error: unknown }> {
+  select: (columns: string) => LooseQuery;
+  eq: (column: string, value: unknown) => LooseQuery;
+  maybeSingle: () => Promise<{ data: unknown; error: unknown }>;
+}
 
 export type DeliverQueuedHookDeps = {
   db?: QueuedHookDb | null;
@@ -465,7 +472,9 @@ async function recheckQueuedDelivery(
     hook: ServerHook;
     hooksUrl: string;
   },
-): Promise<{ ok: true; hooksUrl: string } | { ok: false; reason: QueuedParkReason }> {
+): Promise<
+  { ok: true; hooksUrl: string } | { ok: false; reason: QueuedParkReason }
+> {
   let row: QueuedInstallRow | null = null;
   if (opts.installId) {
     const { data } = await db

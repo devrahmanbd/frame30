@@ -1087,7 +1087,7 @@ const HeroWidget: WidgetComponent = ({ str, Heading, locale, section }) => {
  * The closed renderer map. `Record<SectionType, WidgetComponent>` means a new
  * widget type cannot compile until its renderer exists.
  */
-const BASE_WIDGETS: Record<string, WidgetComponent> = {
+const BASE_WIDGETS: Partial<Record<SectionType, WidgetComponent>> = {
   // Phase 2.1 — bars, navigation, search and account/cart.
   ...CHROME_WIDGETS,
   // Phase 2.2 — merchandising.
@@ -1655,7 +1655,7 @@ const BASE_WIDGETS: Record<string, WidgetComponent> = {
  * instead of leaking brand.
  */
 export const GENERIC_WIDGETS: Partial<Record<SectionType, WidgetComponent>> = {
-  ...(BASE_WIDGETS as any),
+  ...BASE_WIDGETS,
   ...BASIC_WIDGETS,
   ...BLOG_WIDGETS,
   ...CIRCUIT_WIDGETS,

@@ -185,13 +185,7 @@ export const TEMPLATE_ZONES: Record<TemplateKey, readonly Zone[]> = {
   blog: ["header", "main", "footer", ...OVERLAY_ZONES],
   cart: ["header", "main", "footer", "sidebar", "drawer", "popup"],
   checkout: ["header", "main", "footer", "thank_you"],
-  search: [
-    "header",
-    "main",
-    "footer",
-    ...OVERLAY_ZONES,
-    "not_found",
-  ],
+  search: ["header", "main", "footer", ...OVERLAY_ZONES, "not_found"],
 };
 
 /** Zones a base template may host. Unknown templates host nothing. */
@@ -677,7 +671,10 @@ export type MenuItem = {
  * coercion), keep URL-safe slug chars only, drop empties, dedupe, cap at
  * MAX_ARRAY_ROWS. Renderers call it on the raw prop; it never throws.
  */
-export function parsePickedHandles(raw: unknown, max = MAX_ARRAY_ROWS): string[] {
+export function parsePickedHandles(
+  raw: unknown,
+  max = MAX_ARRAY_ROWS,
+): string[] {
   if (typeof raw !== "string") return [];
   const cap = Math.min(Math.max(1, Math.trunc(max)), MAX_ARRAY_ROWS);
   const seen = new Set<string>();
@@ -2127,7 +2124,15 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "content",
     slots: ["header"],
     heading: false,
-    defaults: { label: "Shop", limit: 8, columns: 4, menuId: "", promoImage: "", promoHref: "", promoTitle: "" },
+    defaults: {
+      label: "Shop",
+      limit: 8,
+      columns: 4,
+      menuId: "",
+      promoImage: "",
+      promoHref: "",
+      promoTitle: "",
+    },
     fields: [
       text("label", "Trigger label", 40),
       num("limit", "Max top-level entries"),
@@ -6593,8 +6598,6 @@ export function sectionStyle(props: Record<string, PropValue>): {
   return { className, style };
 }
 
-
-
 /** True when the node is a global block reference placement. */
 export function isGlobalRef(section: Section): boolean {
   return section.type === "global_ref";
@@ -7027,9 +7030,10 @@ export function resolveExtensionNode(
 }
 
 const CATALOG = new Map<SectionType, CatalogEntry>([
-  ...SECTION_CATALOG.map(
-    (entry): [SectionType, CatalogEntry] => [entry.type, entry],
-  ),
+  ...SECTION_CATALOG.map((entry): [SectionType, CatalogEntry] => [
+    entry.type,
+    entry,
+  ]),
   // Phase 2B: global_ref graduated to SECTION_CATALOG (palette + twin
   // parity covered); the explicit registration below is now redundant but
   // harmless (Map overwrite with the identical entry).
@@ -8190,12 +8194,7 @@ export function templateSuffixFromOverride(
 }
 
 export type TemplateMatch =
-  | "suffix"
-  | "slug"
-  | "base"
-  | "page"
-  | "index"
-  | "empty";
+  "suffix" | "slug" | "base" | "page" | "index" | "empty";
 
 /** Ordered candidate keys for (base, suffix, slug), most-specific first. */
 export function resolveTemplateCandidates(

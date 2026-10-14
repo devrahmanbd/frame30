@@ -30,13 +30,24 @@ async function admin() {
   const { supabaseAdmin } =
     await import("@/integrations/supabase/client.server");
   return supabaseAdmin as unknown as {
-    from: (table: string) => {
-      select: (cols: string, opts?: Record<string, unknown>) => any;
-      update: (patch: unknown) => {
-        eq: (col: string, val: string) => Promise<unknown>;
-      };
-    };
+    from: (table: string) => LooseQuery;
   };
+}
+
+/** Minimal shape of the untyped query builder the admin client returns. */
+type LooseResult = {
+  data: unknown;
+  error: { message: string; code?: string } | null;
+  count?: number | null;
+};
+interface LooseQuery extends Promise<LooseResult> {
+  select: (
+    columns?: string,
+    options?: { count?: "exact" | "planned" | "estimated"; head?: boolean },
+  ) => LooseQuery;
+  eq: (column: string, value: unknown) => LooseQuery;
+  neq: (column: string, value: unknown) => LooseQuery;
+  update: (patch: unknown) => LooseQuery;
 }
 void (null as unknown as Admin);
 
@@ -116,7 +127,7 @@ export async function deriveComponentStates(now = new Date()): Promise<{
   // --- signal 2: dead letters awaiting a human
   let dlqDepth = 0;
   try {
-    const [payments, couriers] = (await Promise.all([
+    const [payments, couriers] = await Promise.all([
       a
         .from("webhook_events")
         .select("id", { count: "exact", head: true })
@@ -125,7 +136,7 @@ export async function deriveComponentStates(now = new Date()): Promise<{
         .from("courier_webhook_events")
         .select("id", { count: "exact", head: true })
         .eq("status", "dead_letter"),
-    ])) as { count?: number }[];
+    ]);
     const pay = Number(payments?.count ?? 0);
     dlqDepth = pay + Number(couriers?.count ?? 0);
     if (dlqDepth >= 50)
@@ -164,12 +175,12 @@ export async function deriveComponentStates(now = new Date()): Promise<{
   // --- signal 4: open public incidents always win
   let openIncidents = 0;
   try {
-    const { data } = (await a
+    const incidents = await a
       .from("ops_incidents")
       .select("severity, components, status")
       .neq("status", "resolved")
-      .eq("is_public", true)) as { data: Record<string, unknown>[] | null };
-    for (const row of data ?? []) {
+      .eq("is_public", true);
+    for (const row of (incidents.data ?? []) as Record<string, unknown>[]) {
       openIncidents += 1;
       const severity = String(row["severity"] ?? "minor");
       const state: ComponentState =
@@ -201,14 +212,11 @@ export async function deriveComponentStates(now = new Date()): Promise<{
 export async function refreshComponentHealth(now = new Date()) {
   const { derived, signals } = await deriveComponentStates(now);
   const a = await admin();
-  const { data } = (await a
-    .from("ops_status_components")
-    .select("key, state")) as {
-    data: { key: string; state: string }[] | null;
-  };
+  const { data } = await a.from("ops_status_components").select("key, state");
+  const rows = (data ?? []) as { key: string; state: string }[];
   const verdicts: ComponentVerdict[] = [];
 
-  for (const row of data ?? []) {
+  for (const row of rows) {
     const previous = (COMPONENT_STATES as readonly string[]).includes(row.state)
       ? (row.state as ComponentState)
       : "operational";

@@ -83,9 +83,7 @@ export async function runInstallRenewalSweep(
     const nowMs = options.nowMs ?? Date.now();
     const limit = Math.min(Math.max(options.limit ?? 100, 1), 500);
     let db: {
-      from: (
-        t: string,
-      ) => {
+      from: (t: string) => {
         select: (c: string) => {
           in: (
             c: string,

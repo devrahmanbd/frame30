@@ -101,7 +101,9 @@ export class AudioAlertEngine {
       if (typeof window !== "undefined" && window.localStorage) {
         window.localStorage.setItem(STORAGE_KEY_MUTED, String(muted));
       }
-    } catch {}
+    } catch {
+      // localStorage may be unavailable (private mode/SSR); mute state stays in memory.
+    }
   }
 
   /**
@@ -130,7 +132,9 @@ export class AudioAlertEngine {
       if (typeof window !== "undefined" && window.localStorage) {
         window.localStorage.setItem(STORAGE_KEY_VOLUME, String(clamped));
       }
-    } catch {}
+    } catch {
+      // localStorage may be unavailable (private mode/SSR); volume stays in memory.
+    }
   }
 
   /**

@@ -128,7 +128,7 @@ export async function merchantAssetBytes(
     );
   }
   let total = 0;
-  for (const row of ((data ?? []) as unknown as { bytes?: unknown }[])) {
+  for (const row of (data ?? []) as unknown as { bytes?: unknown }[]) {
     total += Number(row.bytes ?? 0);
   }
   return total;
@@ -260,13 +260,15 @@ export async function listVersionAssets(
       (error as { message?: string } | null)?.message ?? "Asset read failed.",
     );
   }
-  const rows = ((data ?? []) as unknown as {
-    id: string;
-    name: string;
-    kind: string;
-    bytes: number;
-    url: string | null;
-  }[]).filter((r) => r.name.startsWith(prefix));
+  const rows = (
+    (data ?? []) as unknown as {
+      id: string;
+      name: string;
+      kind: string;
+      bytes: number;
+      url: string | null;
+    }[]
+  ).filter((r) => r.name.startsWith(prefix));
   return rows.map((r) => ({
     id: r.id,
     name: r.name,
@@ -297,7 +299,8 @@ export async function deleteVersionAssets(
     if (error) {
       throw new PackageStoreError(
         "package.asset_delete_failed",
-        (error as { message?: string } | null)?.message ?? "Asset delete failed.",
+        (error as { message?: string } | null)?.message ??
+          "Asset delete failed.",
       );
     }
   }

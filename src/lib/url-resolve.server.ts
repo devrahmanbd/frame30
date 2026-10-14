@@ -65,7 +65,30 @@ function withTimeout<T>(
   });
 }
 
-type Loose = { from: (table: string) => any };
+type LooseResult = {
+  data: unknown;
+  error?: { message: string; code?: string } | null;
+};
+/**
+ * Minimal chainable surface. Deliberately not `Promise`-based: the scope
+ * tests inject a lightweight in-memory fake whose terminal `maybeSingle`
+ * is a real promise but whose intermediate builder is not.
+ */
+interface LooseQuery {
+  select: (
+    columns?: string,
+    options?: { count?: "exact" | "planned" | "estimated"; head?: boolean },
+  ) => LooseQuery;
+  eq: (column: string, value: unknown) => LooseQuery;
+  is: (column: string, value: unknown) => LooseQuery;
+  limit: (count: number) => LooseQuery;
+  maybeSingle: () => Promise<LooseResult>;
+  update: (values: unknown) => {
+    eq: (column: string, value: unknown) => Promise<unknown>;
+  };
+}
+
+type Loose = { from: (table: string) => LooseQuery };
 
 type HostResolver = (
   hostname: string | null,
@@ -103,7 +126,8 @@ export async function resolveTenantForUrl(
       .select("id")
       .eq("slug", segments[1])
       .maybeSingle();
-    if (data?.id) return data.id as string;
+    const merchant = data as { id: string } | null;
+    if (merchant?.id) return merchant.id;
   }
   try {
     const res = await resolveHost(hostname ?? null);
@@ -134,18 +158,24 @@ export async function lookupRedirect(
       .eq("from_path", current)
       .limit(1)
       .maybeSingle();
-    if (!data) return null;
-    const status = Number(data.status_code ?? 301) as 301 | 302 | 410;
+    const redirect = data as {
+      to_path: string | null;
+      status_code: number | null;
+      hits: number | null;
+      id: string;
+    } | null;
+    if (!redirect) return null;
+    const status = Number(redirect.status_code ?? 301) as 301 | 302 | 410;
     if (status === 410) return { type: "gone" };
-    const to = String(data.to_path ?? "");
+    const to = String(redirect.to_path ?? "");
     if (!to || to === current) return null;
     void db
       .from("url_redirects")
       .update({
-        hits: Number(data.hits ?? 0) + 1,
+        hits: Number(redirect.hits ?? 0) + 1,
         last_hit_at: new Date().toISOString(),
       })
-      .eq("id", data.id)
+      .eq("id", redirect.id)
       .then(
         () => undefined,
         () => undefined,
@@ -198,11 +228,12 @@ async function resolveEntityTail(
     category: null,
   });
   if (canonicalPath === path) {
-    const { data: merchant } = await db
+    const { data: merchantData } = await db
       .from("merchants")
       .select("slug")
       .eq("id", row.merchant_id)
       .maybeSingle();
+    const merchant = merchantData as { slug: string } | null;
     return {
       type: kind,
       slug: row.slug,
@@ -215,7 +246,7 @@ async function resolveEntityTail(
     buildPermalink(DEFAULT_PERMALINKS, {
       kind,
       slug: row.slug,
-      date: (row.published_at as string | null) ?? null,
+      date: row.published_at ?? null,
       category: null,
     }) === path;
   if (parsed?.kind === kind || legacy) {
@@ -248,7 +279,8 @@ async function resolveUncached(
 
   // One indexed lookup per kind, in parallel. A known tenant scopes every
   // lookup to its own rows so merchant B's slug never resolves on A's host.
-  const scoped = (q: any) => (merchantId ? q.eq("merchant_id", merchantId) : q);
+  const scoped = (q: LooseQuery): LooseQuery =>
+    merchantId ? q.eq("merchant_id", merchantId) : q;
   const [articleRes, productRes, collectionRes, pageRes] = await Promise.all([
     scoped(
       db
@@ -289,14 +321,14 @@ async function resolveUncached(
       .maybeSingle(),
   ]);
   const candidates: { kind: PermalinkKind; row: CandidateRow }[] = [];
-  const push = (kind: PermalinkKind, res: { data?: CandidateRow | null }) => {
-    const row = res?.data;
+  const push = (kind: PermalinkKind, res: LooseResult) => {
+    const row = (res?.data ?? null) as CandidateRow | null;
     if (row?.slug && row?.merchant_id) candidates.push({ kind, row });
   };
-  push("article", articleRes as { data?: CandidateRow | null });
-  push("product", productRes as { data?: CandidateRow | null });
-  push("collection", collectionRes as { data?: CandidateRow | null });
-  push("page", pageRes as { data?: CandidateRow | null });
+  push("article", articleRes);
+  push("product", productRes);
+  push("collection", collectionRes);
+  push("page", pageRes);
   if (!candidates.length) return { type: "miss" };
 
   if (!merchantId) {

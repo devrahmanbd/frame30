@@ -190,9 +190,7 @@ const BlogArchiveWidget: WidgetComponent = ({ str, bool, int }) => {
   const picks = parsePickedHandles(str("handles"));
   const bound = picks.length
     ? picks.flatMap((slug) => {
-        const hit = pool.find(
-          (article) => article.slug.toLowerCase() === slug,
-        );
+        const hit = pool.find((article) => article.slug.toLowerCase() === slug);
         return hit ? [hit] : [];
       })
     : pool;

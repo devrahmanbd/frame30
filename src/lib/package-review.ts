@@ -36,7 +36,8 @@ function cleanUrl(raw: string): string | null {
   const url = raw.replace(/[.,;:!?)\]]+$/, "");
   try {
     const parsed = new URL(url);
-    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return null;
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:")
+      return null;
     return url;
   } catch {
     return null;

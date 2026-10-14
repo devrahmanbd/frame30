@@ -356,9 +356,8 @@ const widgetTicketSchema = z.object({
 export const createSupportTicketWidgetFn = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => widgetTicketSchema.parse(d))
   .handler(async ({ data }) => {
-    const { createTicket, needsApprovalReview } = await import(
-      "./support-tickets.server"
-    );
+    const { createTicket, needsApprovalReview } =
+      await import("./support-tickets.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
 
     // Resolve merchant by storefront slug

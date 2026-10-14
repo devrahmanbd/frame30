@@ -50,8 +50,35 @@ type Client = SupabaseClient<Database>;
 // The taxonomy tables landed after the last type regeneration cycle in some
 // checkouts; a narrow structural alias keeps the file honest without leaking
 // `any` into the exported surface.
+/** Minimal shape of the untyped query builder the client returns. */
+type LooseResult = {
+  data: unknown;
+  error: { message: string; code?: string } | null;
+  count?: number | null;
+};
+interface LooseQuery extends Promise<LooseResult> {
+  select: (
+    columns?: string,
+    options?: { count?: "exact" | "planned" | "estimated"; head?: boolean },
+  ) => LooseQuery;
+  eq: (column: string, value: unknown) => LooseQuery;
+  in: (column: string, values: unknown[]) => LooseQuery;
+  is: (column: string, value: unknown) => LooseQuery;
+  like: (column: string, pattern: string) => LooseQuery;
+  order: (
+    column: string,
+    options?: { ascending?: boolean; nullsFirst?: boolean },
+  ) => LooseQuery;
+  limit: (count: number) => LooseQuery;
+  single: () => Promise<LooseResult>;
+  maybeSingle: () => Promise<LooseResult>;
+  insert: (values: unknown) => LooseQuery;
+  update: (values: unknown) => LooseQuery;
+  upsert: (values: unknown, options?: { onConflict?: string }) => LooseQuery;
+  delete: () => LooseQuery;
+}
 type Loose = {
-  from: (table: string) => any;
+  from: (table: string) => LooseQuery;
 };
 const loose = (db: Client) => db as unknown as Loose;
 
@@ -340,12 +367,13 @@ export async function saveTerm(
       .select("id")
       .single();
     if (error) throw new Error(error.message);
+    const created = data as { id: string };
     await audit(db, merchantId, actor, "blog.term_created", {
-      id: data.id,
+      id: created.id,
       kind: prepared.kind,
       slug,
     });
-    return { id: data.id as string, slug, movedFrom: null };
+    return { id: created.id, slug, movedFrom: null };
   });
 }
 

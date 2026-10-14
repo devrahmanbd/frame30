@@ -1,4 +1,4 @@
-import { defineConfig, type UserConfig } from "vite";
+import { defineConfig, type PluginOption, type UserConfig } from "vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
@@ -7,7 +7,7 @@ import browserslistToEsbuild from "browserslist-to-esbuild";
 import { fileURLToPath } from "node:url";
 
 export default defineConfig(async ({ command }): Promise<UserConfig> => {
-  const plugins: any[] = [
+  const plugins: PluginOption[] = [
     tanstackStart({
       server: { entry: "server" },
       // Per-route code splitting: without this the route tree eagerly

@@ -15,8 +15,14 @@ const NOT_FOUND = { "cache-control": "no-store" };
 type LooseDb = {
   from(table: string): {
     select(cols: string): {
-      eq(col: string, val: string): {
-        eq(col: string, val: string): {
+      eq(
+        col: string,
+        val: string,
+      ): {
+        eq(
+          col: string,
+          val: string,
+        ): {
           maybeSingle(): Promise<{ data: PkgRow | null }>;
         };
       };

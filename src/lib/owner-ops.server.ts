@@ -80,8 +80,8 @@ export async function ownerGate<T>(
         try {
           const { supabaseAdmin } =
             await import("@/integrations/supabase/client.server");
-          const clientToUse = supabaseAdmin ?? db;
-          const { error: insertErr } = await (clientToUse as any)
+          const clientToUse: Client = supabaseAdmin ?? db;
+          const { error: insertErr } = await clientToUse
             .from("platform_audit_log")
             .insert({
               action: opts.action,

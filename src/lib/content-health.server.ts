@@ -20,7 +20,7 @@
  *    leaves `running` behind is treated as stale after 15 minutes.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/integrations/supabase/types";
+import type { Database, Json } from "@/integrations/supabase/types";
 import {
   CRAWL_POLICY,
   FINDING_SEVERITY,
@@ -51,7 +51,36 @@ import {
 } from "./observability.server";
 
 type Client = SupabaseClient<Database>;
-type LooseClient = Client & { from: (table: string) => any };
+/** Minimal shape of the untyped query builder the client returns. */
+type LooseResult = {
+  data: unknown;
+  error: { message: string; code?: string } | null;
+  count?: number | null;
+};
+interface LooseQuery extends Promise<LooseResult> {
+  select: (
+    columns?: string,
+    options?: { count?: "exact" | "planned" | "estimated"; head?: boolean },
+  ) => LooseQuery;
+  eq: (column: string, value: unknown) => LooseQuery;
+  neq: (column: string, value: unknown) => LooseQuery;
+  in: (column: string, values: unknown[]) => LooseQuery;
+  is: (column: string, value: unknown) => LooseQuery;
+  gte: (column: string, value: unknown) => LooseQuery;
+  order: (
+    column: string,
+    options?: { ascending?: boolean; nullsFirst?: boolean },
+  ) => LooseQuery;
+  range: (from: number, to: number) => LooseQuery;
+  limit: (count: number) => LooseQuery;
+  single: () => Promise<LooseResult>;
+  maybeSingle: () => Promise<LooseResult>;
+  insert: (values: unknown) => LooseQuery;
+  update: (values: unknown) => LooseQuery;
+  upsert: (values: unknown, options?: { onConflict?: string }) => LooseQuery;
+  delete: () => LooseQuery;
+}
+type LooseClient = Client & { from: (table: string) => LooseQuery };
 
 export class ContentHealthError extends Error {
   constructor(
@@ -136,6 +165,61 @@ type SeoMetaRow = {
   secondary_keywords: string[] | null;
   robots_index: boolean;
   sitemap_exclude: boolean;
+};
+
+/** One `articles` row as selected by `loadContentGraph`. */
+type ArticleHealthRow = {
+  id: string;
+  title: string | null;
+  title_en: string | null;
+  slug: string;
+  body: string | null;
+  excerpt: string | null;
+  tags: string[] | null;
+  status: string | null;
+  published_at: string | null;
+  updated_at: string | null;
+  robots: string | null;
+  cover_image_url: string | null;
+};
+
+/** One `storefront_pages` row as selected by `loadContentGraph`. */
+type PageHealthRow = {
+  id: string;
+  title: string | null;
+  slug: string;
+  body_markdown: string | null;
+  excerpt: string | null;
+  is_published: boolean | null;
+  published_at: string | null;
+  updated_at: string | null;
+  robots: string | null;
+  cover_image_url: string | null;
+};
+
+/** One `products` row as selected by `loadContentGraph`. */
+type ProductHealthRow = {
+  id: string;
+  title: string | null;
+  slug: string;
+  description: string | null;
+  tags: string[] | null;
+  status: string | null;
+  image_url: string | null;
+  updated_at: string | null;
+  created_at: string | null;
+};
+
+/** One `collections` row as selected by `loadContentGraph`. */
+type CollectionHealthRow = {
+  id: string;
+  name: string | null;
+  slug: string;
+  description: string | null;
+  is_published: boolean | null;
+  image_url: string | null;
+  updated_at: string | null;
+  created_at: string | null;
 };
 
 export type LoadedContent = {
@@ -245,8 +329,7 @@ export async function loadContentGraph(
   }
 
   const origins: string[] = [];
-  for (const row of (domains as { data?: { hostname?: string }[] })?.data ??
-    []) {
+  for (const row of (domains.data ?? []) as { hostname?: string }[]) {
     if (row?.hostname)
       origins.push(`https://${row.hostname}`, `http://${row.hostname}`);
   }
@@ -276,7 +359,7 @@ export async function loadContentGraph(
     );
   };
 
-  for (const row of take((articles?.data ?? []) as any[])) {
+  for (const row of take((articles?.data ?? []) as ArticleHealthRow[])) {
     const meta = metaFor("article", row.id);
     const body = `${row.excerpt ?? ""}\n${row.body ?? ""}`;
     push({
@@ -311,7 +394,7 @@ export async function loadContentGraph(
     });
   }
 
-  for (const row of take((pages?.data ?? []) as any[])) {
+  for (const row of take((pages?.data ?? []) as PageHealthRow[])) {
     const meta = metaFor("page", row.id);
     push({
       type: "page",
@@ -344,7 +427,7 @@ export async function loadContentGraph(
     });
   }
 
-  for (const row of take((products?.data ?? []) as any[])) {
+  for (const row of take((products?.data ?? []) as ProductHealthRow[])) {
     const meta = metaFor("product", row.id);
     push({
       type: "product",
@@ -376,7 +459,7 @@ export async function loadContentGraph(
     });
   }
 
-  for (const row of take((collections?.data ?? []) as any[])) {
+  for (const row of take((collections?.data ?? []) as CollectionHealthRow[])) {
     const meta = metaFor("collection", row.id);
     push({
       type: "collection",
@@ -417,7 +500,12 @@ export async function loadContentGraph(
       string,
       { sku: boolean; price: boolean; stock: boolean }
     >();
-    for (const v of (variants ?? []) as any[]) {
+    for (const v of (variants ?? []) as {
+      product_id: string;
+      sku: string | null;
+      price_amount_minor_int: number | null;
+      stock_quantity: number | null;
+    }[]) {
       const prev = byProduct.get(v.product_id) ?? {
         sku: false,
         price: false,
@@ -438,13 +526,17 @@ export async function loadContentGraph(
     }
   }
 
-  const redirectRows: RedirectRow[] = ((redirects?.data ?? []) as any[]).map(
-    (r) => ({
-      from: r.from_path,
-      to: r.to_path ?? null,
-      status: Number(r.status_code ?? 301),
-    }),
-  );
+  const redirectRows: RedirectRow[] = (
+    (redirects?.data ?? []) as {
+      from_path: string;
+      to_path: string | null;
+      status_code: number | null;
+    }[]
+  ).map((r) => ({
+    from: r.from_path,
+    to: r.to_path ?? null,
+    status: Number(r.status_code ?? 301),
+  }));
 
   return {
     merchant: { id: merchant.id, slug: merchant.slug, name: merchant.name },
@@ -713,7 +805,13 @@ export async function reconcileFindings(
     string,
     { id: string; state: string; occurrences: number }
   >();
-  for (const row of (existingRows ?? []) as any[]) {
+  for (const row of (existingRows ?? []) as {
+    id: string;
+    code: string;
+    fingerprint: string;
+    state: string;
+    occurrences: number | null;
+  }[]) {
     existing.set(`${row.code}|${row.fingerprint}`, {
       id: row.id,
       state: row.state,
@@ -1091,7 +1189,10 @@ export async function runContentHealthSweep(
     .order("started_at", { ascending: false })
     .limit(2_000);
   const lastRun = new Map<string, number>();
-  for (const row of (recent ?? []) as any[]) {
+  for (const row of (recent ?? []) as {
+    merchant_id: string;
+    started_at: string | null;
+  }[]) {
     const at = Date.parse(row.started_at ?? "") || 0;
     if (!lastRun.has(row.merchant_id)) lastRun.set(row.merchant_id, at);
   }
@@ -1163,6 +1264,23 @@ export type FindingFilter = {
   offset?: number;
 };
 
+/** One `content_health_findings` row as selected by `loadFindings`. */
+type FindingRow = {
+  id: string;
+  code: string;
+  severity: string;
+  entity_type: string;
+  entity_id: string | null;
+  entity_title: string | null;
+  entity_path: string | null;
+  target: string | null;
+  detail: Json;
+  state: string;
+  occurrences: number | null;
+  first_seen_at: string | null;
+  last_seen_at: string | null;
+};
+
 export async function loadFindings(
   db: Client,
   merchantId: string,
@@ -1192,8 +1310,31 @@ export async function loadFindings(
     .order("last_seen_at", { ascending: false })
     .range(offset, offset + limit - 1);
   if (error) throw new ContentHealthError("read_failed", error.message);
-  return { rows: (data ?? []) as any[], total: count ?? 0, limit, offset };
+  return {
+    rows: (data ?? []) as FindingRow[],
+    total: count ?? 0,
+    limit,
+    offset,
+  };
 }
+
+/** One `content_health_runs` row as selected by `loadContentHealthState`. */
+type RunRow = {
+  id: string;
+  trigger: string | null;
+  status: string | null;
+  scanned: Json;
+  finding_counts: Json;
+  links_checked: number | null;
+  external_checked: number | null;
+  findings_opened: number | null;
+  findings_resolved: number | null;
+  truncated: boolean | null;
+  duration_ms: number | null;
+  error_code: string | null;
+  started_at: string | null;
+  finished_at: string | null;
+};
 
 /** First paint for the desk: latest run, history, open counts, worst pages. */
 export async function loadContentHealthState(db: Client, merchantId: string) {
@@ -1218,7 +1359,14 @@ export async function loadContentHealthState(db: Client, merchantId: string) {
   if (runs.error)
     throw new ContentHealthError("read_failed", runs.error.message);
 
-  const openRows = (open?.data ?? []) as any[];
+  const openRows = (open?.data ?? []) as {
+    code: string;
+    severity: string;
+    entity_type: string;
+    entity_path: string | null;
+    entity_title: string | null;
+    state: string;
+  }[];
   const bySeverity = { error: 0, warning: 0, notice: 0 } as Record<
     string,
     number
@@ -1241,7 +1389,7 @@ export async function loadContentHealthState(db: Client, merchantId: string) {
     byPage.set(row.entity_path, prev);
   }
 
-  const history = (runs.data ?? []) as any[];
+  const history = (runs.data ?? []) as RunRow[];
   const latest = history[0] ?? null;
   const scanned = (latest?.scanned ?? {}) as Record<ContentEntityType, number>;
 

@@ -79,7 +79,10 @@ const TOKEN_VALUE_RULES: Record<
   VariationTokenKey,
   { test: (value: unknown) => boolean; hint: string }
 > = {
-  brand: { test: (v) => typeof v === "string" && HEX.test(v), hint: "hex color" },
+  brand: {
+    test: (v) => typeof v === "string" && HEX.test(v),
+    hint: "hex color",
+  },
   accent: {
     test: (v) => typeof v === "string" && HEX.test(v),
     hint: "hex color",
@@ -194,9 +197,12 @@ export function validateThemeVariations(
     }
     const overrides = variation.tokenOverrides ?? {};
     for (const [tokenKey, value] of Object.entries(overrides)) {
-      const rule = (TOKEN_VALUE_RULES as Record<string, { test: (v: unknown) => boolean; hint: string }>)[
-        tokenKey
-      ];
+      const rule = (
+        TOKEN_VALUE_RULES as Record<
+          string,
+          { test: (v: unknown) => boolean; hint: string }
+        >
+      )[tokenKey];
       if (!VARIATION_TOKEN_SET.has(tokenKey) || !rule) {
         return fail(
           `${where}: unknown token override "${tokenKey}" (token keys only).`,
@@ -210,9 +216,7 @@ export function validateThemeVariations(
     }
     const skins = variation.skinDefaults ?? {};
     for (const [widget, skin] of Object.entries(skins)) {
-      const vocab = (WIDGET_SKINS as Record<string, readonly string[]>)[
-        widget
-      ];
+      const vocab = (WIDGET_SKINS as Record<string, readonly string[]>)[widget];
       if (!vocab) {
         return fail(
           `${where}: unknown skinnable widget "${widget}" (skin names only).`,
@@ -303,15 +307,17 @@ export function withVariationSkinDefaults(
   if (!variation) return s;
   const skins = variation.skinDefaults ?? {};
   if (Object.keys(skins).length === 0) return s;
-  return (type: SectionType, props: Record<string, PropValue> = {}): Section => {
+  return (
+    type: SectionType,
+    props: Record<string, PropValue> = {},
+  ): Section => {
     const skin = (skins as Record<string, string>)[type];
     if (typeof skin !== "string") return s(type, props);
     const authored = props["skin"];
     const baseSkin = base?.[type]?.["skin"];
     // Explicit non-default choice (authored or theme-built) wins; anything
     // else (absent, undefined, or merely base-equal) takes the variation.
-    if (authored !== undefined && authored !== baseSkin)
-      return s(type, props);
+    if (authored !== undefined && authored !== baseSkin) return s(type, props);
     return s(type, { ...stripUndefined(props), skin });
   };
 }

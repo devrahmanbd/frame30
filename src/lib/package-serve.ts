@@ -145,7 +145,8 @@ export function resolvePkgAsset(
   }
   // SVG, images and fonts are never served inline: binary rows hold no
   // bytes, and an inline SVG on the platform origin would be stored XSS.
-  if (!isServablePkgKind(row.kind)) return { status: 404, reason: "refused_kind" };
+  if (!isServablePkgKind(row.kind))
+    return { status: 404, reason: "refused_kind" };
   if (row.content === null) return { status: 404, reason: "empty" };
   return {
     status: 200,

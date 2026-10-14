@@ -31,7 +31,28 @@ import {
   type StoryCard,
 } from "./landing";
 
-type Db = { from: (table: string) => any };
+type Db = { from: (table: string) => LooseQuery };
+
+/** Minimal shape of the untyped query builder the anon client returns. */
+type LooseResult = {
+  data: unknown;
+  error: { message: string; code?: string } | null;
+  count?: number | null;
+};
+interface LooseQuery extends Promise<LooseResult> {
+  select: (
+    columns?: string,
+    options?: { count?: "exact" | "planned" | "estimated"; head?: boolean },
+  ) => LooseQuery;
+  eq: (column: string, value: unknown) => LooseQuery;
+  in: (column: string, values: unknown[]) => LooseQuery;
+  is: (column: string, value: unknown) => LooseQuery;
+  order: (
+    column: string,
+    options?: { ascending?: boolean; nullsFirst?: boolean },
+  ) => LooseQuery;
+  limit: (count: number) => LooseQuery;
+}
 
 async function anonDb(): Promise<Db> {
   const { publicClient } = await import("./pricing.server");
@@ -42,7 +63,7 @@ async function anonDb(): Promise<Db> {
 async function countOf(
   db: Db,
   table: string,
-  apply: (q: any) => any,
+  apply: (q: LooseQuery) => LooseQuery,
 ): Promise<number | null> {
   try {
     const { count, error } = await apply(

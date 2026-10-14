@@ -61,7 +61,8 @@ const META: Record<BuiltinThemeKey, BuiltinThemeMeta> = {
     key: "songoskriti",
     nameEn: "Songoskriti",
     nameBn: "সংস্কৃতি",
-    summaryEn: "Official Framique heritage theme: jamdani, panjabi and festive craft.",
+    summaryEn:
+      "Official Framique heritage theme: jamdani, panjabi and festive craft.",
     summaryBn: "অফিসিয়াল ফ্রামিক হেরিটেজ থিম।",
     category: "general",
     version: "1.0.0",
@@ -70,7 +71,8 @@ const META: Record<BuiltinThemeKey, BuiltinThemeMeta> = {
     key: "somvabona",
     nameEn: "Somvabona",
     nameBn: "সম্ভাবনা",
-    summaryEn: "Official Framique everyday theme: cotton, essentials and budget craft.",
+    summaryEn:
+      "Official Framique everyday theme: cotton, essentials and budget craft.",
     summaryBn: "অফিসিয়াল ফ্রামিক দৈনন্দিন থিম।",
     category: "general",
     version: "1.0.0",

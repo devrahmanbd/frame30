@@ -72,12 +72,30 @@ async function admin() {
   const { supabaseAdmin } =
     await import("@/integrations/supabase/client.server");
   return supabaseAdmin as unknown as {
-    from: (t: string) => any;
+    from: (t: string) => LooseQuery;
     rpc: (
       fn: string,
       args?: Record<string, unknown>,
     ) => Promise<{ data: unknown; error: unknown }>;
   };
+}
+
+/** Minimal shape of the untyped query builder the admin client returns. */
+type LooseResult = {
+  data: unknown;
+  error: { message: string; code?: string } | null;
+  count?: number | null;
+};
+interface LooseQuery extends Promise<LooseResult> {
+  select: (columns?: string) => LooseQuery;
+  eq: (column: string, value: unknown) => LooseQuery;
+  is: (column: string, value: unknown) => LooseQuery;
+  gte: (column: string, value: unknown) => LooseQuery;
+  order: (column: string, options?: { ascending?: boolean }) => LooseQuery;
+  limit: (count: number) => LooseQuery;
+  single: () => Promise<LooseResult>;
+  insert: (values: unknown) => LooseQuery;
+  update: (values: unknown) => LooseQuery;
 }
 
 function envChannel(): AlertChannel | null {

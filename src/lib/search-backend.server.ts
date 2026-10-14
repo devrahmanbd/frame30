@@ -63,7 +63,23 @@ async function admin(): Promise<Client> {
 }
 
 function table(client: Client, name: string) {
-  return (client as unknown as { from: (t: string) => any }).from(name);
+  return (client as unknown as { from: (t: string) => LooseQuery }).from(name);
+}
+
+/** Minimal shape of the untyped query builder the client returns. */
+type LooseResult = {
+  data: unknown;
+  error: { message: string; code?: string } | null;
+  count?: number | null;
+};
+interface LooseQuery extends Promise<LooseResult> {
+  select: (columns?: string) => LooseQuery;
+  eq: (column: string, value: unknown) => LooseQuery;
+  in: (column: string, values: unknown[]) => LooseQuery;
+  limit: (count: number) => LooseQuery;
+  maybeSingle: () => Promise<LooseResult>;
+  update: (values: unknown) => LooseQuery;
+  upsert: (values: unknown, options?: { onConflict?: string }) => LooseQuery;
 }
 
 /* ------------------------------------------------------------------- config */

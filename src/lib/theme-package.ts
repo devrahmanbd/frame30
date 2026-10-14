@@ -231,8 +231,7 @@ export function isPresentationSurface(
   value: unknown,
 ): value is PresentationSurface {
   return (
-    typeof value === "string" &&
-    (SURFACE_SET as ReadonlySet<string>).has(value)
+    typeof value === "string" && (SURFACE_SET as ReadonlySet<string>).has(value)
   );
 }
 
@@ -253,9 +252,7 @@ export function isThemeCapability(value: unknown): value is ThemeCapability {
 function isVersionRange(value: string): boolean {
   const v = value.trim();
   return (
-    parseSemver(v) !== null ||
-    CARET_RANGE_RE.test(v) ||
-    PAIR_RANGE_RE.test(v)
+    parseSemver(v) !== null || CARET_RANGE_RE.test(v) || PAIR_RANGE_RE.test(v)
   );
 }
 
@@ -273,7 +270,8 @@ function assetPathIssue(path: string): "path" | "executable" | null {
     return "path";
   }
   const ext = path.slice(path.lastIndexOf(".") + 1).toLowerCase();
-  if (!path.includes(".") || EXECUTABLE_ASSET_EXTS.has(ext)) return "executable";
+  if (!path.includes(".") || EXECUTABLE_ASSET_EXTS.has(ext))
+    return "executable";
   return null;
 }
 
@@ -295,22 +293,19 @@ export function validateThemeManifest(input: unknown): ThemeVerdict {
 
     // --- bilingual display names (both required) ---
     const nameRaw = raw.name;
-    const name =
-      typeof nameRaw === "string" ? nameRaw.trim() : "";
+    const name = typeof nameRaw === "string" ? nameRaw.trim() : "";
     if (!name) errors.push("name");
     else if (name.length > MAX_NAME_LEN) errors.push("name.too_long");
     else if (EXECUTABLE_RE.test(name)) errors.push("name.executable");
 
     const nameBnRaw = raw.nameBn;
-    const nameBn =
-      typeof nameBnRaw === "string" ? nameBnRaw.trim() : "";
+    const nameBn = typeof nameBnRaw === "string" ? nameBnRaw.trim() : "";
     if (!nameBn) errors.push("nameBn");
     else if (nameBn.length > MAX_NAME_LEN) errors.push("nameBn.too_long");
     else if (EXECUTABLE_RE.test(nameBn)) errors.push("nameBn.executable");
 
     // --- version (strict semver) ---
-    const version =
-      typeof raw.version === "string" ? raw.version.trim() : "";
+    const version = typeof raw.version === "string" ? raw.version.trim() : "";
     if (!parseSemver(version)) errors.push("version");
 
     // --- api (builder range; must cover the running builder) ---
@@ -352,8 +347,7 @@ export function validateThemeManifest(input: unknown): ThemeVerdict {
         errors.push("descriptionBn.executable");
       else descriptionBn = raw.descriptionBn.trim();
     }
-    if (description && !descriptionBn)
-      warnings.push("description.bn_missing");
+    if (description && !descriptionBn) warnings.push("description.bn_missing");
 
     // --- templates (non-empty subset of TEMPLATE_KEYS) ---
     const templates: TemplateKey[] = [];
@@ -489,9 +483,7 @@ export function validateThemeManifest(input: unknown): ThemeVerdict {
           const r = (a ?? {}) as Record<string, unknown>;
           const path = typeof r.path === "string" ? r.path.trim() : "";
           const sha =
-            typeof r.sha256 === "string"
-              ? r.sha256.trim().toLowerCase()
-              : "";
+            typeof r.sha256 === "string" ? r.sha256.trim().toLowerCase() : "";
           const issue = assetPathIssue(path);
           if (issue === "executable")
             errors.push(`assetManifest[${i}].path.executable`);

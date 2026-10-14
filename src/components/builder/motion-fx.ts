@@ -118,7 +118,7 @@ export function scrollScrubPlan(
 export function parseCountTarget(value: unknown): number | null {
   if (typeof value === "number") return Number.isFinite(value) ? value : null;
   if (typeof value !== "string") return null;
-  const cleaned = value.replace(/[^0-9.\-]/g, "");
+  const cleaned = value.replace(/[^0-9.-]/g, "");
   if (!cleaned || cleaned === "-" || cleaned === ".") return null;
   const n = Number(cleaned);
   return Number.isFinite(n) ? n : null;

@@ -468,7 +468,7 @@ async function storeSlugOf(
   db: Client,
   merchantId: string,
 ): Promise<string | undefined> {
-  const { data } = await (db as any)
+  const { data } = await db
     .from("merchants")
     .select("slug")
     .eq("id", merchantId)
@@ -497,7 +497,7 @@ export async function savePage(
   };
   let previousSlug: string | null = null;
   if (input.id) {
-    const { data: before } = await (db as any)
+    const { data: before } = await db
       .from("storefront_pages")
       .select("slug")
       .eq("id", input.id)
@@ -565,7 +565,7 @@ export async function archivePage(
   merchantId: string,
   pageId: string,
 ) {
-  const { data: before } = await (db as any)
+  const { data: before } = await db
     .from("storefront_pages")
     .select("slug")
     .eq("id", pageId)

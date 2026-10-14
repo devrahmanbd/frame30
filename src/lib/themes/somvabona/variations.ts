@@ -87,10 +87,7 @@ export function somvabonaTokensFor(key: string | null | undefined) {
  */
 export function withSomvabonaVariation<
   S extends (type: never, props?: Record<string, PropValue>) => Section,
->(
-  s: S,
-  key: string | null | undefined,
-): S {
+>(s: S, key: string | null | undefined): S {
   return withVariationSkinDefaults(
     s as unknown as (
       type: SectionType,

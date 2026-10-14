@@ -363,7 +363,7 @@ function AnalyticsPage() {
                 <ChartTooltip
                   content={
                     <ChartTooltipContent
-                      formatter={(value: any, name: string | number) => [
+                      formatter={(value, name) => [
                         fmtMinor(value as number, currency),
                         name,
                       ]}
@@ -423,7 +423,7 @@ function AnalyticsPage() {
                       cursor={{ fill: "transparent" }}
                       content={
                         <ChartTooltipContent
-                          formatter={(value: any, name: string | number) => [
+                          formatter={(value, name) => [
                             fmtMinor(value as number, currency),
                             name,
                           ]}

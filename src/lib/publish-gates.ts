@@ -329,7 +329,11 @@ const CONDITIONAL_LABELS: {
   unless: { key: string; is: unknown };
 }[] = [
   { type: "form", key: "phoneLabel", unless: { key: "showPhone", is: false } },
-  { type: "cart_summary", key: "ctaLabel", unless: { key: "showCta", is: false } },
+  {
+    type: "cart_summary",
+    key: "ctaLabel",
+    unless: { key: "showCta", is: false },
+  },
   {
     type: "cart_summary",
     key: "couponApplyLabel",
@@ -397,10 +401,7 @@ function hasLinkTarget(section: Section): boolean {
   for (const key of Object.keys(props)) {
     if (/href$/i.test(key) && textOf(props[key])) return true;
   }
-  if (
-    section.type === "authenticity_badge" &&
-    textOf(props["source"])
-  )
+  if (section.type === "authenticity_badge" && textOf(props["source"]))
     return true;
   return false;
 }
@@ -476,8 +477,7 @@ export function interactiveGate(ast: ThemeAst): GateFailure[] {
       if (hrefKeys.length > 0) {
         const named = Object.entries(props).some(
           ([key, value]) =>
-            (NAMING_KEY.test(key) || NAMING_EXACT.has(key)) &&
-            textOf(value),
+            (NAMING_KEY.test(key) || NAMING_EXACT.has(key)) && textOf(value),
         );
         if (!named) {
           failures.push({
@@ -509,9 +509,7 @@ export function interactiveGate(ast: ThemeAst): GateFailure[] {
 
     const hiddenEverywhere =
       Array.isArray(section.hidden) &&
-      ALL_BREAKPOINTS.every((bp) =>
-        (section.hidden as string[]).includes(bp),
-      );
+      ALL_BREAKPOINTS.every((bp) => (section.hidden as string[]).includes(bp));
     if (
       hiddenEverywhere &&
       (hasLinkTarget(section) || ALWAYS_INTERACTIVE.has(section.type))
@@ -548,10 +546,7 @@ export function statusGate(ast: ThemeAst): GateFailure[] {
       });
     }
 
-    if (
-      section.type === "checkout_steps" ||
-      section.type === "order_tracker"
-    ) {
+    if (section.type === "checkout_steps" || section.type === "order_tracker") {
       const empty = ["heading", "step1", "step2", "step3", "step4"].filter(
         (key) => !textOf(props[key]),
       );
@@ -584,10 +579,7 @@ export function statusGate(ast: ThemeAst): GateFailure[] {
 
     if (section.type === "sustain_badge") {
       for (const n of [1, 2, 3]) {
-        if (
-          textOf(props[`c${n}Source`]) &&
-          !textOf(props[`c${n}Label`])
-        ) {
+        if (textOf(props[`c${n}Source`]) && !textOf(props[`c${n}Label`])) {
           failures.push({
             code: "a11y.status.color_only",
             message: `a11y: ${at} cites a source for claim ${n} with no claim text — the badge signals trust by colour alone.`,
@@ -706,12 +698,11 @@ export function motionBudgetGate(ast: ThemeAst): GateFailure[] {
   if (loops > MOTION_THEME_BUDGET.maxLoopLayers) {
     failures.push({
       code: "motion.budget.loops",
-      message:
-        `motion: ${loops} lively loop layers against a ceiling of ${MOTION_THEME_BUDGET.maxLoopLayers} — loops never settle, so each one is a permanent compositor tax (first: ${firstLoopWhere}).`,
+      message: `motion: ${loops} lively loop layers against a ceiling of ${MOTION_THEME_BUDGET.maxLoopLayers} — loops never settle, so each one is a permanent compositor tax (first: ${firstLoopWhere}).`,
     });
   }
   return failures;
-};
+}
 
 /**
  * No-plugin-territory trust gate (C6 reasons 1-4): the theme-side half of

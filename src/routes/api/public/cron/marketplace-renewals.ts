@@ -11,9 +11,8 @@ export const Route = createFileRoute("/api/public/cron/marketplace-renewals")({
     handlers: {
       GET: cronGet,
       POST: cronPost("marketplace-renewals", async () => {
-        const { runInstallRenewalSweep } = await import(
-          "@/lib/billing-cron.server"
-        );
+        const { runInstallRenewalSweep } =
+          await import("@/lib/billing-cron.server");
         return runInstallRenewalSweep();
       }),
     },

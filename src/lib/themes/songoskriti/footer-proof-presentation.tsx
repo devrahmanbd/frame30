@@ -54,7 +54,10 @@ export function SongoskritiFooterProof({
   label: string;
 }) {
   return (
-    <nav aria-label={label} className="border-t border-[#eaeaea] bg-transparent">
+    <nav
+      aria-label={label}
+      className="border-t border-[#eaeaea] bg-transparent"
+    >
       <div
         data-footer-presentation="songoskriti-proof"
         className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:grid-cols-2 lg:grid-cols-4"
@@ -121,8 +124,7 @@ function proofRowLinksOf(
 ): { label: string; href: string }[] {
   const linksRaw = typeof row.links === "string" ? row.links : "";
   const linksBnRaw = typeof row.links_bn === "string" ? row.links_bn : "";
-  const raw =
-    ctx.locale === "bn" && linksBnRaw.trim() ? linksBnRaw : linksRaw;
+  const raw = ctx.locale === "bn" && linksBnRaw.trim() ? linksBnRaw : linksRaw;
   return proofLinksOf(raw);
 }
 

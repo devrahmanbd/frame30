@@ -457,11 +457,9 @@ function toShellItems(
       label: localize ? localize(label) : label,
       href,
       children: toShellItems(rawKids as MenuNode[], localize),
-      badge:
-        typeof badgeRaw === "string" && badgeRaw.trim() ? badgeRaw : null,
+      badge: typeof badgeRaw === "string" && badgeRaw.trim() ? badgeRaw : null,
       metadata,
-      image:
-        typeof imageRaw === "string" && imageRaw ? imageRaw : null,
+      image: typeof imageRaw === "string" && imageRaw ? imageRaw : null,
       promo: null,
     };
   });

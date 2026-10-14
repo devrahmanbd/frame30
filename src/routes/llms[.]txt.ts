@@ -7,6 +7,35 @@ import { createFileRoute } from "@tanstack/react-router";
  * exactly what the storefront serves. Best-effort reads — the file renders
  * the store identity even when catalogue tables are unreachable.
  */
+/**
+ * Typed surface of the fluent catalogue queries below. The client resolves
+ * through the loose schema alias, so the builder models only the methods
+ * this file chains; terminal results carry the exact selected columns
+ * (matching `MerchantLlmsInput`), and `then` keeps the list queries'
+ * `r.data ?? []` shape. Runtime behavior is untouched — types erase.
+ */
+type LlmsMerchantRow = { id: string; name: string; slug: string };
+type LlmsCatalogRow = {
+  slug: string;
+  title?: string | null;
+  name?: string | null;
+  updated_at?: string | null;
+  published_at?: string | null;
+};
+type LlmsQueryResult = { data: LlmsCatalogRow[] | null };
+interface LlmsQuery {
+  select: (columns: string) => LlmsQuery;
+  eq: (column: string, value: string | number | boolean | null) => LlmsQuery;
+  is: (column: string, value: null) => LlmsQuery;
+  lte: (column: string, value: string) => LlmsQuery;
+  limit: (count: number) => LlmsQuery;
+  order: (column: string, options: { ascending: boolean }) => LlmsQuery;
+  maybeSingle: () => Promise<{ data: LlmsMerchantRow | null }>;
+  then: <T>(
+    onFulfilled: (value: LlmsQueryResult) => T | PromiseLike<T>,
+  ) => Promise<T>;
+}
+
 async function merchantLlmsTxt(
   slug: string,
   origin: string,
@@ -18,7 +47,7 @@ async function merchantLlmsTxt(
   try {
     const { publicClient } = await import("@/lib/pricing.server");
     const db = publicClient() as unknown as {
-      from: (t: string) => any;
+      from: (t: string) => LlmsQuery;
     };
     const { data: merchant } = await db
       .from("merchants")
@@ -38,14 +67,14 @@ async function merchantLlmsTxt(
         .eq("merchant_id", m.id)
         .eq("status", "active")
         .limit(100)
-        .then((r: any) => r.data ?? []),
+        .then((r: LlmsQueryResult) => r.data ?? []),
       db
         .from("collections")
         .select("slug, name")
         .eq("merchant_id", m.id)
         .eq("is_published", true)
         .limit(50)
-        .then((r: any) => r.data ?? []),
+        .then((r: LlmsQueryResult) => r.data ?? []),
       db
         .from("storefront_pages")
         .select("slug, title")
@@ -53,7 +82,7 @@ async function merchantLlmsTxt(
         .eq("is_published", true)
         .is("deleted_at", null)
         .limit(50)
-        .then((r: any) => r.data ?? []),
+        .then((r: LlmsQueryResult) => r.data ?? []),
       db
         .from("articles")
         .select("slug, title, published_at")
@@ -62,7 +91,7 @@ async function merchantLlmsTxt(
         .lte("published_at", new Date().toISOString())
         .is("deleted_at", null)
         .limit(50)
-        .then((r: any) => r.data ?? [])
+        .then((r: LlmsQueryResult) => r.data ?? [])
         .catch(() => []),
     ]);
     const { buildMerchantLlmsTxt } = await import("@/lib/store-sitemap.server");

@@ -68,10 +68,7 @@ export type CatalogTheme = {
  */
 
 /** Framique-built themes. Exactly these two — no OceanBlue source exists. */
-export const OFFICIAL_THEME_KEYS = [
-  "songoskriti",
-  "somvabona",
-] as const;
+export const OFFICIAL_THEME_KEYS = ["songoskriti", "somvabona"] as const;
 
 export type OfficialThemeKey = (typeof OFFICIAL_THEME_KEYS)[number];
 

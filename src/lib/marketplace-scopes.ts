@@ -101,7 +101,8 @@ export const SCOPES: readonly ScopeDef[] = [
     en: "Replace navigation rendering",
     bn: "নেভিগেশন রেন্ডারিং বদলানো",
     risk: "high",
-    effectEn: "Can swap the full navigation renderer; reviewed before activation.",
+    effectEn:
+      "Can swap the full navigation renderer; reviewed before activation.",
     effectBn: "পুরো নেভিগেশন রেন্ডারার বদলাতে পারবে; চালুর আগে পর্যালোচনা হবে।",
   },
 ] as const;

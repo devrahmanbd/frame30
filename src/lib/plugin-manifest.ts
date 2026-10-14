@@ -71,7 +71,9 @@ export type MenuRendererClaim = {
   reviewApproved: boolean;
 };
 
-export function isMenuRendererClaim(value: unknown): value is MenuRendererClaim {
+export function isMenuRendererClaim(
+  value: unknown,
+): value is MenuRendererClaim {
   const r = (value ?? {}) as Record<string, unknown>;
   return (
     typeof r.pluginId === "string" &&
@@ -91,7 +93,8 @@ export type MenuRendererDecision =
     }
   | {
       kind: "theme_default";
-      reason: "not_claimed" | "not_approved" | "scope_denied" | "renderer_failed";
+      reason:
+        "not_claimed" | "not_approved" | "scope_denied" | "renderer_failed";
       pluginId?: string;
     };
 
@@ -190,7 +193,9 @@ export type MenuSwapRequest<T> = {
 };
 
 /** Light shape guard for swap requests arriving over loosely-typed pipes. */
-export function isMenuSwapRequest(value: unknown): value is MenuSwapRequest<unknown> {
+export function isMenuSwapRequest(
+  value: unknown,
+): value is MenuSwapRequest<unknown> {
   const r = (value ?? {}) as Record<string, unknown>;
   return (
     Array.isArray(r.claims) &&
@@ -400,8 +405,7 @@ function settingField(
 
 // --------------------------------------------- hooksUrl egress guard
 export type HooksUrlVerdict =
-  | { ok: true; url: URL }
-  | { ok: false; reason: string };
+  { ok: true; url: URL } | { ok: false; reason: string };
 
 /**
  * Server-egress guard for plugin hooksUrl.
@@ -419,8 +423,7 @@ export function isAllowedHooksUrl(rawUrl: string): HooksUrlVerdict {
   } catch {
     return { ok: false, reason: "bad_url" };
   }
-  if (url.protocol !== "https:")
-    return { ok: false, reason: "not_https" };
+  if (url.protocol !== "https:") return { ok: false, reason: "not_https" };
   if (url.username || url.password)
     return { ok: false, reason: "credentials_in_url" };
   const rawHost = url.hostname.toLowerCase().replace(/\.+$/, "");
@@ -463,14 +466,12 @@ export function isAllowedHooksUrl(rawUrl: string): HooksUrlVerdict {
   const labels = host.split(".");
   if (
     labels.some(
-      (l) => l === "metadata" || l === "instance-data" || l === "instance-metadata",
+      (l) =>
+        l === "metadata" || l === "instance-data" || l === "instance-metadata",
     )
   )
     return { ok: false, reason: "metadata_host" };
-  if (
-    host === "host.docker.internal" ||
-    host.endsWith(".host.docker.internal")
-  )
+  if (host === "host.docker.internal" || host.endsWith(".host.docker.internal"))
     return { ok: false, reason: "metadata_host" };
   const PRIVATE_SUFFIXES = [
     ".internal",
@@ -550,9 +551,7 @@ export function parseManifest(input: unknown): ManifestVerdict {
     const slots = (Array.isArray(r.slots) ? r.slots : [])
       .map(String)
       .filter(
-        (
-          s,
-        ): s is BlockSlot | MenuSlot =>
+        (s): s is BlockSlot | MenuSlot =>
           (BLOCK_SLOTS as readonly string[]).includes(s) ||
           (MENU_SLOTS as readonly string[]).includes(s),
       );

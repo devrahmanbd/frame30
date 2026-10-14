@@ -37,7 +37,7 @@ export function formatDisplayMoney(
   if (options.compact && minor % 100 === 0) out = out.replace(/\.00\b/, "");
   if (options.currencyDisplay === "code") {
     // Symbol swap only — never touches the digits the server sent.
-    out = out.replace(/^[^\d\-]*\s?/, `${currency} `);
+    out = out.replace(/^[^\d-]*\s?/, `${currency} `);
   }
   return toDigits(
     out,

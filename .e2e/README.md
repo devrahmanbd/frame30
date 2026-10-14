@@ -5,13 +5,13 @@ touches `baseURL` (loopback) and asserts no request leaves it.
 
 ## Files
 
-| File | Purpose |
-|---|---|
-| `playwright.config.ts` | baseURL/timeouts/retries/trace-on-failure + dev-server lifecycle |
-| `helpers.ts` | baseURL resolution, loopback helpers, network collector |
-| `smoke.spec.ts` | harness proof: `/` renders, liveness probe answers |
+| File                               | Purpose                                                                                |
+| ---------------------------------- | -------------------------------------------------------------------------------------- |
+| `playwright.config.ts`             | baseURL/timeouts/retries/trace-on-failure + dev-server lifecycle                       |
+| `helpers.ts`                       | baseURL resolution, loopback helpers, network collector                                |
+| `smoke.spec.ts`                    | harness proof: `/` renders, liveness probe answers                                     |
 | `theme-upload-adversarial.spec.ts` | (a) traversal ZIP rejected unauthenticated; hostile preview renders nothing executable |
-| `theme-preview-isolation.spec.ts` | (b) songoskriti preview: all images 200, zero `assets/` 404s |
+| `theme-preview-isolation.spec.ts`  | (b) songoskriti preview: all images 200, zero `assets/` 404s                           |
 
 ## Run
 
@@ -34,11 +34,11 @@ bunx playwright install --with-deps chromium   # needs sudo for --with-deps
 
 ## Environment
 
-| Var | Default | Meaning |
-|---|---|---|
-| `E2E_BASE_URL` | `http://localhost:<E2E_PORT\|3000>` | Server under test (repo convention, cf. `scripts/*-gate.mjs`) |
-| `E2E_PORT` | `3000` | Port used when `E2E_BASE_URL` is unset (vite dev default) |
-| `E2E_NO_WEBSERVER` | unset | Set to `1` to disable auto-start and manage the server yourself |
+| Var                | Default                             | Meaning                                                         |
+| ------------------ | ----------------------------------- | --------------------------------------------------------------- |
+| `E2E_BASE_URL`     | `http://localhost:<E2E_PORT\|3000>` | Server under test (repo convention, cf. `scripts/*-gate.mjs`)   |
+| `E2E_PORT`         | `3000`                              | Port used when `E2E_BASE_URL` is unset (vite dev default)       |
+| `E2E_NO_WEBSERVER` | unset                               | Set to `1` to disable auto-start and manage the server yourself |
 
 Manual server (equivalent to what the config spawns; `bun` absent → `npx`):
 

@@ -20,9 +20,7 @@ export default async function globalSetup(): Promise<void> {
   const baseURL = resolveBaseURL();
   const host = hostnameOf(baseURL);
   if (host === null || !LOCAL_HOSTNAMES.has(host)) {
-    throw new Error(
-      `[e2e warm-up] refusing non-loopback baseURL: ${baseURL}`,
-    );
+    throw new Error(`[e2e warm-up] refusing non-loopback baseURL: ${baseURL}`);
   }
   const target = `${baseURL}/theme-preview/songoskriti`;
   const budgetMs = 300_000;

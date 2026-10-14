@@ -48,6 +48,26 @@ export const Route = createFileRoute(
 type CouponType = "fixed" | "percent" | "bogo" | "free_shipping";
 type CouponStatus = "draft" | "active" | "paused" | "expired";
 
+/**
+ * Coupon list row: the columns this desk reads. The client resolves through
+ * the loose schema alias, so the row shape is declared here against the
+ * generated snapshot (`coupons` Row in `integrations/supabase/types.ts`),
+ * which the list query selects in full (`select("*")`).
+ */
+type CouponRow = {
+  id: string;
+  code: string;
+  type: CouponType;
+  status: CouponStatus;
+  amount_minor_int: number;
+  percent_off: number;
+  buy_quantity: number;
+  get_quantity: number;
+  min_subtotal_minor_int: number;
+  redeemed_count: number;
+  usage_limit: number | null;
+};
+
 const emptyForm = {
   id: undefined as string | undefined,
   code: "",
@@ -93,22 +113,26 @@ function toMinor(v: string) {
 }
 
 const VIEWS = {
-  all: { en: "All", bn: "সব", match: () => true },
+  all: { en: "All", bn: "সব", match: (_c: CouponRow) => true },
   active: {
     en: "Active",
     bn: "সক্রিয়",
-    match: (c: any) => c.status === "active",
+    match: (c: CouponRow) => c.status === "active",
   },
-  draft: { en: "Draft", bn: "খসড়া", match: (c: any) => c.status === "draft" },
+  draft: {
+    en: "Draft",
+    bn: "খসড়া",
+    match: (c: CouponRow) => c.status === "draft",
+  },
   paused: {
     en: "Paused",
     bn: "স্থগিত",
-    match: (c: any) => c.status === "paused",
+    match: (c: CouponRow) => c.status === "paused",
   },
   expired: {
     en: "Expired",
     bn: "মেয়াদোত্তীর্ণ",
-    match: (c: any) => c.status === "expired",
+    match: (c: CouponRow) => c.status === "expired",
   },
 } as const;
 type ViewKey = keyof typeof VIEWS;
@@ -196,7 +220,7 @@ function CouponsPage() {
     },
   });
 
-  const rows = (coupons ?? []) as any[];
+  const rows = (coupons ?? []) as CouponRow[];
   const view = (list.view in VIEWS ? list.view : "all") as ViewKey;
   const q = list.q.trim().toLowerCase();
   const filtered = rows.filter(
@@ -216,7 +240,7 @@ function CouponsPage() {
     list.dir,
   );
 
-  const columns: Column<any>[] = [
+  const columns: Column<CouponRow>[] = [
     {
       key: "code",
       header: t("Code", "কোড"),
@@ -323,12 +347,14 @@ function CouponsPage() {
           <DataTable
             rows={sorted}
             columns={columns}
-            rowKey={(c: any) => c.id}
+            rowKey={(c: CouponRow) => c.id}
             sort={list.sort}
             dir={list.dir}
             onSort={list.toggleSort}
-            onRowClick={(c: any) => setOpenId(openId === c.id ? null : c.id)}
-            rowActions={(c: any) => (
+            onRowClick={(c: CouponRow) =>
+              setOpenId(openId === c.id ? null : c.id)
+            }
+            rowActions={(c: CouponRow) => (
               <button
                 type="button"
                 className="inline-flex min-h-8 items-center rounded-fq-md border border-border px-2 py-1 text-xs hover:bg-muted"

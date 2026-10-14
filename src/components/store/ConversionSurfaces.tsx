@@ -141,8 +141,8 @@ function ProductRail({
   items: RecommendedProduct[];
   currency: string;
 }) {
-  if (items.length === 0) return null;
   const { location } = useRouterState();
+  if (items.length === 0) return null;
   const custom = isCustomHostPath(location.pathname);
   return (
     <section className="mt-12">

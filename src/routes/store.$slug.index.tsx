@@ -31,7 +31,7 @@ export const Route = createFileRoute("/store/$slug/")({
    * Already on the primary host (or no primary) → null → keep serving.
    * Never throws: resolution failure degrades to no-redirect.
    */
-  beforeLoad: async ({ params, location }: any) => {
+  beforeLoad: async ({ params, location }) => {
     try {
       const { to } = await resolveStoreRedirectFn({
         data: { slug: params.slug as string },
@@ -66,7 +66,7 @@ export const Route = createFileRoute("/store/$slug/")({
   // carries params/deps/location but no search key), so the token is read
   // off the request URL directly. validateSearch above still documents +
   // types the param for Links and useSearch consumers.
-  loader: async ({ params, location }: any) => {
+  loader: async ({ params, location }) => {
     let previewToken: string | undefined;
     try {
       // location.href may be origin-relative in SSR ("/store/x?..."); the

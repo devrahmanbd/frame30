@@ -47,8 +47,16 @@ export async function resolveBuilderProducts(
   if (!widgets.length) return {};
 
   const { publicClient } = await import("@/lib/pricing.server");
+  /** Minimal shape of the untyped query builder the public client returns. */
+  interface LooseQuery extends Promise<{ data: unknown; error: unknown }> {
+    select: (columns?: string) => LooseQuery;
+    eq: (column: string, value: unknown) => LooseQuery;
+    is: (column: string, value: unknown) => LooseQuery;
+    order: (column: string, options?: { ascending?: boolean }) => LooseQuery;
+    limit: (count: number) => LooseQuery;
+  }
   const db = publicClient() as unknown as {
-    from: (t: string) => any;
+    from: (t: string) => LooseQuery;
   };
 
   const { data } = await db

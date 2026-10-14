@@ -6,6 +6,31 @@ import type {} from "@tanstack/react-start";
  * custom host's own merchant. Bounded queries, fail-soft to an index-only
  * document — a sitemap must render even when catalogue reads fail.
  */
+/**
+ * Typed surface of the fluent catalogue queries below. The client resolves
+ * through the loose schema alias, so the builder models only the methods
+ * this file chains; terminal results carry the exact selected columns
+ * (matching `MerchantSitemapInput`), and `then` keeps the list queries'
+ * `r.data ?? []` shape. Runtime behavior is untouched — types erase.
+ */
+type SitemapCatalogRow = {
+  slug: string;
+  updated_at?: string | null;
+  published_at?: string | null;
+};
+type SitemapQueryResult = { data: SitemapCatalogRow[] | null };
+interface SitemapQuery {
+  select: (columns: string) => SitemapQuery;
+  eq: (column: string, value: string | number | boolean | null) => SitemapQuery;
+  is: (column: string, value: null) => SitemapQuery;
+  lte: (column: string, value: string) => SitemapQuery;
+  limit: (count: number) => SitemapQuery;
+  maybeSingle: () => Promise<{ data: { id: string } | null }>;
+  then: <T>(
+    onFulfilled: (value: SitemapQueryResult) => T | PromiseLike<T>,
+  ) => Promise<T>;
+}
+
 async function merchantSitemap(
   slug: string,
   origin: string,
@@ -15,7 +40,7 @@ async function merchantSitemap(
   try {
     const { publicClient } = await import("@/lib/pricing.server");
     const db = publicClient() as unknown as {
-      from: (t: string) => any;
+      from: (t: string) => SitemapQuery;
     };
     const { data: merchant } = await db
       .from("merchants")
@@ -34,14 +59,14 @@ async function merchantSitemap(
           .eq("merchant_id", merchantId)
           .eq("status", "active")
           .limit(500)
-          .then((r: any) => r.data ?? []),
+          .then((r: SitemapQueryResult) => r.data ?? []),
         db
           .from("collections")
           .select("slug, updated_at")
           .eq("merchant_id", merchantId)
           .eq("is_published", true)
           .limit(200)
-          .then((r: any) => r.data ?? []),
+          .then((r: SitemapQueryResult) => r.data ?? []),
         db
           .from("storefront_pages")
           .select("slug, updated_at")
@@ -49,7 +74,7 @@ async function merchantSitemap(
           .eq("is_published", true)
           .is("deleted_at", null)
           .limit(200)
-          .then((r: any) => r.data ?? []),
+          .then((r: SitemapQueryResult) => r.data ?? []),
         db
           .from("articles")
           .select("slug, updated_at, published_at")
@@ -58,7 +83,7 @@ async function merchantSitemap(
           .lte("published_at", now)
           .is("deleted_at", null)
           .limit(500)
-          .then((r: any) => r.data ?? []),
+          .then((r: SitemapQueryResult) => r.data ?? []),
         import("@/lib/permalink.server")
           .then((m) => m.permalinkSettingsFor(db as never, merchantId))
           .catch(() => null),

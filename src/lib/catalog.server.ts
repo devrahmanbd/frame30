@@ -223,10 +223,13 @@ export async function applyImport(
     const { listInstalledPlugins } = await import("./plugins.server");
     const { runHook } = await import("./plugin-hooks.server");
     const installed = await listInstalledPlugins(supabase, merchantId);
-    const outcomes = await runHook(installed, "product.saved", {
-      merchantId,
-      jobId,
-      replayed: result.replayed,
+    const outcomes = await runHook(
+      installed,
+      "product.saved",
+      {
+        merchantId,
+        jobId,
+        replayed: result.replayed,
       },
       undefined,
       transport,
@@ -351,10 +354,13 @@ export async function saveKindConfig(
     const { listInstalledPlugins } = await import("./plugins.server");
     const { runHook } = await import("./plugin-hooks.server");
     const installed = await listInstalledPlugins(supabase, input.merchantId);
-    const outcomes = await runHook(installed, "product.saved", {
-      merchantId: input.merchantId,
-      productId: input.productId,
-      kind: input.kind,
+    const outcomes = await runHook(
+      installed,
+      "product.saved",
+      {
+        merchantId: input.merchantId,
+        productId: input.productId,
+        kind: input.kind,
       },
       undefined,
       transport,

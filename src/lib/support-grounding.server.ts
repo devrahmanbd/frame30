@@ -64,7 +64,7 @@ export type EnforceOutput = {
  * - DeepWiki sources pass through ONLY when labeled source:deepwiki (table === "deepwiki").
  * - Anything else claiming grounded is downgraded to explicit unsure+handoff.
  * - Degraded mode forces banner + lowered confidence (never confident).
- */export function enforceGroundedReply(input: EnforceInput): EnforceOutput {
+ */ export function enforceGroundedReply(input: EnforceInput): EnforceOutput {
   const locale = input.locale ?? "en";
   const degraded = input.degraded ?? false;
   const hasKb = input.sources.some((s) => s.table === "support_kb_docs");
@@ -156,8 +156,7 @@ export function groundedSourcesFromContext(
 }
 
 export type StreamPreflight =
-  | { ok: true; fallbackReply: null }
-  | { ok: false; fallbackReply: string };
+  { ok: true; fallbackReply: null } | { ok: false; fallbackReply: string };
 
 /**
  * Grounding preflight for the SSE lane. Returns ok:true when the lane may
