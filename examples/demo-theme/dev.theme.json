@@ -4,7 +4,13 @@
   "runtime": "1.0.0",
   "name": "Demo Atelier",
   "publisher": "Framique Demo Studio",
-  "capabilities": ["presentation", "animation", "webgl", "commerce-read", "cart-write"],
+  "capabilities": [
+    "presentation",
+    "animation",
+    "webgl",
+    "commerce-read",
+    "cart-write"
+  ],
   "dependencies": [
     {
       "name": "gsap",
@@ -34,9 +40,17 @@
     { "key": "carousel-caption", "label": "Carousel caption", "type": "text" },
     { "key": "carousel-poster", "label": "Carousel poster", "type": "image" },
     { "key": "carousel-gap", "label": "Carousel spacing", "type": "spacing" },
-    { "key": "carousel-motion", "label": "Carousel motion", "type": "animation" },
+    {
+      "key": "carousel-motion",
+      "label": "Carousel motion",
+      "type": "animation"
+    },
     { "key": "cards-heading", "label": "Cards heading", "type": "text" },
-    { "key": "cards-products", "label": "Cards products", "type": "product-selection" },
+    {
+      "key": "cards-products",
+      "label": "Cards products",
+      "type": "product-selection"
+    },
     { "key": "cards-accent", "label": "Cards accent", "type": "color" },
     { "key": "cards-gap", "label": "Cards spacing", "type": "spacing" },
     { "key": "cards-motion", "label": "Cards motion", "type": "animation" },

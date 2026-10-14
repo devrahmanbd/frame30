@@ -14,25 +14,25 @@ Validators (used, never reimplemented): `src/lib/dev-theme-manifest.ts`,
 
 ## Files
 
-| File | Role |
-|---|---|
-| `dev.theme.json` | Shippable manifest: `presentation` + `animation` + `webgl` + `commerce-read` + `cart-write`, two pinned dependencies (GSAP + Three.js, each with version + license + integrity shape), four sections on `main`, sixteen merchant settings from the closed field set. No forbidden keys. |
-| `manifest.ts` | Re-exports the manifest and validates it via `parseDevThemeManifest`. |
-| `commerce.ts` | Read-scoped commerce context (§5): ids, titles, handles, images, options, variant readiness. Figure display is host-owned, so no figure fields exist here by construction. |
-| `shared.ts` | Shared presentation helpers: HTML escaping, reduced-motion probe, merchant input clamps, motion presets under the page budget. |
-| `story-block.ts` | Section 1 — animated storytelling block: static-first render, GSAP mount reached only via dynamic `import("gsap")`, reduced-motion static fallback, unmount cleanup via a live-timeline registry. |
-| `media-carousel.ts` | Section 2 — lazy media carousel (image + video slides): `data-src` placeholders while hidden, a single `requestSlideLoad` gate, still-frame fallback without video support, empty-list note, gate destroy on unmount. |
-| `product-cards.ts` | Section 3 — bespoke product cards + variant selector: strict `variant.select` / `cart.add` envelope builders (throw on weak input, attach only schema fields), source-scanned for commerce purity. |
-| `webgl-scene.ts` | Section 4 — isolated WebGL orbit scene: static-first render (canvas placeholder + poster still), real Three.js frame reached only via dynamic `import("three")` behind the `webgl` capability + reduced-motion + context gates, single-frame render, dispose forces context loss. |
-| `fixture-bundles.ts` | Test support (not shipped code): fixture install grants, catalogue + carousel fixtures, the ThemeRuntime frame identity. Excluded from the bundle mapping. |
-| `demo-manifest.test.ts` | Manifest gates (17 tests). |
-| `story-block.test.ts` | Story proof: settings render, motion, cleanup (13 tests). |
-| `media-carousel.test.ts` | Carousel proof: render, lazy gate, fallbacks, cleanup (12 tests). |
-| `product-cards.test.ts` | Cards proof: render, selectors, builders, source scans (17 tests). |
-| `webgl-scene.test.ts` | WebGL proof: static render, capability/reduced-motion/no-GL gates without the engine, real `import("three")` resolution + manifest pin equality, one-frame mount and full dispose (13 tests). |
-| `commerce-bridge.test.ts` | Bridge + runtime proof against the real validators (16 tests). |
-| `vitest.config.ts` | Local runner — same precedent as `starter-plugin` (the root config does not include this fixture; adding it there is the integrator's call). |
-| `tsconfig.json` | Local typecheck scope (fixture + referenced core gates only). |
+| File                      | Role                                                                                                                                                                                                                                                                                    |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dev.theme.json`          | Shippable manifest: `presentation` + `animation` + `webgl` + `commerce-read` + `cart-write`, two pinned dependencies (GSAP + Three.js, each with version + license + integrity shape), four sections on `main`, sixteen merchant settings from the closed field set. No forbidden keys. |
+| `manifest.ts`             | Re-exports the manifest and validates it via `parseDevThemeManifest`.                                                                                                                                                                                                                   |
+| `commerce.ts`             | Read-scoped commerce context (§5): ids, titles, handles, images, options, variant readiness. Figure display is host-owned, so no figure fields exist here by construction.                                                                                                              |
+| `shared.ts`               | Shared presentation helpers: HTML escaping, reduced-motion probe, merchant input clamps, motion presets under the page budget.                                                                                                                                                          |
+| `story-block.ts`          | Section 1 — animated storytelling block: static-first render, GSAP mount reached only via dynamic `import("gsap")`, reduced-motion static fallback, unmount cleanup via a live-timeline registry.                                                                                       |
+| `media-carousel.ts`       | Section 2 — lazy media carousel (image + video slides): `data-src` placeholders while hidden, a single `requestSlideLoad` gate, still-frame fallback without video support, empty-list note, gate destroy on unmount.                                                                   |
+| `product-cards.ts`        | Section 3 — bespoke product cards + variant selector: strict `variant.select` / `cart.add` envelope builders (throw on weak input, attach only schema fields), source-scanned for commerce purity.                                                                                      |
+| `webgl-scene.ts`          | Section 4 — isolated WebGL orbit scene: static-first render (canvas placeholder + poster still), real Three.js frame reached only via dynamic `import("three")` behind the `webgl` capability + reduced-motion + context gates, single-frame render, dispose forces context loss.       |
+| `fixture-bundles.ts`      | Test support (not shipped code): fixture install grants, catalogue + carousel fixtures, the ThemeRuntime frame identity. Excluded from the bundle mapping.                                                                                                                              |
+| `demo-manifest.test.ts`   | Manifest gates (17 tests).                                                                                                                                                                                                                                                              |
+| `story-block.test.ts`     | Story proof: settings render, motion, cleanup (13 tests).                                                                                                                                                                                                                               |
+| `media-carousel.test.ts`  | Carousel proof: render, lazy gate, fallbacks, cleanup (12 tests).                                                                                                                                                                                                                       |
+| `product-cards.test.ts`   | Cards proof: render, selectors, builders, source scans (17 tests).                                                                                                                                                                                                                      |
+| `webgl-scene.test.ts`     | WebGL proof: static render, capability/reduced-motion/no-GL gates without the engine, real `import("three")` resolution + manifest pin equality, one-frame mount and full dispose (13 tests).                                                                                           |
+| `commerce-bridge.test.ts` | Bridge + runtime proof against the real validators (16 tests).                                                                                                                                                                                                                          |
+| `vitest.config.ts`        | Local runner — same precedent as `starter-plugin` (the root config does not include this fixture; adding it there is the integrator's call).                                                                                                                                            |
+| `tsconfig.json`           | Local typecheck scope (fixture + referenced core gates only).                                                                                                                                                                                                                           |
 
 ## Run
 
