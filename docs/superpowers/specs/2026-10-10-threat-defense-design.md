@@ -13,15 +13,15 @@ Two additions on top of the current pipeline:
 
 ## Components
 
-| Unit | Does | Interface |
-|---|---|---|
-| `strictZipEntries` (extend `package-zip.ts`) | Reject duplicate paths, dotfile/system entries, non-regular file modes | Same `PackageZipError` codes (`zip.*`), existing tests untouched |
-| `storageQuotaFor` + usage sum | `quotaBytesForPlan` + sum over `package-store` assets per merchant; install/upload entry points check before bytes land | Throws `package.over_quota` / `theme.upload_quota`; pure sum fn unit-tested |
-| `inventoryExternalUrls(files)` (new pure module) | Sorted unique external URLs from package text files | `(PackageFile[]) => string[]`; feeds consent payload + scan report |
-| `diffCapabilities(old, new)` (new pure module) | Added/removed permissions, scopes, external-URL hosts, custom-code presence | Returns `{ widened: boolean; details }`; widening forces re-consent |
-| `scanPackage(files, manifest)` (new pure module) | Aggregates secret/CSS/SVG/external-url/permission findings → `{ verdict: clean\|flagged; findings[] }` | Pure; every finding has a fixture test |
-| Approval gate | `approveVersion` / `rejectVersion` server fns (permission-gated, tenant-scoped, audited); activation refuses flagged-unapproved versions | Reuses `requirePermission`, ledger + audit rows |
-| Consent UI | `InstallConsent` shows URL inventory + risk findings; pending-approval queue entry | Additive props only, existing flows keep working |
+| Unit                                             | Does                                                                                                                                     | Interface                                                                   |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `strictZipEntries` (extend `package-zip.ts`)     | Reject duplicate paths, dotfile/system entries, non-regular file modes                                                                   | Same `PackageZipError` codes (`zip.*`), existing tests untouched            |
+| `storageQuotaFor` + usage sum                    | `quotaBytesForPlan` + sum over `package-store` assets per merchant; install/upload entry points check before bytes land                  | Throws `package.over_quota` / `theme.upload_quota`; pure sum fn unit-tested |
+| `inventoryExternalUrls(files)` (new pure module) | Sorted unique external URLs from package text files                                                                                      | `(PackageFile[]) => string[]`; feeds consent payload + scan report          |
+| `diffCapabilities(old, new)` (new pure module)   | Added/removed permissions, scopes, external-URL hosts, custom-code presence                                                              | Returns `{ widened: boolean; details }`; widening forces re-consent         |
+| `scanPackage(files, manifest)` (new pure module) | Aggregates secret/CSS/SVG/external-url/permission findings → `{ verdict: clean\|flagged; findings[] }`                                   | Pure; every finding has a fixture test                                      |
+| Approval gate                                    | `approveVersion` / `rejectVersion` server fns (permission-gated, tenant-scoped, audited); activation refuses flagged-unapproved versions | Reuses `requirePermission`, ledger + audit rows                             |
+| Consent UI                                       | `InstallConsent` shows URL inventory + risk findings; pending-approval queue entry                                                       | Additive props only, existing flows keep working                            |
 
 ## Data flow
 

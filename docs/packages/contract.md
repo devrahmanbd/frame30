@@ -93,12 +93,12 @@ asset refs with `theme.upload_manifest`
 (`src/lib/themes/appearance.server.ts:824-830`). Replays write nothing
 and skip the quota check.
 
-| Plan         | Asset quota (`ASSET_QUOTA_BY_PLAN`) | Pin                                 |
-| ------------ | ----------------------------------- | ----------------------------------- |
+| Plan         | Asset quota (`ASSET_QUOTA_BY_PLAN`)                                        | Pin                                  |
+| ------------ | -------------------------------------------------------------------------- | ------------------------------------ |
 | `launch`     | 1 GiB (`MERCHANT_ASSET_QUOTA_BYTES`, `src/lib/package-store.server.ts:53`) | `src/lib/package-store.server.ts:63` |
-| `growth`     | 5 GiB                               | `src/lib/package-store.server.ts:64` |
-| `business`   | 20 GiB                              | `src/lib/package-store.server.ts:65` |
-| `enterprise` | 100 GiB                             | `src/lib/package-store.server.ts:66` |
+| `growth`     | 5 GiB                                                                      | `src/lib/package-store.server.ts:64` |
+| `business`   | 20 GiB                                                                     | `src/lib/package-store.server.ts:65` |
+| `enterprise` | 100 GiB                                                                    | `src/lib/package-store.server.ts:66` |
 
 Values are owner-tunable; unknown/blank plans fail closed to launch.
 
@@ -565,49 +565,49 @@ await uninstallPluginPackage(db, merchantId, installId, actorId);
 Pipeline codes (all thrown as `PackageInstallError`,
 `src/lib/package-install.server.ts:60`):
 
-| Code                         | Meaning                                                |
-| ---------------------------- | ------------------------------------------------------ |
-| `package.empty`              | no bytes supplied                                      |
-| `package.bad_name`           | file name is not a `.zip`                              |
-| `package.bad_key`            | idempotency key missing                                |
-| `package.manifest_invalid`   | manifest gate rejected the archive                     |
-| `package.bad_version`        | malformed or non-forward version                       |
-| `package.api_incompatible`   | `api` range does not cover the running builder         |
-| `package.missing_dependency` | dependency slug not installed                          |
-| `package.broken_ref`         | templates reference missing files                      |
-| `package.install_failed`     | row / version / ledger / asset step failed             |
-| `package.install_conflict`   | ledger replay without a package row                    |
-| `package.not_found`          | package / version / install not owned by this merchant |
-| `package.active`             | uninstall refused on the live theme                    |
-| `package.consent_required`   | update widens capabilities without covering consent
-  (`src/lib/package-install.server.ts:730-738` themes,
-  `:1092-1100` plugins) |
-| `package.over_quota`         | persisted + incoming bytes exceed
-  `MERCHANT_ASSET_QUOTA_BYTES`
-  (`src/lib/package-install.server.ts:100-114`) |
-| `theme.upload_quota`         | upload lane over the same quota
-  (`src/lib/themes/appearance.server.ts:840-843`) |
-| `theme.approval_required`    | flagged version needs a recorded `theme.approved`
-  audit before activation
-  (`src/lib/themes/appearance.server.ts:1213`) |
-| `plugin.approval_required`   | flagged manifest needs a recorded `plugin.approved`
-  audit before enabling (`src/lib/plugins.server.ts:346`) |
-| `zip.duplicate_entry`        | exact-duplicate file entry in the archive
-  (`src/lib/package-zip.ts:258-264`) |
-| `zip.special_file`           | device node, fifo, or socket entry
-  (`src/lib/package-zip.ts:250`) |
-| `zip.content_mismatch`       | file bytes contradict the extension (HTML as
-  image, script as font, binary as text;
-  `src/lib/package-zip.ts:530`), enforced in both
-  `installPackage` lanes
-  (`src/lib/package-install.server.ts:632`, `:1045`) and the
-  upload lane (`src/lib/themes/appearance.server.ts:818`)) |
-| `egress_denied`              | hostname guard refused the URL before any socket
-  (`src/lib/egress-fetch.ts:373`) |
-| `egress_redirect_blocked`    | redirect target failed guard or DNS revalidation |
-| `egress_dns_blocked`         | resolved address is private/loopback/link-local |
-| `egress_timeout`             | chain deadline exceeded (queue retries) |
-| `egress_too_many_redirects`  | over `maxRedirects` (default 3) |
+| Code                                                       | Meaning                                                |
+| ---------------------------------------------------------- | ------------------------------------------------------ |
+| `package.empty`                                            | no bytes supplied                                      |
+| `package.bad_name`                                         | file name is not a `.zip`                              |
+| `package.bad_key`                                          | idempotency key missing                                |
+| `package.manifest_invalid`                                 | manifest gate rejected the archive                     |
+| `package.bad_version`                                      | malformed or non-forward version                       |
+| `package.api_incompatible`                                 | `api` range does not cover the running builder         |
+| `package.missing_dependency`                               | dependency slug not installed                          |
+| `package.broken_ref`                                       | templates reference missing files                      |
+| `package.install_failed`                                   | row / version / ledger / asset step failed             |
+| `package.install_conflict`                                 | ledger replay without a package row                    |
+| `package.not_found`                                        | package / version / install not owned by this merchant |
+| `package.active`                                           | uninstall refused on the live theme                    |
+| `package.consent_required`                                 | update widens capabilities without covering consent    |
+| (`src/lib/package-install.server.ts:730-738` themes,       |
+| `:1092-1100` plugins)                                      |
+| `package.over_quota`                                       | persisted + incoming bytes exceed                      |
+| `MERCHANT_ASSET_QUOTA_BYTES`                               |
+| (`src/lib/package-install.server.ts:100-114`)              |
+| `theme.upload_quota`                                       | upload lane over the same quota                        |
+| (`src/lib/themes/appearance.server.ts:840-843`)            |
+| `theme.approval_required`                                  | flagged version needs a recorded `theme.approved`      |
+| audit before activation                                    |
+| (`src/lib/themes/appearance.server.ts:1213`)               |
+| `plugin.approval_required`                                 | flagged manifest needs a recorded `plugin.approved`    |
+| audit before enabling (`src/lib/plugins.server.ts:346`)    |
+| `zip.duplicate_entry`                                      | exact-duplicate file entry in the archive              |
+| (`src/lib/package-zip.ts:258-264`)                         |
+| `zip.special_file`                                         | device node, fifo, or socket entry                     |
+| (`src/lib/package-zip.ts:250`)                             |
+| `zip.content_mismatch`                                     | file bytes contradict the extension (HTML as           |
+| image, script as font, binary as text;                     |
+| `src/lib/package-zip.ts:530`), enforced in both            |
+| `installPackage` lanes                                     |
+| (`src/lib/package-install.server.ts:632`, `:1045`) and the |
+| upload lane (`src/lib/themes/appearance.server.ts:818`))   |
+| `egress_denied`                                            | hostname guard refused the URL before any socket       |
+| (`src/lib/egress-fetch.ts:373`)                            |
+| `egress_redirect_blocked`                                  | redirect target failed guard or DNS revalidation       |
+| `egress_dns_blocked`                                       | resolved address is private/loopback/link-local        |
+| `egress_timeout`                                           | chain deadline exceeded (queue retries)                |
+| `egress_too_many_redirects`                                | over `maxRedirects` (default 3)                        |
 
 Publish/builder reasons include `builder.artifact_missing`
 (`src/lib/themes.server.ts:444-464`), `builder.publish_blocked`,

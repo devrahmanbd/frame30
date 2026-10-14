@@ -14,24 +14,24 @@ which is near-identical (`#1a1a1a` vs `#2E2620`); (2) layout, typography and
 spacing are hardcoded Tailwind classes inside **shared renderers**, and
 Songoskriti's renderers override the generic ones **globally**, so Somvabona
 is painted by Songoskriti's components; (3) both homepages speak the same
-section grammar in the same order. "Theme" today means *copy + tint*, not
-*skin*. Details below.
+section grammar in the same order. "Theme" today means _copy + tint_, not
+_skin_. Details below.
 
 ## 1. Tokens: different values, same pixels
 
-| Token | Songoskriti | Somvabona | Rendered? |
-|---|---|---|---|
-| brand | `#1a1a1a` | `#7C2A1A` (maroon) | **0 uses** in `components/builder/*.tsx` — dead difference |
-| accent | `#8B4513` | `#B95A38` | ~unused (same pattern) |
-| ink | `#1a1a1a` | `#2E2620` | **104 uses** — everything keys off this; visually identical |
-| surface | `#faf9f7` ivory | `#FBF6EE` warmer paper | negligible delta at a glance |
-| fontDisplay/fontBody | Playfair Display / Inter | Playfair Display / Inter | **identical** |
-| fontPairing | `editorial-serif` | `editorial-serif` | identical |
-| density/container/space | comfortable / 1320px / 16px | comfortable / 1320px / 16px | identical |
-| radius | `0px` | `4px` | only visible delta, and tiny |
+| Token                   | Songoskriti                 | Somvabona                   | Rendered?                                                   |
+| ----------------------- | --------------------------- | --------------------------- | ----------------------------------------------------------- |
+| brand                   | `#1a1a1a`                   | `#7C2A1A` (maroon)          | **0 uses** in `components/builder/*.tsx` — dead difference  |
+| accent                  | `#8B4513`                   | `#B95A38`                   | ~unused (same pattern)                                      |
+| ink                     | `#1a1a1a`                   | `#2E2620`                   | **104 uses** — everything keys off this; visually identical |
+| surface                 | `#faf9f7` ivory             | `#FBF6EE` warmer paper      | negligible delta at a glance                                |
+| fontDisplay/fontBody    | Playfair Display / Inter    | Playfair Display / Inter    | **identical**                                               |
+| fontPairing             | `editorial-serif`           | `editorial-serif`           | identical                                                   |
+| density/container/space | comfortable / 1320px / 16px | comfortable / 1320px / 16px | identical                                                   |
+| radius                  | `0px`                       | `4px`                       | only visible delta, and tiny                                |
 
 Pipeline itself works (`tokensToCss`, `builder-ast.ts:6274` → CSS vars via
-`ThemeSurface`). The problem is *which* tokens vary and *which* get consumed:
+`ThemeSurface`). The problem is _which_ tokens vary and _which_ get consumed:
 CTAs, prices, badges and headings all resolve to ink/surface/muted. The maroon
 brand that should scream "Somvabona" never reaches a pixel.
 
@@ -42,15 +42,15 @@ Evidence: `grep -rn "theme-brand" src/components/builder/*.tsx` → zero hits;
 
 Section renderers carry fixed layout classes — e.g. `SongoskritiFooterSitemap`
 (`songoskriti.tsx:997`): `max-w-[1440px]`, `font-serif text-[40px]/[56px]/[72px]`,
-`py-10/sm:py-16`, uppercase tracking. Themes supply *props* (copy), never
-*composition*. Two themes picking `hero_carousel → trust → categories → rails`
+`py-10/sm:py-16`, uppercase tracking. Themes supply _props_ (copy), never
+_composition_. Two themes picking `hero_carousel → trust → categories → rails`
 get byte-similar DOM by construction.
 
 Worse, the override is global, not per-theme (`widgets.tsx:1139` CHROME spread
 first, `:1675` SONGOSKRITI spread later — last write wins for **all** themes):
 
-| Overridden key | Winner for every theme |
-|---|---|
+| Overridden key                                                                                                                        | Winner for every theme |
+| ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
 | product_rail, product_grid, rich_text, newsletter, footer_sitemap, payment_icons, department_grid, mega_menu, store_locator (+7 more) | Songoskriti's renderer |
 
 Somvabona defines only 5 unique widgets (`trust_marquee`, `price_buckets`,
@@ -63,8 +63,8 @@ is Songoskriti's component in Somvabona's colors.
 COLOPHON` from `@/lib/themes/songoskriti/footer` (`songoskriti.tsx:62-65`)
 and renders them around whatever columns it's given. Live DOM on
 `/theme-preview/somvabona` shows `data-fq-node="footer_sitemap-3-index"`
-rendering *"Woven in Bangladesh, worn everywhere… Songoskriti… © 2026
-Songoskriti"*. Same for `store_locator`: hardcoded `/ph/songoskriti/*`
+rendering _"Woven in Bangladesh, worn everywhere… Songoskriti… © 2026
+Songoskriti"_. Same for `store_locator`: hardcoded `/ph/songoskriti/*`
 imagery + `useSongoskritiReveals` motion for any theme that uses the section.
 
 Bonus find: Songoskriti's **own** page renders its footer statement +
@@ -95,7 +95,7 @@ rendering follows.
 ## What would actually differentiate the skins
 
 1. **Per-theme renderer registration** (engine port, not global spread):
-   `footer_sitemap` et al. resolve the *active theme's* renderer; generic
+   `footer_sitemap` et al. resolve the _active theme's_ renderer; generic
    stays the fallback. Kills §§2–3 at the root. (audited, unmerged)
 2. **Consume `brand` in prominent slots** (CTAs, prices, badges, rules):
    one-line-per-slot change, highest visual ROI. (§1)

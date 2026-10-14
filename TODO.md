@@ -840,6 +840,7 @@ Equipped with Semrush API Key: `semrtkn-pat-HS2Xf0KFSqmTFHX54b57ZQ-XN9oQNgl5SPra
 - [x] Run `bun run build` to verify clean compilation.
 
 ### Phase 7: Product Detail Page Redesign (Editorial Commerce)
+
 - [x] Extracted Editorial Commerce widgets into reusable React components in `ProductView.tsx`:
   - `ProductGallery`: Renders the main product image (future-proofed for gallery).
   - `ProductInfo`: Renders the product title.

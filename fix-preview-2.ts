@@ -1,8 +1,12 @@
 import fs from "fs";
 
-let content = fs.readFileSync("src/components/store/ThemePreviewFrame.tsx", "utf-8");
+let content = fs.readFileSync(
+  "src/components/store/ThemePreviewFrame.tsx",
+  "utf-8",
+);
 
-const importMarker = 'import { ThemeSurface } from "@/components/builder/ThemeSurface";';
+const importMarker =
+  'import { ThemeSurface } from "@/components/builder/ThemeSurface";';
 const newImports = `import {
   ProductGallery,
   PriceBlock,
@@ -117,15 +121,21 @@ function useMockProductSlots(
 }
 `;
 
-content = content.replace('export function ThemePreviewFrame(', hookStr + '\nexport function ThemePreviewFrame(');
+content = content.replace(
+  "export function ThemePreviewFrame(",
+  hookStr + "\nexport function ThemePreviewFrame(",
+);
 
 // Add the hook call inside ThemePreviewFrame
-const accountSlotsMarker = '  const accountSlots = useMemo(() => {';
+const accountSlotsMarker = "  const accountSlots = useMemo(() => {";
 const newHookCall = `  const productSlots = useMockProductSlots(template, demoFocus, themeName, blueprintKey);\n`;
 content = content.replace(accountSlotsMarker, newHookCall + accountSlotsMarker);
 
 // Now update the contextSlots passed to SectionRenderer
 // The accountSlots is passed directly right now to all SectionRenderers
-content = content.replace(/contextSlots=\{accountSlots\}/g, 'contextSlots={accountSlots || productSlots || undefined}');
+content = content.replace(
+  /contextSlots=\{accountSlots\}/g,
+  "contextSlots={accountSlots || productSlots || undefined}",
+);
 
 fs.writeFileSync("src/components/store/ThemePreviewFrame.tsx", content);

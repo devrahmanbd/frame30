@@ -6,15 +6,15 @@ the human review layer. Nothing here passes silently.
 
 ## What runs, what blocks
 
-| Job / step | Command | Blocking? |
-|---|---|---|
-| `scan` — secret scan | `bun run secrets:scan` (`scripts/secret-scan.mjs`) | Yes — fails on credential-shaped strings |
-| `scan` — SAST suspicious-diff | `bun run sast:scan` (`scripts/sast-scan.mjs`) | Yes — fails on findings, prints `file:line` |
-| `scan` — dependency audit | `bun run scan:deps` (`scripts/dep-audit.mjs`) | Yes — fails on uncovered high/critical |
-| `e2e-critical` — harness gate | `bun run e2e:required` (`scripts/e2e-required.mjs`) | Yes — missing harness FAILS, never passes |
-| `e2e-critical` — critical suites | `bun run e2e:critical` | Yes (runs only after the harness gate) |
-| `e2e-security` — adversarial specs | `bun run e2e:security` (upload-adversarial, preview-isolation, preview-security, css-gate-differential, frame-cpu-recovery) | Yes (requires `build`, like e2e-critical) |
-| `plugin-storefront-gate` | plugin + storefront tripwire suites | Yes |
+| Job / step                         | Command                                                                                                                     | Blocking?                                   |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| `scan` — secret scan               | `bun run secrets:scan` (`scripts/secret-scan.mjs`)                                                                          | Yes — fails on credential-shaped strings    |
+| `scan` — SAST suspicious-diff      | `bun run sast:scan` (`scripts/sast-scan.mjs`)                                                                               | Yes — fails on findings, prints `file:line` |
+| `scan` — dependency audit          | `bun run scan:deps` (`scripts/dep-audit.mjs`)                                                                               | Yes — fails on uncovered high/critical      |
+| `e2e-critical` — harness gate      | `bun run e2e:required` (`scripts/e2e-required.mjs`)                                                                         | Yes — missing harness FAILS, never passes   |
+| `e2e-critical` — critical suites   | `bun run e2e:critical`                                                                                                      | Yes (runs only after the harness gate)      |
+| `e2e-security` — adversarial specs | `bun run e2e:security` (upload-adversarial, preview-isolation, preview-security, css-gate-differential, frame-cpu-recovery) | Yes (requires `build`, like e2e-critical)   |
+| `plugin-storefront-gate`           | plugin + storefront tripwire suites                                                                                         | Yes                                         |
 
 ## SAST suspicious-diff (`scripts/sast-scan.mjs`)
 
@@ -39,7 +39,7 @@ allowlist lives in the script — extend with a reason), `shell-exec`
 `csp-sandbox` (`allow-same-origin`, `unsafe-inline`).
 
 `*.test.*` / fixtures are out of scope for attacker-string rules: validator
-suites must contain attack strings as *data*. An intentional use gets a
+suites must contain attack strings as _data_. An intentional use gets a
 trailing suppression with a mandatory reason, visible in the diff:
 
 ```ts
@@ -78,7 +78,7 @@ a gate: `node scripts/attribution-report.mjs --out
 
 Runs `npm audit --omit=dev --json`, fails on high/critical without a reviewed
 exception in `scripts/dep-exceptions.json`. Each entry needs `module`,
-`reason` (why non-exploitable *here*), `owner`, `expires` (`YYYY-MM-DD`).
+`reason` (why non-exploitable _here_), `owner`, `expires` (`YYYY-MM-DD`).
 CI fails on **expired entries, missing owners, malformed entries**, and
 uncovered findings. Stale entries (no live advisory) warn — remove them.
 One entry per advisory; never blanket-except. Fails closed if the audit

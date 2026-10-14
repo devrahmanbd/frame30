@@ -1,9 +1,12 @@
 import fs from "fs";
 
-let content = fs.readFileSync("src/components/store/ThemePreviewFrame.tsx", "utf-8");
+let content = fs.readFileSync(
+  "src/components/store/ThemePreviewFrame.tsx",
+  "utf-8",
+);
 
 const startStr = '    if (template === "product") {';
-const endStr = '    return slots;';
+const endStr = "    return slots;";
 
 const newCode = `    if (template === "product") {
       const title = demoFocus?.title ?? "Demo Product";
@@ -95,5 +98,12 @@ const newCode = `    if (template === "product") {
 
 `;
 
-content = content.replace(new RegExp(startStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[\\s\\S]*?' + endStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), newCode + endStr);
+content = content.replace(
+  new RegExp(
+    startStr.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") +
+      "[\\s\\S]*?" +
+      endStr.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+  ),
+  newCode + endStr,
+);
 fs.writeFileSync("src/components/store/ThemePreviewFrame.tsx", content);

@@ -31,11 +31,13 @@
 ### Task 1: Package spec + validator
 
 **Files:**
+
 - Create: `docs/themes/packages.md`
 - Create: `src/lib/theme-package.ts`
 - Test: `src/lib/theme-package.test.ts`
 
 **Interfaces:**
+
 - Consumes: `parseTemplates`, `parseTokens`, `lintTemplate` from `@/lib/builder-ast`; `biTextKeysOf`, `bnKey` from `@/lib/bitext`.
 - Produces: `validateThemePackage(input: unknown) => { ok: true; preset: ThemePreset } | { ok: false; errors: string[] }` used by Task 4.
 
@@ -129,14 +131,10 @@ export const MAX_PACKAGE_BYTES = 2 * 1024 * 1024;
 export const MAX_SECTIONS_PER_TEMPLATE = 200;
 
 export type PackageResult =
-  | { ok: true; preset: ThemePreset }
-  | { ok: false; errors: string[] };
+  { ok: true; preset: ThemePreset } | { ok: false; errors: string[] };
 
 function jsUrl(v: unknown): boolean {
-  return (
-    typeof v === "string" &&
-    /^\s*(javascript|data|vbscript):/i.test(v)
-  );
+  return typeof v === "string" && /^\s*(javascript|data|vbscript):/i.test(v);
 }
 
 export function validateThemePackage(input: unknown): PackageResult {
@@ -210,11 +208,13 @@ git commit -m "feat(themes): third-party package spec + validator"
 ### Task 2: Developer allowlist
 
 **Files:**
+
 - Modify: `supabase/migrations/<new-timestamp>_theme_developers.sql` (create)
 - Modify: `src/lib/themes/appearance.server.ts` or new `src/lib/theme-developers.server.ts` (create)
 - Test: `src/lib/theme-developers.test.ts` (create)
 
 **Interfaces:**
+
 - Consumes: existing Supabase client patterns, `currentMerchantId`-style scoping.
 - Produces: `isApprovedDeveloper(merchantId: string) => Promise<boolean>` used by Task 4.
 
@@ -275,10 +275,12 @@ git commit -m "feat(themes): approved-developer allowlist"
 ### Task 3: Builder export (package download)
 
 **Files:**
+
 - Modify: `src/routes/_authenticated/dashboard/builder.tsx` (add Export button + handler)
 - Test: extend `src/lib/theme-package.test.ts` with a round-trip case (see Step 1)
 
 **Interfaces:**
+
 - Consumes: `validateThemePackage` from Task 1; builder's in-memory `{ templates, tokens }` state.
 - Produces: downloaded `<key>-<version>.theme.json` file that `validateThemePackage` accepts.
 
@@ -323,13 +325,27 @@ Add an "Export package" button next to the existing commit/publish actions that 
 
 ```tsx
 const onExport = () => {
-  const pkg = { key, nameEn, nameBn, summaryEn, summaryBn, category, version, api: "^3.0.0", sortOrder, tokens, templates };
+  const pkg = {
+    key,
+    nameEn,
+    nameBn,
+    summaryEn,
+    summaryBn,
+    category,
+    version,
+    api: "^3.0.0",
+    sortOrder,
+    tokens,
+    templates,
+  };
   const checked = validateThemePackage(pkg);
   if (!checked.ok) {
     toast.error(checked.errors[0] ?? "Package invalid");
     return;
   }
-  const blob = new Blob([JSON.stringify(pkg, null, 2)], { type: "application/json" });
+  const blob = new Blob([JSON.stringify(pkg, null, 2)], {
+    type: "application/json",
+  });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -355,12 +371,14 @@ git commit -m "feat(themes): builder package export"
 ### Task 4: Submission → review → publish
 
 **Files:**
+
 - Modify: `supabase/migrations/<new-timestamp>_theme_submissions.sql` (create)
 - Create: `src/lib/theme-submissions.server.ts` + `src/lib/theme-submissions.functions.ts`
 - Modify: `src/routes/_authenticated/dashboard/themes.tsx` or marketplace review screen (locate in Step 1)
 - Test: `src/lib/theme-submissions.test.ts` (create)
 
 **Interfaces:**
+
 - Consumes: `validateThemePackage` (Task 1), `isApprovedDeveloper` (Task 2), existing `theme_publish`-style RPC patterns.
 - Produces: pending submission rows; staff approve/reject; approved packages installable like registry presets.
 
@@ -390,6 +408,7 @@ describe("submission acceptance", () => {
 New migration `theme_submissions (id uuid, merchant_id uuid, package jsonb, status text default 'pending', reviewer_note text, submitted_at, decided_at)` with tenant-scoped RLS (same shape as Task 2's policy).
 
 `submitThemePackage(merchantId, pkg)` server function:
+
 1. `if (!(await isApprovedDeveloper(merchantId))) throw new Error("not an approved developer")`
 2. `const checked = validateThemePackage(pkg); if (!checked.ok) throw new Error(checked.errors[0])`
 3. Insert row with `status: "pending"`, return id.
@@ -411,11 +430,13 @@ git commit -m "feat(themes): approved-developer submission and review"
 ### Task 5: Author docs + example + gates
 
 **Files:**
+
 - Modify: `docs/themes/creation.md` (append external-author chapter)
 - Create: `docs/themes/example-studio.theme.json` (minimal valid package fixture)
 - Test: reuse `src/lib/theme-package.test.ts` (fixture must validate)
 
 **Interfaces:**
+
 - Consumes: Task 1 validator.
 - Produces: a designer-readable path from zero to submitted package.
 

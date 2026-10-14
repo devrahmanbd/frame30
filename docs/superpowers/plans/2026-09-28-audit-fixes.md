@@ -37,6 +37,7 @@ with file:line evidence — the reports ARE the spec; each task cites its rows.
 ### T1: Paid-at-placement → pending until settlement (CRITICAL)
 
 **Files:** `src/lib/orders.server.ts` (:178, :247-259), `src/lib/payments.server.ts` (any reader assuming paid-at-placement — check `applySignedReturn`, fulfilment queries), tests colocated.
+
 - [ ] RED: test asserting online order creates with non-paid status + NO payment row (currently fails).
 - [ ] Create online orders as `pending`/`payment_pending` (match COD `confirmed` semantics — check what fulfilment expects; COD stays as-is), insert NO payment row until settlement.
 - [ ] Audit script (read-only report, not migration): list existing `paid`-without-settlement-intent orders for ops review.
@@ -45,6 +46,7 @@ with file:line evidence — the reports ARE the spec; each task cites its rows.
 ### T2: upgradeAstV2ToV3 repeater-safe (CRITICAL)
 
 **Files:** `src/lib/builder-ast.ts` (:7049-7068), round-trip tests.
+
 - [ ] RED: parse→serialize fixture with hero/faq/footer `items` + twins (currently mangles).
 - [ ] Only promote `items`/`sections` to `children` for container types or node-shaped rows; data rows pass through untouched.
 - [ ] GREEN incl. builder suites. Commit `fix(builder): parse preserves repeater items`, push branch.
@@ -52,6 +54,7 @@ with file:line evidence — the reports ARE the spec; each task cites its rows.
 ### T3: Provider revalidation for aamarPay/bKash callbacks
 
 **Files:** `src/lib/live-gateway.server.ts` (:273-274), `src/lib/live-gateway.ts` (:469-479), tests.
+
 - [ ] RED: forged callback with valid intent id + exact amount must NOT settle (currently does).
 - [ ] Validate against provider API where available, else hold as `pending` (never settle on amount-only). Keep SSLCommerz/PipraPay behavior identical.
 - [ ] GREEN. Commit, push branch.
@@ -59,12 +62,14 @@ with file:line evidence — the reports ARE the spec; each task cites its rows.
 ### T4: Atomic order creation on idempotency key (+ coupon counters)
 
 **Files:** new migration (unique `(merchant_id, idempotency_key)` on orders + `ON CONFLICT DO NOTHING` returning existing), `src/lib/orders.server.ts` (:63-79, :185-212, :261-288), coupon atomic increment guarded by `usage_limit` in SQL.
+
 - [ ] RED: concurrent same-key submits (parallel-insert test or constraint-proof).
 - [ ] Implement; GREEN. Commit (code + migration), push branch.
 
 ### T5: Stable retry/remount keys
 
 **Files:** checkout page key init (`store.$slug.checkout.tsx:93-97`), retry buttons (`order.$orderId.tsx:83`, `store.$slug.order.$orderId.tsx:91`), server attempt counting.
+
 - [ ] RED: refresh+resubmit and double-click produce duplicate intents/orders.
 - [ ] Single session-persisted order key; deterministic retry keys per order+attempt with server-side attempt counting.
 - [ ] GREEN. Commit, push branch.
@@ -72,6 +77,7 @@ with file:line evidence — the reports ARE the spec; each task cites its rows.
 ### T6: Stock rollback sign + release scoping
 
 **Files:** `src/lib/checkout.server.ts` (:217-220 sign, :288-326 scoping), `store.$slug.checkout.tsx` token gen (:88-92).
+
 - [ ] RED: failed-hold rollback double-decrements; unscoped token releases foreign holds (unit-test with fake store).
 - [ ] `+ delta` fix; bind token to merchant (token format change with backward-compat read for in-flight tokens, or document cutover).
 - [ ] GREEN. Commit, push branch.

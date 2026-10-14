@@ -33,10 +33,12 @@
 ### Task 1: Branch setup + audit pin
 
 **Files:**
+
 - Modify: nothing yet (verification only)
 - Test: none (evidence task)
 
 **Interfaces:**
+
 - Consumes: `git ls-tree`, `git show origin/main:<path>`
 - Produces: branch `frame30` based on `origin/main`, stashed WIP preserved, audit evidence list for Tasks 2–6
 
@@ -76,10 +78,12 @@ No commit (branch creation is the artifact). Verify `git status --short | head`.
 ### Task 2: Single authoritative built-in official-theme registry
 
 **Files:**
+
 - Modify: `src/lib/themes/builtin-themes.ts` (create — single authority), `src/lib/preview-sources.ts`, `src/lib/theme-preview-nav.ts` (import type only, no logic change), `src/lib/themes.server.ts` (registryPackage/loadRegistryPackage/installRegistryTheme)
 - Test: `src/lib/themes/builtin-themes.test.ts` (create)
 
 **Interfaces:**
+
 - Consumes: `songoskritiPreviewSource` from `./songoskriti/preview`, `somvabonaPreviewSource` from `../somvabona/preview` (existing signatures `(variationKey?: string) => PreviewThemeSource`)
 - Produces: `OFFICIAL_THEME_KEYS: readonly ["songoskriti","somvabona"]`, `getBuiltinTheme(key)`, `isOfficialThemeKey(key: string)`, `builtinThemeKeys(): string[]` — later tasks import ONLY these for official identity (never `theme-export.OFFICIAL_THEMES`, never bundle JSON keys, never `theme_registry` keys for identity)
 
@@ -88,7 +92,11 @@ No commit (branch creation is the artifact). Verify `git status --short | head`.
 ```ts
 // src/lib/themes/builtin-themes.test.ts
 import { describe, expect, it } from "vitest";
-import { OFFICIAL_THEME_KEYS, getBuiltinTheme, isOfficialThemeKey } from "./builtin-themes";
+import {
+  OFFICIAL_THEME_KEYS,
+  getBuiltinTheme,
+  isOfficialThemeKey,
+} from "./builtin-themes";
 
 describe("builtin-themes single authority", () => {
   it("names exactly songoskriti + somvabona", () => {
@@ -126,7 +134,10 @@ import { somvabonaPreviewSource } from "./somvabona/preview";
 
 export const OFFICIAL_THEME_KEYS = ["songoskriti", "somvabona"] as const;
 export type BuiltinThemeKey = (typeof OFFICIAL_THEME_KEYS)[number];
-export type BuiltinThemeEntry = { key: BuiltinThemeKey; source: () => PreviewThemeSource };
+export type BuiltinThemeEntry = {
+  key: BuiltinThemeKey;
+  source: () => PreviewThemeSource;
+};
 
 const ENTRIES: Record<BuiltinThemeKey, BuiltinThemeEntry> = {
   songoskriti: { key: "songoskriti", source: songoskritiPreviewSource },
@@ -166,10 +177,12 @@ git -C /opt/frame28 -c user.name="opencode" -c user.email="opencode@local" commi
 ### Task 3: Source-direct official install/preview/render; remove runtime bundle/ZIP deps
 
 **Files:**
+
 - Modify: `src/lib/themes.server.ts` (registryPackage → source-direct via builtin registry; loadRegistryPackage → tenant installed rows for custom + official-install state, never bundle JSON; installRegistryTheme → build from source definition), `src/lib/themes/appearance.server.ts` (drop `bundledOfficialCatalogEntries` import; catalogue official section from builtin registry), `src/routes/theme-preview.$key.tsx` (or equivalent route — resolve anonymous preview from builtin source, merchant preview from installed rows)
 - Test: `src/lib/themes/frame30-source-install.test.ts` (create)
 
 **Interfaces:**
+
 - Consumes: `getBuiltinTheme`, `resolveThemePreview`, `assemblePreviewTemplates` (existing), RPC `theme_install_preset`
 - Produces: `registryPackage(key)` source-direct (no bundle import); `installRegistryTheme` initializes `store_themes`/`theme_versions`/`theme_drafts` from source AST without constructing ZIP; no runtime file imports `theme-export`, `official-artifacts`, `official-artifact-bundle(.json)`
 
@@ -197,7 +210,9 @@ describe("frame30 source-direct runtime", () => {
     ];
     for (const f of runtimeFiles) {
       const s = fs.readFileSync(`/opt/frame28/${f}`, "utf8");
-      expect(s).not.toMatch(/official-artifact-bundle|official-artifacts|theme-export/);
+      expect(s).not.toMatch(
+        /official-artifact-bundle|official-artifacts|theme-export/,
+      );
     }
   });
 });
@@ -233,10 +248,12 @@ git -C /opt/frame28 -c user.name="opencode" -c user.email="opencode@local" commi
 ### Task 4: Explicit source-vs-package image-URL boundary (fix regression at source)
 
 **Files:**
+
 - Modify: `src/lib/theme-asset-url.ts` (create — branded types + converters), `src/lib/theme-export.ts` (type `urlForm` input as `PackageAssetUrl` context only; add doc that runtime must never call it), `src/components/builder/heritage.tsx` + `apparel.tsx` (render `src` through source resolver; no bare `assets/` emission outside package context)
 - Test: `src/lib/theme-asset-url.test.ts` (create)
 
 **Interfaces:**
+
 - Consumes: nothing new (pure string functions)
 - Produces: `type SourceAssetUrl = string & { __brand: "source" }`, `type PackageAssetUrl = string & { __brand: "package" }`, `toSourceUrl(basename, themeKey): SourceAssetUrl` (`/ph/<key>/<file>`), `toPackageRef(basename): PackageAssetUrl` (`assets/<file>`), `isSourceUrl(s)`, `isPackageRef(s)` — renderers accept `SourceAssetUrl`; exporter accepts package conversion explicitly
 
@@ -245,11 +262,18 @@ git -C /opt/frame28 -c user.name="opencode" -c user.email="opencode@local" commi
 ```ts
 // src/lib/theme-asset-url.test.ts
 import { describe, expect, it } from "vitest";
-import { toSourceUrl, toPackageRef, isSourceUrl, isPackageRef } from "./theme-asset-url";
+import {
+  toSourceUrl,
+  toPackageRef,
+  isSourceUrl,
+  isPackageRef,
+} from "./theme-asset-url";
 
 describe("theme-asset-url boundary", () => {
   it("source URLs are absolute /ph/ paths", () => {
-    expect(toSourceUrl("hero-festive.png", "songoskriti")).toBe("/ph/songoskriti/hero-festive.png");
+    expect(toSourceUrl("hero-festive.png", "songoskriti")).toBe(
+      "/ph/songoskriti/hero-festive.png",
+    );
     expect(isSourceUrl("/ph/songoskriti/hero-festive.png")).toBe(true);
     expect(isSourceUrl("assets/hero-festive.png")).toBe(false);
   });
@@ -276,7 +300,10 @@ Expected: FAIL (module missing).
 export type SourceAssetUrl = string & { readonly __brand: "source" };
 export type PackageAssetUrl = string & { readonly __brand: "package" };
 
-export function toSourceUrl(basename: string, themeKey: string): SourceAssetUrl {
+export function toSourceUrl(
+  basename: string,
+  themeKey: string,
+): SourceAssetUrl {
   const clean = basename.replace(/^\/+/, "");
   return `/ph/${themeKey}/${clean}` as SourceAssetUrl;
 }
@@ -314,10 +341,12 @@ git -C /opt/frame28 -c user.name="opencode" -c user.email="opencode@local" commi
 ### Task 5: Official plugins stay source-registered; custom plugins keep ZIP pipeline
 
 **Files:**
+
 - Modify: `src/lib/official-plugins.ts` (document source-only; remove any ZIP-build import), `src/lib/official-plugins.server.ts` (remove install-bytes-from-ZIP for official keys; resolve from `builtin-plugins.ts` manifests), `docs/developers/plugins.md` (two-model doc)
 - Test: extend `src/lib/official-plugins.test.ts` (add, do not delete existing ZIP security tests)
 
 **Interfaces:**
+
 - Consumes: `BUILTIN_PLUGINS`, `getBuiltinPlugin` (existing), `OFFICIAL_PLUGIN_KEYS` (existing)
 - Produces: `getOfficialPlugin(key)` source manifest (no bytes); custom install path unchanged (`package-zip` → validate → sandbox → consent → activate)
 
@@ -364,10 +393,12 @@ git -C /opt/frame28 -c user.name="opencode" -c user.email="opencode@local" commi
 ### Task 6: Regression tests for §7 acceptance + docs + gates
 
 **Files:**
+
 - Modify: `src/lib/themes/frame30-acceptance.test.ts` (create — §7 items 1–8), `docs/developers/themes.md` (create or update — two-model doc), existing incorrect-official-ZIP tests (edit only assertions that demand ZIP for official flow; keep all `package-zip`/`package-install` security tests byte-identical)
 - Test: `src/lib/themes/frame30-acceptance.test.ts`
 
 **Interfaces:**
+
 - Consumes: all Task 2–5 exports
 - Produces: green acceptance suite + developer docs describing official-source vs custom-ZIP models
 
@@ -394,8 +425,14 @@ describe("frame30 acceptance", () => {
   });
   it("8: no runtime path imports generated official ZIPs", async () => {
     const fs = await import("node:fs");
-    for (const f of ["src/lib/themes.server.ts", "src/lib/themes/appearance.server.ts", "src/lib/preview-sources.ts"]) {
-      expect(fs.readFileSync(`/opt/frame28/${f}`, "utf8")).not.toMatch(/official-artifact-bundle\.json/);
+    for (const f of [
+      "src/lib/themes.server.ts",
+      "src/lib/themes/appearance.server.ts",
+      "src/lib/preview-sources.ts",
+    ]) {
+      expect(fs.readFileSync(`/opt/frame28/${f}`, "utf8")).not.toMatch(
+        /official-artifact-bundle\.json/,
+      );
     }
   });
 });

@@ -29,18 +29,21 @@
 ### Task 1: Somvabona own catalog + isolation guard (re-apply)
 
 **Files:** Modify `src/lib/demo-catalog.ts` (SOMVABONA catalog, drop alias); new `src/lib/somvabona-catalog.test.ts`; new `src/lib/themes/isolation.test.ts`; `eslint.config.*` guard layer if config supports it cleanly (else test-only + note).
+
 - Reference: old branch commits (catalog + guard) — re-apply semantics fresh, do not cherry-pick blindly (base moved).
 - [ ] RED (alias + missing guard) → GREEN → commit `fix(catalog): somvabona own catalog; guard isolation` → push.
 
 ### Task 2: De-brand generic renderers
 
 **Files:** `src/components/builder/songoskriti.tsx` (footer_sitemap, store_locator + any other brand-hardcoded renderer), theme builders (move brand zones to authored sections/props with `_bn` twins).
+
 - Pin songoskriti default output BEFORE; after: generic output identical for same props, zero brand strings without brand props.
 - [ ] RED → GREEN → commit → push.
 
 ### Task 3: End global key override
 
 **Files:** widget merge (`widgets.tsx` order) → explicit per-theme resolution (theme-keyed registry/port; generic = fallback). No behavior change for songoskriti default path (pins from Task 2 hold).
+
 - [ ] RED (two themes resolving same key to different renderers by theme key) → GREEN → commit → push.
 
 ### Task 4: Verify + twin sweep

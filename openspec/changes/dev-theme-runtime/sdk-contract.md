@@ -38,18 +38,18 @@ explicit follow-ups and land only after this contract is reviewed.
 }
 ```
 
-| Field | Rule (enforced by `parseDevThemeManifest`) |
-|---|---|
-| `id` | Slug: `^[a-z][a-z0-9-]{2,63}$` (lowercase start, hyphens not underscores). |
-| `version` | Strict semver `x.y.z` (no `v` prefix, no ranges). |
-| `runtime` | **Exact pin**: must equal `DEV_THEME_RUNTIME_VERSION` (`"1.0.0"`). Ranges (`^1.0.0`), future pins (`2.0.0`), and unknown pins are rejected — a theme built for another runtime never installs. |
-| `name` / `publisher` | Required non-empty display strings (trimmed, ≤ 80 chars). |
-| `capabilities` | Array, subset of the closed allowlist (§2), no duplicates. |
-| `dependencies` | Array of `{name, version, license, integrity}` — all four required. `integrity` must match `sha(256\|384\|512)-<base64>` **shape** (no fetching at validate time; the pipeline verifies the digest against the immutable bytes at review). |
-| `sections` | Array (≤ 64) of `{key, slot, component}`; `slot` from §3. |
-| `settings` | Array (≤ 128) of `{key, label, type}`; `type` from the closed builder-field set (§4). |
-| forbidden keys | Presence of `server`, `hooks`, `secrets`, `network`, or `network-capability` at the top level rejects the manifest (§7). |
-| size | Manifest JSON ≤ 64KB. |
+| Field                | Rule (enforced by `parseDevThemeManifest`)                                                                                                                                                                                                 |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `id`                 | Slug: `^[a-z][a-z0-9-]{2,63}$` (lowercase start, hyphens not underscores).                                                                                                                                                                 |
+| `version`            | Strict semver `x.y.z` (no `v` prefix, no ranges).                                                                                                                                                                                          |
+| `runtime`            | **Exact pin**: must equal `DEV_THEME_RUNTIME_VERSION` (`"1.0.0"`). Ranges (`^1.0.0`), future pins (`2.0.0`), and unknown pins are rejected — a theme built for another runtime never installs.                                             |
+| `name` / `publisher` | Required non-empty display strings (trimmed, ≤ 80 chars).                                                                                                                                                                                  |
+| `capabilities`       | Array, subset of the closed allowlist (§2), no duplicates.                                                                                                                                                                                 |
+| `dependencies`       | Array of `{name, version, license, integrity}` — all four required. `integrity` must match `sha(256\|384\|512)-<base64>` **shape** (no fetching at validate time; the pipeline verifies the digest against the immutable bytes at review). |
+| `sections`           | Array (≤ 64) of `{key, slot, component}`; `slot` from §3.                                                                                                                                                                                  |
+| `settings`           | Array (≤ 128) of `{key, label, type}`; `type` from the closed builder-field set (§4).                                                                                                                                                      |
+| forbidden keys       | Presence of `server`, `hooks`, `secrets`, `network`, or `network-capability` at the top level rejects the manifest (§7).                                                                                                                   |
+| size                 | Manifest JSON ≤ 64KB.                                                                                                                                                                                                                      |
 
 ## 2. Capability declarations (closed allowlist)
 
@@ -99,14 +99,14 @@ A developer section plugs into page templates **without modifying core**:
 Level B settings use exactly six types, mirroring the builder's declared
 fields (`src/lib/studio/controls.ts`, `src/lib/builder-ast.ts` skins/props):
 
-| Type | Builder mirror | Notes |
-|---|---|---|
-| `text` | text/textarea controls | Copy only; rendered escaped. |
-| `image` | image control | Asset-library reference; upload stays platform-side, theme gets a URL. |
-| `color` | color control | Token-bound; cannot redefine `--theme-*` tokens. |
-| `spacing` | slider/dimensions controls | Scale step (e.g. padding/gap), clamped by the runtime. |
-| `product-selection` | catalogue picker | Yields **ids only** — never prices, never inventory counts. |
-| `animation` | interactions tab (entrance preset + duration/delay) | Preset name only; timelines run under the page budget. |
+| Type                | Builder mirror                                      | Notes                                                                  |
+| ------------------- | --------------------------------------------------- | ---------------------------------------------------------------------- |
+| `text`              | text/textarea controls                              | Copy only; rendered escaped.                                           |
+| `image`             | image control                                       | Asset-library reference; upload stays platform-side, theme gets a URL. |
+| `color`             | color control                                       | Token-bound; cannot redefine `--theme-*` tokens.                       |
+| `spacing`           | slider/dimensions controls                          | Scale step (e.g. padding/gap), clamped by the runtime.                 |
+| `product-selection` | catalogue picker                                    | Yields **ids only** — never prices, never inventory counts.            |
+| `animation`         | interactions tab (entrance preset + duration/delay) | Preset name only; timelines run under the page budget.                 |
 
 `code`, `html`, `url`, arbitrary selects, and any other kind are rejected at
 the manifest gate. Richer declarative kinds arrive as reviewed contract
@@ -124,7 +124,7 @@ never replaces it:
   from server-quoted minor units.
 - `collection` — `{ id, title, handle, productIds[] }` (paged by the host).
 - `cart` — `lines[]` read model plus two scoped writes: `cart.add(variantId,
-  qty)` and `cart.remove(lineId)`. Writes travel the authorized bridge
+qty)` and `cart.remove(lineId)`. Writes travel the authorized bridge
   (precedent: `authorizeWidgetCall` + `WidgetSandbox.bridge`); ungranted
   calls are denied, malformed/oversize envelopes rejected.
 - **Theme NEVER decides price/payment.** Totals are computed server-side from

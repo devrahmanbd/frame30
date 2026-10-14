@@ -1,4 +1,5 @@
 # Order Confirmation Redesign
+
 - Wrap in a layout with `MinimalCheckoutHeader` (import from `StoreHeader.tsx`).
 - Background: `bg-muted/10 min-h-screen pb-24`.
 - Main container: max-w-2xl, centered.
