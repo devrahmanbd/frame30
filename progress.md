@@ -30,6 +30,14 @@
 - [x] Loop C — namespaced presentations + theme-owned tray (needs A)
 - [x] Loop D — E2E test plugin + 16-step workflow (needs A+B)
 - [x] Loop E — mounted demo + browser proof (needs A+C) — 7/7 Chromium (GSAP animates, reduced-motion static, carousel lazy, bridge admit/deny, dispose clean)
+- [x] Final wiring — presentation/tray/gate/picker/insertion swap-ins live, DoD-5 supersession documented in-test
+- [x] Verification — full battery + browser + honest 3-score report
+
+## Scores (evidence-based, Oct 14)
+
+- **Third-party widget parity: 9/10.** Declare (validated manifests) → register (unified registry, no core edits) → tray auto-discovery → schema-generated per-instance controls → duplicate/isolate → save/reload/publish → theme presentation or safe fallback → disable/remove with data preserved. Proven: 16-step unit workflow, 5-test browser workflow, 38/38 E2E cold. −1: authenticated-editor half of the browser workflow unprovable hermetically (routes require session; substitutes proven).
+- **Custom-theme developer freedom: 9/10.** Manifest validator → reviewed-bundle lane (fingerprint-bound install, moderator workflow, revocation) → isolated ThemeRuntime + bridge v2 → GSAP/WebGL/video/carousel in mounted browser proof (7/7) with fallbacks and disposal. −1: no theme build pipeline (bundles assembled by hand) and no real-GPU rendering proof (node has no WebGL).
+- **Overall page-builder parity: 9/10.** Tray/canvas/inspector/saved-page/responsive/preview/theme-switch/storefront share one coherent workflow; undo/history/persistence validated; backward compat pinned (legacy paths byte-identical, bare IDs grandfathered). −1: three small audit gaps remain open (legacy breakpoint preview-only, snapshot-only global insert, no in-builder update affordance).
 - [x] Loop F — builder parity audit (read-only, parallel) — DONE: ~90% present, top-5 gaps filed
 - [x] DynamicTagPicker component (34 tests) — swap-in pending Loop B landing
 - [x] Undo/redo + selection-sync pins (24 tests) — no bugs confirmed, 3 judgment calls flagged
