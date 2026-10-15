@@ -29,10 +29,7 @@ function base(paths: string, props: IconProps): ReactElement {
       strokeLinecap="round"
       strokeLinejoin="round"
       {...rest}
-      dangerouslySetInnerHTML={{
-        __html:
-          paths /* sast-allow: html-sink -- generated file, paths are static Tabler geometry literals from the build script, no dynamic data reaches this sink */,
-      }}
+      dangerouslySetInnerHTML={{ __html: paths }} // sast-allow: html-sink -- generated file, paths are static Tabler geometry literals from the build script, no dynamic data reaches this sink
     />
   );
 }

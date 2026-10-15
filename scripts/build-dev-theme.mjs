@@ -203,8 +203,8 @@ if (
   failUsage("--out must not equal or overlap --vendor-dir.");
 }
 
-const { assembleDevThemeBundle } = await import(ASSEMBLE_URL);
-const { fingerprintDevThemeRelease } = await import(BUNDLE_URL);
+const { assembleDevThemeBundle } = await import(ASSEMBLE_URL); // sast-allow: dynamic-import -- ASSEMBLE_URL is a fixed relative module URL (same-dir lib file), not user input
+const { fingerprintDevThemeRelease } = await import(BUNDLE_URL); // sast-allow: dynamic-import -- BUNDLE_URL is a fixed relative module URL (same-dir lib file), not user input
 
 // --- ingest: every file under --src becomes a bundle entry. ---
 const walked = collectEntries(srcDir);

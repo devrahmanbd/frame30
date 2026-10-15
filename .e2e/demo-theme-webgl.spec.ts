@@ -359,7 +359,7 @@ test("reduced motion forces the static path: engine never loads", async ({
         prefersReducedMotion: true,
         loader: () => {
           w.__loaderCalls = (w.__loaderCalls ?? 0) + 1;
-          return import(threeUrl);
+          return import(threeUrl); // sast-allow: dynamic-import -- test-harness loader over a route-fulfilled local URL, no network or user input
         },
       });
       return {

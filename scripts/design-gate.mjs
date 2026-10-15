@@ -166,9 +166,7 @@ async function auditSeoCrawl(spec) {
     new URL("../src/lib/marketing-seo.ts", import.meta.url).pathname,
   ).href;
   // eslint-disable-next-line prettier/prettier -- keeps sast-allow on the import( finding line: prettier would move a trailing comment down and break SAST suppression
-  const { MARKETING_ROUTES, buildGraph, buildMarketingHead } = await import(
-    seoUrl
-  ); // sast-allow: dynamic-import -- specifier seoUrl is pathToFileURL(new URL("../src/lib/marketing-seo.ts", import.meta.url)) fixed first-party path
+  const { MARKETING_ROUTES, buildGraph, buildMarketingHead } = await import(seoUrl); // sast-allow: dynamic-import -- specifier seoUrl is pathToFileURL(new URL("../src/lib/marketing-seo.ts", import.meta.url)) fixed first-party path
   const findings = [];
 
   for (const r of MARKETING_ROUTES) {
