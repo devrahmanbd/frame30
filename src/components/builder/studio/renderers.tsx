@@ -101,6 +101,8 @@ import {
   type DeviceKey,
   type Maybe,
 } from "@/lib/studio/responsive";
+import type { PropValue, Section } from "@/lib/builder-ast";
+import { WIDGET_COMPONENTS, widgetReader } from "@/components/builder/widgets";
 import { cn } from "@/lib/utils";
 
 const ICON_REGISTRY: Record<
@@ -401,12 +403,40 @@ export function StudioWidget({ node, device, editing, menus }: RenderProps) {
 
   switch (node.el) {
     case "heading": {
-      const level = Math.min(6, Math.max(1, num(s, "level", 2, device)));
-      const Tag = `h${level}` as "h1";
+      // PILOT (frame30): delegate to the shared heading widget. Adapter —
+      // studio level is numeric-or-"hN" (the inline renderer clamped 1-6);
+      // shared renders h1 (primary) / h2 / h3 only, so h4-h6 collapse to
+      // h3 (documented delta). Empty text keeps the studio canvas
+      // fallback. align:center now applies (the inline case ignored it).
+      // Inline editing is NOT forwarded: InlineWidget already wraps
+      // heading nodes in contentEditable, so forwarding would nest
+      // editors (see StudioCanvas.tsx:302).
+      const numericLevel = num(s, "level", 0, device);
+      const parsedLevel =
+        numericLevel >= 1
+          ? Math.min(6, Math.max(1, Math.trunc(numericLevel)))
+          : Number(/^h?([1-6])$/i.exec(str(s, "level", "").trim())?.[1] ?? "2");
+      const primary = parsedLevel === 1;
+      const section: Section = {
+        id: node.id,
+        type: "heading",
+        props: {
+          text: str(s, "text", "") || "Add your heading text",
+          level: parsedLevel >= 3 ? "h3" : "h2",
+          align: str(s, "align", "left"),
+        },
+      };
+      const HeadingWidget = WIDGET_COMPONENTS.heading;
       return (
-        <Tag className="leading-tight">
-          {str(s, "text", "Add your heading text")}
-        </Tag>
+        <HeadingWidget
+          section={section}
+          {...widgetReader(section, undefined, "en")}
+          Heading="h2"
+          primary={primary}
+          editing={false}
+          locale="en"
+          renderChildren={() => null}
+        />
       );
     }
 
@@ -983,7 +1013,39 @@ export function StudioWidget({ node, device, editing, menus }: RenderProps) {
       );
     }
 
-    case "product_grid":
+    case "product_grid": {
+      // PILOT (frame30): delegate to the shared product_grid widget.
+      // Studio has no data layer, so `data` stays undefined and the shared
+      // skeleton branch renders (storefront first-paint parity). Known
+      // delta: the "renders on the storefront" placeholder is replaced by
+      // the single-sourced skeleton grid.
+      const section: Section = {
+        id: node.id,
+        type: "product_grid",
+        props: {
+          heading: str(s, "heading", ""),
+          columns: num(s, "columns", 4, device),
+          limit: num(s, "limit", 12, device),
+          skin: str(s, "skin", ""),
+          cardVariant: str(s, "cardVariant", ""),
+          density: str(s, "density", ""),
+          promise: str(s, "promise", ""),
+          showRating: s.showRating === true,
+        },
+      };
+      const ProductGridWidget = WIDGET_COMPONENTS.product_grid;
+      return (
+        <ProductGridWidget
+          section={section}
+          {...widgetReader(section, undefined, "en")}
+          Heading="h2"
+          primary={false}
+          editing={false}
+          locale="en"
+          renderChildren={() => null}
+        />
+      );
+    }
     case "product_rail":
     case "product_media":
     case "product_meta":
@@ -1015,38 +1077,35 @@ export function StudioWidget({ node, device, editing, menus }: RenderProps) {
     // Ported from the theme engine (same props, same look): page builders
     // get the storefront vocabulary without the theme studio.
     case "faq": {
-      const fromItems = rows(s, "items")
-        .map((row) => ({
-          q: String(row.question ?? ""),
-          a: String(row.answer ?? ""),
-        }))
-        .filter((row) => row.q);
-      const list =
-        fromItems.length > 0
-          ? fromItems
-          : [1, 2, 3]
-              .map((i) => ({
-                q: str(s, `q${i}`),
-                a: str(s, `a${i}`),
-              }))
-              .filter((row) => row.q);
-      if (list.length === 0) return <Placeholder label="Add a question" />;
+      // PILOT (frame30): delegate to the shared faq widget. Adapter —
+      // REPEATER WINS: studio `items` rows (question/answer, including
+      // _bn siblings) pass through untouched; scalar q1/a1..q3/a3 pass
+      // through as the theme-authored fallback. The shared renderer picks
+      // repeater-first, mirroring the inline branch it replaces and
+      // seedQaItems (model.ts), which migrates scalars → items on load.
+      // Known deltas: details/summary → Disclosure (button[aria-expanded]
+      // + region), section heading h3 → h2 (shared Heading is h1|h2
+      // only), empty-faq placeholder → null (shared empty contract).
+      const faqProps: Record<string, PropValue> = {
+        heading: str(s, "heading", ""),
+        items: (Array.isArray(s.items) ? s.items : []) as unknown as PropValue,
+      };
+      for (let i = 1; i <= 3; i += 1) {
+        faqProps[`q${i}`] = str(s, `q${i}`, "");
+        faqProps[`a${i}`] = str(s, `a${i}`, "");
+      }
+      const section: Section = { id: node.id, type: "faq", props: faqProps };
+      const FaqWidget = WIDGET_COMPONENTS.faq;
       return (
-        <section className="rounded-fq-lg border border-border bg-card p-6">
-          {str(s, "heading") && (
-            <h3 className="mb-3 text-lg font-semibold">{str(s, "heading")}</h3>
-          )}
-          <div className="divide-y divide-border">
-            {list.map((row) => (
-              <details key={row.q}>
-                <summary className="cursor-pointer py-2 text-sm font-medium">
-                  {row.q}
-                </summary>
-                <p className="pb-3 text-sm text-muted-foreground">{row.a}</p>
-              </details>
-            ))}
-          </div>
-        </section>
+        <FaqWidget
+          section={section}
+          {...widgetReader(section, undefined, "en")}
+          Heading="h2"
+          primary={false}
+          editing={false}
+          locale="en"
+          renderChildren={() => null}
+        />
       );
     }
 
