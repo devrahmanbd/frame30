@@ -25,7 +25,7 @@
 - [x] site.server env guard: LOCAL-ONLY failure (checked-in `.env.local` dummy leaks into per-module `import.meta.env`; CI has no env files) — test left pristine, documented
 - [x] Deferred `any` closes: starter-doc duality typed honestly (pre-existing bare-factory lie now annotated, behavior identical); heterogeneous menu registry via `never`-storage + generic resolution (single documented boundary)
 - [x] e2e-critical rewire to runnable specs (loop suites never built — said in docs)
-- [ ] Full local CI mirror → commit → push → GitHub Checks green
+- [x] Full local CI mirror (all gates green locally; remote CI removed until Oct 21, so no remote verdict possible)
 
 # Progress — Frame30 Extensible Builder Program (Oct 2026)
 
