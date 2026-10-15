@@ -39,10 +39,17 @@ import {
   BUILDER_API_VERSION,
   exactApiVersion,
   pluginWidgetKey,
+  sanitizePluginWidgetPropsSchema,
   satisfiesApiRange,
   type InstalledPlugin,
 } from "./plugin-manifest";
 import { widgetMeta } from "./widget-registry";
+import {
+  PROP_KINDS as VALUE_PROP_KINDS,
+  validateProps,
+  type JsonValue,
+  type PropField as ValuePropField,
+} from "./widget-props";
 import {
   WIDGETS as STUDIO_CATALOG,
   type WidgetDef as StudioWidgetDef,
@@ -69,43 +76,16 @@ import { SONGOSKRITI_WIDGETS } from "../components/builder/songoskriti";
 
 /* ------------------------------------------------------------------ shapes */
 
-export type PropFieldKind =
-  | "text"
-  | "richtext"
-  | "number"
-  | "boolean"
-  | "select"
-  | "color"
-  | "typography"
-  | "spacing"
-  | "dimensions"
-  | "responsive"
-  | "image"
-  | "media"
-  | "video"
-  | "product"
-  | "collection"
-  | "category"
-  | "repeater"
-  | "group"
-  | "link"
-  | "icon"
-  | "visibility"
-  | "animation";
+/**
+ * Frame30 — single-source schema types. `PropField` is the value-layer
+ * `PropField` (`src/lib/widget-props.ts`) verbatim — never a parallel copy —
+ * so the registry gate, the manifest gate, and `validateProps`/`defaultsFor`
+ * cannot disagree about the shape or the closed kind set. `PropFieldKind`
+ * stays exported for existing importers (derived, not re-declared).
+ */
+export type PropFieldKind = ValuePropField["kind"];
 
-export type PropField = {
-  key: string;
-  label: string;
-  help?: string;
-  kind: PropFieldKind;
-  required?: boolean;
-  default?: unknown;
-  options?: { value: string; label: string }[];
-  min?: number;
-  max?: number;
-  fields?: PropField[];
-  showWhen?: { key: string; equals: unknown };
-};
+export type PropField = ValuePropField;
 
 export type PropSchema = { fields: PropField[] };
 
@@ -162,30 +142,9 @@ const NAMESPACED_ID_RE =
 const LEGACY_BARE_RE = /^[a-z][a-z0-9_-]*$/;
 const VERSION_RE = /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/;
 
-const PROP_KINDS: ReadonlySet<string> = new Set([
-  "text",
-  "richtext",
-  "number",
-  "boolean",
-  "select",
-  "color",
-  "typography",
-  "spacing",
-  "dimensions",
-  "responsive",
-  "image",
-  "media",
-  "video",
-  "product",
-  "collection",
-  "category",
-  "repeater",
-  "group",
-  "link",
-  "icon",
-  "visibility",
-  "animation",
-]);
+const PROP_KINDS: ReadonlySet<string> = new Set(
+  VALUE_PROP_KINDS as readonly string[],
+);
 
 const RENDERERS: ReadonlySet<string> = new Set([
   "builtin",
@@ -211,6 +170,29 @@ function cloneJson<T>(value: T): T {
   }
 }
 
+function isJsonValue(value: unknown): value is JsonValue {
+  if (value === null) return true;
+  const t = typeof value;
+  if (t === "string" || t === "number" || t === "boolean") return true;
+  if (Array.isArray(value)) return value.every(isJsonValue);
+  if (t === "object") {
+    if (!isRecord(value)) return false;
+    return Object.values(value).every(isJsonValue);
+  }
+  return false;
+}
+
+/** JSON-safe clone for schema-carried values (`default`, `showWhen.equals`). */
+function cloneJsonValue(value: unknown): JsonValue | undefined {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(JSON.stringify(value)) as unknown;
+  } catch {
+    return undefined;
+  }
+  return isJsonValue(parsed) ? parsed : undefined;
+}
+
 function sanitizeField(raw: unknown): PropField | null {
   if (!isRecord(raw)) return null;
   if (!isNonEmptyString(raw.key) || !isNonEmptyString(raw.label)) return null;
@@ -222,7 +204,10 @@ function sanitizeField(raw: unknown): PropField | null {
   };
   if (typeof raw.help === "string") field.help = raw.help;
   if (typeof raw.required === "boolean") field.required = raw.required;
-  if (raw.default !== undefined) field.default = cloneJson(raw.default);
+  if (raw.default !== undefined) {
+    const d = cloneJsonValue(raw.default);
+    if (d !== undefined) field.default = d;
+  }
   if (Array.isArray(raw.options)) {
     const options: { value: string; label: string }[] = [];
     for (const o of raw.options) {
@@ -249,7 +234,9 @@ function sanitizeField(raw: unknown): PropField | null {
   if (raw.showWhen !== undefined) {
     if (!isRecord(raw.showWhen) || typeof raw.showWhen.key !== "string")
       return null;
-    field.showWhen = { key: raw.showWhen.key, equals: raw.showWhen.equals };
+    const eq = cloneJsonValue(raw.showWhen.equals);
+    if (eq === undefined) return null;
+    field.showWhen = { key: raw.showWhen.key, equals: eq };
   }
   return field;
 }
@@ -885,7 +872,20 @@ function minApiFromRange(range: string): string | undefined {
  * data preserved. Renderer is `sandbox` (bundles run only in the null-origin
  * island; the registry never sees the entry bytes — no `entry` member
  * exists on WidgetDef). Plugin settings are per-install merchant config, so
- * `defaults` is `{}` and the schema is the empty legacy-unvalidated shape.
+ * a widget WITHOUT its own `propsSchema`/`defaultProps` keeps the legacy
+ * shape exactly: `defaults` is `{}` and the schema is the empty
+ * legacy-unvalidated shape.
+ *
+ * Frame30 — per-widget schema granularity: a widget WITH `propsSchema`
+ * and/or `defaultProps` adapts its real schema (re-validated here through
+ * the shared `sanitizePluginWidgetPropsSchema`, so hand-built installs face
+ * the gate's exact rules) and its defaults (`defaultProps` cleaned through
+ * the value layer's `validateProps`, so adapter defaults always validate;
+ * keys outside the schema are stripped). An invalid per-widget schema (or a
+ * non-record `defaultProps`) fails THAT widget only — it is skipped while
+ * sibling widgets still adapt — never the whole manifest: one bad schema
+ * must not blank the tray. A schema-carrying def still registers through
+ * the same `sanitizeDef` path as every other tier.
  */
 export function fromPluginManifest(
   installed: readonly InstalledPlugin[],
@@ -899,6 +899,15 @@ export function fromPluginManifest(
     if (!manifest || !satisfiesApiRange(manifest.api, api)) continue;
     const minBuilderApi = minApiFromRange(manifest.api);
     for (const w of manifest.widgets) {
+      let fields: PropField[] = [];
+      let defaults: Record<string, unknown> = {};
+      if (w.propsSchema !== undefined || w.defaultProps !== undefined) {
+        const checked = sanitizePluginWidgetPropsSchema(w.propsSchema ?? []);
+        if (!checked.ok) continue;
+        if (w.defaultProps !== undefined && !isRecord(w.defaultProps)) continue;
+        fields = checked.fields;
+        defaults = validateProps({ fields }, w.defaultProps ?? {}).clean;
+      }
       const def: WidgetDef = {
         id: pluginWidgetKey(manifest.id, w.key),
         namespace: "plugin",
@@ -906,8 +915,8 @@ export function fromPluginManifest(
         label: w.label,
         category: "plugin",
         slots: [...w.slots],
-        defaults: {},
-        propsSchema: { fields: [] },
+        defaults,
+        propsSchema: { fields },
         renderer: "sandbox",
       };
       if (minBuilderApi) def.minBuilderApi = minBuilderApi;

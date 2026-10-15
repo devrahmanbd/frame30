@@ -24,6 +24,8 @@ import {
   type PluginThemeContract,
 } from "./plugin-theme-contract";
 import { scanJsAst } from "./plugin-js-scan";
+import { PROP_KINDS } from "./widget-props";
+import type { PropField as WidgetPropField, JsonValue } from "./widget-props";
 export { MENU_SLOTS, isMenuSlot, type MenuSlot };
 
 /** Builder API version plugins declare compatibility against (AST v3 line). */
@@ -274,7 +276,32 @@ export type PluginWidgetDef = {
    * iframe viewport, never the page, and renders clipped/invisible.
    */
   floating?: boolean;
+  /**
+   * Frame30 — optional per-widget props schema. Each entry is exactly one
+   * value-layer `PropField` (`src/lib/widget-props.ts` — same 22-kind
+   * closed set, never extended here), so whatever the gate accepts always
+   * validates end-to-end through `validateProps`/`defaultsFor`. Absent (or
+   * explicitly `[]`) keeps the legacy path: the adapter emits
+   * `defaults: {}` + `propsSchema: { fields: [] }` exactly as before.
+   */
+  propsSchema?: PluginWidgetPropField[];
+  /**
+   * Frame30 — optional per-widget default props, merged over the
+   * schema-derived defaults by the adapter (`fromPluginManifest`). Keys
+   * outside `propsSchema` are stripped there (the value layer drops unknown
+   * keys), so without a schema this carries nothing — legacy `{}`.
+   */
+  defaultProps?: Record<string, JsonValue>;
 };
+
+/**
+ * Frame30 — one per-widget props field. This is an alias, not a copy, of
+ * the value-layer `PropField`, so the manifest gate and
+ * `validateProps`/`defaultsFor` can never disagree about the shape or the
+ * closed kind set. Do not widen this alias: a new control kind ships in
+ * `widget-props.ts` first.
+ */
+export type PluginWidgetPropField = WidgetPropField;
 
 export type PluginManifest = {
   id: string;
@@ -427,6 +454,209 @@ function settingField(
   };
 }
 
+/**
+ * Frame30 — per-widget schema validation (mirrors `settingField` above).
+ *
+ * Same contract style: bad keys/kinds/options are rejected with keyed
+ * errors (`<base>[<j>].key`, `…kind`, `…options`, nested `…fields[<k>]…`,
+ * `…showWhen`, `…<unknownKey>`), duplicates are skipped silently
+ * first-wins (exactly like manifest-level `settings`), and the returned
+ * fields are fresh allow-listed clones. Differences from `settingField`
+ * are deliberate and pinned: the kind set is the value-layer's closed
+ * 22-kind `PROP_KINDS` (a widget schema must express repeaters/images,
+ * which manifest settings never do), nested `fields` recurse for
+ * `repeater`/`group` rows, and `default` accepts any JSON-cloneable value
+ * (structural defaults like repeater rows) instead of only
+ * string/number/boolean.
+ */
+
+const PLUGIN_WIDGET_KEYS: ReadonlySet<string> = new Set([
+  "key",
+  "label",
+  "slots",
+  "entry",
+  "themeable",
+  "height",
+  "floating",
+  "propsSchema",
+  "defaultProps",
+]);
+
+const PLUGIN_PROP_FIELD_KEYS: ReadonlySet<string> = new Set([
+  "key",
+  "label",
+  "help",
+  "kind",
+  "required",
+  "default",
+  "options",
+  "min",
+  "max",
+  "fields",
+  "showWhen",
+]);
+
+function isPlainRecord(value: unknown): value is Record<string, unknown> {
+  if (value === null || typeof value !== "object" || Array.isArray(value))
+    return false;
+  const proto = Object.getPrototypeOf(value);
+  return proto === Object.prototype || proto === null;
+}
+
+function cloneWidgetJson(value: unknown): JsonValue | undefined {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(JSON.stringify(value)) as unknown;
+  } catch {
+    return undefined;
+  }
+  return isJsonValue(parsed) ? parsed : undefined;
+}
+
+function isJsonValue(value: unknown): value is JsonValue {
+  if (value === null) return true;
+  const t = typeof value;
+  if (t === "string" || t === "number" || t === "boolean") return true;
+  if (Array.isArray(value)) return value.every(isJsonValue);
+  if (t === "object") {
+    if (!isPlainRecord(value)) return false;
+    return Object.values(value).every(isJsonValue);
+  }
+  return false;
+}
+
+function pluginPropField(
+  raw: unknown,
+  errors: string[],
+  path: string,
+): PluginWidgetPropField | null {
+  if (!isPlainRecord(raw)) {
+    errors.push(path);
+    return null;
+  }
+  for (const k of Object.keys(raw)) {
+    if (!PLUGIN_PROP_FIELD_KEYS.has(k)) {
+      errors.push(`${path}.${k}`);
+      return null;
+    }
+  }
+  const key = typeof raw.key === "string" ? raw.key : "";
+  if (!KEY_RE.test(key)) {
+    errors.push(`${path}.key`);
+    return null;
+  }
+  const kind = typeof raw.kind === "string" ? raw.kind : "";
+  if (!(PROP_KINDS as readonly string[]).includes(kind)) {
+    errors.push(`${path}.kind`);
+    return null;
+  }
+  const field: PluginWidgetPropField = {
+    key,
+    label: String(raw.label ?? key).slice(0, 80),
+    kind: kind as PluginWidgetPropField["kind"],
+  };
+  if (typeof raw.help === "string") field.help = raw.help;
+  if (typeof raw.required === "boolean") field.required = raw.required;
+  if (raw.options !== undefined) {
+    if (!Array.isArray(raw.options)) {
+      errors.push(`${path}.options`);
+      return null;
+    }
+    const options: { value: string; label: string }[] = [];
+    for (const o of raw.options) {
+      if (!isPlainRecord(o) || typeof o.value !== "string") {
+        errors.push(`${path}.options`);
+        return null;
+      }
+      options.push({
+        value: o.value,
+        label: typeof o.label === "string" ? o.label : o.value,
+      });
+    }
+    field.options = options;
+  }
+  if (
+    field.kind === "select" &&
+    (!field.options || field.options.length === 0)
+  ) {
+    errors.push(`${path}.options`);
+    return null;
+  }
+  if (typeof raw.min === "number") field.min = raw.min;
+  if (typeof raw.max === "number") field.max = raw.max;
+  if (raw.default !== undefined) {
+    const d = cloneWidgetJson(raw.default);
+    if (d !== undefined) field.default = d;
+  }
+  if (raw.fields !== undefined) {
+    if (!Array.isArray(raw.fields)) {
+      errors.push(`${path}.fields`);
+      return null;
+    }
+    const nested: PluginWidgetPropField[] = [];
+    const seen = new Set<string>();
+    raw.fields.forEach((child, k) => {
+      const clean = pluginPropField(child, errors, `${path}.fields[${k}]`);
+      if (clean && !seen.has(clean.key)) {
+        seen.add(clean.key);
+        nested.push(clean);
+      }
+    });
+    field.fields = nested;
+  }
+  if (raw.showWhen !== undefined) {
+    if (!isPlainRecord(raw.showWhen) || typeof raw.showWhen.key !== "string") {
+      errors.push(`${path}.showWhen`);
+      return null;
+    }
+    const eq = cloneWidgetJson(raw.showWhen.equals);
+    if (
+      eq === undefined &&
+      (raw.showWhen as Record<string, unknown>).equals !== undefined
+    ) {
+      errors.push(`${path}.showWhen`);
+      return null;
+    }
+    if (eq === undefined) {
+      errors.push(`${path}.showWhen`);
+      return null;
+    }
+    field.showWhen = {
+      key: raw.showWhen.key,
+      equals: eq,
+    };
+  }
+  return field;
+}
+
+/**
+ * Validates (and allow-list clones) a raw per-widget `propsSchema`. Shared
+ * by the manifest gate (`parseManifest`) and the registry adapter
+ * (`fromPluginManifest`), so hand-built `InstalledPlugin` values face the
+ * exact same rules as submitted manifests. `path` is the error prefix
+ * (`widgets[<i>].propsSchema` at the gate, bare `propsSchema` elsewhere).
+ */
+export function sanitizePluginWidgetPropsSchema(
+  raw: unknown,
+  path = "propsSchema",
+):
+  | { ok: true; fields: PluginWidgetPropField[] }
+  | { ok: false; errors: string[] } {
+  const errors: string[] = [];
+  if (!Array.isArray(raw)) return { ok: false, errors: [path] };
+  const fields: PluginWidgetPropField[] = [];
+  const seen = new Set<string>();
+  raw.forEach((entry, j) => {
+    const clean = pluginPropField(entry, errors, `${path}[${j}]`);
+    if (clean && !seen.has(clean.key)) {
+      seen.add(clean.key);
+      fields.push(clean);
+    }
+  });
+  if (errors.length) return { ok: false, errors };
+  return { ok: true, fields };
+}
+
 // --------------------------------------------- hooksUrl egress guard
 export type HooksUrlVerdict =
   { ok: true; url: URL } | { ok: false; reason: string };
@@ -567,6 +797,12 @@ export function parseManifest(input: unknown): ManifestVerdict {
   const rawWidgets = Array.isArray(raw.widgets) ? raw.widgets : [];
   rawWidgets.forEach((w, i) => {
     const r = (w ?? {}) as Record<string, unknown>;
+    for (const k of Object.keys(r)) {
+      if (!PLUGIN_WIDGET_KEYS.has(k)) {
+        errors.push(`widgets[${i}].${k}`);
+        return;
+      }
+    }
     const key = String(r.key ?? "");
     if (!KEY_RE.test(key)) {
       errors.push(`widgets[${i}].key`);
@@ -614,6 +850,31 @@ export function parseManifest(input: unknown): ManifestVerdict {
       errors.push(`widgets[${i}].duplicate`);
       return;
     }
+    let propsSchema: PluginWidgetPropField[] | undefined;
+    if (r.propsSchema !== undefined) {
+      const checked = sanitizePluginWidgetPropsSchema(
+        r.propsSchema,
+        `widgets[${i}].propsSchema`,
+      );
+      if (!checked.ok) {
+        errors.push(...checked.errors);
+        return;
+      }
+      propsSchema = checked.fields;
+    }
+    let defaultProps: Record<string, JsonValue> | undefined;
+    if (r.defaultProps !== undefined) {
+      if (!isPlainRecord(r.defaultProps)) {
+        errors.push(`widgets[${i}].defaultProps`);
+        return;
+      }
+      const cloned = cloneWidgetJson(r.defaultProps);
+      if (!cloned || typeof cloned !== "object" || Array.isArray(cloned)) {
+        errors.push(`widgets[${i}].defaultProps`);
+        return;
+      }
+      defaultProps = cloned as Record<string, JsonValue>;
+    }
     widgets.push({
       key,
       label: String(r.label ?? key).slice(0, 60),
@@ -625,6 +886,8 @@ export function parseManifest(input: unknown): ManifestVerdict {
           ? Math.min(1200, Math.max(80, r.height))
           : 320,
       ...(r.floating === true ? { floating: true as const } : {}),
+      ...(propsSchema !== undefined ? { propsSchema } : {}),
+      ...(defaultProps !== undefined ? { defaultProps } : {}),
     });
   });
   if (

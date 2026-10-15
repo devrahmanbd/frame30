@@ -53,6 +53,16 @@ export const PROP_KINDS = [
 export type PropKind = (typeof PROP_KINDS)[number];
 
 /**
+ * JSON value: the only thing a schema default or comparison value may hold.
+ * Schemas cross server-function boundaries (TanStack validates return
+ * serializability), so `unknown` here collapses inference tree-wide — every
+ * loader payload containing a schema would fail validation. Keep this in
+ * sync with JSON: string | number | boolean | null | array | object.
+ */
+export type JsonValue =
+  string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
+
+/**
  * Declarative widget prop field. This is the EXACT shape the widget registry
  * builds against — do not change it: a sibling consumes this type verbatim.
  */
@@ -84,12 +94,12 @@ export type PropField = {
     | "visibility"
     | "animation";
   required?: boolean;
-  default?: unknown;
+  default?: JsonValue;
   options?: { value: string; label: string }[];
   min?: number;
   max?: number;
   fields?: PropField[];
-  showWhen?: { key: string; equals: unknown };
+  showWhen?: { key: string; equals: JsonValue };
 };
 
 export type PropSchema = { fields: PropField[] } | readonly PropField[];

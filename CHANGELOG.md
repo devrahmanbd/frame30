@@ -14,6 +14,34 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [Unreleased] (frame30) — Per-widget plugin props schemas
+
+### Added
+
+- Optional `propsSchema` (value-layer `PropField` verbatim — same closed
+  22-kind set, never extended in the manifest) + `defaultProps` on
+  `PluginWidgetDef`. Absent keys keep the legacy path byte-identical
+  (`defaults: {}` + `propsSchema: { fields: [] }`, no migration).
+  Gate (`parseManifest`) rejects the whole manifest on a bad per-widget
+  schema; the adapter (`fromPluginManifest`) skips only that widget while
+  siblings still adapt. `defaultProps` without a schema carries nothing.
+- Serializability fix: schema-carried `default`/`showWhen.equals` are now
+  `JsonValue` (not `unknown`), and the registry's duplicate
+  `PropField`/`PropSchema`/`PROP_KINDS` are aliases of the value-layer
+  single source — an `unknown` in the schema type collapsed TanStack
+  loader inference tree-wide (214 errors from 4 added lines). Fail-closed
+  JSON clones on both gates (unserializable `showWhen.equals` rejects;
+  unserializable `default` drops the default, keeps the field).
+
+### Verification
+
+- New `plugin-widget-schema.test.ts` 18/18 (gate, adapter granularity,
+  reviews-carousel fixture end-to-end through `validateProps`/
+  `defaultsFor`); neighbors green (manifest/registry/props/tray/approval
+  + bundle/emit/locale/install/conflicts/bridge/presentation/theme-contract
+  batches); `tsc` 0 errors repo-wide; eslint clean on touched files;
+  secret scan passed.
+
 ## [Unreleased] (frame30) — Fault acceptance and disaster recovery
 
 > 2026-10-14: CircleCI config removed temporarily (`1185f440`) — both
