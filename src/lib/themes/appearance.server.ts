@@ -1392,45 +1392,27 @@ async function assertActivationCompatible(
     const templates = (version as { templates?: unknown } | null)?.templates;
     const widgetIds = collectActivationWidgetIds(templates);
     if (widgetIds.length === 0) return;
-    const [
-      {
-        createWidgetRegistry,
-        fromBuiltinWidgets,
-        fromStudioCatalog,
-        fromPluginManifest,
-      },
-      { checkThemeCompatibility },
-    ] = await Promise.all([
-      import("../unified-widget-registry"),
-      import("../widget-presentation"),
-    ]);
-    const registry = createWidgetRegistry();
-    for (const def of [...fromBuiltinWidgets(), ...fromStudioCatalog()]) {
-      try {
-        registry.registerWidget(def);
-      } catch {
-        // A single bad adapter def never blocks activation.
-      }
-    }
+    const [{ buildTrayRegistry }, { checkThemeCompatibility }] =
+      await Promise.all([
+        import("../unified-widget-registry"),
+        import("../widget-presentation"),
+      ]);
+    // ONE unified registry for the gate (builtin + studio + installed-plugin
+    // defs plus best-effort singleton theme defs) via the shared helper, so
+    // activation checks the same truth the trays list.
     let installed: readonly unknown[] = [];
     try {
       const { listInstalledPlugins } = await import("../plugins.server");
       installed = await listInstalledPlugins(db as never, merchantId);
-      for (const def of fromPluginManifest(
-        installed as Parameters<typeof fromPluginManifest>[0],
-      )) {
-        try {
-          registry.registerWidget(def);
-        } catch {
-          // Hostile plugin defs are dropped, never stored.
-        }
-      }
     } catch {
       // Plugin-read outage: builtin/studio gate still runs; plugin ids that
       // would read `uninstalled` on an incomplete registry are skipped below
       // so the outage never strands a compatible activation.
       installed = [];
     }
+    const registry = buildTrayRegistry(
+      installed as Parameters<typeof buildTrayRegistry>[0],
+    );
     const report = checkThemeCompatibility(themeKey, widgetIds, { registry });
     const bad = report.results.filter((entry) => !entry.compatible);
     // When the plugin list failed to load, `uninstalled`/`unknown` for

@@ -24,7 +24,7 @@ import {
 import {
   buildExtensionInsert,
   insertPluginWidget,
-  pluginTrayEntries,
+  studioPluginTrayEntries,
 } from "./plugin-tray";
 
 function widget(
@@ -294,7 +294,7 @@ describe("insertPluginWidget — tray wiring", () => {
 describe("studio plugin tray lists from the unified registry", () => {
   it("returns namespaced keys with label + plugin name", () => {
     expect(
-      pluginTrayEntries([
+      studioPluginTrayEntries([
         installed("loyalty-lite", [widget("points_bar", "Points bar")]),
       ]),
     ).toEqual([
@@ -307,7 +307,7 @@ describe("studio plugin tray lists from the unified registry", () => {
   });
 
   it("unions across slots without duplicates", () => {
-    const entries = pluginTrayEntries([
+    const entries = studioPluginTrayEntries([
       installed("multi-slot", [
         widget("everywhere", "Everywhere", ["header", "main", "footer"]),
       ]),
@@ -318,7 +318,7 @@ describe("studio plugin tray lists from the unified registry", () => {
 
   it("excludes disabled and incompatible installs", () => {
     expect(
-      pluginTrayEntries([
+      studioPluginTrayEntries([
         installed("killed-app", [widget("block_a", "Block A")], {
           enabled: false,
         }),
@@ -326,15 +326,15 @@ describe("studio plugin tray lists from the unified registry", () => {
     ).toEqual([]);
     const future = installed("future-app", [widget("block_a", "Block A")]);
     future.manifest.api = "^4.0.0";
-    expect(pluginTrayEntries([future])).toEqual([]);
+    expect(studioPluginTrayEntries([future])).toEqual([]);
   });
 
   it("returns no entries when nothing is installed", () => {
-    expect(pluginTrayEntries([])).toEqual([]);
+    expect(studioPluginTrayEntries([])).toEqual([]);
   });
 
   it("never lists builtin or studio defs as plugin entries", () => {
-    const entries = pluginTrayEntries([
+    const entries = studioPluginTrayEntries([
       installed("loyalty-lite", [widget("points_bar", "Points bar")]),
     ]);
     expect(entries.every((e) => e.key.startsWith("plugin:"))).toBe(true);

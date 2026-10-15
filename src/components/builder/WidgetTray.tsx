@@ -7,13 +7,7 @@ import {
 } from "@/lib/builder-ast";
 import { useLang } from "@/lib/i18n";
 import { parsePluginWidgetKey } from "@/lib/plugin-manifest";
-import {
-  createWidgetRegistry,
-  fromBuiltinWidgets,
-  fromPluginManifest,
-  fromStudioCatalog,
-  listWidgets as listSingletonWidgets,
-} from "@/lib/unified-widget-registry";
+import { buildTrayRegistry } from "@/lib/unified-widget-registry";
 import { themeTrayEntries } from "@/lib/widget-presentation";
 import { insertPluginWidget } from "./studio/plugin-tray";
 import {
@@ -225,32 +219,10 @@ export function WidgetTray({
   }, [hits]);
 
   // ONE unified registry seeded with every tier (builtin + studio +
-  // installed-plugin defs). Both the listing below and insertion read from
-  // it, so the tray can never offer a widget it cannot insert.
-  const trayRegistry = useMemo(() => {
-    const registry = createWidgetRegistry();
-    for (const def of [
-      ...fromBuiltinWidgets(),
-      ...fromStudioCatalog(),
-      ...fromPluginManifest(plugins),
-    ]) {
-      registry.registerWidget(def);
-    }
-    // Frame30 theme defs ride the shared singleton when present (tests and
-    // theme lanes register there); absent keeps the legacy tray identical.
-    try {
-      for (const def of listSingletonWidgets()) {
-        try {
-          registry.registerWidget(def);
-        } catch {
-          // Hostile singleton entries are dropped, never stored.
-        }
-      }
-    } catch {
-      // Singleton unreadable — tier registry still stands.
-    }
-    return registry;
-  }, [plugins]);
+  // installed-plugin defs plus best-effort singleton theme defs) via the
+  // shared `buildTrayRegistry` helper. Both the listing below and insertion
+  // read from it, so the tray can never offer a widget it cannot insert.
+  const trayRegistry = useMemo(() => buildTrayRegistry(plugins), [plugins]);
 
   // Frame30 theme tray: appended for the active theme only. Empty, disabled,
   // incompatible and unknown themes yield no entries — never a throw, never

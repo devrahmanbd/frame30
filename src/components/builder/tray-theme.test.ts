@@ -2,7 +2,7 @@
  * Frame30 swap-in 2 — tray theme append (TDD).
  *
  * - New path engages: `themeTrayEntries` lists claiming defs; both
- *   `WidgetTray`'s registry seeding and `pluginTrayEntries(themeKey)` append
+ *   `WidgetTray`'s registry seeding and `studioPluginTrayEntries(themeKey)` append
  *   them for the active theme.
  * - Old path byte-identical when inactive: absent/blank/unknown/disabled
  *   themes append nothing — plugin listings and empty states unchanged.
@@ -14,7 +14,7 @@ import {
   fromStudioCatalog,
 } from "@/lib/unified-widget-registry";
 import { themeTrayEntries } from "@/lib/widget-presentation";
-import { pluginTrayEntries } from "@/components/builder/studio/plugin-tray";
+import { studioPluginTrayEntries } from "@/components/builder/studio/plugin-tray";
 import type { InstalledPlugin, PluginManifest } from "@/lib/plugin-manifest";
 
 function themeDef(id: string, themes: string[]) {
@@ -87,17 +87,17 @@ describe("theme tray append", () => {
     expect(out.entries.map((e) => e.id)).toContain("theme:songoskriti/finder");
   });
 
-  it("pluginTrayEntries appends theme widgets only when themed", async () => {
+  it("studioPluginTrayEntries appends theme widgets only when themed", async () => {
     const { registerWidget, clearRegistry } =
       await import("@/lib/unified-widget-registry");
     expect(
       registerWidget(themeDef("theme:songoskriti/finder", ["songoskriti"])).ok,
     ).toBe(true);
     try {
-      const themed = pluginTrayEntries(installedStub(), "songoskriti");
+      const themed = studioPluginTrayEntries(installedStub(), "songoskriti");
       expect(themed.map((e) => e.key)).toContain("plugin:acme/reviews");
       expect(themed.map((e) => e.key)).toContain("theme:songoskriti/finder");
-      const legacy = pluginTrayEntries(installedStub());
+      const legacy = studioPluginTrayEntries(installedStub());
       expect(legacy.map((e) => e.key)).toContain("plugin:acme/reviews");
       expect(legacy.map((e) => e.key)).not.toContain(
         "theme:songoskriti/finder",
@@ -120,12 +120,14 @@ describe("theme tray append", () => {
     ).toBe(false);
     // Blank key: miss, no entries.
     expect(themeTrayEntries("", { registry }).ok).toBe(false);
-    // pluginTrayEntries without a theme never includes theme ids.
+    // studioPluginTrayEntries without a theme never includes theme ids.
     expect(
-      pluginTrayEntries([], undefined).some((e) => e.key.startsWith("theme:")),
+      studioPluginTrayEntries([], undefined).some((e) =>
+        e.key.startsWith("theme:"),
+      ),
     ).toBe(false);
     expect(
-      pluginTrayEntries([], "").some((e) => e.key.startsWith("theme:")),
+      studioPluginTrayEntries([], "").some((e) => e.key.startsWith("theme:")),
     ).toBe(false);
   });
 });

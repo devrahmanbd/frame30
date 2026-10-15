@@ -11,6 +11,14 @@
  * is therefore exactly two edits: one catalogue/registry entry and one
  * renderer.
  *
+ * P1 consolidation: entries are a VIEW, not a copy. `label` / `group` /
+ * `slots` / `fields` / `container` delegate to `catalogEntry(type)` on every
+ * read, so catalogue edits can never drift from the registry (the
+ * `urgency_rail` precedent below shows what drift costs). `OVERRIDES` may
+ * only supply what the catalogue does not carry — `data`, `skeleton`, `seo`
+ * — enforced by the `WidgetOverride` type: overriding a catalogue fact is a
+ * compile error, not a silent fork.
+ *
  * This module is data only — it imports no React and no theme module, so
  * server code (SEO, validation, data resolution) can read it without pulling
  * the renderer into the bundle.
@@ -83,8 +91,21 @@ export type WidgetMeta = {
   seo: WidgetSeo;
 };
 
-/** Per-type additions that the AST catalogue does not carry. */
-const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
+/** Per-type additions that the AST catalogue does not carry.
+ *
+ * P1 consolidation: overrides are exactly the non-catalogue facts (`data`,
+ * `skeleton`, `seo`). `label` / `group` / `slots` / `fields` / `container`
+ * live in `SECTION_CATALOG` and are read through `catalogEntry` by the view
+ * below — they cannot be restated here (the type rejects them), so a
+ * catalogue edit can never silently fork from the registry.
+ */
+type WidgetOverride = {
+  data?: WidgetData;
+  skeleton?: boolean;
+  seo?: WidgetSeo;
+};
+
+const OVERRIDES: Partial<Record<SectionType, WidgetOverride>> = {
   product_grid: {
     // Phase 0.3: these params are what the batch resolver hashes. Two nodes
     // with the same params share one request.
@@ -924,24 +945,53 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   image: { seo: { heading: false, eager: true } },
 };
 
+/**
+ * One registry entry as a view over the catalogue: catalogue facts delegate
+ * to `catalogEntry(type)` on every read (same references the catalogue
+ * holds — `meta.fields === catalogEntry(type).fields`), while data, skeleton
+ * and seo resolve from `OVERRIDES[type]` with catalogue-derived defaults.
+ * The override replaces `seo` wholesale (never merged), matching the
+ * historical `...override` spread it replaces.
+ */
 function metaFor(entry: CatalogEntry): WidgetMeta {
-  const override = OVERRIDES[entry.type] ?? {};
-  return {
-    type: entry.type,
-    label: entry.label,
-    group: entry.group,
-    slots: entry.slots,
-    fields: entry.fields,
-    container: entry.container === true,
-    skeleton: false,
-    seo: { heading: entry.heading },
-    ...override,
+  const type = entry.type;
+  const override = OVERRIDES[type];
+  const meta: WidgetMeta = {
+    type,
+    get label() {
+      return catalogEntry(type)?.label ?? entry.label;
+    },
+    get group() {
+      return catalogEntry(type)?.group ?? entry.group;
+    },
+    get slots() {
+      return catalogEntry(type)?.slots ?? entry.slots;
+    },
+    get fields() {
+      return catalogEntry(type)?.fields ?? entry.fields;
+    },
+    get container() {
+      return (catalogEntry(type)?.container ?? entry.container) === true;
+    },
+    get skeleton() {
+      return override?.skeleton ?? false;
+    },
+    get seo(): WidgetSeo {
+      return (
+        override?.seo ?? {
+          heading: catalogEntry(type)?.heading ?? entry.heading,
+        }
+      );
+    },
   };
+  if (override?.data !== undefined) meta.data = override.data;
+  return meta;
 }
 
 /**
  * Closed registry. The `Record<SectionType, …>` annotation is the enforcement:
- * a new `SectionType` without an entry is a compile error.
+ * a new `SectionType` without an entry is a compile error. Each value is a
+ * live view built by `metaFor` — catalogue facts are never copied here.
  */
 export const WIDGET_REGISTRY: Record<SectionType, WidgetMeta> =
   Object.fromEntries(

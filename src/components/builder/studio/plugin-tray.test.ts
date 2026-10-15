@@ -10,7 +10,7 @@ import { WIDGET_BY_KEY } from "../../../lib/studio/catalog";
 import {
   appBlockNodeForPlugin,
   filterPluginTrayEntries,
-  pluginTrayEntries,
+  studioPluginTrayEntries,
   type PluginTrayEntry,
 } from "./plugin-tray";
 
@@ -65,7 +65,7 @@ const KEY = "plugin:loyalty-lite/points_bar";
 
 describe("studio plugin tray entries", () => {
   it("returns namespaced keys with label + plugin name", () => {
-    const entries = pluginTrayEntries([
+    const entries = studioPluginTrayEntries([
       installed("loyalty-lite", [widget("points_bar", "Points bar")]),
     ]);
     expect(entries).toEqual([
@@ -78,7 +78,7 @@ describe("studio plugin tray entries", () => {
   });
 
   it("unions across slots without duplicates", () => {
-    const entries = pluginTrayEntries([
+    const entries = studioPluginTrayEntries([
       installed("multi-slot", [
         widget("everywhere", "Everywhere", ["header", "main", "footer"]),
       ]),
@@ -88,7 +88,7 @@ describe("studio plugin tray entries", () => {
   });
 
   it("excludes disabled plugins (merchant-off and kill-switch both surface as enabled:false)", () => {
-    const entries = pluginTrayEntries([
+    const entries = studioPluginTrayEntries([
       installed("killed-app", [widget("block_a", "Block A")], {
         enabled: false,
       }),
@@ -99,11 +99,11 @@ describe("studio plugin tray entries", () => {
   it("excludes incompatible builder-API plugins", () => {
     const plugin = installed("future-app", [widget("block_a", "Block A")]);
     plugin.manifest.api = "^4.0.0";
-    expect(pluginTrayEntries([plugin])).toEqual([]);
+    expect(studioPluginTrayEntries([plugin])).toEqual([]);
   });
 
   it("returns no entries when nothing is installed", () => {
-    expect(pluginTrayEntries([])).toEqual([]);
+    expect(studioPluginTrayEntries([])).toEqual([]);
   });
 });
 

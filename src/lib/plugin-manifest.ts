@@ -321,13 +321,37 @@ export function parsePluginWidgetKey(
 
 // ------------------------------------------------------------ compatibility
 
-/** Supports `^x.y.z` and `>=a.b.c <d.e.f`; anything else is rejected. */
+/**
+ * Exact pinned builder API (`3.1.0`): the strongest compatibility claim — the
+ * package was built against exactly this API line. Single home for the exact
+ * shape: `satisfiesApiRange` admits it below and `minApiFromRange`
+ * (`unified-widget-registry.ts`) delegates here for the floor it records, so
+ * the two can never disagree about what an exact pin means.
+ */
+export function exactApiVersion(range: string): string | undefined {
+  const trimmed = range.trim();
+  return /^\d+\.\d+\.\d+$/.test(trimmed) ? trimmed : undefined;
+}
+
+/**
+ * Supports `^x.y.z`, `>=a.b.c <d.e.f`, and exact pins (`x.y.z`).
+ *
+ * Exact pins admit ONLY the pinned line: a manifest built for exactly the
+ * running API is compatible (the common authored case — pin what you built
+ * against), anything else fails closed. This matches the `minApiFromRange`
+ * floor the plugin adapter records: both read the pin through
+ * `exactApiVersion`, so filter-time (`resolvePluginWidget`,
+ * `pluginTrayEntries`, `InstalledApps`) and resolve-time (`minBuilderApi`)
+ * agree.
+ */
 export function satisfiesApiRange(
   range: string,
   api = BUILDER_API_VERSION,
 ): boolean {
   const target = parseSemver(api);
   if (!target) return false;
+  const exact = exactApiVersion(range);
+  if (exact) return compareSemver(api, exact) === 0;
   const caret = /^\^(\d+\.\d+\.\d+)$/.exec(range.trim());
   if (caret) {
     const base = parseSemver(caret[1]);

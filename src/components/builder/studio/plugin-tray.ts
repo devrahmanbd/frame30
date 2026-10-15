@@ -26,11 +26,7 @@ import {
   type Slot,
 } from "@/lib/builder-ast";
 import {
-  createWidgetRegistry,
-  fromBuiltinWidgets,
-  fromPluginManifest,
-  fromStudioCatalog,
-  listWidgets as listSingletonWidgets,
+  buildTrayRegistry,
   type UnifiedRegistry,
   type WidgetDef,
 } from "@/lib/unified-widget-registry";
@@ -50,38 +46,25 @@ export type PluginTrayEntry = {
   pluginName: string;
 };
 
-/** Every app widget installed, enabled and compatible plugins contribute. */
-export function pluginTrayEntries(
+/** Every app widget installed, enabled and compatible plugins contribute.
+ *
+ * P5 consolidation: renamed from `pluginTrayEntries` — that name collided
+ * with the manifest-level `pluginTrayEntries` in `@/lib/plugin-manifest`
+ * (slot-filtered tray rows), while this one is the studio-scope union across
+ * block slots plus theme entries. Listed from the single `buildTrayRegistry`
+ * helper so the studio tray and the old `WidgetTray` read the same truth.
+ */
+export function studioPluginTrayEntries(
   installed: readonly InstalledPlugin[],
   themeKey?: string | null,
 ): PluginTrayEntry[] {
-  // Listed from ONE unified registry seeded with every tier (builtin +
-  // studio + installed-plugin defs); only the plugin slice is emitted here.
-  // Disabled installs and incompatible builder-API manifests contribute
-  // nothing — `fromPluginManifest` mirrors the shared resolver filtering, so
-  // semantics match the old path exactly (union across block slots, deduped
-  // by the namespaced key).
-  const registry = createWidgetRegistry();
-  for (const def of [
-    ...fromBuiltinWidgets(),
-    ...fromStudioCatalog(),
-    ...fromPluginManifest(installed),
-  ]) {
-    registry.registerWidget(def);
-  }
-  // Frame30 theme defs ride the shared singleton when present; absent keeps
-  // the legacy tray identical.
-  try {
-    for (const def of listSingletonWidgets()) {
-      try {
-        registry.registerWidget(def);
-      } catch {
-        // Hostile singleton entries are dropped, never stored.
-      }
-    }
-  } catch {
-    // Singleton unreadable — tier registry still stands.
-  }
+  // Listed from the single `buildTrayRegistry` helper (builtin + studio +
+  // installed-plugin defs plus best-effort singleton theme defs); only the
+  // plugin slice is emitted here. Disabled installs and incompatible
+  // builder-API manifests contribute nothing — `fromPluginManifest` mirrors
+  // the shared resolver filtering, so semantics match the old path exactly
+  // (union across block slots, deduped by the namespaced key).
+  const registry = buildTrayRegistry(installed);
   const pluginNames = new Map(
     installed.map((item) => [item.manifest.id, item.manifest.name]),
   );

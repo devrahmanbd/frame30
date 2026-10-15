@@ -307,7 +307,7 @@ describe("unified registry — registration grants no runtime privilege", () => 
 });
 
 describe("unified registry — builtin adapter", () => {
-  it("maps every key of the exported renderer maps", () => {
+  it("maps every key of the exported renderer maps with real schemas", () => {
     const defs = fromBuiltinWidgets();
     const ids = new Set(defs.map((d) => d.id));
     for (const key of Object.keys(WIDGET_COMPONENTS)) {
@@ -321,9 +321,13 @@ describe("unified registry — builtin adapter", () => {
     for (const def of defs) {
       expect(def.namespace).toBe("builtin");
       expect(def.renderer).toBe("builtin");
-      // Legacy-unvalidated old path: no per-widget schema is synthesised here.
-      expect(def.propsSchema).toEqual({ fields: [] });
+      // Schema path: catalogue widgets carry their mapped inspector fields
+      // (only renderer keys outside the catalogue stay legacy-unvalidated).
+      expect(Array.isArray(def.propsSchema.fields)).toBe(true);
     }
+    const hero = defs.find((d) => d.id === "builtin:hero")!;
+    expect(hero.propsSchema.fields.length).toBeGreaterThan(0);
+    expect(hero.label).toBe("Hero");
   });
 
   it("is read-only over the source maps", () => {

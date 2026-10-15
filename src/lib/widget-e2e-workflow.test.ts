@@ -63,7 +63,7 @@ import {
 import {
   buildExtensionInsert,
   insertPluginWidget,
-  pluginTrayEntries as studioPluginTrayEntries,
+  studioPluginTrayEntries,
 } from "../components/builder/studio/plugin-tray";
 import {
   CONTROL_STATUS,

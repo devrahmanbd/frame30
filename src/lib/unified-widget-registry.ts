@@ -10,30 +10,39 @@
  *
  * What this module is NOT:
  * - Not a rewrite: renderers, the closed Phase 0.2 `WIDGET_REGISTRY` /
- *   `WidgetMeta` module (`src/lib/widget-registry.ts`, untouched), the studio
- *   catalogue and the plugin resolver all stay authoritative for their tiers.
+ *   `WidgetMeta` view (`src/lib/widget-registry.ts`, read — never rewritten —
+ *   through `widgetMeta`), the studio catalogue and the plugin resolver all
+ *   stay authoritative for their tiers.
  * - Not a privilege grant: registration is pure metadata. `WidgetDef` carries
  *   no scopes, permissions, capabilities or bundle-entry members, and
  *   `registerWidget` builds a fresh allow-listed object so hostile extra keys
  *   are dropped, never stored.
  * - Not persistent: all state is in-memory Maps. No DB, no network, no React.
  *
- * Empty-schema convention: adapters emit `propsSchema: { fields: [] }` for
- * builtin and studio defs because neither source ships a per-widget control
- * schema. That empty schema means "legacy-unvalidated — render/validate via
- * the old path" (builtin renderers + `WIDGET_REGISTRY` fields, studio twins),
- * NOT a validation bypass for newly authored schemas: any `fields` present
- * are validated on registration.
+ * Empty-schema convention: studio and plugin adapters emit
+ * `propsSchema: { fields: [] }` because neither source ships a per-widget
+ * control schema. That empty schema means "legacy-unvalidated — render/
+ * validate via the old path" (studio twins, sandboxed plugin blocks), NOT a
+ * validation bypass for newly authored schemas: any `fields` present are
+ * validated on registration. Builtin defs are the exception: the builtin
+ * adapter maps the AST catalogue inspector fields into `propsSchema`, so
+ * builtins validate through the schema path like every other authored tier.
  */
 
-import { catalogEntry, type SectionType } from "./builder-ast";
+import {
+  catalogEntry,
+  type Field as AstField,
+  type SectionType,
+} from "./builder-ast";
 import { compareSemver, parseSemver } from "./marketplace-scopes";
 import {
   BUILDER_API_VERSION,
+  exactApiVersion,
   pluginWidgetKey,
   satisfiesApiRange,
   type InstalledPlugin,
 } from "./plugin-manifest";
+import { widgetMeta } from "./widget-registry";
 import {
   WIDGETS as STUDIO_CATALOG,
   type WidgetDef as StudioWidgetDef,
@@ -682,10 +691,106 @@ const PACK_MAPS: Array<Record<string, unknown>> = [
 ];
 
 /**
+ * P2 consolidation — AST inspector fields to registry prop fields.
+ *
+ * Maps the catalogue `Field` vocabulary onto the closed registry `PropField`
+ * kind set 1:1 (never inventing kinds, never loosening validation — the
+ * value layer in `widget-props.ts` is untouched):
+ * text→text, textarea/html→richtext (benign markup preserved, scripts and
+ * handlers neutralised — the closest value policy, and it renders the
+ * multiline control), number/range/unit→number (bounds carried),
+ * select→select (options cloned; option-less selects dropped — an empty
+ * option list would reject every value), url/embed→link, boolean→boolean,
+ * bitext→text (the base key; bilingual tabs stay bespoke and the bn sibling
+ * prop rides alongside untouched), color→color, image→image,
+ * taxonomy→category, group→group and array→repeater (rows mapped
+ * recursively; nested repeaters skipped — repeaters do not nest by
+ * value-layer design).
+ *
+ * `menu` has no registry counterpart (a recursive nav tree, not a scalar or
+ * flat row) and returns null so the def still registers with every other
+ * field intact; the single omission is pinned by test. Unknown future kinds
+ * also return null (fail closed, never a fallback input).
+ */
+function astFieldToPropField(field: AstField): PropField | null {
+  const base = { key: field.key, label: field.label };
+  const max = typeof field.max === "number" ? { max: field.max } : {};
+  switch (field.kind) {
+    case "text":
+      return { ...base, kind: "text", ...max };
+    case "textarea":
+    case "html":
+      return { ...base, kind: "richtext", ...max };
+    case "number":
+    case "range":
+    case "unit": {
+      const bounds = {
+        ...(typeof field.min === "number" ? { min: field.min } : {}),
+        ...max,
+      };
+      return { ...base, kind: "number", ...bounds };
+    }
+    case "select": {
+      const options = (field.options ?? []).map((o) => ({
+        value: o.value,
+        label: o.label,
+      }));
+      if (options.length === 0) return null;
+      return { ...base, kind: "select", options };
+    }
+    case "url":
+    case "embed":
+      return { ...base, kind: "link", ...max };
+    case "boolean":
+      return { ...base, kind: "boolean" };
+    case "bitext":
+      return { ...base, kind: "text", ...max };
+    case "color":
+      return { ...base, kind: "color" };
+    case "image":
+      return { ...base, kind: "image" };
+    case "taxonomy":
+      return { ...base, kind: "category", ...max };
+    case "group": {
+      const nested: PropField[] = [];
+      for (const child of field.fields ?? field.children ?? []) {
+        const mapped = astFieldToPropField(child);
+        if (mapped) nested.push(mapped);
+      }
+      if (nested.length === 0) return null;
+      return { ...base, kind: "group", fields: nested };
+    }
+    case "array": {
+      const rows: PropField[] = [];
+      for (const child of field.fields ?? field.children ?? []) {
+        if (child.kind === "array") continue;
+        const mapped = astFieldToPropField(child);
+        if (mapped) rows.push(mapped);
+      }
+      if (rows.length === 0) return null;
+      return { ...base, kind: "repeater", fields: rows };
+    }
+    case "menu":
+      return null;
+    default:
+      return null;
+  }
+}
+
+/**
  * Adapt builtin renderers to WidgetDefs. Enrichment (label, category, slots,
- * defaults) comes from the AST catalogue via `catalogEntry` — the Phase 0.2
- * `WIDGET_REGISTRY` module is deliberately not imported. Renderer is
- * `builtin`; `propsSchema` is the permissive empty legacy-unvalidated shape.
+ * fields) comes from the Phase 0.2 `WIDGET_REGISTRY` view via `widgetMeta`
+ * — the catalogue through it, so the tray and the inspector can never
+ * disagree about a widget — with `catalogEntry` as the fallback for renderer
+ * keys outside the closed enum and as the source of `defaults` (the registry
+ * view carries no defaults). Renderer is `builtin`; `propsSchema` carries the
+ * mapped inspector fields, so builtins resolve through the schema path in
+ * `SectionInspector.resolveSchemaForSection` like every other authored tier.
+ *
+ * The old no-import rule guarded a `widget-registry.ts` cycle that does not
+ * exist: that module imports only `builder-ast`, which never imports this
+ * module (verified by `tsc` and the adapter tests below — a cycle would fail
+ * the build and empty the schemas).
  */
 export function fromBuiltinWidgets(source?: BuiltinSource): WidgetDef[] {
   const components =
@@ -705,18 +810,25 @@ export function fromBuiltinWidgets(source?: BuiltinSource): WidgetDef[] {
     }
   }
   return keys.map((key) => {
+    const meta = widgetMeta(key as SectionType);
     const entry = catalogEntry(key as SectionType);
+    const astFields = meta?.fields ?? entry?.fields ?? [];
+    const fields: PropField[] = [];
+    for (const field of astFields) {
+      const mapped = astFieldToPropField(field);
+      if (mapped) fields.push(mapped);
+    }
     return deepFreeze({
       id: `builtin:${key}`,
       namespace: "builtin" as const,
       version: "1.0.0",
-      label: entry?.label ?? key,
-      category: entry?.group ?? "general",
-      slots: entry ? [...entry.slots] : [],
+      label: meta?.label ?? entry?.label ?? key,
+      category: meta?.group ?? entry?.group ?? "general",
+      slots: meta ? [...meta.slots] : entry ? [...entry.slots] : [],
       defaults: entry
         ? (cloneJson(entry.defaults) as Record<string, unknown>)
         : {},
-      propsSchema: { fields: [] },
+      propsSchema: { fields },
       renderer: "builtin" as const,
     });
   });
@@ -747,14 +859,21 @@ export function fromStudioCatalog(
   );
 }
 
-/** Minimum builder API implied by a manifest `api` range (`^x.y.z`, `>=a <b`). */
+/** Minimum builder API implied by a manifest `api` range.
+ *
+ * `^x.y.z` floors at the caret base, `>=a <b` at `a`, and exact pins floor
+ * at the pin itself — via `exactApiVersion`, the single home for the exact
+ * shape, so this floor and `satisfiesApiRange` (the filter) can never
+ * disagree about what an exact pin means.
+ */
 function minApiFromRange(range: string): string | undefined {
   const trimmed = range.trim();
+  const exact = exactApiVersion(trimmed);
+  if (exact) return exact;
   const caret = /^\^(\d+\.\d+\.\d+)$/.exec(trimmed);
   if (caret) return caret[1];
   const pair = /^>=\s*(\d+\.\d+\.\d+)\s+<\s*(\d+\.\d+\.\d+)$/.exec(trimmed);
   if (pair) return pair[1];
-  if (/^\d+\.\d+\.\d+$/.test(trimmed)) return trimmed;
   return undefined;
 }
 
@@ -796,4 +915,47 @@ export function fromPluginManifest(
     }
   }
   return out;
+}
+
+/**
+ * P5 consolidation — the single tray registry builder for every write path.
+ *
+ * Seeds a fresh registry with every tier (builtin + studio + installed-plugin
+ * defs) and best-effort merges the shared singleton (theme defs ride there
+ * when present; absent keeps the legacy tray identical). Hostile or
+ * unreadable entries are dropped, never stored; merchant-disabled installs
+ * and builder-incompatible manifests contribute nothing — the shared adapter
+ * filtering, so listing and insertion read the same truth and the tray can
+ * never offer a widget it cannot insert. Never throws.
+ */
+export function buildTrayRegistry(
+  installed: readonly InstalledPlugin[],
+  opts?: { api?: string },
+): UnifiedRegistry {
+  const registry = createWidgetRegistry();
+  for (const def of [
+    ...fromBuiltinWidgets(),
+    ...fromStudioCatalog(),
+    ...fromPluginManifest(installed, opts),
+  ]) {
+    try {
+      registry.registerWidget(def);
+    } catch {
+      // A single bad adapter def never breaks the tray.
+    }
+  }
+  // Theme defs ride the shared singleton when present (tests and theme lanes
+  // register there); absent keeps the legacy tray identical.
+  try {
+    for (const def of listWidgets()) {
+      try {
+        registry.registerWidget(def);
+      } catch {
+        // Hostile singleton entries are dropped, never stored.
+      }
+    }
+  } catch {
+    // Singleton unreadable — tier registry still stands.
+  }
+  return registry;
 }
