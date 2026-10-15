@@ -14,6 +14,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { useLang, LanguageProvider } from "@/lib/i18n";
 import { SectionRenderer } from "@/components/builder/SectionRenderer";
+import type { DevThemeBinding } from "@/components/builder/SectionRenderer";
 import {
   TRAY_MIME,
   decodeTrayDrop,
@@ -276,6 +277,17 @@ function slugifyThemeKey(name: string) {
   return slug || "custom-theme";
 }
 
+/**
+ * Frame30 Level B editor bridge host: deny-all. Every authorized bridge
+ * call answers `theme.denied` (the bridge maps the throw to a `theme.*`
+ * error — never a rejection, never a side effect). Combined with
+ * `granted: []` the authorizer refuses before this is even reached; this is
+ * the backstop. Height reporting bypasses the bridge entirely.
+ */
+async function denyAllDevThemeCalls(): Promise<unknown> {
+  throw new Error("theme.denied");
+}
+
 function BuilderStudio() {
   const { t } = useLang();
   const qc = useQueryClient();
@@ -364,6 +376,56 @@ function BuilderStudio() {
     }
     return registry;
   }, [authorizedPlugins, activeDevThemeDefs]);
+
+  /**
+   * Frame30 Level B editor binding: the server-projected binding inputs
+   * (`workspace.theme.devThemeBinding` — allow-listed origin, pinned
+   * name+version, server-computed grants) completed with the EDITOR host
+   * implementation. Least-privilege is deliberately stricter than the
+   * server grant: `granted: []` plus a deny-all `onCall`, so no bridge
+   * method (commerce, cart, navigate) can execute from the editing surface
+   * — a merchant clicking a preview control gets a `theme.*` refusal, never
+   * a side effect. Height reporting is unaffected: it travels as the
+   * frame→host `fq:theme-height` postMessage, outside the method bridge.
+   * Absent inputs (unapproved/inactive/missing) yield no binding, so the
+   * renderer keeps its explicit placeholder — never a default-allow.
+   */
+  const devThemeBinding = useMemo<DevThemeBinding | undefined>(() => {
+    const inputs = (
+      workspace.data?.theme as unknown as
+        | {
+            devThemeBinding?: {
+              assetOrigin?: unknown;
+              theme?: { name?: unknown; version?: unknown };
+            } | null;
+          }
+        | undefined
+    )?.devThemeBinding;
+    if (!inputs || typeof inputs !== "object") return undefined;
+    if (typeof inputs.assetOrigin !== "string" || !inputs.assetOrigin) {
+      return undefined;
+    }
+    const theme = inputs.theme;
+    if (
+      !theme ||
+      typeof theme.name !== "string" ||
+      typeof theme.version !== "string" ||
+      !theme.name ||
+      !theme.version
+    ) {
+      return undefined;
+    }
+    // The frame URL builder fails closed on malformed identities anyway;
+    // this shape check keeps a corrupt loader payload from mounting a
+    // binding object at all.
+    return {
+      assetOrigin: inputs.assetOrigin,
+      theme: { name: theme.name, version: theme.version },
+      granted: [],
+      navigateAllowlist: [],
+      onCall: denyAllDevThemeCalls,
+    };
+  }, [workspace.data]);
 
   const [template, setTemplate] = useState<TemplateKey>("index");
   const [slot, setSlot] = useState<Slot>("main");
@@ -2237,6 +2299,7 @@ function BuilderStudio() {
                                 template={template}
                                 selectedIds={selectedIds}
                                 registry={builderRegistry}
+                                devThemeBinding={devThemeBinding}
                                 onInlineEdit={(nodeId, key, value) => {
                                   // Grafted global-block content is a projection: editing
                                   // it here would be silently discarded on next resolve.

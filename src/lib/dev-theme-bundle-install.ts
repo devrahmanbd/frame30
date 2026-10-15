@@ -37,6 +37,13 @@
  *   templates/tokens are inert `{}` (no AST claim — executable content is
  *   addressed by fingerprint; the install never activates, and
  *   activation/render is the runtime follow-up).
+ * - asset projection: `theme_assets` rows under
+ *   `dev-themes/<themeId>/<version>/…` (one per servable assembled output,
+ *   text UTF-8 or base64) plus the `release.json` descriptor and the
+ *   `.approval.json` snapshot, so the `/t/…` route and the workspace
+ *   projection serve/prove the approved bytes. `theme_id` stays NULL
+ *   (linking the FK would break theme deletes in lanes that cannot change
+ *   here); a `dev-themes/` sweep on uninstall is the follow-up.
  * - money: paid listings charge through `postLedgerEntry` with source
  *   `market.theme.installed`, same split and idempotency posture as
  *   `installListing` (H3 order: projection BEFORE money moves; a money
@@ -56,6 +63,7 @@ import {
   validateDevThemeBundle,
   type DevThemeBundleInput,
 } from "./dev-theme-bundle";
+import { assembleDevThemeBundle } from "./dev-theme-bundle-assemble";
 import type { DevThemeRelease, DevThemeReleaseStore } from "./dev-theme-review";
 
 type Client = SupabaseClient<Database>;
@@ -266,7 +274,21 @@ async function compensateInstall(
   merchantId: string,
   installId: string,
   themeId: string | null,
+  assetNames: string[] = [],
 ): Promise<void> {
+  // Fingerprinted asset rows go first: they are keyed by exact name
+  // (merchant-scoped), so a half-persisted bundle leaves no servable bytes.
+  for (const name of assetNames) {
+    try {
+      await db
+        .from("theme_assets")
+        .delete()
+        .eq("merchant_id", merchantId)
+        .eq("name", name);
+    } catch {
+      // Best-effort: the original error stays the thrown one.
+    }
+  }
   if (themeId) {
     await db
       .from("theme_versions")
@@ -289,6 +311,122 @@ async function compensateInstall(
     .delete()
     .eq("merchant_id", merchantId)
     .eq("id", installId);
+}
+
+/**
+ * Level B close-out: persist the assembled hashed bundle behind the bound
+ * origin path. Assembles deterministically from the SAME verified inputs
+ * (Gate 1 passed on these exact bytes, so re-validation is vacuous and any
+ * refusal here is an internal error), then writes one `theme_assets` row
+ * per servable output plus the `release.json` descriptor (name→hash map)
+ * and the `.approval.json` snapshot (status + reviews for the projection's
+ * real activation gate). Returns every written row name so callers can
+ * compensate exactly. Throws after best-effort self-cleanup (never
+ * half-persisted bytes).
+ */
+async function persistDevThemeAssetRows(
+  db: Client,
+  merchantId: string,
+  input: {
+    release: DevThemeRelease;
+    bytes: ReviewedThemeBundleBytes;
+  },
+): Promise<string[]> {
+  const { release } = input;
+  // Belt-and-braces: the manifest gate proved these shapes, but row names
+  // become URL paths — never interpolate unvalidated strings into them.
+  if (!/^[a-z][a-z0-9-]{2,63}$/.test(release.themeId)) {
+    fail("dev_theme_install.identity", "Approval theme id is not URL-safe.");
+  }
+  if (!/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(release.version)) {
+    fail("dev_theme_install.version", "Approval version is not semver.");
+  }
+  const assembled = assembleDevThemeBundle({
+    manifestJson: input.bytes.manifest,
+    files: input.bytes.files,
+    dependencies: input.bytes.dependencies,
+    allowedNetworkHosts: input.bytes.allowedNetworkHosts,
+  });
+  if (!assembled.ok) {
+    fail(
+      "dev_theme_install.assemble_failed",
+      assembled.errors.slice(0, 3).join(","),
+    );
+  }
+  // Single source of truth for namespace + encoding (the serve lane reads
+  // the same helpers — persist and serve can never disagree). Dynamic
+  // import, matching this module's lane-crossing convention below: the
+  // theme-server module stays off this lane's static startup path.
+  const {
+    devThemeAssetNamespace,
+    devThemeReleaseRowName,
+    devThemeApprovalRowName,
+    devThemeAssetEncoding,
+    devThemeAssetKind,
+  } = await import("./themes.server");
+  const namespace = devThemeAssetNamespace(release.themeId, release.version);
+  const rows: Record<string, unknown>[] = [];
+  for (const output of assembled.outputs) {
+    const encoding = devThemeAssetEncoding(output.path);
+    const kind = devThemeAssetKind(output.path);
+    // Unservable kinds (readme/license extras) persist no rows — serving
+    // them 404s regardless, so no dead bytes accumulate.
+    if (!encoding || !kind) continue;
+    rows.push({
+      merchant_id: merchantId,
+      theme_id: null,
+      name: `${namespace}/${output.path}`,
+      kind,
+      content:
+        encoding === "text"
+          ? new TextDecoder().decode(output.bytes)
+          : Buffer.from(output.bytes).toString("base64"),
+      url: `/t/${release.themeId}/${release.version}/${output.path}`,
+      bytes: output.bytes.length,
+      enabled: true,
+    });
+  }
+  const releaseJson = assembled.releaseJson;
+  rows.push({
+    merchant_id: merchantId,
+    theme_id: null,
+    name: devThemeReleaseRowName(release.themeId, release.version),
+    kind: "json",
+    content: releaseJson,
+    url: null,
+    bytes: releaseJson.length,
+    enabled: true,
+  });
+  const approvalJson = JSON.stringify(release);
+  rows.push({
+    merchant_id: merchantId,
+    theme_id: null,
+    name: devThemeApprovalRowName(release.themeId, release.version),
+    kind: "json",
+    content: approvalJson,
+    url: null,
+    bytes: approvalJson.length,
+    enabled: true,
+  });
+  const names = rows.map((row) => row.name as string);
+  try {
+    const { error } = await db.from("theme_assets").insert(rows as never);
+    if (error) throw error;
+  } catch (err) {
+    for (const name of names) {
+      try {
+        await db
+          .from("theme_assets")
+          .delete()
+          .eq("merchant_id", merchantId)
+          .eq("name", name);
+      } catch {
+        // Best-effort: the original error stays the thrown one.
+      }
+    }
+    throw err;
+  }
+  return names;
 }
 
 export async function installReviewedThemeBundle(
@@ -477,6 +615,7 @@ export async function installReviewedThemeBundle(
   // H3 order — host projection BEFORE any money moves, so a theme-row
   // failure compensates with just the install row, never an orphan charge.
   let hostThemeId: string | null = null;
+  let assetNames: string[] = [];
   try {
     const { data: theme, error: themeError } = await db
       .from("store_themes")
@@ -522,8 +661,31 @@ export async function installReviewedThemeBundle(
       .eq("merchant_id", merchantId)
       .eq("id", hostThemeId);
     if (linkError) throw new Error("market_materialize_failed");
+
+    // Level B close-out: persist the assembled hashed bundle bytes behind
+    // the REAL bound origin path (`/t/<themeId>/<version>/…`, served by
+    // `src/routes/t.$.ts`). Assembled deterministically from the SAME
+    // verified inputs (re-validation is vacuous — Gate 1 passed on these
+    // exact bytes), so the persisted rows are byte-identical to the
+    // approval. Served rows: every servable output as a `theme_assets` row
+    // (`dev-themes/<themeId>/<version>/<outPath>`, text UTF-8 or base64 per
+    // `devThemeAssetEncoding`), plus the `release.json` descriptor
+    // (name→hash map) and the `.approval.json` snapshot (status + reviews
+    // for the projection's real activation gate). `theme_id` stays NULL:
+    // linking the store_themes FK would break theme deletes in lanes that
+    // cannot change here — a `dev-themes/` sweep on uninstall is the
+    // follow-up (rows are merchant-scoped and namespace-addressable).
+    // Failure compensates the whole install (never half-persisted bytes).
+    try {
+      assetNames = await persistDevThemeAssetRows(db, merchantId, {
+        release,
+        bytes: input.bytes,
+      });
+    } catch {
+      throw new Error("market_materialize_failed");
+    }
   } catch {
-    await compensateInstall(db, merchantId, installId, hostThemeId);
+    await compensateInstall(db, merchantId, installId, hostThemeId, assetNames);
     throw new Error("market_install_failed");
   }
 
@@ -544,7 +706,13 @@ export async function installReviewedThemeBundle(
         memo: `${input.listing.name} v${release.version}`,
       });
     } catch {
-      await compensateInstall(db, merchantId, installId, hostThemeId);
+      await compensateInstall(
+        db,
+        merchantId,
+        installId,
+        hostThemeId,
+        assetNames,
+      );
       throw new Error("market_payment_failed");
     }
   }

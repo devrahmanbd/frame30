@@ -9,6 +9,7 @@
 import type { ReactNode } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { SectionRenderer } from "@/components/builder/SectionRenderer";
+import type { DevThemeBinding } from "@/components/builder/SectionRenderer";
 import { CartProvider, useLiveCart } from "@/components/builder/CartContext";
 import { VitalsReporter } from "@/components/store/VitalsReporter";
 import { TrafficReporter } from "@/components/store/TrafficReporter";
@@ -78,6 +79,19 @@ type Props = {
    * responsive sheet — it is tiny, tenant-specific and on the critical path.
    */
   customCss?: string | null;
+  /**
+   * Frame30 Level B — runtime binding for uploaded-theme widgets on the
+   * storefront. Forwarded to every `SectionRenderer` below (pinned
+   * identity AND version must match the def, else the explicit
+   * placeholder). Deliberately WITHOUT a producer in this change: no
+   * storefront loader projects the binding yet and no storefront `onCall`
+   * implementation with server revalidation exists — a deny-all `onCall`
+   * would silently break commerce, an allow-all would be default-allow —
+   * so the prop stays absent and the storefront keeps the placeholder
+   * until that host work lands. The prop existing now keeps the host diff
+   * to binding-only when it does.
+   */
+  devThemeBinding?: DevThemeBinding | null;
   /**
    * Custom-isolated theme mount (ThemeRuntime activation). Only a record
    * flagged `runtime: "custom-isolated"` with a valid immutable descriptor
@@ -189,6 +203,7 @@ export function ThemeChrome({
   containerClassName = "mx-auto max-w-6xl px-4 py-8",
   customCss = null,
   isolatedTheme = null,
+  devThemeBinding = null,
 }: Props) {
   // Phase 2.1: language choice is remembered per storefront.
   useLangScope(storeSlug ?? null);
@@ -318,6 +333,7 @@ export function ThemeChrome({
               template={template}
               storeSlug={storeSlug}
               themeKey={themeKey}
+              devThemeBinding={devThemeBinding ?? undefined}
               contextSlots={contextSlots}
               linkBase={base}
             />
@@ -335,6 +351,7 @@ export function ThemeChrome({
                   template={template}
                   storeSlug={storeSlug}
                   themeKey={themeKey}
+                  devThemeBinding={devThemeBinding ?? undefined}
                   contextSlots={contextSlots}
                   linkBase={base}
                 />
@@ -351,6 +368,7 @@ export function ThemeChrome({
                 template={template}
                 storeSlug={storeSlug}
                 themeKey={themeKey}
+                devThemeBinding={devThemeBinding ?? undefined}
                 contextSlots={contextSlots}
                 productSlot={productSlot}
                 collectionSlot={collectionSlot}
@@ -373,6 +391,7 @@ export function ThemeChrome({
                 template={template}
                 storeSlug={storeSlug}
                 themeKey={themeKey}
+                devThemeBinding={devThemeBinding ?? undefined}
                 contextSlots={contextSlots}
                 linkBase={base}
               />

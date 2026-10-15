@@ -51,6 +51,20 @@ import { translationCoverage } from "./translation-coverage";
 import { demoCatalogFor } from "./demo-catalog";
 import { resolveThemePreview } from "./theme-preview-nav";
 import { builtinThemeKeys, isOfficialThemeKey } from "./themes/builtin-themes";
+import {
+  bindDevThemeRuntime,
+  resolveDevThemeActivation,
+} from "./dev-theme-activate";
+import {
+  DEV_THEME_BUNDLE_LIMITS,
+  fingerprintDevThemeRelease,
+  hashBytes,
+} from "./dev-theme-bundle";
+import {
+  parseDevThemeManifest,
+  type DevThemeManifest,
+} from "./dev-theme-manifest";
+import type { DevThemeRelease } from "./dev-theme-review";
 
 type Client = SupabaseClient<Database>;
 
@@ -73,6 +87,22 @@ export type ThemeSummary = {
   publishedVersionId: string | null;
   sourceKey: string | null;
   sourceVersion: string | null;
+  /** Ledger linkage for Level B projection (null for data-only rows). */
+  sourceInstallId: string | null;
+  /**
+   * Frame30 Level B — approved manifest for the ACTIVE release only,
+   * projected by `loadDevThemeProjection` (published + approve-bound
+   * fingerprint per `resolveDevThemeActivation`). Absent for every other
+   * theme, so the builder's `activeDevThemeWidgetDefs` adapt stays empty.
+   */
+  approvedDevManifest?: DevThemeManifest | null;
+  /**
+   * Frame30 Level B — binding inputs for the approved ACTIVE release
+   * (allow-listed asset origin, pinned name+version, least-privilege
+   * grants). The route adds its own `onCall` to form the renderer's
+   * `DevThemeBinding`. Absent unless projected — never a default-allow.
+   */
+  devThemeBinding?: DevThemeBindingInputs | null;
 };
 
 async function resolveTheme(
@@ -84,7 +114,7 @@ async function resolveTheme(
     const { data } = await db
       .from("store_themes")
       .select(
-        "id, name, is_active, published_version_id, source_listing_slug, source_version",
+        "id, name, is_active, published_version_id, source_listing_slug, source_version, source_install_id",
       )
       .eq("merchant_id", merchantId)
       .eq("id", previewThemeId)
@@ -97,6 +127,7 @@ async function resolveTheme(
         publishedVersionId: data.published_version_id,
         sourceKey: data.source_listing_slug,
         sourceVersion: data.source_version,
+        sourceInstallId: data.source_install_id ?? null,
       };
     }
   }
@@ -110,7 +141,7 @@ async function ensureTheme(
   const { data, error } = await db
     .from("store_themes")
     .select(
-      "id, name, is_active, published_version_id, source_listing_slug, source_version",
+      "id, name, is_active, published_version_id, source_listing_slug, source_version, source_install_id",
     )
     .eq("merchant_id", merchantId)
     .order("is_active", { ascending: false })
@@ -126,6 +157,7 @@ async function ensureTheme(
       publishedVersionId: data.published_version_id,
       sourceKey: data.source_listing_slug,
       sourceVersion: data.source_version,
+      sourceInstallId: data.source_install_id ?? null,
     };
   }
   const { data: created, error: createError } = await db
@@ -146,6 +178,7 @@ async function ensureTheme(
     publishedVersionId: created.published_version_id,
     sourceKey: null,
     sourceVersion: null,
+    sourceInstallId: null,
   };
 }
 
@@ -200,7 +233,7 @@ export async function loadWorkspace(
       db
         .from("theme_versions")
         .select(
-          "id, version, status, note, label, created_at, published_at, rollback_of, templates, tokens, ast",
+          "id, version, status, note, label, created_at, published_at, rollback_of, templates, tokens, ast, checksum",
         )
         .eq("theme_id", theme.id)
         .order("version", { ascending: false })
@@ -249,6 +282,26 @@ export async function loadWorkspace(
     const issues: BuilderWorkspace["issues"] = {};
     for (const key of TEMPLATE_KEYS)
       issues[key] = lintTemplate(templateOf(templates, key));
+
+    // Frame30 Level B — project the approved ACTIVE release onto the
+    // workspace theme (approved manifest for the `activeDevThemeWidgetDefs`
+    // adapt + `DevThemeBinding` inputs). Absent for every other theme, so
+    // the renderer seam stays placeholder — never a default-allow.
+    if (theme.isActive && theme.sourceKey && theme.sourceInstallId) {
+      const projection = await loadDevThemeProjection(db, merchantId, {
+        themeId: theme.id,
+        isActive: theme.isActive,
+        sourceKey: theme.sourceKey,
+        sourceInstallId: theme.sourceInstallId,
+        versionChecksums: versionRows.map(
+          (row) => (row as { checksum?: unknown }).checksum,
+        ),
+      }).catch(() => null);
+      if (projection) {
+        theme.approvedDevManifest = projection.manifest;
+        theme.devThemeBinding = projection.binding;
+      }
+    }
 
     return {
       theme,
@@ -2002,6 +2055,793 @@ export async function purgeDemoContent(db: Client, merchantId: string) {
 
 export function purgeThemeCache() {
   purgeStorefront("manual");
+}
+
+/* ---------------- Level B (reviewed developer themes) — server projection
+ *
+ * Level B close-out, server lane. Two gaps are closed here (pure helpers +
+ * loader; the route file `src/routes/t.$.ts` is the only HTTP reader):
+ *
+ * 1. PROJECTION — `projectDevThemeBinding` (pure) + `loadDevThemeProjection`
+ *    (loader): the approved ACTIVE release is projected onto the workspace
+ *    theme as (a) the approved manifest (the builder's
+ *    `activeDevThemeWidgetDefs` adapt consumes it) and (b) the
+ *    `DevThemeBinding` inputs (allow-listed asset origin, pinned
+ *    name+version, least-privilege grants). The approval gate itself is NOT
+ *    reimplemented: the pure projector runs the REAL
+ *    `resolveDevThemeActivation` (published status + `approve` review bound
+ *    to the exact fingerprint + runtime pin) and the REAL
+ *    `bindDevThemeRuntime` (origin allow-list + immutable version pin +
+ *    closed capability→grant map) — any refusal yields null, never a
+ *    default-allow. `dev-theme-activate.ts` is only read, never weakened.
+ *
+ *    Trust chain (buyer-local, merchant-predicated throughout — Rule 15):
+ *    the install lane verified the published approval and installed ONLY
+ *    fingerprint-equal bytes; the activation lane flipped `is_active` only
+ *    when the ledger row AND a host version row both carried that
+ *    fingerprint. The loader re-verifies that evidence instead of trusting
+ *    it: install `artifact_checksum` (64-hex) corroborated by a host
+ *    version-row checksum, the stored approval snapshot recomputed to the
+ *    same fingerprint AND re-run through the real activation gate, the
+ *    stored `dev.theme.json` bytes hashed to an approval file entry, and
+ *    the stored `release.json` descriptor bound to the approval by
+ *    hash-multiset equality (assembly preserves bytes 1:1, so an edited map
+ *    fails). Any gap refuses (null) before any consumer sees a binding.
+ *    Note the two fingerprints differ by construction: the review binds the
+ *    SOURCE shape, the descriptor the OUTPUT (hashed-name) shape.
+ *
+ *    Known limit (reported, not hidden): revocation AFTER activation is
+ *    enforced at install/activate time; the projection re-verifies installed
+ *    evidence per load but performs no live cross-merchant store re-check
+ *    (review rows are seller-scoped), so a revoke-then-render window exists
+ *    until re-activation. Fail-closed on every byte tamper regardless.
+ *
+ * 2. ASSET SERVING — `parseDevThemeAssetPath` + `resolveDevThemeAsset`
+ *    (pure): the assembled hashed bundle bytes (persisted at install into
+ *    `theme_assets` under `dev-themes/<themeId>/<version>/…` alongside the
+ *    `release.json` descriptor and the `.approval.json` snapshot) are served
+ *    from the REAL bound origin path `/t/{themeId}/{version}/…` with
+ *    immutable caching, exact-version pinning (no `latest`, regex-pinned),
+ *    traversal-safe decoding (normalize-then-reject, never sanitise),
+ *    content-type correctness (js/css/map/json/font/image, `nosniff`
+ *    everywhere, `sandbox` on SVG so a slipped active SVG can never execute
+ *    as a platform-origin document), per-file sha256 assertion against the
+ *    fingerprinted release (never serve bytes that fail the release
+ *    fingerprint), and 404 on unknown versions, ambiguous releases, missing
+ *    entries, tampered bytes, and oversized rows. `index.html` is NOT an
+ *    assembled output (no document builder exists) so it 404s fail-closed —
+ *    the frame stays blank rather than executing unreviewed bytes.
+ */
+
+/** Serializable binding inputs the route completes with its own `onCall`. */
+export type DevThemeBindingInputs = {
+  /** Controlled asset origin (from `devThemeAssetOrigin`, never a default). */
+  assetOrigin: string;
+  /** Pinned approved identity (name + immutable version). */
+  theme: { name: string; version: string };
+  /** Granted `theme:*` scopes for this install (least-privilege). */
+  granted: string[];
+  /** Exact https origins the theme may navigate to (empty = paths only). */
+  navigateAllowlist: string[];
+  /** Approved release fingerprint this binding executes. */
+  fingerprint: string;
+};
+
+export type DevThemeProjection = {
+  /** Approved manifest for the `activeDevThemeWidgetDefs` adapt. */
+  manifest: DevThemeManifest;
+  /** Binding inputs for the renderer's `DevThemeBinding` (+ host `onCall`). */
+  binding: DevThemeBindingInputs;
+};
+
+const DEV_THEME_FINGERPRINT_RE = /^[0-9a-f]{64}$/;
+// Mirrors of the binding identity regexes in `dev-theme-activate.ts` (and
+// `ThemeRuntime.tsx`): duplicated on purpose — a server lib module must not
+// import a React component file, and the sandbox harness pins the values.
+const DEV_THEME_ORIGIN_RE = /^https:\/\/[a-z0-9.-]+(:\d+)?$/i;
+const DEV_THEME_LOCAL_ORIGIN_RE = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i;
+const DEV_THEME_NAME_RE = /^[a-z0-9-]{1,64}$/;
+const DEV_THEME_VERSION_RE =
+  /^\d{1,5}\.\d{1,5}\.\d{1,5}(?:-[a-z0-9.-]{1,32})?$/i;
+
+/**
+ * Allow-listed asset origin for Level B bindings. Reads
+ * `DEV_THEME_ASSET_ORIGIN` (the origin that serves `/t/…`, e.g. the
+ * platform origin or a controlled CDN) and returns it ONLY when it passes
+ * the same approved-origin shape the runtime binding enforces. Unset or
+ * malformed → null → no binding is ever minted (fail closed, never a
+ * default origin).
+ */
+export function devThemeAssetOrigin(): string | null {
+  const raw = (process.env.DEV_THEME_ASSET_ORIGIN ?? "").trim();
+  if (!raw) return null;
+  if (!DEV_THEME_ORIGIN_RE.test(raw) && !DEV_THEME_LOCAL_ORIGIN_RE.test(raw)) {
+    return null;
+  }
+  return raw;
+}
+
+/**
+ * Project an approval snapshot onto a workspace theme. Pure, fail-closed:
+ * every gate below yields null (unapproved / inactive / missing / foreign /
+ * tampered / unbound-origin), and the function never throws — hostile
+ * shapes yield null, never a crash and never a binding.
+ */
+export function projectDevThemeBinding(
+  input: unknown,
+): DevThemeProjection | null {
+  try {
+    if (!input || typeof input !== "object" || Array.isArray(input))
+      return null;
+    const {
+      isActive,
+      sourceKey,
+      installedFingerprint,
+      release,
+      assetOrigin,
+      navigateAllowlist,
+    } = input as {
+      isActive?: unknown;
+      sourceKey?: unknown;
+      installedFingerprint?: unknown;
+      release?: unknown;
+      assetOrigin?: unknown;
+      navigateAllowlist?: unknown;
+    };
+    if (isActive !== true) return null;
+    if (typeof sourceKey !== "string" || !sourceKey.trim()) return null;
+    const key = sourceKey.trim();
+    if (
+      typeof installedFingerprint !== "string" ||
+      !DEV_THEME_FINGERPRINT_RE.test(installedFingerprint)
+    ) {
+      return null;
+    }
+    if (!release || typeof release !== "object" || Array.isArray(release)) {
+      return null;
+    }
+    const snapshot = release as {
+      fingerprint?: unknown;
+      themeId?: unknown;
+      manifest?: unknown;
+    };
+    // Installed bytes are the approved bytes (the install + activation lanes
+    // established this; the loader corroborates it from merchant rows).
+    if (snapshot.fingerprint !== installedFingerprint) return null;
+    // Workspace source pin: the approval covers THIS workspace theme (the
+    // Level B listing contract sets the listing slug to the reviewed theme
+    // id — every fixture does; a mismatch stays placeholder, fail closed).
+    if (snapshot.themeId !== key) return null;
+    if (typeof assetOrigin !== "string" || !assetOrigin) return null;
+    // The REAL activation gate (published + approve-bound fingerprint +
+    // runtime pin + theme binding) — read, never reimplemented or weakened.
+    const activation = resolveDevThemeActivation({
+      release: release as DevThemeRelease,
+      expectedFingerprint: installedFingerprint,
+      expectedThemeId: key,
+    });
+    // Canonical manifest for the adapt (belt-and-braces: the adapt itself
+    // re-validates, so a stored shape that drifts still yields no defs).
+    const parsed = parseDevThemeManifest(snapshot.manifest);
+    if (!parsed.ok) return null;
+    if (parsed.manifest.id !== key) return null;
+    if (parsed.manifest.version !== activation.version) return null;
+    const allowlist = Array.isArray(navigateAllowlist)
+      ? navigateAllowlist.filter(
+          (entry): entry is string => typeof entry === "string",
+        )
+      : [];
+    // The REAL runtime binding (origin allow-list + immutable version pin +
+    // closed capability grants; `theme:navigate` never granted implicitly).
+    const bound = bindDevThemeRuntime(activation, {
+      assetOrigin,
+      navigateAllowlist: allowlist,
+    });
+    return {
+      manifest: parsed.manifest,
+      binding: {
+        assetOrigin: bound.assetOrigin,
+        theme: { name: bound.theme.name, version: bound.theme.version },
+        granted: [...bound.granted],
+        navigateAllowlist: [...bound.navigateAllowlist],
+        fingerprint: bound.fingerprint,
+      },
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** `theme_assets` namespace for one fingerprinted release. */
+export function devThemeAssetNamespace(
+  themeId: string,
+  version: string,
+): string {
+  return `dev-themes/${themeId}/${version}`;
+}
+
+/** Descriptor row: the deterministic `release.json` (manifest + files + fingerprint). */
+export function devThemeReleaseRowName(
+  themeId: string,
+  version: string,
+): string {
+  return `${devThemeAssetNamespace(themeId, version)}/release.json`;
+}
+
+/** Approval-snapshot row: the install-time `DevThemeRelease` (status + reviews). */
+export function devThemeApprovalRowName(
+  themeId: string,
+  version: string,
+): string {
+  return `${devThemeAssetNamespace(themeId, version)}/.approval.json`;
+}
+
+type DevThemeAssetRow = {
+  merchant_id?: unknown;
+  name?: unknown;
+  kind?: unknown;
+  content?: unknown;
+  bytes?: unknown;
+};
+
+function readSingleRow(rows: unknown): DevThemeAssetRow | null {
+  if (Array.isArray(rows)) {
+    const first = rows[0];
+    return first && typeof first === "object"
+      ? (first as DevThemeAssetRow)
+      : null;
+  }
+  if (rows && typeof rows === "object") return rows as DevThemeAssetRow;
+  return null;
+}
+
+function parseStoredJson(content: unknown): unknown | null {
+  try {
+    if (typeof content === "string") return JSON.parse(content);
+    if (content && typeof content === "object") return content;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+type VerifiedDevThemeRelease = {
+  manifest: DevThemeManifest;
+  files: { path: string; sha256: string; bytes: number }[];
+  fingerprint: string;
+};
+
+function readReleaseFiles(
+  rawFiles: unknown,
+): VerifiedDevThemeRelease["files"] | null {
+  if (!Array.isArray(rawFiles) || rawFiles.length === 0) return null;
+  const files: VerifiedDevThemeRelease["files"] = [];
+  for (const entry of rawFiles) {
+    if (!entry || typeof entry !== "object" || Array.isArray(entry))
+      return null;
+    const { path, sha256, bytes } = entry as Record<string, unknown>;
+    if (typeof path !== "string" || !path) return null;
+    if (typeof sha256 !== "string" || !DEV_THEME_FINGERPRINT_RE.test(sha256)) {
+      return null;
+    }
+    if (typeof bytes !== "number" || !Number.isFinite(bytes) || bytes < 0) {
+      return null;
+    }
+    files.push({ path, sha256, bytes });
+  }
+  return files;
+}
+
+/**
+ * Verify a stored approval snapshot (`DevThemeRelease`, persisted at
+ * install): shape, fingerprint recompute over the exact reviewed shape
+ * (source paths — the shape the review bound), the named fingerprint, the
+ * workspace theme pin, and the REAL `resolveDevThemeActivation` gate
+ * (published + `approve` review bound to the exact fingerprint + runtime
+ * pin). Returns null for anything unverifiable.
+ */
+function verifyDevThemeApprovalSnapshot(
+  content: unknown,
+  themeId: string,
+  fingerprint: string,
+): { release: DevThemeRelease; manifest: DevThemeManifest } | null {
+  try {
+    const snapshot = parseStoredJson(content);
+    if (!snapshot || typeof snapshot !== "object" || Array.isArray(snapshot)) {
+      return null;
+    }
+    const { manifest: rawManifest, files: rawFiles } = snapshot as Record<
+      string,
+      unknown
+    >;
+    const parsed = parseDevThemeManifest(rawManifest);
+    if (!parsed.ok) return null;
+    const files = readReleaseFiles(rawFiles);
+    if (!files) return null;
+    if (fingerprintDevThemeRelease(parsed.manifest, files) !== fingerprint) {
+      return null;
+    }
+    // The REAL activation gate — read, never reimplemented or weakened.
+    resolveDevThemeActivation({
+      release: snapshot as DevThemeRelease,
+      expectedFingerprint: fingerprint,
+      expectedThemeId: themeId,
+    });
+    if (parsed.manifest.id !== themeId) return null;
+    return { release: snapshot as DevThemeRelease, manifest: parsed.manifest };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Verify a stored `release.json` descriptor against an approved release.
+ * The descriptor's own fingerprint covers the OUTPUT shape (hashed names),
+ * which differs from the review fingerprint (source paths) by construction —
+ * so the binding here is hash-multiset equality: assembly preserves bytes
+ * 1:1 (no dup outputs), hence the descriptor's file hashes must be EXACTLY
+ * the approval's file hashes (same multiset), plus URL identity and the
+ * descriptor's own self-consistency recompute. An edited map (hash swaps,
+ * added/removed entries) fails the multiset and serves nothing.
+ */
+function verifyDevThemeReleaseMap(
+  content: unknown,
+  themeId: string,
+  version: string,
+  approval: {
+    manifest: DevThemeManifest;
+    files: VerifiedDevThemeRelease["files"];
+  },
+): VerifiedDevThemeRelease | null {
+  try {
+    const raw = parseStoredJson(content);
+    if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+    const {
+      manifest: rawManifest,
+      files: rawFiles,
+      fingerprint,
+    } = raw as Record<string, unknown>;
+    if (
+      typeof fingerprint !== "string" ||
+      !DEV_THEME_FINGERPRINT_RE.test(fingerprint)
+    ) {
+      return null;
+    }
+    const parsed = parseDevThemeManifest(rawManifest);
+    if (!parsed.ok) return null;
+    if (parsed.manifest.id !== themeId || parsed.manifest.version !== version) {
+      return null;
+    }
+    if (
+      approval.manifest.id !== themeId ||
+      approval.manifest.version !== version
+    ) {
+      return null;
+    }
+    const files = readReleaseFiles(rawFiles);
+    if (!files) return null;
+    // Self-consistency: the map recomputes to its own fingerprint.
+    if (fingerprintDevThemeRelease(parsed.manifest, files) !== fingerprint) {
+      return null;
+    }
+    // Byte binding: same multiset of file hashes as the approval.
+    const mapHashes = files.map((entry) => entry.sha256).sort();
+    const approvalHashes = approval.files.map((entry) => entry.sha256).sort();
+    if (mapHashes.length !== approvalHashes.length) return null;
+    if (mapHashes.some((hash, index) => hash !== approvalHashes[index])) {
+      return null;
+    }
+    return { manifest: parsed.manifest, files, fingerprint };
+  } catch {
+    return null;
+  }
+}
+
+export type DevThemeProjectionTheme = {
+  themeId: string;
+  isActive: unknown;
+  sourceKey: unknown;
+  sourceInstallId: unknown;
+  versionChecksums: unknown;
+};
+
+/**
+ * Loader: resolve the Level B projection for a workspace theme from
+ * merchant rows. Merchant-predicated throughout (Rule 15); never throws —
+ * every gap (inactive, unlinked, legacy install without a fingerprint,
+ * checksum disagreement, missing/tampered descriptor, unapproved snapshot,
+ * unlisted origin) yields null.
+ */
+export async function loadDevThemeProjection(
+  db: Client,
+  merchantId: string,
+  theme: DevThemeProjectionTheme,
+): Promise<DevThemeProjection | null> {
+  try {
+    if (!theme || typeof theme !== "object") return null;
+    if (theme.isActive !== true) return null;
+    if (typeof theme.sourceKey !== "string" || !theme.sourceKey.trim()) {
+      return null;
+    }
+    const key = theme.sourceKey.trim();
+    if (
+      typeof theme.sourceInstallId !== "string" ||
+      !theme.sourceInstallId.trim()
+    ) {
+      return null;
+    }
+    const checksums = Array.isArray(theme.versionChecksums)
+      ? theme.versionChecksums
+      : [];
+    // Install linkage: merchant predicate first, so a cross-merchant
+    // install id fails closed here.
+    const { data: install, error: installError } = await db
+      .from("marketplace_installs")
+      .select("id, artifact_checksum, artifact_version")
+      .eq("merchant_id", merchantId)
+      .eq("id", theme.sourceInstallId)
+      .maybeSingle();
+    if (installError || !install) return null;
+    const linked = install as {
+      artifact_checksum?: unknown;
+      artifact_version?: unknown;
+    };
+    if (
+      typeof linked.artifact_checksum !== "string" ||
+      !DEV_THEME_FINGERPRINT_RE.test(linked.artifact_checksum)
+    ) {
+      // Legacy / data-only installs carry no fingerprint — never a binding.
+      return null;
+    }
+    const fingerprint = linked.artifact_checksum;
+    if (
+      typeof linked.artifact_version !== "string" ||
+      !linked.artifact_version
+    ) {
+      return null;
+    }
+    const version = linked.artifact_version;
+    if (!DEV_THEME_VERSION_RE.test(version)) return null;
+    // Dual corroboration (mirrors `activateDevThemeInstall`): a host version
+    // row must carry the same fingerprint, or the merchant installed other
+    // bytes than the approval covers.
+    if (!checksums.includes(fingerprint)) return null;
+    const origin = devThemeAssetOrigin();
+    if (!origin) return null;
+    const namespace = devThemeAssetNamespace(key, version);
+    const [releaseRes, manifestRes, approvalRes] = await Promise.all([
+      db
+        .from("theme_assets")
+        .select("content")
+        .eq("merchant_id", merchantId)
+        .eq("name", `${namespace}/release.json`)
+        .maybeSingle(),
+      db
+        .from("theme_assets")
+        .select("content")
+        .eq("merchant_id", merchantId)
+        .eq("name", `${namespace}/dev.theme.json`)
+        .maybeSingle(),
+      db
+        .from("theme_assets")
+        .select("content")
+        .eq("merchant_id", merchantId)
+        .eq("name", `${namespace}/.approval.json`)
+        .maybeSingle(),
+    ]);
+    if (releaseRes.error || manifestRes.error || approvalRes.error) return null;
+    // Approval snapshot: recompute + the REAL activation gate. The verified
+    // manifest below is byte-bound to reviewed bytes (never stored shape).
+    const approval = verifyDevThemeApprovalSnapshot(
+      readSingleRow(approvalRes.data)?.content,
+      key,
+      fingerprint,
+    );
+    if (!approval) return null;
+    if (approval.manifest.version !== version) return null;
+    // The stored manifest bytes hash to an approval file entry: the bundle
+    // bytes on disk are the reviewed bytes (verbatim root file, so the
+    // source-shape hash applies directly).
+    const manifestContent = readSingleRow(manifestRes.data)?.content;
+    if (typeof manifestContent !== "string") return null;
+    const manifestBytes = new TextEncoder().encode(manifestContent);
+    const manifestHit = approval.release.files.some(
+      (entry) =>
+        entry.sha256 === hashBytes(manifestBytes) &&
+        entry.bytes === manifestBytes.length,
+    );
+    if (!manifestHit) return null;
+    // Descriptor map bound to the approval by hash-multiset equality.
+    const releaseMap = verifyDevThemeReleaseMap(
+      readSingleRow(releaseRes.data)?.content,
+      key,
+      version,
+      { manifest: approval.manifest, files: approval.release.files },
+    );
+    if (!releaseMap) return null;
+    return projectDevThemeBinding({
+      isActive: true,
+      sourceKey: key,
+      installedFingerprint: fingerprint,
+      release: approval.release,
+      assetOrigin: origin,
+    });
+  } catch {
+    return null;
+  }
+}
+
+/* ------------------------------------- Level B asset serving (`/t/…`) */
+
+/** Requested release file, parsed from the `/t/` splat. */
+export type DevThemeAssetRequest = {
+  themeId: string;
+  version: string;
+  assetPath: string;
+};
+
+const DEV_THEME_MAX_ASSET_PATH = 512;
+
+/**
+ * Split + single-decode the `/t/` splat (`<themeId>/<version>/<path…>`).
+ * Returns null for anything unaddressable: wrong arity, mutable versions
+ * (`latest` fails the semver pin), traversal (`.`, `..`, decoded
+ * separators, backslashes, NUL), dotfiles (the lane-internal
+ * `.approval.json` descriptor is never addressable), or overlong paths.
+ * Normalize-then-reject, never sanitise.
+ */
+export function parseDevThemeAssetPath(
+  splat: string,
+): DevThemeAssetRequest | null {
+  try {
+    if (typeof splat !== "string" || !splat) return null;
+    const raw = splat.split("/");
+    if (raw.length < 3) return null;
+    const parts: string[] = [];
+    for (const segment of raw) {
+      let decoded: string;
+      try {
+        decoded = decodeURIComponent(segment);
+      } catch {
+        return null;
+      }
+      if (
+        !decoded ||
+        decoded === "." ||
+        decoded === ".." ||
+        decoded.includes("/") ||
+        decoded.includes("\\") ||
+        decoded.includes("\0")
+      ) {
+        return null;
+      }
+      parts.push(decoded);
+    }
+    const [themeId, version, ...rest] = parts as [string, string, ...string[]];
+    if (!DEV_THEME_NAME_RE.test(themeId)) return null;
+    if (!DEV_THEME_VERSION_RE.test(version)) return null;
+    if (rest.some((segment) => segment.startsWith("."))) return null;
+    const assetPath = rest.join("/");
+    if (!assetPath || assetPath.length > DEV_THEME_MAX_ASSET_PATH) return null;
+    if (assetPath.includes("..")) return null;
+    return { themeId, version, assetPath };
+  } catch {
+    return null;
+  }
+}
+
+/** Servable content type for a release file path, or null (never served). */
+export function devThemeAssetContentType(assetPath: string): string | null {
+  const lower = assetPath.toLowerCase();
+  if (
+    lower.endsWith(".js") ||
+    lower.endsWith(".mjs") ||
+    lower.endsWith(".cjs")
+  ) {
+    return "text/javascript; charset=utf-8";
+  }
+  if (lower.endsWith(".css")) return "text/css; charset=utf-8";
+  if (lower.endsWith(".map") || lower.endsWith(".json")) {
+    return "application/json; charset=utf-8";
+  }
+  if (lower.endsWith(".png")) return "image/png";
+  if (lower.endsWith(".jpg") || lower.endsWith(".jpeg")) return "image/jpeg";
+  if (lower.endsWith(".gif")) return "image/gif";
+  if (lower.endsWith(".webp")) return "image/webp";
+  if (lower.endsWith(".avif")) return "image/avif";
+  if (lower.endsWith(".ico")) return "image/x-icon";
+  if (lower.endsWith(".svg")) return "image/svg+xml";
+  if (lower.endsWith(".woff2")) return "font/woff2";
+  if (lower.endsWith(".woff")) return "font/woff";
+  if (lower.endsWith(".ttf")) return "font/ttf";
+  if (lower.endsWith(".otf")) return "font/otf";
+  if (lower.endsWith(".eot")) return "application/vnd.ms-fontobject";
+  return null;
+}
+
+/** Binary-served extensions: content rides base64 in the text column. */
+function devThemeAssetIsBinary(assetPath: string): boolean {
+  return devThemeAssetEncoding(assetPath) === "base64";
+}
+
+/**
+ * Storage encoding for a release file path: `text` (raw UTF-8 in the text
+ * column) or `base64` (binary bytes, base64 in the text column). Null when
+ * the path is not servable at all. Single source of truth shared by the
+ * install persist and the serve decode, so the two can never disagree.
+ */
+export function devThemeAssetEncoding(
+  assetPath: string,
+): "text" | "base64" | null {
+  if (!devThemeAssetContentType(assetPath)) return null;
+  const lower = assetPath.toLowerCase();
+  if (/\.(js|mjs|cjs|css|map|json|svg)$/.test(lower)) return "text";
+  return "base64";
+}
+
+/**
+ * `theme_assets` kind for a release file path (informational + future
+ * sweep; the serve lane keys off the extension, never this column). Null
+ * when the path is not persist-worthy (unservable kinds are skipped at
+ * persist so no dead rows accumulate — serving them 404s regardless).
+ */
+export function devThemeAssetKind(assetPath: string): string | null {
+  const contentType = devThemeAssetContentType(assetPath);
+  if (!contentType) return null;
+  const lower = assetPath.toLowerCase();
+  if (/\.(js|mjs|cjs)$/.test(lower)) return "js";
+  if (lower.endsWith(".css")) return "css";
+  if (lower.endsWith(".map") || lower.endsWith(".json")) return "json";
+  if (/\.(woff2?|ttf|otf|eot)$/.test(lower)) return "font";
+  return "image";
+}
+
+function decodeDevThemeAssetBytes(
+  assetPath: string,
+  content: unknown,
+): Uint8Array<ArrayBuffer> | null {
+  try {
+    if (typeof content !== "string") return null;
+    if (!devThemeAssetIsBinary(assetPath)) {
+      return new TextEncoder().encode(content);
+    }
+    const binary = Buffer.from(content, "base64");
+    if (!binary.length) return null;
+    return Uint8Array.from(binary);
+  } catch {
+    return null;
+  }
+}
+
+export type DevThemeAssetOutcome =
+  | {
+      status: 200;
+      body: Uint8Array<ArrayBuffer>;
+      headers: Record<string, string>;
+    }
+  | { status: 404; reason: string };
+
+function devThemeAssetHeaders(assetPath: string, contentType: string) {
+  const headers: Record<string, string> = {
+    "content-type": contentType,
+    "x-content-type-options": "nosniff",
+    "cache-control": "public, max-age=31536000, immutable",
+  };
+  // Stored-XSS backstop: the bundle gate already refuses active SVG, but a
+  // directly-navigated SVG on the platform origin would otherwise execute —
+  // the sandbox response header neuters it as a document while `<img>`
+  // usage is unaffected.
+  if (assetPath.toLowerCase().endsWith(".svg")) {
+    headers["content-security-policy"] = "sandbox";
+  }
+  return headers;
+}
+
+/**
+ * Authorize + shape the response for one requested release file.
+ * `approvalRows` are the stored `.approval.json` snapshots for the
+ * addressed namespace (any merchant — the URL is merchant-free);
+ * `mapRows` are the stored `release.json` descriptors; `assetRows` are the
+ * stored rows for the addressed file name. Verification chain: at least one
+ * approval snapshot must recompute AND pass the real activation gate
+ * (multiple DISTINCT clean fingerprints refuse as ambiguous rather than
+ * serving possibly-unapproved bytes); the descriptor map must bind to that
+ * approval by hash-multiset equality; served bytes must hash to the map
+ * entry (hence to approved bytes). Never throws.
+ */
+export function resolveDevThemeAsset(
+  requested: DevThemeAssetRequest,
+  approvalRows: unknown,
+  mapRows: unknown,
+  assetRows: unknown,
+): DevThemeAssetOutcome {
+  try {
+    const contentType = devThemeAssetContentType(requested.assetPath);
+    if (!contentType) return { status: 404, reason: "refused_kind" };
+    // Approval snapshots first: recompute + the real activation gate each.
+    // The named fingerprint rides inside the snapshot and is verified by
+    // recompute within `verifyDevThemeApprovalSnapshot`.
+    const approvals = (
+      Array.isArray(approvalRows) ? approvalRows : [approvalRows]
+    )
+      .map((row) => {
+        const content = readSingleRow(row)?.content;
+        const parsed = parseStoredJson(content);
+        const named =
+          parsed && typeof parsed === "object"
+            ? (parsed as Record<string, unknown>).fingerprint
+            : null;
+        if (
+          typeof named !== "string" ||
+          !DEV_THEME_FINGERPRINT_RE.test(named)
+        ) {
+          return null;
+        }
+        return verifyDevThemeApprovalSnapshot(
+          content,
+          requested.themeId,
+          named,
+        );
+      })
+      .filter(
+        (verified): verified is NonNullable<typeof verified> =>
+          verified !== null,
+      );
+    if (approvals.length === 0)
+      return { status: 404, reason: "unknown_version" };
+    const fingerprints = new Set(
+      approvals.map((entry) => entry.release.fingerprint),
+    );
+    if (fingerprints.size > 1)
+      return { status: 404, reason: "ambiguous_release" };
+    const approval = approvals[0]!;
+    if (approval.manifest.version !== requested.version) {
+      return { status: 404, reason: "unknown_version" };
+    }
+    // Descriptor map bound to the SAME approval (multiset equality inside;
+    // a same-slug same-version resubmission with different bytes refuses).
+    const maps = (Array.isArray(mapRows) ? mapRows : [mapRows])
+      .map((row) => readSingleRow(row)?.content)
+      .map((content) =>
+        verifyDevThemeReleaseMap(
+          content,
+          requested.themeId,
+          requested.version,
+          {
+            manifest: approval.manifest,
+            files: approval.release.files,
+          },
+        ),
+      )
+      .filter(
+        (verified): verified is VerifiedDevThemeRelease => verified !== null,
+      );
+    if (maps.length === 0) return { status: 404, reason: "unknown_version" };
+    const descriptor = maps[0]!;
+    const entry = descriptor.files.find(
+      (file) => file.path === requested.assetPath,
+    );
+    if (!entry) return { status: 404, reason: "missing" };
+    const candidates = Array.isArray(assetRows) ? assetRows : [assetRows];
+    for (const candidate of candidates) {
+      const bytes = decodeDevThemeAssetBytes(
+        requested.assetPath,
+        readSingleRow(candidate)?.content,
+      );
+      if (!bytes) continue;
+      if (bytes.length !== entry.bytes) continue;
+      if (bytes.length > DEV_THEME_BUNDLE_LIMITS.maxEntryBytes) continue;
+      if (hashBytes(bytes) !== entry.sha256) continue;
+      return {
+        status: 200,
+        body: bytes,
+        headers: devThemeAssetHeaders(requested.assetPath, contentType),
+      };
+    }
+    return { status: 404, reason: "fingerprint_mismatch" };
+  } catch {
+    return { status: 404, reason: "internal" };
+  }
 }
 
 export type { TemplateKey };

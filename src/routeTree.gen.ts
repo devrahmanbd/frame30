@@ -78,6 +78,7 @@ import { Route as RootTenantsRouteImport } from './routes/root/tenants'
 import { Route as RootTrialRouteImport } from './routes/root/trial'
 import { Route as RootUsersRouteImport } from './routes/root/users'
 import { Route as SitemapsKindRouteImport } from './routes/sitemaps.$kind'
+import { Route as TSplatRouteImport } from './routes/t.$'
 import { Route as ThemePreviewKeyRouteImport } from './routes/theme-preview.$key'
 import { Route as DotwellKnownAcmeChallengeTokenRouteImport } from './routes/[.]well-known.acme-challenge.$token'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
@@ -575,6 +576,11 @@ const RootUsersRoute = RootUsersRouteImport.update({
 const SitemapsKindRoute = SitemapsKindRouteImport.update({
   id: '/sitemaps/$kind',
   path: '/sitemaps/$kind',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TSplatRoute = TSplatRouteImport.update({
+  id: '/t/$',
+  path: '/t/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ThemePreviewKeyRoute = ThemePreviewKeyRouteImport.update({
@@ -1520,6 +1526,7 @@ export interface FileRoutesByFullPath {
   '/root/trial': typeof RootTrialRoute
   '/root/users': typeof RootUsersRoute
   '/sitemaps/$kind': typeof SitemapsKindRoute
+  '/t/$': typeof TSplatRoute
   '/theme-preview/$key': typeof ThemePreviewKeyRoute
   '/blog/': typeof BlogIndexRoute
   '/docs/': typeof DocsIndexRoute
@@ -1742,6 +1749,7 @@ export interface FileRoutesByTo {
   '/root/trial': typeof RootTrialRoute
   '/root/users': typeof RootUsersRoute
   '/sitemaps/$kind': typeof SitemapsKindRoute
+  '/t/$': typeof TSplatRoute
   '/theme-preview/$key': typeof ThemePreviewKeyRoute
   '/blog': typeof BlogIndexRoute
   '/docs': typeof DocsIndexRoute
@@ -1968,6 +1976,7 @@ export interface FileRoutesById {
   '/root/trial': typeof RootTrialRoute
   '/root/users': typeof RootUsersRoute
   '/sitemaps/$kind': typeof SitemapsKindRoute
+  '/t/$': typeof TSplatRoute
   '/theme-preview/$key': typeof ThemePreviewKeyRoute
   '/blog/': typeof BlogIndexRoute
   '/docs/': typeof DocsIndexRoute
@@ -2194,6 +2203,7 @@ export interface FileRouteTypes {
     | '/root/trial'
     | '/root/users'
     | '/sitemaps/$kind'
+    | '/t/$'
     | '/theme-preview/$key'
     | '/blog/'
     | '/docs/'
@@ -2416,6 +2426,7 @@ export interface FileRouteTypes {
     | '/root/trial'
     | '/root/users'
     | '/sitemaps/$kind'
+    | '/t/$'
     | '/theme-preview/$key'
     | '/blog'
     | '/docs'
@@ -2641,6 +2652,7 @@ export interface FileRouteTypes {
     | '/root/trial'
     | '/root/users'
     | '/sitemaps/$kind'
+    | '/t/$'
     | '/theme-preview/$key'
     | '/blog/'
     | '/docs/'
@@ -2843,6 +2855,7 @@ export interface RootRouteChildren {
   PkgSplatRoute: typeof PkgSplatRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
   SitemapsKindRoute: typeof SitemapsKindRoute
+  TSplatRoute: typeof TSplatRoute
   ThemePreviewKeyRoute: typeof ThemePreviewKeyRoute
   BlogIndexRoute: typeof BlogIndexRoute
   DocsIndexRoute: typeof DocsIndexRoute
@@ -3396,6 +3409,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemaps/$kind'
       fullPath: '/sitemaps/$kind'
       preLoaderRoute: typeof SitemapsKindRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/t/$': {
+      id: '/t/$'
+      path: '/t/$'
+      fullPath: '/t/$'
+      preLoaderRoute: typeof TSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/theme-preview/$key': {
@@ -4851,6 +4871,7 @@ const rootRouteChildren: RootRouteChildren = {
   PkgSplatRoute: PkgSplatRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
   SitemapsKindRoute: SitemapsKindRoute,
+  TSplatRoute: TSplatRoute,
   ThemePreviewKeyRoute: ThemePreviewKeyRoute,
   BlogIndexRoute: BlogIndexRoute,
   DocsIndexRoute: DocsIndexRoute,
