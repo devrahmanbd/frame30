@@ -28,7 +28,10 @@
  *   (exactly one active, mirroring `activateTheme`) and auditing
  *   `dev_theme.activated` into the existing `theme_audit` shape (no
  *   migration — free-form audit columns, same argument
- *   `dev-theme-review.ts` makes). Every refusal happens BEFORE any write.
+ *   `dev-theme-review.ts` makes). The audit insert is error-checked: a lost
+ *   audit reverts the just-set flag and fails the activation (no
+ *   live-but-unaudited row, same posture as the install lane's K3 audit-kill
+ *   compensation). Every refusal happens BEFORE any write.
  *
  * Capability → grant map (least-privilege; rendering-only capabilities grant
  * no bridge scope — animation/WebGL execute in the frame, they are not data
@@ -432,18 +435,41 @@ export async function activateDevThemeInstall(
     .eq("id", input.themeId);
   if (error) throw error;
 
-  await db.from("theme_audit").insert({
-    merchant_id: merchantId,
-    theme_id: input.themeId,
-    actor: input.actorId ?? null,
-    action: "dev_theme.activated",
-    before: null,
-    after: {
-      fingerprint: activation.fingerprint,
-      release_id: input.release.id,
-      version: activation.version,
-    },
-  });
+  let auditError: unknown;
+  try {
+    ({ error: auditError } = await db.from("theme_audit").insert({
+      merchant_id: merchantId,
+      theme_id: input.themeId,
+      actor: input.actorId ?? null,
+      action: "dev_theme.activated",
+      before: null,
+      after: {
+        fingerprint: activation.fingerprint,
+        release_id: input.release.id,
+        version: activation.version,
+      },
+    }));
+  } catch (e) {
+    auditError = e;
+  }
+  if (auditError) {
+    // No live-but-unaudited row (same posture as the install lane's K3
+    // audit-kill compensation): best-effort revert of the just-set flag,
+    // then fail loudly — a lost audit never passes silently.
+    try {
+      await db
+        .from("store_themes")
+        .update({ is_active: false })
+        .eq("merchant_id", merchantId)
+        .eq("id", input.themeId);
+    } catch {
+      // The revert is best-effort; the audit failure stays the thrown error.
+    }
+    fail(
+      "dev_theme_activate.audit_failed",
+      "Activation audit row was not recorded.",
+    );
+  }
 
   return { themeId: input.themeId, fingerprint: activation.fingerprint };
 }

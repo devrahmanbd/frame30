@@ -16,6 +16,39 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased] (frame30) — Extension blockers: schemas, one registry, real renderers, Level B themes
 
+### Added — close-out (E2E journeys, CI restore, durable review store, first theme-owned widget)
+
+- Two cold browser journeys: `.e2e/plugin-anonymous-journey.spec.ts`
+  (parse → adapter → tray registry → insert → generated controls →
+  validate/defaults → presentation, plus public preview render and
+  hostile-inert proof; auth-gated tray-click/save/publish steps explicitly
+  skipped — auth stubbing forbidden) and
+  `.e2e/levelb-theme-sandbox.spec.ts` (assemble → review → publish →
+  activate → pinned-URL `allow-scripts`-only frame, zero theme code on
+  host, themed storefront render). Both green cold (15 pass, 3
+  auth-skips, 0 fail).
+- `.circleci/config.yml` restored verbatim from `1185f440^` (274 lines,
+  YAML-validated, all 13 `bun run` targets + SAST flags + e2e spec refs
+  audited present). Remote builds still need owner token access — no green
+  claim; first post-restore build remains the verdict.
+- Durable Level B review store: `dev_theme_releases` (submit idempotency)
+  + `dev_theme_reviews` (approval idempotency) with RLS mirroring
+  `theme_submissions`; fail-closed on store/audit faults with flag revert
+  (no live-but-unaudited row); in-memory store kept as the unit-test seam.
+- First native theme-owned widget: `theme:songoskriti/ornament` (heritage
+  divider, existing kinds only) registered by exact id; renderer executes
+  it natively under the owning theme while foreign/missing cases keep
+  explicit placeholders.
+- Fixed the pre-existing `extension-workflow.spec.ts` static-wiring token
+  (tray now reads `buildTrayRegistry(plugins)`) and gave its cold redirect
+  assertion a 90s budget.
+
+### Verification (close-out)
+
+- New: E2E 15 pass + 3 auth-skips cold; review-persist 9/9 (TDD red→green)
+  with 357 neighbors green; ornament 20/20 with 528 neighbors green;
+  `tsgo` clean; eslint clean; secret scan passed.
+
 ### Added
 
 - Inspector resolves canonical extension nodes by `widgetKey`
@@ -49,8 +82,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   renderer/tray/presentation/registry/theme-contract/inspector/dev-theme
   batches; `tsc` 0 errors repo-wide; eslint 0 errors (pre-existing
   react-refresh warnings only); secret scan passed.
-- Still missing: the two decisive browser journeys (plugin lifecycle,
-  Level B execution) and CI restoration.
+- Still missing at commit time: full-suite browser proof (the two journey
+  specs below are proven cold individually; the whole `.e2e` suite has not
+  run green in one pass) and CI restoration (config restored verbatim —
+  remote builds still need owner token access).
 
 ## [Unreleased] (frame30) — Per-widget plugin props schemas
 

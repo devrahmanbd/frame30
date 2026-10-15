@@ -98,19 +98,21 @@ test("sibling editor routes share the same session gate", async ({ page }) => {
       timeout: 180_000,
     });
     expect(response?.status()).toBeLessThan(500);
+    // Cold-aware budget: first compile of the builder chunk can exceed 30s.
     await expect(page, `unauthenticated ${path} redirects to /auth`).toHaveURL(
       /\/auth/,
-      { timeout: 30_000 },
+      { timeout: 90_000 },
     );
   }
   expect(collector.externalResponses()).toEqual([]);
 });
 
 test("static wiring: palette/insert/controls/canvas/duplicate/publish chain", () => {
-  // Palette shows installed plugin widgets (same resolver semantics as the
-  // legacy WidgetTray, which reads fromPluginManifest over installed rows).
+  // Palette shows installed plugin widgets (one-registry: the tray reads the
+  // route-threaded registry, falling back to buildTrayRegistry over installed
+  // rows when no registry is injected).
   const tray = src("src/components/builder/WidgetTray.tsx");
-  expect(tray.includes("fromPluginManifest(plugins)")).toBe(true);
+  expect(tray.includes("buildTrayRegistry(plugins)")).toBe(true);
   expect(tray.includes("onAddExtension")).toBe(true);
 
   // Insert builds the canonical extension node with schema-cleaned defaults.

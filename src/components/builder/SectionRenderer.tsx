@@ -30,7 +30,10 @@ import { useReveal } from "./reveal";
 import { useMotionFx } from "./motion-fx";
 import { widgetReader } from "./widgets";
 import { resolveWidgetComponent } from "./theme-widgets";
-import { resolveThemePresentation } from "@/lib/theme-presentations";
+import {
+  resolveThemeOwnedComponent,
+  resolveThemePresentation,
+} from "@/lib/theme-presentations";
 import { isExtensionNode, type ExtensionNode } from "@/lib/builder-ast";
 import { resolvePresentation } from "@/lib/widget-presentation";
 import { PluginBlock } from "./PluginBlock";
@@ -505,11 +508,89 @@ export function SectionRenderer({
           </WidgetBoundary>,
         );
       }
-      // Theme-owned owner-definition: no approved theme-owned component
-      // source exists in-repo (theme presentations are keyed by SectionType,
-      // never by `theme:<owner>/...` ids), so even the owning-theme hit keeps
-      // the explicit recoverable placeholder — a genuinely missing renderer,
+      // Theme-owned owner-definition: the owning theme ships a native
+      // trusted-source component (approved in-repo theme source, same
+      // process as builtins — no sandbox). A registered hit renders
+      // through the same boundary + chrome wrap as every native lane.
+      // Recoverable fallbacks (foreign theme, or an owner-definition with
+      // no approved component yet) keep the explicit placeholder below —
       // fail-closed, never another owner's component.
+      if (
+        presentation.ok &&
+        presentation.mode === "theme-owned" &&
+        presentation.presentation === "owner-definition"
+      ) {
+        const Owned = resolveThemeOwnedComponent(presentation.widgetId);
+        if (Owned) {
+          // Extension nodes are leaves, but a hand-built section may still
+          // carry children: recurse with the legacy child prop list so
+          // nested output stays identical to the non-extension path.
+          const renderOwnedChildren = () =>
+            (section.children ?? []).map((child) => (
+              <SectionRenderer
+                key={child.id}
+                section={child}
+                productSlot={productSlot}
+                collectionSlot={collectionSlot}
+                contextSlots={contextSlots}
+                template={template}
+                storeSlug={storeSlug}
+                themeKey={themeKey}
+                editing={editing}
+                device={device}
+                locale={locale}
+                selectedIds={selectedIds}
+                onInlineEdit={onInlineEdit}
+                linkBase={linkBase}
+                registry={registry}
+              />
+            ));
+          return wrap(
+            <WidgetBoundary type={section.type} editing={editing}>
+              <Owned
+                section={section}
+                str={str}
+                bool={bool}
+                int={int}
+                money={money}
+                locale={locale}
+                Heading={primary ? "h1" : "h2"}
+                primary={primary}
+                editing={editing}
+                device={device}
+                template={template}
+                storeSlug={storeSlug}
+                data={nodeData}
+                productSlot={productSlot}
+                collectionSlot={collectionSlot}
+                link={(href: string) => {
+                  if (
+                    !href ||
+                    href.startsWith("http") ||
+                    href.startsWith("mailto:") ||
+                    href.startsWith("tel:") ||
+                    href === "#"
+                  )
+                    return href;
+                  const h = href.startsWith("/") ? href : `/${href}`;
+                  return linkBase ? `${linkBase}${h}` : h;
+                }}
+                renderChildren={renderOwnedChildren}
+                {...(onInlineEdit
+                  ? {
+                      inlineEdit: (key: string, value: string) =>
+                        onInlineEdit(section.id, key, value),
+                    }
+                  : {})}
+              />
+            </WidgetBoundary>,
+          );
+        }
+      }
+      // Recoverable theme-owned outcome (foreign-theme fallback, missing
+      // owner-definition component, or an unregistered id): the EXISTING
+      // unavailable placeholder — no new design, data preserved, never
+      // another owner's component.
       return editing ? (
         <div className="rounded-fq-md border border-dashed border-border p-4 text-sm text-muted-foreground">
           Widget preview unavailable

@@ -85,4 +85,84 @@ export function resolveThemePresentation(
 /** Test-only reset: drops every registration (isolates suites). */
 export function clearThemePresentations(): void {
   PRESENTATIONS.clear();
+  THEME_OWNED_COMPONENTS.clear();
+}
+
+/* ------------------------------------------------- theme-owned widgets */
+
+/**
+ * Native theme-owned extension components (NATIVE theme-owned lane).
+ *
+ * Maps an exact registry widget id (`theme:<owner>/...`) to its trusted
+ * in-repo component. Unlike the `SectionType`-keyed table above, this map
+ * is keyed by the full widget identity the presentation resolver
+ * (`resolvePresentation` in `src/lib/widget-presentation.ts`) recognizes,
+ * so the renderer (`SectionRenderer` theme-owned branch) can execute the
+ * owning-theme hit natively — same process as builtins, no sandbox.
+ *
+ * Contracts (mirroring the table above):
+ * - Registration is first-wins: a duplicate registration warns and keeps
+ *   the first Component. Registration never throws (invalid input warns
+ *   and returns, so a hostile id can never evict an approved component).
+ * - Resolution never throws: unknown / null / garbage ids return undefined
+ *   (the caller keeps the explicit recoverable placeholder), never another
+ *   owner's component.
+ * - This module names no theme and branches on no theme: lookup is an
+ *   opaque id → Component map. Only theme modules call the register side.
+ */
+const THEME_OWNED_COMPONENTS = new Map<string, WidgetComponent>();
+
+/**
+ * Claim one `theme:<owner>/...` widget id for a native Component. Owned
+ * by themes: only theme modules call this (typically at module init,
+ * alongside their WidgetDef registration). First registration wins;
+ * duplicates warn and are ignored. Never throws.
+ */
+export function registerThemeOwnedComponent(
+  widgetId: string,
+  Component: WidgetComponent,
+): void {
+  if (
+    typeof widgetId !== "string" ||
+    widgetId.trim().length === 0 ||
+    !widgetId.trim().startsWith("theme:")
+  ) {
+    console.warn(
+      `[theme-presentations] ignoring theme-owned registration for ${String(widgetId)}: not a theme widget id.`,
+    );
+    return;
+  }
+  if (typeof Component !== "function") {
+    console.warn(
+      `[theme-presentations] ignoring theme-owned registration for ${widgetId.trim()}: not a component.`,
+    );
+    return;
+  }
+  const key = widgetId.trim();
+  if (THEME_OWNED_COMPONENTS.has(key)) {
+    console.warn(
+      `[theme-presentations] duplicate theme-owned registration for ${key} ignored; keeping the first.`,
+    );
+    return;
+  }
+  THEME_OWNED_COMPONENTS.set(key, Component);
+}
+
+/**
+ * Resolve the native component for a `theme:<owner>/...` widget id, or
+ * undefined when nothing is registered. Never throws — unknown ids and
+ * garbage input resolve to undefined instead of leaking another owner's
+ * brand.
+ */
+export function resolveThemeOwnedComponent(
+  widgetId: string | null | undefined,
+): WidgetComponent | undefined {
+  try {
+    if (typeof widgetId !== "string") return undefined;
+    const key = widgetId.trim();
+    if (!key) return undefined;
+    return THEME_OWNED_COMPONENTS.get(key);
+  } catch {
+    return undefined;
+  }
 }

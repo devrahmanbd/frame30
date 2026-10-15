@@ -35,8 +35,23 @@
  * parks the release and clears the pointer; remove-compromised quarantines
  * the bytes (hashes retained for forensics) under a separate terminal
  * status that can never publish again.
+ *
+ * Durability (this module's second half): the pure store above is unchanged
+ * and stays the unit-test seam. The `persist*` / `load*` adapter below backs
+ * it with Supabase (`dev_theme_releases` + `dev_theme_reviews`, migration
+ * 20261015000000): submissions upsert on (merchant, theme, fingerprint),
+ * approvals upsert on (merchant, theme, fingerprint, decision) — a
+ * re-approval returns the existing row, never a duplicate — and every DB
+ * fault throws before any trust decision (fail-closed: an unreadable store
+ * refuses, it never default-allows). Audit events are still returned, not
+ * written: the caller persists them with `insertDevThemeAuditRow`, which
+ * throws when the audit row does not land. Durable addressing is always the
+ * fingerprint, never a row id — the pure `releaseId` is accepted for
+ * signature symmetry and ignored for lookups.
  */
 
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
 import type { DevThemeManifest } from "./dev-theme-manifest";
 import type { DevThemeHashedFile } from "./dev-theme-bundle";
 
@@ -674,3 +689,728 @@ export function createDevThemeReleaseStore() {
 export type DevThemeReleaseStore = ReturnType<
   typeof createDevThemeReleaseStore
 >;
+
+/* ------------------------------------------------ Supabase-backed durability */
+
+export const DEV_THEME_RELEASES_TABLE = "dev_theme_releases";
+export const DEV_THEME_REVIEWS_TABLE = "dev_theme_reviews";
+
+type ReviewStoreClient = SupabaseClient<Database>;
+
+/**
+ * Minimal table accessor covering exactly the query shapes the adapter
+ * issues. The real client is cast to this (the generated `Database` type has
+ * no dev_theme tables checked in — types.ts is generated, not hand-edited);
+ * FakeDb satisfies it structurally through `asClient()`.
+ */
+type StoreDbQuery = PromiseLike<{ data: unknown; error: unknown }> & {
+  select(columns?: string): StoreDbQuery;
+  eq(column: string, value: unknown): StoreDbQuery;
+  order(column: string, opts?: { ascending?: boolean }): StoreDbQuery;
+  limit(n: number): StoreDbQuery;
+  insert(rows: Record<string, unknown>): StoreDbQuery;
+  update(patch: Record<string, unknown>): StoreDbQuery;
+  maybeSingle(): Promise<{ data: unknown; error: unknown }>;
+  single(): Promise<{ data: unknown; error: unknown }>;
+};
+
+type StoreDb = { from(table: string): StoreDbQuery };
+
+function storeDb(db: ReviewStoreClient): StoreDb {
+  return db as unknown as StoreDb;
+}
+
+export type PersistedDevThemeReleaseRow = {
+  id: string;
+  merchant_id: string;
+  theme_id: string;
+  version: string;
+  fingerprint: string;
+  status: string;
+  submitted_by: string;
+  submitted_at: string;
+  published_at: string | null;
+  manifest: unknown;
+  files: unknown;
+};
+
+export type PersistedDevThemeReviewRow = {
+  id: string;
+  merchant_id: string;
+  theme_id: string;
+  fingerprint: string;
+  decision: "approve" | "reject";
+  reviewer_id: string;
+  reviewer_role: DevThemeReviewerRole;
+  reason: string;
+  reviewed_at: string;
+  release_id: string | null;
+};
+
+export type PersistDevThemeReviewInput = ReviewInput & {
+  /** Durable addressing is fingerprint-bound; the pure row id is ignored. */
+  themeId: string;
+  fingerprint: string;
+};
+
+export type PublishDevThemeReleaseInput = {
+  merchantId: string;
+  themeId: string;
+  fingerprint: string;
+  actor: DevThemeActor;
+  publishedAt: string;
+};
+
+const FINGERPRINT_RE = /^[0-9a-f]{64}$/;
+const KNOWN_STATUSES = [
+  "draft",
+  "in_review",
+  "approved",
+  "published",
+  "superseded",
+  "rejected",
+  "revoked",
+  "removed",
+] as const;
+
+function requireFingerprint(value: string): string {
+  requireId(value, "fingerprint");
+  if (!FINGERPRINT_RE.test(value)) {
+    fail("dev_theme.fingerprint_invalid", "Fingerprint must be sha256 hex.");
+  }
+  return value;
+}
+
+function isDuplicateKey(error: unknown): boolean {
+  const err = error as { code?: unknown; message?: unknown } | null;
+  if (err?.code === "23505") return true;
+  return (
+    typeof err?.message === "string" && err.message.includes("duplicate key")
+  );
+}
+
+/** Fail-closed: any store read fault refuses, it never resolves to allow. */
+function unreadable(detail: string): never {
+  fail("dev_theme.store_unreadable", detail);
+}
+
+function unwritable(detail: string): never {
+  fail("dev_theme.store_unwritable", detail);
+}
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return null;
+  }
+  return value as Record<string, unknown>;
+}
+
+function asString(value: unknown): string | null {
+  return typeof value === "string" && value.length > 0 ? value : null;
+}
+
+function decodeReleaseRow(value: unknown): PersistedDevThemeReleaseRow {
+  const row = asRecord(value);
+  const id = row ? asString(row.id) : null;
+  const merchantId = row ? asString(row.merchant_id) : null;
+  const themeId = row ? asString(row.theme_id) : null;
+  const version = row ? asString(row.version) : null;
+  const fingerprint = row ? asString(row.fingerprint) : null;
+  const status = row ? asString(row.status) : null;
+  const submittedBy = row ? asString(row.submitted_by) : null;
+  const submittedAt = row ? asString(row.submitted_at) : null;
+  if (
+    !row ||
+    !id ||
+    !merchantId ||
+    !themeId ||
+    !version ||
+    !fingerprint ||
+    !status ||
+    !submittedBy ||
+    !submittedAt ||
+    !FINGERPRINT_RE.test(fingerprint) ||
+    !(KNOWN_STATUSES as readonly string[]).includes(status)
+  ) {
+    fail("dev_theme.store_corrupt", "Stored release row is malformed.");
+  }
+  return {
+    id,
+    merchant_id: merchantId,
+    theme_id: themeId,
+    version,
+    fingerprint,
+    status,
+    submitted_by: submittedBy,
+    submitted_at: submittedAt,
+    published_at: asString((row as Record<string, unknown>).published_at),
+    manifest: (row as Record<string, unknown>).manifest ?? {},
+    files: (row as Record<string, unknown>).files ?? [],
+  };
+}
+
+function decodeReviewRow(value: unknown): PersistedDevThemeReviewRow {
+  const row = asRecord(value);
+  const decision = row?.decision;
+  const role = row?.reviewer_role;
+  const record = {
+    id: row ? asString(row.id) : null,
+    merchantId: row ? asString(row.merchant_id) : null,
+    themeId: row ? asString(row.theme_id) : null,
+    fingerprint: row ? asString(row.fingerprint) : null,
+    reviewerId: row ? asString(row.reviewer_id) : null,
+    reason: row ? asString(row.reason) : null,
+    reviewedAt: row ? asString(row.reviewed_at) : null,
+  };
+  if (
+    !row ||
+    !record.id ||
+    !record.merchantId ||
+    !record.themeId ||
+    !record.fingerprint ||
+    !record.reviewerId ||
+    !record.reason ||
+    !record.reviewedAt ||
+    !FINGERPRINT_RE.test(record.fingerprint) ||
+    (decision !== "approve" && decision !== "reject") ||
+    !(DEV_THEME_REVIEWER_ROLES as readonly string[]).includes(String(role))
+  ) {
+    fail("dev_theme.store_corrupt", "Stored review row is malformed.");
+  }
+  const releaseId = asString(row.release_id);
+  return {
+    id: record.id,
+    merchant_id: record.merchantId,
+    theme_id: record.themeId,
+    fingerprint: record.fingerprint,
+    decision: decision as "approve" | "reject",
+    reviewer_id: record.reviewerId,
+    reviewer_role: role as DevThemeReviewerRole,
+    reason: record.reason as string,
+    reviewed_at: record.reviewedAt as string,
+    release_id: releaseId,
+  };
+}
+
+function decodeManifest(value: unknown): DevThemeManifest {
+  const manifest = asRecord(value);
+  if (!manifest || typeof manifest.version !== "string") {
+    fail("dev_theme.store_corrupt", "Stored manifest is malformed.");
+  }
+  return manifest as unknown as DevThemeManifest;
+}
+
+function decodeFiles(value: unknown): DevThemeHashedFile[] {
+  if (!Array.isArray(value)) {
+    fail("dev_theme.store_corrupt", "Stored file list is malformed.");
+  }
+  return value.map((entry) => {
+    const file = asRecord(entry);
+    const path = file ? asString(file.path) : null;
+    const sha256 = file ? asString(file.sha256) : null;
+    const bytes = file?.bytes;
+    if (
+      !path ||
+      !sha256 ||
+      !FINGERPRINT_RE.test(sha256) ||
+      typeof bytes !== "number" ||
+      !Number.isFinite(bytes) ||
+      bytes < 0
+    ) {
+      fail("dev_theme.store_corrupt", "Stored file entry is malformed.");
+    }
+    return {
+      path: path as string,
+      sha256: sha256 as string,
+      bytes: bytes as number,
+    };
+  });
+}
+
+function submissionEvent(
+  row: PersistedDevThemeReleaseRow,
+  actorId: string | null,
+  deduplicated: boolean,
+): DevThemeAuditEvent {
+  return {
+    action: "dev_theme.submitted",
+    merchantId: row.merchant_id,
+    themeId: row.theme_id,
+    releaseId: row.id,
+    actorId,
+    before: null,
+    after: deduplicated
+      ? { fingerprint: row.fingerprint, deduplicated: true }
+      : { fingerprint: row.fingerprint, version: row.version },
+  };
+}
+
+async function findRelease(
+  db: StoreDb,
+  merchantId: string,
+  themeId: string,
+  fingerprint: string,
+): Promise<PersistedDevThemeReleaseRow | null> {
+  let data: unknown;
+  let error: unknown;
+  try {
+    ({ data, error } = await db
+      .from(DEV_THEME_RELEASES_TABLE)
+      .select("*")
+      .eq("merchant_id", merchantId)
+      .eq("theme_id", themeId)
+      .eq("fingerprint", fingerprint)
+      .maybeSingle());
+  } catch (e) {
+    unreadable(e instanceof Error ? e.message : "release read failed");
+  }
+  if (error)
+    unreadable(
+      `release read failed: ${String((error as { message?: unknown }).message ?? error)}`,
+    );
+  if (data === null || data === undefined) return null;
+  return decodeReleaseRow(data);
+}
+
+async function findReview(
+  db: StoreDb,
+  merchantId: string,
+  themeId: string,
+  fingerprint: string,
+  decision: "approve" | "reject",
+): Promise<PersistedDevThemeReviewRow | null> {
+  let data: unknown;
+  let error: unknown;
+  try {
+    ({ data, error } = await db
+      .from(DEV_THEME_REVIEWS_TABLE)
+      .select("*")
+      .eq("merchant_id", merchantId)
+      .eq("theme_id", themeId)
+      .eq("fingerprint", fingerprint)
+      .eq("decision", decision)
+      .maybeSingle());
+  } catch (e) {
+    unreadable(e instanceof Error ? e.message : "review read failed");
+  }
+  if (error)
+    unreadable(
+      `review read failed: ${String((error as { message?: unknown }).message ?? error)}`,
+    );
+  if (data === null || data === undefined) return null;
+  return decodeReviewRow(data);
+}
+
+/**
+ * Durable submit: idempotent on (merchant, theme, fingerprint) — identical
+ * bytes re-resolve the existing row (mirrors the pure store's dedup). A
+ * unique-violation race between the pre-check and the insert re-reads the
+ * winner instead of failing; any other DB fault throws.
+ */
+export async function persistDevThemeSubmission(
+  db: ReviewStoreClient,
+  input: SubmitInput,
+): Promise<{
+  release: PersistedDevThemeReleaseRow;
+  deduplicated: boolean;
+  audit: DevThemeAuditEvent;
+}> {
+  const merchantId = requireId(input.merchantId, "merchant");
+  const themeId = requireId(input.themeId, "theme");
+  const fingerprint = requireFingerprint(input.fingerprint);
+  const submittedAt = requireTimestamp(input.submittedAt);
+  const submittedBy = requireId(input.submittedBy, "submitter");
+  const store = storeDb(db);
+  const existing = await findRelease(store, merchantId, themeId, fingerprint);
+  if (existing) {
+    return {
+      release: existing,
+      deduplicated: true,
+      audit: submissionEvent(existing, submittedBy, true),
+    };
+  }
+  const version =
+    asString((input.manifest as unknown as Record<string, unknown>)?.version) ??
+    "0.0.0";
+  let inserted: unknown;
+  let insertError: unknown;
+  try {
+    ({ data: inserted, error: insertError } = await store
+      .from(DEV_THEME_RELEASES_TABLE)
+      .insert({
+        merchant_id: merchantId,
+        theme_id: themeId,
+        version,
+        fingerprint,
+        status: "in_review",
+        submitted_by: submittedBy,
+        submitted_at: submittedAt,
+        manifest: input.manifest as unknown as Record<string, unknown>,
+        files: input.files as unknown as Record<string, unknown>,
+      })
+      .select("*")
+      .single());
+  } catch (e) {
+    unwritable(e instanceof Error ? e.message : "submission write failed");
+  }
+  if (insertError) {
+    if (isDuplicateKey(insertError)) {
+      const raced = await findRelease(store, merchantId, themeId, fingerprint);
+      if (raced) {
+        return {
+          release: raced,
+          deduplicated: true,
+          audit: submissionEvent(raced, submittedBy, true),
+        };
+      }
+    }
+    unwritable(
+      `submission write failed: ${String((insertError as { message?: unknown }).message ?? insertError)}`,
+    );
+  }
+  const release = decodeReleaseRow(inserted);
+  return {
+    release,
+    deduplicated: false,
+    audit: submissionEvent(release, submittedBy, false),
+  };
+}
+
+/**
+ * Durable review: idempotent on (merchant, theme, fingerprint, decision) —
+ * re-approving the same bytes returns the existing row, never a duplicate.
+ * The release status converges to the decision outcome (so a retry after a
+ * partially-failed first write still lands `approved`); anything past
+ * `in_review` refuses a NEW decision, mirroring the pure store.
+ */
+export async function persistDevThemeReview(
+  db: ReviewStoreClient,
+  input: PersistDevThemeReviewInput,
+): Promise<{
+  review: PersistedDevThemeReviewRow;
+  release: PersistedDevThemeReleaseRow;
+  audit: DevThemeAuditEvent;
+}> {
+  const merchantId = requireId(input.merchantId, "merchant");
+  const themeId = requireId(input.themeId, "theme");
+  const fingerprint = requireFingerprint(input.fingerprint);
+  const reviewer = requireActor(input.reviewer, "reviewer");
+  const reason = requireReason(input.reason);
+  const reviewedAt = requireTimestamp(input.reviewedAt);
+  if (input.decision !== "approve" && input.decision !== "reject") {
+    fail("dev_theme.decision_invalid", "Decision must be approve or reject.");
+  }
+  const decision = input.decision;
+  const store = storeDb(db);
+  const release = await findRelease(store, merchantId, themeId, fingerprint);
+  if (!release) {
+    fail("dev_theme.not_found", "No release carries that fingerprint.");
+  }
+  const outcome = decision === "approve" ? "approved" : "rejected";
+  const action =
+    decision === "approve" ? "dev_theme.reviewed" : "dev_theme.rejected";
+
+  const converged = async (
+    review: PersistedDevThemeReviewRow,
+    current: PersistedDevThemeReleaseRow,
+  ): Promise<PersistedDevThemeReleaseRow> => {
+    if (current.status !== "in_review") return current;
+    let updateError: unknown;
+    try {
+      ({ error: updateError } = await store
+        .from(DEV_THEME_RELEASES_TABLE)
+        .update({ status: outcome })
+        .eq("merchant_id", merchantId)
+        .eq("theme_id", themeId)
+        .eq("fingerprint", fingerprint));
+    } catch (e) {
+      unwritable(e instanceof Error ? e.message : "status write failed");
+    }
+    if (updateError) {
+      unwritable(
+        `status write failed: ${String((updateError as { message?: unknown }).message ?? updateError)}`,
+      );
+    }
+    return { ...current, status: outcome };
+  };
+
+  const auditFor = (
+    current: PersistedDevThemeReleaseRow,
+    review: PersistedDevThemeReviewRow,
+  ): DevThemeAuditEvent => ({
+    action: action as DevThemeAuditEvent["action"],
+    merchantId,
+    themeId,
+    releaseId: current.id,
+    actorId: reviewer.id,
+    before: { status: "in_review" },
+    after: {
+      fingerprint,
+      status: outcome,
+      reviewer_role: reviewer.role,
+      reason,
+      reviewed_at: reviewedAt,
+    },
+  });
+
+  const existing = await findReview(
+    store,
+    merchantId,
+    themeId,
+    fingerprint,
+    decision,
+  );
+  if (existing) {
+    const current = await findRelease(store, merchantId, themeId, fingerprint);
+    const next = current ? await converged(existing, current) : release;
+    return { review: existing, release: next, audit: auditFor(next, existing) };
+  }
+  if (release.status !== "in_review") {
+    fail(
+      "dev_theme.review_state",
+      `Only in_review releases can be reviewed (is ${release.status}).`,
+    );
+  }
+  let inserted: unknown;
+  let insertError: unknown;
+  try {
+    ({ data: inserted, error: insertError } = await store
+      .from(DEV_THEME_REVIEWS_TABLE)
+      .insert({
+        merchant_id: merchantId,
+        theme_id: themeId,
+        fingerprint,
+        decision,
+        reviewer_id: reviewer.id,
+        reviewer_role: reviewer.role,
+        reason,
+        reviewed_at: reviewedAt,
+        release_id: release.id,
+      })
+      .select("*")
+      .single());
+  } catch (e) {
+    unwritable(e instanceof Error ? e.message : "review write failed");
+  }
+  if (insertError) {
+    if (isDuplicateKey(insertError)) {
+      const raced = await findReview(
+        store,
+        merchantId,
+        themeId,
+        fingerprint,
+        decision,
+      );
+      if (raced) {
+        const current = await findRelease(
+          store,
+          merchantId,
+          themeId,
+          fingerprint,
+        );
+        const next = current ? await converged(raced, current) : release;
+        return { review: raced, release: next, audit: auditFor(next, raced) };
+      }
+    }
+    unwritable(
+      `review write failed: ${String((insertError as { message?: unknown }).message ?? insertError)}`,
+    );
+  }
+  const review = decodeReviewRow(inserted);
+  const next = await converged(review, release);
+  return { review, release: next, audit: auditFor(next, review) };
+}
+
+/**
+ * Durable publish: refuses unless the release is approved AND an approve
+ * review binds its exact fingerprint (the same two gates the pure store
+ * enforces). Re-publishing an already-published fingerprint re-resolves it.
+ */
+export async function publishDevThemeRelease(
+  db: ReviewStoreClient,
+  input: PublishDevThemeReleaseInput,
+): Promise<{
+  release: PersistedDevThemeReleaseRow;
+  audit: DevThemeAuditEvent;
+}> {
+  const merchantId = requireId(input.merchantId, "merchant");
+  const themeId = requireId(input.themeId, "theme");
+  const fingerprint = requireFingerprint(input.fingerprint);
+  const actor = requireActor(input.actor);
+  const publishedAt = requireTimestamp(input.publishedAt);
+  const store = storeDb(db);
+  const release = await findRelease(store, merchantId, themeId, fingerprint);
+  if (!release) {
+    fail("dev_theme.not_found", "No release carries that fingerprint.");
+  }
+  if (release.status === "removed") {
+    fail("dev_theme.removed", "A removed release can never publish.");
+  }
+  if (release.status === "published") {
+    return {
+      release,
+      audit: {
+        action: "dev_theme.published",
+        merchantId,
+        themeId,
+        releaseId: release.id,
+        actorId: actor.id,
+        before: null,
+        after: { fingerprint, deduplicated: true, published_at: publishedAt },
+      },
+    };
+  }
+  if (release.status !== "approved") {
+    fail(
+      "dev_theme.approval_required",
+      `Release is ${release.status}: an approval for this exact fingerprint is required before publish.`,
+    );
+  }
+  const approval = await findReview(
+    store,
+    merchantId,
+    themeId,
+    fingerprint,
+    "approve",
+  );
+  if (!approval) {
+    fail(
+      "dev_theme.approval_required",
+      "No review approval covers this exact fingerprint.",
+    );
+  }
+  let updateError: unknown;
+  try {
+    ({ error: updateError } = await store
+      .from(DEV_THEME_RELEASES_TABLE)
+      .update({ status: "published", published_at: publishedAt })
+      .eq("merchant_id", merchantId)
+      .eq("theme_id", themeId)
+      .eq("fingerprint", fingerprint));
+  } catch (e) {
+    unwritable(e instanceof Error ? e.message : "publish write failed");
+  }
+  if (updateError) {
+    unwritable(
+      `publish write failed: ${String((updateError as { message?: unknown }).message ?? updateError)}`,
+    );
+  }
+  const next: PersistedDevThemeReleaseRow = {
+    ...release,
+    status: "published",
+    published_at: publishedAt,
+  };
+  return {
+    release: next,
+    audit: {
+      action: "dev_theme.published",
+      merchantId,
+      themeId,
+      releaseId: release.id,
+      actorId: actor.id,
+      before: { status: release.status },
+      after: { fingerprint, published_at: publishedAt },
+    },
+  };
+}
+
+/**
+ * Durable approval snapshot for the activation/install gates. Throws
+ * `dev_theme.store_unreadable` on ANY store fault (fail-closed — the caller
+ * refuses activation) and returns null only when no release carries the
+ * fingerprint. Malformed stored rows refuse too (`store_corrupt`): an
+ * approval the store cannot vouch for never activates.
+ */
+export async function loadDevThemeApproval(
+  db: ReviewStoreClient,
+  merchantId: string,
+  themeId: string,
+  fingerprint: string,
+): Promise<{ release: DevThemeRelease } | null> {
+  requireId(merchantId, "merchant");
+  requireId(themeId, "theme");
+  requireFingerprint(fingerprint);
+  const store = storeDb(db);
+  const row = await findRelease(store, merchantId, themeId, fingerprint);
+  if (!row) return null;
+  let data: unknown;
+  let error: unknown;
+  try {
+    ({ data, error } = await store
+      .from(DEV_THEME_REVIEWS_TABLE)
+      .select("*")
+      .eq("merchant_id", merchantId)
+      .eq("theme_id", themeId)
+      .eq("fingerprint", fingerprint)
+      .order("reviewed_at", { ascending: true }));
+  } catch (e) {
+    unreadable(e instanceof Error ? e.message : "review read failed");
+  }
+  if (error)
+    unreadable(
+      `review read failed: ${String((error as { message?: unknown }).message ?? error)}`,
+    );
+  const reviews = ((data ?? []) as unknown[]).map((entry) => {
+    const review = decodeReviewRow(entry);
+    return {
+      reviewerId: review.reviewer_id,
+      reviewerRole: review.reviewer_role,
+      decision: review.decision,
+      reason: review.reason,
+      reviewedAt: review.reviewed_at,
+      fingerprint: review.fingerprint,
+    };
+  });
+  const manifest = decodeManifest(row.manifest);
+  const files = decodeFiles(row.files);
+  if (!(KNOWN_STATUSES as readonly string[]).includes(row.status)) {
+    fail("dev_theme.store_corrupt", "Stored release status is unknown.");
+  }
+  return {
+    release: {
+      id: row.id,
+      merchantId: row.merchant_id,
+      themeId: row.theme_id,
+      version: row.version,
+      manifest,
+      files,
+      fileHashes: files.map((f) => ({ path: f.path, sha256: f.sha256 })),
+      fingerprint: row.fingerprint,
+      status: row.status as DevThemeRelease["status"],
+      submittedBy: row.submitted_by,
+      submittedAt: row.submitted_at,
+      reviews,
+      rollbackOf: null,
+      publishedAt: row.published_at,
+    },
+  };
+}
+
+/**
+ * Durable audit write for a review-lane transition event, shaped for the
+ * EXISTING `theme_audit` table (no migration — free-form audit columns).
+ * Throws `dev_theme.audit_failed` when the row does not land: a lost audit
+ * fails loudly, it never passes silently.
+ */
+export async function insertDevThemeAuditRow(
+  db: ReviewStoreClient,
+  event: DevThemeAuditEvent,
+): Promise<void> {
+  let error: unknown;
+  try {
+    ({ error } = await storeDb(db)
+      .from("theme_audit")
+      .insert(toThemeAuditRow(event)));
+  } catch (e) {
+    fail(
+      "dev_theme.audit_failed",
+      e instanceof Error ? e.message : "audit write failed",
+    );
+  }
+  if (error) {
+    fail(
+      "dev_theme.audit_failed",
+      String((error as { message?: unknown }).message ?? error),
+    );
+  }
+}

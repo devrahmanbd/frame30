@@ -1,0 +1,274 @@
+# Framique CI — CircleCI is the ONLY CI system. Do not add GitHub Actions
+# (see AGENTS.md "CI" section). This pipeline mirrors `.github/workflows`
+# tooling choices verified against current CircleCI docs via Context7:
+# - `circleci/node` orb provides first-class Bun support (`install-bun`,
+#   `install-packages` with `pkg-manager: bun`, frozen-lockfile installs
+#   that honour the bunfig.toml 24h supply-chain guard).
+# - No `cimg/bun` image exists — Bun is installed onto `cimg/node`.
+# - E2E uses the `-browsers` image variant + Playwright's own browser
+#   install (`--with-deps` needs the apt access convenience images provide).
+version: 2.1
+
+orbs:
+  node: circleci/node@7.2
+
+executors:
+  bun-executor:
+    docker:
+      - image: cimg/node:24.21
+    resource_class: medium
+  e2e-executor:
+    docker:
+      - image: cimg/node:24.21-browsers
+    resource_class: large
+
+commands:
+  setup-bun:
+    description: Install pinned Bun and project dependencies (frozen lockfile).
+    steps:
+      - node/install:
+          install-bun: true
+          bun-version: "1.3.14"
+      - node/install-packages:
+          pkg-manager: bun
+          app-dir: ~/project
+
+jobs:
+  lint-typecheck:
+    executor: bun-executor
+    steps:
+      - checkout
+      - setup-bun
+      - run:
+          name: ESLint
+          command: bun run lint
+      - run:
+          name: Typecheck (tsgo --noEmit)
+          command: bun run typecheck
+      - run:
+          name: Ops shell scripts (bash -n)
+          command: |
+            shopt -s nullglob
+            for f in ops/backup/*.sh; do bash -n "$f"; done
+            echo "syntax OK"
+      - run:
+          name: Harness registry (schema check, no execution)
+          command: node harness/run.mjs --list > /dev/null
+
+  unit-contract:
+    executor: bun-executor
+    steps:
+      - checkout
+      - setup-bun
+      - run:
+          name: Unit + contract tests (Vitest)
+          command: bun run test
+      - run:
+          name: Contract gate
+          command: bun run test:contracts
+
+  scan:
+    parameters:
+      sast-mode:
+        description: "diff scans changed code vs the PR-aware base (fail-closed); full scans the whole tree (nightly sweep)."
+        type: enum
+        enum: ["diff", "full"]
+        default: "diff"
+    executor: bun-executor
+    steps:
+      - checkout
+      - setup-bun
+      - run:
+          name: Secret scan (blocking)
+          command: bun run secrets:scan
+      - run:
+          name: SAST suspicious-diff (blocking)
+          command: |
+            if [ "<< parameters.sast-mode >>" = "full" ]; then
+              # Scheduled whole-tree sweep (nightly-full-sast workflow): the
+              # full tree is the target set, so no base ref is needed.
+              node scripts/sast-scan.mjs --full
+              # Preserve the scanner's exit code; never fall through to diff mode.
+              exit "$?"
+            fi
+            # Fail-closed base resolution — first hit wins:
+            #   1. SAST_BASE when explicitly set (manual override / project env;
+            #      must name a ref fetchable below, e.g. origin/main).
+            #   2. Fork-PR context (CIRCLE_PR_NUMBER): destination branch via
+            #      the GitHub API when a token is available (best effort —
+            #      any failure falls through to the branch default below).
+            #   3. Branch-aware default: builds on `frame30` (the integration
+            #      branch) diff against origin/main; any other branch diffs
+            #      against origin/frame30 when it exists (PRs target it),
+            #      else origin/main. CircleCI exposes the source branch as
+            #      CIRCLE_BRANCH but never the PR destination, hence this chain.
+            # Every fetch below is fatal by design: if the base
+            # cannot be fetched the job fails here. The scanner then runs with
+            # SAST_REQUIRE_BASE=1, so an unresolvable base can never pass
+            # vacuously — base established + zero changed lines stays a
+            # genuine pass (e.g. post-merge builds on main).
+            set -eu
+            BASE="${SAST_BASE:-}"
+            TOKEN="${GITHUB_TOKEN:-${GH_TOKEN:-}}"
+            if [ -z "$BASE" ] && [ -n "${CIRCLE_PR_NUMBER:-}" ] && [ -n "$TOKEN" ]; then
+              SLUG="$(git config --get remote.origin.url | sed -E -e 's#\.git$##' -e 's#.*github\.com[:/]([^/]+)/([^/]+)$#\1/\2#')"
+              if PR_BASE="$(curl -fsSL -H "Authorization: Bearer $TOKEN" "https://api.github.com/repos/$SLUG/pulls/$CIRCLE_PR_NUMBER" 2>/dev/null | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).base.ref))" 2>/dev/null)"; then
+                if [ -n "$PR_BASE" ]; then
+                  git fetch origin "$PR_BASE:refs/remotes/origin/$PR_BASE" --depth 50
+                  BASE="origin/$PR_BASE"
+                  echo "SAST: base $BASE (PR #$CIRCLE_PR_NUMBER destination via API)"
+                fi
+              else
+                echo "SAST: PR-destination lookup failed; falling back to branch default"
+              fi
+            fi
+            if [ -z "$BASE" ]; then
+              CUR="${CIRCLE_BRANCH:-}"
+              if [ -z "$CUR" ]; then
+                if TRY="$(git branch --show-current 2>/dev/null)"; then
+                  CUR="$TRY"
+                else
+                  CUR=""
+                fi
+              fi
+              CANDIDATE="main"
+              if [ -n "$CUR" ] && [ "$CUR" != "main" ] && [ "$CUR" != "master" ] && [ "$CUR" != "frame30" ]; then
+                if git ls-remote --exit-code --heads origin frame30 >/dev/null 2>&1; then
+                  CANDIDATE="frame30"
+                fi
+              fi
+              git fetch origin "$CANDIDATE:refs/remotes/origin/$CANDIDATE" --depth 50
+              BASE="origin/$CANDIDATE"
+              echo "SAST: base $BASE (branch default for '${CUR:-unknown}')"
+            else
+              case "$BASE" in
+                origin/*)
+                  git fetch origin "${BASE#origin/}:refs/remotes/$BASE" --depth 50
+                  ;;
+              esac
+              echo "SAST: base $BASE (explicit SAST_BASE)"
+            fi
+            export SAST_BASE="$BASE"
+            SAST_REQUIRE_BASE=1 bun run sast:scan
+      - run:
+          name: Dependency audit (blocking, reviewed exceptions only)
+          command: bun run scan:deps
+      - run:
+          name: Attribution report (observability, non-blocking)
+          command: |
+            # NOT a gate: `|| true` is correct here because this step only
+            # assembles review context (SAST finding -> introducing commit ->
+            # PR actor/reviewers + package-report rows). A broken or empty
+            # assembly must never fail the build; the secret/SAST/dep gates
+            # above stay fail-closed. The artifact always exists afterwards
+            # (fallback stub) so store_artifacts never misses its path.
+            mkdir -p .artifacts
+            node scripts/attribution-report.mjs --out .artifacts/attribution.json || true
+            test -f .artifacts/attribution.json || printf '{"generatedAt":"%s","unresolved":"attribution-report did not emit"}\n' "$(date -u +%FT%TZ)" > .artifacts/attribution.json
+      - store_artifacts:
+          path: .artifacts/attribution.json
+
+  build:
+    executor: bun-executor
+    steps:
+      - checkout
+      - setup-bun
+      - run:
+          name: Production build (Vite + Nitro)
+          command: bun run build
+
+  e2e-critical:
+    executor: e2e-executor
+    steps:
+      - checkout
+      - setup-bun
+      # Fail-closed: a missing Playwright harness must NOT read as a pass.
+      # `e2e:required` exits non-zero (writing a HARNESS-MISSING-NOT-VERIFIED
+      # marker) until `.e2e/playwright.config.ts` lands; only then do the
+      # browser install and the critical suites run. See
+      # docs/security/ci-gates.md. (This intentionally supersedes the old
+      # pass-by-design skip described in AGENTS.md.)
+      - run:
+          name: E2E harness required (fail-closed)
+          command: bun run e2e:required
+      - run:
+          name: Install Playwright Chromium
+          command: bunx playwright install --with-deps chromium
+      - run:
+          name: E2E critical suites
+          command: bun run e2e:critical
+
+  plugin-storefront-gate:
+    executor: bun-executor
+    steps:
+      - checkout
+      - setup-bun
+      - run:
+          name: Plugin + storefront tripwire (blocking)
+          command: |
+            bun run test -- \
+              src/components/store/PluginLayer.test.tsx \
+              src/components/store/ThemeChrome.plugins.test.tsx \
+              src/components/store/PluginFooterMounts.test.tsx \
+              src/components/store/StudioNodes.plugins.test.tsx \
+              src/lib/builtin-whatsapp.test.ts \
+              src/lib/plugin-acceptance.test.ts \
+              src/lib/phase5-plugins.test.ts
+
+  # Adversarial browser specs: every file named here EXISTS and passes cold.
+  # (The aspirational *_loop suites have docs but no Playwright implementation;
+  # `e2e:critical`/`e2e:golden` were rewired to runnable specs for the same
+  # reason — see package.json.) Do not add a spec here until it
+  # passes from cold locally.
+  e2e-security:
+    executor: e2e-executor
+    steps:
+      - checkout
+      - setup-bun
+      - run:
+          name: E2E harness required (fail-closed)
+          command: bun run e2e:required
+      - run:
+          name: Install Playwright Chromium
+          command: bunx playwright install --with-deps chromium
+      - run:
+          name: E2E adversarial security specs
+          command: bun run e2e:security
+
+workflows:
+  version: 2
+  gates:
+    jobs:
+      - lint-typecheck
+      - unit-contract
+      - scan
+      - build
+      # build is a HARD gate: e2e-critical never starts unless the production
+      # build succeeds. Without this `requires` edge every job fans out in
+      # parallel, so a broken build still burns the large browsers executor on
+      # E2E while its own red signal races the other jobs. A failed `build`
+      # now fails the workflow with e2e-critical left `blocked` (never run).
+      - e2e-critical:
+          requires:
+            - build
+      # Same hard gate as e2e-critical: never burn the browsers executor
+      # when the production build is broken.
+      - e2e-security:
+          requires:
+            - build
+      - plugin-storefront-gate
+  # Nightly whole-tree SAST sweep: catches anything that landed outside a
+  # scanned diff (long-lived branches, suppression drift). Covers main plus
+  # frame30 while the integration branch lives; drop it when retired.
+  nightly-full-sast:
+    triggers:
+      - schedule:
+          cron: "0 4 * * *"
+          filters:
+            branches:
+              only:
+                - main
+                - frame30
+    jobs:
+      - scan:
+          sast-mode: full
