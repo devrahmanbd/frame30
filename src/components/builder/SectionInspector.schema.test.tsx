@@ -411,3 +411,95 @@ describe("per-instance isolation", () => {
     expect(b.props.title).toBe("B");
   });
 });
+
+describe("canonical extension nodes (widgetKey)", () => {
+  const CAROUSEL_ID = "plugin:acme/reviews-carousel";
+
+  function extensionSection(widgetKey: unknown): Section {
+    const node: Record<string, unknown> = {
+      id: "e1",
+      type: "extension",
+      instanceId: "e1",
+      owner: { kind: "plugin", id: "acme" },
+      apiVersion: "1.0.0",
+      props: {},
+    };
+    if (widgetKey !== "__missing__") node["widgetKey"] = widgetKey;
+    return node as unknown as Section;
+  }
+
+  it("resolves a canonical node by widgetKey with the correct widgetId", () => {
+    expect(
+      registerWidget({
+        id: CAROUSEL_ID,
+        namespace: "plugin",
+        version: "1.0.0",
+        label: "Reviews Carousel",
+        category: "social",
+        slots: ["main"],
+        defaults: {},
+        propsSchema: JSON.parse(JSON.stringify(SCHEMA)) as PropSchema,
+        renderer: "sandbox",
+      }).ok,
+    ).toBe(true);
+    const out = resolveSchemaForSection(extensionSection(CAROUSEL_ID));
+    expect(out.status).toBe("schema");
+    if (out.status === "schema") {
+      expect(out.widgetId).toBe(CAROUSEL_ID);
+      expect(out.label).toBe("Reviews Carousel");
+    }
+  });
+
+  it("falls to legacy when the widgetKey is unknown", () => {
+    const out = resolveSchemaForSection(
+      extensionSection("plugin:acme/does-not-exist"),
+    );
+    expect(out.status).toBe("legacy");
+  });
+
+  it("treats an empty-schema widget as legacy (never a bypass)", () => {
+    expect(
+      registerWidget({
+        id: CAROUSEL_ID,
+        namespace: "plugin",
+        version: "1.0.0",
+        label: "Reviews Carousel",
+        category: "social",
+        slots: ["main"],
+        defaults: {},
+        propsSchema: { fields: [] },
+        renderer: "sandbox",
+      }).ok,
+    ).toBe(true);
+    expect(resolveSchemaForSection(extensionSection(CAROUSEL_ID)).status).toBe(
+      "legacy",
+    );
+  });
+
+  it("falls to legacy on hostile widgetKey shapes without throwing", () => {
+    const hostile: unknown[] = [
+      "__missing__",
+      undefined,
+      null,
+      42,
+      0,
+      false,
+      true,
+      {},
+      [],
+      ["plugin:acme/reviews-carousel"],
+      "",
+      "   ",
+    ];
+    for (const shape of hostile) {
+      let out;
+      expect(() => {
+        out = resolveSchemaForSection(extensionSection(shape));
+      }).not.toThrow();
+      expect(
+        (out as ReturnType<typeof resolveSchemaForSection>).status,
+        `widgetKey=${JSON.stringify(shape)}`,
+      ).toBe("legacy");
+    }
+  });
+});

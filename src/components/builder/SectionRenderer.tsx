@@ -33,6 +33,13 @@ import { resolveWidgetComponent } from "./theme-widgets";
 import { resolveThemePresentation } from "@/lib/theme-presentations";
 import { isExtensionNode, type ExtensionNode } from "@/lib/builder-ast";
 import { resolvePresentation } from "@/lib/widget-presentation";
+import { PluginBlock } from "./PluginBlock";
+import { useInstalledPlugins } from "./PluginContext";
+import {
+  parsePluginWidgetKey,
+  type InstalledPlugin,
+} from "@/lib/plugin-manifest";
+import { getOfficialPlugin, isOfficialPluginKey } from "@/lib/official-plugins";
 import {
   createWidgetRegistry,
   fromBuiltinWidgets,
@@ -108,11 +115,18 @@ type Props = {
  * registry (builtin + studio + singleton defs) when the caller supplies
  * none, then resolves via `resolvePresentation`. Never throws; null means
  * the caller keeps the legacy path untouched.
+ *
+ * `opts.installedPlugins` (the host's server-authorized installs) drives
+ * Class A/B attribution for community widgets: passed, a themeable-declared
+ * widget resolves `plugin-themeable`; absent, every community widget takes
+ * the fail-safe `plugin-isolated` sandbox. Official and builtin outcomes are
+ * identical either way, so existing callers stay unchanged.
  */
 export function resolveExtensionForRender(
   section: Section,
   themeKey: string | null | undefined,
   injected?: UnifiedRegistry,
+  opts?: { installedPlugins?: readonly InstalledPlugin[] },
 ): ReturnType<typeof resolvePresentation> | null {
   try {
     if (!isExtensionNode(section)) return null;
@@ -156,6 +170,9 @@ export function resolveExtensionForRender(
       props,
       ...(typeof ext.version === "string" && ext.version.trim()
         ? { version: ext.version.trim() }
+        : {}),
+      ...(opts?.installedPlugins
+        ? { installedPlugins: opts.installedPlugins }
         : {}),
     });
   } catch {
@@ -228,6 +245,11 @@ export function SectionRenderer({
   // Rows for this node come from the page's single batched data call; the
   // widget itself never fetches.
   const nodeData = useNodeData(section.id);
+  // Frame30 extension lanes: the host's server-authorized installs, read
+  // here so Class A/B attribution (isolated vs themeable) matches the
+  // PluginBlock decision below. Reading context renders nothing, so the
+  // legacy built-in path stays byte-identical.
+  const installedPlugins = useInstalledPlugins();
   // Phase 1.4: a reveal only animates once the node is actually on screen, and
   // never when the visitor asked for reduced motion.
   const revealMode = String(resolveProps(section, device)["reveal"] ?? "none");
@@ -374,6 +396,7 @@ export function SectionRenderer({
         section,
         themeKey,
         registry,
+        { installedPlugins },
       );
       // A null resolution (bad key, hostile shape) is a miss: placeholder.
       if (!presentation || !presentation.ok) {
@@ -397,9 +420,8 @@ export function SectionRenderer({
       }
       // Native-builtin extensions render the SAME builtin component as the
       // legacy path, via a tail recursion over an adapted section. Every
-      // other ok mode (official / isolated / themeable / owner-definition)
-      // stays placeholder until its renderer lane lands — fail-closed, never
-      // another owner's component.
+      // other ok mode continues into its renderer lane below — fail-closed,
+      // never another owner's component.
       if (presentation.ok && presentation.mode === "native-builtin") {
         const builtinType = builtinTypeForPresentation(presentation);
         if (builtinType) {
@@ -436,6 +458,58 @@ export function SectionRenderer({
           </div>
         ) : null;
       }
+      // Frame30 plugin lanes (official / isolated / themeable): the ONE
+      // sandboxed plugin frame (`PluginBlock` — null-origin island, never
+      // page DOM; bundle bytes are never inlined into this document). The
+      // official lane additionally requires a trusted in-repo source behind
+      // the plugin id; Class B dressing (theme presentation vs island) is
+      // decided inside `PluginBlock` from the installed manifest plus the
+      // registered presentations, so the bundle never executes on the
+      // dressed path either.
+      if (
+        presentation.ok &&
+        (presentation.mode === "official" ||
+          presentation.mode === "plugin-isolated" ||
+          presentation.mode === "plugin-themeable")
+      ) {
+        if (presentation.mode === "official") {
+          const parsed = parsePluginWidgetKey(presentation.widgetId);
+          const sourceId = parsed ? parsed.pluginId : "";
+          if (
+            !sourceId ||
+            !isOfficialPluginKey(sourceId) ||
+            !getOfficialPlugin(sourceId)
+          ) {
+            return editing ? (
+              <div className="rounded-fq-md border border-dashed border-border p-4 text-sm text-muted-foreground">
+                Widget preview unavailable
+              </div>
+            ) : null;
+          }
+        }
+        // Legacy `plugin_block` height contract (clamped 80–1200, 320
+        // default), read off the resolved props — never trusted blindly.
+        const rawHeight = presentation.props["height"];
+        const height =
+          typeof rawHeight === "number" && Number.isFinite(rawHeight)
+            ? Math.min(1200, Math.max(80, Math.trunc(rawHeight)))
+            : 320;
+        return wrap(
+          <WidgetBoundary type={section.type} editing={editing}>
+            <PluginBlock
+              pluginKey={presentation.widgetId}
+              height={height}
+              editing={editing}
+              themeKey={themeKey ?? null}
+            />
+          </WidgetBoundary>,
+        );
+      }
+      // Theme-owned owner-definition: no approved theme-owned component
+      // source exists in-repo (theme presentations are keyed by SectionType,
+      // never by `theme:<owner>/...` ids), so even the owning-theme hit keeps
+      // the explicit recoverable placeholder — a genuinely missing renderer,
+      // fail-closed, never another owner's component.
       return editing ? (
         <div className="rounded-fq-md border border-dashed border-border p-4 text-sm text-muted-foreground">
           Widget preview unavailable
@@ -501,6 +575,9 @@ export function SectionRenderer({
         selectedIds={selectedIds}
         onInlineEdit={onInlineEdit}
         linkBase={linkBase}
+        // Nested extensions resolve against the same route registry;
+        // legacy children ignore it (non-extension sections never touch it).
+        registry={registry}
       />
     ));
 

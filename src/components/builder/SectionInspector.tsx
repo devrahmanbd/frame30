@@ -19,7 +19,8 @@ import { inheritanceOf } from "@/lib/responsive";
 import { altKey, sizesKey } from "@/lib/media";
 import { taxonomyOptions } from "@/lib/taxonomy";
 import { unitLabel } from "@/lib/unit-format";
-import { getWidget } from "@/lib/unified-widget-registry";
+import { getWidget, type UnifiedRegistry } from "@/lib/unified-widget-registry";
+import { resolveInspectorSchema } from "@/lib/widget-presentation";
 import {
   controlStatus,
   defaultsFor,
@@ -164,6 +165,13 @@ type Props = {
   onAbChange?: (ab: Section["ab"]) => void;
   /** Content-only mode: editors cannot change style or advanced settings. */
   contentOnly?: boolean;
+  /**
+   * Frame30 one-registry — route-threaded registry built from the tenant's
+   * authorized installs. When provided, schema resolution reads it (via
+   * `resolveInspectorSchema`, parity-tested against the singleton path);
+   * absent keeps the legacy singleton read, so other call-sites are unchanged.
+   */
+  registry?: UnifiedRegistry;
 };
 
 const BP_LABEL: Record<Breakpoint, { en: string; bn: string }> = {
@@ -200,7 +208,11 @@ function fieldError(field: Field, value: PropValue | undefined): string | null {
 
 /** Field editor for the selected widget, driven entirely by the AST catalog. */
 export function SectionInspector(props: Props) {
-  const resolution = resolveSchemaForSection(props.section);
+  // Threaded registry wins when provided (route's authorized definitions);
+  // otherwise the singleton-backed path — parity-tested, same outcomes.
+  const resolution = props.registry
+    ? resolveInspectorSchema(props.section, props.registry)
+    : resolveSchemaForSection(props.section);
   if (props.section && resolution.status === "schema") {
     return (
       <SchemaSectionInspector
@@ -249,9 +261,11 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 /**
  * Pure resolution behind the dispatcher. Candidates mirror the editor save
  * path (`pluginKey` first for app blocks, then the bare type and the
- * `builtin:` alias). The empty adapter shape (`{ fields: [] }`) means
- * legacy-unvalidated and falls through to the bespoke path — it is never a
- * validation bypass. Lookup failures fall through to legacy, never a crash.
+ * `builtin:` alias). Canonical extension nodes (`type: "extension"`) resolve
+ * by their `widgetKey` first, then fall through to the legacy candidates.
+ * The empty adapter shape (`{ fields: [] }`) means legacy-unvalidated and
+ * falls through to the bespoke path — it is never a validation bypass.
+ * Lookup failures fall through to legacy, never a crash.
  */
 export function resolveSchemaForSection(
   section: Section | null,
@@ -262,6 +276,11 @@ export function resolveSchemaForSection(
       ? (section.props as Record<string, unknown>)
       : {};
     const candidates: string[] = [];
+    if ((section as unknown as { type?: unknown }).type === "extension") {
+      const rawKey = (section as unknown as { widgetKey?: unknown }).widgetKey;
+      if (typeof rawKey === "string" && rawKey.trim())
+        candidates.push(rawKey.trim());
+    }
     if (section.type === "plugin_block") {
       const key = props["pluginKey"];
       if (typeof key === "string" && key.trim()) candidates.push(key.trim());

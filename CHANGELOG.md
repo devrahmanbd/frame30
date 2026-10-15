@@ -14,6 +14,44 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [Unreleased] (frame30) — Extension blockers: schemas, one registry, real renderers, Level B themes
+
+### Added
+
+- Inspector resolves canonical extension nodes by `widgetKey`
+  (`resolveSchemaForSection` + threaded `resolveInspectorSchema(section,
+  registry?)` in `widget-presentation.ts`): `pluginKey`-first legacy order
+  preserved, empty `{ fields: [] }` still means legacy-unvalidated, hostile
+  shapes fall through without throwing.
+- One effective registry: the builder route builds `builderRegistry` once
+  from its server-authorized installs and passes the SAME instance to tray,
+  canvas renderer (including nested `renderChildren`) and inspector.
+  Nothing is written to the shared singleton — tenant isolation preserved.
+- Real per-mode extension renderers: `official` via the trusted in-repo
+  source gate, `plugin-isolated` via the sandboxed `PluginBlock` island,
+  `plugin-themeable` with `themeKey` (bundle never executes when dressed).
+  `theme-owned`/`owner-definition` stays an explicit recoverable placeholder
+  — no approved theme-owned component source exists in-repo yet (fail-closed).
+- Level B code-capable theme lane integrated: `dev-theme-widgets.ts`
+  (sections → editor-resolvable `theme:{id}/{section}` defs, `renderer:
+  "custom"`, editor-only), `dev-theme-activate.ts` (fingerprint-bound
+  activation, least-privilege grants, pinned-URL+CSP runtime binding),
+  sandbox proof (GSAP/Three bundle renders only inside the
+  `allow-scripts` frame; host HTML carries zero theme code), `docs/themes/
+  level-b.md` SDK contract. Data-only lane frozen and untouched; review
+  store/approval snapshots still in-memory (documented follow-up).
+
+### Verification
+
+- New: inspector canonical 4, renderer plugin-lanes 9, tray registry 3,
+  presentation-inspector 11, builder wiring 4, dev-theme widgets 9 +
+  activate 15 + sandbox 5 (+6 bundle vectors); neighbors green across
+  renderer/tray/presentation/registry/theme-contract/inspector/dev-theme
+  batches; `tsc` 0 errors repo-wide; eslint 0 errors (pre-existing
+  react-refresh warnings only); secret scan passed.
+- Still missing: the two decisive browser journeys (plugin lifecycle,
+  Level B execution) and CI restoration.
+
 ## [Unreleased] (frame30) — Per-widget plugin props schemas
 
 ### Added

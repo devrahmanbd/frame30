@@ -21,6 +21,7 @@ import {
 } from "@/components/builder/dnd";
 import { WidgetTray } from "@/components/builder/WidgetTray";
 import { PluginProvider } from "@/components/builder/PluginContext";
+import { buildTrayRegistry } from "@/lib/unified-widget-registry";
 import { SupportedViewportGate } from "@/components/builder/SupportedViewportGate";
 import { pluginListFn } from "@/lib/plugins.functions";
 import { LayerTree, NODE_NAME_PROP } from "@/components/builder/LayerTree";
@@ -294,6 +295,28 @@ function BuilderStudio() {
     queryFn: () => loadPlugins({}),
     staleTime: 60_000,
   });
+
+  /**
+   * Frame30 one-registry data-flow: ONE registry built from the route's
+   * server-authorized installed plugins feeds BOTH the tray
+   * listing/insertion (`WidgetTray registry`) and the canvas preview
+   * (`SectionRenderer registry`), so the tray can never offer a widget the
+   * preview cannot resolve (and vice versa) — listing, inspector-visible
+   * definitions, preview and storefront render read the same truth.
+   * Tenant isolation holds because the registry derives only from this
+   * tenant's authorized installs; nothing is ever written to the shared
+   * singleton. The inspector keeps its singleton default (backward
+   * compatible) until its resolution path accepts the same registry (see
+   * `resolveInspectorSchema` in `src/lib/widget-presentation.ts`).
+   */
+  const authorizedPlugins = useMemo(
+    () => pluginsQuery.data?.plugins ?? [],
+    [pluginsQuery.data],
+  );
+  const builderRegistry = useMemo(
+    () => buildTrayRegistry(authorizedPlugins),
+    [authorizedPlugins],
+  );
 
   const workspace = useQuery({
     // Themeless: the builder edits the merchant's single storefront workspace.
@@ -1239,7 +1262,7 @@ function BuilderStudio() {
   );
 
   return (
-    <PluginProvider plugins={pluginsQuery.data?.plugins ?? []}>
+    <PluginProvider plugins={authorizedPlugins}>
       <div className="flex h-screen flex-col overflow-hidden bg-background">
         <BuilderTopBar
           title={workspace.data?.theme?.name ?? t("Untitled", "শিরোনামহীন")}
@@ -1555,6 +1578,7 @@ function BuilderStudio() {
                 )}
                 <WidgetTray
                   slot={slot}
+                  registry={builderRegistry}
                   onAdd={(type: SectionType, presetKey: string) => {
                     const id = editor.add(template, slot, type, {
                       parentId: addParent,
@@ -2173,6 +2197,7 @@ function BuilderStudio() {
                                 locale={frameLang}
                                 template={template}
                                 selectedIds={selectedIds}
+                                registry={builderRegistry}
                                 onInlineEdit={(nodeId, key, value) => {
                                   // Grafted global-block content is a projection: editing
                                   // it here would be silently discarded on next resolve.
@@ -2306,6 +2331,7 @@ function BuilderStudio() {
                 template={template}
                 device={device}
                 contentOnly={contentOnly}
+                registry={builderRegistry}
                 onChange={(key, value, bp) =>
                   selected &&
                   editor.setPropAt(template, slot, selected.id, key, value, bp)

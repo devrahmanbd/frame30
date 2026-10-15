@@ -45,7 +45,11 @@
 
 import { ownerForWidgetKey, type ExtensionNode } from "./builder-ast";
 import type { InstalledPlugin } from "./plugin-manifest";
-import type { UnifiedRegistry, WidgetDef } from "./unified-widget-registry";
+import {
+  getWidget as getSingletonWidget,
+  type UnifiedRegistry,
+  type WidgetDef,
+} from "./unified-widget-registry";
 
 /* ------------------------------------------------------------------ refs */
 
@@ -827,4 +831,90 @@ export function checkThemeCompatibility(
   } catch {
     return { themeKey: normalizeThemeKey(themeKey), results: [] };
   }
+}
+
+/* ------------------------------------------------- inspector schema seam */
+
+export type InspectorSchemaResult =
+  | { status: "legacy" }
+  | {
+      status: "schema";
+      widgetId: string;
+      label: string;
+      /** Static registry metadata line (`namespace · category · vX`). */
+      meta: string;
+      schema: WidgetDef["propsSchema"];
+    };
+
+/**
+ * Frame30 one-registry — the inspector's resolution path with an optional
+ * registry parameter. Absent (or unusable) `registry` reads the shared
+ * singleton, so existing callers stay byte-identical: the same candidates as
+ * `resolveSchemaForSection` (`pluginKey` first for app blocks, then the bare
+ * type and the `builtin:` alias), the same empty-schema convention
+ * (`{ fields: [] }` means legacy-unvalidated, never a bypass), the same
+ * legacy fallthrough. A threaded registry additionally resolves extension
+ * nodes (`type: "extension"` via their `widgetKey`) and any plugin/theme
+ * definition the singleton never sees — read-only, never registered
+ * globally, so tenant isolation is preserved. Never throws.
+ */
+export function resolveInspectorSchema(
+  section:
+    | {
+        type?: unknown;
+        props?: unknown;
+        widgetKey?: unknown;
+      }
+    | null
+    | undefined,
+  registry?: UnifiedRegistry,
+): InspectorSchemaResult {
+  try {
+    if (!section || typeof section !== "object") return { status: "legacy" };
+    const bag = section as {
+      type?: unknown;
+      props?: unknown;
+      widgetKey?: unknown;
+    };
+    if (typeof bag.type !== "string" || !bag.type) return { status: "legacy" };
+    const props =
+      bag.props && typeof bag.props === "object" && !Array.isArray(bag.props)
+        ? (bag.props as Record<string, unknown>)
+        : {};
+    const candidates: string[] = [];
+    if (bag.type === "plugin_block") {
+      const key = props["pluginKey"];
+      if (typeof key === "string" && key.trim())
+        candidates.push(key.trim().slice(0, 160));
+    }
+    if (bag.type === "extension") {
+      const key = bag.widgetKey;
+      if (typeof key === "string" && key.trim())
+        candidates.push(key.trim().slice(0, 160));
+    }
+    candidates.push(bag.type, `builtin:${bag.type}`);
+    const useRegistry =
+      registry && typeof registry.getWidget === "function" ? registry : null;
+    for (const id of candidates) {
+      let def: WidgetDef | undefined;
+      try {
+        def = useRegistry ? useRegistry.getWidget(id) : getSingletonWidget(id);
+      } catch {
+        continue;
+      }
+      const fields = (def?.propsSchema as { fields?: unknown } | undefined)
+        ?.fields;
+      if (!Array.isArray(fields) || fields.length === 0) continue;
+      return {
+        status: "schema",
+        widgetId: def!.id,
+        label: def!.label,
+        meta: `${def!.namespace} · ${def!.category} · v${def!.version}`,
+        schema: def!.propsSchema,
+      };
+    }
+  } catch {
+    // Registry lookup must never break the inspector: legacy path below.
+  }
+  return { status: "legacy" };
 }

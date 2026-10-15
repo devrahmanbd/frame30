@@ -421,3 +421,77 @@ describe("validateDevThemeBundle — traversal / symlink / oversize", () => {
     expect(b.fingerprint).not.toBe(a.fingerprint);
   });
 });
+
+describe("validateDevThemeBundle — executable l10n (locales are data, never code)", () => {
+  it("accepts en + bn locale JSON side by side", () => {
+    const files = validFiles();
+    files.push(file("locales/bn.json", JSON.stringify({ headline: "হ্যালো" })));
+    expect(validateDevThemeBundle(validInput({ files })).ok).toBe(true);
+  });
+
+  it("refuses code under locales/ (locale data never executes)", () => {
+    const files = validFiles();
+    files.push(file("locales/en.js", `export const headline = "Hello";`));
+    const verdict = validateDevThemeBundle(validInput({ files }));
+    expect(verdict.ok).toBe(false);
+    if (verdict.ok) return;
+    expect(verdict.errors.join(" ")).toMatch(/disallowed_location/);
+  });
+
+  it("refuses non-JSON files under locales/", () => {
+    const files = validFiles();
+    files.push(file("locales/notes.md", "# notes"));
+    const verdict = validateDevThemeBundle(validInput({ files }));
+    expect(verdict.ok).toBe(false);
+    if (verdict.ok) return;
+    expect(verdict.errors.join(" ")).toMatch(
+      /disallowed_location|blocked_extension/,
+    );
+  });
+
+  it("refuses embedded credentials in locale JSON (Tier-0 parity)", () => {
+    const files = validFiles();
+    // Split literal so the repo's own secret scanner never sees a joined
+    // token in this fixture (same pattern as the Tier-0 vector above).
+    const token = "sk-" + "abcdefghijklmnopqrstuvwxyz0123456789";
+    files.push(file("locales/bn.json", JSON.stringify({ api_key: token })));
+    const verdict = validateDevThemeBundle(validInput({ files }));
+    expect(verdict.ok).toBe(false);
+    if (verdict.ok) return;
+    expect(verdict.errors.join(" ")).toMatch(/secret/);
+  });
+
+  it("refuses secrets filenames under locales/", () => {
+    const files = validFiles();
+    files.push(file("locales/.env", "x"));
+    const verdict = validateDevThemeBundle(validInput({ files }));
+    expect(verdict.ok).toBe(false);
+    if (verdict.ok) return;
+    expect(verdict.errors.join(" ")).toMatch(/secrets_file/);
+  });
+});
+
+describe("data-only lane stays frozen — executables still rejected there", () => {
+  it("the frozen gate refuses a .js asset path (no code in data-only packages)", () => {
+    const verdict = validateThemeManifest({
+      key: "aurora-lookbook",
+      name: "Aurora",
+      nameBn: "Aurora",
+      version: "1.0.0",
+      api: "^3.0.0",
+      templates: ["index"],
+      presentationSurfaces: ["header"],
+      locales: ["en"],
+      capabilities: ["render_storefront"],
+      assetManifest: [
+        {
+          path: "components/Hero.js",
+          sha256: "a".repeat(64),
+        },
+      ],
+    });
+    expect(verdict.ok).toBe(false);
+    if (verdict.ok) return;
+    expect(verdict.errors.join(" ")).toMatch(/executable/);
+  });
+});

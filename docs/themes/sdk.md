@@ -1,6 +1,9 @@
 # Theme SDK (integrator reference)
 
-Author guide: `./creation.md`. This file is the integrator contract: server
+Author guide: `./creation.md`. Code-capable (Level B) developer themes:
+`./level-b.md` (executable-bundle lane: manifest, asset pipeline,
+review → install → activation gating, sandboxed execution, and the
+data-only vs Level B boundary). This file is the integrator contract: server
 functions with input shapes, tables with key columns, the registry/seed
 pipeline, the marketplace flow, homepage-as-page, the error catalogue, and
 versioning/rollback/schedules. Only APIs read in this repo are listed.

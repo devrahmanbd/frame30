@@ -7,7 +7,10 @@ import {
 } from "@/lib/builder-ast";
 import { useLang } from "@/lib/i18n";
 import { parsePluginWidgetKey } from "@/lib/plugin-manifest";
-import { buildTrayRegistry } from "@/lib/unified-widget-registry";
+import {
+  buildTrayRegistry,
+  type UnifiedRegistry,
+} from "@/lib/unified-widget-registry";
 import { themeTrayEntries } from "@/lib/widget-presentation";
 import { insertPluginWidget } from "./studio/plugin-tray";
 import {
@@ -165,6 +168,7 @@ export function WidgetTray({
   onAddPlugin,
   onAddExtension,
   themeKey,
+  registry,
 }: {
   slot: Slot;
   /** `presetKey` is `"default"` when the widget has no variants. */
@@ -184,6 +188,14 @@ export function WidgetTray({
    * states stay byte-identical.
    */
   themeKey?: string | null;
+  /**
+   * Frame30 one-registry: the route-built registry (from the
+   * server-authorized installed plugins) that listing and insertion read
+   * instead of building per-render, so the tray can never offer a widget
+   * the preview cannot resolve. Absent or unusable falls back to the
+   * per-render build — existing callers stay unwired and unchanged.
+   */
+  registry?: UnifiedRegistry;
 }) {
   const { t } = useLang();
   const [term, setTerm] = useState("");
@@ -220,9 +232,18 @@ export function WidgetTray({
 
   // ONE unified registry seeded with every tier (builtin + studio +
   // installed-plugin defs plus best-effort singleton theme defs) via the
-  // shared `buildTrayRegistry` helper. Both the listing below and insertion
+  // shared `buildTrayRegistry` helper — or the route-built registry passed
+  // in (same builder, same truth). Both the listing below and insertion
   // read from it, so the tray can never offer a widget it cannot insert.
-  const trayRegistry = useMemo(() => buildTrayRegistry(plugins), [plugins]);
+  // An absent or unusable prop falls back to the per-render build, never a
+  // throw, so existing callers stay byte-identical.
+  const fallbackRegistry = useMemo(() => buildTrayRegistry(plugins), [plugins]);
+  const trayRegistry =
+    registry &&
+    typeof registry.listWidgets === "function" &&
+    typeof registry.resolveWidget === "function"
+      ? registry
+      : fallbackRegistry;
 
   // Frame30 theme tray: appended for the active theme only. Empty, disabled,
   // incompatible and unknown themes yield no entries — never a throw, never
