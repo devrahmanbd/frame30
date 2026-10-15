@@ -13,12 +13,17 @@ import {
   type WidgetDef,
 } from "./unified-widget-registry";
 import type { InstalledPlugin } from "./plugin-manifest";
+import { ownerForWidgetKey } from "./builder-ast";
 import {
   CLASS_B_FALLBACK,
+  DEFAULT_BUILDER_API,
   ISOLATED_THEME_TOKENS,
+  OFFICIAL_PLUGIN_IDS_DEFAULT,
+  OFFICIAL_THEME_KEYS_DEFAULT,
   PRESENTATION_SANDBOX_TOKENS,
   checkThemeCompatibility,
   dressingKey,
+  ownerScopeOf,
   resolvePresentation,
   themeTrayEntries,
 } from "./widget-presentation";
@@ -854,5 +859,63 @@ describe("checkThemeCompatibility", () => {
       registry: gateReg(),
     });
     expect(notArray.results).toEqual([]);
+  });
+});
+
+/* ------------------------------------------------- ownerScopeOf delegation */
+
+describe("ownerScopeOf — delegates to ownerForWidgetKey", () => {
+  it("returns the owner id for well-formed keys", () => {
+    expect(ownerScopeOf("theme:songoskriti/finder")).toBe("songoskriti");
+    expect(ownerScopeOf("builtin:hero")).toBe("hero");
+    expect(ownerScopeOf("plugin:acme/widget/extra")).toBe("acme");
+  });
+
+  it("falls back to empty scope for garbage input, matching the canonical", () => {
+    const garbage = [
+      "",
+      "   ",
+      "no-namespace",
+      "builtin:",
+      "theme:",
+      "  :  ",
+      "BUILTIN:hero",
+    ];
+    for (const key of garbage) {
+      expect(ownerScopeOf(key), JSON.stringify(key)).toBe("");
+      expect(ownerScopeOf(key)).toBe(ownerForWidgetKey(key).id);
+    }
+  });
+
+  it("matches ownerForWidgetKey().id on every key shape", () => {
+    const keys = [
+      "builtin:hero",
+      "studio:hero",
+      "plugin:acme/reviews",
+      "theme:songoskriti/finder",
+      "theme:somvabona/a/b/c",
+      "plugin:acme/ spaced ",
+      `theme:${"x".repeat(80)}/w`,
+    ];
+    for (const key of keys) {
+      expect(ownerScopeOf(key), key).toBe(ownerForWidgetKey(key).id);
+    }
+    expect(ownerScopeOf(`theme:${"x".repeat(80)}/w`)).toHaveLength(64);
+  });
+});
+
+/* ------------------------------------------ canonical mirrors (drift pins) */
+
+describe("widget-presentation — canonical mirrors", () => {
+  it("pins copied constants to their canonical sources", async () => {
+    const { OFFICIAL_PLUGIN_KEYS } = await import("./official-plugins");
+    const { OFFICIAL_THEME_KEYS } = await import("./themes/builtin-themes");
+    const { THEME_SANDBOX } =
+      await import("../components/theme-runtime/ThemeRuntime");
+    const { BUILDER_API_VERSION } = await import("./plugin-manifest");
+    expect([...OFFICIAL_PLUGIN_IDS_DEFAULT]).toEqual([...OFFICIAL_PLUGIN_KEYS]);
+    expect([...OFFICIAL_THEME_KEYS_DEFAULT]).toEqual([...OFFICIAL_THEME_KEYS]);
+    expect(PRESENTATION_SANDBOX_TOKENS).toBe(THEME_SANDBOX);
+    expect(DEFAULT_BUILDER_API).toBe(BUILDER_API_VERSION);
   });
 });

@@ -174,9 +174,12 @@ function dataSpec(type: SectionType) {
   );
 }
 
-export function isDataWidget(type: SectionType): boolean {
-  return dataSpec(type) !== null;
-}
+/**
+ * Canonical data-widget predicate — re-exported from `widget-registry.ts`
+ * (single definition of `isDataWidget`; template-gated widgets count as
+ * data there, so they count here too).
+ */
+export { isDataWidget } from "./widget-registry";
 
 /** One hint per data source; each names the field to connect. */
 const SOURCE_EMPTY: Record<string, BiText> = {

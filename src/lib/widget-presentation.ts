@@ -43,7 +43,7 @@
  *   page's widget ids and block publication on any incompatible entry.
  */
 
-import type { ExtensionNode } from "./builder-ast";
+import { ownerForWidgetKey, type ExtensionNode } from "./builder-ast";
 import type { InstalledPlugin } from "./plugin-manifest";
 import type { UnifiedRegistry, WidgetDef } from "./unified-widget-registry";
 
@@ -120,15 +120,13 @@ export function normalizeThemeKey(value: unknown): string {
 }
 
 /**
- * Owner scope derived from a registry widget key, mirroring
- * `ownerForWidgetKey` in `src/lib/builder-ast.ts`: the segment before the
- * first `/` after the namespace prefix (`theme:songoskriti/finder` →
- * `songoskriti`). Empty for unparseable keys.
+ * Owner scope derived from a registry widget key — delegates to
+ * `ownerForWidgetKey` in `src/lib/builder-ast.ts` (single regex): the
+ * segment before the first `/` after the namespace prefix
+ * (`theme:songoskriti/finder` → `songoskriti`). Empty for unparseable keys.
  */
 export function ownerScopeOf(widgetId: string): string {
-  const m = /^(builtin|studio|plugin|theme):(.+)$/.exec(widgetId.trim());
-  if (!m) return "";
-  return m[2]!.split("/")[0]!.trim().slice(0, 64);
+  return ownerForWidgetKey(widgetId).id;
 }
 
 /** Plugin id for `plugin:<id>/<widget>` keys, else null. */

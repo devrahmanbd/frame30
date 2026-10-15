@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   SECTION_CATALOG,
+  catalogEntry,
   flattenFields,
   type SectionType,
 } from "./builder-ast";
@@ -18,6 +19,10 @@ import {
   verticalsOf,
   widgetHelp,
 } from "./widget-metadata";
+import {
+  WIDGET_REGISTRY,
+  isDataWidget as registryIsDataWidget,
+} from "./widget-registry";
 import { createRecentStore } from "./widget-recent";
 
 const BENGALI = /[\u0980-\u09FF]/;
@@ -37,12 +42,36 @@ describe("Phase 2 exit gate — widget metadata", () => {
   it("every data widget declares an editor empty state", () => {
     const data = SECTION_CATALOG.filter((e) => isDataWidget(e.type));
     expect(data.length).toBeGreaterThan(30);
-    for (const entry of data) {
+    // Source-bound widgets name the field to connect in the editor.
+    const withSource = data.filter(
+      (e) => WIDGET_REGISTRY[e.type]?.data !== undefined,
+    );
+    expect(withSource.length).toBeGreaterThan(30);
+    for (const entry of withSource) {
       const hint = dataEmptyState(entry.type);
       expect(hint?.en, entry.type).toBeTruthy();
       expect(BENGALI.test(hint!.bn), entry.type).toBe(true);
     }
+    // Template-gated widgets count as data (registry canonical) but carry
+    // no source binding, so they have no empty state — only the gate.
+    const templateGated = data.filter(
+      (e) => WIDGET_REGISTRY[e.type]?.data === undefined,
+    );
+    expect(templateGated.length).toBeGreaterThan(0);
+    for (const entry of templateGated) {
+      expect(catalogEntry(entry.type)?.templates, entry.type).toBeDefined();
+      expect(dataEmptyState(entry.type), entry.type).toBeNull();
+    }
     expect(dataEmptyState("spacer")).toBeNull();
+  });
+
+  it("isDataWidget is the registry canonical (template-gated widgets count)", () => {
+    expect(isDataWidget).toBe(registryIsDataWidget);
+    // Templates-only widget: no `.data` source, but template-gated so data.
+    expect(isDataWidget("breadcrumb")).toBe(true);
+    expect(catalogEntry("breadcrumb")?.templates).toBeDefined();
+    expect(WIDGET_REGISTRY["breadcrumb"]?.data).toBeUndefined();
+    expect(isDataWidget("spacer")).toBe(false);
   });
 
   it("every non-obvious prop resolves a hint", () => {
