@@ -17,6 +17,169 @@ import {
 import { currentNonce } from "@/lib/ssr-nonce";
 import { useLang } from "@/lib/i18n";
 import { type RiskTier, resolvePolicy } from "@/lib/risk-tier";
+import {
+  MAX_REPEATER_ITEMS,
+  MAX_TEXT_LENGTH,
+  validateProps,
+  type PropSchema,
+} from "@/lib/widget-props";
+
+/* --------------------------------------- per-instance props validation ---
+ *
+ * Canonical extension nodes carry per-instance `props`; the install's global
+ * `settings` are a SEPARATE channel (served over `plugin.settings`). This is
+ * the isolated-runtime boundary validator both sides call:
+ * - schema-driven defs (`propsSchema.fields` non-empty): the shared value
+ *   layer (`validateProps`) — unknown keys stripped, markup neutralised,
+ *   oversize truncated, every known key present, fresh objects every call.
+ * - legacy defs (empty schema): JSON-safe deep clone with hostile keys
+ *   (`__proto__` / `constructor` / `prototype`) stripped, unserializable
+ *   values dropped fail-closed, text/depth/width capped like the value layer.
+ *
+ * Never throws; never mutates its input; never merges settings.
+ */
+
+/** Keys that must never survive a props boundary (prototype pollution). */
+const HOSTILE_PROP_KEYS: ReadonlySet<string> = new Set([
+  "__proto__",
+  "constructor",
+  "prototype",
+]);
+
+const LEGACY_KEY_RE = /^[a-zA-Z][a-zA-Z0-9_-]{0,39}$/;
+const LEGACY_MAX_KEYS = 50;
+const LEGACY_MAX_DEPTH = 4;
+
+const SCRIPT_BLOCK_RE = /<\s*(script|style)\b[\s\S]*?(<\s*\/\s*\1\s*>|$)/gi;
+const TAG_RE = /<[^>]*>/g;
+const RESIDUAL_ANGLE_RE = /[<>]/g;
+// eslint-disable-next-line no-control-regex
+const CONTROL_CHARS_RE = /[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g;
+
+/** Legacy merchant text: no markup survives (mirrors the value-layer text). */
+function stripInstanceText(value: string, limit: number): string {
+  return value
+    .replace(SCRIPT_BLOCK_RE, "")
+    .replace(TAG_RE, "")
+    .replace(RESIDUAL_ANGLE_RE, "")
+    .replace(CONTROL_CHARS_RE, "")
+    .slice(0, limit);
+}
+
+const DROP: unique symbol = Symbol("instance-props.drop");
+
+/** Deep-clean for legacy (schema-less) props. Returns DROP for unsalvageable. */
+function sanitizeLegacyValue(value: unknown, depth: number): unknown {
+  if (typeof value === "string")
+    return stripInstanceText(value, MAX_TEXT_LENGTH);
+  if (typeof value === "number") return Number.isFinite(value) ? value : DROP;
+  if (typeof value === "boolean") return value;
+  if (value === null) return null;
+  if (depth >= LEGACY_MAX_DEPTH) return DROP;
+  if (Array.isArray(value)) {
+    const out: unknown[] = [];
+    for (const item of value.slice(0, MAX_REPEATER_ITEMS)) {
+      const cleaned = sanitizeLegacyValue(item, depth + 1);
+      if (cleaned !== DROP) out.push(cleaned);
+    }
+    return out;
+  }
+  if (typeof value === "object" && value !== null) {
+    const out: Record<string, unknown> = {};
+    let count = 0;
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+      if (count >= LEGACY_MAX_KEYS) break;
+      if (HOSTILE_PROP_KEYS.has(k)) continue;
+      if (!LEGACY_KEY_RE.test(k)) continue;
+      const cleaned = sanitizeLegacyValue(v, depth + 1);
+      if (cleaned === DROP) continue;
+      out[k] = cleaned;
+      count += 1;
+    }
+    return out;
+  }
+  return DROP;
+}
+
+/**
+ * JSON-safe record clone, fail-closed: circular / bigint / otherwise
+ * unserializable top levels yield `{}`; functions, symbols and `undefined`
+ * members are dropped by JSON semantics. Never throws.
+ */
+function jsonSafeRecord(raw: unknown): Record<string, unknown> {
+  try {
+    const text = JSON.stringify(raw);
+    if (typeof text !== "string") return {};
+    const parsed: unknown = JSON.parse(text);
+    if (
+      typeof parsed === "object" &&
+      parsed !== null &&
+      !Array.isArray(parsed)
+    ) {
+      return parsed as Record<string, unknown>;
+    }
+    return {};
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * Hostile-key-only deep strip for schema-validated output: removes
+ * `__proto__` / `constructor` / `prototype` at every level without touching
+ * any value (validated richtext markup survives). The input is acyclic
+ * (JSON-roundtripped before validation), so this always terminates.
+ */
+function stripHostileKeys(value: unknown, depth = 0): unknown {
+  if (Array.isArray(value)) {
+    if (depth > 10) return [];
+    return value.map((item) => stripHostileKeys(item, depth + 1));
+  }
+  if (value && typeof value === "object") {
+    if (depth > 10) return {};
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+      if (HOSTILE_PROP_KEYS.has(k)) continue;
+      out[k] = stripHostileKeys(v, depth + 1);
+    }
+    return out;
+  }
+  return value;
+}
+
+/**
+ * Validate per-instance props against the widget's own schema. Accepts both
+ * schema carriers (the registry `{ fields }` object form and bare arrays,
+ * e.g. manifest `propsSchema`). Never throws, never mutates `raw`, returns
+ * a fresh object every call so two instances never share references.
+ */
+export function validateInstanceProps(
+  raw: unknown,
+  schema?: PropSchema | null,
+): Record<string, unknown> {
+  try {
+    const safe = jsonSafeRecord(raw);
+    const list: readonly unknown[] = Array.isArray(schema)
+      ? (schema as readonly unknown[])
+      : Array.isArray(
+            (schema as { fields?: unknown } | null | undefined)?.fields,
+          )
+        ? ((schema as { fields: readonly unknown[] })
+            .fields as readonly unknown[])
+        : [];
+    if (list.length > 0) {
+      const clean = validateProps({ fields: list } as PropSchema, safe)
+        .clean as Record<string, unknown>;
+      return stripHostileKeys(clean) as Record<string, unknown>;
+    }
+    const cleaned: unknown = sanitizeLegacyValue(safe, 0);
+    return typeof cleaned === "object" && cleaned !== null
+      ? (cleaned as Record<string, unknown>)
+      : {};
+  } catch {
+    return {};
+  }
+}
 
 /**
  * Sandbox host for third-party marketplace bundles.
@@ -173,10 +336,35 @@ export function pageNonce(): string {
   }
 }
 
+/**
+ * Serialize per-instance props for the frame document, fail-closed: hostile
+ * keys (`__proto__` / `constructor` / `prototype`) are dropped at every level
+ * via the replacer, unserializable payloads (circular, bigint) yield `"{}".
+ * `<` is escaped so the JSON can never break out of its script element.
+ * Never throws.
+ */
+function framePropsJson(instanceProps: Record<string, unknown>): string {
+  try {
+    const text = JSON.stringify(instanceProps, (key, value: unknown) =>
+      HOSTILE_PROP_KEYS.has(key) ? undefined : value,
+    );
+    if (typeof text !== "string") return "{}";
+    return text.replace(/</g, "\\u003c");
+  } catch {
+    return "{}";
+  }
+}
+
 export const FRAME_HTML = (
   entry: string,
   parentOrigin: string,
   nonce: string,
+  /**
+   * Validated per-instance props, baked into the frame document as
+   * `window.framique.props` (inert JSON data, never code). `undefined` keeps
+   * the legacy frame byte-identical — no props line is emitted.
+   */
+  instanceProps?: Record<string, unknown>,
 ) => `<!doctype html><html><head><meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'none'; connect-src 'none'; font-src 'none';"> <!-- sast-allow: csp-sandbox -- frame CSP is default-src none with img/connect/font none, isolation comes from resolvePolicy sandbox without allow-same-origin plus authorizeWidgetCall scope checks and flood guard -->
 <style>body{margin:0;font:14px/1.6 system-ui;color:#111}</style></head>
@@ -193,7 +381,7 @@ window.framique = {
   },
   mount(node) { document.getElementById("root").replaceChildren(node); },
 };
-window.addEventListener("message", (e) => {
+${instanceProps === undefined ? "" : `window.framique.props=${framePropsJson(instanceProps)};\n`}window.addEventListener("message", (e) => {
   const d = e.data || {};
   if (!d.id || !pending.has(d.id)) return;
   const p = pending.get(d.id);
@@ -208,6 +396,7 @@ export function WidgetSandbox({
   entry,
   grantedScopes,
   settings,
+  instanceProps,
   onCall,
   height = 320,
   riskTier = "low",
@@ -218,6 +407,13 @@ export function WidgetSandbox({
   grantedScopes: string[];
   /** Validated values for exactly the mounted plugin; served to `plugin.settings`. */
   settings?: Record<string, unknown>;
+  /**
+   * Validated per-instance props for exactly this widget instance, baked
+   * into the frame document as `window.framique.props`. DISTINCT from
+   * `settings` (global install values) — never merged in either direction.
+   * `undefined` keeps the legacy frame byte-identical (no props line).
+   */
+  instanceProps?: Record<string, unknown>;
   onCall: SandboxHandler;
   height?: number;
   riskTier?: RiskTier;
@@ -237,8 +433,8 @@ export function WidgetSandbox({
   const origin = typeof window === "undefined" ? "" : window.location.origin;
   const nonce = useMemo(() => pageNonce(), []);
   const srcDoc = useMemo(
-    () => FRAME_HTML(entry, origin, nonce),
-    [entry, origin, nonce],
+    () => FRAME_HTML(entry, origin, nonce, instanceProps),
+    [entry, origin, nonce, instanceProps],
   );
 
   // Flood/duplicate state lives in a ref: the hot path must not re-render

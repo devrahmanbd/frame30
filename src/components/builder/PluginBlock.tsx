@@ -1,12 +1,16 @@
-import { useCallback } from "react";
+import { useCallback, type ComponentType } from "react";
 import { resolvePluginWidget } from "@/lib/plugin-manifest";
 import {
   resolveCommunityPresentation,
   resolveCommunityRender,
+  type CommunityPresentationProps,
 } from "@/lib/plugin-theme-contract";
 import { WIDGET_API, type WidgetCall } from "@/lib/marketplace-scopes";
 import { useLang } from "@/lib/i18n";
-import { WidgetSandbox } from "@/components/marketplace/WidgetSandbox";
+import {
+  validateInstanceProps,
+  WidgetSandbox,
+} from "@/components/marketplace/WidgetSandbox";
 import { useInstalledPlugins } from "./PluginContext";
 
 /**
@@ -23,12 +27,22 @@ import { useInstalledPlugins } from "./PluginContext";
  * registered presentation when the active theme dresses this widget, and
  * the same generic sandboxed island otherwise — the sandbox path is
  * identical either way.
+ *
+ * Per-instance props (canonical extension nodes) arrive via `instanceProps`,
+ * are re-validated here against the widget's own schema (hostile/unknown
+ * keys stripped, never executed), and ride DISTINCT from the install's
+ * global `settings`: the dressed presentation gets both `data` (global) and
+ * `instanceProps` (this instance, never merged); the sandbox island gets
+ * `settings` (global, over the `plugin.settings` bridge) and `instanceProps`
+ * (baked into the frame document). Absent keeps the legacy path
+ * byte-identical.
  */
 export function PluginBlock({
   pluginKey,
   height,
   editing,
   themeKey,
+  instanceProps,
 }: {
   pluginKey: string;
   height: number;
@@ -38,6 +52,11 @@ export function PluginBlock({
    * behavior byte-identical (sandbox island, even for themeable widgets).
    */
   themeKey?: string | null;
+  /**
+   * Per-instance props from the extension node. Validated at this boundary;
+   * absent keeps the legacy path byte-identical (no props channel).
+   */
+  instanceProps?: Record<string, unknown>;
 }) {
   const { t } = useLang();
   const plugins = useInstalledPlugins();
@@ -84,6 +103,15 @@ export function PluginBlock({
   }
 
   const { plugin, widget } = resolved;
+  // Per-instance props: re-validated at this boundary against the widget's
+  // own schema (fresh object every render — two instances never share
+  // references). Global `plugin.settings` below is untouched and never
+  // merged in either direction. `undefined` (legacy callers) skips the props
+  // channel entirely, keeping the legacy path byte-identical.
+  const cleanInstanceProps =
+    instanceProps === undefined
+      ? undefined
+      : validateInstanceProps(instanceProps, widget.propsSchema);
   // Class B dressed: the theme owns every pixel — the bundle never
   // executes, so sandboxing is never weakened. Every other outcome
   // (Class A, undressed Class B, raced registry) falls through to the
@@ -96,12 +124,22 @@ export function PluginBlock({
       pluginKey,
     );
     if (Presentation) {
+      // The contract type carries no instance-props member (owned by the
+      // theme registry module), so the extra channel rides a local widening:
+      // `data` stays the install's global settings, `instanceProps` is this
+      // instance's validated props — distinct props, never merged.
+      const Dressed = Presentation as ComponentType<
+        CommunityPresentationProps & {
+          instanceProps?: Record<string, unknown>;
+        }
+      >;
       return (
         <div data-plugin={plugin.manifest.id} data-plugin-widget={widget.key}>
-          <Presentation
+          <Dressed
             pluginId={plugin.manifest.id}
             widgetKey={pluginKey}
             data={{ ...plugin.settings }}
+            instanceProps={cleanInstanceProps ?? {}}
           />
         </div>
       );
@@ -114,6 +152,7 @@ export function PluginBlock({
         entry={widget.entry}
         grantedScopes={plugin.grantedScopes}
         settings={plugin.settings}
+        instanceProps={cleanInstanceProps}
         onCall={onCall as (method: string, params: unknown) => Promise<unknown>}
         height={height || widget.height || 320}
       />

@@ -29,8 +29,9 @@
  * This file creates no lanes, routes or stores and imports nothing from the
  * widget/builder lanes — only `./bridge-v2` and `./capabilities`.
  */
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+  buildThemePreviewEnvelope,
   createThemeGuard,
   handleThemeMessage,
   isOwnerFrame,
@@ -156,6 +157,14 @@ export type ThemeRuntimeProps = {
   minHeight?: number;
   maxHeight?: number;
   className?: string;
+  /**
+   * Editor-preview seam: observes the owned frame element (`ThemeWidgetPreview`
+   * uses it to address postMessage) and its load event (preview envelopes
+   * post only after load — pre-load posts are lost). Both optional; the
+   * message loop above never depends on them.
+   */
+  onFrame?: (frame: HTMLIFrameElement | null) => void;
+  onFrameLoad?: () => void;
 };
 
 export function ThemeRuntime({
@@ -168,6 +177,8 @@ export function ThemeRuntime({
   minHeight = THEME_MIN_HEIGHT,
   maxHeight = THEME_MAX_HEIGHT,
   className,
+  onFrame,
+  onFrameLoad,
 }: ThemeRuntimeProps) {
   const ref = useRef<HTMLIFrameElement | null>(null);
   const [height, setHeight] = useState(minHeight);
@@ -228,13 +239,28 @@ export function ThemeRuntime({
     return () => window.removeEventListener("message", onMessage);
   }, [granted, navigateAllowlist, onCall, minHeight, maxHeight]);
 
+  // Merged frame ref: the message loop keeps its owned-window check while
+  // preview hosts observe the same element. A throwing host callback must
+  // never break the frame mount.
+  const setFrameRefs = useCallback(
+    (el: HTMLIFrameElement | null) => {
+      ref.current = el;
+      try {
+        onFrame?.(el);
+      } catch {
+        // Host observation is best-effort; the frame stays mounted.
+      }
+    },
+    [onFrame],
+  );
+
   // Fail closed: no render without a valid immutable theme URL. Theme code is
   // never inlined — there is intentionally no `srcDoc` path here.
   if (!url) return null;
 
   return (
     <iframe
-      ref={ref}
+      ref={setFrameRefs}
       title={title}
       src={url}
       sandbox={THEME_SANDBOX}
@@ -242,6 +268,143 @@ export function ThemeRuntime({
       loading="lazy"
       className={className ?? "w-full border-0"}
       style={{ height }}
+      onLoad={() => {
+        try {
+          onFrameLoad?.();
+        } catch {
+          // Host observation is best-effort.
+        }
+      }}
+    />
+  );
+}
+
+/* ------------------------------------------------- widget preview (Level B)
+ *
+ * PREVIEW STRATEGY for uploaded-theme widgets: a theme-owned component is
+ * NEVER executed in page DOM (no dynamic import, no srcDoc, no inline
+ * scripts — pinned by `theme-preview.test.tsx`). The preview renders the
+ * SAME sandboxed ThemeRuntime frame above (immutable version-pinned URL,
+ * `allow-scripts` only, restrictive frame CSP served by the asset origin)
+ * and delivers the intended component id + validated instance data to the
+ * OWNED frame as a versioned `fq:theme-preview` envelope
+ * (`buildThemePreviewEnvelope` in `bridge-v2.ts` — shape/size/forbidden
+ * gates, `theme.*` refusals).
+ *
+ * Data contract: `instanceProps` must already be `validateProps`-clean
+ * against the def's `propsSchema` (the route/editor validates before
+ * rendering); the envelope builder re-checks as defense in depth. An
+ * invalid envelope posts NOTHING (fail closed with a console warning —
+ * the frame shell still renders so height/bridge behavior stays
+ * observable). Commerce actions inside the frame still travel the v2
+ * method bridge and revalidate server-side.
+ *
+ * Renderer swap-in (adopter: `SectionRenderer` theme-owned branch, beside
+ * the `resolveThemeOwnedComponent` hit): an owner-definition hit for a
+ * `theme:<uploaded-id>/...` widget with NO native in-repo component
+ * renders `ThemeWidgetPreview` (sandboxed) instead of the unavailable
+ * placeholder — native in-repo theme components keep their existing lane.
+ */
+
+export type ThemeWidgetPreviewProps = {
+  title?: string;
+  /** Controlled https origin serving version-pinned theme documents. */
+  assetOrigin: string;
+  /** Pinned theme identity (name + immutable version). */
+  theme: ThemeIdentity;
+  /** Exact registry widget id (`theme:<owner>/<section>`). */
+  widgetId: string;
+  /** Intended section component (e.g. `HeroCanvas`). */
+  component: string;
+  /**
+   * Validated instance data — `validateProps`-clean against the def's
+   * `propsSchema`. Raw merchant values never reach this prop.
+   */
+  instanceProps: unknown;
+  /** Granted `theme:*` scopes for this install (see `buildThemeGrants`). */
+  granted: readonly string[];
+  /** Exact https origins the theme may navigate to (empty = paths only). */
+  navigateAllowlist?: readonly string[];
+  /** Host implementation behind authorized bridge calls (server revalidates). */
+  onCall: ThemeHostHandler;
+  minHeight?: number;
+  maxHeight?: number;
+  className?: string;
+};
+
+export function ThemeWidgetPreview({
+  title = "Theme widget preview",
+  assetOrigin,
+  theme,
+  widgetId,
+  component,
+  instanceProps,
+  granted,
+  navigateAllowlist = [],
+  onCall,
+  minHeight,
+  maxHeight,
+  className,
+}: ThemeWidgetPreviewProps) {
+  const url = buildThemeFrameUrl(assetOrigin, theme);
+  const [frame, setFrame] = useState<HTMLIFrameElement | null>(null);
+  const [loaded, setLoaded] = useState(false);
+
+  // A new theme identity is a new frame: reset load tracking so envelopes
+  // never post to a stale (or not-yet-loaded) document. `key={url}` below
+  // remounts the frame itself; this resets the host-side flag.
+  useEffect(() => {
+    setLoaded(false);
+  }, [url]);
+
+  const envelope = useMemo(
+    () =>
+      buildThemePreviewEnvelope({ widgetId, component, props: instanceProps }),
+    [widgetId, component, instanceProps],
+  );
+
+  useEffect(() => {
+    if (!envelope.ok) {
+      console.warn(
+        `[theme-preview] dropping invalid preview payload for ${String(widgetId)}: ${envelope.error}`,
+      );
+    }
+  }, [envelope, widgetId]);
+
+  useEffect(() => {
+    if (!loaded || !envelope.ok) return;
+    const target = frame?.contentWindow ?? null;
+    if (!target) return;
+    try {
+      // Target "*" is REQUIRED, not lax — same rationale as the answer
+      // path above: the frame is sandboxed without `allow-same-origin`,
+      // so its origin is opaque ("null"). Safe because the target is the
+      // verified owned frame window and the payload is validated instance
+      // data only — no secrets, no cross-install data. Pre-load posts are
+      // never attempted (`loaded` gates), because they would be lost.
+      target.postMessage(envelope.envelope, "*");
+    } catch {
+      // A hostile frame state must never break the editor.
+    }
+  }, [loaded, frame, envelope]);
+
+  // Fail closed: no frame without a valid immutable theme URL.
+  if (!url) return null;
+
+  return (
+    <ThemeRuntime
+      key={url}
+      title={title}
+      assetOrigin={assetOrigin}
+      theme={theme}
+      granted={granted}
+      navigateAllowlist={navigateAllowlist}
+      onCall={onCall}
+      minHeight={minHeight}
+      maxHeight={maxHeight}
+      className={className}
+      onFrame={setFrame}
+      onFrameLoad={() => setLoaded(true)}
     />
   );
 }

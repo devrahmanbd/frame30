@@ -87,6 +87,38 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   run green in one pass) and CI restoration (config restored verbatim —
   remote builds still need owner token access).
 
+## [Unreleased] (frame30) — Instance props reach renderers; uploaded themes render in sandbox
+
+### Added
+
+- Validated per-instance props thread extension node → presentation →
+  `PluginBlock` → `WidgetSandbox` frame (`window.framique.props`, inert
+  JSON) and the Class B `instanceProps` contract, with global
+  `plugin.settings` kept separate. Two instances never cross-contaminate;
+  hostile props (scripts, handlers, proto-pollution, oversize, deep,
+  non-JSON) neutralized at each boundary; legacy paths byte-identical
+  (25 new tests).
+- Level B per-widget schemas (`text`/`richtext`/`image`/`color`/
+  `spacing`/`product`+repeater/`animation` on existing kinds), active-theme
+  defs adapted into `builderRegistry`, `themeKey` passed to the tray, and
+  the preview envelope actually consumed through the documented bridge
+  (40 new tests).
+- Storefront/editor renderer for uploaded theme widgets: `theme:<id>/...`
+  defs with `renderer: "custom"` plus a server-projected binding (pinned
+  identity AND version) render through the sandboxed `ThemeWidgetPreview`;
+  unbound/skewed/foreign stays placeholder. Registry contract gains inert
+  `themeId`/`themeComponent` name tokens (malformed dropped at
+  registration); shared code still never branches on theme names
+  (theme-independence pin green).
+
+### Verification
+
+- New: instance-props 25/25, theme-sandbox 7/7; lane neighbors 357 + 797
+  green; `tsc` 0; eslint 0 errors; secret scan passed.
+- Still open: server projection of the approved manifest onto the workspace
+  (route has no binding yet — branch stays fail-closed) and the real-bundle
+  production E2E.
+
 ## [Unreleased] (frame30) — Per-widget plugin props schemas
 
 ### Added

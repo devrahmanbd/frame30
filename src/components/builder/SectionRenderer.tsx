@@ -36,7 +36,14 @@ import {
 } from "@/lib/theme-presentations";
 import { isExtensionNode, type ExtensionNode } from "@/lib/builder-ast";
 import { resolvePresentation } from "@/lib/widget-presentation";
+import { validateInstanceProps } from "@/components/marketplace/WidgetSandbox";
 import { PluginBlock } from "./PluginBlock";
+import {
+  ThemeWidgetPreview,
+  type ThemeHostHandler,
+  type ThemeIdentity,
+} from "../theme-runtime/ThemeRuntime";
+import { validateProps } from "@/lib/widget-props";
 import { useInstalledPlugins } from "./PluginContext";
 import {
   parsePluginWidgetKey,
@@ -111,6 +118,33 @@ type Props = {
    * non-extension sections never touch it — byte-identical when inactive.
    */
   registry?: UnifiedRegistry;
+  /**
+   * Frame30 Level B — runtime binding for uploaded-theme widgets. Absent
+   * keeps the theme-owned sandbox path fail-closed (explicit placeholder):
+   * the binding arrives only with server-projected approval (asset origin,
+   * pinned identity, grants), so an unbound render can never execute
+   * theme code. Editor and storefront hosts omit this until then.
+   */
+  devThemeBinding?: DevThemeBinding;
+};
+
+/**
+ * Server-projected runtime binding for ONE approved Level B release.
+ * Every member is validated where it is consumed (`ThemeWidgetPreview`
+ * fails closed without a valid immutable URL); the binding itself carries
+ * no secrets and no cross-install data.
+ */
+export type DevThemeBinding = {
+  /** Controlled https origin serving version-pinned theme documents. */
+  assetOrigin: string;
+  /** Pinned approved identity (name + immutable version). */
+  theme: ThemeIdentity;
+  /** Granted `theme:*` scopes for this install. */
+  granted: readonly string[];
+  /** Exact https origins the theme may navigate to (empty = paths only). */
+  navigateAllowlist?: readonly string[];
+  /** Host implementation behind authorized bridge calls. */
+  onCall: ThemeHostHandler;
 };
 
 /**
@@ -164,7 +198,7 @@ export function resolveExtensionForRender(
       }
       registry = fallback;
     }
-    return resolvePresentation({
+    const result = resolvePresentation({
       widgetId: ext.version
         ? { ...ext, widgetKey, props }
         : { ...ext, widgetKey, props },
@@ -178,6 +212,27 @@ export function resolveExtensionForRender(
         ? { installedPlugins: opts.installedPlugins }
         : {}),
     });
+    // Plugin lanes only (official / isolated / themeable): the extension
+    // node's per-instance props are validated against the widget's own
+    // schema (hostile/unknown keys stripped, never executed; unserializable
+    // values dropped fail-closed) before they reach `PluginBlock`, which
+    // re-validates. Native-builtin, theme-owned and missing outcomes return
+    // untouched below — byte-identical.
+    try {
+      if (
+        result &&
+        result.ok &&
+        (result.mode === "official" ||
+          result.mode === "plugin-isolated" ||
+          result.mode === "plugin-themeable")
+      ) {
+        const clean = validateInstanceProps(props, result.def.propsSchema);
+        if (clean !== result.props) return { ...result, props: clean };
+      }
+    } catch {
+      // Validation never breaks resolution: fall through with the raw result.
+    }
+    return result;
   } catch {
     return null;
   }
@@ -234,6 +289,7 @@ export function SectionRenderer({
   segments,
   linkBase,
   registry,
+  devThemeBinding,
 }: Props) {
   const { lang } = useLang();
   const dynamic = useDynamicContext(editing);
@@ -452,6 +508,7 @@ export function SectionRenderer({
               segments={segments}
               linkBase={linkBase}
               registry={registry}
+              devThemeBinding={devThemeBinding}
             />
           );
         }
@@ -504,6 +561,7 @@ export function SectionRenderer({
               height={height}
               editing={editing}
               themeKey={themeKey ?? null}
+              instanceProps={presentation.props}
             />
           </WidgetBoundary>,
         );
@@ -543,6 +601,7 @@ export function SectionRenderer({
                 onInlineEdit={onInlineEdit}
                 linkBase={linkBase}
                 registry={registry}
+                devThemeBinding={devThemeBinding}
               />
             ));
           return wrap(
@@ -585,6 +644,64 @@ export function SectionRenderer({
               />
             </WidgetBoundary>,
           );
+        }
+        // Level B uploaded-theme widget: no native in-repo component, but a
+        // `theme:<id>/...` def with `renderer: "custom"` in the injected
+        // registry (inert `themeId`/`themeComponent` name tokens survive the
+        // registry allow-list) and a server-projected runtime binding whose
+        // pinned identity AND version match the def. Ownership was already
+        // gated by the presentation (`owner-definition` resolves only under
+        // the owning theme), so no theme-identity comparison happens here —
+        // shared code never branches on theme names (see the
+        // theme-independence pin). Renders ONLY through the sandboxed
+        // `ThemeWidgetPreview` (opaque origin, allow-scripts, pinned URL)
+        // with schema-validated instance props — never page-DOM execution.
+        // Unbound (no approval projected) falls through to the explicit
+        // placeholder below — fail-closed.
+        if (devThemeBinding) {
+          try {
+            const def = registry?.getWidget?.(presentation.widgetId);
+            const component =
+              typeof def?.themeComponent === "string"
+                ? def.themeComponent.trim()
+                : "";
+            const defThemeId =
+              typeof def?.themeId === "string" ? def.themeId : "";
+            const bindingTheme = devThemeBinding.theme;
+            if (
+              def &&
+              def.namespace === "theme" &&
+              def.renderer === "custom" &&
+              component &&
+              defThemeId &&
+              bindingTheme &&
+              typeof bindingTheme.name === "string" &&
+              typeof bindingTheme.version === "string" &&
+              defThemeId === bindingTheme.name &&
+              def.version === bindingTheme.version
+            ) {
+              const clean = validateProps(
+                def.propsSchema,
+                (presentation.props ?? {}) as Record<string, unknown>,
+              ).clean;
+              return wrap(
+                <WidgetBoundary type={section.type} editing={editing}>
+                  <ThemeWidgetPreview
+                    assetOrigin={devThemeBinding.assetOrigin}
+                    theme={bindingTheme}
+                    widgetId={presentation.widgetId}
+                    component={component}
+                    instanceProps={clean}
+                    granted={devThemeBinding.granted}
+                    navigateAllowlist={devThemeBinding.navigateAllowlist ?? []}
+                    onCall={devThemeBinding.onCall}
+                  />
+                </WidgetBoundary>,
+              );
+            }
+          } catch {
+            // A hostile def shape must never break the render: placeholder.
+          }
         }
       }
       // Recoverable theme-owned outcome (foreign-theme fallback, missing
@@ -659,6 +776,7 @@ export function SectionRenderer({
         // Nested extensions resolve against the same route registry;
         // legacy children ignore it (non-extension sections never touch it).
         registry={registry}
+        devThemeBinding={devThemeBinding}
       />
     ));
 

@@ -101,6 +101,17 @@ export type WidgetDef = {
   themes?: string[];
   renderer: "builtin" | "sandbox" | "custom";
   minBuilderApi?: string;
+  /**
+   * Frame30 Level B — inert uploaded-theme metadata. `themeId` is the theme
+   * slug, `themeComponent` the manifest-declared section component token.
+   * Both are NAME tokens only (never code, never a URL): the bridge
+   * re-validates the component token before any envelope is built, and the
+   * renderer additionally requires a server-projected binding whose pinned
+   * identity matches. Malformed tokens are dropped at registration (the def
+   * stays, rendering falls back to the explicit placeholder).
+   */
+  themeId?: string;
+  themeComponent?: string;
 };
 
 export type MissingReason =
@@ -342,6 +353,26 @@ function sanitizeDef(
     renderer: input.renderer as WidgetDef["renderer"],
   };
   if (input.themes !== undefined) def.themes = [...(input.themes as string[])];
+  // Level B inert metadata: strict name-token shapes only (mirrors the
+  // bridge envelope's component-token rule — documented duplication, not
+  // import, so the registry stays dependency-free). Anything else is
+  // dropped: the def still registers, but nothing can address it for
+  // execution, so rendering falls back to the explicit placeholder.
+  if (
+    typeof (input as { themeId?: unknown }).themeId === "string" &&
+    /^[a-z0-9-]{1,64}$/.test((input as { themeId: string }).themeId)
+  ) {
+    def.themeId = (input as { themeId: string }).themeId;
+  }
+  if (
+    typeof (input as { themeComponent?: unknown }).themeComponent ===
+      "string" &&
+    /^[A-Za-z][A-Za-z0-9_]{0,63}$/.test(
+      (input as { themeComponent: string }).themeComponent,
+    )
+  ) {
+    def.themeComponent = (input as { themeComponent: string }).themeComponent;
+  }
   if (input.minBuilderApi !== undefined) {
     def.minBuilderApi = (input.minBuilderApi as string).trim();
   }

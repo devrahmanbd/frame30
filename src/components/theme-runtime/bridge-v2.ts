@@ -456,3 +456,155 @@ export function isThemeError(answer: ThemeAnswer): boolean {
     answer.error.startsWith("theme.")
   );
 }
+
+// ------------------------------------------------------------ widget preview
+//
+// Editor preview for uploaded-theme widgets (host → frame direction).
+//
+// A theme-owned widget NEVER executes in page DOM. The editor renders the
+// SAME sandboxed ThemeRuntime frame (`ThemeWidgetPreview` in
+// `ThemeRuntime.tsx`) and delivers the intended component id + validated
+// instance data to the OWNED frame as this versioned envelope. Validation
+// layers (defense in depth, none a substitute for the others):
+// - The caller validates merchant props through the shared value layer
+//   (`validateProps` against the def's `propsSchema`) BEFORE building.
+// - This builder re-checks shape (theme-namespaced widget id, safe
+//   component identifier, plain-record props), size (the same 64 KiB cap
+//   as bridge messages) and forbidden fields (price/tenant/payment —
+//   `findForbiddenFields`, same table as frame → host calls).
+// - The frame treats the envelope as untrusted render input; every commerce
+//   action still revalidates server-side (SERVER CONTRACT above).
+// Never throws — malformed input maps to a `theme.*` error.
+
+/** Host → frame render instruction for one theme-owned widget instance. */
+export const THEME_PREVIEW_MESSAGE = "fq:theme-preview";
+
+/** Preview payloads share the bridge message size cap. */
+export const THEME_PREVIEW_MAX_BYTES = THEME_MAX_MESSAGE_BYTES;
+
+/**
+ * Theme widget identity (`theme:<owner>/<section>`, mirroring the manifest
+ * id + section-key shapes — never another lane's key).
+ */
+const THEME_PREVIEW_WIDGET_RE = /^[a-z][a-z0-9-]{2,63}\/[a-z][a-z0-9_-]{1,39}$/;
+/** Section component identifier (single safe token, never a path). */
+const THEME_PREVIEW_COMPONENT_RE = /^[A-Za-z][A-Za-z0-9_-]{0,127}$/;
+
+export type ThemePreviewEnvelope = {
+  v: 2;
+  type: typeof THEME_PREVIEW_MESSAGE;
+  widgetId: string;
+  component: string;
+  props: Record<string, unknown>;
+};
+
+export type ThemePreviewBuildResult =
+  { ok: true; envelope: ThemePreviewEnvelope } | { ok: false; error: string };
+
+export type ThemePreviewParseResult =
+  | {
+      ok: true;
+      widgetId: string;
+      component: string;
+      props: Record<string, unknown>;
+    }
+  | { ok: false; error: string };
+
+function clonePreviewProps(value: unknown):
+  | {
+      ok: true;
+      props: Record<string, unknown>;
+    }
+  | { ok: false; error: string } {
+  if (!isPlainRecord(value)) return { ok: false, error: "theme.malformed" };
+  let raw = "";
+  let clone: unknown;
+  try {
+    raw = JSON.stringify(value) ?? "";
+    clone = JSON.parse(raw) as unknown;
+  } catch {
+    return { ok: false, error: "theme.malformed" };
+  }
+  if (utf8Length(raw) > THEME_PREVIEW_MAX_BYTES) {
+    return { ok: false, error: "theme.oversize" };
+  }
+  if (!isPlainRecord(clone)) return { ok: false, error: "theme.malformed" };
+  if (findForbiddenFields(clone).length > 0) {
+    return { ok: false, error: "theme.forbidden_field" };
+  }
+  return { ok: true, props: clone };
+}
+
+function checkPreviewIdentity(
+  widgetId: unknown,
+  component: unknown,
+): { ok: true; widgetId: string; component: string } | { ok: false } {
+  if (typeof widgetId !== "string" || typeof component !== "string") {
+    return { ok: false };
+  }
+  const id = widgetId.trim();
+  const name = component.trim();
+  if (!id.startsWith("theme:")) return { ok: false };
+  if (!THEME_PREVIEW_WIDGET_RE.test(id.slice("theme:".length))) {
+    return { ok: false };
+  }
+  if (!THEME_PREVIEW_COMPONENT_RE.test(name)) return { ok: false };
+  return { ok: true, widgetId: id, component: name };
+}
+
+/**
+ * Build the host → frame preview envelope for one validated widget
+ * instance. `props` must already be `validateProps`-clean; this gate
+ * re-checks shape/size/forbidden keys and fails closed. Never throws.
+ */
+export function buildThemePreviewEnvelope(
+  input: unknown,
+): ThemePreviewBuildResult {
+  try {
+    if (!isPlainRecord(input)) return { ok: false, error: "theme.malformed" };
+    const identity = checkPreviewIdentity(input.widgetId, input.component);
+    if (!identity.ok) return { ok: false, error: "theme.malformed" };
+    const props = clonePreviewProps(input.props);
+    if (!props.ok) return { ok: false, error: props.error };
+    return {
+      ok: true,
+      envelope: {
+        v: THEME_BRIDGE_VERSION,
+        type: THEME_PREVIEW_MESSAGE,
+        widgetId: identity.widgetId,
+        component: identity.component,
+        props: props.props,
+      },
+    };
+  } catch {
+    return { ok: false, error: "theme.malformed" };
+  }
+}
+
+/**
+ * Parse a received preview envelope (frame-side / test-side mirror of the
+ * builder). Version, type, identity and payload gates match the builder;
+ * anything else is a `theme.*` refusal. Never throws.
+ */
+export function parseThemePreviewEnvelope(
+  msg: unknown,
+): ThemePreviewParseResult {
+  try {
+    if (!isPlainRecord(msg)) return { ok: false, error: "theme.malformed" };
+    if (msg.v !== THEME_BRIDGE_VERSION || msg.type !== THEME_PREVIEW_MESSAGE) {
+      return { ok: false, error: "theme.malformed" };
+    }
+    const identity = checkPreviewIdentity(msg.widgetId, msg.component);
+    if (!identity.ok) return { ok: false, error: "theme.malformed" };
+    const props = clonePreviewProps(msg.props);
+    if (!props.ok) return { ok: false, error: props.error };
+    return {
+      ok: true,
+      widgetId: identity.widgetId,
+      component: identity.component,
+      props: props.props,
+    };
+  } catch {
+    return { ok: false, error: "theme.malformed" };
+  }
+}

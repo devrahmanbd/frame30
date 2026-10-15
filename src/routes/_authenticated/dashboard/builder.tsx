@@ -22,6 +22,7 @@ import {
 import { WidgetTray } from "@/components/builder/WidgetTray";
 import { PluginProvider } from "@/components/builder/PluginContext";
 import { buildTrayRegistry } from "@/lib/unified-widget-registry";
+import { activeDevThemeWidgetDefs } from "@/lib/dev-theme-widgets";
 import { SupportedViewportGate } from "@/components/builder/SupportedViewportGate";
 import { pluginListFn } from "@/lib/plugins.functions";
 import { LayerTree, NODE_NAME_PROP } from "@/components/builder/LayerTree";
@@ -297,6 +298,24 @@ function BuilderStudio() {
   });
 
   /**
+   * Server-authorized installed plugins for the one-registry below (see
+   * the Frame30 one-registry comment at the `builderRegistry` build site).
+   */
+  const authorizedPlugins = useMemo(
+    () => pluginsQuery.data?.plugins ?? [],
+    [pluginsQuery.data],
+  );
+
+  const workspace = useQuery({
+    // Themeless: the builder edits the merchant's single storefront workspace.
+    // Theme preview params and preview payloads are gone with the theme
+    // lifecycle (registry/install/activation).
+    queryKey: ["builder", "workspace"],
+    queryFn: () => loadWorkspace({}),
+    staleTime: 30_000,
+  });
+
+  /**
    * Frame30 one-registry data-flow: ONE registry built from the route's
    * server-authorized installed plugins feeds BOTH the tray
    * listing/insertion (`WidgetTray registry`) and the canvas preview
@@ -308,24 +327,43 @@ function BuilderStudio() {
    * singleton. The inspector keeps its singleton default (backward
    * compatible) until its resolution path accepts the same registry (see
    * `resolveInspectorSchema` in `src/lib/widget-presentation.ts`).
+   *
+   * Frame30 Level B theme widgets: the approved ACTIVE dev-theme manifest
+   * (projected by the server lane onto the workspace theme ONLY for the
+   * approved active release — published + approve-bound fingerprint per
+   * `resolveDevThemeActivation` in `dev-theme-activate.ts`; absent,
+   * e.g. today, adapts to no defs) joins the SAME route-local registry via
+   * `activeDevThemeWidgetDefs` (`fromDevThemeManifest` under an active-key
+   * gate: inactive, unkeyed, refusing or foreign manifests yield no defs).
+   * Theme defs must join this authorized registry, never the global
+   * singleton directly. `activeThemeKey` is the single server-authorized
+   * key below: it addresses the tray (`WidgetTray themeKey`) and gates
+   * the adapt, so discovery and registration can never disagree.
    */
-  const authorizedPlugins = useMemo(
-    () => pluginsQuery.data?.plugins ?? [],
-    [pluginsQuery.data],
+  const activeThemeKey = workspace.data?.theme?.sourceKey ?? null;
+  const activeDevThemeDefs = useMemo(
+    () =>
+      activeDevThemeWidgetDefs({
+        themeKey: activeThemeKey,
+        manifest: (
+          workspace.data?.theme as unknown as
+            { approvedDevManifest?: unknown } | undefined
+        )?.approvedDevManifest,
+        isActive: workspace.data?.theme?.isActive,
+      }),
+    [activeThemeKey, workspace.data],
   );
-  const builderRegistry = useMemo(
-    () => buildTrayRegistry(authorizedPlugins),
-    [authorizedPlugins],
-  );
-
-  const workspace = useQuery({
-    // Themeless: the builder edits the merchant's single storefront workspace.
-    // Theme preview params and preview payloads are gone with the theme
-    // lifecycle (registry/install/activation).
-    queryKey: ["builder", "workspace"],
-    queryFn: () => loadWorkspace({}),
-    staleTime: 30_000,
-  });
+  const builderRegistry = useMemo(() => {
+    const registry = buildTrayRegistry(authorizedPlugins);
+    for (const def of activeDevThemeDefs) {
+      try {
+        registry.registerWidget(def);
+      } catch {
+        // A single bad theme def never breaks the tray.
+      }
+    }
+    return registry;
+  }, [authorizedPlugins, activeDevThemeDefs]);
 
   const [template, setTemplate] = useState<TemplateKey>("index");
   const [slot, setSlot] = useState<Slot>("main");
@@ -1579,6 +1617,7 @@ function BuilderStudio() {
                 <WidgetTray
                   slot={slot}
                   registry={builderRegistry}
+                  themeKey={activeThemeKey}
                   onAdd={(type: SectionType, presetKey: string) => {
                     const id = editor.add(template, slot, type, {
                       parentId: addParent,

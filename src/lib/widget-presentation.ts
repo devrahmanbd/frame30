@@ -50,6 +50,11 @@ import {
   type UnifiedRegistry,
   type WidgetDef,
 } from "./unified-widget-registry";
+import {
+  MAX_REPEATER_ITEMS,
+  MAX_TEXT_LENGTH,
+  validateProps,
+} from "./widget-props";
 
 /* ------------------------------------------------------------------ refs */
 
@@ -401,6 +406,144 @@ function isDressed(
   }
 }
 
+/* ------------------------------------- Class B instance-props validation ---
+ *
+ * Class B (plugin-themeable) ONLY: the extension node's per-instance props
+ * are validated here against the resolved def's own schema before they reach
+ * the dressed presentation. `data` (global install settings / publicData) is
+ * untouched and never merged into `props` or vice versa. Local helpers (not
+ * imported from the sandbox host) so this pure module stays React-free:
+ * - schema-driven defs: the shared value layer (`validateProps`) — unknown
+ *   keys stripped, markup neutralised, fresh objects every call;
+ * - legacy defs (empty schema): JSON-safe deep clone with hostile keys
+ *   (`__proto__` / `constructor` / `prototype`) stripped and unserializable
+ *   values dropped fail-closed.
+ * Never throws.
+ */
+
+const THEMEABLE_HOSTILE_KEYS: ReadonlySet<string> = new Set([
+  "__proto__",
+  "constructor",
+  "prototype",
+]);
+
+const THEMEABLE_KEY_RE = /^[a-zA-Z][a-zA-Z0-9_-]{0,39}$/;
+const THEMEABLE_MAX_KEYS = 50;
+const THEMEABLE_MAX_DEPTH = 4;
+
+const THEMEABLE_SCRIPT_BLOCK_RE =
+  /<\s*(script|style)\b[\s\S]*?(<\s*\/\s*\1\s*>|$)/gi;
+const THEMEABLE_TAG_RE = /<[^>]*>/g;
+const THEMEABLE_ANGLE_RE = /[<>]/g;
+// eslint-disable-next-line no-control-regex
+const THEMEABLE_CONTROL_RE = /[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g;
+
+function themeableStripText(value: string, limit: number): string {
+  return value
+    .replace(THEMEABLE_SCRIPT_BLOCK_RE, "")
+    .replace(THEMEABLE_TAG_RE, "")
+    .replace(THEMEABLE_ANGLE_RE, "")
+    .replace(THEMEABLE_CONTROL_RE, "")
+    .slice(0, limit);
+}
+
+const THEMEABLE_DROP: unique symbol = Symbol("themeable.drop");
+
+function themeableLegacyValue(value: unknown, depth: number): unknown {
+  if (typeof value === "string")
+    return themeableStripText(value, MAX_TEXT_LENGTH);
+  if (typeof value === "number")
+    return Number.isFinite(value) ? value : THEMEABLE_DROP;
+  if (typeof value === "boolean") return value;
+  if (value === null) return null;
+  if (depth >= THEMEABLE_MAX_DEPTH) return THEMEABLE_DROP;
+  if (Array.isArray(value)) {
+    const out: unknown[] = [];
+    for (const item of value.slice(0, MAX_REPEATER_ITEMS)) {
+      const cleaned = themeableLegacyValue(item, depth + 1);
+      if (cleaned !== THEMEABLE_DROP) out.push(cleaned);
+    }
+    return out;
+  }
+  if (typeof value === "object" && value !== null) {
+    const out: Record<string, unknown> = {};
+    let count = 0;
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+      if (count >= THEMEABLE_MAX_KEYS) break;
+      if (THEMEABLE_HOSTILE_KEYS.has(k)) continue;
+      if (!THEMEABLE_KEY_RE.test(k)) continue;
+      const cleaned = themeableLegacyValue(v, depth + 1);
+      if (cleaned === THEMEABLE_DROP) continue;
+      out[k] = cleaned;
+      count += 1;
+    }
+    return out;
+  }
+  return THEMEABLE_DROP;
+}
+
+function themeableJsonSafe(raw: unknown): Record<string, unknown> {
+  try {
+    const text = JSON.stringify(raw);
+    if (typeof text !== "string") return {};
+    const parsed: unknown = JSON.parse(text);
+    if (
+      typeof parsed === "object" &&
+      parsed !== null &&
+      !Array.isArray(parsed)
+    ) {
+      return parsed as Record<string, unknown>;
+    }
+    return {};
+  } catch {
+    return {};
+  }
+}
+
+function themeableStripHostile(value: unknown, depth = 0): unknown {
+  if (Array.isArray(value)) {
+    if (depth > 10) return [];
+    return value.map((item) => themeableStripHostile(item, depth + 1));
+  }
+  if (value && typeof value === "object") {
+    if (depth > 10) return {};
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+      if (THEMEABLE_HOSTILE_KEYS.has(k)) continue;
+      out[k] = themeableStripHostile(v, depth + 1);
+    }
+    return out;
+  }
+  return value;
+}
+
+function validatedThemeableProps(
+  authored: Record<string, unknown>,
+  propsSchema: WidgetDef["propsSchema"],
+): Record<string, unknown> {
+  try {
+    const safe = themeableJsonSafe(authored);
+    const fields = Array.isArray(
+      (propsSchema as { fields?: unknown } | null | undefined)?.fields,
+    )
+      ? (propsSchema as { fields: readonly unknown[] }).fields
+      : [];
+    if (fields.length > 0) {
+      const clean = validateProps(
+        { fields } as Parameters<typeof validateProps>[0],
+        safe,
+      ).clean as Record<string, unknown>;
+      return themeableStripHostile(clean) as Record<string, unknown>;
+    }
+    const cleaned: unknown = themeableLegacyValue(safe, 0);
+    return typeof cleaned === "object" && cleaned !== null
+      ? (cleaned as Record<string, unknown>)
+      : {};
+  } catch {
+    return {};
+  }
+}
+
 /**
  * True when `themeKey` owns the theme-namespace def: the id scope matches
  * (`theme:<owner>/...`) or the def's `themes` claim includes the key.
@@ -542,7 +685,9 @@ export function resolvePresentation(
         ),
         data,
         fallback: CLASS_B_FALLBACK,
-        props,
+        // Validated per-instance props (Class B contract): schema-cleaned,
+        // hostile-free, never merged with `data` above.
+        props: validatedThemeableProps(authored, def.propsSchema),
       };
     }
 
