@@ -15,6 +15,7 @@ import type { DeviceKey, Maybe } from "./responsive";
 import { resolveResponsive } from "./responsive";
 import type { BuilderDoc, Widget as V1Widget } from "@/lib/page-builder";
 import { parseBuilderBody } from "@/lib/page-builder";
+import { resolveStudioKey } from "./catalog";
 
 export type SettingValue =
   | string
@@ -385,13 +386,16 @@ function sanitiseNode(input: unknown, depth = 0): StudioNode | null {
     )
       node.children = children;
   }
-  if (raw.el === "faq" || raw.el === "product_qna") seedQaItems(node);
-  if (raw.el === "trust_bar") seedTrustItems(node);
-  if (raw.el === "announcement_bar") seedAnnouncementItems(node);
-  if (raw.el === "lookbook") seedLookbookItems(node);
-  if (raw.el === "hero") seedHeroItems(node);
-  if (raw.el === "footer_sitemap") seedFooterSitemapItems(node);
-  if (raw.el === "spec_table") seedSpecItems(node);
+  // P7: seeder dispatch follows STUDIO_KEY_ALIASES so a foreign-named
+  // `el` still reaches the canonical seeder. Node identity stays raw.
+  const el = resolveStudioKey(raw.el);
+  if (el === "faq" || el === "product_qna") seedQaItems(node);
+  if (el === "trust_bar") seedTrustItems(node);
+  if (el === "announcement_bar") seedAnnouncementItems(node);
+  if (el === "lookbook") seedLookbookItems(node);
+  if (el === "hero") seedHeroItems(node);
+  if (el === "footer_sitemap") seedFooterSitemapItems(node);
+  if (el === "spec_table") seedSpecItems(node);
   return node;
 }
 

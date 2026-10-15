@@ -1051,3 +1051,46 @@ describe("whatsapp_button", () => {
     expect(html).toContain("wa.me/8801?text=");
   });
 });
+
+/**
+ * P7 — seeder dispatch follows STUDIO_KEY_ALIASES. Canonical seeders keep
+ * firing through the resolution path, and foreign-named nodes keep their
+ * raw identity (aliases never rewrite `el`).
+ */
+describe("seeder alias following (P7)", () => {
+  const docWith = (el: string, settings: NodeSettings): string =>
+    `<!--fq-studio:v2${JSON.stringify({
+      version: 2,
+      root: [{ id: "n1", el, settings }],
+      page: defaultPageSettings(),
+    })}fq-studio:end-->`;
+
+  it("seeds canonical faq scalars through the alias-resolution path", () => {
+    const parsed = parseStudioBody(docWith("faq", { q1: "Q?", a1: "A!" }));
+    expect(parsed?.root[0]?.settings.items).toEqual([
+      { question: "Q?", answer: "A!" },
+    ]);
+  });
+
+  it("preserves raw identity for foreign-named nodes", () => {
+    for (const el of ["products", "grid", "text-editor"]) {
+      const parsed = parseStudioBody(docWith(el, { text: "hi" }));
+      expect(parsed?.root[0]?.el).toBe(el);
+    }
+  });
+
+  it("still seeds trust_bar / spec_table through the resolution path", () => {
+    const trust = parseStudioBody(
+      docWith("trust_bar", { i1Title: "Fast", i1Body: "Quick" }),
+    );
+    expect(trust?.root[0]?.settings.items).toEqual([
+      { icon: "", title: "Fast", body: "Quick" },
+    ]);
+    const spec = parseStudioBody(
+      docWith("spec_table", { r1Label: "Weight", r1Value: "1kg" }),
+    );
+    expect(spec?.root[0]?.settings.items).toEqual([
+      { group: "", label: "Weight", value: "1kg" },
+    ]);
+  });
+});

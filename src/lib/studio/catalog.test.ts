@@ -917,7 +917,10 @@ describe("global_ref studio twin", () => {
     expect(twin).toBeDefined();
     expect(twin!.label).toBe("Global block");
     expect(twin!.category).toBe("advanced");
-    expect(twin!.defaults).toEqual({ ref: "" });
+    // P7: generated from the catalog entry (content + style layer).
+    expect(twin!.defaults).toEqual(
+      catalogEntry("global_ref" as SectionType)!.defaults,
+    );
   });
 
   it("mirrors the BASE content schema (style-layer keys excluded)", () => {
@@ -942,7 +945,9 @@ describe("global_ref studio twin", () => {
     );
     const node = newWidgetNode("global_ref");
     expect(node.el).toBe("global_ref");
-    expect(node.settings).toEqual({ ref: "" });
+    expect(node.settings).toEqual(
+      catalogEntry("global_ref" as SectionType)!.defaults,
+    );
     expect(node.children).toBeUndefined();
   });
 });
