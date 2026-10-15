@@ -16,6 +16,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased] (frame30) — Fault acceptance and disaster recovery
 
+> 2026-10-14: CircleCI config removed temporarily (`1185f440`) — both
+> provided API tokens lack access to the project (it lives under a different
+> identity). Restore with `git revert 1185f440` after Oct 21; treat the first
+> post-restore build as the verdict on the last run's unit-contract/scan-1/e2e
+> failures, which were unreproducible locally.
+
 System-wide resilience program (three read-only audits → 7 build lanes).
 Nothing here deploys itself: all verified on `frame30` locally unless noted.
 
