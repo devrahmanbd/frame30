@@ -357,6 +357,40 @@ export function shouldAdoptDoc(
   return !dirty;
 }
 
+/**
+ * Pure guard behind `setSetting` (unit-tested): hostile keys
+ * (`__proto__`/`constructor`/`prototype`) and over-long/empty keys never
+ * store, and a twin's `extensionInstanceId` never drifts from its node id
+ * (duplicate/paste/save own re-pinning; a direct write would desync two
+ * nodes onto one instance). Every other twin key stores verbatim — miss →
+ * preserve, with schema validation deferred to save-normalize so authoring
+ * never loses data here. Legacy nodes only gain the hostile-key guard.
+ * Never throws.
+ */
+export function isStudioSettingWriteAllowed(
+  node: unknown,
+  key: unknown,
+): boolean {
+  try {
+    if (typeof key !== "string" || !key || key.length > 120) return false;
+    if (key === "__proto__" || key === "constructor" || key === "prototype")
+      return false;
+    if (key === "extensionInstanceId") {
+      try {
+        const settings = (node as Partial<StudioNode> | null)?.settings as
+          Record<string, unknown> | null | undefined;
+        const marker = settings?.["extensionInstanceId"];
+        if (typeof marker === "string" && marker.trim()) return false;
+      } catch {
+        // Hostile node shape: allow the verbatim store below.
+      }
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function useStudio(initial: StudioDoc, resetKey?: string | null) {
   const [history, setHistory] = useState(() => initHistory(initial));
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -469,7 +503,15 @@ export function useStudio(initial: StudioDoc, resetKey?: string | null) {
 
   const setSetting = useCallback(
     (id: string, key: string, value: SettingValue) => {
+      // Validated at the edit edge via `isStudioSettingWriteAllowed` below:
+      // hostile keys never store, a twin's identity never drifts, everything
+      // else stores verbatim (miss → preserve at save-normalize).
       const node = findNode(doc.root, id);
+      try {
+        if (!isStudioSettingWriteAllowed(node ?? null, key)) return;
+      } catch {
+        return;
+      }
       setRoot(
         updateNode(doc.root, id, (current) => ({
           ...current,

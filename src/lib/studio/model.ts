@@ -832,11 +832,37 @@ function sectionToStudioNode(input: unknown, depth: number): StudioNode | null {
   };
   if (typeof section.type !== "string" || !section.type) return null;
   if (section.invalid) return null;
-  const settings =
-    section.props && typeof section.props === "object"
-      ? (section.props as NodeSettings)
-      : {};
+  // Deep-cloned so the import never shares references with the stored block
+  // (cross-instance bleed), then the twin envelope follows the fresh id.
+  let settings: NodeSettings;
+  try {
+    const raw = section.props;
+    if (raw && typeof raw === "object" && !Array.isArray(raw)) {
+      try {
+        settings = structuredClone(raw) as NodeSettings;
+      } catch {
+        settings = { ...(raw as NodeSettings) };
+      }
+    } else {
+      settings = {};
+    }
+  } catch {
+    settings = {};
+  }
   const node: StudioNode = { id: uid(), el: section.type, settings };
+  // Envelope re-pin (frame30): stored sections carry the twin envelope in
+  // props (`studioNodesToSections` preserves it verbatim); a fresh import
+  // mints a fresh node id, so the envelope must follow it — otherwise the
+  // import and the stored block share one instance id. Legacy sections (no
+  // envelope) keep the plain result untouched. Never throws.
+  try {
+    const marker = (settings as Record<string, unknown>)["extensionInstanceId"];
+    if (typeof marker === "string" && marker.trim()) {
+      (settings as Record<string, unknown>)["extensionInstanceId"] = node.id;
+    }
+  } catch {
+    // Hostile settings keep their cloned value; save normalizes.
+  }
   if (Array.isArray(section.hidden)) {
     const hiddenOn = section.hidden.flatMap((bp) =>
       typeof bp === "string" ? (BREAKPOINT_TO_DEVICES[bp] ?? []) : [],

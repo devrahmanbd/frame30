@@ -41,8 +41,11 @@ function store(storage?: Storage): Storage | undefined {
 export function docSignature(doc: StudioDoc): string {
   return JSON.stringify({
     root: doc.root,
+    header: doc.header ?? [],
+    footer: doc.footer ?? [],
     page: doc.page,
     classes: doc.classes ?? [],
+    breakpoints: doc.breakpoints ?? [],
   });
 }
 

@@ -46,7 +46,7 @@
 import { ownerForWidgetKey, type ExtensionNode } from "./builder-ast";
 import type { InstalledPlugin } from "./plugin-manifest";
 import {
-  getWidget as getSingletonWidget,
+  resolveWidget as resolveSingletonWidget,
   type UnifiedRegistry,
   type WidgetDef,
 } from "./unified-widget-registry";
@@ -1028,7 +1028,9 @@ export type InspectorSchemaResult =
 /**
  * Frame30 one-registry — the inspector's resolution path with an optional
  * registry parameter. Absent (or unusable) `registry` reads the shared
- * singleton, so existing callers stay byte-identical: the same candidates as
+ * singleton (LEGACY flagged fallback — kept so existing callers stay
+ * byte-identical on enabled defs, but flagged: tenant-aware callers MUST
+ * thread an explicit registry), so the same candidates as
  * `resolveSchemaForSection` (`pluginKey` first for app blocks, then the bare
  * type and the `builtin:` alias), the same empty-schema convention
  * (`{ fields: [] }` means legacy-unvalidated, never a bypass), the same
@@ -1036,6 +1038,13 @@ export type InspectorSchemaResult =
  * nodes (`type: "extension"` via their `widgetKey`) and any plugin/theme
  * definition the singleton never sees — read-only, never registered
  * globally, so tenant isolation is preserved. Never throws.
+ *
+ * State-aware (tray parity): BOTH paths resolve via `resolveWidget`, never
+ * the state-blind `getWidget` — a def that is disabled/suspended/
+ * builder-incompatible mid-session, or an uninstalled/unknown id, misses to
+ * the legacy path instead of rendering a full schema panel for a widget the
+ * tray can no longer offer. Misses advance to the next candidate; exhausting
+ * every candidate yields `{ status: "legacy" }` with no throw.
  */
 export function resolveInspectorSchema(
   section:
@@ -1073,11 +1082,27 @@ export function resolveInspectorSchema(
     }
     candidates.push(bag.type, `builtin:${bag.type}`);
     const useRegistry =
-      registry && typeof registry.getWidget === "function" ? registry : null;
+      registry && typeof registry.resolveWidget === "function"
+        ? registry
+        : null;
     for (const id of candidates) {
       let def: WidgetDef | undefined;
       try {
-        def = useRegistry ? useRegistry.getWidget(id) : getSingletonWidget(id);
+        // State-aware on BOTH paths (tray parity): misses (disabled /
+        // suspended / incompatible / uninstalled / unknown) fall through to
+        // legacy — never a schema panel for an unofferable widget.
+        if (useRegistry) {
+          const hit = useRegistry.resolveWidget(id);
+          if (!hit.ok) continue;
+          def = hit.def;
+        } else {
+          // LEGACY flagged fallback: the shared singleton, resolved
+          // state-aware (never the state-blind `getWidget`). Tenant-aware
+          // callers MUST thread an explicit registry instead.
+          const hit = resolveSingletonWidget(id);
+          if (!hit.ok) continue;
+          def = hit.def;
+        }
       } catch {
         continue;
       }

@@ -208,10 +208,13 @@ function projectedDb(
           name: "Aurora Lookbook",
           is_active: over?.isActive ?? true,
           published_version_id: null,
-          source_listing_slug: over?.sourceKey === undefined ? THEME_SLUG : over.sourceKey,
+          source_listing_slug:
+            over?.sourceKey === undefined ? THEME_SLUG : over.sourceKey,
           source_version: "1.0.0",
           source_install_id:
-            over?.sourceInstallId === undefined ? INSTALL_ID : over.sourceInstallId,
+            over?.sourceInstallId === undefined
+              ? INSTALL_ID
+              : over.sourceInstallId,
         },
       ],
       theme_versions: [
@@ -277,20 +280,52 @@ function projectedDb(
 
 beforeEach(() => recorder.reset());
 
-describe("allow-list — read-only commerce, writes denied", () => {
-  it("admits storefront.read, variant.select and navigate only", () => {
+describe("allow-list — reads plus server-repriced cart.add", () => {
+  it("admits storefront.read, variant.select, cart.add and navigate", () => {
     expect(isStorefrontDevThemeMethod("storefront.read")).toBe(true);
     expect(isStorefrontDevThemeMethod("variant.select")).toBe(true);
+    expect(isStorefrontDevThemeMethod("cart.add")).toBe(true);
     expect(isStorefrontDevThemeMethod("navigate")).toBe(true);
-    expect(isStorefrontDevThemeMethod("cart.add")).toBe(false);
     expect(isStorefrontDevThemeMethod("unknown.method")).toBe(false);
     expect(isStorefrontDevThemeMethod(null)).toBe(false);
     expect(isStorefrontDevThemeMethod(undefined)).toBe(false);
   });
 
   it("rejects forbidden keys and malformed shapes with theme.* errors", () => {
-    expect(validateStorefrontDevThemeParams("cart.add", {})).toBe("theme.denied");
-    expect(validateStorefrontDevThemeParams("unknown", {})).toBe("theme.denied");
+    // cart.add is server-repriced (never frame prices): forged price-like
+    // fields refuse, malformed shapes refuse, well-formed requests pass the
+    // shape gate (catalog revalidation happens in the resolver).
+    expect(
+      validateStorefrontDevThemeParams("cart.add", {
+        variantId: "var-1",
+        quantity: 1,
+        price: 1,
+      }),
+    ).toBe("theme.forbidden_field");
+    expect(validateStorefrontDevThemeParams("cart.add", {})).toBe(
+      "theme.invalid_params",
+    );
+    expect(
+      validateStorefrontDevThemeParams("cart.add", {
+        variantId: "var-1",
+        quantity: 0,
+      }),
+    ).toBe("theme.invalid_params");
+    expect(
+      validateStorefrontDevThemeParams("cart.add", {
+        variantId: "var-1",
+        quantity: 100,
+      }),
+    ).toBe("theme.invalid_params");
+    expect(
+      validateStorefrontDevThemeParams("cart.add", {
+        variantId: "var-1",
+        quantity: 2,
+      }),
+    ).toBeNull();
+    expect(validateStorefrontDevThemeParams("unknown", {})).toBe(
+      "theme.denied",
+    );
     expect(
       validateStorefrontDevThemeParams("storefront.read", { price: 1 }),
     ).toBe("theme.forbidden_field");
@@ -310,7 +345,9 @@ describe("allow-list — read-only commerce, writes denied", () => {
       validateStorefrontDevThemeParams("storefront.read", undefined),
     ).toBeNull();
     expect(
-      validateStorefrontDevThemeParams("variant.select", { variantId: "var-1" }),
+      validateStorefrontDevThemeParams("variant.select", {
+        variantId: "var-1",
+      }),
     ).toBeNull();
     expect(
       validateStorefrontDevThemeParams("navigate", { href: "/p/x" }),
@@ -325,10 +362,16 @@ describe("loadPublishedDevThemeProjection — published approved release only", 
     try {
       const { release, fingerprint } = approvedBundle();
       const db = projectedDb(release, fingerprint);
-      const out = await loadPublishedDevThemeProjection(db.asClient(), MERCHANT);
+      const out = await loadPublishedDevThemeProjection(
+        db.asClient(),
+        MERCHANT,
+      );
       expect(out).not.toBeNull();
       expect(out!.manifest.id).toBe(THEME_SLUG);
-      expect(out!.binding.theme).toEqual({ name: THEME_SLUG, version: "1.0.0" });
+      expect(out!.binding.theme).toEqual({
+        name: THEME_SLUG,
+        version: "1.0.0",
+      });
       expect(out!.binding.fingerprint).toBe(fingerprint);
       expect(out!.binding.granted).toContain("theme:storefront:read");
     } finally {
@@ -362,14 +405,18 @@ describe("loadPublishedDevThemeProjection — published approved release only", 
       ).toBeNull();
       expect(
         await loadPublishedDevThemeProjection(
-          projectedDb(release, fingerprint, { sourceInstallId: null }).asClient(),
+          projectedDb(release, fingerprint, {
+            sourceInstallId: null,
+          }).asClient(),
           MERCHANT,
         ),
       ).toBeNull();
       // Draft-only corroboration never satisfies the public loader.
       expect(
         await loadPublishedDevThemeProjection(
-          projectedDb(release, fingerprint, { versionStatus: "draft" }).asClient(),
+          projectedDb(release, fingerprint, {
+            versionStatus: "draft",
+          }).asClient(),
           MERCHANT,
         ),
       ).toBeNull();
@@ -379,8 +426,12 @@ describe("loadPublishedDevThemeProjection — published approved release only", 
       expect(
         await loadPublishedDevThemeProjection(empty.asClient(), MERCHANT),
       ).toBeNull();
-      expect(await loadPublishedDevThemeProjection(fakeDb().asClient(), MERCHANT)).toBeNull();
-      expect(await loadPublishedDevThemeProjection(fakeDb().asClient(), "")).toBeNull();
+      expect(
+        await loadPublishedDevThemeProjection(fakeDb().asClient(), MERCHANT),
+      ).toBeNull();
+      expect(
+        await loadPublishedDevThemeProjection(fakeDb().asClient(), ""),
+      ).toBeNull();
     } finally {
       if (prev === undefined) delete process.env.DEV_THEME_ASSET_ORIGIN;
       else process.env.DEV_THEME_ASSET_ORIGIN = prev;
@@ -451,7 +502,10 @@ describe("loadPublishedDevThemeProjection — published approved release only", 
         revision: 99,
         updated_at: T1,
       });
-      const out = await loadPublishedDevThemeProjection(db.asClient(), MERCHANT);
+      const out = await loadPublishedDevThemeProjection(
+        db.asClient(),
+        MERCHANT,
+      );
       expect(out).not.toBeNull();
       expect(db.selects("theme_drafts").length).toBe(0);
     } finally {
@@ -466,16 +520,54 @@ describe("resolveStorefrontDevThemeCall — allow, revalidate, deny", () => {
     return fakeDb({
       tables: {
         merchants: [
-          { id: MERCHANT, name: "Acme", slug: SLUG, currency_code: "BDT", status: "active" },
-          { id: "other", name: "Other", slug: "other", currency_code: "BDT", status: "active" },
+          {
+            id: MERCHANT,
+            name: "Acme",
+            slug: SLUG,
+            currency_code: "BDT",
+            status: "active",
+          },
+          {
+            id: "other",
+            name: "Other",
+            slug: "other",
+            currency_code: "BDT",
+            status: "active",
+          },
         ],
         products: [
-          { id: "prod-1", merchant_id: MERCHANT, title: "Jamdani", slug: "jamdani", status: "active", created_at: T1 },
-          { id: "prod-9", merchant_id: "other", title: "Foreign", slug: "foreign", status: "active", created_at: T1 },
+          {
+            id: "prod-1",
+            merchant_id: MERCHANT,
+            title: "Jamdani",
+            slug: "jamdani",
+            status: "active",
+            created_at: T1,
+          },
+          {
+            id: "prod-9",
+            merchant_id: "other",
+            title: "Foreign",
+            slug: "foreign",
+            status: "active",
+            created_at: T1,
+          },
         ],
         product_variants: [
-          { id: "var-1", product_id: "prod-1", name: "Default", price_amount_minor_int: 5000, stock_quantity: 3 },
-          { id: "var-9", product_id: "prod-9", name: "Foreign", price_amount_minor_int: 9999, stock_quantity: 9 },
+          {
+            id: "var-1",
+            product_id: "prod-1",
+            name: "Default",
+            price_amount_minor_int: 5000,
+            stock_quantity: 3,
+          },
+          {
+            id: "var-9",
+            product_id: "prod-9",
+            name: "Foreign",
+            price_amount_minor_int: 9999,
+            stock_quantity: 9,
+          },
         ],
       },
     });
@@ -490,7 +582,9 @@ describe("resolveStorefrontDevThemeCall — allow, revalidate, deny", () => {
       undefined,
     )) as { shop: Record<string, unknown>; products: unknown[] };
     expect(out.shop).toEqual({ name: "Acme", slug: SLUG, currency: "BDT" });
-    expect(out.products).toEqual([{ id: "prod-1", title: "Jamdani", slug: "jamdani" }]);
+    expect(out.products).toEqual([
+      { id: "prod-1", title: "Jamdani", slug: "jamdani" },
+    ]);
     expect(JSON.stringify(out)).not.toMatch(/customer|order|secret|token/i);
   });
 
@@ -502,9 +596,15 @@ describe("resolveStorefrontDevThemeCall — allow, revalidate, deny", () => {
       "variant.select",
       { variantId: "var-1" },
     )) as { variant: Record<string, unknown> };
-    expect(hit.variant).toMatchObject({ id: "var-1", priceMinor: 5000, inStock: true });
+    expect(hit.variant).toMatchObject({
+      id: "var-1",
+      priceMinor: 5000,
+      inStock: true,
+    });
     await expect(
-      resolveStorefrontDevThemeCall(db.asClient(), SLUG, "variant.select", { variantId: "var-9" }),
+      resolveStorefrontDevThemeCall(db.asClient(), SLUG, "variant.select", {
+        variantId: "var-9",
+      }),
     ).rejects.toThrow("theme.not_found");
     const byProduct = (await resolveStorefrontDevThemeCall(
       db.asClient(),
@@ -518,32 +618,47 @@ describe("resolveStorefrontDevThemeCall — allow, revalidate, deny", () => {
   it("navigate allows same-store paths and denies the rest", async () => {
     const db = shopDb();
     await expect(
-      resolveStorefrontDevThemeCall(db.asClient(), SLUG, "navigate", { href: "/p/jamdani" }),
+      resolveStorefrontDevThemeCall(db.asClient(), SLUG, "navigate", {
+        href: "/p/jamdani",
+      }),
     ).resolves.toEqual({ allowed: true });
     await expect(
-      resolveStorefrontDevThemeCall(db.asClient(), SLUG, "navigate", { href: "javascript:alert(1)" }),
+      resolveStorefrontDevThemeCall(db.asClient(), SLUG, "navigate", {
+        href: "javascript:alert(1)",
+      }),
     ).rejects.toThrow("theme.navigation_denied");
     await expect(
-      resolveStorefrontDevThemeCall(db.asClient(), SLUG, "navigate", { href: "https://evil.example/x" }),
+      resolveStorefrontDevThemeCall(db.asClient(), SLUG, "navigate", {
+        href: "https://evil.example/x",
+      }),
     ).rejects.toThrow("theme.navigation_denied");
   });
 
-  it("commerce writes, unknown methods, forbidden fields, and unknown stores deny", async () => {
+  it("unknown methods, forbidden fields, and unknown stores deny (cart.add is server-repriced, not denied)", async () => {
     const db = shopDb();
-    await expect(
-      resolveStorefrontDevThemeCall(db.asClient(), SLUG, "cart.add", { variantId: "var-1", quantity: 1 }),
-    ).rejects.toThrow("theme.denied");
+    // cart.add is a live capability: the server reprices from its own
+    // catalog (see the cart.add suite below) — unknown methods still deny.
     await expect(
       resolveStorefrontDevThemeCall(db.asClient(), SLUG, "unknown.method", {}),
     ).rejects.toThrow("theme.denied");
     await expect(
-      resolveStorefrontDevThemeCall(db.asClient(), SLUG, "storefront.read", { price: 1 }),
+      resolveStorefrontDevThemeCall(db.asClient(), SLUG, "storefront.read", {
+        price: 1,
+      }),
     ).rejects.toThrow("theme.forbidden_field");
     await expect(
-      resolveStorefrontDevThemeCall(db.asClient(), SLUG, "variant.select", { variantId: "var-1", tenantId: MERCHANT }),
+      resolveStorefrontDevThemeCall(db.asClient(), SLUG, "variant.select", {
+        variantId: "var-1",
+        tenantId: MERCHANT,
+      }),
     ).rejects.toThrow("theme.forbidden_field");
     await expect(
-      resolveStorefrontDevThemeCall(db.asClient(), "nope", "storefront.read", undefined),
+      resolveStorefrontDevThemeCall(
+        db.asClient(),
+        "nope",
+        "storefront.read",
+        undefined,
+      ),
     ).rejects.toThrow("theme.denied");
   });
 

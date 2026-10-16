@@ -111,12 +111,12 @@ describe("full controls", () => {
   });
 });
 
-describe("placeholder pickers", () => {
+describe("media and data pickers (former placeholders, now editable)", () => {
   const PICKERS: PropSchema = (
     ["image", "media", "video", "product", "collection"] as const
   ).map((kind) => ({ key: `p_${kind}`, label: `${kind} pick`, kind }));
 
-  it("renders labelled placeholders with the same props contract", () => {
+  it("renders editable pickers with the same props contract", () => {
     const out = html(
       <SchemaControls
         schema={PICKERS}
@@ -128,11 +128,26 @@ describe("placeholder pickers", () => {
       expect(out).toContain(`${kind} pick`);
       expect(out).toContain(`data-placeholder="${kind}"`);
     }
-    expect(out).toContain("next batch");
+    // Editable inputs on the final contract, Clear on every picker.
+    expect(out).toContain("<input");
     expect(out).toContain("/a.jpg");
+    expect(out).toContain("Clear");
+    // Media kinds take URLs, data kinds take handles.
+    expect(out).toContain('type="url"');
+    expect(out).toContain('type="text"');
   });
 
-  it("renders structured placeholders without editable inputs", () => {
+  it("clears a picker to the empty string through the pure transition", () => {
+    const next = applySchemaChange(
+      PICKERS,
+      { p_image: "/a.jpg" },
+      "p_image",
+      "",
+    );
+    expect(next).toEqual({ p_image: "" });
+  });
+
+  it("renders structured editors with editable inputs", () => {
     const out = html(
       <SchemaControls
         schema={(
@@ -150,9 +165,13 @@ describe("placeholder pickers", () => {
     ]) {
       expect(out).toContain(`data-placeholder="${kind}"`);
     }
-    expect(out).not.toContain("<input");
-    expect(out).not.toContain("<select");
-    expect(out).not.toContain("<textarea");
+    // Full structured editors: typography sub-fields, responsive cascade
+    // note, visibility breakpoints, animation effect controls.
+    expect(out).toContain("<input");
+    expect(out).toContain("<select");
+    expect(out).toContain("Family");
+    expect(out).toContain("Desktop");
+    expect(out).toContain("Effect");
   });
 });
 

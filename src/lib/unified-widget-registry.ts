@@ -17,8 +17,18 @@
  *   for legacy single-tenant callers, previews and tests. Tenant-aware code
  *   MUST NOT use it for tenant data — thread an explicit factory registry
  *   (`resolveInspectorSchema(..., registry)`, `resolvePresentation({registry})`).
- *   `buildTrayRegistry` merges it best-effort ONLY for global in-repo theme
- *   defs (e.g. songoskriti ornament); tenant defs ride explicit `themeDefs`.
+ *   `buildTrayRegistry`/`buildFallbackExtensionRegistry` merge it FILTERED
+ *   by default (`includeSingleton: false` opts out entirely; allow-list
+ *   widening opts in to broader merging), enforced by the namespace
+ *   allow-list (`GLOBAL_SINGLETON_NAMESPACES`, default `theme:`-only) with
+ *   `theme:` ids additionally gated by the global-owner allow-list
+ *   (`GLOBAL_SINGLETON_THEME_OWNERS`): global in-repo theme defs (e.g. the
+ *   songoskriti ornament) merge; tenant defs (`plugin:*`, or a non-global
+ *   `theme:<owner>/...`) NEVER merge implicitly — they ride explicit
+ *   `themeDefs`/installs, so a tenant def on the singleton cannot leak
+ *   cross-tenant. `EMPTY_REGISTRY` is the ONE shared frozen fail-closed empty
+ *   registry for null/unusable-registry paths (mutations rejected, reads
+ *   miss) — call sites return it instead of rebuilding competing empties.
  * - Static-only sources (never registries): `WIDGET_COMPONENTS`/
  *   `GENERIC_WIDGETS`/pack maps, `STUDIO_CATALOG`, the Phase 0.2
  *   `WIDGET_REGISTRY` view (read via `widgetMeta`), `PRESENTATIONS` in
@@ -1018,10 +1028,14 @@ const PACK_MAPS: Array<Record<string, unknown>> = [
  * recursively; nested repeaters skipped — repeaters do not nest by
  * value-layer design).
  *
- * `menu` has no registry counterpart (a recursive nav tree, not a scalar or
- * flat row) and returns null so the def still registers with every other
- * field intact; the single omission is pinned by test. Unknown future kinds
- * also return null (fail closed, never a fallback input).
+ * `menu` maps to a `repeater` of flat link rows (label text, href link,
+ * type select over the nav item vocabulary): manual menu picks stay
+ * schema-editable end to end (pick → `validateProps` → save → render reads
+ * `label`/`href` rows like every other items list). Nested subtrees cannot
+ * ride a repeater row — repeaters do not nest by value-layer design — so
+ * `children`/`mega` extras are dropped at validation, never stored; the top
+ * level still registers with every other field intact. Unknown future kinds
+ * return null (fail closed, never a fallback input).
  */
 function astFieldToPropField(field: AstField): PropField | null {
   const base = { key: field.key, label: field.label };
@@ -1082,7 +1096,27 @@ function astFieldToPropField(field: AstField): PropField | null {
       return { ...base, kind: "repeater", fields: rows };
     }
     case "menu":
-      return null;
+      return {
+        ...base,
+        kind: "repeater",
+        fields: [
+          { key: "label", label: "Label", kind: "text", max: 120 },
+          { key: "href", label: "Link", kind: "link", max: 500 },
+          {
+            key: "type",
+            label: "Type",
+            kind: "select",
+            options: [
+              { value: "link", label: "Link" },
+              { value: "page", label: "Page" },
+              { value: "collection", label: "Collection" },
+              { value: "product", label: "Product" },
+              { value: "category", label: "Category" },
+              { value: "custom", label: "Custom" },
+            ],
+          },
+        ],
+      };
     default:
       return null;
   }
@@ -1327,47 +1361,290 @@ export function fromPluginManifest(
  * P5 consolidation — the single tray registry builder for every write path.
  *
  * Seeds a fresh factory registry with every tier (builtin + studio +
- * installed-plugin defs) plus explicit tenant `themeDefs`, then best-effort
- * merges the shared singleton (LEGACY shim: global in-repo theme defs such
- * as the songoskriti ornament register there; absent keeps the legacy tray
- * identical). Hostile or unreadable entries are dropped, never stored;
- * merchant-disabled / platform-suspended installs and builder-incompatible
- * manifests contribute nothing — the shared adapter filtering, so listing
- * and insertion read the same truth and the tray can never offer a widget
- * it cannot insert. Never throws. Tenant isolation: pass tenant theme defs
- * via `themeDefs` (never the singleton) so two tenants' trays stay disjoint.
+ * installed-plugin defs) plus explicit tenant `themeDefs`. The shared
+ * singleton merges FILTERED by default (`includeSingleton: false` opts out
+ * entirely): the namespace allow-list (`singletonNamespaces`, defaulting to
+ * the global `GLOBAL_SINGLETON_NAMESPACES`) with `theme:` ids additionally
+ * gated by the global-owner allow-list (`singletonThemeOwners`, defaulting
+ * to the in-repo `GLOBAL_SINGLETON_THEME_OWNERS`): global in-repo theme defs
+ * (e.g. the songoskriti ornament) merge; a tenant def on the singleton
+ * (`plugin:*`, or a non-global `theme:<owner>/...`) NEVER merges unless the
+ * caller explicitly widens the allow-lists — tenant defs ride explicit
+ * `themeDefs`/installs, so a tenant def on the singleton cannot leak
+ * cross-tenant. Hostile or unreadable entries are dropped, never stored; merchant-disabled / platform-suspended
+ * installs and builder-incompatible manifests contribute nothing — the shared
+ * adapter filtering, so listing and insertion read the same truth and the
+ * tray can never offer a widget it cannot insert. Never throws: hostile
+ * `installed`/`themeDefs` coerce to empty (static tiers still stand) and a
+ * catastrophic failure yields a fresh empty registry.
  */
-export function buildTrayRegistry(
-  installed: readonly InstalledPlugin[],
-  opts?: { api?: string; themeDefs?: readonly WidgetDef[] },
-): UnifiedRegistry {
-  const registry = createWidgetRegistry();
-  for (const def of [
-    ...fromBuiltinWidgets(),
-    ...fromStudioCatalog(),
-    ...fromPluginManifest(installed, opts),
-    ...(Array.isArray(opts?.themeDefs) ? opts.themeDefs : []),
-  ]) {
+export type SingletonMergeOptions = {
+  /**
+   * Singleton merge control. Default (absent) merges FILTERED global defs
+   * (secure default): frozen tray callers that cannot pass options keep their
+   * global in-repo defs, while tenant defs NEVER merge implicitly. Pass
+   * `false` for strict isolation (no singleton read at all — tenant code
+   * that threads explicit `themeDefs`/installs should declare it). Pass
+   * `true` to explicitly declare reliance on the global singleton defs
+   * (same filtered merge as the default; self-documenting opt-in).
+   * Broadening the merge beyond global (tenant namespaces/owners) ALWAYS
+   * requires explicitly widening `singletonNamespaces`/`singletonThemeOwners`
+   * below — that widening is the risk-accepting opt-in.
+   */
+  includeSingleton?: boolean;
+  /**
+   * Singleton namespaces eligible for merging. Default
+   * `GLOBAL_SINGLETON_NAMESPACES` (`["theme"]`): `plugin:` installs NEVER
+   * merge implicitly — they ride the explicit `installed` param, so one
+   * tenant's legacy singleton write cannot surface in another tenant's tray.
+   * Widen explicitly only when the caller accepts that risk.
+   */
+  singletonNamespaces?: readonly string[];
+  /**
+   * `theme:`-namespace owners eligible for merging. Default
+   * `GLOBAL_SINGLETON_THEME_OWNERS` (in-repo official owners): a tenant
+   * theme def on the singleton stays out. Compared case-insensitively
+   * against the id's owner segment.
+   */
+  singletonThemeOwners?: readonly string[];
+};
+
+export type TrayRegistryOptions = {
+  api?: string;
+  themeDefs?: readonly WidgetDef[];
+} & SingletonMergeOptions;
+
+/**
+ * Singleton namespaces eligible for merging by default: global-only. Kept
+ * to `theme:` because builtin/studio tiers already seed from the adapters
+ * (merging their singleton copies would only admit squats), and `plugin:`
+ * installs ride the explicit `installed` param (tenant isolation).
+ */
+export const GLOBAL_SINGLETON_NAMESPACES: readonly string[] = ["theme"];
+
+/**
+ * In-repo global theme owners eligible for the singleton merge by default.
+ * Documented copy of `OFFICIAL_THEME_KEYS` in
+ * `src/lib/themes/builtin-themes.ts` (copied, not imported — importing that
+ * module would drag theme preview sources into the registry lane, the same
+ * reason `widget-presentation.ts` copies the list): identity comparison
+ * only, never theme modules.
+ */
+export const GLOBAL_SINGLETON_THEME_OWNERS: readonly string[] = [
+  "songoskriti",
+  "somvabona",
+];
+
+/** Owner segment of a `theme:<owner>/...` id, else `""`. Never throws. */
+function singletonThemeOwnerOf(id: string): string {
+  try {
+    const m = /^theme:([^/\s]+)\/(.+)$/.exec(id.trim());
+    return m ? m[1]! : "";
+  } catch {
+    return "";
+  }
+}
+
+/** Seed builtin + studio tiers. A single bad adapter def never breaks the build. */
+function seedStaticTiers(registry: UnifiedRegistry): void {
+  for (const def of [...fromBuiltinWidgets(), ...fromStudioCatalog()]) {
     try {
       registry.registerWidget(def);
     } catch {
       // A single bad adapter def never breaks the tray.
     }
   }
-  // LEGACY shim: theme defs ride the shared singleton when present (global
-  // in-repo defs such as the songoskriti ornament register there; tenant
-  // defs MUST ride `themeDefs` above, never the singleton). Absent keeps the
-  // legacy tray identical.
+}
+
+/**
+ * Best-effort singleton merge with global-only namespace enforcement at THIS
+ * merge site (the single choke point — every fallback/tray builder below
+ * funnels through here). `includeSingleton: false` skips the read entirely
+ * (strict isolation); otherwise ONLY allow-listed namespaces merge, with
+ * `theme:` ids additionally gated by the global-owner allow-list — so a
+ * tenant def on the singleton (`plugin:*`, or a non-global
+ * `theme:<owner>/...`) NEVER leaks cross-tenant unless the caller explicitly
+ * widens the allow-lists (risk-accepting opt-in).
+ */
+function mergeSingletonFiltered(
+  registry: UnifiedRegistry,
+  opts?: SingletonMergeOptions,
+): void {
+  if (opts?.includeSingleton === false) return;
+  const namespaces = Array.isArray(opts?.singletonNamespaces)
+    ? opts.singletonNamespaces
+    : GLOBAL_SINGLETON_NAMESPACES;
+  const allowedNamespaces = new Set(
+    (namespaces as readonly unknown[]).filter(
+      (n): n is string => typeof n === "string" && n.length > 0,
+    ),
+  );
+  const owners = Array.isArray(opts?.singletonThemeOwners)
+    ? opts.singletonThemeOwners
+    : GLOBAL_SINGLETON_THEME_OWNERS;
+  const allowedOwners = new Set(
+    (owners as readonly unknown[])
+      .filter((o): o is string => typeof o === "string")
+      .map((o) => o.trim().toLowerCase())
+      .filter((o) => o.length > 0),
+  );
+  let defs: WidgetDef[];
   try {
-    for (const def of listWidgets()) {
+    defs = listWidgets();
+  } catch {
+    // Singleton unreadable — tier registry still stands.
+    return;
+  }
+  for (const def of defs) {
+    try {
+      if (
+        !def ||
+        typeof (def as WidgetDef).id !== "string" ||
+        typeof (def as WidgetDef).namespace !== "string"
+      ) {
+        continue;
+      }
+      // Namespace allow-list: tenant install namespaces never merge implicitly.
+      if (!allowedNamespaces.has((def as WidgetDef).namespace)) continue;
+      // Global-only: `theme:` ids merge only for allow-listed global owners.
+      if ((def as WidgetDef).namespace === "theme") {
+        const owner = singletonThemeOwnerOf(
+          (def as WidgetDef).id,
+        ).toLowerCase();
+        if (!owner || !allowedOwners.has(owner)) continue;
+      }
+      registry.registerWidget(def);
+    } catch {
+      // Hostile singleton entries are dropped, never stored.
+    }
+  }
+}
+
+/**
+ * ONE shared fail-closed empty registry — the single "no registry" value
+ * instead of competing rebuilds on null. Frozen: every mutation is rejected
+ * (`{ ok: false, error: "frozen_registry" }`, `clear()` is a no-op), every
+ * read misses or returns empty. Never throws, never accumulates state, so
+ * sharing it across tenants cannot leak. Fallback builders that need the
+ * static tiers return FRESH registries (callers may hold them); paths that
+ * need "no usable registry" return this instance (identity-stable: `===`).
+ */
+function frozenEmptyRegistry(): UnifiedRegistry {
+  const rejected = { ok: false, error: "frozen_registry" } as const;
+  const missOf = (id: unknown, ctx: unknown): ResolveResult => {
+    try {
+      const data =
+        isRecord(ctx) && isRecord((ctx as ResolveContext).data)
+          ? cloneJson((ctx as ResolveContext).data)
+          : {};
+      return {
+        ok: false,
+        missing: {
+          reason: "unknown",
+          preservedData: data as Record<string, unknown>,
+          widgetId: String(id),
+        },
+      };
+    } catch {
+      return {
+        ok: false,
+        missing: { reason: "unknown", preservedData: {}, widgetId: String(id) },
+      };
+    }
+  };
+  return {
+    registerWidget: () => ({ ...rejected }),
+    resolveWidget: (id, ctx) => missOf(id, ctx),
+    enableWidget: () => ({ ...rejected }),
+    disableWidget: () => ({ ...rejected }),
+    suspendWidget: () => ({ ...rejected }),
+    unsuspendWidget: () => ({ ...rejected }),
+    isSuspended: () => false,
+    updateWidget: () => ({ ...rejected }),
+    removeWidget: () => ({ ...rejected }),
+    rollbackWidget: () => ({ ...rejected }),
+    getWidget: () => undefined,
+    listWidgets: () => [],
+    widgetIds: () => [],
+    isDeprecatedId: () => false,
+    clear: () => {},
+  };
+}
+
+export const EMPTY_REGISTRY: UnifiedRegistry = frozenEmptyRegistry();
+
+/**
+ * The ONE canonical fallback registry builder for absent/unusable threaded
+ * registries: builtin + studio tiers (the same tiers `buildTrayRegistry`
+ * seeds minus installed plugins, which only the authorized threaded registry
+ * carries), plus the opt-in filtered singleton merge above. This is the
+ * single implementation behind the three historical copies (StudioBuilder
+ * helper + inline duplicate, SectionRenderer inline): same tiers, same
+ * drop-rules, same never-throw contract — those call sites adopt it by an
+ * import swap (out of scope here; their files are owned by other lanes).
+ * Returns a FRESH registry every call (tenant isolation); a catastrophic
+ * failure fails closed to the shared `EMPTY_REGISTRY`.
+ */
+export function buildFallbackExtensionRegistry(
+  opts?: SingletonMergeOptions,
+): UnifiedRegistry {
+  try {
+    const fallback = createWidgetRegistry();
+    try {
+      seedStaticTiers(fallback);
+    } catch {
+      // Static-tier construction never breaks the legacy path.
+    }
+    mergeSingletonFiltered(fallback, opts);
+    return fallback;
+  } catch {
+    return EMPTY_REGISTRY;
+  }
+}
+
+export function buildTrayRegistry(
+  installed: readonly InstalledPlugin[],
+  opts?: TrayRegistryOptions,
+): UnifiedRegistry {
+  try {
+    const registry = createWidgetRegistry();
+    try {
+      seedStaticTiers(registry);
+    } catch {
+      // Static tiers best-effort; plugin/theme tiers still seed below.
+    }
+    const list = Array.isArray(installed) ? installed : [];
+    for (const def of fromPluginManifest(
+      list as readonly InstalledPlugin[],
+      opts,
+    )) {
       try {
         registry.registerWidget(def);
       } catch {
-        // Hostile singleton entries are dropped, never stored.
+        // A single bad adapter def never breaks the tray.
       }
     }
+    if (Array.isArray(opts?.themeDefs)) {
+      for (const def of opts.themeDefs as readonly WidgetDef[]) {
+        try {
+          registry.registerWidget(def);
+        } catch {
+          // A single bad theme def never breaks the tray.
+        }
+      }
+    }
+    // LEGACY shim (filtered by default, strict with `includeSingleton:
+    // false`): global in-repo theme defs such as the songoskriti ornament
+    // register on the singleton and merge; tenant defs MUST ride
+    // `themeDefs`/installs above, never the singleton.
+    mergeSingletonFiltered(registry, opts);
+    return registry;
   } catch {
-    // Singleton unreadable — tier registry still stands.
+    // Total failure still yields a usable registry — never throws.
+    try {
+      return createWidgetRegistry();
+    } catch {
+      return EMPTY_REGISTRY;
+    }
   }
-  return registry;
 }

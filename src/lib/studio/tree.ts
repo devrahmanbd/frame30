@@ -84,11 +84,41 @@ export function removeNode(nodes: StudioNode[], id: string): StudioNode[] {
 }
 
 export function cloneNode(node: StudioNode): StudioNode {
-  return {
+  const cloned: StudioNode = {
     ...structuredClone(node),
     id: uid(),
-    children: node.children?.map(cloneNode),
+    children: Array.isArray(node.children)
+      ? node.children.map(cloneNode)
+      : undefined,
   };
+  // Fresh-identity branching (frame30): an extension twin's envelope must
+  // stay pinned to its own node id. A verbatim copy shares one
+  // `extensionInstanceId` across two nodes until save heals — the canvas
+  // must never show that. Hostile top-level keys are never carried onto the
+  // copy (proto pollution), and hostile non-array children are dropped
+  // instead of throwing. Legacy nodes (no envelope) keep the plain result
+  // untouched. Never throws.
+  try {
+    const settings = cloned.settings as Record<string, unknown>;
+    if (settings && typeof settings === "object") {
+      for (const hostile of ["__proto__", "constructor", "prototype"]) {
+        try {
+          if (Object.prototype.hasOwnProperty.call(settings, hostile)) {
+            delete settings[hostile];
+          }
+        } catch {
+          // A single hostile key never breaks the clone.
+        }
+      }
+      const marker = settings["extensionInstanceId"];
+      if (typeof marker === "string" && marker.trim()) {
+        settings["extensionInstanceId"] = cloned.id;
+      }
+    }
+  } catch {
+    // Hostile settings keep their cloned value; save normalizes.
+  }
+  return cloned;
 }
 
 /** Insert `node` inside `parentId` at `index`; a null parent means the root. */

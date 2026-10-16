@@ -170,6 +170,117 @@ export function getReviewedThemeRef(
 }
 
 /**
+ * Seller bundle-attach encoding (listing-marker companion to
+ * `getReviewedThemeRef`): the seller's reviewed bundle travels on the
+ * listing row (`manifest.dev_theme.bundle`) as JSON-safe base64, so the
+ * install lane resolves bytes server-side from the DB row instead of
+ * trusting caller-supplied bytes. The attach is signposting only —
+ * `decodeReviewedThemeListingBundle` + the install lane re-validate and
+ * re-hash before trusting anything.
+ */
+export type ReviewedThemeListingBundleFile = {
+  path: string;
+  base64: string;
+};
+
+export type ReviewedThemeListingBundle = {
+  manifest: unknown;
+  files: ReviewedThemeListingBundleFile[];
+  dependencies: unknown;
+  allowedNetworkHosts: unknown;
+};
+
+export function encodeReviewedThemeBundleForListing(
+  bytes: ReviewedThemeBundleBytes,
+): ReviewedThemeListingBundle {
+  return {
+    manifest: bytes.manifest,
+    files: bytes.files.map((f) => ({
+      path: f.path,
+      base64: Buffer.from(f.bytes).toString("base64"),
+    })),
+    dependencies: Array.isArray(bytes.dependencies)
+      ? [...bytes.dependencies]
+      : [],
+    allowedNetworkHosts: Array.isArray(bytes.allowedNetworkHosts)
+      ? [...bytes.allowedNetworkHosts]
+      : [],
+  };
+}
+
+function decodeBase64Bytes(value: unknown): Uint8Array | null {
+  if (typeof value !== "string" || value.length === 0) return null;
+  if (!/^[A-Za-z0-9+/]*={0,2}$/.test(value)) return null;
+  try {
+    const raw = Buffer.from(value, "base64");
+    if (!raw.length) return null;
+    return Uint8Array.from(raw);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Decode the seller-attached bundle from a listing manifest. Malformed
+ * attaches (missing bundle, bad shapes, undecodable/oversized files) read
+ * as null — the install lane falls back to the legacy caller-bytes path or
+ * fails closed with `bytes_required`, never a crash and never blind bytes.
+ */
+export function decodeReviewedThemeListingBundle(
+  manifest: unknown,
+): ReviewedThemeBundleBytes | null {
+  try {
+    if (!manifest || typeof manifest !== "object" || Array.isArray(manifest)) {
+      return null;
+    }
+    const ref = (manifest as Record<string, unknown>).dev_theme;
+    if (!ref || typeof ref !== "object" || Array.isArray(ref)) return null;
+    const bundle = (ref as Record<string, unknown>).bundle;
+    if (!bundle || typeof bundle !== "object" || Array.isArray(bundle)) {
+      return null;
+    }
+    const record = bundle as Record<string, unknown>;
+    if (!Array.isArray(record.files) || record.files.length === 0) return null;
+    if (record.files.length > 500) return null;
+    const files: ReviewedThemeBundleBytes["files"] = [];
+    let total = 0;
+    for (const entry of record.files) {
+      if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+        return null;
+      }
+      const { path, base64 } = entry as Record<string, unknown>;
+      if (typeof path !== "string" || !path) return null;
+      const bytes = decodeBase64Bytes(base64);
+      if (!bytes) return null;
+      // Decode-time safety cap only (the install validator enforces the
+      // real bundle limits): never materialize absurd rows into memory.
+      if (bytes.length > 5 * 1024 * 1024) return null;
+      total += bytes.length;
+      if (total > 50 * 1024 * 1024) return null;
+      files.push({ path, bytes });
+    }
+    const dependencies = Array.isArray(record.dependencies)
+      ? (record.dependencies as NonNullable<
+          ReviewedThemeBundleBytes["dependencies"]
+        >)
+      : [];
+    const allowedNetworkHosts = Array.isArray(record.allowedNetworkHosts)
+      ? (record.allowedNetworkHosts as NonNullable<
+          ReviewedThemeBundleBytes["allowedNetworkHosts"]
+        >)
+      : [];
+    return {
+      manifest: record.manifest,
+      files,
+      dependencies,
+      allowedNetworkHosts,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Re-enforce the review-store publish invariants on an approval snapshot:
  * live `published` status (revoked/removed refuse on their own code) plus an
  * `approve` review binding the release's exact fingerprint — the same two

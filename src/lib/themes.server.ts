@@ -2721,6 +2721,40 @@ export type DevThemeAssetOutcome =
     }
   | { status: 404; reason: string };
 
+/**
+ * Serve-time revocation verdict (pure, fail-closed).
+ *
+ * The stored `.approval.json` snapshot is frozen at install time, so a
+ * revoke/remove AFTER install would otherwise keep serving: the `/t/…`
+ * route re-checks the live `dev_theme_releases` row on EVERY request and
+ * denies before snapshot verification whenever live evidence refuses.
+ *
+ * - `"no_evidence"`: no live row (pre-migration DBs, RLS-hidden rows) — the
+ *   route falls through to snapshot verification, which still fully gates.
+ * - `"allow"`: a live row names this exact fingerprint as `published`.
+ * - `"revoked"`: any live row for this fingerprint is not `published`
+ *   (revoked / removed / regressed), names a different fingerprint
+ *   (tamper), or is malformed. The route 404s, never serves.
+ *
+ * This is an ADDITIONAL deny only — `"allow"` never bypasses the snapshot
+ * verification below, which always runs.
+ */
+export function devThemeServeRevocationVerdict(
+  live: unknown,
+  fingerprint: string,
+): "allow" | "revoked" | "no_evidence" {
+  try {
+    const row = Array.isArray(live) ? (live[0] ?? null) : live;
+    if (row === null || row === undefined) return "no_evidence";
+    if (typeof row !== "object" || Array.isArray(row)) return "revoked";
+    const record = row as Record<string, unknown>;
+    if (record.fingerprint !== fingerprint) return "revoked";
+    return record.status === "published" ? "allow" : "revoked";
+  } catch {
+    return "revoked";
+  }
+}
+
 function devThemeAssetHeaders(assetPath: string, contentType: string) {
   const headers: Record<string, string> = {
     "content-type": contentType,

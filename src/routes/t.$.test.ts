@@ -33,6 +33,7 @@ type Recorder = ReturnType<typeof metricRecorder>;
 const rec = vi.hoisted(() => ({ holder: null as Recorder | null }));
 const dbHolder = vi.hoisted(() => ({
   db: null as ReturnType<typeof fakeDb> | null,
+  client: null as unknown | null,
 }));
 const recorder = metricRecorder();
 rec.holder = recorder;
@@ -49,7 +50,7 @@ vi.mock("@tanstack/react-router", () => ({
     }) => ({ routeId: id, handlers: config.server.handlers }),
 }));
 vi.mock("@/lib/pricing.server", () => ({
-  publicClient: () => dbHolder.db!.asClient(),
+  publicClient: () => dbHolder.client ?? dbHolder.db!.asClient(),
 }));
 
 const { installReviewedThemeBundle } =
@@ -256,6 +257,154 @@ describe("/t/$ handler", () => {
       expect(idx).toBeGreaterThanOrEqual(0);
       rows.splice(idx, 1);
       const res = await get("aurora-lookbook/1.0.0/index.html");
+      expect(res.status).toBe(404);
+      expect(res.headers.get("cache-control")).toBe("no-store");
+    });
+  });
+
+  describe("serve-time revocation re-check (Pass 2)", () => {
+    async function installedDbWithLive(
+      live: "published" | "revoked" | "removed" | null,
+    ) {
+      const db = fakeDb({
+        tables: {
+          marketplace_themes: [],
+          marketplace_installs: [],
+          store_themes: [],
+          theme_versions: [],
+          theme_drafts: [],
+          activity_log: [],
+          theme_audit: [],
+          wallet_ledger_entries: [],
+          theme_assets: [],
+          dev_theme_releases: [],
+          dev_theme_reviews: [],
+        },
+      });
+      const store = createDevThemeReleaseStore();
+      const v = validateDevThemeBundle(bundleInput());
+      expect(v.ok).toBe(true);
+      if (!v.ok) throw new Error("fixture bundle rejected");
+      const { release: submitted } = store.submit({
+        merchantId: SELLER,
+        themeId: THEME_SLUG,
+        manifest: v.manifest,
+        files: v.files,
+        fingerprint: v.fingerprint,
+        submittedBy: "dev-1",
+        submittedAt: T0,
+      });
+      store.review({
+        releaseId: submitted.id,
+        merchantId: SELLER,
+        reviewer: { ...MOD },
+        decision: "approve",
+        reason: "clean",
+        reviewedAt: T1,
+      });
+      const { release } = store.publish({
+        releaseId: submitted.id,
+        merchantId: SELLER,
+        actor: { ...MOD },
+        expectedFingerprint: v.fingerprint,
+        publishedAt: T1,
+      });
+      await installReviewedThemeBundle(db.asClient(), MERCHANT, {
+        release: release as DevThemeRelease,
+        bytes: bundleInput(),
+        idempotencyKey: "dev-route-live-1",
+        listing: {
+          id: LISTING_ID,
+          slug: THEME_SLUG,
+          name: "Aurora Lookbook",
+          version: "1.0.0",
+          price_minor_int: 0,
+          currency_code: "BDT",
+          seller_merchant_id: SELLER,
+          install_count: 0,
+        },
+        trial: false,
+        consentedBy: ACTOR,
+        expectedThemeId: THEME_SLUG,
+      });
+      if (live) {
+        db.rows("dev_theme_releases").push({
+          merchant_id: SELLER,
+          theme_id: THEME_SLUG,
+          version: "1.0.0",
+          fingerprint: v.fingerprint,
+          status: live,
+          submitted_by: "dev-1",
+          submitted_at: T0,
+        });
+      }
+      return { db, fingerprint: v.fingerprint };
+    }
+
+    async function jsSplat(): Promise<string> {
+      const assets = dbHolder.db!.rows("theme_assets") as { name: string }[];
+      const js = assets.find((a) => a.name.endsWith(".js"))!;
+      return js.name.replace("dev-themes/", "");
+    }
+
+    beforeEach(() => {
+      dbHolder.client = null;
+    });
+
+    it("serves when the live release row is still published", async () => {
+      const { db } = await installedDbWithLive("published");
+      dbHolder.db = db;
+      const res = await get(await jsSplat());
+      expect(res.status).toBe(200);
+      expect(await res.text()).toBe(HERO_JS);
+    });
+
+    it("404s a revoked release even with a valid snapshot (fail-closed)", async () => {
+      const { db } = await installedDbWithLive("revoked");
+      dbHolder.db = db;
+      const res = await get(await jsSplat());
+      expect(res.status).toBe(404);
+      expect(res.headers.get("cache-control")).toBe("no-store");
+    });
+
+    it("404s a removed (compromised) release even with a valid snapshot", async () => {
+      const { db } = await installedDbWithLive("removed");
+      dbHolder.db = db;
+      const res = await get(await jsSplat());
+      expect(res.status).toBe(404);
+      expect(res.headers.get("cache-control")).toBe("no-store");
+    });
+
+    it("404s the index.html document for a revoked release", async () => {
+      const { db } = await installedDbWithLive("revoked");
+      dbHolder.db = db;
+      const res = await get("aurora-lookbook/1.0.0/index.html");
+      expect(res.status).toBe(404);
+      expect(res.headers.get("cache-control")).toBe("no-store");
+    });
+
+    it("serves from the snapshot when no live row exists (pre-migration legacy)", async () => {
+      const { db } = await installedDbWithLive(null);
+      dbHolder.db = db;
+      const res = await get(await jsSplat());
+      expect(res.status).toBe(200);
+    });
+
+    it("404s fail-closed when the live store read faults", async () => {
+      const { db } = await installedDbWithLive("published");
+      dbHolder.db = db;
+      const real = db.asClient() as {
+        from: (table: string) => unknown;
+      };
+      const inner = real.from.bind(real);
+      dbHolder.client = {
+        from: (table: string) => {
+          if (table === "dev_theme_releases")
+            throw new Error("injected_live_store_outage");
+          return inner(table);
+        },
+      };
+      const res = await get(await jsSplat());
       expect(res.status).toBe(404);
       expect(res.headers.get("cache-control")).toBe("no-store");
     });

@@ -24,11 +24,16 @@ import { daysBetween } from "./billing.server";
 import { money } from "./money";
 import { isOfficialPluginKey } from "./official-plugins";
 import {
+  decodeReviewedThemeListingBundle,
   getReviewedThemeRef,
   installReviewedThemeBundle,
 } from "./dev-theme-bundle-install";
 import type { DevThemeBundleInput } from "./dev-theme-bundle";
-import type { DevThemeRelease } from "./dev-theme-review";
+import {
+  DevThemeReviewError,
+  loadDevThemeApproval,
+  type DevThemeRelease,
+} from "./dev-theme-review";
 import {
   APP_VERSION,
   SELLER_SHARE_BASIS_POINTS,
@@ -55,6 +60,14 @@ export type InstallInput = {
   consentedBy?: string | null;
   /** Recurring cadence for paid installs. Defaults to `one_time`. */
   billingInterval?: InstallBillingInterval;
+  /**
+   * Level B buyer consent pin (explicit `marketInstallFn` key): the
+   * fingerprint the buyer reviewed on the consent screen. The installer
+   * resolves bytes + approval server-side (listing attach + durable review
+   * rows); the pin must equal the listing marker or the install refuses
+   * before any store read. Raw caller bytes can never arrive over HTTP.
+   */
+  devThemeFingerprint?: string | null;
   /**
    * Level B reviewed-theme bytes (the presented bundle the fingerprint lane
    * re-validates and re-hashes at install). Only read when the listing
@@ -222,13 +235,24 @@ function resolveWidgetArtifact(
 
 /**
  * Level B reviewed-theme hook wrapper (ingestion hook — the ONLY Level B
- * touchpoint in this module). Binds the listing marker's theme id to the
- * caller-supplied approval, then delegates to the fingerprint-pinned
- * installer. Fail-closed when the caller supplies no bytes or no approval:
- * a reviewed listing never installs blind, and the widget-oriented
- * bundle/consent gates below never see these installs (dev themes carry
- * reviewed capabilities, not install-time scopes). Builtin
- * (`installBuiltinWidget`) and custom-ZIP (`installPackage` via
+ * touchpoint in this module). Binds the listing marker's theme id to a
+ * SERVER-RESOLVED approval, then delegates to the fingerprint-pinned
+ * installer. Fail-closed throughout:
+ *
+ * - The buyer consent pin (`devThemeFingerprint`) must equal the listing
+ *   marker, or the install refuses before any store read.
+ * - The approval resolves from the durable review rows
+ *   (`dev_theme_releases` + `dev_theme_reviews`, seller-scoped) — a durable
+ *   revoked/unapproved row refuses with NO fallback to caller snapshots.
+ *   Only when the durable store holds no row (pre-migration DBs) does the
+ *   legacy caller-supplied `reviewedRelease` apply, still re-gated at install.
+ * - The bytes resolve from the seller-attached listing bundle
+ *   (`manifest.dev_theme.bundle`) — an attach always wins, so caller-supplied
+ *   `reviewedBundle` is ignored whenever the seller attached bytes. With no
+ *   attach the legacy caller bytes apply, else `bytes_required`.
+ * - The resolved approval fingerprint must equal the marker/pin fingerprint.
+ *
+ * Builtin (`installBuiltinWidget`) and custom-ZIP (`installPackage` via
  * `resolveWidgetArtifact`) branches are untouched.
  */
 async function installReviewedThemeListing(
@@ -243,17 +267,71 @@ async function installReviewedThemeListing(
     price_minor_int?: unknown;
     currency_code?: unknown;
     seller_merchant_id?: unknown;
+    manifest?: unknown;
   },
   input: InstallInput,
   expectedThemeId: string,
 ) {
-  if (!input.reviewedBundle)
-    throw new Error("dev_theme_install.bytes_required");
-  if (!input.reviewedRelease)
-    throw new Error("dev_theme_install.approval_required");
+  const FINGERPRINT_RE = /^[0-9a-f]{64}$/;
+  const marker = getReviewedThemeRef(listing.manifest);
+  const pin =
+    typeof input.devThemeFingerprint === "string" &&
+    input.devThemeFingerprint.length > 0
+      ? input.devThemeFingerprint
+      : null;
+  if (pin !== null && !FINGERPRINT_RE.test(pin)) {
+    throw new Error("market_consent_mismatch");
+  }
+  const markerFingerprint = marker ? marker.fingerprint : null;
+  if (pin !== null && pin !== markerFingerprint) {
+    throw new Error("market_consent_mismatch");
+  }
+  const fingerprint = pin ?? markerFingerprint;
+  if (!fingerprint) throw new Error("dev_theme_install.bytes_required");
+
+  // Approval: durable first (seller-scoped review rows). A durable row that
+  // exists but refuses (revoked/unapproved) never falls back — server wins.
+  // Only an ABSENT row (pre-migration DBs, no durable backing yet) falls
+  // back to the legacy caller-supplied snapshot.
+  let release: DevThemeRelease | null = null;
+  const sellerId =
+    typeof listing.seller_merchant_id === "string" &&
+    listing.seller_merchant_id.length > 0
+      ? listing.seller_merchant_id
+      : null;
+  if (sellerId) {
+    try {
+      const loaded = await loadDevThemeApproval(
+        db,
+        sellerId,
+        expectedThemeId,
+        fingerprint,
+      );
+      if (loaded) release = loaded.release;
+    } catch (err) {
+      if (
+        !(err instanceof DevThemeReviewError) ||
+        err.code !== "dev_theme.store_unreadable"
+      ) {
+        throw err;
+      }
+    }
+  }
+  release ??= input.reviewedRelease ?? null;
+  if (!release) throw new Error("dev_theme_install.approval_required");
+  if (release.fingerprint !== fingerprint) {
+    throw new Error("dev_theme_install.fingerprint_mismatch");
+  }
+
+  // Bytes: the seller attach always wins — caller bytes are ignored whenever
+  // the listing carries them (never trust caller bytes).
+  const attached = decodeReviewedThemeListingBundle(listing.manifest);
+  const bytes: DevThemeBundleInput | null =
+    attached ?? input.reviewedBundle ?? null;
+  if (!bytes) throw new Error("dev_theme_install.bytes_required");
   return installReviewedThemeBundle(db, merchantId, {
-    release: input.reviewedRelease,
-    bytes: input.reviewedBundle,
+    release,
+    bytes,
     idempotencyKey: input.idempotencyKey,
     listing: {
       id: listing.id,
@@ -368,6 +446,8 @@ export async function installListing(
           name: string;
           version: string;
           install_count: number;
+          seller_merchant_id?: unknown;
+          manifest?: unknown;
         },
         input,
         reviewedRef.themeId,

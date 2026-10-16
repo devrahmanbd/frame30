@@ -250,6 +250,14 @@ export type RenderProps = {
   device: DeviceKey;
   editing?: boolean;
   /**
+   * Storefront surface (read-only server render via `StudioNodes`): twin
+   * misses render the explicit fail-closed placeholder instead of null —
+   * the shopper sees a recovery, never a silent hole. The canvas never sets
+   * this (preview misses keep null). Ignored by every legacy lane, so
+   * non-twin rendering stays byte-identical.
+   */
+  storefront?: boolean;
+  /**
    * Real menus for the widget→menu binding (`settings.menuId`). When
    * provided, bound navigation widgets preview the resolved menu; when
    * absent (or unbound) they fall back to manual `items` / placeholders.
@@ -457,6 +465,7 @@ function StudioExtensionBlock({
   node,
   device,
   editing,
+  storefront,
   menus,
   themeKey,
   registry,
@@ -471,13 +480,13 @@ function StudioExtensionBlock({
   );
 
   if (!presentation || !presentation.ok) {
-    return editing ? <ExtensionUnavailable /> : null;
+    return editing || storefront ? <ExtensionUnavailable /> : null;
   }
   if (
     presentation.mode === "theme-owned" &&
     presentation.presentation === "recoverable-fallback"
   ) {
-    return editing ? <ExtensionUnavailable /> : null;
+    return editing || storefront ? <ExtensionUnavailable /> : null;
   }
   if (presentation.mode === "native-builtin") {
     const builtinType = builtinTypeForPresentation(presentation);
@@ -491,6 +500,7 @@ function StudioExtensionBlock({
           }}
           device={device}
           editing={editing}
+          storefront={storefront}
           menus={menus}
           themeKey={themeKey}
           registry={registry}
@@ -498,7 +508,7 @@ function StudioExtensionBlock({
         />
       );
     }
-    return editing ? <ExtensionUnavailable /> : null;
+    return editing || storefront ? <ExtensionUnavailable /> : null;
   }
   if (
     presentation.mode === "official" ||
@@ -513,7 +523,7 @@ function StudioExtensionBlock({
         !isOfficialPluginKey(sourceId) ||
         !getOfficialPlugin(sourceId)
       ) {
-        return editing ? <ExtensionUnavailable /> : null;
+        return editing || storefront ? <ExtensionUnavailable /> : null;
       }
     }
     // Legacy `plugin_block` height contract (clamped 80–1200, 320
@@ -548,6 +558,7 @@ function StudioExtensionBlock({
             node={child}
             device={device}
             editing={editing}
+            storefront={storefront}
             menus={menus}
             themeKey={themeKey}
             registry={registry}
@@ -617,7 +628,7 @@ function StudioExtensionBlock({
       }
     }
   }
-  return editing ? <ExtensionUnavailable /> : null;
+  return editing || storefront ? <ExtensionUnavailable /> : null;
 }
 
 /**
@@ -638,6 +649,7 @@ function StudioAppBlock({
   pluginKey,
   height,
   editing,
+  storefront,
   node,
   device,
   menus,
@@ -648,6 +660,7 @@ function StudioAppBlock({
   pluginKey: string;
   height: number;
   editing?: boolean;
+  storefront?: boolean;
   node: StudioNode;
   device: DeviceKey;
   menus?: readonly StudioMenuSource[] | null;
@@ -670,6 +683,7 @@ function StudioAppBlock({
         node={node}
         device={device}
         editing={editing}
+        storefront={storefront}
         menus={menus}
         themeKey={themeKey}
         registry={registry}
@@ -810,6 +824,7 @@ export function StudioWidget({
   node,
   device,
   editing,
+  storefront,
   menus,
   themeKey,
   registry,
@@ -1309,6 +1324,7 @@ export function StudioWidget({
           pluginKey={str(s, "pluginKey")}
           height={height}
           editing={editing}
+          storefront={storefront}
           node={node}
           device={device}
           menus={menus}

@@ -87,6 +87,31 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   run green in one pass) and CI restoration (config restored verbatim —
   remote builds still need owner token access).
 
+## [Unreleased] (frame30) — Swarm audit close-out: production gaps fixed
+
+### Fixed (adversarial audit → implementation, severity-ordered)
+
+- Level B install entry reachable (fingerprint-only buyer pin; seller
+  bytes resolved server-side), serve-time revocation re-check live,
+  moderator + update/rollback server surface.
+- Storefront live binding (projection + revalidating `onCall`, cart-write
+  via server repricing), freshness/suspension live, `seen` pruned.
+- Storefront canonical twins resolve with explicit recovery (never null);
+  duplicate/global/template/drop paths re-pin identity; `setSetting`
+  validated; autosave signature covers chrome.
+- One fallback builder, singleton merge gated (global-only default),
+  state-aware inspector, owner availability on all maps.
+- Full NEXT_BATCH controls, menu bindings editable, canonical insertion
+  only; CI runs the Level B production E2E + headless release gates;
+  suspended forwarded end-to-end.
+
+### Verification
+
+- ~400 new tests across 8 lanes; neighbors 4000+ green; `tsgo` 0;
+  eslint 0 errors on owned lines; secret scan passed; harness guards 1.0.
+- Open: 9 auth-gated E2E steps (proven wall), remote CI run (owner),
+  GPU proof (no GPU on server).
+
 ## [Unreleased] (frame30) — Swarm: full checklist integration
 
 ### Added

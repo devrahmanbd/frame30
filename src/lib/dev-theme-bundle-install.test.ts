@@ -613,7 +613,11 @@ describe("installListing — reviewed-theme hook (builtin + custom-ZIP branches 
         idempotencyKey: "hook-no-bytes-1",
         grantedScopes: [],
         consentedBy: ACTOR,
-      }),
+        // Approval present (durable-absent legacy path): the refusal must
+        // name the missing BYTES, proving a reviewed listing never installs
+        // blind even when the approval checks out.
+        reviewedRelease: approvalFor(),
+      } as never),
     ).rejects.toThrow(/dev_theme_install\.bytes_required/);
     expect(db.rows("marketplace_installs")).toHaveLength(0);
   });

@@ -350,6 +350,20 @@ export type ThemeFloodGate =
   | { ok: false; error: "theme.duplicate_id" | "theme.rate_limited" };
 
 /**
+ * Bound on the per-mount duplicate-`id` set. `times` is already
+ * window-pruned (≤30 entries); `seen` was not — over a long-lived frame it
+ * grew without bound (one entry per admitted envelope, forever). When the
+ * set exceeds this cap the oldest insertion-order ids are dropped, so guard
+ * memory stays O(cap) per mount. Tradeoff, stated plainly: a duplicate id
+ * older than the prune horizon may be re-admitted (replay window bounded by
+ * the cap, not infinite). Fresh mounts reset via `resetThemeGuard` anyway.
+ */
+export const THEME_GUARD_MAX_SEEN = 600;
+
+/** Entries retained after a prune (most-recent insertion-order ids). */
+export const THEME_GUARD_SEEN_RETAIN = 300;
+
+/**
  * Admit one message. Duplicates are rejected first and cost no rate budget;
  * admitted messages (even ones the authorizer later denies) each spend one
  * rate slot. `now` is injectable for tests.
@@ -372,7 +386,21 @@ export function checkThemeGuard(
     return { ok: false, error: "theme.rate_limited" };
   }
   g.times.push(now);
-  if (typeof id === "string") g.seen.add(id);
+  if (typeof id === "string") {
+    g.seen.add(id);
+    // Window-tied hygiene: `times` slides every call; `seen` is pruned here
+    // on the same path so a long-lived frame cannot accumulate unbounded
+    // duplicate state. Insertion order is arrival order for admitted ids,
+    // so dropping the oldest keeps the most-recent replay horizon.
+    if (g.seen.size > THEME_GUARD_MAX_SEEN) {
+      const drop = g.seen.size - THEME_GUARD_SEEN_RETAIN;
+      let n = 0;
+      for (const old of g.seen) {
+        if (n++ >= drop) break;
+        g.seen.delete(old);
+      }
+    }
+  }
   return { ok: true };
 }
 

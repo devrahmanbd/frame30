@@ -108,12 +108,20 @@ describe("P2 — builtin adapter carries real fields", () => {
     expect(hero.propsSchema.fields.length).toBe(
       catalogEntry("hero")!.fields.filter((f) => f.kind !== "menu").length,
     );
-    // nav_menu carries everything except the unmappable menu tree.
+    // nav_menu carries everything: the menu tree adapts to a repeater of
+    // flat link rows (label/href/type) instead of being dropped.
     const navMenu = byId.get("builtin:nav_menu");
     if (navMenu) {
       expect(navMenu.propsSchema.fields.length).toBe(
-        catalogEntry("nav_menu")!.fields.length - 1,
+        catalogEntry("nav_menu")!.fields.length,
       );
+      const items = navMenu.propsSchema.fields.find((f) => f.key === "items");
+      expect(items?.kind).toBe("repeater");
+      expect(items?.fields?.map((f) => f.key)).toEqual([
+        "label",
+        "href",
+        "type",
+      ]);
     }
   });
 

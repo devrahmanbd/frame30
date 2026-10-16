@@ -1341,6 +1341,245 @@ export async function publishDevThemeRelease(
   };
 }
 
+/* --------------------------------- moderator server entries (durable)
+ *
+ * G4 close-out: the pure store above is memory-only, so `rollback()` and
+ * the moderator transitions had no durable server entry. These entries back
+ * them with the Supabase review rows, mirroring the pure gates exactly
+ * (never weakened — same status sets, same approval binding, same reviewer
+ * vocabulary, same fail-closed store faults):
+ *
+ * - `revokeDevThemeRelease`: published|approved → revoked (pointer-equivalent
+ *   is the status itself — serving/activation re-checks refuse revoked rows).
+ * - `rollbackDevThemeRelease`: re-publishes an approved fingerprint's row.
+ *   Deviation from the pure `rollback()` (documented, not hidden): the pure
+ *   store mints a NEW release id carrying the target bytes, but the durable
+ *   UNIQUE on (merchant, theme, fingerprint) forbids a second row for the
+ *   same bytes — so the target row itself returns to `published` with a
+ *   `dev_theme.rolled_back` audit carrying `rollback_of`. Same effect (the
+ *   fingerprint serves/activates again), same gates (revoked/removed/
+ *   rejected/unreviewed targets refuse before any write).
+ * - `activateDevThemeRelease`: loads the durable approval and runs the REAL
+ *   `activateDevThemeInstall` gate (ledger + host-row fingerprint linkage +
+ *   audit) — the gate is read, never reimplemented.
+ *
+ * State writes land inside the entry; audit EVENTS are returned for the
+ * caller to persist with `insertDevThemeAuditRow` (same pattern as
+ * `persistDevThemeReview`), except activation, whose audit lands inside the
+ * activation gate itself (same pattern as `activateDevThemeInstall`).
+ */
+
+export type RevokeDevThemeReleaseInput = {
+  merchantId: string;
+  themeId: string;
+  fingerprint: string;
+  actor: DevThemeActor;
+  reason: string;
+  revokedAt: string;
+};
+
+export async function revokeDevThemeRelease(
+  db: ReviewStoreClient,
+  input: RevokeDevThemeReleaseInput,
+): Promise<{
+  release: PersistedDevThemeReleaseRow;
+  audit: DevThemeAuditEvent;
+}> {
+  const merchantId = requireId(input.merchantId, "merchant");
+  const themeId = requireId(input.themeId, "theme");
+  const fingerprint = requireFingerprint(input.fingerprint);
+  const actor = requireActor(input.actor);
+  const reason = requireReason(input.reason);
+  const revokedAt = requireTimestamp(input.revokedAt);
+  const store = storeDb(db);
+  const release = await findRelease(store, merchantId, themeId, fingerprint);
+  if (!release) {
+    fail("dev_theme.not_found", "No release carries that fingerprint.");
+  }
+  if (release.status !== "published" && release.status !== "approved") {
+    fail(
+      "dev_theme.revoke_state",
+      `Only published or approved releases can be revoked (is ${release.status}).`,
+    );
+  }
+  let updateError: unknown;
+  try {
+    ({ error: updateError } = await store
+      .from(DEV_THEME_RELEASES_TABLE)
+      .update({ status: "revoked" })
+      .eq("merchant_id", merchantId)
+      .eq("theme_id", themeId)
+      .eq("fingerprint", fingerprint));
+  } catch (e) {
+    unwritable(e instanceof Error ? e.message : "revoke write failed");
+  }
+  if (updateError) {
+    unwritable(
+      `revoke write failed: ${String((updateError as { message?: unknown }).message ?? updateError)}`,
+    );
+  }
+  const next: PersistedDevThemeReleaseRow = { ...release, status: "revoked" };
+  return {
+    release: next,
+    audit: {
+      action: "dev_theme.revoked",
+      merchantId,
+      themeId,
+      releaseId: release.id,
+      actorId: actor.id,
+      before: { status: release.status },
+      after: { fingerprint, reason, revoked_at: revokedAt },
+    },
+  };
+}
+
+export type RollbackDevThemeReleaseInput = {
+  merchantId: string;
+  themeId: string;
+  targetFingerprint: string;
+  actor: DevThemeActor;
+  rolledBackAt: string;
+};
+
+export async function rollbackDevThemeRelease(
+  db: ReviewStoreClient,
+  input: RollbackDevThemeReleaseInput,
+): Promise<{
+  release: PersistedDevThemeReleaseRow;
+  audit: DevThemeAuditEvent;
+}> {
+  const merchantId = requireId(input.merchantId, "merchant");
+  const themeId = requireId(input.themeId, "theme");
+  const fingerprint = requireFingerprint(input.targetFingerprint);
+  const actor = requireActor(input.actor);
+  const rolledBackAt = requireTimestamp(input.rolledBackAt);
+  const store = storeDb(db);
+  const target = await findRelease(store, merchantId, themeId, fingerprint);
+  if (!target) {
+    fail("dev_theme.not_found", "No release carries that fingerprint.");
+  }
+  if (target.status === "revoked" || target.status === "removed") {
+    fail(
+      "dev_theme.rollback_revoked",
+      `Rollback target ${target.id} is ${target.status}: revoked bytes never restore.`,
+    );
+  }
+  const approval = await findReview(
+    store,
+    merchantId,
+    themeId,
+    fingerprint,
+    "approve",
+  );
+  if (!approval) {
+    fail(
+      "dev_theme.approval_required",
+      "Rollback target was never approved: unreviewed bytes never go live.",
+    );
+  }
+  if (
+    target.status !== "approved" &&
+    target.status !== "published" &&
+    target.status !== "superseded"
+  ) {
+    fail(
+      "dev_theme.approval_required",
+      `Rollback target is ${target.status}: only approved releases restore.`,
+    );
+  }
+  let updateError: unknown;
+  try {
+    ({ error: updateError } = await store
+      .from(DEV_THEME_RELEASES_TABLE)
+      .update({ status: "published", published_at: rolledBackAt })
+      .eq("merchant_id", merchantId)
+      .eq("theme_id", themeId)
+      .eq("fingerprint", fingerprint));
+  } catch (e) {
+    unwritable(e instanceof Error ? e.message : "rollback write failed");
+  }
+  if (updateError) {
+    unwritable(
+      `rollback write failed: ${String((updateError as { message?: unknown }).message ?? updateError)}`,
+    );
+  }
+  const next: PersistedDevThemeReleaseRow = {
+    ...target,
+    status: "published",
+    published_at: rolledBackAt,
+  };
+  return {
+    release: next,
+    audit: {
+      action: "dev_theme.rolled_back",
+      merchantId,
+      themeId,
+      releaseId: target.id,
+      actorId: actor.id,
+      before: { status: target.status },
+      after: {
+        fingerprint,
+        rollback_of: target.id,
+        rolled_back_at: rolledBackAt,
+      },
+    },
+  };
+}
+
+export type ActivateDevThemeReleaseInput = {
+  /** Buyer merchant owning the install + host theme rows. */
+  merchantId: string;
+  /** Host `store_themes` row from the fingerprint-pinned install. */
+  themeId: string;
+  /** Ledger row (resolved via the theme link when absent). */
+  installId?: string;
+  /** Seller scope of the durable approval. */
+  releaseMerchantId: string;
+  releaseThemeId: string;
+  fingerprint: string;
+  actorId?: string | null;
+};
+
+export async function activateDevThemeRelease(
+  db: ReviewStoreClient,
+  input: ActivateDevThemeReleaseInput,
+): Promise<{ themeId: string; fingerprint: string }> {
+  const merchantId = requireId(input.merchantId, "merchant");
+  const themeId = requireId(input.themeId, "theme");
+  const releaseMerchantId = requireId(input.releaseMerchantId, "merchant");
+  const releaseThemeId = requireId(input.releaseThemeId, "theme");
+  const fingerprint = requireFingerprint(input.fingerprint);
+  const approval = await loadDevThemeApproval(
+    db,
+    releaseMerchantId,
+    releaseThemeId,
+    fingerprint,
+  );
+  if (!approval) {
+    fail(
+      "dev_theme.approval_required",
+      "No durable approval covers that fingerprint: unreviewed bytes never activate.",
+    );
+  }
+  // Lane-crossing dynamic import (same convention as
+  // `dev-theme-bundle-install.ts`): the REAL activation gate runs — ledger +
+  // host-row fingerprint linkage, published + approve-bound re-check, audit —
+  // read, never reimplemented or weakened.
+  const { activateDevThemeInstall } = await import("./dev-theme-activate");
+  return activateDevThemeInstall(
+    db as unknown as Parameters<typeof activateDevThemeInstall>[0],
+    merchantId,
+    {
+      themeId,
+      installId: input.installId,
+      release: approval.release,
+      expectedFingerprint: fingerprint,
+      expectedThemeId: releaseThemeId,
+      actorId: input.actorId ?? null,
+    },
+  );
+}
+
 /**
  * Durable approval snapshot for the activation/install gates. Throws
  * `dev_theme.store_unreadable` on ANY store fault (fail-closed — the caller

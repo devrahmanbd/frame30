@@ -23,21 +23,85 @@
 import type { SectionType } from "./builder-ast";
 import type { WidgetComponent } from "@/components/builder/widgets";
 
-/** themeKey → (widgetType → presentation Component). */
+/** themeKey → (widgetType → presentation Component). Keys are normalized
+ * (trim+lowercase) at register and resolve — case/padding variants address
+ * the SAME entry instead of shadowing as distinct keys. */
 const PRESENTATIONS = new Map<string, Map<SectionType, WidgetComponent>>();
+
+/** Owners marked unavailable present nothing on ANY map (unified gate). */
+const THEME_OWNER_AVAILABILITY = new Map<string, boolean>();
+
+/**
+ * Normalize a core theme/owner key (trim+lowercase), or null for empty /
+ * non-string input. Core maps (PRESENTATIONS, THEME_OWNED_COMPONENTS, unified
+ * availability) are case-insensitive by design: `" Acme "` and `"acme"` are
+ * one owner. (Versioned dressing owners stay
+ * case-sensitive — pinned by the adversarial suite — and consult the unified
+ * gate case-insensitively IN ADDITION to their own flag.)
+ */
+function normalizeCoreOwnerKey(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const clean = value.trim().toLowerCase();
+  return clean ? clean : null;
+}
+
+/**
+ * Normalize a core widget type (trim+lowercase), or null for empty /
+ * non-string input. Identity for every valid `SectionType` (all lowercase
+ * snake_case), so well-formed callers see zero behavior change.
+ */
+function normalizeCoreWidgetType(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const clean = value.trim().toLowerCase();
+  return clean ? clean : null;
+}
+
+/**
+ * Normalize a theme-owned widget id (trim+lowercase), or null when it is not
+ * a `theme:` id. Lowercasing the whole id merges case variants of the owner
+ * AND widget segments (`THEME:Alpha/Widget-A` ≡ `theme:alpha/widget-a`);
+ * registry ids are lowercase by gate construction, so valid ids are fixed
+ * points.
+ */
+function normalizeThemeOwnedId(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const clean = value.trim().toLowerCase();
+  if (!clean || !clean.startsWith("theme:")) return null;
+  return clean;
+}
+
+/** Owner segment of a NORMALIZED `theme:<owner>/...` id, else `""`. */
+function ownerOfNormalizedThemeId(normalizedId: string): string {
+  const rest = normalizedId.slice("theme:".length);
+  const slash = rest.indexOf("/");
+  if (slash <= 0) return "";
+  return rest.slice(0, slash);
+}
+
+/** True unless the (normalized) owner was explicitly marked unavailable. */
+function isCoreOwnerAvailable(normalizedOwner: string): boolean {
+  try {
+    return THEME_OWNER_AVAILABILITY.get(normalizedOwner) !== false;
+  } catch {
+    return false;
+  }
+}
 
 /**
  * Claim one themeKey × widgetType pair for a presentation Component.
  * Owned by themes: only theme modules call this. First registration wins;
- * duplicates warn and are ignored. Never throws (invalid input warns and
- * returns).
+ * duplicates warn and are ignored. Keys normalize (trim+lowercase), so a
+ * padded/cased duplicate warns as a duplicate instead of shadowing. Never
+ * throws (invalid input warns and returns).
  */
 export function registerThemePresentation(
   themeKey: string,
   widgetType: SectionType,
   Component: WidgetComponent,
 ): void {
-  if (typeof themeKey !== "string" || themeKey.length === 0) {
+  const ownerKey = normalizeCoreOwnerKey(themeKey);
+  const widgetKey = normalizeCoreWidgetType(widgetType as unknown);
+  if (!ownerKey || !widgetKey) {
     console.warn(
       `[theme-presentations] ignoring registration for empty theme key (${String(widgetType)}).`,
     );
@@ -45,29 +109,33 @@ export function registerThemePresentation(
   }
   if (typeof Component !== "function") {
     console.warn(
-      `[theme-presentations] ignoring registration for ${themeKey}/${String(widgetType)}: not a component.`,
+      `[theme-presentations] ignoring registration for ${ownerKey}/${widgetKey}: not a component.`,
     );
     return;
   }
-  let byWidget = PRESENTATIONS.get(themeKey);
+  let byWidget = PRESENTATIONS.get(ownerKey);
   if (!byWidget) {
     byWidget = new Map<SectionType, WidgetComponent>();
-    PRESENTATIONS.set(themeKey, byWidget);
+    PRESENTATIONS.set(ownerKey, byWidget);
   }
-  if (byWidget.has(widgetType)) {
+  const typedWidgetKey = widgetKey as SectionType;
+  if (byWidget.has(typedWidgetKey)) {
     console.warn(
-      `[theme-presentations] duplicate registration for ${themeKey}/${String(widgetType)} ignored; keeping the first.`,
+      `[theme-presentations] duplicate registration for ${ownerKey}/${widgetKey} ignored; keeping the first.`,
     );
     return;
   }
-  byWidget.set(widgetType, Component);
+  byWidget.set(typedWidgetKey, Component);
 }
 
 /**
  * Resolve the registered presentation for a themeKey × widgetType pair,
  * or the caller-supplied fallback (the existing resolution result) when
- * nothing is registered. Never throws — unknown themes, null keys and
- * missing widgets all fall back instead of leaking another theme's brand.
+ * nothing is registered or the owner is marked unavailable (see
+ * `setThemeOwnerAvailability` — unavailable owners dress nothing, so the
+ * caller keeps the recoverable placeholder with authored props preserved).
+ * Never throws — unknown themes, null keys and missing widgets all fall back
+ * instead of leaking another theme's brand.
  */
 export function resolveThemePresentation(
   themeKey: string | null | undefined,
@@ -75,7 +143,11 @@ export function resolveThemePresentation(
   fallback?: WidgetComponent | undefined,
 ): WidgetComponent | undefined {
   try {
-    const hit = PRESENTATIONS.get(themeKey ?? "")?.get(widgetType);
+    const ownerKey = normalizeCoreOwnerKey(themeKey);
+    const widgetKey = normalizeCoreWidgetType(widgetType as unknown);
+    if (!ownerKey || !widgetKey) return fallback;
+    if (!isCoreOwnerAvailable(ownerKey)) return fallback;
+    const hit = PRESENTATIONS.get(ownerKey)?.get(widgetKey as SectionType);
     return hit ?? fallback;
   } catch {
     return fallback;
@@ -88,6 +160,7 @@ export function clearThemePresentations(): void {
   THEME_OWNED_COMPONENTS.clear();
   VERSIONED_DRESSINGS.clear();
   VERSIONED_AVAILABILITY.clear();
+  THEME_OWNER_AVAILABILITY.clear();
 }
 
 /* --------------------------------------- versioned namespaced dressings */
@@ -536,7 +609,7 @@ export function resolveVersionedPresentation(
     const ownerKey = normalizeVersionedOwner(owner);
     const widgetKey = normalizeVersionedWidget(widgetId);
     if (!ownerKey || !widgetKey) return fallback;
-    if (VERSIONED_AVAILABILITY.get(ownerKey) === false) return fallback;
+    if (isVersionedOwnerBlocked(ownerKey)) return fallback;
     const bucket = VERSIONED_DRESSINGS.get(ownerKey)?.get(widgetKey);
     if (!bucket || bucket.length === 0) return fallback;
     const ver =
@@ -596,6 +669,63 @@ export function isVersionedOwnerAvailable(owner: unknown): boolean {
   }
 }
 
+/**
+ * Mark an owner's presentations available or unavailable across ALL THREE
+ * maps (core PRESENTATIONS, THEME_OWNED_COMPONENTS, versioned dressings).
+ * Unavailable owners resolve to a miss/fallback so the caller keeps the
+ * recoverable placeholder with the authored props preserved — never a
+ * foreign render. Keys normalize (trim+lowercase), so padded/cased spellings
+ * flip the same owner. OR-of-unavailable with the versioned flag: EITHER
+ * `setVersionedPresentationAvailability(owner, false)` OR this API with
+ * `false` blocks versioned resolution; re-enable via the SAME API that
+ * disabled it. Never throws.
+ */
+export function setThemeOwnerAvailability(
+  owner: unknown,
+  available: unknown,
+): void {
+  try {
+    const ownerKey = normalizeCoreOwnerKey(owner);
+    if (!ownerKey) {
+      versionedWarn("ignoring availability update for an empty owner.");
+      return;
+    }
+    if (typeof available !== "boolean") {
+      versionedWarn(
+        `ignoring availability update for ${ownerKey}: not a boolean.`,
+      );
+      return;
+    }
+    THEME_OWNER_AVAILABILITY.set(ownerKey, available);
+  } catch {
+    versionedWarn("ignoring availability update after an internal error.");
+  }
+}
+
+/** Whether an owner's presentations currently resolve on every map (default true). */
+export function isThemeOwnerAvailable(owner: unknown): boolean {
+  try {
+    const ownerKey = normalizeCoreOwnerKey(owner);
+    if (!ownerKey) return false;
+    return THEME_OWNER_AVAILABILITY.get(ownerKey) !== false;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * True when EITHER availability flag blocks this versioned owner: its own
+ * case-sensitive flag, or the unified case-insensitive gate above.
+ */
+function isVersionedOwnerBlocked(ownerKey: string): boolean {
+  try {
+    if (VERSIONED_AVAILABILITY.get(ownerKey) === false) return true;
+    return THEME_OWNER_AVAILABILITY.get(ownerKey.toLowerCase()) === false;
+  } catch {
+    return false;
+  }
+}
+
 function versionedCompatOf(
   bucket: StoredDressing[] | undefined,
   ver: VersionTriple | null,
@@ -642,7 +772,7 @@ export function checkVersionedCompatibility(
       bucket,
       ver,
       api,
-      VERSIONED_AVAILABILITY.get(ownerKey) !== false,
+      !isVersionedOwnerBlocked(ownerKey),
     );
   } catch {
     return { compatible: false, reason: "unknown" };
@@ -672,7 +802,7 @@ export function migrateVersionedProps(
     const widgetKey = normalizeVersionedWidget(widgetId);
     if (!ownerKey || !widgetKey)
       return { ok: false, reason: "bad_key", preservedProps: preserved };
-    if (VERSIONED_AVAILABILITY.get(ownerKey) === false)
+    if (isVersionedOwnerBlocked(ownerKey))
       return { ok: false, reason: "unavailable", preservedProps: preserved };
     const bucket = VERSIONED_DRESSINGS.get(ownerKey)?.get(widgetKey);
     if (!bucket || bucket.length === 0)
@@ -753,18 +883,17 @@ const THEME_OWNED_COMPONENTS = new Map<string, WidgetComponent>();
 /**
  * Claim one `theme:<owner>/...` widget id for a native Component. Owned
  * by themes: only theme modules call this (typically at module init,
- * alongside their WidgetDef registration). First registration wins;
- * duplicates warn and are ignored. Never throws.
+ * alongside their WidgetDef registration). The id normalizes
+ * (trim+lowercase), so case/padding variants claim the SAME entry instead of
+ * shadowing. First registration wins; duplicates warn and are ignored.
+ * Never throws.
  */
 export function registerThemeOwnedComponent(
   widgetId: string,
   Component: WidgetComponent,
 ): void {
-  if (
-    typeof widgetId !== "string" ||
-    widgetId.trim().length === 0 ||
-    !widgetId.trim().startsWith("theme:")
-  ) {
+  const key = normalizeThemeOwnedId(widgetId);
+  if (!key) {
     console.warn(
       `[theme-presentations] ignoring theme-owned registration for ${String(widgetId)}: not a theme widget id.`,
     );
@@ -772,11 +901,10 @@ export function registerThemeOwnedComponent(
   }
   if (typeof Component !== "function") {
     console.warn(
-      `[theme-presentations] ignoring theme-owned registration for ${widgetId.trim()}: not a component.`,
+      `[theme-presentations] ignoring theme-owned registration for ${key}: not a component.`,
     );
     return;
   }
-  const key = widgetId.trim();
   if (THEME_OWNED_COMPONENTS.has(key)) {
     console.warn(
       `[theme-presentations] duplicate theme-owned registration for ${key} ignored; keeping the first.`,
@@ -788,17 +916,20 @@ export function registerThemeOwnedComponent(
 
 /**
  * Resolve the native component for a `theme:<owner>/...` widget id, or
- * undefined when nothing is registered. Never throws — unknown ids and
- * garbage input resolve to undefined instead of leaking another owner's
- * brand.
+ * undefined when nothing is registered OR the owning theme is marked
+ * unavailable (see `setThemeOwnerAvailability` — the caller keeps the
+ * explicit recoverable placeholder). Never throws — unknown ids, garbage
+ * input and unavailable owners resolve to undefined instead of leaking
+ * another owner's brand.
  */
 export function resolveThemeOwnedComponent(
   widgetId: string | null | undefined,
 ): WidgetComponent | undefined {
   try {
-    if (typeof widgetId !== "string") return undefined;
-    const key = widgetId.trim();
+    const key = normalizeThemeOwnedId(widgetId);
     if (!key) return undefined;
+    const owner = ownerOfNormalizedThemeId(key);
+    if (owner && !isCoreOwnerAvailable(owner)) return undefined;
     return THEME_OWNED_COMPONENTS.get(key);
   } catch {
     return undefined;

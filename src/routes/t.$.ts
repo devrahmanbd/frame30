@@ -23,21 +23,123 @@
  *
  * Fail-closed throughout: unparseable splats, unknown versions, ambiguous
  * releases, missing entries, tampered bytes/maps/approvals, refused kinds,
- * unapproved documents, and oversized rows all
+ * unapproved documents, live-revoked releases, faulted live-store reads, and
+ * oversized rows all
  * 404 with `no-store` (never an immutable directive on a refusal, so a
  * refusal can never poison a shared cache).
+ *
+ * Known limit (reported, not hidden): the live revocation read goes through
+ * the same public (anon) client, and `dev_theme_releases` RLS is
+ * tenant-scoped — so in production the live row is RLS-hidden ("no
+ * evidence") and the snapshot verification carries the serve. The re-check
+ * fires wherever the row is readable (tests, seller-scoped readers, any
+ * future public read policy) and denies revoked/removed on sight; an
+ * explicit revoked row denies even when the snapshot is still valid.
  */
 import { createFileRoute } from "@tanstack/react-router";
 
 const NOT_FOUND = { "cache-control": "no-store" };
 
+type LooseFilter = PromiseLike<{ data: unknown; error: unknown }> & {
+  eq(col: string, val: string): LooseFilter;
+  maybeSingle(): Promise<{ data: unknown; error: unknown }>;
+};
+
 type LooseDb = {
   from(table: string): {
-    select(cols: string): {
-      eq(col: string, val: string): Promise<{ data: unknown; error: unknown }>;
-    };
+    select(cols: string): LooseFilter;
   };
 };
+
+const CLAIMED_FINGERPRINT_RE = /^[0-9a-f]{64}$/;
+
+/**
+ * Claimed (seller, fingerprint) identities from the stored approval
+ * snapshots for this namespace. Untrusted until `resolveDevThemeAsset`
+ * verifies — used ONLY to address the live revocation re-check.
+ */
+function claimedServeIdentities(
+  approvalRows: unknown,
+  themeId: string,
+): Array<{ seller: string; fingerprint: string }> {
+  const list = Array.isArray(approvalRows) ? approvalRows : [approvalRows];
+  const out = new Map<string, { seller: string; fingerprint: string }>();
+  for (const row of list) {
+    const content =
+      row && typeof row === "object"
+        ? (row as { content?: unknown }).content
+        : null;
+    let parsed: unknown = null;
+    try {
+      parsed = typeof content === "string" ? JSON.parse(content) : content;
+    } catch {
+      continue;
+    }
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      continue;
+    }
+    const record = parsed as Record<string, unknown>;
+    if (record.themeId !== themeId) continue;
+    if (typeof record.merchantId !== "string" || !record.merchantId) continue;
+    if (
+      typeof record.fingerprint !== "string" ||
+      !CLAIMED_FINGERPRINT_RE.test(record.fingerprint)
+    ) {
+      continue;
+    }
+    const key = `${record.merchantId}:${record.fingerprint}`;
+    if (!out.has(key)) {
+      out.set(key, {
+        seller: record.merchantId,
+        fingerprint: record.fingerprint,
+      });
+    }
+  }
+  return [...out.values()];
+}
+
+/**
+ * Serve-time revocation re-check: for every claimed identity, read the live
+ * `dev_theme_releases` row and deny when it refuses. Fail-closed: a live
+ * revoked/removed/regressed row denies, and a faulted read denies too (a
+ * refusal can never poison a cache — all denials carry `no-store`). No live
+ * row is "no evidence" (pre-migration DBs, RLS-hidden rows): the snapshot
+ * verification below still fully gates the serve.
+ */
+async function isDevThemeServeRevoked(
+  db: LooseDb,
+  themeId: string,
+  approvalRows: unknown,
+): Promise<boolean> {
+  try {
+    const { devThemeServeRevocationVerdict } =
+      await import("@/lib/themes.server");
+    for (const identity of claimedServeIdentities(approvalRows, themeId)) {
+      let data: unknown;
+      let error: unknown;
+      try {
+        ({ data, error } = await db
+          .from("dev_theme_releases")
+          .select("status,fingerprint")
+          .eq("merchant_id", identity.seller)
+          .eq("theme_id", themeId)
+          .eq("fingerprint", identity.fingerprint)
+          .maybeSingle());
+      } catch {
+        return true;
+      }
+      if (error) return true;
+      if (
+        devThemeServeRevocationVerdict(data, identity.fingerprint) === "revoked"
+      ) {
+        return true;
+      }
+    }
+    return false;
+  } catch {
+    return true;
+  }
+}
 
 export const Route = createFileRoute("/t/$")({
   server: {
@@ -90,6 +192,20 @@ export const Route = createFileRoute("/t/$")({
         ]);
 
         if (requested.assetPath === "index.html") {
+          // Serve-time revocation re-check (fail-closed): a release revoked
+          // AFTER install keeps a valid snapshot — the live row denies first.
+          if (
+            await isDevThemeServeRevoked(
+              db,
+              requested.themeId,
+              (approvals as { data: unknown }).data,
+            )
+          ) {
+            return new Response("not_found", {
+              status: 404,
+              headers: NOT_FOUND,
+            });
+          }
           const { buildDevThemeDocument } =
             await import("@/lib/dev-theme-document");
           const origin = new URL(request.url).origin;
@@ -131,6 +247,22 @@ export const Route = createFileRoute("/t/$")({
           return new Response(doc.body, { headers: doc.headers });
         }
 
+        // Serve-time revocation re-check (fail-closed): a release revoked
+        // AFTER install keeps a valid snapshot — the live row denies first.
+        // The snapshot verification below ALWAYS still runs: the live check
+        // is an additional deny, never an allow-bypass.
+        if (
+          await isDevThemeServeRevoked(
+            db,
+            requested.themeId,
+            (approvals as { data: unknown }).data,
+          )
+        ) {
+          return new Response("not_found", {
+            status: 404,
+            headers: NOT_FOUND,
+          });
+        }
         const outcome = resolveDevThemeAsset(
           requested,
           (approvals as { data: unknown }).data,

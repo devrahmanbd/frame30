@@ -43,6 +43,23 @@
  * contracts in `bridge-v2.ts` already enforce that; this binding only
  * selects which methods the frame may call.
  *
+ * cart-write decision (Frame30 storefront host): KEEP the grant as a live
+ * capability, because the storefront host implements `cart.add` via
+ * server-side repricing (`resolveStorefrontDevThemeCall` in
+ * `storefront-dev-theme.server.ts` — tenant from the URL slug, price/stock
+ * from live catalog rows, frame prices rejected as `theme.forbidden_field`,
+ * no orders or stock movements created). Rationale over the remove-option:
+ * full custom-isolated themes own the whole storefront document — there is
+ * no host cart UI visible beside the frame — so denying the write would
+ * silently break commerce rendering (the same deny-all-breaks-commerce
+ * argument the storefront host makes for reads). The grant names what the
+ * install holds; the host still decides what the frame may execute, and the
+ * server revalidates every invocation. Removing the grant instead would keep
+ * the starter theme's declared `cart-write` capability dead on arrival and
+ * contradict the bridge vocabulary (`cart.add` is one of the four
+ * documented theme methods). Tests pin both halves: the grant map here and
+ * the repriced server branch there.
+ *
  * Lane separation: this lane never reads or writes data-only theme rows
  * (`theme.json` packages have no fingerprint-bound rows, so the checksum
  * linkage refuses them); the frozen data-only lane is NOT modified.

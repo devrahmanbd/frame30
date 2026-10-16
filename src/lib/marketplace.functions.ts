@@ -37,6 +37,17 @@ export const marketInstallFn = createServerFn({ method: "POST" })
         billingInterval: z
           .enum(["one_time", "monthly", "annual"])
           .default("one_time"),
+        // Level B reviewed-theme consent pin (the ONLY Level B install key):
+        // the fingerprint the buyer reviewed. The installer resolves bytes +
+        // approval server-side from the listing attach + durable review rows.
+        // Raw `reviewedBundle` / `reviewedRelease` keys are intentionally
+        // absent — zod strips unknown keys, so caller bytes can never reach
+        // the installer over HTTP (never trust caller bytes).
+        devThemeFingerprint: z
+          .string()
+          .regex(/^[0-9a-f]{64}$/)
+          .nullable()
+          .default(null),
         versionId: z.string().uuid().nullable().default(null),
         grantedScopes: z
           .array(z.string().trim().min(2).max(40))

@@ -133,6 +133,13 @@ export type CustomIsolatedThemeMount = {
   navigateAllowlist?: readonly string[];
   /** Host implementation behind authorized bridge calls (server revalidates). */
   onCall: ThemeHostHandler;
+  /**
+   * Kill-switch liveness, fed from the install's live status: forwarded to
+   * `ThemeRuntime`, where true refuses every bridge call as
+   * `theme.suspended` before any host work. Absent = live. The frame still
+   * mounts either way — suspension denies calls, it never strands the page.
+   */
+  suspended?: boolean;
   /** Descriptive frame title (defaults to the store name). */
   title?: string;
 };
@@ -263,6 +270,7 @@ export function ThemeChrome({
           granted={isolatedTheme.granted}
           navigateAllowlist={isolatedTheme.navigateAllowlist ?? []}
           onCall={isolatedTheme.onCall}
+          suspended={isolatedTheme.suspended}
         />
       </>
     );

@@ -5,10 +5,13 @@
  * and executes bundled code through the real runtime — REUSING (not
  * redoing) the proven execution spec:
  * - Genuine gsap/three execution through the real sandbox is proven by
- *   `.e2e/levelb-theme-execution.spec.ts` (cold browser, real loopback HTTP,
- *   vendor byte-proof) and `src/lib/dev-theme-sandbox.test.tsx` (frame-shape
- *   harness). This file asserts those specs exist with their genuine markers
- *   and pins the same verdicts at Node level, without launching a browser.
+ *   EXECUTING `.e2e/levelb-theme-execution.spec.ts` (cold browser, real
+ *   loopback HTTP, vendor byte-proof) plus the switch round-trip and
+ *   lifecycle specs — via the harness `levelb-production-e2e` verifier,
+ *   which CI runs as job `e2e-levelb-production`. Execution proof belongs
+ *   to that spec run, not to file-words here: this file pins the Node-level
+ *   contracts only, without launching a browser.
+ *   (`src/lib/dev-theme-sandbox.test.tsx` remains the frame-shape harness.)
  * - Registration/schema/envelope/binding run here through the REAL modules:
  *   fromDevThemeManifest → createWidgetRegistry → resolveInspectorSchema →
  *   validateDevThemeWidgetProps → build/parseThemePreviewEnvelope →
@@ -311,27 +314,5 @@ describe("Pass 2 — bundled code executes only through the real runtime", () =>
         version: "1.0.0",
       }),
     ).toBe(null);
-  });
-
-  it("execution reuses the proven spec: genuine gsap/three ran in the real sandbox", () => {
-    // No browser is launched here by design (hermetic lane budget): the
-    // execution bytes were proven by the specs below, which this test pins
-    // by marker so a rewrite that mocks the frame cannot pass silently.
-    const executionSpec = readFileSync(
-      ".e2e/levelb-theme-execution.spec.ts",
-      "utf8",
-    );
-    expect(executionSpec).toContain("gsap");
-    expect(executionSpec).toContain("three");
-    expect(executionSpec).toContain("WebGLRenderer");
-    expect(executionSpec).toContain("allow-scripts");
-    expect(executionSpec).toContain("connect-src 'none'");
-    expect(executionSpec).toContain("page.route()");
-    const sandboxHarness = readFileSync(
-      "src/lib/dev-theme-sandbox.test.tsx",
-      "utf8",
-    );
-    expect(sandboxHarness).toContain("ThemeRuntime");
-    expect(sandboxHarness).toContain("allow-scripts");
   });
 });

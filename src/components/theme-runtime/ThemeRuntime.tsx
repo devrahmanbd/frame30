@@ -158,6 +158,23 @@ export type ThemeRuntimeProps = {
   maxHeight?: number;
   className?: string;
   /**
+   * Freshness clock (ms epoch) for timestamped envelopes. Evaluated per
+   * message (`now ?? Date.now()` at the host call site): a PRESENT `ts`
+   * must fall within `THEME_ENVELOPE_MAX_SKEW_MS` of this clock or the
+   * envelope is `theme.stale`. Absent keeps the previous behavior — the
+   * host clock at message time — so untimestamped envelopes stay
+   * back-compatible.
+   */
+  now?: number;
+  /**
+   * Kill-switch / revocation liveness, fed from the install's live status
+   * per envelope: when true every call is refused as `theme.suspended`
+   * BEFORE any database read. The route feeds this from its loader's live
+   * install-status check, so mid-session revocation takes effect on the
+   * next envelope without remounting. Defaults to false (live).
+   */
+  suspended?: boolean;
+  /**
    * Editor-preview seam: observes the owned frame element (`ThemeWidgetPreview`
    * uses it to address postMessage) and its load event (preview envelopes
    * post only after load — pre-load posts are lost). Both optional; the
@@ -177,6 +194,8 @@ export function ThemeRuntime({
   minHeight = THEME_MIN_HEIGHT,
   maxHeight = THEME_MAX_HEIGHT,
   className,
+  now,
+  suspended,
   onFrame,
   onFrameLoad,
 }: ThemeRuntimeProps) {
@@ -223,6 +242,13 @@ export function ThemeRuntime({
         navigateAllowlist,
         onCall,
         guard,
+        // Freshness live: the host clock at THIS message (prop override for
+        // tests, `Date.now()` in production) verifies timestamped envelopes.
+        now: now ?? Date.now(),
+        // Revocation liveness: the route feeds the install's live status;
+        // mid-session revocation refuses the next envelope as
+        // `theme.suspended` without remounting.
+        suspended,
       });
       // Target "*" is REQUIRED, not lax: the frame is sandboxed without
       // `allow-same-origin`, so its origin is opaque ("null") and addressing
@@ -237,7 +263,15 @@ export function ThemeRuntime({
     }
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);
-  }, [granted, navigateAllowlist, onCall, minHeight, maxHeight]);
+  }, [
+    granted,
+    navigateAllowlist,
+    onCall,
+    minHeight,
+    maxHeight,
+    now,
+    suspended,
+  ]);
 
   // Merged frame ref: the message loop keeps its owned-window check while
   // preview hosts observe the same element. A throwing host callback must
@@ -330,6 +364,18 @@ export type ThemeWidgetPreviewProps = {
   minHeight?: number;
   maxHeight?: number;
   className?: string;
+  /**
+   * Freshness clock (ms epoch) for timestamped envelopes, forwarded to the
+   * inner `ThemeRuntime` frame so widget commerce revalidates against the
+   * host clock per message. Absent keeps host-clock-at-message behavior.
+   */
+  now?: number;
+  /**
+   * Kill-switch liveness for the widget frame, forwarded to the inner
+   * `ThemeRuntime`: when true every call is refused as `theme.suspended`
+   * before any host work. Defaults to false (live).
+   */
+  suspended?: boolean;
 };
 
 export function ThemeWidgetPreview({
@@ -345,6 +391,8 @@ export function ThemeWidgetPreview({
   minHeight,
   maxHeight,
   className,
+  now,
+  suspended,
 }: ThemeWidgetPreviewProps) {
   const url = buildThemeFrameUrl(assetOrigin, theme);
   const [frame, setFrame] = useState<HTMLIFrameElement | null>(null);
@@ -403,6 +451,8 @@ export function ThemeWidgetPreview({
       minHeight={minHeight}
       maxHeight={maxHeight}
       className={className}
+      now={now}
+      suspended={suspended}
       onFrame={setFrame}
       onFrameLoad={() => setLoaded(true)}
     />

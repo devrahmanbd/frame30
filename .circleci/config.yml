@@ -235,6 +235,57 @@ jobs:
           name: E2E adversarial security specs
           command: bun run e2e:security
 
+  # Level B genuine-bundle production E2E (harness `levelb-production-e2e`).
+  # Runs EXACTLY the harness verifier command — `npx playwright test -c
+  # .e2e/playwright.config.ts levelb-theme-execution levelb-theme-switch-serve
+  # levelb-theme-lifecycle` — so genuine execution (real fixture theme: repo
+  # gsap/ScrollTrigger plus three, hash-asserted /t serving, GSAP end state,
+  # ScrollTrigger progress, real WebGL draw in-frame, zero theme code on the
+  # host, plus the install-to-serve switch round-trip) is proven by EXECUTION
+  # in CI, not by file-words in a unit test. Every spec named here EXISTS and
+  # passes cold (`.e2e/levelb-theme-sandbox.spec.ts` exists but is NOT in the
+  # harness verifier set — do not add it here until the harness task adopts
+  # it). Same executor/steps as e2e-critical/e2e-security: browsers image +
+  # large class (real Chromium), fail-closed harness gate first.
+  e2e-levelb-production:
+    executor: e2e-executor
+    steps:
+      - checkout
+      - setup-bun
+      - run:
+          name: E2E harness required (fail-closed)
+          command: bun run e2e:required
+      - run:
+          name: Install Playwright Chromium
+          command: bunx playwright install --with-deps chromium
+      # Headless release gates (static: no credentials, no GPU, no server).
+      # - schema:check passes vacuously without SUPABASE creds (the script
+      #   skips with exit 0); WITH creds it drift-checks the live schema.
+      # - cron:check is a pure file compare (registry vs ops/cron/crontab).
+      # - selfhost:preflight static half runs anywhere (YAML/shape checks);
+      #   host-secret checks SKIP without --host by design.
+      # - seo:weight is a static source scan (no browser, no network).
+      - run:
+          name: Release gates (headless)
+          command: |
+            bun run schema:check
+            bun run cron:check
+            bun run selfhost:preflight
+            bun run seo:weight
+      # NOT wired here (needs credentials/GPU/seeded server — owner runs
+      # pre-release via package.json `gates:release`):
+      # - db:migrate:check needs DATABASE_URL or the compose db container
+      #   (docker exec); neither exists on these executors.
+      # - perf:budget needs the `dist/` Vite manifest from `bun run build`,
+      #   which this pipeline does not persist across jobs (no workspaces).
+      # - a11y/vitals/responsive/console/rhythm/design gates need a seeded
+      #   running server plus long browser runtimes beyond this job's scope.
+      # - e2e:browsers (browser-smoke) needs E2E_STORE_SLUG on a seeded store
+      #   AND firefox+webkit installs (multi-engine cost).
+      - run:
+          name: Level B production E2E (harness verifier, exact command)
+          command: npx playwright test -c .e2e/playwright.config.ts levelb-theme-execution levelb-theme-switch-serve levelb-theme-lifecycle
+
 workflows:
   version: 2
   gates:
@@ -254,6 +305,14 @@ workflows:
       # Same hard gate as e2e-critical: never burn the browsers executor
       # when the production build is broken.
       - e2e-security:
+          requires:
+            - build
+      # Same hard gate: the harness `levelb-production-e2e` verifier (exact
+      # command) plus the headless release gates run only on a green build.
+      # Credential/GPU-gated release steps stay owner-run pre-release (see
+      # the NOT-wired comment on the job). No approval hold anywhere in this
+      # pipeline (mirrors e2e-critical/e2e-security: requires build only).
+      - e2e-levelb-production:
           requires:
             - build
       - plugin-storefront-gate

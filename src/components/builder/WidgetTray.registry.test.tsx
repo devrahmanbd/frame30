@@ -54,9 +54,15 @@ function renderTray(opts: {
   registry?: Parameters<typeof WidgetTray>[0]["registry"];
 }): string {
   const noop = (_type: SectionType, _preset: string) => undefined;
+  const noopExtension = () => undefined;
   return renderToStaticMarkup(
     <PluginProvider plugins={opts.plugins ?? []}>
-      <WidgetTray slot="main" onAdd={noop} registry={opts.registry} />
+      <WidgetTray
+        slot="main"
+        onAdd={noop}
+        onAddExtension={noopExtension}
+        registry={opts.registry}
+      />
     </PluginProvider>,
   );
 }

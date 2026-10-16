@@ -13,6 +13,7 @@ import {
 } from "@/lib/unified-widget-registry";
 import { themeTrayEntries } from "@/lib/widget-presentation";
 import { insertPluginWidget } from "./studio/plugin-tray";
+import type { ExtensionInsertResult } from "./studio/plugin-tray";
 import {
   VERTICALS,
   presetsFor,
@@ -49,6 +50,28 @@ const GROUP_LABEL: Record<string, { en: string; bn: string }> = {
   engagement: { en: "Engagement", bn: "এনগেজমেন্ট" },
   context: { en: "Page context", bn: "পেজ কনটেক্সট" },
 };
+
+/**
+ * Canonical-first tray insertion (the tray's only insertion path). The
+ * registry-resolving insert always runs first and delivers the extension
+ * node; the legacy `onAddPlugin` placeholder fires ONLY for genuine misses
+ * (explicit recovery), and `none` when nothing is wired — never a silent
+ * mis-insert, never a parallel legacy path beside a resolvable def.
+ */
+export function insertTrayWidget(
+  trayRegistry: UnifiedRegistry,
+  slot: Slot,
+  widgetKey: string,
+  handlers: {
+    onAddExtension: (node: ExtensionNode) => void;
+    onAddPlugin?: (pluginKey: string) => void;
+  },
+): {
+  handled: "extension" | "legacy" | "none";
+  result: ExtensionInsertResult;
+} {
+  return insertPluginWidget(trayRegistry, { widgetKey, slot }, handlers);
+}
 
 function WidgetIcon({ type }: { type: string }) {
   if (
@@ -178,10 +201,12 @@ export function WidgetTray({
   /**
    * Frame30: receives the canonical extension node built from the unified
    * registry (defaults + unique instance id + permitted slot + selection id
-   * inside). Absent keeps the legacy `onAddPlugin` path byte-identical, so
-   * existing callers stay unwired until their track adopts the node.
+   * inside). Required — canonical insertion is the only path: the tray
+   * always attempts it first, and the legacy `onAddPlugin` below fires only
+   * as explicit recovery for genuine misses (unknown / disabled / suspended
+   * / incompatible / uninstalled / illegal-slot), never as a parallel path.
    */
-  onAddExtension?: (node: ExtensionNode) => void;
+  onAddExtension: (node: ExtensionNode) => void;
   /**
    * Frame30 theme tray: active theme key for `themeTrayEntries`. Absent,
    * blank or unknown/disabled themes append nothing — empty and disabled
@@ -289,17 +314,13 @@ export function WidgetTray({
 
   const insertPlugin = useCallback(
     (pluginKey: string) => {
-      // Adopted callers receive the canonical extension node; everyone else
-      // — and every resolve/slot miss — keeps the legacy placeholder path.
-      if (!onAddExtension) {
-        onAddPlugin?.(pluginKey);
-        return;
-      }
-      insertPluginWidget(
-        trayRegistry,
-        { widgetKey: pluginKey, slot },
-        { onAddExtension, onAddPlugin },
-      );
+      // Canonical insertion is the only path: the registry-resolving insert
+      // always runs first, and the legacy placeholder survives only as
+      // explicit recovery for genuine misses (see insertTrayWidget).
+      insertTrayWidget(trayRegistry, slot, pluginKey, {
+        onAddExtension,
+        onAddPlugin,
+      });
     },
     [onAddExtension, onAddPlugin, slot, trayRegistry],
   );

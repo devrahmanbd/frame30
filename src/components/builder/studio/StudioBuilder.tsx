@@ -317,7 +317,17 @@ function ElementsPanelInner({
         onInsertSaved={(id) => {
           const template = templates.find((t) => t.id === id);
           if (template)
-            instantiate(template).forEach((node) => studio.addNode(node));
+            // Fresh-identity import (frame30): template payloads carry stale
+            // twin envelopes (copied verbatim by `instantiate`); re-pin every
+            // import to its own new ids so two inserts never share one
+            // instance. Legacy nodes keep the plain result byte-identical.
+            instantiate(template).forEach((node) => {
+              try {
+                studio.addNode(duplicateExtensionStudioNode(node));
+              } catch {
+                studio.addNode(node);
+              }
+            });
         }}
         globals={globals}
         onInsertGlobal={onInsertGlobal}
@@ -1143,10 +1153,16 @@ export function StudioBuilder({
    * inside" on a container arms the next rail insert to land there. */
   const [addParent, setAddParent] = useState<string | null>(null);
   const addPluginNode = useCallback(
-    (pluginKey: string) => {
+    (pluginKey: string, target?: DropTarget) => {
       // Frame30 extension insert: canonical node via `buildExtensionInsert`
       // + `studio.addNode`. Registry misses keep the legacy `app-block`
       // fallback — existing callers stay byte-identical when inactive.
+      // An explicit drop `target` wins over the container-scoped `addParent`
+      // (rail clicks pass none, so they keep the armed-parent behavior).
+      const where = addParent
+        ? { id: addParent, position: "inside" as const }
+        : undefined;
+      const at = target ?? where;
       try {
         const key = (pluginKey ?? "").trim().slice(0, 120);
         if (key) {
@@ -1185,10 +1201,7 @@ export function StudioBuilder({
             slot: targetSlot,
           });
           if (built.ok) {
-            studio.addNode(
-              studioNodeForExtension(built.node),
-              addParent ? { id: addParent, position: "inside" } : undefined,
-            );
+            studio.addNode(studioNodeForExtension(built.node), at);
             setAddParent(null);
             return;
           }
@@ -1196,10 +1209,7 @@ export function StudioBuilder({
       } catch {
         // Extension insert never breaks the legacy path: fall through below.
       }
-      studio.addNode(
-        appBlockNodeForPlugin(pluginKey),
-        addParent ? { id: addParent, position: "inside" } : undefined,
-      );
+      studio.addNode(appBlockNodeForPlugin(pluginKey), at);
       setAddParent(null);
     },
     [addParent, extensionRegistry, slot, studio],
@@ -1242,7 +1252,11 @@ export function StudioBuilder({
         return;
       }
       block.nodes.forEach((node) => {
-        const fresh = cloneNode(node);
+        // Fresh-identity copy (frame30): twins re-pin to their own new ids
+        // with deep-cloned props (no shared references, no envelope desync);
+        // legacy nodes keep the plain `cloneNode` result via the helper's
+        // legacy branch. Miss → preserved verbatim for save-normalize.
+        const fresh = duplicateExtensionStudioNode(node);
         studio.addNode(
           slot === "main" ? fresh : withSlot(fresh, slot),
           addParent ? { id: addParent, position: "inside" } : undefined,
@@ -1734,8 +1748,21 @@ export function StudioBuilder({
   const handleDrop = useCallback(
     (target: DropTarget) => {
       if (dragWidget.current) {
-        studio.addWidget(dragWidget.current, target);
+        const key = dragWidget.current;
         dragWidget.current = null;
+        // Extension-key drops (namespaced `owner:widget`) funnel through the
+        // canonical `addPluginNode` insert (validated props + fresh identity
+        // + miss fallback); catalog keys keep the legacy widget path
+        // byte-identical. Never throws into the canvas drag state.
+        try {
+          if (typeof key === "string" && key.includes(":")) {
+            addPluginNode(key, target);
+            return;
+          }
+        } catch {
+          // Fall through to the legacy path below.
+        }
+        studio.addWidget(key, target);
         return;
       }
       if (dragNode.current) {
@@ -1743,7 +1770,7 @@ export function StudioBuilder({
         dragNode.current = null;
       }
     },
-    [studio],
+    [addPluginNode, studio],
   );
 
   // Host-provided left tab (e.g. SEO) beside Elements when idle. Selecting
@@ -2189,7 +2216,14 @@ export function StudioBuilder({
         onOpenChange={(open) => setModal(open ? "templates" : null)}
         templates={templates}
         onInsert={(template) =>
-          instantiate(template).forEach((node) => studio.addNode(node))
+          // Fresh-identity import (frame30): see `onInsertSaved` above.
+          instantiate(template).forEach((node) => {
+            try {
+              studio.addNode(duplicateExtensionStudioNode(node));
+            } catch {
+              studio.addNode(node);
+            }
+          })
         }
         onToggleFavourite={(id) =>
           setTemplates((list) =>
