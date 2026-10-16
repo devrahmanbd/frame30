@@ -361,11 +361,136 @@ function cssNetworkHosts(text: string): string[] {
   return [...out];
 }
 
+/**
+ * Asset-manifest completeness (additive — every other gate above is
+ * untouched): every RELATIVE reference in shipped JS/CSS must resolve to a
+ * bundled file, or the bundle refuses. Bare specifiers (`gsap`, `three`,
+ * `gsap/ScrollTrigger`) are registry pins, never files, so they are
+ * ignored — only `./` + `../` refs are file authority. Absolute `/…`,
+ * `http(s):`, `data:`, `blob:`, and `#` refs are not bundle files and are
+ * ignored here (remote http hosts are still gated by the network allowlist
+ * above). Resolution is posix-relative to the importing file; the result
+ * must equal a bundled path exactly (authors write explicit extensions).
+ */
+function jsLocalRefs(text: string): string[] {
+  const out: string[] = [];
+  const re =
+    /(?:import|export)\s+(?:[^'"]*?from\s+)?['"](\.[^'"]*)['"]|import\s*\(\s*['"](\.[^'"]*)['"]\s*\)|require\s*\(\s*['"](\.[^'"]*)['"]\s*\)/g;
+  let match: RegExpExecArray | null;
+  while ((match = re.exec(text)) !== null) {
+    const ref = match[1] ?? match[2] ?? match[3];
+    if (ref) out.push(ref);
+  }
+  return out;
+}
+
+function cssLocalRefs(text: string): string[] {
+  const out: string[] = [];
+  const urlRe = /url\(\s*['"]?([^'")\s]+)['"]?\s*\)/gi;
+  let match: RegExpExecArray | null;
+  while ((match = urlRe.exec(text)) !== null) {
+    const ref = match[1]!.trim();
+    if (!ref) continue;
+    if (/^(https?:|data:|blob:|#)/i.test(ref)) continue;
+    if (!ref.startsWith(".")) continue;
+    out.push(ref.split("#")[0]!.split("?")[0]!);
+  }
+  const importRe = /@import\s+['"]([^'"]+)['"]/gi;
+  while ((match = importRe.exec(text)) !== null) {
+    const ref = match[1]!.trim();
+    if (!ref) continue;
+    if (/^(https?:|data:|blob:)/i.test(ref)) continue;
+    if (!ref.startsWith(".")) continue;
+    out.push(ref.split("#")[0]!.split("?")[0]!);
+  }
+  return out;
+}
+
+function resolveBundleRef(importer: string, ref: string): string | null {
+  const dir = importer.includes("/")
+    ? importer.slice(0, importer.lastIndexOf("/"))
+    : "";
+  const parts = (dir ? `${dir}/${ref}` : ref).split("/");
+  const stack: string[] = [];
+  for (const part of parts) {
+    if (part === "" || part === ".") continue;
+    if (part === "..") {
+      if (stack.length === 0) return null;
+      stack.pop();
+      continue;
+    }
+    stack.push(part);
+  }
+  const resolved = stack.join("/");
+  if (!resolved || resolved.startsWith(".") || resolved.includes("..")) {
+    return null;
+  }
+  return resolved;
+}
+
+function checkAssetCompleteness(
+  content: DevThemeBundleFile[],
+  errors: string[],
+): void {
+  const present = new Set(content.map((f) => f.path));
+  const textByPath = new Map<string, string>();
+  for (const file of content) {
+    const ext = extOf(file.path);
+    const isCode = ext === ".js" || ext === ".mjs" || ext === ".cjs";
+    const isCss = ext === ".css";
+    if (!isCode && !isCss) continue;
+    const text = decodeTextStrict(file.bytes);
+    if (text === null) continue;
+    textByPath.set(file.path, text);
+  }
+  for (const [path, text] of textByPath) {
+    const ext = extOf(path);
+    const refs = ext === ".css" ? cssLocalRefs(text) : jsLocalRefs(text);
+    for (const ref of refs) {
+      // Extensionless relative imports (`./commerce`) are bundler aliases
+      // resolved at build time, not file authority — only explicit file refs
+      // (`./shared.js`, `../assets/logo.png`) must be present. This keeps the
+      // historical fixture mapping (TS sources with extensionless imports
+      // mapped to hashed outputs) green while still refusing dangling file
+      // URLs that would 404 at serve time.
+      const base = ref.slice(ref.lastIndexOf("/") + 1);
+      if (!base.includes(".")) continue;
+      const resolved = resolveBundleRef(path, ref);
+      if (resolved === null || !present.has(resolved)) {
+        errors.push(
+          `bundle.asset_missing:${path.slice(0, 60)}:${ref.slice(0, 60)}`,
+        );
+      }
+    }
+  }
+}
+
 function checkDependencies(
   manifest: DevThemeManifest,
   entries: unknown,
   errors: string[],
 ): void {
+  // Dependency confusion backstops (additive — the pin-equality below is
+  // untouched): names must be registry-shaped (lowercase npm shape, no
+  // scopes tricks, no paths, no URLs — `GSAP` vs `gsap` or `gsap fh` never
+  // resolve to the pinned bytes), and versions must be exact pins (ranges
+  // like `^3.0.0`, `*`, or `latest` would let a hostile newer tarball ride
+  // an old approval — the vendor stage hashes exact bytes, so the pin is
+  // exact here too).
+  const DEP_NAME_RE = /^(?:@[a-z0-9][a-z0-9-._~]*\/)?[a-z0-9][a-z0-9-._~]*$/;
+  const EXACT_VERSION_RE =
+    /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
+  // Manifest pins are checked here (additive — the manifest gate checks
+  // presence/shape only, this gate checks registry shape + exact pin so a
+  // confused or ranged pin never reaches an approval).
+  for (const pin of manifest.dependencies) {
+    if (!DEP_NAME_RE.test(pin.name)) {
+      errors.push(`bundle.dependency_name:${pin.name.slice(0, 80)}`);
+    }
+    if (!EXACT_VERSION_RE.test(pin.version)) {
+      errors.push(`bundle.dependency_version:${pin.name.slice(0, 80)}`);
+    }
+  }
   if (entries === undefined) {
     if (manifest.dependencies.length > 0) {
       for (const dep of manifest.dependencies) {
@@ -403,6 +528,14 @@ function checkDependencies(
     }
     if (!INTEGRITY_RE.test(integrity)) {
       errors.push(`bundle.dependency_integrity:${name.trim()}`);
+      return;
+    }
+    if (!DEP_NAME_RE.test(name.trim())) {
+      errors.push(`bundle.dependency_name:${name.trim().slice(0, 80)}`);
+      return;
+    }
+    if (!EXACT_VERSION_RE.test(version.trim())) {
+      errors.push(`bundle.dependency_version:${name.trim().slice(0, 80)}`);
       return;
     }
     byName.set(name.trim(), {
@@ -623,6 +756,9 @@ export function validateDevThemeBundle(
 
   // --- dependency pins: bundle entries must equal the manifest pins. ---
   checkDependencies(manifest, input.dependencies, errors);
+
+  // --- asset-manifest completeness: every relative ref must be present. ---
+  checkAssetCompleteness(content, errors);
 
   if (errors.length > 0) return { ok: false, errors };
 

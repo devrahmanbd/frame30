@@ -611,6 +611,12 @@ export function createDevThemeReleaseStore() {
       const themeId = requireId(input.themeId, "theme");
       const actor = requireActor(input.actor);
       const rolledBackAt = requireTimestamp(input.rolledBackAt);
+      if (!/^[0-9a-f]{64}$/.test(input.targetFingerprint)) {
+        fail(
+          "dev_theme.fingerprint_invalid",
+          "Rollback target must be sha256 hex.",
+        );
+      }
       const targetId = byFingerprint.get(
         `${scope(merchantId, themeId)}:${input.targetFingerprint}`,
       );
@@ -618,15 +624,35 @@ export function createDevThemeReleaseStore() {
       if (!target) {
         fail("dev_theme.not_found", "No release carries that fingerprint.");
       }
-      const approvedTarget = (target as DevThemeRelease).reviews.some(
-        (r) =>
-          r.decision === "approve" &&
-          r.fingerprint === (target as DevThemeRelease).fingerprint,
+      const typed = target as DevThemeRelease;
+      // Safe-rollback (additive — the approval check below is untouched): a
+      // revoked, removed, or rejected target never restores, even when it
+      // carries a historical approval. Only ever-approved live states
+      // (approved/published/superseded) restore; anything else refuses before
+      // any write, so a compromised latest cannot be rolled back INTO.
+      if (typed.status === "revoked" || typed.status === "removed") {
+        fail(
+          "dev_theme.rollback_revoked",
+          `Rollback target ${typed.id} is ${typed.status}: revoked bytes never restore.`,
+        );
+      }
+      const approvedTarget = typed.reviews.some(
+        (r) => r.decision === "approve" && r.fingerprint === typed.fingerprint,
       );
       if (!approvedTarget) {
         fail(
           "dev_theme.approval_required",
           "Rollback target was never approved: unreviewed bytes never go live.",
+        );
+      }
+      if (
+        typed.status !== "approved" &&
+        typed.status !== "published" &&
+        typed.status !== "superseded"
+      ) {
+        fail(
+          "dev_theme.approval_required",
+          `Rollback target is ${typed.status}: only approved releases restore.`,
         );
       }
       seq += 1;
@@ -659,6 +685,7 @@ export function createDevThemeReleaseStore() {
           {
             rollback_of: (target as DevThemeRelease).id,
             rolled_back_at: rolledBackAt,
+            version: (target as DevThemeRelease).version,
           },
         ),
       };

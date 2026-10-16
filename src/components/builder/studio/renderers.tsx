@@ -689,7 +689,9 @@ function StudioAppBlock({
             ? "App not compatible with this builder version"
             : resolved.reason === "disabled"
               ? "Apps are switched off for this store"
-              : "No app widget selected";
+              : resolved.reason === "suspended"
+                ? "App suspended by the platform"
+                : "No app widget selected";
     return <Placeholder label={label} />;
   }
 

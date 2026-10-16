@@ -1,0 +1,62 @@
+/**
+ * Frame30 starter — custom layout (ships in the bundle).
+ *
+ * One custom grid the three sections share via `data-layout` hooks. Local
+ * poster art is referenced relatively (../assets/poster.svg) so the bundle
+ * asset-completeness gate proves it is present and hashed. No remote hosts,
+ * no imports — pure CSS.
+ */
+
+:root {
+  --starter-accent: #7c3aed;
+  --starter-gap: 24px;
+  --starter-surface: #ffffff;
+  --starter-ink: #1f2937;
+}
+
+[data-layout="starter-grid"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--starter-gap);
+  background: var(--starter-surface);
+  color: var(--starter-ink);
+  padding: calc(var(--starter-gap) * 1.5);
+  border: 1px solid color-mix(in srgb, var(--starter-accent) 24%, transparent);
+  border-radius: 12px;
+}
+
+[data-layout="starter-grid"] [data-hero-backdrop] {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+[data-layout="starter-rail"] {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: calc(var(--starter-gap) * 0.75);
+  padding: var(--starter-gap);
+}
+
+[data-layout="starter-rail"] video,
+[data-layout="starter-rail"] img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+
+[data-starter="webgl-scene"] [data-webgl-stage] {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background-image: url(../assets/poster.svg);
+  background-size: cover;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+@media (min-width: 900px) {
+  [data-layout="starter-grid"] {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  }
+}

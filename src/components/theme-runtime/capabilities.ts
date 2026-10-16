@@ -93,6 +93,23 @@ export function buildThemeGrants(opts: ThemeGrantOptions = {}): ThemeGrantSet {
   };
 }
 
+/**
+ * Revocation constructor: strips every granted scope so a revoked or
+ * kill-switched install authorizes nothing, while preserving the normalized
+ * navigate allowlist (same pattern as `buildThemeGrants` — the allowlist
+ * alone never authorizes, so re-granting later cannot inherit a stale list
+ * silently). Never mutates its input; revoking an empty set stays empty.
+ * The bridge maps the revoked set to per-call `scope_denied`, and hosts
+ * with a liveness signal pass `suspended: true` in the auth context for the
+ * explicit `suspended` refusal instead.
+ */
+export function revokeThemeGrants(set: ThemeGrantSet): ThemeGrantSet {
+  return {
+    granted: [],
+    navigateAllowlist: [...(set?.navigateAllowlist ?? [])],
+  };
+}
+
 function normalizeAllowlist(input: readonly string[] | undefined): string[] {
   if (!input) return [];
   const out: string[] = [];
@@ -150,7 +167,10 @@ export function isNavigationAllowed(
  * and `tenant-id` are one rule. Price-affecting fields are here because the
  * server reprices every commerce action from its own catalog; tenant/payment
  * fields are here because cross-tenant and payment-state forgery are the two
- * attacks this lane exists to contain.
+ * attacks this lane exists to contain. `merchant`/`merchantId` are here
+ * because the tenant is resolved server-side from the URL slug / session,
+ * never from bridge params — a merchant field over the bridge is a
+ * cross-tenant probe by definition.
  */
 const FORBIDDEN_PARAM_KEYS = new Set([
   "price",
@@ -167,6 +187,8 @@ const FORBIDDEN_PARAM_KEYS = new Set([
   "tenantid",
   "shopid",
   "storeid",
+  "merchant",
+  "merchantid",
   "secret",
   "secrets",
   "apikey",

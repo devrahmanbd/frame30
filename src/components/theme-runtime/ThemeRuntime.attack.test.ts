@@ -22,7 +22,14 @@ import { answerThemeCall, handleThemeMessage } from "./bridge-v2";
 import type { ThemeAnswer } from "./bridge-v2";
 import { createThemeGuard } from "./bridge-v2";
 import { buildThemeGrants } from "./capabilities";
-import { THEME_SANDBOX } from "./ThemeRuntime";
+import {
+  buildThemeFrameUrl,
+  clampThemeHeight,
+  THEME_MAX_HEIGHT,
+  THEME_MIN_HEIGHT,
+  THEME_SANDBOX,
+  themeFrameCSP,
+} from "./ThemeRuntime";
 
 const DIR = dirname(fileURLToPath(import.meta.url));
 const src = (f: string) => readFileSync(join(DIR, f), "utf8");
@@ -219,5 +226,141 @@ describe("attack: cookies / storage / parent-origin unreachable", () => {
     expect(tsx).toContain("connect-src 'none'");
     expect(tsx).toContain("frame-src 'none'");
     expect(tsx).toContain("form-action 'none'");
+  });
+});
+
+describe("attack: sandbox escape (top-navigation, popups, forms)", () => {
+  it("sandbox tokens are exactly allow-scripts — nothing else", () => {
+    expect(THEME_SANDBOX).toBe("allow-scripts");
+    const tsx = src("ThemeRuntime.tsx");
+    // Match real attribute/code strings only (prose documents the ABSENCE
+    // in backticks — same quoted-token pattern as the DOM-reach test above).
+    expect(tsx).not.toMatch(/["']allow-top-navigation/);
+    expect(tsx).not.toMatch(/["']allow-popups/);
+    expect(tsx).not.toMatch(/["']allow-forms/);
+    expect(tsx).not.toMatch(/["']allow-same-origin["']/);
+  });
+
+  it("height handshake cannot take the page (runaway clamped, garbage floored)", () => {
+    expect(clampThemeHeight(1e12)).toBe(THEME_MAX_HEIGHT);
+    // Non-finite input collapses to the minimum (fail closed), never the max.
+    expect(clampThemeHeight(Number.POSITIVE_INFINITY)).toBe(THEME_MIN_HEIGHT);
+    expect(clampThemeHeight(NaN)).toBe(THEME_MIN_HEIGHT);
+    expect(clampThemeHeight("tall")).toBe(THEME_MIN_HEIGHT);
+    expect(clampThemeHeight(undefined)).toBe(THEME_MIN_HEIGHT);
+  });
+});
+
+describe("attack: credentialed fetch / worker / blob imports denied by frame CSP", () => {
+  const ORIGIN = "https://themes.example-cdn.com";
+
+  it("pins the full CSP contract on an approved origin", () => {
+    const csp = themeFrameCSP(ORIGIN);
+    expect(csp).toContain("default-src 'none'");
+    expect(csp).toContain("connect-src 'none'");
+    expect(csp).toContain("frame-src 'none'");
+    expect(csp).toContain("object-src 'none'");
+    expect(csp).toContain("base-uri 'none'");
+    expect(csp).toContain("form-action 'none'");
+    // Script/style/img/font admit EXACTLY the asset origin: no third-party
+    // hosts, no inline scripts, no blob:/data: execution paths.
+    expect(csp).toContain(`script-src ${ORIGIN}`);
+    expect(csp).not.toMatch(/script-src[^;]*unsafe-inline/);
+    expect(csp).not.toContain("blob:");
+    expect(csp).not.toContain("data:text/html");
+    expect(csp).not.toMatch(/https?:\/\/(?!themes\.example-cdn\.com)/);
+  });
+
+  it("unapproved origins fail closed to bare default-src none", () => {
+    // The asset origin is platform configuration (any https host, plus http
+    // loopback for local dev); everything else — plain http, garbage, the
+    // opaque "null" origin — fails closed. An attacker cannot steer this:
+    // the value never comes from bridge params.
+    for (const origin of [
+      "http://themes.example-cdn.com",
+      "http://evil.example.com",
+      "",
+      "null",
+      "javascript:alert(1)",
+    ]) {
+      expect(themeFrameCSP(origin), origin).toBe("default-src 'none'");
+    }
+    expect(themeFrameCSP("http://localhost:3000")).toContain(
+      "connect-src 'none'",
+    );
+  });
+});
+
+describe("attack: immutable frame URL cannot be steered", () => {
+  const ORIGIN = "https://themes.example-cdn.com";
+
+  it("rejects mutable tags, traversal, and non-https origins", () => {
+    expect(
+      buildThemeFrameUrl(ORIGIN, { name: "aurora", version: "1.0.0" }),
+    ).toBe(`${ORIGIN}/t/aurora/1.0.0/index.html`);
+    for (const theme of [
+      { name: "aurora", version: "latest" },
+      { name: "aurora", version: "1.0" },
+      { name: "../evil", version: "1.0.0" },
+      { name: "aurora", version: "1.0.0/../../x" },
+      { name: "", version: "1.0.0" },
+    ] as const) {
+      expect(buildThemeFrameUrl(ORIGIN, theme)).toBeNull();
+    }
+    // Non-https origins never address a frame; any https host is admissible
+    // configuration (same contract as themeFrameCSP — the value is platform
+    // config, never attacker input from the bridge).
+    expect(
+      buildThemeFrameUrl("http://evil.example.com", {
+        name: "aurora",
+        version: "1.0.0",
+      }),
+    ).toBeNull();
+  });
+});
+
+describe("attack: recorded traffic replayed while suspended stays dead", () => {
+  it("a hostile burst under suspension settles refused, 0 onCall", async () => {
+    const onCall = vi.fn(async (method: string) => ({ method }));
+    const guard = createThemeGuard();
+    const burst: unknown[] = [];
+    for (let i = 0; i < 20; i++)
+      burst.push({
+        v: 2,
+        id: `r-${i}`,
+        method: "cart.add",
+        params: { variantId: "v", quantity: 1 },
+        ts: Date.now(),
+      });
+    for (let i = 0; i < 20; i++)
+      burst.push({ v: 1, id: `v1-${i}`, method: "shop.info" });
+    const outs: ThemeAnswer[] = [];
+    for (const msg of burst) {
+      outs.push(
+        await handleThemeMessage(msg, {
+          granted: FULL.granted,
+          navigateAllowlist: FULL.navigateAllowlist,
+          onCall,
+          guard,
+          now: Date.now(),
+          suspended: true,
+        }),
+      );
+    }
+    // Layered gates, both explicit: the flood guard admits the first 30
+    // (each refused as suspended by the authorizer), the 10 over budget are
+    // rate-limited. Nothing reaches onCall either way — the frame is dead
+    // with explicit per-call state, never a silent stale render.
+    expect(
+      outs
+        .slice(0, 30)
+        .every((o) => "error" in o && o.error === "theme.suspended"),
+    ).toBe(true);
+    expect(
+      outs
+        .slice(30)
+        .every((o) => "error" in o && o.error === "theme.rate_limited"),
+    ).toBe(true);
+    expect(onCall).not.toHaveBeenCalled();
   });
 });

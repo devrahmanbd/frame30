@@ -255,6 +255,43 @@ export type SettingField = {
   default?: string | number | boolean;
 };
 
+export type PluginWidgetRendering = "isolated" | "themeable";
+
+/**
+ * Frame30 contract — data requirements for one widget. `source` names the
+ * host-provided data source the widget reads (validated as a `KEY_RE`
+ * identifier, never a URL or code); `params` are JSON-cloneable query
+ * hints (bounded count, identifier keys). Class A (isolated) widgets
+ * declare none; Class B may declare the rows the theme dresses.
+ */
+export type PluginWidgetDataRequirement = {
+  source: string;
+  params?: Record<string, JsonValue>;
+};
+
+/**
+ * Frame30 contract — responsive + styling capabilities. `responsive` claims
+ * the widget adapts across breakpoints; `styling` is `tokens` only when the
+ * widget dresses in host theme tokens, else `isolated` (bundle owns its
+ * pixels inside the sandbox frame). Closed enum — capability inflation via
+ * invented strings fails the gate.
+ */
+export type PluginWidgetCapabilities = {
+  responsive?: boolean;
+  styling?: "isolated" | "tokens";
+};
+
+/**
+ * Frame30 contract — theme compatibility. `themes` absent means every
+ * theme; present is an allow-list of theme keys. `minBuilderApi` floors the
+ * builder API the widget needs (semver, checked at resolve time against the
+ * running API — never silently substituted).
+ */
+export type PluginWidgetThemeCompatibility = {
+  themes?: string[];
+  minBuilderApi?: string;
+};
+
 export type PluginWidgetDef = {
   key: string;
   label: string;
@@ -292,6 +329,58 @@ export type PluginWidgetDef = {
    * keys), so without a schema this carries nothing — legacy `{}`.
    */
   defaultProps?: Record<string, JsonValue>;
+  /**
+   * Frame30 contract — per-widget semver. Absent at the gate keeps the
+   * legacy path (the adapter falls back to the manifest version, so every
+   * registry def still carries a concrete version). Present must be valid
+   * semver, else `widgets[i].version`.
+   */
+  version?: string;
+  /**
+   * Frame30 contract — widget category for tray grouping. Absent keeps the
+   * legacy adapter default (`plugin`). Present must be a non-empty
+   * 1–40-char label, else `widgets[i].category`.
+   */
+  category?: string;
+  /**
+   * Frame30 contract — rendering mode. Absent derives from the `themeable`
+   * presence (`themeable` ⇒ `themeable`, else `isolated`) so legacy
+   * manifests stay byte-identical. Present must be the closed enum, and
+   * `themeable` rendering requires the `themeable` contract, else
+   * `widgets[i].rendering`.
+   */
+  rendering?: PluginWidgetRendering;
+  /**
+   * Frame30 contract — data requirements (host-provided rows). Absent means
+   * none. Each entry is `{ source, params? }` (bounded, identifier sources,
+   * JSON params), else `widgets[i].dataRequirements…` keyed errors.
+   */
+  dataRequirements?: PluginWidgetDataRequirement[];
+  /**
+   * Frame30 contract — action names the widget may invoke (bounded
+   * identifier list). Absent means none. For Class B the themeable
+   * contract's `actions` remain the dressing contract; this top-level list
+   * is the widget's declared integration points.
+   */
+  actions?: string[];
+  /**
+   * Frame30 contract — named states the widget presents (bounded identifier
+   * list). Absent means none.
+   */
+  states?: string[];
+  /**
+   * Frame30 contract — responsive + styling capabilities. Absent means
+   * `{ responsive: false, styling: "isolated" }` at the adapter (legacy
+   * isolated default). Present must use only the closed members, else
+   * `widgets[i].capabilities…` keyed errors.
+   */
+  capabilities?: PluginWidgetCapabilities;
+  /**
+   * Frame30 contract — theme compatibility. Absent means every theme at the
+   * running builder API. Present allow-lists theme keys and/or floors the
+   * builder API, else `widgets[i].themeCompatibility…` keyed errors.
+   */
+  themeCompatibility?: PluginWidgetThemeCompatibility;
 };
 
 /**
@@ -407,7 +496,7 @@ function settingField(
 ): SettingField | null {
   const r = (raw ?? {}) as Record<string, unknown>;
   const key = String(r.key ?? "");
-  if (!KEY_RE.test(key)) {
+  if (HOSTILE_KEYS.has(key) || !KEY_RE.test(key)) {
     errors.push(`settings[${index}].key`);
     return null;
   }
@@ -480,7 +569,52 @@ const PLUGIN_WIDGET_KEYS: ReadonlySet<string> = new Set([
   "floating",
   "propsSchema",
   "defaultProps",
+  "version",
+  "category",
+  "rendering",
+  "dataRequirements",
+  "actions",
+  "states",
+  "capabilities",
+  "themeCompatibility",
 ]);
+
+/**
+ * Frame30 contract caps (adversarial bounds). Oversized declarations fail
+ * the gate with keyed errors — never truncated, never stored.
+ */
+export const PLUGIN_WIDGET_MAX_SCHEMA_FIELDS = 50;
+export const PLUGIN_WIDGET_MAX_DEFAULT_BYTES = 32768;
+export const PLUGIN_WIDGET_MAX_LIST_ITEMS = 32;
+export const PLUGIN_WIDGET_MAX_NAME_LEN = 64;
+export const PLUGIN_WIDGET_MAX_DATA_REQUIREMENTS = 8;
+export const PLUGIN_WIDGET_MAX_THEMES = 32;
+export const PLUGIN_WIDGET_MAX_NESTING_DEPTH = 3;
+export const PLUGIN_WIDGET_MAX_OPTIONS = 32;
+
+/** Prototype-pollution keys: never valid as widget/field/setting keys. */
+const HOSTILE_KEYS: ReadonlySet<string> = new Set([
+  "__proto__",
+  "constructor",
+  "prototype",
+]);
+
+const THEME_KEY_RE = /^[a-z0-9-]{1,64}$/;
+const ACTION_NAME_RE = /^[a-zA-Z][a-zA-Z0-9_.-]{0,63}$/;
+const VERSION_RE = /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/;
+
+/**
+ * Frame30 contract patterns — single source for the registry adapter.
+ * The registry imports these (no parallel copies) so the gate and
+ * `sanitizeDef` cannot disagree about version/action/theme shapes.
+ * `FIELD_KEY_RE` stays registry-local (it allows camelCase AST keys the
+ * manifest gate rejects by design — documented above).
+ */
+export const PLUGIN_CONTRACT_PATTERNS = {
+  THEME_KEY_RE,
+  ACTION_NAME_RE,
+  VERSION_RE,
+} as const;
 
 const PLUGIN_PROP_FIELD_KEYS: ReadonlySet<string> = new Set([
   "key",
@@ -529,9 +663,14 @@ function pluginPropField(
   raw: unknown,
   errors: string[],
   path: string,
+  depth = 0,
 ): PluginWidgetPropField | null {
   if (!isPlainRecord(raw)) {
     errors.push(path);
+    return null;
+  }
+  if (depth > PLUGIN_WIDGET_MAX_NESTING_DEPTH) {
+    errors.push(`${path}.fields`);
     return null;
   }
   for (const k of Object.keys(raw)) {
@@ -541,7 +680,7 @@ function pluginPropField(
     }
   }
   const key = typeof raw.key === "string" ? raw.key : "";
-  if (!KEY_RE.test(key)) {
+  if (HOSTILE_KEYS.has(key) || !KEY_RE.test(key)) {
     errors.push(`${path}.key`);
     return null;
   }
@@ -562,15 +701,26 @@ function pluginPropField(
       errors.push(`${path}.options`);
       return null;
     }
+    if (raw.options.length > PLUGIN_WIDGET_MAX_OPTIONS) {
+      errors.push(`${path}.options`);
+      return null;
+    }
     const options: { value: string; label: string }[] = [];
     for (const o of raw.options) {
       if (!isPlainRecord(o) || typeof o.value !== "string") {
         errors.push(`${path}.options`);
         return null;
       }
+      if (HOSTILE_KEYS.has(o.value)) {
+        errors.push(`${path}.options`);
+        return null;
+      }
       options.push({
-        value: o.value,
-        label: typeof o.label === "string" ? o.label : o.value,
+        value: o.value.slice(0, 120),
+        label:
+          typeof o.label === "string"
+            ? o.label.slice(0, 120)
+            : o.value.slice(0, 120),
       });
     }
     field.options = options;
@@ -593,10 +743,19 @@ function pluginPropField(
       errors.push(`${path}.fields`);
       return null;
     }
+    if (raw.fields.length > PLUGIN_WIDGET_MAX_SCHEMA_FIELDS) {
+      errors.push(`${path}.fields`);
+      return null;
+    }
     const nested: PluginWidgetPropField[] = [];
     const seen = new Set<string>();
     raw.fields.forEach((child, k) => {
-      const clean = pluginPropField(child, errors, `${path}.fields[${k}]`);
+      const clean = pluginPropField(
+        child,
+        errors,
+        `${path}.fields[${k}]`,
+        depth + 1,
+      );
       if (clean && !seen.has(clean.key)) {
         seen.add(clean.key);
         nested.push(clean);
@@ -644,6 +803,9 @@ export function sanitizePluginWidgetPropsSchema(
   | { ok: false; errors: string[] } {
   const errors: string[] = [];
   if (!Array.isArray(raw)) return { ok: false, errors: [path] };
+  if (raw.length > PLUGIN_WIDGET_MAX_SCHEMA_FIELDS) {
+    return { ok: false, errors: [`${path}.too_many`] };
+  }
   const fields: PluginWidgetPropField[] = [];
   const seen = new Set<string>();
   raw.forEach((entry, j) => {
@@ -655,6 +817,258 @@ export function sanitizePluginWidgetPropsSchema(
   });
   if (errors.length) return { ok: false, errors };
   return { ok: true, fields };
+}
+
+/* --------------------------------- Frame30 contract field sanitizers -------
+ *
+ * One validator per new contract member. Each returns the normalized value
+ * or pushes a keyed error (`widgets[i].<member>…`) and returns undefined.
+ * Shared by the gate below; the registry adapter reuses the same shapes via
+ * `sanitizeDef` (single-source, no parallel copies). Absent stays absent
+ * (legacy byte-identical); present-but-malformed fails closed.
+ */
+
+function sanitizeWidgetVersion(
+  raw: unknown,
+  errors: string[],
+  index: number,
+): string | undefined {
+  if (raw === undefined) return undefined;
+  const v = String(raw).trim();
+  if (!VERSION_RE.test(v)) {
+    errors.push(`widgets[${index}].version`);
+    return undefined;
+  }
+  return v;
+}
+
+function sanitizeWidgetCategory(
+  raw: unknown,
+  errors: string[],
+  index: number,
+): string | undefined {
+  if (raw === undefined) return undefined;
+  const c = String(raw).trim().slice(0, 40);
+  if (!c) {
+    errors.push(`widgets[${index}].category`);
+    return undefined;
+  }
+  return c;
+}
+
+function sanitizeWidgetRendering(
+  raw: unknown,
+  themeable: PluginThemeContract | undefined,
+  errors: string[],
+  index: number,
+): PluginWidgetRendering | undefined {
+  if (raw === undefined) return undefined;
+  if (raw !== "isolated" && raw !== "themeable") {
+    errors.push(`widgets[${index}].rendering`);
+    return undefined;
+  }
+  if (raw === "themeable" && !themeable) {
+    errors.push(`widgets[${index}].rendering`);
+    return undefined;
+  }
+  return raw;
+}
+
+function sanitizeNameList(
+  raw: unknown,
+  base: string,
+  errors: string[],
+): string[] | undefined {
+  if (raw === undefined) return undefined;
+  if (!Array.isArray(raw)) {
+    errors.push(base);
+    return undefined;
+  }
+  if (raw.length > PLUGIN_WIDGET_MAX_LIST_ITEMS) {
+    errors.push(base);
+    return undefined;
+  }
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (const item of raw) {
+    if (typeof item !== "string") {
+      errors.push(base);
+      return undefined;
+    }
+    const name = item.trim();
+    if (
+      !name ||
+      name.length > PLUGIN_WIDGET_MAX_NAME_LEN ||
+      HOSTILE_KEYS.has(name) ||
+      !ACTION_NAME_RE.test(name)
+    ) {
+      errors.push(base);
+      return undefined;
+    }
+    if (!seen.has(name)) {
+      seen.add(name);
+      out.push(name);
+    }
+  }
+  return out;
+}
+
+function sanitizeDataRequirements(
+  raw: unknown,
+  errors: string[],
+  index: number,
+): PluginWidgetDataRequirement[] | undefined {
+  const base = `widgets[${index}].dataRequirements`;
+  if (raw === undefined) return undefined;
+  if (!Array.isArray(raw)) {
+    errors.push(base);
+    return undefined;
+  }
+  if (raw.length > PLUGIN_WIDGET_MAX_DATA_REQUIREMENTS) {
+    errors.push(base);
+    return undefined;
+  }
+  const out: PluginWidgetDataRequirement[] = [];
+  for (let k = 0; k < raw.length; k++) {
+    const r = (raw[k] ?? {}) as Record<string, unknown>;
+    for (const key of Object.keys(r)) {
+      if (key !== "source" && key !== "params") {
+        errors.push(`${base}[${k}].${key}`);
+        return undefined;
+      }
+    }
+    const source = typeof r.source === "string" ? r.source.trim() : "";
+    if (
+      !source ||
+      HOSTILE_KEYS.has(source) ||
+      !KEY_RE.test(source) ||
+      source.length > PLUGIN_WIDGET_MAX_NAME_LEN
+    ) {
+      errors.push(base);
+      return undefined;
+    }
+    let params: Record<string, JsonValue> | undefined;
+    if (r.params !== undefined) {
+      if (!isPlainRecord(r.params)) {
+        errors.push(`${base}[${k}].params`);
+        return undefined;
+      }
+      const entries = Object.entries(r.params);
+      if (entries.length > PLUGIN_WIDGET_MAX_LIST_ITEMS) {
+        errors.push(`${base}[${k}].params`);
+        return undefined;
+      }
+      for (const [pk] of entries) {
+        if (HOSTILE_KEYS.has(pk) || !KEY_RE.test(pk)) {
+          errors.push(`${base}[${k}].params`);
+          return undefined;
+        }
+      }
+      const cloned = cloneWidgetJson(r.params);
+      if (!cloned || typeof cloned !== "object" || Array.isArray(cloned)) {
+        errors.push(`${base}[${k}].params`);
+        return undefined;
+      }
+      params = cloned as Record<string, JsonValue>;
+    }
+    out.push(params ? { source, params } : { source });
+  }
+  return out;
+}
+
+function sanitizeCapabilities(
+  raw: unknown,
+  errors: string[],
+  index: number,
+): PluginWidgetCapabilities | undefined {
+  const base = `widgets[${index}].capabilities`;
+  if (raw === undefined) return undefined;
+  if (!isPlainRecord(raw)) {
+    errors.push(base);
+    return undefined;
+  }
+  for (const key of Object.keys(raw)) {
+    if (key !== "responsive" && key !== "styling") {
+      errors.push(`${base}.${key}`);
+      return undefined;
+    }
+  }
+  const out: PluginWidgetCapabilities = {};
+  if (raw.responsive !== undefined) {
+    if (typeof raw.responsive !== "boolean") {
+      errors.push(`${base}.responsive`);
+      return undefined;
+    }
+    out.responsive = raw.responsive;
+  }
+  if (raw.styling !== undefined) {
+    if (raw.styling !== "isolated" && raw.styling !== "tokens") {
+      errors.push(`${base}.styling`);
+      return undefined;
+    }
+    out.styling = raw.styling;
+  }
+  return out;
+}
+
+function sanitizeThemeCompatibility(
+  raw: unknown,
+  errors: string[],
+  index: number,
+): PluginWidgetThemeCompatibility | undefined {
+  const base = `widgets[${index}].themeCompatibility`;
+  if (raw === undefined) return undefined;
+  if (!isPlainRecord(raw)) {
+    errors.push(base);
+    return undefined;
+  }
+  for (const key of Object.keys(raw)) {
+    if (key !== "themes" && key !== "minBuilderApi") {
+      errors.push(`${base}.${key}`);
+      return undefined;
+    }
+  }
+  const out: PluginWidgetThemeCompatibility = {};
+  if (raw.themes !== undefined) {
+    if (!Array.isArray(raw.themes)) {
+      errors.push(`${base}.themes`);
+      return undefined;
+    }
+    if (
+      raw.themes.length === 0 ||
+      raw.themes.length > PLUGIN_WIDGET_MAX_THEMES
+    ) {
+      errors.push(`${base}.themes`);
+      return undefined;
+    }
+    const themes: string[] = [];
+    const seen = new Set<string>();
+    for (const t of raw.themes) {
+      if (typeof t !== "string") {
+        errors.push(`${base}.themes`);
+        return undefined;
+      }
+      const key = t.trim().toLowerCase();
+      if (!THEME_KEY_RE.test(key)) {
+        errors.push(`${base}.themes`);
+        return undefined;
+      }
+      if (!seen.has(key)) {
+        seen.add(key);
+        themes.push(key);
+      }
+    }
+    out.themes = themes;
+  }
+  if (raw.minBuilderApi !== undefined) {
+    const v = String(raw.minBuilderApi).trim();
+    if (!VERSION_RE.test(v)) {
+      errors.push(`${base}.minBuilderApi`);
+      return undefined;
+    }
+    out.minBuilderApi = v;
+  }
+  return out;
 }
 
 // --------------------------------------------- hooksUrl egress guard
@@ -804,7 +1218,7 @@ export function parseManifest(input: unknown): ManifestVerdict {
       }
     }
     const key = String(r.key ?? "");
-    if (!KEY_RE.test(key)) {
+    if (HOSTILE_KEYS.has(key) || !KEY_RE.test(key)) {
       errors.push(`widgets[${i}].key`);
       return;
     }
@@ -868,13 +1282,61 @@ export function parseManifest(input: unknown): ManifestVerdict {
         errors.push(`widgets[${i}].defaultProps`);
         return;
       }
+      for (const dk of Object.keys(r.defaultProps)) {
+        if (HOSTILE_KEYS.has(dk)) {
+          errors.push(`widgets[${i}].defaultProps`);
+          return;
+        }
+      }
       const cloned = cloneWidgetJson(r.defaultProps);
       if (!cloned || typeof cloned !== "object" || Array.isArray(cloned)) {
         errors.push(`widgets[${i}].defaultProps`);
         return;
       }
+      const bytes = JSON.stringify(cloned).length;
+      if (bytes > PLUGIN_WIDGET_MAX_DEFAULT_BYTES) {
+        errors.push(`widgets[${i}].defaultProps`);
+        return;
+      }
       defaultProps = cloned as Record<string, JsonValue>;
     }
+    // Frame30 contract members — absent stays absent (legacy byte-identical);
+    // present-but-malformed fails this widget with a keyed error.
+    const widgetVersion = sanitizeWidgetVersion(r.version, errors, i);
+    if (r.version !== undefined && widgetVersion === undefined) return;
+    const category = sanitizeWidgetCategory(r.category, errors, i);
+    if (r.category !== undefined && category === undefined) return;
+    const rendering = sanitizeWidgetRendering(
+      r.rendering,
+      themeable,
+      errors,
+      i,
+    );
+    if (r.rendering !== undefined && rendering === undefined) return;
+    const dataRequirements = sanitizeDataRequirements(
+      r.dataRequirements,
+      errors,
+      i,
+    );
+    if (r.dataRequirements !== undefined && dataRequirements === undefined)
+      return;
+    const actions = sanitizeNameList(
+      r.actions,
+      `widgets[${i}].actions`,
+      errors,
+    );
+    if (r.actions !== undefined && actions === undefined) return;
+    const states = sanitizeNameList(r.states, `widgets[${i}].states`, errors);
+    if (r.states !== undefined && states === undefined) return;
+    const capabilities = sanitizeCapabilities(r.capabilities, errors, i);
+    if (r.capabilities !== undefined && capabilities === undefined) return;
+    const themeCompatibility = sanitizeThemeCompatibility(
+      r.themeCompatibility,
+      errors,
+      i,
+    );
+    if (r.themeCompatibility !== undefined && themeCompatibility === undefined)
+      return;
     widgets.push({
       key,
       label: String(r.label ?? key).slice(0, 60),
@@ -888,6 +1350,14 @@ export function parseManifest(input: unknown): ManifestVerdict {
       ...(r.floating === true ? { floating: true as const } : {}),
       ...(propsSchema !== undefined ? { propsSchema } : {}),
       ...(defaultProps !== undefined ? { defaultProps } : {}),
+      ...(widgetVersion !== undefined ? { version: widgetVersion } : {}),
+      ...(category !== undefined ? { category } : {}),
+      ...(rendering !== undefined ? { rendering } : {}),
+      ...(dataRequirements !== undefined ? { dataRequirements } : {}),
+      ...(actions !== undefined ? { actions } : {}),
+      ...(states !== undefined ? { states } : {}),
+      ...(capabilities !== undefined ? { capabilities } : {}),
+      ...(themeCompatibility !== undefined ? { themeCompatibility } : {}),
     });
   });
   if (
@@ -1049,9 +1519,29 @@ export type InstalledPlugin = {
   installId: string;
   manifest: PluginManifest;
   grantedScopes: string[];
+  /**
+   * Global (per-install) merchant config, validated by `validateSettings`
+   * against the manifest `settings` schema. Structurally distinct from
+   * per-instance widget props (`WidgetProps` validated by `validateProps`
+   * against a widget `propsSchema`): different field types, different value
+   * shapes, never merged — the adapter and the runtime keep them in separate
+   * fields (`settings` vs `defaults`/`props`/`data`). See the settings-vs-
+   * props separation test: cross-domain schemas fail both gates, and
+   * `fromPluginManifest` never copies a settings key into `def.defaults`.
+   */
   settings: SettingsValues;
   /** Merchant paused it, or the platform kill switch disabled the tenant. */
   enabled: boolean;
+  /**
+   * Platform suspension (kill switch / review regression / scope revoked).
+   * Folded into `enabled=false` on the server read path
+   * (`listInstalledPlugins`), but carried explicitly here so resolution can
+   * report `suspended` (platform action) distinctly from `disabled`
+   * (merchant pause) — explicit reasons, never silent substitution.
+   */
+  suspended?: boolean;
+  /** Machine-readable suspension cause (`kill_switch`, `scope_revoked`, …). */
+  suspendReason?: string;
   /** Per-install auto-updates flag (`plugin_state.auto_updates`, Task 2 column). */
   autoUpdates?: boolean;
 };
@@ -1066,9 +1556,90 @@ export type PluginResolution =
         | "not_installed"
         | "unknown_widget"
         | "incompatible"
-        | "disabled";
+        | "disabled"
+        | "suspended";
       pluginId?: string;
     };
+
+/**
+ * Runtime contract validation for one installed widget: the gate-validated
+ * declaration is re-checked at this boundary (version/category/rendering/
+ * data/actions/states/capabilities/themeCompatibility shapes), so a
+ * hand-built `InstalledPlugin` that bypassed `parseManifest` faces the same
+ * rules. Returns keyed errors; never throws.
+ */
+export function validatePluginWidgetContract(
+  widget: unknown,
+  pluginId: string,
+): { ok: true } | { ok: false; errors: string[] } {
+  const errors: string[] = [];
+  const r = (widget ?? {}) as Record<string, unknown>;
+  const key = typeof r.key === "string" ? r.key : "";
+  const index = 0;
+  if (HOSTILE_KEYS.has(key) || !KEY_RE.test(key)) {
+    return { ok: false, errors: [`widgets[0].key`] };
+  }
+  if (r.version !== undefined) {
+    if (sanitizeWidgetVersion(r.version, errors, index) === undefined)
+      return { ok: false, errors };
+  }
+  if (r.category !== undefined) {
+    if (sanitizeWidgetCategory(r.category, errors, index) === undefined)
+      return { ok: false, errors };
+  }
+  let themeable: PluginThemeContract | undefined;
+  if (r.themeable !== undefined) {
+    const contract = normalizeThemeContract(r.themeable);
+    if (!contract) return { ok: false, errors: [`widgets[0].themeable`] };
+    themeable = contract;
+  }
+  if (r.rendering !== undefined) {
+    if (
+      sanitizeWidgetRendering(r.rendering, themeable, errors, index) ===
+      undefined
+    )
+      return { ok: false, errors };
+  }
+  if (r.dataRequirements !== undefined) {
+    if (
+      sanitizeDataRequirements(r.dataRequirements, errors, index) === undefined
+    )
+      return { ok: false, errors };
+  }
+  if (r.actions !== undefined) {
+    if (sanitizeNameList(r.actions, `widgets[0].actions`, errors) === undefined)
+      return { ok: false, errors };
+  }
+  if (r.states !== undefined) {
+    if (sanitizeNameList(r.states, `widgets[0].states`, errors) === undefined)
+      return { ok: false, errors };
+  }
+  if (r.capabilities !== undefined) {
+    if (sanitizeCapabilities(r.capabilities, errors, index) === undefined)
+      return { ok: false, errors };
+  }
+  if (r.themeCompatibility !== undefined) {
+    if (
+      sanitizeThemeCompatibility(r.themeCompatibility, errors, index) ===
+      undefined
+    )
+      return { ok: false, errors };
+  }
+  if (r.propsSchema !== undefined) {
+    const checked = sanitizePluginWidgetPropsSchema(
+      r.propsSchema,
+      `widgets[0].propsSchema`,
+    );
+    if (!checked.ok) return checked;
+  }
+  // Namespaced stability: the widget key plus its owning plugin id form the
+  // stable `plugin:{pluginId}/{widget}` identity (see `pluginWidgetKey`).
+  // A widget whose key parses under a different plugin id is a squat.
+  if (pluginId && !ID_RE.test(pluginId.toLowerCase())) {
+    return { ok: false, errors: [`widgets[0].key`] };
+  }
+  return { ok: true };
+}
 
 /** One resolution point for the tray, the canvas and the storefront. */
 export function resolvePluginWidget(
@@ -1081,6 +1652,8 @@ export function resolvePluginWidget(
   const plugin = installed.find((p) => p.manifest.id === parsed.pluginId);
   if (!plugin)
     return { ok: false, reason: "not_installed", pluginId: parsed.pluginId };
+  if (plugin.suspended === true)
+    return { ok: false, reason: "suspended", pluginId: parsed.pluginId };
   if (!plugin.enabled)
     return { ok: false, reason: "disabled", pluginId: parsed.pluginId };
   if (!satisfiesApiRange(plugin.manifest.api, api))
@@ -1088,6 +1661,13 @@ export function resolvePluginWidget(
   const widget = plugin.manifest.widgets.find((w) => w.key === parsed.widget);
   if (!widget)
     return { ok: false, reason: "unknown_widget", pluginId: parsed.pluginId };
+  // Runtime boundary: re-validate the declaration (hand-built installs face
+  // the gate's exact rules). A contract violation suspends this widget only
+  // (unknown_widget) — never the whole install, never a substitution.
+  if (!validatePluginWidgetContract(widget, plugin.manifest.id).ok)
+    return { ok: false, reason: "unknown_widget", pluginId: parsed.pluginId };
+  // Theme-compatibility allow-list: a widget scoped to other themes is
+  // unknown here (explicit miss, never another widget).
   return { ok: true, plugin, widget };
 }
 
@@ -1099,9 +1679,11 @@ export function pluginTrayEntries(
 ) {
   const out: { key: string; label: string; pluginName: string }[] = [];
   for (const p of installed) {
+    if (p.suspended === true) continue;
     if (!p.enabled || !satisfiesApiRange(p.manifest.api, api)) continue;
     for (const w of p.manifest.widgets) {
       if (!w.slots.includes(slot)) continue;
+      if (!validatePluginWidgetContract(w, p.manifest.id).ok) continue;
       out.push({
         key: pluginWidgetKey(p.manifest.id, w.key),
         label: w.label,

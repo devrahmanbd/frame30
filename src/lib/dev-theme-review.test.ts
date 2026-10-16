@@ -600,3 +600,135 @@ describe("dev-theme review — audit rows reuse existing table shapes", () => {
     );
   });
 });
+
+describe("dev-theme review — safe updates + rollback (frame30 item 9)", () => {
+  it("rollback to a revoked target refuses (revoked bytes never restore)", () => {
+    const { store, release, fingerprint } = approved();
+    store.publish({
+      releaseId: release.id,
+      merchantId: "m1",
+      actor: { ...MOD },
+      expectedFingerprint: fingerprint,
+      publishedAt: T1,
+    });
+    store.revoke({
+      releaseId: release.id,
+      merchantId: "m1",
+      actor: { ...MOD },
+      reason: "post-publish violation",
+      revokedAt: T1,
+    });
+    expect(() =>
+      store.rollback({
+        merchantId: "m1",
+        themeId: "aurora-lookbook",
+        targetFingerprint: fingerprint,
+        actor: { ...MOD },
+        rolledBackAt: T1,
+      }),
+    ).toThrow(/revoked/);
+  });
+
+  it("rollback to a removed target refuses (quarantined bytes never restore)", () => {
+    const { store, release, fingerprint } = approved();
+    store.publish({
+      releaseId: release.id,
+      merchantId: "m1",
+      actor: { ...MOD },
+      expectedFingerprint: fingerprint,
+      publishedAt: T1,
+    });
+    store.removeCompromised({
+      releaseId: release.id,
+      merchantId: "m1",
+      actor: { id: "admin-1", role: "admin" },
+      reason: "exfiltration confirmed",
+      removedAt: T1,
+    });
+    expect(() =>
+      store.rollback({
+        merchantId: "m1",
+        themeId: "aurora-lookbook",
+        targetFingerprint: fingerprint,
+        actor: { ...MOD },
+        rolledBackAt: T1,
+      }),
+    ).toThrow(/revoked|removed|approval/);
+  });
+
+  it("revoked latest refuses while prior approved restores with audit", () => {
+    const { store, release: r1, fingerprint: fp1 } = approved();
+    store.publish({
+      releaseId: r1.id,
+      merchantId: "m1",
+      actor: { ...MOD },
+      expectedFingerprint: fp1,
+      publishedAt: T1,
+    });
+    const v2 = bundleFor(manifest({ version: "1.0.1" }), `export const h = 2;`);
+    const { release: s2 } = store.submit({
+      merchantId: "m1",
+      themeId: "aurora-lookbook",
+      manifest: v2.manifest,
+      files: v2.files,
+      fingerprint: v2.fingerprint,
+      submittedBy: "dev-1",
+      submittedAt: T1,
+    });
+    store.review({
+      releaseId: s2.id,
+      merchantId: "m1",
+      reviewer: { ...MOD },
+      decision: "approve",
+      reason: "v2 ok",
+      reviewedAt: T1,
+    });
+    const { release: r2 } = store.publish({
+      releaseId: s2.id,
+      merchantId: "m1",
+      actor: { ...MOD },
+      expectedFingerprint: v2.fingerprint,
+      publishedAt: T1,
+    });
+    // Latest is compromised → revoke parks it and clears the pointer.
+    store.revoke({
+      releaseId: r2.id,
+      merchantId: "m1",
+      actor: { ...MOD },
+      reason: "v2 ships a skimmer",
+      revokedAt: T1,
+    });
+    expect(store.published("m1", "aurora-lookbook")).toBeNull();
+    // Safe rollback restores the last-approved bytes as a NEW audited release.
+    const rolled = store.rollback({
+      merchantId: "m1",
+      themeId: "aurora-lookbook",
+      targetFingerprint: fp1,
+      actor: { ...MOD },
+      rolledBackAt: T1,
+    });
+    expect(rolled.release.fingerprint).toBe(fp1);
+    expect(rolled.release.rollbackOf).toBe(r1.id);
+    expect(rolled.release.status).toBe("published");
+    expect(rolled.release.version).toBe("1.0.0");
+    expect(rolled.audit.action).toBe("dev_theme.rolled_back");
+    expect(store.published("m1", "aurora-lookbook")?.id).toBe(
+      rolled.release.id,
+    );
+  });
+
+  it("rollback with a malformed fingerprint refuses before any write", () => {
+    const { store } = approved();
+    const liveBefore = store.published("m1", "aurora-lookbook");
+    expect(() =>
+      store.rollback({
+        merchantId: "m1",
+        themeId: "aurora-lookbook",
+        targetFingerprint: "not-hex",
+        actor: { ...MOD },
+        rolledBackAt: T1,
+      }),
+    ).toThrow(/hex/);
+    expect(store.published("m1", "aurora-lookbook")).toBe(liveBefore);
+  });
+});

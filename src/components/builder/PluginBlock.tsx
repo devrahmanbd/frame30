@@ -90,6 +90,10 @@ export function PluginBlock({
         "Apps are switched off for this store",
         "এই স্টোরে অ্যাপ বন্ধ আছে",
       ],
+      suspended: [
+        "App suspended by the platform",
+        "অ্যাপটি প্ল্যাটফর্ম থেকে স্থগিত করা হয়েছে",
+      ],
     };
     const [en, bn] = reasons[resolved.reason] ?? reasons.bad_key;
     return (

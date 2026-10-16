@@ -62,7 +62,7 @@ import {
   type DevThemeManifest,
 } from "./dev-theme-manifest";
 import { resolveDevThemeActivation } from "./dev-theme-activate";
-import type { DevThemeRelease } from "./dev-theme-review";
+import type { DevThemeRelease, DevThemeReleaseStore } from "./dev-theme-review";
 
 // Mirrors of the identity + origin regexes in `dev-theme-activate.ts` (and
 // `ThemeRuntime.tsx` / `themes.server.ts`): duplicated on purpose — same
@@ -164,6 +164,7 @@ function verifyApprovalSnapshot(
   content: unknown,
   themeId: string,
   fingerprint: string,
+  store?: DevThemeReleaseStore,
 ): VerifiedApproval | null {
   try {
     const snapshot = parseStoredJson(content);
@@ -182,10 +183,15 @@ function verifyApprovalSnapshot(
       return null;
     }
     // The REAL activation gate — read, never reimplemented or weakened.
+    // With a live store this is the serve-time approval re-check (not just
+    // install time): a snapshot taken before a revoke refuses, so revoked
+    // bytes never synthesize a document.
     resolveDevThemeActivation({
       release: snapshot as DevThemeRelease,
       expectedFingerprint: fingerprint,
       expectedThemeId: themeId,
+      expectedVersion: parsed.manifest.version,
+      ...(store ? { store } : {}),
     });
     if (parsed.manifest.id !== themeId) return null;
     return { release: snapshot as DevThemeRelease, manifest: parsed.manifest };
@@ -274,10 +280,12 @@ export function verifyDevThemeReleaseForDocument(
   mapRows: unknown,
   themeId: string,
   version: string,
+  opts?: { store?: DevThemeReleaseStore },
 ): VerifiedDevThemeDocumentRelease | null {
   try {
     if (!DOC_NAME_RE.test(themeId) || !DOC_VERSION_RE.test(version))
       return null;
+    const store = opts?.store;
     const approvals = (
       Array.isArray(approvalRows) ? approvalRows : [approvalRows]
     )
@@ -291,7 +299,7 @@ export function verifyDevThemeReleaseForDocument(
         if (typeof named !== "string" || !DOC_FINGERPRINT_RE.test(named)) {
           return null;
         }
-        return verifyApprovalSnapshot(content, themeId, named);
+        return verifyApprovalSnapshot(content, themeId, named, store);
       })
       .filter((verified): verified is VerifiedApproval => verified !== null);
     if (approvals.length === 0) return null;
@@ -406,6 +414,10 @@ export type BuildDevThemeDocumentInput = {
   approvalRows: unknown;
   /** Stored `release.json` descriptor rows for the namespace (any merchant). */
   mapRows: unknown;
+  /** Live review store for the serve-time approval re-check. When provided,
+   * a snapshot revoked after it was taken refuses (revoked bytes never
+   * synthesize a document). Absent preserves the snapshot-only verification. */
+  store?: DevThemeReleaseStore;
 };
 
 export type BuildDevThemeDocumentOutcome =
@@ -441,6 +453,7 @@ export function buildDevThemeDocument(
       input.mapRows,
       themeId,
       version,
+      input.store ? { store: input.store } : undefined,
     );
     if (!verified) return { status: 404, reason: "unknown_version" };
     const { scripts, styles } = selectDevThemeDocumentAssets(verified.files);

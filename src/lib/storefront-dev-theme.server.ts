@@ -232,8 +232,19 @@ export async function resolveStorefrontDevThemeCall(
   slug: string,
   method: string,
   params: unknown,
-  opts?: { navigateAllowlist?: readonly string[] },
+  opts?: {
+    navigateAllowlist?: readonly string[];
+    /**
+     * Kill-switch / revocation liveness for the bridge-call authorization
+     * path: when true the call is denied as `theme.suspended` BEFORE any
+     * database read (no merchant, catalog, or variant row is touched) and
+     * before shape checks — a suspended install authorizes nothing, with an
+     * explicit wire error instead of a silent stale frame.
+     */
+    suspended?: boolean;
+  },
 ): Promise<unknown> {
+  if (opts?.suspended === true) deny("theme.suspended");
   if (typeof slug !== "string" || !slug.trim()) deny("theme.denied");
   if (!isStorefrontDevThemeMethod(method)) deny("theme.denied");
   const shapeError = validateStorefrontDevThemeParams(method, params);

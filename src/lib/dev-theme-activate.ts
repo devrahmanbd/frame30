@@ -80,6 +80,10 @@ export type ActivationGateInput = {
   expectedFingerprint: string;
   /** Marketplace-level theme binding. When set, the approval must cover it. */
   expectedThemeId?: string;
+  /** Version pin. When set, the approval's manifest version must equal it —
+   * fingerprint-bound activation per version (a fingerprint for 1.0.1 never
+   * activates as 1.0.0). */
+  expectedVersion?: string;
   /** Live store for re-verifying a snapshot that may have been revoked. */
   store?: DevThemeReleaseStore;
 };
@@ -161,6 +165,15 @@ export function resolveDevThemeActivation(
     fail(
       "dev_theme_activate.theme_mismatch",
       `Approval covers theme ${release.themeId}, not ${input.expectedThemeId}.`,
+    );
+  }
+  if (
+    input.expectedVersion !== undefined &&
+    release.manifest.version !== input.expectedVersion
+  ) {
+    fail(
+      "dev_theme_activate.version_mismatch",
+      `Approval is version ${release.manifest.version}, not ${input.expectedVersion}.`,
     );
   }
   const runtime = (release.manifest as { runtime?: unknown } | null)?.runtime;
@@ -323,6 +336,8 @@ export type ActivateDevThemeInstallInput = {
   release: DevThemeRelease;
   expectedFingerprint: string;
   expectedThemeId?: string;
+  /** Version pin. When set, the approval's manifest version must equal it. */
+  expectedVersion?: string;
   store?: DevThemeReleaseStore;
   actorId?: string | null;
 };
@@ -351,6 +366,7 @@ export async function activateDevThemeInstall(
     release: input.release,
     expectedFingerprint: input.expectedFingerprint,
     expectedThemeId: input.expectedThemeId,
+    expectedVersion: input.expectedVersion,
     store: input.store,
   });
 
@@ -378,7 +394,7 @@ export async function activateDevThemeInstall(
 
   const { data: installRow } = await db
     .from("marketplace_installs")
-    .select("id, kind, status, artifact_checksum")
+    .select("id, kind, status, artifact_checksum, artifact_version")
     .eq("merchant_id", merchantId)
     .eq("id", linkedInstallId)
     .maybeSingle();
@@ -387,6 +403,7 @@ export async function activateDevThemeInstall(
     kind: string;
     status: string;
     artifact_checksum?: unknown;
+    artifact_version?: unknown;
   } | null;
   if (!install || install.kind !== "theme") {
     fail(
@@ -404,6 +421,21 @@ export async function activateDevThemeInstall(
     fail(
       "dev_theme_activate.fingerprint_mismatch",
       "Installed bytes do not match the approved fingerprint.",
+    );
+  }
+  // Per-version binding (additive — checksum linkage above is untouched): when
+  // the ledger carries a version pin it must equal the approved manifest
+  // version, or a fingerprint for 1.0.1 could activate under a 1.0.0 install
+  // row. Absent (pre-migration NULL) degrades to checksum-only, same posture
+  // as the install lane's artifact-column degrade.
+  if (
+    typeof install.artifact_version === "string" &&
+    install.artifact_version.length > 0 &&
+    install.artifact_version !== activation.version
+  ) {
+    fail(
+      "dev_theme_activate.version_mismatch",
+      `Install pins version ${install.artifact_version}, approval is ${activation.version}.`,
     );
   }
 

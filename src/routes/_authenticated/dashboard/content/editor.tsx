@@ -90,6 +90,15 @@ function EditorRoute() {
     [pluginsQuery.data],
   );
   const workspaceTheme = workspaceQuery.data?.theme;
+  /**
+   * Frame30 one-registry: exactly ONE `buildEditorExtensionRegistry` call
+   * per route render feeds EVERY downstream path (tray discovery,
+   * inspector, canvas, preview, save, publish) through the same instance —
+   * the shell/route never build a second registry. `editorThemeKey` is the
+   * exact `themeKey` input below, threaded as `activeThemeKey` so canvas /
+   * preview presentation resolves keyed (owning-theme defs are
+   * `theme:<sourceKey>/…`); absent keeps explicit unkeyed fail-closed.
+   */
   const editorRegistry = useMemo(
     () =>
       buildEditorExtensionRegistry({
@@ -103,6 +112,11 @@ function EditorRoute() {
       }),
     [authorizedPlugins, workspaceTheme],
   );
+  const editorThemeKey =
+    typeof workspaceTheme?.sourceKey === "string" &&
+    workspaceTheme.sourceKey.trim()
+      ? workspaceTheme.sourceKey.trim()
+      : null;
   const editorDevThemeBinding = useMemo(
     () =>
       resolveEditorDevThemeBinding(
@@ -120,6 +134,7 @@ function EditorRoute() {
       forceEditor={forced}
       extensionRegistry={editorRegistry}
       devThemeBinding={editorDevThemeBinding ?? null}
+      activeThemeKey={editorThemeKey}
       listHref={
         kind === "page"
           ? "/dashboard/content/pages"

@@ -520,6 +520,40 @@ export async function installListing(
         .eq("id", pkg.packageId);
       throw new Error("market_artifact_mismatch");
     }
+    // Version truth (Frame30 item 13): the ledger must claim the version the
+    // bytes actually carry. A pinned vault row whose recorded version differs
+    // from the installed artifact's manifest version is a version lie — the
+    // row is compensated and the install fails closed with
+    // `market_version_mismatch`, never patched into agreement.
+    if (pinned) {
+      const { checkPinnedVersionTruth } = await import("./plugin-package");
+      const truth = checkPinnedVersionTruth({
+        artifactVersion: pkg.version,
+        pinnedVersion: pinned.version,
+      });
+      if (!truth.ok) {
+        try {
+          const { deleteVersionAssets, pluginVersionPrefix } =
+            await import("./package-store.server");
+          await deleteVersionAssets(
+            db,
+            merchantId,
+            pluginVersionPrefix(
+              widgetArtifact.manifestSlug,
+              widgetArtifact.checksum.slice(0, 8),
+            ),
+          );
+        } catch {
+          /* compensation is best-effort; the mismatch error below is the signal */
+        }
+        await db
+          .from("marketplace_installs")
+          .delete()
+          .eq("merchant_id", merchantId)
+          .eq("id", pkg.packageId);
+        throw new Error(`market_version_mismatch:${truth.detail}`);
+      }
+    }
     // The pipeline wrote the ledger row with upload defaults; patch it to the
     // marketplace shape (listing identity, price, trial, consent evidence).
     // Marketplace identity stays on the listing slug — the asset namespace

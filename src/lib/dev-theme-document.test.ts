@@ -39,7 +39,7 @@ const GSAP_DEP = {
   integrity: "sha384-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
 };
 
-const APP_JS = `import "./vendor/three.00000000.js";
+const APP_JS = `import "./vendor/three.js";
 export function boot(el) { el.textContent = "on"; }`;
 const VENDOR_JS = `export const THREE = { REVISION: "186" };`;
 const MAIN_CSS = `.hero{color:red}`;
@@ -591,5 +591,121 @@ describe("classifyDevThemeDocumentRef — traversal-proof asset refs", () => {
       "sections/hero.55555555.js",
     ]);
     expect(styles).toEqual(["styles/a.css", "styles/b.css"]);
+  });
+});
+
+describe("buildDevThemeDocument — serve-time approval re-check (frame30 item 9)", () => {
+  it("a live revoke after the snapshot refuses the document (no stale serve)", () => {
+    const m = manifest();
+    const store = createDevThemeReleaseStore();
+    const assembled = assembleDevThemeBundle({
+      manifestJson: m,
+      files: files(),
+      dependencies: [{ ...GSAP_DEP }],
+      allowedNetworkHosts: [],
+    });
+    expect(assembled.ok).toBe(true);
+    if (!assembled.ok) return;
+    const { release: submitted } = store.submit({
+      merchantId: "seller-1",
+      themeId: THEME_SLUG,
+      manifest: assembled.manifest,
+      files: assembled.files,
+      fingerprint: assembled.fingerprint,
+      submittedBy: "dev-1",
+      submittedAt: T0,
+    });
+    store.review({
+      releaseId: submitted.id,
+      merchantId: "seller-1",
+      reviewer: { ...MOD },
+      decision: "approve",
+      reason: "clean",
+      reviewedAt: T1,
+    });
+    const { release } = store.publish({
+      releaseId: submitted.id,
+      merchantId: "seller-1",
+      actor: { ...MOD },
+      expectedFingerprint: assembled.fingerprint,
+      publishedAt: T1,
+    });
+    const ns = `dev-themes/${THEME_SLUG}/${VERSION}`;
+    const approvalRows = [
+      {
+        merchant_id: "merchant-1",
+        name: `${ns}/.approval.json`,
+        content: JSON.stringify(release),
+      },
+    ];
+    const mapRows = [
+      {
+        merchant_id: "merchant-1",
+        name: `${ns}/release.json`,
+        content: assembled.releaseJson,
+      },
+    ];
+    // Snapshot-only verification still serves (install-time proof).
+    expect(
+      buildDevThemeDocument({
+        themeId: THEME_SLUG,
+        version: VERSION,
+        assetOrigin: ORIGIN,
+        approvalRows,
+        mapRows,
+      }).status,
+    ).toBe(200);
+    // After a live revoke, the serve-time re-check refuses.
+    store.revoke({
+      releaseId: release.id,
+      merchantId: "seller-1",
+      actor: { ...MOD },
+      reason: "post-publish violation",
+      revokedAt: T1,
+    });
+    const refused = buildDevThemeDocument({
+      themeId: THEME_SLUG,
+      version: VERSION,
+      assetOrigin: ORIGIN,
+      approvalRows,
+      mapRows,
+      store,
+    });
+    expect(refused.status).toBe(404);
+  });
+
+  it("asset substitution post-approval refuses (bytes must hash to the map entry)", () => {
+    const { approvalRows, mapRows } = approved();
+    const verified = verifyDevThemeReleaseForDocument(
+      approvalRows,
+      mapRows,
+      THEME_SLUG,
+      VERSION,
+    );
+    expect(verified).not.toBeNull();
+    const tampered = {
+      ...(mapRows[0] as Record<string, unknown>),
+      content: JSON.stringify({
+        ...(JSON.parse((mapRows[0] as { content: string }).content) as Record<
+          string,
+          unknown
+        >),
+        files: [
+          {
+            path: "components/app.00000000.js",
+            sha256: "0".repeat(64),
+            bytes: 10,
+          },
+        ],
+      }),
+    };
+    expect(
+      verifyDevThemeReleaseForDocument(
+        approvalRows,
+        [tampered],
+        THEME_SLUG,
+        VERSION,
+      ),
+    ).toBeNull();
   });
 });

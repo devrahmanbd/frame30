@@ -108,7 +108,9 @@ describe("one-registry call-site pins (static)", () => {
     expect(builder).toContain("resolveExtensionTrayEntries(extensionRegistry");
   });
 
-  it("EditorShell forwards the active theme key to the studio", () => {
-    expect(shell).toContain("activeThemeKey={effectiveThemeId");
+  it("EditorShell forwards the resolved route theme key to the studio", () => {
+    // Route build key (slug) wins over the workspace uuid so owning-theme
+    // defs (`theme:<sourceKey>/…`) resolve keyed, never unkeyed.
+    expect(shell).toContain("activeThemeKey={resolvedThemeKey");
   });
 });

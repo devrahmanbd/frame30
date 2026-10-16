@@ -86,6 +86,644 @@ export function resolveThemePresentation(
 export function clearThemePresentations(): void {
   PRESENTATIONS.clear();
   THEME_OWNED_COMPONENTS.clear();
+  VERSIONED_DRESSINGS.clear();
+  VERSIONED_AVAILABILITY.clear();
+}
+
+/* --------------------------------------- versioned namespaced dressings */
+
+/**
+ * Versioned namespaced presentation contract (DRESSING lane).
+ *
+ * Lets an owner dress built-in AND compatible third-party widgets through a
+ * registration keyed by (owner, widget id, version range) with a builder-API
+ * compatibility floor. The widget id is namespaced (`<ns>:<rest>`, for
+ * example a builtin id or a third-party plugin id); the version range is a
+ * semver subset (`*`, exact, caret, tilde, comparator sets); the floor is a
+ * minimum builder API triple.
+ *
+ * Deterministic resolution rules (`resolveVersionedPresentation`):
+ * - R1 owner scope: only the requesting owner's dressings are ever
+ *   considered. A miss returns the caller-supplied fallback (or undefined),
+ *   never another owner's component.
+ * - R2 availability: an owner marked unavailable dresses nothing (miss).
+ * - R3 version gate: a dressing matches when its range holds the caller's
+ *   widget version. An unknown/garbage widget version matches ONLY wildcard
+ *   dressings — a pinned range never renders without version evidence.
+ * - R4 API floor: a dressing with a floor matches only when the caller's
+ *   builder API parses and meets the floor. Without caller evidence only
+ *   floor-less dressings match.
+ * - R5 specificity: among the survivors the most specific range wins
+ *   (exact > caret/tilde > bounded comparator set > half-bounded comparator
+ *   > wildcard); ties keep the first registration.
+ *
+ * Contracts (mirroring the tables above):
+ * - Registration is first-wins on the exact (owner, widget id, normalized
+ *   range) triple: duplicates warn and keep the first. Registration never
+ *   throws (invalid input warns and returns).
+ * - Resolution/compatibility/migration never throw and never cross owners.
+ * - This module names no owner and branches on no owner: lookup is opaque
+ *   nested Maps keyed by the normalized owner and widget id.
+ *
+ * Swap-in points (adopters wire these; this module renders nothing):
+ * - renderer: beside the existing presentation call — map a hit component to
+ *   the node and render a miss as the existing unavailable placeholder with
+ *   the authored props preserved.
+ * - activation gate: before a theme switch — run
+ *   `checkVersionedCompatibility` over the page's widget ids and carry
+ *   settings forward with `migrateVersionedProps` (validated migration or an
+ *   explicit incompatibility state, never a silent foreign render).
+ */
+
+export type VersionedPresentationMigrate = (
+  prevProps: Record<string, unknown>,
+) => Record<string, unknown> | null | undefined;
+
+export type VersionedPresentationEntry = {
+  /** Opaque owner key claiming this dressing. */
+  owner: string;
+  /** Namespaced widget id this dressing presents (`<ns>:<rest>`). */
+  widgetId: string;
+  /** Semver range (`*`, exact, `^`, `~`, comparator set). `""` means any. */
+  versionRange: string;
+  /** Minimum builder API triple; absent means no floor. */
+  minBuilderApi?: string;
+  /** Presentation component for the (owner, widget, range) triple. */
+  component: WidgetComponent;
+  /**
+   * Settings migration for a theme switch. Receives a hostile-stripped clone
+   * of the authored props and returns the carried-forward props, or null to
+   * declare an explicit incompatibility. Absent means pass-through.
+   */
+  migrate?: VersionedPresentationMigrate;
+};
+
+export type VersionedResolveOptions = {
+  /** Registry widget version the caller runs; absent tracks any. */
+  widgetVersion?: string;
+  /** Builder API the caller runs; absent means no floor evidence. */
+  builderApi?: string;
+  /** Returned on a miss (usually the existing resolution result). */
+  fallback?: WidgetComponent | undefined;
+};
+
+export type VersionedCompatReason =
+  | "compatible"
+  | "bad_key"
+  | "unknown"
+  | "unavailable"
+  | "incompatible-version"
+  | "incompatible-api";
+
+export type VersionedCompatResult =
+  | { compatible: true; reason: "compatible" }
+  | {
+      compatible: false;
+      reason:
+        | "bad_key"
+        | "unknown"
+        | "unavailable"
+        | "incompatible-version"
+        | "incompatible-api";
+    };
+
+export type VersionedMigrateOptions = {
+  /** Widget version the settings were authored under. */
+  fromVersion?: string;
+  /** Widget version the target dressing must satisfy. */
+  toVersion?: string;
+  /** Builder API the target runs under. */
+  builderApi?: string;
+};
+
+export type VersionedMigrateResult =
+  | { ok: true; migrated: boolean; props: Record<string, unknown> }
+  | {
+      ok: false;
+      reason:
+        | "bad_key"
+        | "unknown"
+        | "unavailable"
+        | "incompatible-version"
+        | "incompatible-api"
+        | "incompatible"
+        | "migration-failed";
+      preservedProps: Record<string, unknown>;
+    };
+
+type VersionTriple = [number, number, number];
+
+type StoredDressing = {
+  rangeText: string;
+  kind: "wild" | "exact" | "caret" | "tilde" | "comparators";
+  exact?: VersionTriple;
+  base?: VersionTriple;
+  upper?: VersionTriple;
+  comparators?: ReadonlyArray<{ op: string; ver: VersionTriple }>;
+  boundedBelow?: boolean;
+  boundedAbove?: boolean;
+  specificity: number;
+  floor: VersionTriple | null;
+  component: WidgetComponent;
+  migrate?: VersionedPresentationMigrate;
+};
+
+/** owner → (widget id → dressings in registration order). */
+const VERSIONED_DRESSINGS = new Map<string, Map<string, StoredDressing[]>>();
+
+/** Owners marked unavailable dress nothing (miss with data preserved). */
+const VERSIONED_AVAILABILITY = new Map<string, boolean>();
+
+const VERSIONED_OWNER_MAX = 128;
+const VERSIONED_WIDGET_MAX = 256;
+const VERSIONED_RANGE_MAX = 128;
+const VERSIONED_TRIPLE_MAX = 64;
+const VERSIONED_PART_MAX = 9;
+
+const VERSIONED_WIDGET_RE = /^[A-Za-z][A-Za-z0-9_-]*:[^\s:][^\s]*$/;
+const VERSIONED_TRIPLE_RE = /^[v=]?(\d+)\.(\d+)\.(\d+)(?:[-+][0-9A-Za-z.-]+)?$/;
+const VERSIONED_COMPARATOR_RE =
+  /^(>=|<=|>|<|=)?v?(\d+)\.(\d+)\.(\d+)(?:[-+][0-9A-Za-z.-]+)?$/;
+
+function versionedWarn(message: string): void {
+  console.warn(`[theme-presentations] ${message}`);
+}
+
+function versionedCleanRecord(value: unknown): Record<string, unknown> {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return {};
+  }
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+    if (k === "__proto__" || k === "constructor" || k === "prototype") continue;
+    out[k] = v;
+  }
+  return out;
+}
+
+function versionedClone(value: Record<string, unknown>): Record<string, unknown> {
+  try {
+    const parsed: unknown = JSON.parse(JSON.stringify(value));
+    return versionedCleanRecord(parsed);
+  } catch {
+    return {};
+  }
+}
+
+function normalizeVersionedOwner(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const clean = value.trim();
+  if (!clean || clean.length > VERSIONED_OWNER_MAX) return null;
+  return clean;
+}
+
+function normalizeVersionedWidget(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const clean = value.trim();
+  if (!clean || clean.length > VERSIONED_WIDGET_MAX) return null;
+  if (!VERSIONED_WIDGET_RE.test(clean)) return null;
+  return clean;
+}
+
+function parseVersionTriple(raw: unknown): VersionTriple | null {
+  if (typeof raw !== "string") return null;
+  const clean = raw.trim();
+  if (!clean || clean.length > VERSIONED_TRIPLE_MAX) return null;
+  const m = VERSIONED_TRIPLE_RE.exec(clean);
+  if (!m) return null;
+  const parts = [m[1]!, m[2]!, m[3]!];
+  for (const part of parts) {
+    if (part.length > VERSIONED_PART_MAX) return null;
+  }
+  const triple: VersionTriple = [Number(parts[0]), Number(parts[1]), Number(parts[2])];
+  if (!triple.every((n) => Number.isSafeInteger(n) && n >= 0)) return null;
+  return triple;
+}
+
+function compareTriples(a: VersionTriple, b: VersionTriple): number {
+  for (let i = 0; i < 3; i++) {
+    if (a[i] !== b[i]) return a[i]! < b[i]! ? -1 : 1;
+  }
+  return 0;
+}
+
+function caretUpper(base: VersionTriple): VersionTriple {
+  if (base[0] > 0) return [base[0] + 1, 0, 0];
+  if (base[1] > 0) return [0, base[1] + 1, 0];
+  return [0, 0, base[2] + 1];
+}
+
+function parseVersionRange(raw: string): StoredDressing | null {
+  const text = raw.trim().replace(/\s+/g, " ");
+  if (text === "" || text === "*" || text === "x" || text === "X") {
+    return {
+      rangeText: "*",
+      kind: "wild",
+      specificity: 0,
+      floor: null,
+      component: (() => null) as WidgetComponent,
+    };
+  }
+  const exact = parseVersionTriple(text);
+  if (exact) {
+    return {
+      rangeText: `${exact[0]}.${exact[1]}.${exact[2]}`,
+      kind: "exact",
+      exact,
+      specificity: 4,
+      floor: null,
+      component: (() => null) as WidgetComponent,
+    };
+  }
+  const first = text.charAt(0);
+  if (first === "^" || first === "~") {
+    const base = parseVersionTriple(text.slice(1));
+    if (!base) return null;
+    const upper: VersionTriple =
+      first === "^" ? caretUpper(base) : [base[0], base[1] + 1, 0];
+    return {
+      rangeText: `${first}${base[0]}.${base[1]}.${base[2]}`,
+      kind: first === "^" ? "caret" : "tilde",
+      base,
+      upper,
+      specificity: 3,
+      floor: null,
+      component: (() => null) as WidgetComponent,
+    };
+  }
+  const parts = text.split(" ").filter((p) => p.length > 0);
+  if (parts.length === 0 || parts.length > 4) return null;
+  const comparators: Array<{ op: string; ver: VersionTriple }> = [];
+  for (const part of parts) {
+    const m = VERSIONED_COMPARATOR_RE.exec(part);
+    if (!m) return null;
+    const triple: VersionTriple = [Number(m[2]), Number(m[3]), Number(m[4])];
+    if (
+      m[2]!.length > VERSIONED_PART_MAX ||
+      m[3]!.length > VERSIONED_PART_MAX ||
+      m[4]!.length > VERSIONED_PART_MAX ||
+      !triple.every((n) => Number.isSafeInteger(n) && n >= 0)
+    ) {
+      return null;
+    }
+    comparators.push({ op: m[1] ?? "=", ver: triple });
+  }
+  let boundedBelow = false;
+  let boundedAbove = false;
+  for (const c of comparators) {
+    if (c.op === ">" || c.op === ">=" || c.op === "=") boundedBelow = true;
+    if (c.op === "<" || c.op === "<=" || c.op === "=") boundedAbove = true;
+  }
+  return {
+    rangeText: parts.join(" "),
+    kind: "comparators",
+    comparators,
+    boundedBelow,
+    boundedAbove,
+    specificity: boundedBelow && boundedAbove ? 2 : 1,
+    floor: null,
+    component: (() => null) as WidgetComponent,
+  };
+}
+
+function dressingMatchesVersion(
+  stored: StoredDressing,
+  ver: VersionTriple | null,
+): boolean {
+  if (stored.kind === "wild") return true;
+  if (!ver) return false;
+  if (stored.kind === "exact" && stored.exact) {
+    return compareTriples(ver, stored.exact) === 0;
+  }
+  if (
+    (stored.kind === "caret" || stored.kind === "tilde") &&
+    stored.base &&
+    stored.upper
+  ) {
+    return (
+      compareTriples(ver, stored.base) >= 0 &&
+      compareTriples(ver, stored.upper) < 0
+    );
+  }
+  if (stored.kind === "comparators" && stored.comparators) {
+    for (const c of stored.comparators) {
+      const cmp = compareTriples(ver, c.ver);
+      if (c.op === "=" && cmp !== 0) return false;
+      if (c.op === ">" && cmp <= 0) return false;
+      if (c.op === ">=" && cmp < 0) return false;
+      if (c.op === "<" && cmp >= 0) return false;
+      if (c.op === "<=" && cmp > 0) return false;
+    }
+    return true;
+  }
+  return false;
+}
+
+function dressingPassesFloor(
+  stored: StoredDressing,
+  api: VersionTriple | null,
+): boolean {
+  if (!stored.floor) return true;
+  if (!api) return false;
+  return compareTriples(api, stored.floor) >= 0;
+}
+
+/**
+ * Claim one (owner, widget id, version range) triple for a presentation
+ * component. Only owner modules call this. First registration on the exact
+ * triple wins; duplicates warn and are ignored. Overlapping ranges coexist
+ * and resolve by specificity. Never throws.
+ */
+export function registerVersionedPresentation(entry: unknown): void {
+  try {
+    if (typeof entry !== "object" || entry === null || Array.isArray(entry)) {
+      versionedWarn("ignoring versioned registration: not an entry object.");
+      return;
+    }
+    const bag = entry as Partial<VersionedPresentationEntry>;
+    const owner = normalizeVersionedOwner(bag.owner);
+    if (!owner) {
+      versionedWarn("ignoring versioned registration for an empty owner.");
+      return;
+    }
+    const widgetId = normalizeVersionedWidget(bag.widgetId);
+    if (!widgetId) {
+      versionedWarn(
+        `ignoring versioned registration for ${owner}: not a namespaced widget id.`,
+      );
+      return;
+    }
+    if (typeof bag.versionRange !== "string") {
+      versionedWarn(
+        `ignoring versioned registration for ${owner}/${widgetId}: bad version range.`,
+      );
+      return;
+    }
+    const trimmedRange = bag.versionRange.trim();
+    if (trimmedRange.length > VERSIONED_RANGE_MAX) {
+      versionedWarn(
+        `ignoring versioned registration for ${owner}/${widgetId}: version range too long.`,
+      );
+      return;
+    }
+    const parsed = parseVersionRange(trimmedRange);
+    if (!parsed) {
+      versionedWarn(
+        `ignoring versioned registration for ${owner}/${widgetId}: unparsable version range.`,
+      );
+      return;
+    }
+    let floor: VersionTriple | null = null;
+    if (bag.minBuilderApi !== undefined) {
+      const triple = parseVersionTriple(bag.minBuilderApi);
+      if (!triple) {
+        versionedWarn(
+          `ignoring versioned registration for ${owner}/${widgetId}: bad builder-API floor.`,
+        );
+        return;
+      }
+      floor = triple;
+    }
+    if (typeof bag.component !== "function") {
+      versionedWarn(
+        `ignoring versioned registration for ${owner}/${widgetId}: not a component.`,
+      );
+      return;
+    }
+    if (bag.migrate !== undefined && typeof bag.migrate !== "function") {
+      versionedWarn(
+        `ignoring versioned registration for ${owner}/${widgetId}: bad migrate hook.`,
+      );
+      return;
+    }
+    let byWidget = VERSIONED_DRESSINGS.get(owner);
+    if (!byWidget) {
+      byWidget = new Map<string, StoredDressing[]>();
+      VERSIONED_DRESSINGS.set(owner, byWidget);
+    }
+    let bucket = byWidget.get(widgetId);
+    if (!bucket) {
+      bucket = [];
+      byWidget.set(widgetId, bucket);
+    }
+    for (const existing of bucket) {
+      if (existing.rangeText === parsed.rangeText) {
+        versionedWarn(
+          `duplicate versioned registration for ${owner}/${widgetId}@${parsed.rangeText} ignored; keeping the first.`,
+        );
+        return;
+      }
+    }
+    bucket.push({ ...parsed, floor, component: bag.component, migrate: bag.migrate });
+  } catch {
+    versionedWarn("ignoring versioned registration after an internal error.");
+  }
+}
+
+/**
+ * Resolve the requesting owner's dressing for a widget id, or the
+ * caller-supplied fallback when nothing compatible is registered. Follows
+ * rules R1–R5 above. Never throws; never returns another owner's component.
+ */
+export function resolveVersionedPresentation(
+  owner: string | null | undefined,
+  widgetId: string | null | undefined,
+  opts?: VersionedResolveOptions,
+): WidgetComponent | undefined {
+  try {
+    const fallback =
+      opts && typeof opts.fallback === "function" ? opts.fallback : undefined;
+    const ownerKey = normalizeVersionedOwner(owner);
+    const widgetKey = normalizeVersionedWidget(widgetId);
+    if (!ownerKey || !widgetKey) return fallback;
+    if (VERSIONED_AVAILABILITY.get(ownerKey) === false) return fallback;
+    const bucket = VERSIONED_DRESSINGS.get(ownerKey)?.get(widgetKey);
+    if (!bucket || bucket.length === 0) return fallback;
+    const ver =
+      opts && typeof opts.widgetVersion === "string"
+        ? parseVersionTriple(opts.widgetVersion)
+        : null;
+    const api =
+      opts && typeof opts.builderApi === "string"
+        ? parseVersionTriple(opts.builderApi)
+        : null;
+    let best: StoredDressing | null = null;
+    for (const candidate of bucket) {
+      if (!dressingPassesFloor(candidate, api)) continue;
+      if (!dressingMatchesVersion(candidate, ver)) continue;
+      if (!best || candidate.specificity > best.specificity) best = candidate;
+    }
+    return best ? best.component : fallback;
+  } catch {
+    return opts && typeof opts.fallback === "function" ? opts.fallback : undefined;
+  }
+}
+
+/**
+ * Mark an owner's dressings available or unavailable (owning-theme
+ * disabled/unavailable gate). Unavailable owners resolve to a miss so the
+ * caller keeps the recoverable placeholder with the authored props
+ * preserved. Never throws.
+ */
+export function setVersionedPresentationAvailability(
+  owner: unknown,
+  available: unknown,
+): void {
+  try {
+    const ownerKey = normalizeVersionedOwner(owner);
+    if (!ownerKey) {
+      versionedWarn("ignoring availability update for an empty owner.");
+      return;
+    }
+    if (typeof available !== "boolean") {
+      versionedWarn(`ignoring availability update for ${ownerKey}: not a boolean.`);
+      return;
+    }
+    VERSIONED_AVAILABILITY.set(ownerKey, available);
+  } catch {
+    versionedWarn("ignoring availability update after an internal error.");
+  }
+}
+
+/** Whether an owner's dressings currently resolve (default true). */
+export function isVersionedOwnerAvailable(owner: unknown): boolean {
+  try {
+    const ownerKey = normalizeVersionedOwner(owner);
+    if (!ownerKey) return false;
+    return VERSIONED_AVAILABILITY.get(ownerKey) !== false;
+  } catch {
+    return false;
+  }
+}
+
+function versionedCompatOf(
+  bucket: StoredDressing[] | undefined,
+  ver: VersionTriple | null,
+  api: VersionTriple | null,
+  ownerReady: boolean,
+): VersionedCompatResult {
+  if (!ownerReady) return { compatible: false, reason: "unavailable" };
+  if (!bucket || bucket.length === 0)
+    return { compatible: false, reason: "unknown" };
+  const versionHits = bucket.filter((d) => dressingMatchesVersion(d, ver));
+  if (versionHits.length === 0)
+    return { compatible: false, reason: "incompatible-version" };
+  const floorHits = versionHits.filter((d) => dressingPassesFloor(d, api));
+  if (floorHits.length === 0)
+    return { compatible: false, reason: "incompatible-api" };
+  return { compatible: true, reason: "compatible" };
+}
+
+/**
+ * Pre-switch compatibility for one widget under a target owner. Never
+ * throws; every outcome is explicit so the caller can hold an
+ * incompatibility state instead of rendering a foreign dressing.
+ */
+export function checkVersionedCompatibility(
+  owner: string | null | undefined,
+  widgetId: string | null | undefined,
+  opts?: { widgetVersion?: string; builderApi?: string },
+): VersionedCompatResult {
+  try {
+    const ownerKey = normalizeVersionedOwner(owner);
+    const widgetKey = normalizeVersionedWidget(widgetId);
+    if (!ownerKey || !widgetKey)
+      return { compatible: false, reason: "bad_key" };
+    const ver =
+      opts && typeof opts.widgetVersion === "string"
+        ? parseVersionTriple(opts.widgetVersion)
+        : null;
+    const api =
+      opts && typeof opts.builderApi === "string"
+        ? parseVersionTriple(opts.builderApi)
+        : null;
+    const bucket = VERSIONED_DRESSINGS.get(ownerKey)?.get(widgetKey);
+    return versionedCompatOf(
+      bucket,
+      ver,
+      api,
+      VERSIONED_AVAILABILITY.get(ownerKey) !== false,
+    );
+  } catch {
+    return { compatible: false, reason: "unknown" };
+  }
+}
+
+/**
+ * Carry settings across a theme switch under the target owner: validated
+ * migration when the target dressing defines one, pass-through when it does
+ * not, or an explicit incompatibility holding the preserved props. Owner
+ * scope, version gate and API floor mirror resolution, so a switch never
+ * silently renders a foreign dressing. Never throws.
+ */
+export function migrateVersionedProps(
+  owner: string | null | undefined,
+  widgetId: string | null | undefined,
+  prevProps: unknown,
+  opts?: VersionedMigrateOptions,
+): VersionedMigrateResult {
+  try {
+    const preserved = versionedClone(
+      versionedCleanRecord(
+        typeof prevProps === "object" && prevProps !== null ? prevProps : {},
+      ),
+    );
+    const ownerKey = normalizeVersionedOwner(owner);
+    const widgetKey = normalizeVersionedWidget(widgetId);
+    if (!ownerKey || !widgetKey)
+      return { ok: false, reason: "bad_key", preservedProps: preserved };
+    if (VERSIONED_AVAILABILITY.get(ownerKey) === false)
+      return { ok: false, reason: "unavailable", preservedProps: preserved };
+    const bucket = VERSIONED_DRESSINGS.get(ownerKey)?.get(widgetKey);
+    if (!bucket || bucket.length === 0)
+      return { ok: false, reason: "unknown", preservedProps: preserved };
+    const target =
+      opts && typeof opts.toVersion === "string"
+        ? parseVersionTriple(opts.toVersion)
+        : null;
+    const api =
+      opts && typeof opts.builderApi === "string"
+        ? parseVersionTriple(opts.builderApi)
+        : null;
+    const compat = versionedCompatOf(bucket, target, api, true);
+    if (!compat.compatible)
+      return { ok: false, reason: compat.reason, preservedProps: preserved };
+    let best: StoredDressing | null = null;
+    for (const candidate of bucket) {
+      if (!dressingPassesFloor(candidate, api)) continue;
+      if (!dressingMatchesVersion(candidate, target)) continue;
+      if (!best || candidate.specificity > best.specificity) best = candidate;
+    }
+    if (!best)
+      return { ok: false, reason: "unknown", preservedProps: preserved };
+    if (!best.migrate)
+      return { ok: true, migrated: false, props: preserved };
+    let next: unknown;
+    try {
+      next = best.migrate(preserved);
+    } catch {
+      return {
+        ok: false,
+        reason: "migration-failed",
+        preservedProps: preserved,
+      };
+    }
+    if (next === null || next === undefined)
+      return { ok: false, reason: "incompatible", preservedProps: preserved };
+    if (typeof next !== "object" || next === null || Array.isArray(next))
+      return {
+        ok: false,
+        reason: "migration-failed",
+        preservedProps: preserved,
+      };
+    return {
+      ok: true,
+      migrated: true,
+      props: versionedClone(versionedCleanRecord(next)),
+    };
+  } catch {
+    return { ok: false, reason: "unknown", preservedProps: {} };
+  }
 }
 
 /* ------------------------------------------------- theme-owned widgets */

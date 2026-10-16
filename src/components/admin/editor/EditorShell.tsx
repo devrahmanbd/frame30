@@ -77,6 +77,13 @@ import { UnderlineTabs, fieldInput } from "./primitives";
 import { useEditorDoc } from "./useEditorDoc";
 import type { UnifiedRegistry } from "@/lib/unified-widget-registry";
 import type { DevThemeBinding } from "@/components/builder/SectionRenderer";
+import {
+  canonicalizeEditorDocForSave,
+  deriveEditorPluginEntries,
+  editorRegistryFingerprint,
+  resolveEditorThemeKey,
+  selectEditorRegistry,
+} from "@/lib/editor/editor-seam";
 
 const SIDEBAR_MIN = 320;
 const SIDEBAR_MAX = 420;
@@ -172,6 +179,7 @@ export function EditorShell({
   plugins: pluginsProp,
   extensionRegistry = null,
   devThemeBinding = null,
+  activeThemeKey: routeThemeKey = null,
 }: {
   kind: ContentKind;
   id: string | null;
@@ -205,6 +213,16 @@ export function EditorShell({
    * does, flowing the moment it does.
    */
   devThemeBinding?: DevThemeBinding | null;
+  /**
+   * Frame30 one-registry theme key (route-owned): the exact `themeKey`
+   * input the authorized registry was built with (workspace `sourceKey`,
+   * e.g. `aurora-lookbook`). Preferred for canvas/preview presentation so
+   * owning-theme defs (`theme:<sourceKey>/…`) resolve keyed; absent falls
+   * back to the document pin below (then the registry is plugins-only, so
+   * resolution fail-closes to a miss). Same `string | null` shape as the
+   * studio's `activeThemeKey`.
+   */
+  activeThemeKey?: string | null;
 }) {
   const { t, lang } = useLang();
   const navigate = useNavigate();
@@ -214,7 +232,18 @@ export function EditorShell({
   // PLUGIN SEAM (continued): normalized here, forwarded into the studio via
   // `studioSeamProps` at the <StudioBuilder> call site. Empty by default,
   // so the Elements tray renders exactly as before until entries exist.
-  const pluginEntries = pluginEntriesProp ?? pluginsProp ?? [];
+  // Pure helper keeps the prop-alias contract unit-tested.
+  const pluginEntries = deriveEditorPluginEntries(
+    pluginEntriesProp,
+    pluginsProp,
+  );
+
+  // Frame30 one-registry guards (wiring side only — never builds):
+  // `safeRegistry` is the SAME authorized instance or explicit absent, so
+  // tray, inspector, canvas, preview, save and publish all share one truth.
+  // Hostile/foreign seam objects fall back to absent (the studio's own
+  // fallback applies) instead of crashing the shell.
+  const safeRegistry = selectEditorRegistry(extensionRegistry);
 
   // Pages open in the full-window builder: the outer sidebar starts closed
   // (page settings + SEO live in the builder's own panels) but stays one
@@ -419,15 +448,35 @@ export function EditorShell({
 
   const setBody = (body: string) => update({ body }, "body");
 
+  /**
+   * Frame30 save/publish canonicalization (wiring side): canvas docs are
+   * sanitized against the SAME guarded registry instance before they become
+   * the shell body, so save/publish serialize the canonical representation
+   * with validated per-instance props (no prop loss for known keys, no
+   * hostile keys, no install-global bleed, fresh objects per instance).
+   * Misses (e.g. a plugin disabled mid-session) preserve verbatim for
+   * recovery; legacy bodies pass through untouched. Never throws.
+   */
+  const serializeStudioDocForShell = (next: StudioDoc): string => {
+    try {
+      const clean = canonicalizeEditorDocForSave(next, safeRegistry) ?? next;
+      return serializeStudioBody(clean);
+    } catch {
+      return serializeStudioBody(next);
+    }
+  };
+
   // The studio's inner publish button used to toast success while doing
   // nothing (no `onPublish` was threaded through). This flushes the live
   // canvas into the shell body first, then runs the working
   // `commit("publish")` path the shell's own pre-publish flow uses.
+  // The flush canonicalizes through the same registry the tray/canvas
+  // resolved, so publish can never serialize stale/unvalidated props.
   const publishFromStudio = (next: StudioDoc) =>
     createStudioPublishHandler(
       (body) => setBody(body),
       () => publish(),
-    )(next);
+    )(canonicalizeEditorDocForSave(next, safeRegistry) ?? next);
 
   // Server revisions → studio History panel shape (newest first, as stored).
   const studioRevisions = useMemo(
@@ -449,14 +498,16 @@ export function EditorShell({
   // explicit attributes) so this file compiles and runs unchanged today —
   // the extra props are inert until the owning track adds them — and flows
   // through the moment it does. `pluginEntries` only spreads when non-empty.
-  // Frame30 one-registry: the route-owned `extensionRegistry` (already
-  // declared by the studio, consumed by `addPluginNode`) plus the single
-  // projected `devThemeBinding` share this one seam object. Absent values
-  // are never spread (the studio default is explicit absent), so no second
-  // competing build can exist.
+  // Frame30 one-registry: the route-owned authorized instance (guarded to
+  // the SAME reference or explicit absent — never a rebuild) plus the
+  // single projected `devThemeBinding` share this one seam object, so tray
+  // (derived), inspector, canvas and preview resolve identically. Absent
+  // values are never spread (the studio default is explicit absent), so no
+  // second competing build can exist. Hostile seam objects select to absent
+  // via `safeRegistry` above instead of reaching the studio.
   const studioSeamProps = {
     ...(pluginEntries.length > 0 ? { pluginEntries } : null),
-    ...(extensionRegistry ? { extensionRegistry } : null),
+    ...(safeRegistry ? { extensionRegistry: safeRegistry } : null),
     ...(devThemeBinding ? { devThemeBinding } : null),
     onRestoreRevision: restoreStudioRevision,
   };
@@ -528,6 +579,39 @@ export function EditorShell({
     themeOptions.find((t) => t.id === doc.themeId)?.name ??
     themeOptions.find((t) => t.isActive)?.name ??
     null;
+  /**
+   * Frame30 keyed resolution (wiring side): the route build key wins so the
+   * canvas, its preview twin (same `StudioCanvas` props, `hideHandles` only)
+   * and the save canonicalizer above resolve owning-theme defs keyed. Falls
+   * back to the document pin only when the route key is absent (then the
+   * registry is plugins-only and resolution fail-closes to a miss).
+   * Threaded to EVERY theme-resolution site below (`activeThemeKey`); the
+   * uuid `data-theme-scope` above stays DOM scoping, not resolution.
+   */
+  const resolvedThemeKey = resolveEditorThemeKey({
+    routeThemeKey,
+    docThemeId: doc.themeId,
+    activeThemeId: themeOptions.find((t) => t.isActive)?.id ?? null,
+  });
+  /**
+   * Mid-session switch recovery: the canvas remounts when the authorized
+   * def set (or its key) changes — theme change / plugin disable re-derives
+   * tray, inspector, canvas and preview from the new truth instead of
+   * rendering stale definitions. Content-identical rebuilds fingerprint
+   * identically, so no spurious remount. Authored data stays preserved in
+   * the persisted body (misses keep verbatim) for re-resolution.
+   */
+  const registryFingerprint = useMemo(
+    () => editorRegistryFingerprint(safeRegistry),
+    [safeRegistry],
+  );
+  const studioResetKey = useMemo(
+    () =>
+      doc.id
+        ? `${kind}:${doc.id}:${doc.updatedAt ?? ""}:${registryFingerprint}:${resolvedThemeKey ?? "unkeyed"}`
+        : `new:${registryFingerprint}:${resolvedThemeKey ?? "unkeyed"}`,
+    [kind, doc.id, doc.updatedAt, registryFingerprint, resolvedThemeKey],
+  );
   const [brandOverrides, setBrandOverrides] = useState<
     Partial<ShellBrandTokens>
   >({});
@@ -779,20 +863,28 @@ export function EditorShell({
                         readStudioBody(doc.body, doc.title || pill.title) ??
                         upgradeV1(builderDoc, doc.title || pill.title)
                       }
-                      onChange={(next) => setBody(serializeStudioBody(next))}
+                      // Save path canonicalizes through the SAME guarded
+                      // registry (validated props, no loss, no bleed); the
+                      // preview twin inside the studio shares the identical
+                      // `extensionRegistry` / `devThemeBinding` /
+                      // `activeThemeKey` props below (hideHandles only), so
+                      // preview is never a disconnected build.
+                      onChange={(next) =>
+                        setBody(serializeStudioDocForShell(next))
+                      }
                       onPublish={publishFromStudio}
                       revisions={studioRevisions}
                       {...studioSeamProps}
-                      // Explicit (not in the seam object): `effectiveThemeId`
-                      // is defined below the seam. Absent keeps StudioBuilder's
-                      // legacy unkeyed composition.
-                      activeThemeKey={effectiveThemeId ?? undefined}
+                      // Keyed (not the uuid DOM scope): the exact build key
+                      // the registry was built with, so owning-theme widgets
+                      // resolve to their owner, never unkeyed. Absent keeps
+                      // StudioBuilder's legacy unkeyed composition.
+                      activeThemeKey={resolvedThemeKey ?? undefined}
                       docId={doc.id ? `${kind}:${doc.id}` : null}
-                      resetKey={
-                        doc.id
-                          ? `${kind}:${doc.id}:${doc.updatedAt ?? ""}`
-                          : "new"
-                      }
+                      // Fingerprint-keyed: a mid-session registry/theme
+                      // switch remounts (explicit recovery) instead of
+                      // rendering stale definitions.
+                      resetKey={studioResetKey}
                       fill
                       globalBlocks={globalBlocks}
                       onSaveGlobalBlock={saveGlobalBlock}

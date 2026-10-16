@@ -1,0 +1,52 @@
+{
+  "id": "frame30-starter",
+  "version": "1.0.0",
+  "runtime": "1.0.0",
+  "name": "Frame30 Starter",
+  "publisher": "Framique Studio",
+  "capabilities": ["presentation", "animation", "webgl", "commerce-read", "cart-write"],
+  "dependencies": [
+    {
+      "name": "gsap",
+      "version": "3.15.0",
+      "license": "MIT",
+      "integrity": "sha384-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    {
+      "name": "three",
+      "version": "0.186.1",
+      "license": "MIT",
+      "integrity": "sha512-blFeqb49wRCSGUGj7gtpfnSGHy2lwDk94RhUmS1c/hTby70kvChbWpkJ4Pm1390LqzzvTmzgXKHPEafJwCb8jA=="
+    }
+  ],
+  "sections": [
+    {
+      "key": "hero",
+      "slot": "main",
+      "component": "HeroCanvas",
+      "label": "Starter hero",
+      "settings": [
+        { "key": "kicker", "label": "Kicker", "type": "text" },
+        { "key": "palette", "label": "Palette", "type": "color" }
+      ]
+    },
+    { "key": "webgl-scene", "slot": "main", "component": "WebglScene" },
+    {
+      "key": "media-rail",
+      "slot": "main",
+      "component": "MediaRail",
+      "label": "Media rail",
+      "settings": [
+        { "key": "rail-note", "label": "Rail note", "type": "text" }
+      ]
+    }
+  ],
+  "settings": [
+    { "key": "headline", "label": "Headline", "type": "text" },
+    { "key": "backdrop", "label": "Backdrop", "type": "image" },
+    { "key": "accent", "label": "Accent", "type": "color" },
+    { "key": "gap", "label": "Gap", "type": "spacing" },
+    { "key": "featured", "label": "Featured", "type": "product-selection" },
+    { "key": "motion", "label": "Motion", "type": "animation" }
+  ]
+}

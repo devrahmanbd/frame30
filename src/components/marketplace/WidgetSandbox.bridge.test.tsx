@@ -12,6 +12,7 @@ import {
   handleSandboxMessage,
   isMenusListCall,
   menusListSlot,
+  SANDBOX_ENVELOPE_MAX_SKEW_MS,
 } from "./WidgetSandbox";
 import {
   BRIDGE_MAX_MESSAGES,
@@ -454,5 +455,175 @@ describe("handleSandboxMessage — call timeout", () => {
     // machinery exists.
     expect(html).toContain("pending.delete(d.id)");
     expect(html).not.toContain("sandbox.timeout");
+  });
+});
+
+describe("answerWidgetCall — suspension (kill switch propagates mid-session)", () => {
+  it("refuses every method while suspended, even granted ones", async () => {
+    const onCall = vi.fn(async () => ({ ok: true }));
+    for (const [method, params] of [
+      ["plugin.settings", undefined],
+      ["shop.info", { fields: ["name"] }],
+      ["cart.add", { variantId: "v", quantity: 1 }],
+      ["menus.list", { slot: "menu_bar" }],
+    ] as const) {
+      await expect(
+        answerWidgetCall(msg(method, params), {
+          settings: SETTINGS,
+          granted: [
+            "render_storefront",
+            "read_shop",
+            "write_cart",
+            "read_menus",
+          ],
+          onCall,
+          suspended: true,
+        }),
+      ).resolves.toEqual({ error: "sandbox.suspended" });
+    }
+    expect(onCall).not.toHaveBeenCalled();
+  });
+
+  it("suspension wins over malformed input (explicit dead-frame state)", async () => {
+    const onCall = vi.fn(async () => ({ ok: true }));
+    await expect(
+      answerWidgetCall(null, {
+        granted: [],
+        onCall,
+        suspended: true,
+      }),
+    ).resolves.toEqual({ error: "sandbox.suspended" });
+    expect(onCall).not.toHaveBeenCalled();
+  });
+
+  it("mid-session suspend stops execution; unsuspend resumes", async () => {
+    const onCall = vi.fn(async (method: string) => ({ method }));
+    const guard = createFloodGuard();
+    const live = {
+      granted: ["read_shop", "render_storefront"],
+      onCall,
+      guard,
+      now: 0,
+    };
+    await expect(
+      handleSandboxMessage({ v: 1, id: "w-1", method: "shop.info" }, live),
+    ).resolves.toEqual({ result: { method: "shop.info" } });
+    await expect(
+      handleSandboxMessage(
+        { v: 1, id: "w-2", method: "shop.info" },
+        { ...live, suspended: true },
+      ),
+    ).resolves.toEqual({ error: "sandbox.suspended" });
+    await expect(
+      handleSandboxMessage(
+        { v: 1, id: "w-3", method: "shop.info" },
+        { ...live, granted: [] },
+      ),
+    ).resolves.toEqual({ error: "sandbox.scope_denied" });
+    expect(onCall).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("handleSandboxMessage — forged source refused before any budget", () => {
+  it("refuses spoofed sources without touching guard or onCall", async () => {
+    const onCall = vi.fn(async () => ({ ok: true }));
+    const guard = createFloodGuard();
+    await expect(
+      handleSandboxMessage(msg("shop.info"), {
+        granted: ["read_shop", "render_storefront"],
+        onCall,
+        guard,
+        now: 0,
+        sourceValid: false,
+      }),
+    ).resolves.toEqual({ error: "sandbox.forged_source" });
+    expect(onCall).not.toHaveBeenCalled();
+    expect(guard.times.length).toBe(0);
+    expect(guard.seen.size).toBe(0);
+  });
+
+  it("spoofed floods cannot consume the rate budget", async () => {
+    const onCall = vi.fn(async () => ({ ok: true }));
+    const guard = createFloodGuard();
+    for (let i = 0; i < 40; i++) {
+      await handleSandboxMessage(
+        { v: 1, id: `spoof-${i}`, method: "shop.info" },
+        {
+          granted: ["read_shop", "render_storefront"],
+          onCall,
+          guard,
+          now: 0,
+          sourceValid: false,
+        },
+      );
+    }
+    await expect(
+      handleSandboxMessage(
+        { v: 1, id: "real", method: "shop.info" },
+        {
+          granted: ["read_shop", "render_storefront"],
+          onCall,
+          guard,
+          now: 0,
+          sourceValid: true,
+        },
+      ),
+    ).resolves.toEqual({ result: { ok: true } });
+    expect(onCall).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("answerWidgetCall — envelope freshness (replayed traffic refused)", () => {
+  const NOW = 1_700_000_000_000;
+  const fresh = (id: string, ts: unknown) => ({
+    v: 1,
+    id,
+    method: "shop.info",
+    ts,
+  });
+  const ctx = {
+    granted: ["read_shop", "render_storefront"],
+    onCall: async () => ({ ok: true }),
+  };
+
+  it("admits untimestamped envelopes (back-compat frame bootstrap)", async () => {
+    await expect(
+      answerWidgetCall(msg("shop.info"), { ...ctx, now: NOW }),
+    ).resolves.toEqual({ result: { ok: true } });
+  });
+
+  it("admits fresh timestamps, refuses stale past and forged future", async () => {
+    await expect(
+      answerWidgetCall(fresh("f1", NOW), { ...ctx, now: NOW }),
+    ).resolves.toEqual({ result: { ok: true } });
+    await expect(
+      answerWidgetCall(fresh("f2", NOW - SANDBOX_ENVELOPE_MAX_SKEW_MS - 1), {
+        ...ctx,
+        now: NOW,
+      }),
+    ).resolves.toEqual({ error: "sandbox.stale" });
+    await expect(
+      answerWidgetCall(fresh("f3", NOW + 3_600_000), { ...ctx, now: NOW }),
+    ).resolves.toEqual({ error: "sandbox.stale" });
+  });
+
+  it("maps ill-typed ts to malformed without calling onCall", async () => {
+    const onCall = vi.fn(async () => ({ ok: true }));
+    for (const ts of ["now", true, NaN, {}, []]) {
+      await expect(
+        answerWidgetCall(fresh(`t-${String(ts)}`, ts), {
+          granted: ctx.granted,
+          onCall,
+          now: NOW,
+        }),
+      ).resolves.toEqual({ error: "sandbox.malformed" });
+    }
+    expect(onCall).not.toHaveBeenCalled();
+  });
+
+  it("skips freshness without a host clock", async () => {
+    await expect(answerWidgetCall(fresh("nc", 0), ctx)).resolves.toEqual({
+      result: { ok: true },
+    });
   });
 });

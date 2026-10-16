@@ -505,3 +505,68 @@ describe("activateDevThemeInstall — fingerprint-bound flag flip", () => {
     expect(db.rows("theme_audit")).toHaveLength(0);
   });
 });
+
+describe("activateDevThemeInstall — per-version fingerprint binding (frame30 item 9)", () => {
+  it("a named version must equal the approved manifest version", () => {
+    const { release, fingerprint } = approvedBundle();
+    expect(
+      resolveDevThemeActivation({
+        release,
+        expectedFingerprint: fingerprint,
+        expectedVersion: "1.0.0",
+      }).version,
+    ).toBe("1.0.0");
+    expect(() =>
+      resolveDevThemeActivation({
+        release,
+        expectedFingerprint: fingerprint,
+        expectedVersion: "1.0.1",
+      }),
+    ).toThrow(/version_mismatch/);
+  });
+
+  it("a ledger version skew refuses (fingerprint for 1.0.1 never activates a 1.0.0 row)", async () => {
+    const db = installedDb();
+    const { release, fingerprint } = approvedBundle();
+    const { installId, themeId } = await installed(
+      db,
+      release,
+      "dev-act-skew-1",
+    );
+    const install = db
+      .rows("marketplace_installs")
+      .find((r) => (r as { id: unknown }).id === installId) as Record<
+      string,
+      unknown
+    >;
+    install.artifact_version = "9.9.9";
+    await expect(
+      activateDevThemeInstall(db.asClient(), MERCHANT, {
+        installId,
+        themeId,
+        release,
+        expectedFingerprint: fingerprint,
+        actorId: ACTOR,
+      }),
+    ).rejects.toThrow(/version_mismatch/);
+    const themes = db.rows("store_themes") as {
+      id: string;
+      is_active: boolean;
+    }[];
+    expect(themes.find((t) => t.id === themeId)!.is_active).toBe(false);
+    expect(db.rows("theme_audit")).toHaveLength(0);
+  });
+
+  it("downgrade by fingerprint still needs the exact old fingerprint (no silent version fall)", () => {
+    const { release, fingerprint } = approvedBundle();
+    // Naming the new version's fingerprint with the old version refuses:
+    // a downgrade rides only an explicit rollback audit, never a version lie.
+    expect(() =>
+      resolveDevThemeActivation({
+        release,
+        expectedFingerprint: fingerprint,
+        expectedVersion: "0.9.0",
+      }),
+    ).toThrow(/version_mismatch/);
+  });
+});

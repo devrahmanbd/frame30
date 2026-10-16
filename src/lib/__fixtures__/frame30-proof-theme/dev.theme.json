@@ -1,0 +1,57 @@
+{
+  "id": "frame30-proof-theme",
+  "version": "1.0.0",
+  "runtime": "1.0.0",
+  "name": "Frame30 Proof Theme",
+  "publisher": "Framique Studio",
+  "capabilities": ["presentation", "animation"],
+  "dependencies": [
+    {
+      "name": "gsap",
+      "version": "3.15.0",
+      "license": "MIT",
+      "integrity": "sha384-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    }
+  ],
+  "sections": [
+    {
+      "key": "hero",
+      "slot": "main",
+      "component": "HeroCanvas",
+      "label": "Proof hero",
+      "settings": [
+        {
+          "key": "kicker",
+          "label": "Kicker",
+          "type": "text",
+          "multiline": true,
+          "required": true,
+          "help": "Short eyebrow above the headline",
+          "default": "New drop"
+        },
+        { "key": "palette", "label": "Palette", "type": "color", "default": "#b3123f" }
+      ]
+    },
+    { "key": "webgl-scene", "slot": "main", "component": "WebglScene" },
+    {
+      "key": "media-rail",
+      "slot": "main",
+      "component": "MediaRail",
+      "label": "Media rail",
+      "settings": [{ "key": "rail-note", "label": "Rail note", "type": "text" }]
+    }
+  ],
+  "settings": [
+    { "key": "headline", "label": "Headline", "type": "text" },
+    { "key": "backdrop", "label": "Backdrop", "type": "image" },
+    { "key": "accent", "label": "Accent", "type": "color" },
+    { "key": "gap", "label": "Gap", "type": "spacing" },
+    {
+      "key": "featured",
+      "label": "Featured",
+      "type": "product-selection",
+      "multiple": true
+    },
+    { "key": "motion", "label": "Motion", "type": "animation" }
+  ]
+}

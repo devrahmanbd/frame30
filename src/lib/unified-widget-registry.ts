@@ -1,5 +1,41 @@
 /**
- * Unified widget registry — shims and adapters over the three existing systems.
+ * Unified widget registry — ONE authoritative registry lineage.
+ *
+ * Single lineage: every runtime registry is built by `createWidgetRegistry`
+ * (factory, isolated in-memory Maps, no global state). `buildTrayRegistry`
+ * and `buildEditorExtensionRegistry` both delegate to it; no second Map
+ * lineage exists. All reads go straight to the Maps — there is NO read
+ * cache, so there is no stale cache: mutations (`register`/`update`/
+ * `rollback`/`enable`/`disable`/`suspend`/`remove`) recompute the `latest`
+ * pointer synchronously and the next `resolve`/`get` observes it. Held
+ * references are frozen snapshots by design — callers must re-resolve after
+ * a mutation (pinned by test).
+ *
+ * Legacy shims that remain (documented, not competing):
+ * - Module singleton (`registerWidget`/`resolveWidget`/… + `clearRegistry`):
+ *   thin delegates over ONE `shared = createWidgetRegistry()` instance, kept
+ *   for legacy single-tenant callers, previews and tests. Tenant-aware code
+ *   MUST NOT use it for tenant data — thread an explicit factory registry
+ *   (`resolveInspectorSchema(..., registry)`, `resolvePresentation({registry})`).
+ *   `buildTrayRegistry` merges it best-effort ONLY for global in-repo theme
+ *   defs (e.g. songoskriti ornament); tenant defs ride explicit `themeDefs`.
+ * - Static-only sources (never registries): `WIDGET_COMPONENTS`/
+ *   `GENERIC_WIDGETS`/pack maps, `STUDIO_CATALOG`, the Phase 0.2
+ *   `WIDGET_REGISTRY` view (read via `widgetMeta`), `PRESENTATIONS` in
+ *   `theme-presentations.ts` (sibling lane, read-only input) and in
+ *   `plugin-theme-contract.ts`. Each is adapted via `fromBuiltinWidgets`/
+ *   `fromStudioCatalog`/`fromPluginManifest`/`activeDevThemeWidgetDefs` into
+ *   `WidgetDef`s and registered — sources are never read at resolve time.
+ * - `theme-presentations.ts` map stays sibling-owned (read-only input here).
+ *
+ * Tenant isolation: factory registries are disjoint by construction (Maps per
+ * instance, frozen defs, no cross-reads). Ownership: `plugin:`/`theme:` ids
+ * require `owner/widget` parts and the namespace prefix must match;
+ * cross-owner resolves miss explicitly (never substitution). Version/API
+ * gates: `minBuilderApi` floors resolve; `update`/`rollback` retain versions
+ * with `latest` recomputed (cache invalidation). Safe states: every miss
+ * carries an explicit `reason` (`unknown`|`disabled`|`suspended`|
+ * `incompatible`|`uninstalled`) with authored data preserved.
  *
  * The builder grew three un-unified widget sources: builtin renderers
  * (`src/components/builder/widgets.tsx`), the studio `WIDGETS` catalogue
@@ -38,10 +74,16 @@ import { compareSemver, parseSemver } from "./marketplace-scopes";
 import {
   BUILDER_API_VERSION,
   exactApiVersion,
+  PLUGIN_CONTRACT_PATTERNS,
   pluginWidgetKey,
   sanitizePluginWidgetPropsSchema,
   satisfiesApiRange,
+  validatePluginWidgetContract,
   type InstalledPlugin,
+  type PluginWidgetCapabilities,
+  type PluginWidgetDataRequirement,
+  type PluginWidgetRendering,
+  type PluginWidgetThemeCompatibility,
 } from "./plugin-manifest";
 import { widgetMeta } from "./widget-registry";
 import {
@@ -89,6 +131,16 @@ export type PropField = ValuePropField;
 
 export type PropSchema = { fields: PropField[] };
 
+/**
+ * Frame30 contract — registry-carried members are single-source aliases of
+ * the manifest contract (like the existing `PropField` pattern above), never
+ * parallel copies: the gate, the adapter and `sanitizeDef` cannot disagree.
+ */
+export type WidgetDataRequirement = PluginWidgetDataRequirement;
+export type WidgetCapabilities = PluginWidgetCapabilities;
+export type WidgetRendering = PluginWidgetRendering;
+export type WidgetThemeCompatibility = PluginWidgetThemeCompatibility;
+
 export type WidgetDef = {
   id: string;
   namespace: "builtin" | "studio" | "plugin" | "theme";
@@ -112,10 +164,24 @@ export type WidgetDef = {
    */
   themeId?: string;
   themeComponent?: string;
+  /**
+   * Frame30 contract — carried from the manifest declaration (plugin tier).
+   * `rendering` is `isolated` (Class A sandbox) or `themeable` (Class B);
+   * `dataRequirements`/`actions`/`states` name integration points;
+   * `capabilities` claims responsive/styling; `themeCompatibility` scopes
+   * themes + floors the builder API. Absent means legacy-undeclared (adapter
+   * defaults apply). Malformed members reject registration (`bad_*`).
+   */
+  rendering?: WidgetRendering;
+  dataRequirements?: WidgetDataRequirement[];
+  actions?: string[];
+  states?: string[];
+  capabilities?: WidgetCapabilities;
+  themeCompatibility?: WidgetThemeCompatibility;
 };
 
 export type MissingReason =
-  "unknown" | "disabled" | "incompatible" | "uninstalled";
+  "unknown" | "disabled" | "suspended" | "incompatible" | "uninstalled";
 
 export type ResolveContext = {
   /** Pin an older retained version; absent means the newest registered. */
@@ -151,7 +217,11 @@ type Namespace = (typeof NAMESPACES)[number];
 const NAMESPACED_ID_RE =
   /^(builtin|studio|plugin|theme):[a-z][a-z0-9_-]*(\/[a-z][a-z0-9_-]*)?$/;
 const LEGACY_BARE_RE = /^[a-z][a-z0-9_-]*$/;
-const VERSION_RE = /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/;
+// Single-source contract patterns (imported, not copied — see
+// `PLUGIN_CONTRACT_PATTERNS` in plugin-manifest.ts).
+const VERSION_RE = PLUGIN_CONTRACT_PATTERNS.VERSION_RE;
+const ACTION_NAME_RE = PLUGIN_CONTRACT_PATTERNS.ACTION_NAME_RE;
+const THEME_KEY_RE = PLUGIN_CONTRACT_PATTERNS.THEME_KEY_RE;
 
 const PROP_KINDS: ReadonlySet<string> = new Set(
   VALUE_PROP_KINDS as readonly string[],
@@ -162,6 +232,26 @@ const RENDERERS: ReadonlySet<string> = new Set([
   "sandbox",
   "custom",
 ]);
+
+/**
+ * Registry key shapes (intentional mirrors, not imports — documented
+ * duplication like `dev-theme-widgets.ts:KEY_RE`): `FIELD_KEY_RE` allows
+ * camelCase AST keys (`activeBrand`, `b1Href`) the manifest gate's lowercase
+ * `KEY_RE` rejects, because the builtin adapter carries catalogue keys
+ * verbatim; `HOSTILE_FIELD_KEYS` mirrors the manifest gate's set so direct
+ * `registerWidget` calls face the same proto-pollution bar. Contract
+ * patterns (`VERSION_RE`/`ACTION_NAME_RE`/`THEME_KEY_RE`) are imported
+ * single-source via `PLUGIN_CONTRACT_PATTERNS` above — never copied.
+ */
+const FIELD_KEY_RE = /^[a-zA-Z][a-zA-Z0-9_-]{0,39}$/;
+const HOSTILE_FIELD_KEYS: ReadonlySet<string> = new Set([
+  "__proto__",
+  "constructor",
+  "prototype",
+]);
+const MAX_REGISTRY_SCHEMA_FIELDS = 100;
+const MAX_REGISTRY_NESTING_DEPTH = 4;
+const MAX_REGISTRY_OPTIONS = 32;
 
 const PLUGIN_ID_RE = /^plugin:[^/]+\/.+$/;
 
@@ -204,39 +294,55 @@ function cloneJsonValue(value: unknown): JsonValue | undefined {
   return isJsonValue(parsed) ? parsed : undefined;
 }
 
-function sanitizeField(raw: unknown): PropField | null {
+function sanitizeField(raw: unknown, depth = 0): PropField | null {
   if (!isRecord(raw)) return null;
-  if (!isNonEmptyString(raw.key) || !isNonEmptyString(raw.label)) return null;
+  if (depth > MAX_REGISTRY_NESTING_DEPTH) return null;
+  const rawKey = typeof raw.key === "string" ? raw.key : "";
+  if (
+    HOSTILE_FIELD_KEYS.has(rawKey) ||
+    !FIELD_KEY_RE.test(rawKey) ||
+    !isNonEmptyString(raw.label)
+  )
+    return null;
   if (typeof raw.kind !== "string" || !PROP_KINDS.has(raw.kind)) return null;
   const field: PropField = {
-    key: raw.key,
-    label: raw.label,
+    key: rawKey,
+    label: String(raw.label).slice(0, 80),
     kind: raw.kind as PropFieldKind,
   };
-  if (typeof raw.help === "string") field.help = raw.help;
+  if (typeof raw.help === "string") field.help = raw.help.slice(0, 200);
   if (typeof raw.required === "boolean") field.required = raw.required;
   if (raw.default !== undefined) {
     const d = cloneJsonValue(raw.default);
     if (d !== undefined) field.default = d;
   }
-  if (Array.isArray(raw.options)) {
+  if (raw.options !== undefined) {
+    if (!Array.isArray(raw.options)) return null;
+    if (raw.options.length > MAX_REGISTRY_OPTIONS) return null;
     const options: { value: string; label: string }[] = [];
     for (const o of raw.options) {
       if (!isRecord(o) || typeof o.value !== "string") return null;
+      if (HOSTILE_FIELD_KEYS.has(o.value)) return null;
       options.push({
-        value: o.value,
-        label: typeof o.label === "string" ? o.label : o.value,
+        value: o.value.slice(0, 120),
+        label:
+          typeof o.label === "string"
+            ? o.label.slice(0, 120)
+            : o.value.slice(0, 120),
       });
     }
     field.options = options;
   }
+  if (field.kind === "select" && (!field.options || field.options.length === 0))
+    return null;
   if (typeof raw.min === "number") field.min = raw.min;
   if (typeof raw.max === "number") field.max = raw.max;
   if (raw.fields !== undefined) {
     if (!Array.isArray(raw.fields)) return null;
+    if (raw.fields.length > MAX_REGISTRY_SCHEMA_FIELDS) return null;
     const nested: PropField[] = [];
     for (const child of raw.fields) {
-      const clean = sanitizeField(child);
+      const clean = sanitizeField(child, depth + 1);
       if (!clean) return null;
       nested.push(clean);
     }
@@ -244,6 +350,11 @@ function sanitizeField(raw: unknown): PropField | null {
   }
   if (raw.showWhen !== undefined) {
     if (!isRecord(raw.showWhen) || typeof raw.showWhen.key !== "string")
+      return null;
+    if (
+      HOSTILE_FIELD_KEYS.has(raw.showWhen.key) ||
+      !FIELD_KEY_RE.test(raw.showWhen.key)
+    )
       return null;
     const eq = cloneJsonValue(raw.showWhen.equals);
     if (eq === undefined) return null;
@@ -292,6 +403,28 @@ function sanitizeDef(
     const prefix = `${namespace}:`;
     if (!id.startsWith(prefix))
       return { ok: false, error: "namespace_id_mismatch" };
+    // Ownership: plugin/theme ids require owner/widget parts
+    // (`plugin:acme/reviews`, `theme:songoskriti/finder`). A bare
+    // `plugin:acme` or `theme:songoskriti` claims a namespace without an
+    // owner scope — key squatting surface — so it fails closed.
+    if (
+      (namespace === "plugin" || namespace === "theme") &&
+      !id.includes("/")
+    ) {
+      return { ok: false, error: "bad_id" };
+    }
+    if (namespace === "plugin" || namespace === "theme") {
+      const rest = id.slice(prefix.length);
+      const [owner, widget] = rest.split("/");
+      if (
+        !owner ||
+        !widget ||
+        HOSTILE_FIELD_KEYS.has(owner) ||
+        HOSTILE_FIELD_KEYS.has(widget)
+      ) {
+        return { ok: false, error: "bad_id" };
+      }
+    }
   }
   if (
     typeof input.version !== "string" ||
@@ -316,6 +449,9 @@ function sanitizeDef(
     return { ok: false, error: "bad_props_schema" };
   }
   const fields: PropField[] = [];
+  if (input.propsSchema.fields.length > MAX_REGISTRY_SCHEMA_FIELDS) {
+    return { ok: false, error: "bad_props_schema" };
+  }
   for (const f of input.propsSchema.fields) {
     const clean = sanitizeField(f);
     if (!clean) return { ok: false, error: "bad_prop_field" };
@@ -338,6 +474,106 @@ function sanitizeDef(
       !VERSION_RE.test(input.minBuilderApi.trim())
     ) {
       return { ok: false, error: "bad_min_builder_api" };
+    }
+  }
+  // Frame30 contract members (plugin tier carry-over). Absent means
+  // legacy-undeclared; present-but-malformed rejects registration.
+  if (input.rendering !== undefined) {
+    if (input.rendering !== "isolated" && input.rendering !== "themeable") {
+      return { ok: false, error: "bad_rendering" };
+    }
+  }
+  if (input.dataRequirements !== undefined) {
+    if (!Array.isArray(input.dataRequirements)) {
+      return { ok: false, error: "bad_data_requirements" };
+    }
+    if (input.dataRequirements.length > 8) {
+      return { ok: false, error: "bad_data_requirements" };
+    }
+    for (const req of input.dataRequirements) {
+      if (!isRecord(req) || typeof req.source !== "string") {
+        return { ok: false, error: "bad_data_requirements" };
+      }
+      if (HOSTILE_FIELD_KEYS.has(req.source)) {
+        return { ok: false, error: "bad_data_requirements" };
+      }
+    }
+  }
+  for (const listKey of ["actions", "states"] as const) {
+    const list = (input as Record<string, unknown>)[listKey];
+    if (list !== undefined) {
+      if (!Array.isArray(list) || list.length > 32) {
+        return { ok: false, error: `bad_${listKey}` };
+      }
+      for (const item of list) {
+        if (
+          typeof item !== "string" ||
+          !ACTION_NAME_RE.test(item.trim()) ||
+          HOSTILE_FIELD_KEYS.has(item.trim())
+        ) {
+          return { ok: false, error: `bad_${listKey}` };
+        }
+      }
+    }
+  }
+  if (input.capabilities !== undefined) {
+    // LEGACY hostile-drop: non-record `capabilities` (e.g. `["admin"]`
+    // privilege claims) are dropped, never stored, never rejected — the
+    // pre-contract behavior pinned by test. Record shapes are the Frame30
+    // contract and malformed records reject.
+    if (!isRecord(input.capabilities)) {
+      // Drop hostile non-record capabilities; def still registers.
+    } else {
+      for (const k of Object.keys(input.capabilities)) {
+        if (k !== "responsive" && k !== "styling") {
+          return { ok: false, error: "bad_capabilities" };
+        }
+      }
+      if (
+        input.capabilities.responsive !== undefined &&
+        typeof input.capabilities.responsive !== "boolean"
+      ) {
+        return { ok: false, error: "bad_capabilities" };
+      }
+      const styling = (input.capabilities as Record<string, unknown>).styling;
+      if (
+        styling !== undefined &&
+        styling !== "isolated" &&
+        styling !== "tokens"
+      ) {
+        return { ok: false, error: "bad_capabilities" };
+      }
+    }
+  }
+  if (input.themeCompatibility !== undefined) {
+    if (!isRecord(input.themeCompatibility)) {
+      return { ok: false, error: "bad_theme_compatibility" };
+    }
+    for (const k of Object.keys(input.themeCompatibility)) {
+      if (k !== "themes" && k !== "minBuilderApi") {
+        return { ok: false, error: "bad_theme_compatibility" };
+      }
+    }
+    const tc = input.themeCompatibility as Record<string, unknown>;
+    if (tc.themes !== undefined) {
+      if (
+        !Array.isArray(tc.themes) ||
+        tc.themes.length === 0 ||
+        tc.themes.length > 32 ||
+        !(tc.themes as unknown[]).every(
+          (t) =>
+            typeof t === "string" && THEME_KEY_RE.test(t.trim().toLowerCase()),
+        )
+      ) {
+        return { ok: false, error: "bad_theme_compatibility" };
+      }
+    }
+    if (
+      tc.minBuilderApi !== undefined &&
+      (typeof tc.minBuilderApi !== "string" ||
+        !VERSION_RE.test((tc.minBuilderApi as string).trim()))
+    ) {
+      return { ok: false, error: "bad_theme_compatibility" };
     }
   }
 
@@ -376,6 +612,30 @@ function sanitizeDef(
   if (input.minBuilderApi !== undefined) {
     def.minBuilderApi = (input.minBuilderApi as string).trim();
   }
+  if (input.rendering !== undefined) {
+    def.rendering = input.rendering as WidgetDef["rendering"];
+  }
+  if (input.dataRequirements !== undefined) {
+    def.dataRequirements = cloneJson(
+      input.dataRequirements,
+    ) as WidgetDef["dataRequirements"];
+  }
+  if ((input as { actions?: unknown }).actions !== undefined) {
+    def.actions = [...(input as { actions: string[] }).actions];
+  }
+  if ((input as { states?: unknown }).states !== undefined) {
+    def.states = [...(input as { states: string[] }).states];
+  }
+  if (input.capabilities !== undefined && isRecord(input.capabilities)) {
+    def.capabilities = cloneJson(
+      input.capabilities,
+    ) as WidgetDef["capabilities"];
+  }
+  if (input.themeCompatibility !== undefined) {
+    def.themeCompatibility = cloneJson(
+      input.themeCompatibility,
+    ) as WidgetDef["themeCompatibility"];
+  }
   return { ok: true, def: deepFreeze(def), deprecatedId };
 }
 
@@ -399,6 +659,8 @@ type RegistryRecord = {
   versions: Map<string, WidgetDef>;
   latest: string;
   enabled: boolean;
+  /** Platform suspension (kill switch / review regression). Checked before `enabled`. */
+  suspended: boolean;
   deprecatedId: boolean;
 };
 
@@ -431,6 +693,11 @@ export type UnifiedRegistry = {
   resolveWidget(id: unknown, ctx?: ResolveContext): ResolveResult;
   enableWidget(id: unknown): MutationVerdict;
   disableWidget(id: unknown): MutationVerdict;
+  /** Platform suspension: `suspended` miss (explicit, never substitution). */
+  suspendWidget(id: unknown): MutationVerdict;
+  unsuspendWidget(id: unknown): MutationVerdict;
+  /** True when the record is platform-suspended (false for unknown ids). */
+  isSuspended(id: unknown): boolean;
   updateWidget(id: unknown, def: unknown): MutationVerdict;
   removeWidget(id: unknown): MutationVerdict;
   rollbackWidget(id: unknown, version: string): MutationVerdict;
@@ -482,9 +749,14 @@ export function createWidgetRegistry(): UnifiedRegistry {
             versions: new Map(),
             latest: "",
             enabled: true,
+            suspended: false,
             deprecatedId: false,
           };
       record.versions.set(clean.def.version, clean.def);
+      // Cache invalidation: `latest` is recomputed synchronously on every
+      // mutation (register/update/rollback) — there is no read cache, so the
+      // next resolve observes the newest version. Held references are frozen
+      // snapshots and stay stale by design (callers must re-resolve).
       record.latest = rankVersions(record.versions.keys());
       record.deprecatedId = record.deprecatedId || clean.deprecatedId;
       if (!existing) {
@@ -515,6 +787,8 @@ export function createWidgetRegistry(): UnifiedRegistry {
           context,
         );
       }
+      // Platform suspension wins over merchant disable (stronger action).
+      if (found.record.suspended) return miss(trimmed, "suspended", context);
       if (!found.record.enabled) return miss(trimmed, "disabled", context);
       const want =
         typeof context.version === "string"
@@ -555,11 +829,21 @@ export function createWidgetRegistry(): UnifiedRegistry {
     return { ok: true };
   }
 
+  function setSuspended(id: unknown, suspended: boolean): MutationVerdict {
+    const found = lookup(id);
+    if (!found) return { ok: false, error: "unknown_widget" };
+    found.record.suspended = suspended;
+    return { ok: true };
+  }
+
   return {
     registerWidget,
     resolveWidget,
     enableWidget: (id) => setEnabled(id, true),
     disableWidget: (id) => setEnabled(id, false),
+    suspendWidget: (id) => setSuspended(id, true),
+    unsuspendWidget: (id) => setSuspended(id, false),
+    isSuspended: (id) => lookup(id)?.record.suspended ?? false,
 
     updateWidget(id, def) {
       const found = lookup(id);
@@ -646,6 +930,15 @@ export function enableWidget(id: unknown): MutationVerdict {
 }
 export function disableWidget(id: unknown): MutationVerdict {
   return shared.disableWidget(id);
+}
+export function suspendWidget(id: unknown): MutationVerdict {
+  return shared.suspendWidget(id);
+}
+export function unsuspendWidget(id: unknown): MutationVerdict {
+  return shared.unsuspendWidget(id);
+}
+export function isSuspended(id: unknown): boolean {
+  return shared.isSuspended(id);
 }
 export function updateWidget(id: unknown, def: unknown): MutationVerdict {
   return shared.updateWidget(id, def);
@@ -897,26 +1190,31 @@ function minApiFromRange(range: string): string | undefined {
 
 /**
  * Adapt installed plugin widgets. Filtering mirrors the existing resolver
- * semantics (`resolvePluginWidget` / `pluginTrayEntries`): merchant-disabled
- * installs and builder-incompatible manifests contribute nothing — those
- * states surface at resolve time as `disabled` / `incompatible` misses with
- * data preserved. Renderer is `sandbox` (bundles run only in the null-origin
+ * semantics (`resolvePluginWidget` / `pluginTrayEntries`): merchant-disabled,
+ * platform-suspended and builder-incompatible manifests contribute nothing —
+ * install-level states surface at resolve time via `resolvePluginWidget`
+ * (`disabled`/`suspended`/`incompatible`) with data preserved, while the
+ * registry layer (install-agnostic) reports absent plugin ids as
+ * `uninstalled`. Renderer is `sandbox` (bundles run only in the null-origin
  * island; the registry never sees the entry bytes — no `entry` member
- * exists on WidgetDef). Plugin settings are per-install merchant config, so
- * a widget WITHOUT its own `propsSchema`/`defaultProps` keeps the legacy
+ * exists on WidgetDef). Global install `settings` are NEVER copied into
+ * `defaults`: per-instance defaults derive ONLY from the widget's own
+ * `propsSchema`/`defaultProps` (see the settings-vs-props separation test).
+ * A widget WITHOUT its own `propsSchema`/`defaultProps` keeps the legacy
  * shape exactly: `defaults` is `{}` and the schema is the empty
  * legacy-unvalidated shape.
  *
- * Frame30 — per-widget schema granularity: a widget WITH `propsSchema`
- * and/or `defaultProps` adapts its real schema (re-validated here through
- * the shared `sanitizePluginWidgetPropsSchema`, so hand-built installs face
- * the gate's exact rules) and its defaults (`defaultProps` cleaned through
- * the value layer's `validateProps`, so adapter defaults always validate;
- * keys outside the schema are stripped). An invalid per-widget schema (or a
- * non-record `defaultProps`) fails THAT widget only — it is skipped while
- * sibling widgets still adapt — never the whole manifest: one bad schema
- * must not blank the tray. A schema-carrying def still registers through
- * the same `sanitizeDef` path as every other tier.
+ * Frame30 — full contract carry-over: `version` (per-widget or manifest
+ * fallback), `category` (`plugin` fallback), `rendering` (declared or
+ * derived from `themeable`), `dataRequirements`/`actions`/`states`
+ * (declared, or Class B `themeable.actions/states` fallback),
+ * `capabilities` (declared or legacy-isolated default) and
+ * `themeCompatibility` (declared plus the manifest-API floor) ride into the
+ * def. Per-widget failures (bad schema, non-record defaults, contract
+ * violation via `validatePluginWidgetContract`) fail THAT widget only — it
+ * is skipped while siblings still adapt — never the whole manifest: one bad
+ * declaration must not blank the tray. Every emitted def still registers
+ * through the same `sanitizeDef` path as every other tier.
  */
 export function fromPluginManifest(
   installed: readonly InstalledPlugin[],
@@ -925,11 +1223,13 @@ export function fromPluginManifest(
   const api = opts?.api ?? BUILDER_API_VERSION;
   const out: WidgetDef[] = [];
   for (const item of installed) {
-    if (!item || !item.enabled) continue;
+    if (!item || !item.enabled || item.suspended === true) continue;
     const manifest = item.manifest;
     if (!manifest || !satisfiesApiRange(manifest.api, api)) continue;
     const minBuilderApi = minApiFromRange(manifest.api);
     for (const w of manifest.widgets) {
+      // Runtime boundary: hand-built installs face the gate's exact rules.
+      if (!validatePluginWidgetContract(w, manifest.id).ok) continue;
       let fields: PropField[] = [];
       let defaults: Record<string, unknown> = {};
       if (w.propsSchema !== undefined || w.defaultProps !== undefined) {
@@ -942,15 +1242,81 @@ export function fromPluginManifest(
       const def: WidgetDef = {
         id: pluginWidgetKey(manifest.id, w.key),
         namespace: "plugin",
-        version: manifest.version,
+        version:
+          typeof w.version === "string" && w.version.trim()
+            ? w.version.trim()
+            : manifest.version,
         label: w.label,
-        category: "plugin",
+        category:
+          typeof w.category === "string" && w.category.trim()
+            ? w.category.trim().slice(0, 40)
+            : "plugin",
         slots: [...w.slots],
         defaults,
         propsSchema: { fields },
         renderer: "sandbox",
       };
-      if (minBuilderApi) def.minBuilderApi = minBuilderApi;
+      def.rendering = w.rendering ?? (w.themeable ? "themeable" : "isolated");
+      if (w.dataRequirements !== undefined) {
+        def.dataRequirements = cloneJson(
+          w.dataRequirements,
+        ) as WidgetDef["dataRequirements"];
+      } else if (w.themeable?.data || w.themeable?.schema) {
+        // Class B data-shape refs ride as a single contract requirement so
+        // the registry carries the data dependency without inventing sources.
+        def.dataRequirements = [
+          {
+            source: "contract",
+            params: {
+              schema: w.themeable.schema,
+              ...(w.themeable.data ? { data: w.themeable.data } : {}),
+            } as Record<string, JsonValue>,
+          },
+        ];
+      }
+      const actions = w.actions ?? w.themeable?.actions;
+      if (actions !== undefined) def.actions = [...actions];
+      const states = w.states ?? w.themeable?.states;
+      if (states !== undefined) def.states = [...states];
+      if (w.capabilities !== undefined) {
+        def.capabilities = cloneJson(
+          w.capabilities,
+        ) as WidgetDef["capabilities"];
+      } else {
+        def.capabilities = { responsive: false, styling: "isolated" };
+      }
+      const themeCompatibility: WidgetThemeCompatibility = {
+        ...(w.themeCompatibility ? cloneJson(w.themeCompatibility) : {}),
+      } as WidgetThemeCompatibility;
+      // The manifest-API floor always rides (resolve-time gate); a widget
+      // floor, when declared, must not undercut it (adapter keeps the max).
+      const floors = [minBuilderApi, themeCompatibility.minBuilderApi].filter(
+        (v): v is string => typeof v === "string" && !!v,
+      );
+      if (floors.length) {
+        let max = floors[0]!;
+        for (const f of floors.slice(1)) {
+          try {
+            if (compareSemver(f, max) > 0) max = f;
+          } catch {
+            // Unparseable floor: keep the manifest floor (gate validated).
+          }
+        }
+        themeCompatibility.minBuilderApi = max;
+      }
+      if (
+        themeCompatibility.themes !== undefined ||
+        themeCompatibility.minBuilderApi !== undefined
+      ) {
+        def.themeCompatibility = themeCompatibility;
+      }
+      if (minBuilderApi && !def.minBuilderApi)
+        def.minBuilderApi = minBuilderApi;
+      if (themeCompatibility.minBuilderApi) {
+        def.minBuilderApi = themeCompatibility.minBuilderApi;
+      }
+      // Registration-time gate: malformed carry-over never leaves the adapter.
+      if (!sanitizeDef(def).ok) continue;
       out.push(deepFreeze(def));
     }
   }
@@ -960,23 +1326,27 @@ export function fromPluginManifest(
 /**
  * P5 consolidation — the single tray registry builder for every write path.
  *
- * Seeds a fresh registry with every tier (builtin + studio + installed-plugin
- * defs) and best-effort merges the shared singleton (theme defs ride there
- * when present; absent keeps the legacy tray identical). Hostile or
- * unreadable entries are dropped, never stored; merchant-disabled installs
- * and builder-incompatible manifests contribute nothing — the shared adapter
- * filtering, so listing and insertion read the same truth and the tray can
- * never offer a widget it cannot insert. Never throws.
+ * Seeds a fresh factory registry with every tier (builtin + studio +
+ * installed-plugin defs) plus explicit tenant `themeDefs`, then best-effort
+ * merges the shared singleton (LEGACY shim: global in-repo theme defs such
+ * as the songoskriti ornament register there; absent keeps the legacy tray
+ * identical). Hostile or unreadable entries are dropped, never stored;
+ * merchant-disabled / platform-suspended installs and builder-incompatible
+ * manifests contribute nothing — the shared adapter filtering, so listing
+ * and insertion read the same truth and the tray can never offer a widget
+ * it cannot insert. Never throws. Tenant isolation: pass tenant theme defs
+ * via `themeDefs` (never the singleton) so two tenants' trays stay disjoint.
  */
 export function buildTrayRegistry(
   installed: readonly InstalledPlugin[],
-  opts?: { api?: string },
+  opts?: { api?: string; themeDefs?: readonly WidgetDef[] },
 ): UnifiedRegistry {
   const registry = createWidgetRegistry();
   for (const def of [
     ...fromBuiltinWidgets(),
     ...fromStudioCatalog(),
     ...fromPluginManifest(installed, opts),
+    ...(Array.isArray(opts?.themeDefs) ? opts.themeDefs : []),
   ]) {
     try {
       registry.registerWidget(def);
@@ -984,8 +1354,10 @@ export function buildTrayRegistry(
       // A single bad adapter def never breaks the tray.
     }
   }
-  // Theme defs ride the shared singleton when present (tests and theme lanes
-  // register there); absent keeps the legacy tray identical.
+  // LEGACY shim: theme defs ride the shared singleton when present (global
+  // in-repo defs such as the songoskriti ornament register there; tenant
+  // defs MUST ride `themeDefs` above, never the singleton). Absent keeps the
+  // legacy tray identical.
   try {
     for (const def of listWidgets()) {
       try {

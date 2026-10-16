@@ -1,0 +1,146 @@
+{
+  "id": "frame30-proof",
+  "name": "Frame30 Proof Widgets",
+  "version": "1.0.0",
+  "description": "Checklist 14 proof fixture: three widgets with nontrivial schemas (repeater, responsive, media, validation edges).",
+  "api": "^3.0.0",
+  "permissions": ["read_shop", "render_storefront"],
+  "widgets": [
+    {
+      "key": "lookbook_grid",
+      "label": "Lookbook Grid",
+      "slots": ["main"],
+      "entry": "framique.mountLookbookGrid(document.createElement('div'))",
+      "version": "1.0.0",
+      "category": "showcase",
+      "rendering": "isolated",
+      "capabilities": { "responsive": true, "styling": "tokens" },
+      "actions": ["open_tile", "filter_tiles"],
+      "states": ["idle", "filtered"],
+      "dataRequirements": [{ "source": "products", "params": { "limit": "12" } }],
+      "propsSchema": [
+        { "key": "title", "label": "Heading", "kind": "text", "required": true, "max": 80 },
+        {
+          "key": "layout",
+          "label": "Layout",
+          "kind": "select",
+          "default": "grid",
+          "options": [
+            { "value": "grid", "label": "Grid" },
+            { "value": "masonry", "label": "Masonry" },
+            { "value": "carousel", "label": "Carousel" }
+          ]
+        },
+        { "key": "columns", "label": "Columns", "kind": "number", "min": 1, "max": 6, "default": 3 },
+        { "key": "hero_media", "label": "Hero media", "kind": "media" },
+        { "key": "backdrop", "label": "Backdrop", "kind": "image" },
+        { "key": "palette", "label": "Palette", "kind": "color", "default": "#111111" },
+        { "key": "gap", "label": "Gap", "kind": "spacing" },
+        {
+          "key": "tiles",
+          "label": "Tiles",
+          "kind": "repeater",
+          "fields": [
+            { "key": "tile_image", "label": "Tile image", "kind": "image", "required": true },
+            { "key": "tile_link", "label": "Tile link", "kind": "link" },
+            { "key": "tile_caption", "label": "Caption", "kind": "text", "required": true, "max": 120 },
+            { "key": "tile_price", "label": "Price", "kind": "number", "min": 0 }
+          ]
+        },
+        { "key": "layout_config", "label": "Responsive layout", "kind": "responsive" },
+        {
+          "key": "badge",
+          "label": "Badge",
+          "kind": "text",
+          "max": 24,
+          "showWhen": { "key": "layout", "equals": "carousel" }
+        },
+        { "key": "motion", "label": "Motion", "kind": "animation" },
+        { "key": "cta", "label": "Call to action", "kind": "link" },
+        { "key": "featured", "label": "Featured product", "kind": "product" },
+        { "key": "shelf", "label": "Shelf", "kind": "collection" },
+        { "key": "tone", "label": "Tone", "kind": "category" },
+        { "key": "marker", "label": "Marker icon", "kind": "icon" }
+      ],
+      "defaultProps": {
+        "title": "New season",
+        "layout": "grid",
+        "columns": 3,
+        "tiles": [
+          {
+            "tile_image": "https://cdn.example.com/tile-1.jpg",
+            "tile_link": "https://shop.example.com/p/1",
+            "tile_caption": "Silk wrap",
+            "tile_price": 129
+          }
+        ]
+      }
+    },
+    {
+      "key": "motion_hero",
+      "label": "Motion Hero",
+      "slots": ["header", "main"],
+      "entry": "framique.mountMotionHero(document.createElement('div'))",
+      "version": "1.1.0",
+      "category": "hero",
+      "propsSchema": [
+        { "key": "headline", "label": "Headline", "kind": "text", "required": true, "max": 90 },
+        { "key": "subhead", "label": "Subhead", "kind": "richtext", "max": 500 },
+        { "key": "backdrop", "label": "Backdrop", "kind": "image" },
+        { "key": "accent", "label": "Accent", "kind": "color", "default": "#b3123f" },
+        { "key": "gap", "label": "Gap", "kind": "spacing" },
+        { "key": "motion", "label": "Motion", "kind": "animation" },
+        {
+          "key": "align",
+          "label": "Align",
+          "kind": "select",
+          "default": "center",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "right", "label": "Right" }
+          ]
+        },
+        { "key": "cta", "label": "Call to action", "kind": "link" },
+        { "key": "layout_config", "label": "Responsive layout", "kind": "responsive" }
+      ],
+      "defaultProps": { "headline": "Wear the story", "align": "center" }
+    },
+    {
+      "key": "shoppable_video",
+      "label": "Shoppable Video",
+      "slots": ["main", "footer"],
+      "entry": "framique.mountShoppableVideo(document.createElement('div'))",
+      "version": "2.0.0",
+      "category": "video",
+      "themeCompatibility": { "themes": ["frame30-proof-theme"] },
+      "propsSchema": [
+        { "key": "clip", "label": "Clip", "kind": "video", "required": true },
+        { "key": "poster", "label": "Poster", "kind": "image" },
+        {
+          "key": "pins",
+          "label": "Product pins",
+          "kind": "repeater",
+          "fields": [
+            { "key": "sku", "label": "SKU", "kind": "product", "required": true },
+            { "key": "at", "label": "Timestamp (s)", "kind": "number", "min": 0, "default": 0 },
+            { "key": "note", "label": "Note", "kind": "text", "max": 60 }
+          ]
+        },
+        { "key": "autoplay", "label": "Autoplay", "kind": "boolean", "default": false },
+        { "key": "layout_config", "label": "Responsive layout", "kind": "responsive" }
+      ],
+      "defaultProps": { "autoplay": false, "pins": [] }
+    }
+  ],
+  "hooks": [],
+  "settings": [
+    { "key": "title", "label": "Section title", "kind": "text", "default": "Proof widgets" },
+    { "key": "accent", "label": "Accent", "kind": "color", "default": "#b3123f" }
+  ],
+  "i18n": {
+    "en": { "title": "Proof widgets", "cta": "Shop now" },
+    "bn": { "title": "প্রুফ উইজেট", "cta": "এখনই কিনুন" }
+  },
+  "budget": { "jsKb": 10, "mainThreadMs": 5 }
+}

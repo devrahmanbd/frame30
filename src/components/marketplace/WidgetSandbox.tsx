@@ -216,10 +216,30 @@ export function menusListSlot(msg: unknown): unknown {
 }
 
 /**
+ * Freshness skew for timestamped widget envelopes (`ts`, ms epoch).
+ * Envelopes without `ts` skip the check (back-compat: the shipped frame
+ * bootstrap sends none); a PRESENT `ts` must be a finite number within this
+ * skew of the host clock or the call is `sandbox.stale`. Verdicts stay in
+ * the `sandbox.*` namespace the frame already handles.
+ */
+export const SANDBOX_ENVELOPE_MAX_SKEW_MS = 5 * 60 * 1000;
+
+/**
  * Pure bridge decision: authorize the real frame message first, serve
  * `plugin.settings` from the mounted plugin's validated values, delegate
  * everything else to the host. Denial shapes match what the frame already
  * handles (`sandbox.<reason>`).
+ *
+ * Liveness pre-checks (before menus/scope, before any host contact):
+ * - `sourceValid === false` (the component's owned-window check failed —
+ *   postMessage spoof from another context) answers `sandbox.forged_source`.
+ * - `suspended === true` (install revoked / platform kill switch) answers
+ *   `sandbox.suspended` for EVERY call — explicit dead-frame state, never a
+ *   silent stale render. Mid-session revocation takes effect on the next
+ *   envelope without remounting.
+ * - a present `ts` is freshness-verified against `now` (same clock the
+ *   flood guard uses); replayed or pre-forged envelopes are `sandbox.stale`,
+ *   ill-typed ones `sandbox.malformed`.
  *
  * TRACK M — menu fill points (`menu_bar` / `menu_dropdown` / `menu_drawer`):
  * a well-formed `menus.list` request naming an unsanctioned fill point never
@@ -237,8 +257,29 @@ export async function answerWidgetCall(
     settings?: Record<string, unknown>;
     granted: readonly string[];
     onCall: SandboxHandler;
+    /** Kill-switch liveness: true refuses every call as `sandbox.suspended`. */
+    suspended?: boolean;
+    /** Owned-window result: explicit false refuses as `sandbox.forged_source`. */
+    sourceValid?: boolean;
+    /** Host clock (ms epoch) for `ts` freshness; absent skips the check. */
+    now?: number;
   },
 ): Promise<{ result: unknown } | { error: string }> {
+  if (ctx.sourceValid === false) return { error: "sandbox.forged_source" };
+  if (ctx.suspended === true) return { error: "sandbox.suspended" };
+  const ts = (msg as { ts?: unknown } | null)?.ts;
+  if (ts !== undefined) {
+    if (typeof ts !== "number" || !Number.isFinite(ts)) {
+      return { error: "sandbox.malformed" };
+    }
+    if (
+      typeof ctx.now === "number" &&
+      Number.isFinite(ctx.now) &&
+      Math.abs(ctx.now - ts) > SANDBOX_ENVELOPE_MAX_SKEW_MS
+    ) {
+      return { error: "sandbox.stale" };
+    }
+  }
   if (isMenusListCall(msg)) {
     const slot = menusListSlot(msg);
     if (slot !== undefined && !isMenuSlot(slot))
@@ -304,8 +345,17 @@ export async function handleSandboxMessage(
     timeoutMs?: number;
     /** Injectable clock for tests; defaults to the host setTimeout pair. */
     timers?: BridgeTimers;
+    /** Kill-switch liveness: true refuses every call as `sandbox.suspended`. */
+    suspended?: boolean;
+    /**
+     * Owned-window result: explicit false refuses as `sandbox.forged_source`
+     * BEFORE the flood guard, so spoofed traffic spends no rate budget and
+     * touches no guard state.
+     */
+    sourceValid?: boolean;
   },
 ): Promise<{ result: unknown } | { error: string }> {
+  if (ctx.sourceValid === false) return { error: "sandbox.forged_source" };
   const gate = checkFloodGuard(
     ctx.guard,
     (msg as { id?: unknown } | null)?.id,
@@ -313,7 +363,14 @@ export async function handleSandboxMessage(
   );
   if (!gate.ok) return { error: gate.error };
   return answerWithTimeout(
-    answerWidgetCall(msg, ctx),
+    answerWidgetCall(msg, {
+      settings: ctx.settings,
+      granted: ctx.granted,
+      onCall: ctx.onCall,
+      suspended: ctx.suspended,
+      sourceValid: ctx.sourceValid,
+      now: ctx.now ?? Date.now(),
+    }),
     normalizeTimeoutMs(ctx.timeoutMs),
     ctx.timers,
   );

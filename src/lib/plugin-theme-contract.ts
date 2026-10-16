@@ -235,7 +235,8 @@ export type CommunityRenderDecision =
         | "not_installed"
         | "unknown_widget"
         | "incompatible"
-        | "disabled";
+        | "disabled"
+        | "suspended";
       pluginId?: string;
     }
   | {

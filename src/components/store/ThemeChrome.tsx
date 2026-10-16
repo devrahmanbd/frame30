@@ -344,6 +344,7 @@ export function ThemeChrome({
               storeSlug={storeSlug}
               themeKey={themeKey}
               devThemeBinding={devThemeBinding ?? undefined}
+              registry={registry ?? undefined}
               contextSlots={contextSlots}
               linkBase={base}
             />
@@ -362,6 +363,7 @@ export function ThemeChrome({
                   storeSlug={storeSlug}
                   themeKey={themeKey}
                   devThemeBinding={devThemeBinding ?? undefined}
+                  registry={registry ?? undefined}
                   contextSlots={contextSlots}
                   linkBase={base}
                 />
@@ -379,6 +381,7 @@ export function ThemeChrome({
                 storeSlug={storeSlug}
                 themeKey={themeKey}
                 devThemeBinding={devThemeBinding ?? undefined}
+                registry={registry ?? undefined}
                 contextSlots={contextSlots}
                 productSlot={productSlot}
                 collectionSlot={collectionSlot}
@@ -402,6 +405,7 @@ export function ThemeChrome({
                 storeSlug={storeSlug}
                 themeKey={themeKey}
                 devThemeBinding={devThemeBinding ?? undefined}
+                registry={registry ?? undefined}
                 contextSlots={contextSlots}
                 linkBase={base}
               />

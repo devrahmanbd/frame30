@@ -48,6 +48,7 @@ import {
   type WidgetProps,
 } from "@/lib/widget-props";
 import type { UnifiedRegistry } from "@/lib/unified-widget-registry";
+import { ownerForWidgetKey } from "@/lib/builder-ast";
 
 const TABS: { key: PanelTab; label: string; icon: typeof FileText }[] = [
   { key: "general", label: "General", icon: FileText },
@@ -228,32 +229,57 @@ export function hasRenderableSchemaFields(schema: PropSchema): boolean {
 }
 
 /**
+ * Canonical extension address for a studio twin: trimmed `widgetKey` plus
+ * the derived owner via `ownerForWidgetKey` (single regex — never a stored
+ * `owner`, so a hostile envelope cannot spoof). Null for legacy / hostile /
+ * blank twins. Never throws. Extension-node path only.
+ */
+export function extensionAddressForNode(
+  node: StudioNode | null | undefined,
+): { owner: ReturnType<typeof ownerForWidgetKey>; widgetKey: string } | null {
+  try {
+    if (!node || typeof node !== "object" || Array.isArray(node)) return null;
+    if ((node as StudioNode).el !== "app-block") return null;
+    const settings = (node as StudioNode).settings;
+    if (!settings || typeof settings !== "object" || Array.isArray(settings))
+      return null;
+    const bag = settings as Record<string, unknown>;
+    const marker = bag["extensionInstanceId"];
+    if (typeof marker !== "string" || !marker.trim()) return null;
+    const rawKey = bag["pluginKey"];
+    if (typeof rawKey !== "string" || !rawKey.trim()) return null;
+    const widgetKey = rawKey.trim().slice(0, 120);
+    if (!widgetKey) return null;
+    const owner = ownerForWidgetKey(widgetKey);
+    if (!owner || typeof owner.id !== "string" || !owner.id) return null;
+    return { owner, widgetKey };
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Pure resolution behind the schema dispatcher. Only canonical extension
  * studio nodes (`el: "app-block"` carrying the `extensionInstanceId`
  * envelope written by `studioNodeForExtension`) are candidates, addressed by
- * their `settings.pluginKey` through `resolveInspectorSchema` — the same
- * candidates, empty-schema convention (`{ fields: [] }` means
- * legacy-unvalidated), and legacy fallthrough as the old-builder inspector.
- * Lookup failures and hostile nodes fall through to legacy, never a crash.
+ * canonical owner + `widgetKey` through the threaded authorized
+ * `resolveInspectorSchema` — when a threaded `registry` is provided it is the
+ * ONLY registry consulted (never the singleton); absent keeps the legacy
+ * singleton read. Same candidates, empty-schema convention
+ * (`{ fields: [] }` means legacy-unvalidated), and legacy fallthrough as the
+ * old-builder inspector. Lookup failures and hostile nodes fall through to
+ * legacy, never a crash.
  */
 export function resolveSchemaForNode(
   node: StudioNode | null | undefined,
   registry?: UnifiedRegistry | null,
 ): StudioSchemaResolution {
   try {
-    if (!node || typeof node !== "object" || Array.isArray(node))
-      return { status: "legacy" };
-    if ((node as StudioNode).el !== "app-block") return { status: "legacy" };
-    const settings = (node as StudioNode).settings;
-    if (!isRecord(settings)) return { status: "legacy" };
-    const marker = settings.extensionInstanceId;
-    if (typeof marker !== "string" || !marker.trim())
-      return { status: "legacy" };
-    const rawKey = settings.pluginKey;
-    if (typeof rawKey !== "string" || !rawKey.trim())
-      return { status: "legacy" };
+    const address = extensionAddressForNode(node);
+    if (!address) return { status: "legacy" };
+    const settings = (node as StudioNode).settings as Record<string, unknown>;
     const resolved = resolveInspectorSchema(
-      { type: "extension", widgetKey: rawKey.trim(), props: settings },
+      { type: "extension", widgetKey: address.widgetKey, props: settings },
       registry ?? undefined,
     );
     if (resolved.status !== "schema") return { status: "legacy" };

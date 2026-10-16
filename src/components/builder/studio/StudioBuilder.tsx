@@ -62,6 +62,12 @@ import {
 } from "@/lib/unified-widget-registry";
 import type { DevThemeBinding } from "../SectionRenderer";
 import { ownerForWidgetKey } from "@/lib/builder-ast";
+import {
+  isExtensionTwin as isLifecycleTwin,
+  normalizeDocForSave as normalizeLifecycleDoc,
+  refreshPastedTwins as refreshLifecyclePaste,
+  withFreshTwinIdentity as freshLifecycleIdentity,
+} from "@/lib/studio/extension-lifecycle";
 
 /**
  * Plugin element accepted on the seam. `pluginName` stays optional so both
@@ -84,7 +90,8 @@ export type StudioBuilderPluginEntry = Pick<
     | "not_installed"
     | "unknown_widget"
     | "incompatible"
-    | "disabled";
+    | "disabled"
+    | "suspended";
   /**
    * Pinned widget version (`plugin_state.version_pin`). Absent/null tracks
    * the registry latest. Display-only.
@@ -676,6 +683,7 @@ const PLUGIN_REASON_LABEL: Record<
   unknown_widget: "Widget unavailable in the installed version.",
   incompatible: "Needs update — incompatible with this builder.",
   disabled: "Disabled — enable to use.",
+  suspended: "Suspended by the platform — unavailable for now.",
 };
 
 function cleanHref(value: unknown): string | null {
@@ -762,8 +770,7 @@ function hasExtensionResolver(registry: unknown): registry is UnifiedRegistry {
     return (
       !!registry &&
       typeof registry === "object" &&
-      typeof (registry as Partial<UnifiedRegistry>).resolveWidget ===
-        "function"
+      typeof (registry as Partial<UnifiedRegistry>).resolveWidget === "function"
     );
   } catch {
     return false;
@@ -896,9 +903,7 @@ export function isExtensionStudioNode(node: unknown): boolean {
     const settings = candidate.settings;
     if (!settings || typeof settings !== "object" || Array.isArray(settings))
       return false;
-    const marker = (settings as Record<string, unknown>)[
-      "extensionInstanceId"
-    ];
+    const marker = (settings as Record<string, unknown>)["extensionInstanceId"];
     return typeof marker === "string" && marker.trim().length > 0;
   } catch {
     return false;
@@ -954,44 +959,63 @@ export function extensionDefForNode(
  * source), while every subtree node carrying the extension envelope gets a
  * fresh `extensionInstanceId` pinned to its own new id. Legacy nodes (no
  * envelope) return the plain `cloneNode` result untouched, so pre-extension
- * duplication stays byte-identical. Never throws and never mutates the
+ * duplication stays byte-identical. Delegates to the canonical
+ * `withFreshTwinIdentity` lifecycle helper (single implementation for
+ * selection/duplication/copy-paste). Never throws and never mutates the
  * source.
  */
 export function duplicateExtensionStudioNode(source: StudioNode): StudioNode {
   try {
-    const copy = cloneNode(source);
-    const refresh = (node: StudioNode): void => {
+    if (!isLifecycleTwin(source)) {
       try {
-        const settings = node.settings;
-        if (
-          settings &&
-          typeof settings === "object" &&
-          !Array.isArray(settings)
-        ) {
-          const current = (settings as Record<string, unknown>)[
-            "extensionInstanceId"
-          ];
-          if (typeof current === "string" && current.trim()) {
-            node.settings = { ...settings, extensionInstanceId: node.id };
-          }
-        }
+        return cloneNode(source);
       } catch {
-        // A hostile settings bag keeps its cloned value.
+        return { id: uid(), el: "app-block", settings: {} };
       }
-      try {
-        for (const child of node.children ?? []) refresh(child);
-      } catch {
-        // Hostile children keep their cloned values.
-      }
-    };
-    refresh(copy);
-    return copy;
+    }
+    return freshLifecycleIdentity(source);
   } catch {
     try {
       return cloneNode(source);
     } catch {
       return { id: uid(), el: "app-block", settings: {} };
     }
+  }
+}
+
+/**
+ * Frame30 extension lifecycle — copy/paste + save normalization (pure,
+ * unit-tested). `refreshExtensionPaste` gives pasted clipboard nodes fresh
+ * identities collision-safe against the live canvas (deep-cloned, envelopes
+ * re-pinned); `normalizeExtensionDocForSave` repairs stale envelopes,
+ * validates props through the threaded registry when provided, and dedupes
+ * colliding ids — legacy docs return the same reference (byte-identical).
+ * Never throws.
+ */
+export function refreshExtensionPaste(
+  nodes: readonly StudioNode[],
+  liveIds: ReadonlySet<string> | readonly string[],
+): StudioNode[] {
+  try {
+    return refreshLifecyclePaste(nodes, liveIds);
+  } catch {
+    return [];
+  }
+}
+
+export function normalizeExtensionDocForSave(
+  doc: StudioDoc,
+  registry?: UnifiedRegistry | null,
+): StudioDoc {
+  try {
+    const usable =
+      registry &&
+      typeof (registry as Partial<UnifiedRegistry>).getWidget === "function"
+        ? registry
+        : null;
+    return normalizeLifecycleDoc(doc, usable);
+  } catch {
+    return doc;
   }
 }
 
@@ -1260,13 +1284,18 @@ export function StudioBuilder({
   );
 
   /* keep the host in sync without pushing on every keystroke */
+  /* Extension lifecycle: the host receives the normalized save
+   * representation (legacy docs pass through by reference). */
   const lastSent = useRef(doc);
   useEffect(() => {
     if (lastSent.current === doc) return;
     lastSent.current = doc;
-    const id = window.setTimeout(() => onChange(doc), 400);
+    const id = window.setTimeout(
+      () => onChange(normalizeExtensionDocForSave(doc, extensionRegistry)),
+      400,
+    );
     return () => window.clearTimeout(id);
-  }, [doc, onChange]);
+  }, [doc, onChange, extensionRegistry]);
 
   /* ---------------- autosave + crash recovery ---------------- */
 
@@ -1282,21 +1311,32 @@ export function StudioBuilder({
   }, [docId]);
 
   /* mirror every edit locally, debounced, so a crash loses seconds not hours */
+  /* Extension lifecycle: the draft stores the normalized save representation
+   * (stale envelopes heal, hostile props neutralize); legacy docs return the
+   * same reference, so non-extension autosave stays byte-identical. */
   useEffect(() => {
     if (!docId || !dirty) return;
     const id = window.setTimeout(() => {
       const at = Date.now();
-      writeDraft(docId, doc, at);
+      writeDraft(
+        docId,
+        normalizeExtensionDocForSave(doc, extensionRegistry),
+        at,
+      );
       setAutosavedAt(at);
     }, AUTOSAVE_DEBOUNCE_MS);
     return () => window.clearTimeout(id);
-  }, [doc, dirty, docId]);
+  }, [doc, dirty, docId, extensionRegistry]);
 
   /* last-chance write when the tab goes away mid-edit */
   useEffect(() => {
     if (!docId) return;
     const flush = () => {
-      if (studio.dirty) writeDraft(docId, studio.doc);
+      if (studio.dirty)
+        writeDraft(
+          docId,
+          normalizeExtensionDocForSave(studio.doc, extensionRegistry),
+        );
     };
     window.addEventListener("pagehide", flush);
     document.addEventListener("visibilitychange", flush);
@@ -1304,23 +1344,25 @@ export function StudioBuilder({
       window.removeEventListener("pagehide", flush);
       document.removeEventListener("visibilitychange", flush);
     };
-  }, [docId, studio]);
+  }, [docId, studio, extensionRegistry]);
 
   const publish = useCallback(async () => {
-    await onPublish?.(doc);
+    // Extension lifecycle: publish the normalized save representation.
+    await onPublish?.(normalizeExtensionDocForSave(doc, extensionRegistry));
     studio.setDirty(false);
     if (docId) clearDraft(docId);
     setAutosavedAt(null);
     toast.success("Page published");
-  }, [doc, docId, onPublish, studio]);
+  }, [doc, docId, onPublish, studio, extensionRegistry]);
 
   const saveDraft = useCallback(() => {
-    onChange(doc);
+    // Extension lifecycle: explicit save stores the normalized representation.
+    onChange(normalizeExtensionDocForSave(doc, extensionRegistry));
     studio.setDirty(false);
     if (docId) clearDraft(docId);
     setAutosavedAt(null);
     toast.success("Draft saved");
-  }, [doc, docId, onChange, studio]);
+  }, [doc, docId, onChange, studio, extensionRegistry]);
 
   const restoreRecovery = useCallback(() => {
     if (!recovery) return;
@@ -1370,20 +1412,70 @@ export function StudioBuilder({
         if (!id) return false;
         const node = findNode(doc.root, id);
         if (!node) return false;
-        return studio.copyNodes([cloneNode(node)]);
+        // Extension lifecycle: deep-cloned copy with valid envelope (legacy
+        // path stays `cloneNode`-identical via the helper's legacy branch).
+        return studio.copyNodes([duplicateExtensionStudioNode(node)]);
       },
       paste: () => {
         const payload = studio.peekClipboard();
         if (!payload || payload.kind !== "nodes" || payload.nodes.length === 0)
           return false;
-        studio.paste();
-        return true;
+        try {
+          const nodes = payload.nodes as StudioNode[];
+          const hasExtension = nodes.some((entry) => {
+            try {
+              return isLifecycleTwin(entry);
+            } catch {
+              return false;
+            }
+          });
+          if (!hasExtension) {
+            studio.paste();
+            return true;
+          }
+          const live = new Set<string>();
+          try {
+            for (const entry of flatten(doc.root)) live.add(entry.node.id);
+          } catch {
+            // Hostile tree: fall through to the legacy paste below.
+          }
+          const fresh = refreshExtensionPaste(nodes, live);
+          if (fresh.length === 0) return false;
+          for (const entry of fresh) studio.addNode(entry);
+          return true;
+        } catch {
+          studio.paste();
+          return true;
+        }
       },
       duplicate: () => {
         const ids = topMostStudioIds(doc.root, selectedIds);
         if (ids.length === 0) return false;
-        studio.duplicateMany(ids);
-        return true;
+        try {
+          const hasExtension = ids.some((entry) => {
+            try {
+              return isLifecycleTwin(findNode(doc.root, entry));
+            } catch {
+              return false;
+            }
+          });
+          if (!hasExtension) {
+            studio.duplicateMany(ids);
+            return true;
+          }
+          for (const entry of ids) {
+            const source = findNode(doc.root, entry);
+            if (!source) continue;
+            studio.addNode(duplicateExtensionStudioNode(source), {
+              id: entry,
+              position: "after",
+            });
+          }
+          return true;
+        } catch {
+          studio.duplicateMany(ids);
+          return true;
+        }
       },
       remove: () => {
         const ids = topMostStudioIds(doc.root, selectedIds);
@@ -1486,7 +1578,29 @@ export function StudioBuilder({
         id: "duplicate",
         label: "Duplicate",
         hint: "⌘D",
-        run: () => studio.duplicate(id),
+        run: () => {
+          // Extension lifecycle: twins duplicate with fresh identities
+          // (legacy path stays `studio.duplicate`-identical).
+          try {
+            const source = findNode(doc.root, id);
+            if (source) {
+              try {
+                if (isLifecycleTwin(source)) {
+                  studio.addNode(duplicateExtensionStudioNode(source), {
+                    id,
+                    position: "after",
+                  });
+                  return;
+                }
+              } catch {
+                // Fall through to the legacy duplicate below.
+              }
+            }
+          } catch {
+            // Fall through to the legacy duplicate below.
+          }
+          studio.duplicate(id);
+        },
       },
       { kind: "separator", id: "s1" },
       {
@@ -1494,14 +1608,71 @@ export function StudioBuilder({
         id: "copy",
         label: "Copy",
         hint: "⌘C",
-        run: () => studio.copy(id),
+        run: () => {
+          try {
+            const source = findNode(doc.root, id);
+            if (source) {
+              try {
+                if (isLifecycleTwin(source)) {
+                  studio.copyNodes([duplicateExtensionStudioNode(source)]);
+                  return;
+                }
+              } catch {
+                // Fall through to the legacy copy below.
+              }
+            }
+          } catch {
+            // Fall through to the legacy copy below.
+          }
+          studio.copy(id);
+        },
       },
       {
         kind: "action",
         id: "paste",
         label: "Paste",
         hint: "⌘V",
-        run: () => studio.paste({ id, position: "after" }),
+        run: () => {
+          // Extension lifecycle: pasted twins get fresh identities
+          // collision-safe against the live canvas (legacy stays identical).
+          try {
+            const payload = studio.peekClipboard();
+            const nodes = payload?.kind === "nodes" ? payload.nodes : null;
+            if (nodes?.length) {
+              const hasExtension = (nodes as StudioNode[]).some((entry) => {
+                try {
+                  return isLifecycleTwin(entry);
+                } catch {
+                  return false;
+                }
+              });
+              if (hasExtension) {
+                const live = new Set<string>();
+                try {
+                  for (const entry of flatten(doc.root))
+                    live.add(entry.node.id);
+                } catch {
+                  // Hostile tree: paste with an empty live set below.
+                }
+                const fresh = refreshExtensionPaste(
+                  nodes as StudioNode[],
+                  live,
+                );
+                if (fresh.length > 0) {
+                  let at: DropTarget = { id, position: "after" };
+                  for (const entry of fresh) {
+                    studio.addNode(entry, at);
+                    at = { id: entry.id, position: "after" };
+                  }
+                  return;
+                }
+              }
+            }
+          } catch {
+            // Fall through to the legacy paste below.
+          }
+          studio.paste({ id, position: "after" });
+        },
       },
       {
         kind: "action",
@@ -1916,8 +2087,34 @@ export function StudioBuilder({
               <button
                 type="button"
                 onClick={() => {
-                  const ids = topMostStudioIds(doc.root, selectedIds);
-                  studio.duplicateMany(ids);
+                  // Extension lifecycle: twins duplicate with fresh identities
+                  // (legacy path stays `duplicateMany`-identical).
+                  try {
+                    const ids = topMostStudioIds(doc.root, selectedIds);
+                    const hasExtension = ids.some((entry) => {
+                      try {
+                        return isLifecycleTwin(findNode(doc.root, entry));
+                      } catch {
+                        return false;
+                      }
+                    });
+                    if (hasExtension) {
+                      for (const entry of ids) {
+                        const source = findNode(doc.root, entry);
+                        if (!source) continue;
+                        studio.addNode(duplicateExtensionStudioNode(source), {
+                          id: entry,
+                          position: "after",
+                        });
+                      }
+                      return;
+                    }
+                    studio.duplicateMany(ids);
+                  } catch {
+                    studio.duplicateMany(
+                      topMostStudioIds(doc.root, selectedIds),
+                    );
+                  }
                 }}
                 className="font-medium text-primary hover:underline"
               >

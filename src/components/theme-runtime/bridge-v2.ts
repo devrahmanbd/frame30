@@ -70,11 +70,23 @@ export const THEME_MAX_MESSAGE_BYTES = 64 * 1024;
 /** Default budget for one bridge call before the host times out. */
 export const THEME_DEFAULT_CALL_TIMEOUT_MS = 5_000;
 
+/**
+ * Freshness skew for timestamped envelopes (`ts`, ms epoch). Envelopes
+ * without `ts` are admitted without a freshness check (back-compat: neither
+ * shipped frame sends one); a PRESENT `ts` must be a finite number within
+ * this skew of the host clock or the envelope is `theme.stale` (replayed or
+ * pre-forged traffic). Hosts pass their clock through (`ThemeMessageContext`
+ * already carries `now` for the flood guard — the same value is reused).
+ */
+export const THEME_ENVELOPE_MAX_SKEW_MS = 5 * 60 * 1000;
+
 export type ThemeEnvelope = {
   v: 2;
   id: string;
   method: string;
   params?: unknown;
+  /** Optional ms-epoch freshness claim, verified against the host clock. */
+  ts?: unknown;
 };
 
 export type ThemeAnswer = { result: unknown } | { error: string };
@@ -95,7 +107,9 @@ export type ThemeVerdict =
         | "scope_denied"
         | "forbidden_field"
         | "invalid_params"
-        | "navigation_denied";
+        | "navigation_denied"
+        | "stale"
+        | "suspended";
       method?: string;
     };
 
@@ -173,18 +187,32 @@ function paramsValid(method: ThemeMethod, params: unknown): boolean {
 export type ThemeAuthContext = {
   granted: readonly string[];
   navigateAllowlist?: readonly string[];
+  /**
+   * Kill-switch / revocation liveness: when true every call — even
+   * well-formed, in-scope ones — is refused as `suspended` (explicit
+   * dead-frame state, never a silent stale render). The component sets this
+   * from the install's live status on every message; mid-session revocation
+   * takes effect on the next envelope without remounting.
+   */
+  suspended?: boolean;
 };
 
 /**
  * The single decision point the theme host consults for every message. Pure:
- * no DOM, no clock. Never throws — defensive try/catch maps even pathological
+ * no DOM. The clock is injectable (`opts.now`): timestamped envelopes are
+ * verified against it, untimestamped ones skip freshness (back-compat).
+ * Never throws — defensive try/catch maps even pathological
  * input (circular structures break JSON.stringify) to an error verdict.
  */
 export function authorizeThemeCall(
   msg: unknown,
   ctx: ThemeAuthContext,
+  opts?: { now?: number },
 ): ThemeVerdict {
   try {
+    if (ctx.suspended === true) {
+      return { allowed: false, reason: "suspended" };
+    }
     const m = msg as Partial<ThemeEnvelope> | null;
     if (
       !m ||
@@ -197,6 +225,17 @@ export function authorizeThemeCall(
       typeof m.method !== "string"
     ) {
       return { allowed: false, reason: "malformed" };
+    }
+    if (m.ts !== undefined) {
+      if (typeof m.ts !== "number" || !Number.isFinite(m.ts)) {
+        return { allowed: false, reason: "malformed" };
+      }
+      const now = opts?.now;
+      if (typeof now === "number" && Number.isFinite(now)) {
+        if (Math.abs(now - m.ts) > THEME_ENVELOPE_MAX_SKEW_MS) {
+          return { allowed: false, reason: "stale", method: m.method };
+        }
+      }
     }
     let raw = "";
     try {
@@ -249,6 +288,13 @@ export function authorizeThemeCall(
 
 export type ThemeAnswerContext = ThemeAuthContext & {
   onCall: ThemeHostHandler;
+  /**
+   * Host clock (ms epoch) for envelope freshness. `handleThemeMessage`
+   * forwards its own `now` (the same value the flood guard uses); direct
+   * `answerThemeCall` callers without a clock skip freshness for
+   * timestamped envelopes.
+   */
+  now?: number;
 };
 
 /**
@@ -263,7 +309,7 @@ export async function answerThemeCall(
   ctx: ThemeAnswerContext,
 ): Promise<ThemeAnswer> {
   try {
-    const verdict = authorizeThemeCall(msg, ctx);
+    const verdict = authorizeThemeCall(msg, ctx, { now: ctx.now });
     if (!verdict.allowed) return { error: `theme.${verdict.reason}` };
     const rawParams = (msg as { params?: unknown } | null)?.params;
     const { clean } = sanitizeThemeParams(rawParams);
@@ -400,11 +446,21 @@ export type ThemeMessageContext = ThemeAnswerContext & {
   now?: number;
   timeoutMs?: number;
   timers?: ThemeTimers;
+  /**
+   * Caller-identity result from the component's `isOwnerFrame` check. An
+   * explicit `false` means the message did NOT come from the owned frame
+   * window (postMessage spoof from another context) and is refused as
+   * `theme.forged_source` BEFORE the flood guard — forged traffic spends no
+   * rate budget and touches no guard state. `undefined`/`true` keeps the
+   * existing path (the component pre-filters; pure callers opt in).
+   */
+  sourceValid?: boolean;
 };
 
 /**
- * Host-side gate in front of `answerThemeCall`: flood/duplicate rejection
- * first (no timer started for rejected traffic), then the authorized call
+ * Host-side gate in front of `answerThemeCall`: caller-identity rejection
+ * first (no guard, no timer for forged traffic), then flood/duplicate
+ * rejection (no timer started for rejected traffic), then the authorized call
  * races its per-call budget. Never rejects.
  */
 export async function handleThemeMessage(
@@ -412,6 +468,7 @@ export async function handleThemeMessage(
   ctx: ThemeMessageContext,
 ): Promise<ThemeAnswer> {
   try {
+    if (ctx.sourceValid === false) return { error: "theme.forged_source" };
     const gate = checkThemeGuard(
       ctx.guard,
       (msg as { id?: unknown } | null)?.id,

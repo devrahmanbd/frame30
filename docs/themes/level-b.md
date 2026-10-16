@@ -136,3 +136,76 @@ No server-side code, no hooks/webhook egress, no secrets in the package
 imports (dependencies resolve from pinned digests, never theme-declared
 URLs), no payment logic, no price authority, no checkout overrides. Each
 has a validator vector refusing it.
+
+## 6. Updates, rollback, per-version activation (frame30 item 9)
+
+- **Versioned releases.** Every code/dependency/capability change mints a
+  new fingerprint, hence a new reviewable release carrying its manifest
+  `version`. Publishing a newer approved release retains the previous
+  known-good as `superseded`, still addressable by fingerprint
+  (`dev-theme-review.test.ts`: pointer + rollback vectors).
+- **Fingerprint-bound activation per version.**
+  `resolveDevThemeActivation` binds fingerprint + theme id + runtime pin,
+  plus an optional `expectedVersion` pin — a fingerprint for `1.0.1` never
+  activates as `1.0.0` (`dev_theme_activate.version_mismatch`).
+  `activateDevThemeInstall` additionally requires the ledger row's
+  `artifact_version` to equal the approved manifest version when present
+  (absent degrades to checksum-only, same posture as the install lane's
+  artifact-column degrade).
+- **Safe rollback.** `rollback({ targetFingerprint })` mints a NEW
+  `published` release carrying the target's exact bytes with a `rollbackOf`
+  link + `dev_theme.rolled_back` audit (version included) — never a flip.
+  The target must carry an approval for its own fingerprint AND sit in an
+  ever-approved live state (`approved`/`published`/`superseded`); revoked,
+  removed, rejected, or never-approved targets refuse
+  (`dev_theme.rollback_revoked` / `dev_theme.approval_required`), and a
+  malformed fingerprint refuses before any write. Revoked-latest → prior
+  approved restores with audit; revoked bytes never restore.
+- **Downgrades ride rollback only.** A version lie (naming an old version
+  for new bytes, or activating an older fingerprint under a newer install
+  row) refuses with `version_mismatch` / `fingerprint_mismatch` — no
+  silent fall.
+
+## 7. Serve-time approval re-check (not just install time)
+
+Install and activation verify the published approval, but bytes are served
+later. The `/t/…` lane re-verifies per request (approval recompute + the
+REAL activation gate + descriptor multiset binding + per-file hash), and
+`buildDevThemeDocument` / `verifyDevThemeReleaseForDocument` accept an
+optional live `store`: with it, a snapshot revoked after it was taken
+refuses (404) instead of serving stale bytes
+(`dev-theme-document.test.ts`: live-revoke vector). Integrators serving
+documents should pass the live store; absent preserves snapshot-only
+verification. Asset substitution post-approval (tampered bytes/map) 404s
+on hash mismatch.
+
+## 8. Dependency + asset-manifest rigor (frame30 item 9)
+
+- **Dependency confusion.** Manifest pins AND bundle entries must be
+  registry-shaped lowercase names (`bundle.dependency_name`) and exact
+  version pins (`bundle.dependency_version` — ranges like `^3.0.0`, `*`,
+  `latest` refuse). Pin equality stays bidirectional (extra/missing/
+  mismatch refuse); the vendor stage still hashes exact bytes locally,
+  never fetching.
+- **Asset completeness.** Every explicit relative file ref in shipped
+  JS/CSS (`./helper.js`, `../assets/poster.svg`) must resolve to a bundled
+  path or the bundle refuses (`bundle.asset_missing`). Bare specifiers
+  (`gsap`, `three`, `gsap/ScrollTrigger`) are registry pins, never files;
+  extensionless aliases (`./commerce`) are build-time only. Oversized
+  entries/totals still refuse (`bundle.entry_too_large` /
+  `bundle.total_too_large`).
+- **Fixture note.** `dev-theme-document.test.ts` sources reference source
+  paths (`./vendor/three.js`), never hashed output names — validation runs
+  on source paths; outputs are hashed.
+
+## 9. Starter (`src/lib/dev-theme-starter-theme/`)
+
+Runnable starter assembled ONLY through the real pipeline (manifest +
+bundle + assemble + review → publish → activation + document + widgets),
+pinned by `starter.test.ts` (13 vectors): three theme-owned sections
+(GSAP hero, Three.js scene, video rail) + per-widget schemas, custom-layout
+CSS + local stills, genuine `gsap`/`ScrollTrigger` + `three` dynamic
+imports pinned to the installed versions, lazy video gate with still
+fallback, versioned update + revoked-latest rollback, per-version
+activation with least-privilege grants, and a hash-pinned document with no
+inline code. Developer steps: `src/lib/dev-theme-starter-theme/README.md`.

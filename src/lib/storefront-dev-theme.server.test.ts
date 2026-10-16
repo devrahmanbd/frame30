@@ -546,4 +546,81 @@ describe("resolveStorefrontDevThemeCall — allow, revalidate, deny", () => {
       resolveStorefrontDevThemeCall(db.asClient(), "nope", "storefront.read", undefined),
     ).rejects.toThrow("theme.denied");
   });
+
+  it("kill switch denies every bridge call without touching the database", async () => {
+    const db = shopDb();
+    for (const [method, params] of [
+      ["storefront.read", undefined],
+      ["variant.select", { variantId: "var-1" }],
+      ["navigate", { href: "/p/jamdani" }],
+      ["cart.add", { variantId: "var-1", quantity: 1 }],
+    ] as const) {
+      await expect(
+        resolveStorefrontDevThemeCall(db.asClient(), SLUG, method, params, {
+          suspended: true,
+        }),
+      ).rejects.toThrow("theme.suspended");
+    }
+    // No merchant, catalog, or variant row was read: suspension is decided
+    // before the first query, so a revoked install costs zero data access.
+    expect(db.selects().length).toBe(0);
+  });
+
+  it("suspension wins over malformed stores and forged params alike", async () => {
+    const db = shopDb();
+    await expect(
+      resolveStorefrontDevThemeCall(
+        db.asClient(),
+        "",
+        "storefront.read",
+        undefined,
+        {
+          suspended: true,
+        },
+      ),
+    ).rejects.toThrow("theme.suspended");
+    await expect(
+      resolveStorefrontDevThemeCall(
+        db.asClient(),
+        SLUG,
+        "storefront.read",
+        { price: 1 },
+        { suspended: true },
+      ),
+    ).rejects.toThrow("theme.suspended");
+    expect(db.selects().length).toBe(0);
+  });
+
+  it("tenant smuggling via merchant params is forgery, never a tenant switch", async () => {
+    const db = shopDb();
+    // merchantId / merchant_id / merchant ride the same forbidden table as
+    // tenantId: the slug owns the tenant, params never do.
+    for (const params of [
+      { merchantId: "other" },
+      { merchant_id: "other" },
+      { merchant: "other" },
+    ]) {
+      await expect(
+        resolveStorefrontDevThemeCall(
+          db.asClient(),
+          SLUG,
+          "storefront.read",
+          params,
+        ),
+      ).rejects.toThrow("theme.forbidden_field");
+      await expect(
+        resolveStorefrontDevThemeCall(db.asClient(), SLUG, "variant.select", {
+          variantId: "var-1",
+          ...params,
+        }),
+      ).rejects.toThrow("theme.forbidden_field");
+    }
+    // And without smuggled keys the slug still scopes to ITS merchant only:
+    // cross-tenant variant ids fail closed even when well-formed.
+    await expect(
+      resolveStorefrontDevThemeCall(db.asClient(), SLUG, "variant.select", {
+        variantId: "var-9",
+      }),
+    ).rejects.toThrow("theme.not_found");
+  });
 });

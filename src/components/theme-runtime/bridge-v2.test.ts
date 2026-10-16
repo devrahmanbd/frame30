@@ -13,8 +13,10 @@ import {
   isOwnerFrame,
   isThemeError,
   normalizeThemeTimeoutMs,
+  resetThemeGuard,
   THEME_BRIDGE_MAX_MESSAGES,
   THEME_BRIDGE_VERSION,
+  THEME_ENVELOPE_MAX_SKEW_MS,
   type ThemeAnswer,
   type ThemeTimers,
 } from "./bridge-v2";
@@ -529,5 +531,343 @@ describe("theme.* error namespace", () => {
     expect(normalizeThemeTimeoutMs(-5)).toBe(5_000);
     expect(normalizeThemeTimeoutMs(NaN)).toBe(5_000);
     expect(normalizeThemeTimeoutMs(undefined)).toBe(5_000);
+  });
+});
+
+describe("envelope freshness (ts / replayed-or-forged traffic)", () => {
+  const NOW = 1_700_000_000_000;
+
+  it("admits untimestamped envelopes without a freshness check (back-compat)", () => {
+    expect(
+      authorizeThemeCall(env("storefront.read"), { granted: FULL.granted }),
+    ).toEqual({ allowed: true, method: "storefront.read" });
+    expect(
+      authorizeThemeCall(
+        env("storefront.read"),
+        { granted: FULL.granted },
+        { now: NOW },
+      ),
+    ).toEqual({ allowed: true, method: "storefront.read" });
+  });
+
+  it("admits a fresh timestamp within skew", () => {
+    for (const ts of [NOW, NOW - 1, NOW + THEME_ENVELOPE_MAX_SKEW_MS - 1]) {
+      expect(
+        authorizeThemeCall(
+          { ...env("storefront.read"), ts },
+          { granted: FULL.granted },
+          { now: NOW },
+        ),
+      ).toEqual({ allowed: true, method: "storefront.read" });
+    }
+  });
+
+  it("refuses replayed (stale past) and pre-forged (future) envelopes", () => {
+    expect(
+      authorizeThemeCall(
+        { ...env("storefront.read"), ts: NOW - THEME_ENVELOPE_MAX_SKEW_MS - 1 },
+        { granted: FULL.granted },
+        { now: NOW },
+      ),
+    ).toEqual({
+      allowed: false,
+      reason: "stale",
+      method: "storefront.read",
+    });
+    expect(
+      authorizeThemeCall(
+        {
+          ...env("cart.add", { variantId: "v", quantity: 1 }),
+          ts: NOW + 3_600_000,
+        },
+        { granted: FULL.granted },
+        { now: NOW },
+      ),
+    ).toEqual({ allowed: false, reason: "stale", method: "cart.add" });
+  });
+
+  it("treats an ill-typed ts as malformed envelope shape", () => {
+    for (const ts of ["now", true, NaN, Infinity, {}, []]) {
+      expect(
+        authorizeThemeCall(
+          { ...env("storefront.read"), ts },
+          { granted: FULL.granted },
+          { now: NOW },
+        ).allowed,
+      ).toBe(false);
+      expect(
+        authorizeThemeCall(
+          { ...env("storefront.read"), ts },
+          { granted: FULL.granted },
+          { now: NOW },
+        ),
+      ).toEqual({ allowed: false, reason: "malformed" });
+    }
+  });
+
+  it("never delegates stale envelopes to onCall (answer + handle layers)", async () => {
+    const onCall = vi.fn(async () => ({ ok: true }));
+    const stale = {
+      ...env("cart.add", { variantId: "v", quantity: 1 }),
+      ts: 0,
+    };
+    await expect(
+      answerThemeCall(stale, {
+        granted: FULL.granted,
+        onCall,
+        now: NOW,
+      }),
+    ).resolves.toEqual({ error: "theme.stale" });
+    await expect(
+      handleThemeMessage(stale, {
+        granted: FULL.granted,
+        navigateAllowlist: FULL.navigateAllowlist,
+        onCall,
+        guard: createThemeGuard(),
+        now: NOW,
+      }),
+    ).resolves.toEqual({ error: "theme.stale" });
+    expect(onCall).not.toHaveBeenCalled();
+  });
+
+  it("skips freshness for timestamped envelopes when the host has no clock", () => {
+    expect(
+      authorizeThemeCall(
+        { ...env("storefront.read"), ts: 0 },
+        { granted: FULL.granted },
+      ),
+    ).toEqual({ allowed: true, method: "storefront.read" });
+  });
+});
+
+describe("suspension — kill switch propagates to live frames", () => {
+  it("refuses every method while suspended, even well-formed and in-scope", () => {
+    const ctx = { granted: FULL.granted, suspended: true as const };
+    for (const [method, params] of [
+      ["storefront.read", undefined],
+      ["variant.select", { variantId: "v-1" }],
+      ["cart.add", { variantId: "v-1", quantity: 1 }],
+      ["navigate", { href: "/x" }],
+    ] as const) {
+      expect(authorizeThemeCall(env(method, params), ctx)).toEqual({
+        allowed: false,
+        reason: "suspended",
+      });
+    }
+  });
+
+  it("suspension wins over every other verdict, including malformed", () => {
+    expect(authorizeThemeCall(null, { granted: [], suspended: true })).toEqual({
+      allowed: false,
+      reason: "suspended",
+    });
+    expect(
+      authorizeThemeCall(
+        { v: 1, id: "1", method: "shop.info" },
+        { granted: [], suspended: true },
+      ),
+    ).toEqual({ allowed: false, reason: "suspended" });
+  });
+
+  it("never touches onCall while suspended, via answer and handle", async () => {
+    const onCall = vi.fn(async () => ({ ok: true }));
+    await expect(
+      answerThemeCall(env("storefront.read"), {
+        granted: FULL.granted,
+        onCall,
+        suspended: true,
+      }),
+    ).resolves.toEqual({ error: "theme.suspended" });
+    await expect(
+      handleThemeMessage(env("storefront.read"), {
+        granted: FULL.granted,
+        navigateAllowlist: FULL.navigateAllowlist,
+        onCall,
+        guard: createThemeGuard(),
+        suspended: true,
+      }),
+    ).resolves.toEqual({ error: "theme.suspended" });
+    expect(onCall).not.toHaveBeenCalled();
+  });
+
+  it("mid-session revocation stops execution; re-grant resumes (no stranded state)", async () => {
+    const onCall = vi.fn(async () => ({ ok: true }));
+    const guard = createThemeGuard();
+    const live = {
+      granted: FULL.granted,
+      navigateAllowlist: FULL.navigateAllowlist,
+      onCall,
+      guard,
+      now: 0,
+    };
+    await expect(
+      handleThemeMessage(env("storefront.read", undefined, "live-1"), live),
+    ).resolves.toEqual({ result: { ok: true } });
+    // Kill switch flips mid-session: the NEXT envelope is refused explicitly.
+    await expect(
+      handleThemeMessage(env("storefront.read", undefined, "live-2"), {
+        ...live,
+        suspended: true,
+      }),
+    ).resolves.toEqual({ error: "theme.suspended" });
+    // Grant revocation (empty set) denies distinctly, and replay of a seen
+    // id stays a duplicate even across the revocation boundary.
+    await expect(
+      handleThemeMessage(env("storefront.read", undefined, "live-3"), {
+        ...live,
+        granted: [],
+      }),
+    ).resolves.toEqual({ error: "theme.scope_denied" });
+    await expect(
+      handleThemeMessage(env("storefront.read", undefined, "live-1"), live),
+    ).resolves.toEqual({ error: "theme.duplicate_id" });
+    // Re-grant on a fresh identity resumes; the old guard stays bounded.
+    await expect(
+      handleThemeMessage(env("storefront.read", undefined, "live-4"), {
+        ...live,
+        guard: createThemeGuard(),
+      }),
+    ).resolves.toEqual({ result: { ok: true } });
+    expect(onCall).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("forged source — postMessage spoofing refused before any budget", () => {
+  const legit = env("storefront.read");
+
+  it("refuses an explicit non-owned source without touching guard or onCall", async () => {
+    const onCall = vi.fn(async () => ({ ok: true }));
+    const guard = createThemeGuard();
+    await expect(
+      handleThemeMessage(legit, {
+        granted: FULL.granted,
+        navigateAllowlist: FULL.navigateAllowlist,
+        onCall,
+        guard,
+        now: 0,
+        sourceValid: false,
+      }),
+    ).resolves.toEqual({ error: "theme.forged_source" });
+    expect(onCall).not.toHaveBeenCalled();
+    expect(guard.times.length).toBe(0);
+    expect(guard.seen.size).toBe(0);
+  });
+
+  it("admits owned sources (true / unset) unchanged", async () => {
+    const onCall = vi.fn(async () => ({ ok: true }));
+    for (const sourceValid of [true, undefined] as const) {
+      await expect(
+        handleThemeMessage(
+          env("storefront.read", undefined, `s-${String(sourceValid)}`),
+          {
+            granted: FULL.granted,
+            navigateAllowlist: FULL.navigateAllowlist,
+            onCall,
+            guard: createThemeGuard(),
+            sourceValid,
+          },
+        ),
+      ).resolves.toEqual({ result: { ok: true } });
+    }
+    expect(onCall).toHaveBeenCalledTimes(2);
+  });
+
+  it("spoofed floods cannot consume the rate budget", async () => {
+    const onCall = vi.fn(async () => ({ ok: true }));
+    const guard = createThemeGuard();
+    for (let i = 0; i < 40; i++) {
+      await handleThemeMessage(
+        env("storefront.read", undefined, `spoof-${i}`),
+        {
+          granted: FULL.granted,
+          navigateAllowlist: FULL.navigateAllowlist,
+          onCall,
+          guard,
+          now: 0,
+          sourceValid: false,
+        },
+      );
+    }
+    // Budget untouched: a legitimate call still admits on the same guard.
+    await expect(
+      handleThemeMessage(env("storefront.read", undefined, "real"), {
+        granted: FULL.granted,
+        navigateAllowlist: FULL.navigateAllowlist,
+        onCall,
+        guard,
+        now: 0,
+        sourceValid: true,
+      }),
+    ).resolves.toEqual({ result: { ok: true } });
+    expect(onCall).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("handleThemeMessage — storm hygiene (no leaked timers, bounded state)", () => {
+  const base = {
+    granted: FULL.granted,
+    navigateAllowlist: FULL.navigateAllowlist,
+  };
+
+  it("resets guard state on identity change (no cross-mount replay bleed)", () => {
+    const guard = createThemeGuard();
+    expect(checkThemeGuard(guard, "a", 0).ok).toBe(true);
+    expect(checkThemeGuard(guard, "a", 1).ok).toBe(false);
+    resetThemeGuard(guard);
+    expect(guard.times.length).toBe(0);
+    expect(guard.seen.size).toBe(0);
+    expect(checkThemeGuard(guard, "a", 2).ok).toBe(true);
+  });
+
+  it("storm: 40 never-resolving near-cap calls settle as errors, leak no timers", async () => {
+    const pending = new Map<number, () => void>();
+    let next = 1;
+    const timers: ThemeTimers = {
+      schedule: (cb) => {
+        const h = next++;
+        pending.set(h, cb);
+        return h;
+      },
+      cancel: (h) => {
+        pending.delete(h as number);
+      },
+    };
+    const guard = createThemeGuard();
+    const blob = "x".repeat(60 * 1024);
+    const ctx = {
+      ...base,
+      onCall: () => new Promise<unknown>(() => {}),
+      guard,
+      timers,
+      timeoutMs: 100,
+      now: 0,
+    };
+    const calls = Array.from({ length: 40 }, (_, i) =>
+      handleThemeMessage(env("storefront.read", { blob }, `storm-${i}`), ctx),
+    );
+    // Timeouts only fire here — a hung call would never settle the batch.
+    for (const cb of [...pending.values()]) cb();
+    pending.clear();
+    const outs = await Promise.all(calls);
+    expect(outs.slice(0, 30)).toEqual(
+      Array.from({ length: 30 }, () => ({ error: "theme.timeout" })),
+    );
+    expect(outs.slice(30)).toEqual(
+      Array.from({ length: 10 }, () => ({ error: "theme.rate_limited" })),
+    );
+    expect(pending.size).toBe(0);
+    expect(guard.times.length).toBeLessThanOrEqual(THEME_BRIDGE_MAX_MESSAGES);
+    expect(guard.seen.size).toBe(30);
+  });
+
+  it("oversize envelopes are refused at the handle layer without onCall", async () => {
+    const onCall = vi.fn(async () => ({ ok: true }));
+    await expect(
+      handleThemeMessage(
+        env("storefront.read", { blob: "x".repeat(70 * 1024) }, "big"),
+        { ...base, onCall, guard: createThemeGuard(), now: 0 },
+      ),
+    ).resolves.toEqual({ error: "theme.oversize" });
+    expect(onCall).not.toHaveBeenCalled();
   });
 });

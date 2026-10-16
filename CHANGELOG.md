@@ -87,6 +87,42 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   run green in one pass) and CI restoration (config restored verbatim —
   remote builds still need owner token access).
 
+## [Unreleased] (frame30) — Swarm: full checklist integration
+
+### Added
+
+- One authoritative widget contract + registry (items 2–3): full plugin
+  widget declarations (mode/slots/data/actions/states/capabilities/theme
+  floor), single `createWidgetRegistry` lineage, suspend support,
+  update-invalidation, tenant-disjoint reads.
+- Editor shell on the single authorized registry (item 1) with same-
+  instance preview/save/publish, keyed remounts on registry switch.
+- Schema inspector by owner+`widgetKey` + one saved representation across
+  the full lifecycle (items 4–5): insert/drag/select/duplicate/paste/
+  undo/autosave/save/migrate/theme-switch/recovery, legacy byte-identical.
+- Canvas parity across all five render modes + validated instance-prop
+  propagation in both trees (items 6–7); storefront binding live with
+  server-revalidating `onCall`.
+- Versioned theme presentations (R1–R5) with switching-safe settings
+  (item 8); Level B updates/rollback/serve-time re-checks + runnable
+  starter theme with genuine gsap/three (items 9–10).
+- Bridge freshness/suspension/forgery gates, commerce allow-list intact,
+  budgets + cleanup (item 11); install/update compat gates + audited
+  rollback + no-substitution recovery (item 13).
+- Proof plugin + proof theme fixtures with journey/matrix suites (items
+  14–15); theme allow-list now ENFORCED in `checkThemeCompatibility`
+  (scoped plugin widgets report `foreign-theme` outside their list —
+  retired the tripwire, corrected one stale journey premise).
+- Six harness tasks extended by the swarm coverage (item 16 partial).
+
+### Verification
+
+- ~500 new tests across 9 lanes; neighbors 3000+ green; `tsc` 0;
+  eslint 0 errors on owned lines; secret scan passed; production E2E
+  cold green; harness guards reward 1.0.
+- Open: 9 auth-gated E2E steps (proven wall, no stubbing), remote CI
+  tokens (owner), real-GPU proof (no GPU on server — SwiftShader stands).
+
 ## [Unreleased] (frame30) — Audit close-out: registry reaches every call site
 
 ### Fixed

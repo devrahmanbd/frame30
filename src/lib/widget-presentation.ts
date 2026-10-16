@@ -120,7 +120,16 @@ function cloneJson<T>(value: T): T {
 function cloneProps(value: unknown): Record<string, unknown> {
   if (!isRecord(value)) return {};
   const clean = cloneJson(value);
-  return isRecord(clean) ? clean : {};
+  if (!isRecord(clean)) return {};
+  // Hostile-key strip at every runtime boundary (proto-pollution): the JSON
+  // round-trip preserves `__proto__` as an own property, so it is dropped
+  // here — never stored, never forwarded to a renderer.
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(clean)) {
+    if (k === "__proto__" || k === "constructor" || k === "prototype") continue;
+    out[k] = v;
+  }
+  return out;
 }
 
 /** Trimmed theme key, or `""` for null / garbage (unkeyed resolution). */
@@ -315,7 +324,12 @@ export type PresentationResult =
     };
 
 export type PresentationMissReason =
-  "bad_key" | "unknown" | "disabled" | "incompatible" | "uninstalled";
+  | "bad_key"
+  | "unknown"
+  | "disabled"
+  | "suspended"
+  | "incompatible"
+  | "uninstalled";
 
 function miss(
   widgetId: string,
@@ -898,6 +912,7 @@ export type CompatibilityReason =
   | "bad_theme"
   | "unknown"
   | "disabled"
+  | "suspended"
   | "incompatible"
   | "uninstalled"
   | "foreign-theme";
@@ -964,6 +979,25 @@ export function checkThemeCompatibility(
       }
       const def = resolved.def;
       if (def.namespace === "theme" && !isThemeOwner(def, key)) {
+        return {
+          widgetId,
+          compatible: false,
+          reason: "foreign-theme" as const,
+        };
+      }
+      // Frame30 contract — a plugin widget scoped to other themes is
+      // foreign here. The allow-list rides the gate and adapter into
+      // `def.themeCompatibility`; an ABSENT or EMPTY list means
+      // unscoped (compatible everywhere), never a silent allow.
+      const scoped = def.themeCompatibility?.themes;
+      if (
+        def.namespace === "plugin" &&
+        Array.isArray(scoped) &&
+        scoped.length > 0 &&
+        !scoped.some(
+          (t) => typeof t === "string" && t.trim() === key,
+        )
+      ) {
         return {
           widgetId,
           compatible: false,

@@ -227,7 +227,12 @@ export type ExtensionInsertRequest = {
 };
 
 export type ExtensionInsertError =
-  "unknown" | "disabled" | "incompatible" | "uninstalled" | "illegal_slot";
+  | "unknown"
+  | "disabled"
+  | "suspended"
+  | "incompatible"
+  | "uninstalled"
+  | "illegal_slot";
 
 export type ExtensionInsertResult =
   | { ok: true; node: ExtensionNode; selectedId: string }

@@ -43,7 +43,14 @@ import type { Database } from "@/integrations/supabase/types";
 import { assertTenantId } from "./tenant-scope";
 import { checkApiCompatibility } from "./registry-version";
 import { validateThemeManifest } from "./theme-package";
-import { pkg1PluginValidator } from "./plugin-package";
+import {
+  checkExtensionUpdateCompat,
+  compareExtensionVersions,
+  isExtensionDowngrade,
+  parseExtensionVersion,
+  pkg1PluginValidator,
+} from "./plugin-package";
+import { BUILDER_API_VERSION, satisfiesApiRange } from "./plugin-manifest";
 import {
   assertPackageContentAuthentic,
   collectBrokenAssetRefs,
@@ -293,6 +300,214 @@ function compareSemver(a: string, b: string): number {
     if (d !== 0) return d;
   }
   return 0;
+}
+
+/* ------------------------------- extension versioning (Frame30 item 13) ---
+ *
+ * Install/update-time version truth for extension packages. The manifest
+ * gate (`parseManifest`, read-only) admits exact API pins (`3.1.0`) alongside
+ * ranges, but `checkApiCompatibility` only models ranges — without the
+ * fallback below, a manifest the gate accepts is refused at install. The
+ * fallback admits exactly what the gate admits (its own `satisfiesApiRange`,
+ * same running API), nothing more. Theme manifests never carry exact pins
+ * (their gate rejects them), so the theme path behavior is unchanged.
+ */
+
+function checkPackageApiCompat(
+  range: string | undefined,
+  kind: PackageKind,
+): { ok: true } | { ok: false; message: string } {
+  const verdict = checkApiCompatibility(range);
+  if (verdict.ok) return verdict;
+  if (
+    kind === "plugin" &&
+    verdict.code === "registry.api_range_invalid" &&
+    typeof range === "string" &&
+    satisfiesApiRange(range, BUILDER_API_VERSION)
+  ) {
+    return { ok: true };
+  }
+  return verdict;
+}
+
+/** True when the failure is a unique-key race on the install ledger. */
+function isDuplicateLedgerKey(error: unknown): boolean {
+  const msg =
+    error instanceof Error
+      ? error.message
+      : ((error as { message?: string } | null)?.message ??
+        String(error ?? ""));
+  return /duplicate key/i.test(msg);
+}
+
+type StoredPluginLine = {
+  /**
+   * Newest parseable version on a live line for this slug (null = legacy).
+   * Terminal rows (`removed`/`purged`/`lapsed`/`rolled_back`) never pin the
+   * floor: an uninstalled version must not strand a legitimate reinstall or
+   * recovery of an older line.
+   */
+  maxLedgerVersion: string | null;
+  /** Projected manifest from `plugin_state`, when the lane projected one. */
+  projectedManifest: Record<string, unknown> | null;
+  /** Projected manifest version, when present and parseable. */
+  projectedVersion: string | null;
+  /** Platform suspension survives on the projection (kill switch / review). */
+  projectedSuspended: boolean;
+};
+
+/** Ledger statuses that end a row's life — never a version floor. */
+const TERMINAL_INSTALL_STATUSES: ReadonlySet<string> = new Set([
+  "removed",
+  "purged",
+  "lapsed",
+  "rolled_back",
+]);
+
+/**
+ * Read the installed line for a plugin slug: every ledger version plus the
+ * host projection. Missing `plugin_state` degrades to ledger-only (legacy
+ * DBs install unimpeded — same degrade rule as the namespace scan); any
+ * other read failure fails the install (`package.install_failed`) — the
+ * ordering gate must prove safety, never assume it.
+ */
+async function readStoredPluginLine(
+  db: Client,
+  merchantId: string,
+  slug: string,
+): Promise<StoredPluginLine> {
+  const empty: StoredPluginLine = {
+    maxLedgerVersion: null,
+    projectedManifest: null,
+    projectedVersion: null,
+    projectedSuspended: false,
+  };
+  const { data: rows } = await db
+    .from("marketplace_installs")
+    .select("version, status")
+    .eq("merchant_id", merchantId)
+    .eq("listing_slug", slug)
+    .eq("kind", "widget");
+  let best: string | null = null;
+  for (const row of (rows ?? []) as unknown as {
+    version?: unknown;
+    status?: unknown;
+  }[]) {
+    if (
+      typeof row.status === "string" &&
+      TERMINAL_INSTALL_STATUSES.has(row.status)
+    ) {
+      continue;
+    }
+    const v = typeof row.version === "string" ? row.version : "";
+    if (!parseExtensionVersion(v)) continue;
+    if (best === null || (compareExtensionVersions(v, best) ?? 0) > 0) {
+      best = v;
+    }
+  }
+  empty.maxLedgerVersion = best;
+  try {
+    const { data: projected } = await (db as unknown as Loose)
+      .from("plugin_state")
+      .select("manifest, manifest_version, suspended")
+      .eq("merchant_id", merchantId)
+      .eq("plugin_id", slug)
+      .maybeSingle();
+    const row = projected as unknown as {
+      manifest?: unknown;
+      manifest_version?: unknown;
+      suspended?: unknown;
+    } | null;
+    if (row) {
+      empty.projectedSuspended = row.suspended === true;
+      if (
+        row.manifest !== null &&
+        typeof row.manifest === "object" &&
+        !Array.isArray(row.manifest)
+      ) {
+        empty.projectedManifest = row.manifest as Record<string, unknown>;
+      }
+      if (
+        typeof row.manifest_version === "string" &&
+        parseExtensionVersion(row.manifest_version)
+      ) {
+        empty.projectedVersion = row.manifest_version;
+      }
+    }
+  } catch (err) {
+    if (isMissingProjectionTableError(err)) return empty;
+    throw new PackageInstallError(
+      "package.install_failed",
+      "Plugin projection read failed.",
+    );
+  }
+  return empty;
+}
+
+/**
+ * Forward-update gate for plugin installs. Runs after the idempotency replay
+ * lookup (retries replay, never refuse) and before any write (quota, assets,
+ * ledger), so a refused update lands nothing:
+ * - ordering: the candidate must be strictly newer than every live version
+ *   (live ledger lines + host projection); downgrades and reinstalls fail as
+ *   `package.bad_version` (theme-path parity). Terminal rows (removed/purged)
+ *   never pin the floor; legacy-unparseable versions skip ordering (presence
+ *   suffices).
+ * - compatibility: when a projected manifest exists, the candidate must be a
+ *   safe forward update (`checkExtensionUpdateCompat`): API floors, budget
+ *   ceilings and breaking schema changes fail closed; widened permissions
+ *   are reported for the consent check below (which enforces re-consent).
+ */
+async function assertForwardPluginUpdate(
+  db: Client,
+  merchantId: string,
+  manifest: ValidatedPackageManifest,
+): Promise<StoredPluginLine> {
+  const line = await readStoredPluginLine(db, merchantId, manifest.slug);
+  const known = [line.maxLedgerVersion, line.projectedVersion].filter(
+    (v): v is string => typeof v === "string" && !!v,
+  );
+  for (const installed of known) {
+    if (isExtensionDowngrade(installed, manifest.version)) {
+      throw new PackageInstallError(
+        "package.bad_version",
+        `Version ${manifest.version} is not newer than installed ${installed}.`,
+      );
+    }
+  }
+  if (line.projectedManifest) {
+    const verdict = checkExtensionUpdateCompat({
+      installedManifest: line.projectedManifest,
+      candidateManifest: manifest.raw,
+    });
+    if (!verdict.ok) {
+      switch (verdict.code) {
+        case "version_not_newer":
+        case "version_invalid":
+          throw new PackageInstallError(
+            "package.bad_version",
+            `Package manifest rejected: ${verdict.errors.join(",")}`,
+          );
+        case "api_incompatible":
+          throw new PackageInstallError(
+            "package.api_incompatible",
+            `Package manifest rejected: ${verdict.errors.join(",")}`,
+          );
+        case "api_range_invalid":
+        case "capability_ceiling":
+          throw new PackageInstallError(
+            "package.manifest_invalid",
+            `Package manifest rejected: ${verdict.errors.join(",")}`,
+          );
+        case "schema_migration_required":
+          throw new PackageInstallError(
+            "package.incompatible_update",
+            `Update needs a validated widget migration: ${verdict.errors.join(",")}. Stored content stays on the installed version.`,
+          );
+      }
+    }
+  }
+  return line;
 }
 
 export function artifactIdFor(bytes: Uint8Array): string {
@@ -1159,7 +1374,7 @@ async function installPluginPackage(
     );
   }
   const manifest = verdict.manifest;
-  const api = checkApiCompatibility(manifest.api);
+  const api = checkPackageApiCompat(manifest.api, "plugin");
   if (!api.ok)
     throw new PackageInstallError("package.api_incompatible", api.message);
   await assertDependencies(db, merchantId, manifest.dependencies);
@@ -1203,6 +1418,12 @@ async function installPluginPackage(
     };
   }
 
+  // Forward-update gate (Frame30 item 13): downgrades, reinstalls, API-floor
+  // violations and breaking schema changes fail here — after the replay
+  // lookup (retries replay) and before any write (quota, assets, ledger),
+  // so a refused update lands nothing and the last-good install stands.
+  await assertForwardPluginUpdate(db, merchantId, manifest);
+
   const prefix = pluginVersionPrefix(manifest.slug, artifactId.slice(0, 8));
   // Storage quota (threat-defense): same rule as the theme flow — replays
   // write nothing; fresh installs and updates must fit the quota first.
@@ -1245,8 +1466,11 @@ async function installPluginPackage(
   // must never strand a partial namespace. A failed asset save compensates
   // the prefix it just wrote (best-effort) before the original stage error
   // propagates — the failure-injection suite pins each stage to clean state.
+  // The stored ids are kept so the duplicate-key race below can remove only
+  // this call's surplus rows (same bytes, same prefix as the winner's).
+  let storedAssetIds: string[] = [];
   try {
-    await saveVersionAssets(db, merchantId, {
+    const stored = await saveVersionAssets(db, merchantId, {
       themeId: null,
       prefix,
       files: files
@@ -1257,6 +1481,7 @@ async function installPluginPackage(
           text: decodeText(f.bytes),
         })),
     });
+    storedAssetIds = stored.map((a) => a.id);
   } catch (e) {
     await deleteVersionAssets(db, merchantId, prefix).catch(() => null);
     throw e;
@@ -1281,8 +1506,48 @@ async function installPluginPackage(
       artifact_version: manifest.version,
       artifact_pinned: "upload",
     }));
-  } catch {
-    await deleteVersionAssets(db, merchantId, prefix).catch(() => null);
+  } catch (e) {
+    // Concurrent-update race: a twin submit won the unique (merchant, key)
+    // race after the top-of-function check. The bytes are identical (same
+    // submit ⇒ same artifact ⇒ same prefix), so the winner's rows stay:
+    // remove only this call's surplus asset rows by id (best-effort), then
+    // replay the winner instead of stacking a second install — the same
+    // binding the marketplace ledger path uses (never a silent duplicate).
+    // A prefix wipe here would strand the winner without assets.
+    if (isDuplicateLedgerKey(e)) {
+      for (const assetId of storedAssetIds) {
+        try {
+          await (db as unknown as Loose)
+            .from("theme_assets")
+            .delete()
+            .eq("merchant_id", merchantId)
+            .eq("id", assetId);
+        } catch {
+          /* best-effort; the replay below is the signal */
+        }
+      }
+      const { data: raced } = await db
+        .from("marketplace_installs")
+        .select("id")
+        .eq("merchant_id", merchantId)
+        .eq("idempotency_key", input.idempotencyKey)
+        .maybeSingle();
+      if (raced) {
+        const hit = raced as unknown as { id: string };
+        return {
+          packageId: hit.id,
+          versionId: hit.id,
+          version: manifest.version,
+          versionNumber: 1,
+          artifactId,
+          alreadyInstalled: true,
+          updated: false,
+        };
+      }
+      await deleteVersionAssets(db, merchantId, prefix).catch(() => null);
+    } else {
+      await deleteVersionAssets(db, merchantId, prefix).catch(() => null);
+    }
     throw new PackageInstallError(
       "package.install_failed",
       "Ledger write failed.",
@@ -1464,6 +1729,80 @@ export async function rollbackPluginPackage(
       ? target.artifact_checksum.toLowerCase()
       : null;
 
+  // Idempotent rollback: a committed key replays the recorded rollback
+  // instead of stacking another row. The replay runs BEFORE the revoked
+  // pre-flight below: it writes nothing (history, not a new state change),
+  // so replaying a recorded rollback stays safe even when the line was
+  // suspended afterwards. A key committed for a DIFFERENT target is a
+  // conflict — never a silent replay of someone else's rollback.
+  //
+  // Pass `opts.idempotencyKey` for concurrent safety: concurrent keyless
+  // rollbacks stack (callers mint a key per submit, like installs).
+  if (opts?.idempotencyKey) {
+    const { data: prior } = await db
+      .from("marketplace_installs")
+      .select("id, version, artifact_checksum, previous_snapshot")
+      .eq("merchant_id", merchantId)
+      .eq("idempotency_key", opts.idempotencyKey)
+      .maybeSingle();
+    const hit = prior as unknown as {
+      id: string;
+      version: string;
+      artifact_checksum: string | null;
+      previous_snapshot?: {
+        rollback_of?: unknown;
+        rolled_from?: { id: string }[];
+      } | null;
+    } | null;
+    if (hit) {
+      const snapshot = hit.previous_snapshot ?? null;
+      if (snapshot?.rollback_of !== targetInstallId) {
+        throw new PackageInstallError(
+          "package.install_conflict",
+          "That rollback key already recorded a different target.",
+        );
+      }
+      return {
+        packageId: hit.id,
+        versionId: hit.id,
+        version: hit.version,
+        artifactId:
+          typeof hit.artifact_checksum === "string"
+            ? hit.artifact_checksum
+            : null,
+        rollbackOf: targetInstallId,
+        superseded: Array.isArray(snapshot?.rolled_from)
+          ? snapshot.rolled_from.map((r) => r.id)
+          : [],
+      };
+    }
+  }
+
+  // Rollback-to-revoked pre-flight (Frame30 item 13): a revoked target or a
+  // suspended line can never become live again through rollback. Both refusal
+  // checks run BEFORE any sibling is parked, so a refused rollback leaves
+  // every row exactly as it found them — the last-good install stands,
+  // audited by the absence of change (no `package.rolled_back` row is
+  // written on refusal).
+  const targetStatus = (target as unknown as { status?: string }).status;
+  if (
+    targetStatus === "removed" ||
+    targetStatus === "purged" ||
+    targetStatus === "uninstalling"
+  ) {
+    throw new PackageInstallError(
+      "package.rollback_revoked",
+      "That version was revoked and cannot be rolled back to. Content stays on the current install.",
+    );
+  }
+  const line = await readStoredPluginLine(db, merchantId, slug);
+  if (line.projectedSuspended) {
+    throw new PackageInstallError(
+      "package.rollback_revoked",
+      "That plugin is suspended by platform review and cannot be rolled back to. Content stays on the current install.",
+    );
+  }
+
   const { data: siblings } = await db
     .from("marketplace_installs")
     .select("id, status")
@@ -1532,6 +1871,47 @@ export async function rollbackPluginPackage(
       artifact_pinned: target.artifact_pinned ?? null,
     }));
   } catch (e) {
+    // A duplicate-key loser must NOT restore siblings: the winner already
+    // owns the parked state, and resurrecting rows would strand two live
+    // installs. Re-read the winner's row by key and replay it (or conflict
+    // when the key recorded a different target).
+    if (opts?.idempotencyKey && isDuplicateLedgerKey(e)) {
+      const { data: raced } = await db
+        .from("marketplace_installs")
+        .select("id, version, artifact_checksum, previous_snapshot")
+        .eq("merchant_id", merchantId)
+        .eq("idempotency_key", opts.idempotencyKey)
+        .maybeSingle();
+      const hit = raced as unknown as {
+        id: string;
+        version: string;
+        artifact_checksum: string | null;
+        previous_snapshot?: {
+          rollback_of?: unknown;
+          rolled_from?: { id: string }[];
+        } | null;
+      } | null;
+      if (hit && hit.previous_snapshot?.rollback_of === targetInstallId) {
+        return {
+          packageId: hit.id,
+          versionId: hit.id,
+          version: hit.version,
+          artifactId:
+            typeof hit.artifact_checksum === "string"
+              ? hit.artifact_checksum
+              : null,
+          rollbackOf: targetInstallId,
+          superseded: Array.isArray(hit.previous_snapshot?.rolled_from)
+            ? hit.previous_snapshot.rolled_from.map((r) => r.id)
+            : [],
+        };
+      }
+      await restoreSiblings();
+      throw new PackageInstallError(
+        "package.install_conflict",
+        "That rollback key already recorded a different target.",
+      );
+    }
     await restoreSiblings();
     if (e instanceof PackageInstallError) throw e;
     throw new PackageInstallError(

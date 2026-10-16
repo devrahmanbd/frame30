@@ -266,3 +266,56 @@ runAt })` → `theme_schedule_set` (returns `{ id }`);
   (`purgeStorefront`, `:370-379`); activation awaits the purge so the
   storefront never serves a stale theme
   (`src/lib/themes/appearance.server.ts:462-470`).
+
+## 8. Level B developer flow (code-capable themes; see `./level-b.md`)
+
+Author in `src/lib/dev-theme-starter-theme/` (runnable starter, 13
+vectors in `starter.test.ts`); every step runs through the real gates:
+
+1. **Manifest** (`parseDevThemeManifest`,
+   `src/lib/dev-theme-manifest.ts`): `dev.theme.json` (never `theme.json`)
+   — slug id, semver version, exact runtime pin `1.0.0`, closed
+   capabilities/settings/slots, pinned `{name, version, license,
+   integrity}` deps, no `server/hooks/secrets/network` keys, ≤ 64 KB.
+2. **Assemble** (`assembleDevThemeBundle`,
+   `src/lib/dev-theme-bundle-assemble.ts`): manifest gate → bundle gate
+   (`validateDevThemeBundle`: executable allowlist, server/secrets/network
+   screens, pin equality + `dependency_name`/`dependency_version`
+   confusion backstops, `asset_missing` completeness,
+   traversal/symlink/oversize) → optional vendor-bytes check →
+   deterministic hashed outputs + `release.json` (fingerprint round-trips).
+3. **Review** (`createDevThemeReleaseStore`, `src/lib/dev-theme-review.ts`):
+   `submit` (idempotent on fingerprint) → `review`
+   (moderator/admin/system + reason + timestamp, binds exact fingerprint) →
+   `publish` (requires `approved` + naming the release's own fingerprint).
+   Updates mint new fingerprints; `rollback({ targetFingerprint })` mints
+   a NEW audited `published` release (`rollbackOf` + version) for the
+   last-approved bytes — revoked/removed/unapproved targets refuse
+   (`rollback_revoked` / `approval_required`).
+4. **Install** (`installReviewedThemeBundle`,
+   `src/lib/dev-theme-bundle-install.ts`): re-validates + re-hashes
+   presented bytes, proceeds only on equality with the published approval;
+   writes ledger + host triple with `is_active: false` (never activates).
+5. **Activate** (`resolveDevThemeActivation` + `bindDevThemeRuntime` +
+   `activateDevThemeInstall`, `src/lib/dev-theme-activate.ts`):
+   published + exact-fingerprint approval + runtime pin + optional
+   theme/version binding (`version_mismatch` on a version lie) + live-store
+   re-check; ledger `artifact_checksum` + version-row `checksum` must equal
+   the fingerprint, and a present ledger `artifact_version` must equal the
+   manifest version. Grants are least-privilege
+   (`presentation`/`commerce-read`/`cart-write`; `animation`/`webgl` grant
+   nothing; `navigate` never implicit).
+6. **Serve** (`resolveDevThemeAsset` + `buildDevThemeDocument`):
+   approval recompute + real activation gate + descriptor multiset binding
+   + per-file hash, per request. Pass the live store for the serve-time
+   revocation re-check — revoked snapshots 404 instead of serving stale
+   bytes. Tampered bytes/maps/approvals 404 (`fingerprint_mismatch` /
+   `unknown_version` / `ambiguous_release`).
+7. **Editor** (`fromDevThemeManifest`, `src/lib/dev-theme-widgets.ts`):
+   one `theme:{id}/{section}` def per section (shared settings +
+   per-widget extras, closed kinds only), validated through
+   `validateProps`/`defaultsFor`; renderer is `custom` (editor-only).
+
+New error codes: `bundle.dependency_name`,
+`bundle.dependency_version`, `bundle.asset_missing`,
+`dev_theme.rollback_revoked`, `dev_theme_activate.version_mismatch`.

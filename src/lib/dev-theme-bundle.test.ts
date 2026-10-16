@@ -495,3 +495,106 @@ describe("data-only lane stays frozen — executables still rejected there", () 
     expect(verdict.errors.join(" ")).toMatch(/executable/);
   });
 });
+
+describe("validateDevThemeBundle — dependency confusion + asset completeness (frame30 item 9)", () => {
+  it("refuses an uppercase dependency name (registry-shaped lowercase only)", () => {
+    const bad = devManifest({
+      dependencies: [{ ...GSAP_DEP, name: "GSAP" }],
+    });
+    const verdict = validateDevThemeBundle({
+      manifest: bad,
+      files: validFiles(JSON.stringify(bad)),
+      dependencies: [{ ...GSAP_DEP, name: "GSAP" }],
+    });
+    expect(verdict.ok).toBe(false);
+    if (verdict.ok) return;
+    expect(verdict.errors.join(" ")).toMatch(/dependency_name/);
+  });
+
+  it.each(["^3.15.0", "~3.15.0", "*", "latest", ">=3.0.0"])(
+    "refuses a ranged dependency version %s (exact pin only)",
+    (version) => {
+      const bad = devManifest({
+        dependencies: [{ ...GSAP_DEP, version }],
+      });
+      const verdict = validateDevThemeBundle({
+        manifest: bad,
+        files: validFiles(JSON.stringify(bad)),
+        dependencies: [{ ...GSAP_DEP, version }],
+      });
+      expect(verdict.ok).toBe(false);
+      if (verdict.ok) return;
+      expect(verdict.errors.join(" ")).toMatch(/dependency_version/);
+    },
+  );
+
+  it("refuses a path-shaped dependency name", () => {
+    const bad = devManifest({
+      dependencies: [{ ...GSAP_DEP, name: "../evil" }],
+    });
+    const verdict = validateDevThemeBundle({
+      manifest: bad,
+      files: validFiles(JSON.stringify(bad)),
+      dependencies: [{ ...GSAP_DEP, name: "../evil" }],
+    });
+    expect(verdict.ok).toBe(false);
+    if (verdict.ok) return;
+    expect(verdict.errors.join(" ")).toMatch(/dependency_name/);
+  });
+
+  it("refuses a dangling relative JS import (referenced asset must be present)", () => {
+    const files = validFiles();
+    files.push(
+      file("components/app.js", `import "./missing.js"; export const x = 1;`),
+    );
+    const verdict = validateDevThemeBundle(validInput({ files }));
+    expect(verdict.ok).toBe(false);
+    if (verdict.ok) return;
+    expect(verdict.errors.join(" ")).toMatch(/asset_missing/);
+  });
+
+  it("refuses a dangling relative CSS url (referenced asset must be present)", () => {
+    const files = validFiles();
+    files.push(
+      file("styles/extra.css", `.hero{background:url(../assets/gone.png)}`),
+    );
+    const verdict = validateDevThemeBundle(validInput({ files }));
+    expect(verdict.ok).toBe(false);
+    if (verdict.ok) return;
+    expect(verdict.errors.join(" ")).toMatch(/asset_missing/);
+  });
+
+  it("accepts a satisfied relative import plus bare registry pins", () => {
+    const files = validFiles();
+    files.push(
+      file("assets/icon.png", "fake-png"),
+      file(
+        "components/app.js",
+        `import "gsap"; import "./helper.js"; export const x = 1;`,
+      ),
+      file("components/helper.js", `export const h = 1;`),
+      file("styles/extra.css", `.hero{background:url(../assets/icon.png)}`),
+    );
+    expect(validateDevThemeBundle(validInput({ files })).ok).toBe(true);
+  });
+
+  it("ignores extensionless bundler aliases (build-time, not file authority)", () => {
+    const files = validFiles();
+    files.push(
+      file("components/app.js", `import "./helper"; export const x = 1;`),
+    );
+    expect(validateDevThemeBundle(validInput({ files })).ok).toBe(true);
+  });
+
+  it("refuses an oversized bundle (per-entry + total caps hold)", () => {
+    const files = validFiles();
+    files.push({
+      path: "assets/big.png",
+      bytes: new Uint8Array(DEV_THEME_BUNDLE_LIMITS.maxEntryBytes + 1),
+    });
+    const verdict = validateDevThemeBundle(validInput({ files }));
+    expect(verdict.ok).toBe(false);
+    if (verdict.ok) return;
+    expect(verdict.errors.join(" ")).toMatch(/entry_too_large/);
+  });
+});

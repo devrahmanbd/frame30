@@ -10,6 +10,7 @@ import {
   findForbiddenFields,
   isForbiddenParamKey,
   isNavigationAllowed,
+  revokeThemeGrants,
   sanitizeThemeParams,
   themeRequiredScope,
   themeScopeFor,
@@ -199,6 +200,10 @@ describe("forbidden fields — wire shape never carries them", () => {
       "tenant",
       "tenantId",
       "shop_id",
+      "merchant",
+      "merchantId",
+      "merchant_id",
+      "merchant-id",
       "secret",
       "api_key",
       "token",
@@ -212,6 +217,71 @@ describe("forbidden fields — wire shape never carries them", () => {
     }
     for (const k of ["variantId", "quantity", "promoCode", "href", "fields"]) {
       expect(isForbiddenParamKey(k), k).toBe(false);
+    }
+  });
+
+  it("flags merchant-tenant smuggling (slug/session own the tenant, never params)", () => {
+    expect(containsForbiddenFields({ merchantId: "other" })).toBe(true);
+    expect(containsForbiddenFields({ merchant_id: "other" })).toBe(true);
+    expect(containsForbiddenFields({ merchant: "other" })).toBe(true);
+    expect(
+      findForbiddenFields({ variantId: "v", nested: { merchantId: "x" } }),
+    ).toContain("nested.merchantId");
+    const { clean, stripped } = sanitizeThemeParams({
+      variantId: "v",
+      quantity: 1,
+      merchantId: "other",
+    });
+    expect(clean).toEqual({ variantId: "v", quantity: 1 });
+    expect(stripped).toContain("merchantId");
+  });
+});
+
+describe("revokeThemeGrants — kill-switch grant stripping", () => {
+  const full = () =>
+    buildThemeGrants({
+      storefrontRead: true,
+      variantSelect: true,
+      cartAdd: true,
+      navigate: true,
+      navigateAllowlist: ["https://shop.example.com"],
+    });
+
+  it("strips every granted scope while preserving the allowlist", () => {
+    const revoked = revokeThemeGrants(full());
+    expect(revoked.granted).toEqual([]);
+    expect(revoked.navigateAllowlist).toEqual(["https://shop.example.com"]);
+  });
+
+  it("never mutates its input; revoking empty stays empty", () => {
+    const before = full();
+    const snapshot = JSON.parse(JSON.stringify(before)) as unknown;
+    revokeThemeGrants(before);
+    expect(before).toEqual(snapshot);
+    expect(revokeThemeGrants(buildThemeGrants())).toEqual({
+      granted: [],
+      navigateAllowlist: [],
+    });
+  });
+
+  it("revoked sets authorize nothing (bridge denies per call)", async () => {
+    const { authorizeThemeCall } = await import("./bridge-v2");
+    const revoked = revokeThemeGrants(full());
+    for (const method of Object.keys(THEME_METHODS)) {
+      const params =
+        method === "cart.add"
+          ? { variantId: "v", quantity: 1 }
+          : method === "variant.select"
+            ? { variantId: "v" }
+            : method === "navigate"
+              ? { href: "/x" }
+              : undefined;
+      expect(
+        authorizeThemeCall(
+          { v: 2, id: "1", method, params },
+          { granted: revoked.granted },
+        ),
+      ).toEqual({ allowed: false, reason: "scope_denied", method });
     }
   });
 });
