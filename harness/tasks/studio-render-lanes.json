@@ -1,0 +1,27 @@
+{
+  "cost": "fast",
+  "environment": {
+    "worktree": true,
+    "ports": 0
+  },
+  "id": "studio-render-lanes",
+  "instruction": "Keep studio extension render lanes at parity with the reference SectionRenderer branch: all modes (native-builtin, official, isolated, themeable, theme-owned sandbox) resolve the same outcomes with validated per-instance props, fail-closed placeholders only for genuinely missing/incompatible widgets, and legacy studio nodes byte-identical. Run the verifier; every listed test must pass. Do not weaken any assertion to get green.",
+  "kind": "guard",
+  "reward": {
+    "mode": "all-pass"
+  },
+  "title": "Studio canvas extension render lanes stay green",
+  "verifier": {
+    "command": [
+      "./node_modules/.bin/vitest",
+      "run",
+      "src/components/builder/studio/studio-extension-render.test.tsx",
+      "src/components/builder/studio/studio-extension-twin-parity.test.tsx",
+      "src/components/builder/SectionRenderer.plugin-lanes.test.tsx",
+      "src/components/builder/SectionRenderer.instance-props.test.tsx",
+      "src/components/builder/SectionRenderer.theme-sandbox.test.tsx",
+      "src/components/builder/SectionRenderer.editor-binding.test.tsx"
+    ],
+    "timeout_sec": 300
+  }
+}

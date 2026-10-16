@@ -1,0 +1,27 @@
+{
+  "cost": "fast",
+  "environment": {
+    "worktree": true,
+    "ports": 0
+  },
+  "id": "extension-pipeline-matrix",
+  "instruction": "Keep extension pipeline and security proofs green: insertion-to-publish prop preservation with instance independence, legacy byte-identical round-trips, tenant isolation, capability grants, sandbox boundaries, kill switches, revocation refusal, and hostile-prop neutralization. Run the verifier; every listed test must pass. Do not weaken any assertion to get green.",
+  "kind": "guard",
+  "reward": {
+    "mode": "all-pass"
+  },
+  "title": "Extension pipeline preservation and security matrix stay green",
+  "verifier": {
+    "command": [
+      "./node_modules/.bin/vitest",
+      "run",
+      "src/lib/studio/pipeline-pass1-persistence.test.ts",
+      "src/lib/studio/pipeline-pass2-publish.test.ts",
+      "src/lib/studio/pipeline-pass3-legacy.test.ts",
+      "src/lib/frame30-security-matrix.test.ts",
+      "src/lib/frame30-hostile-props.test.ts",
+      "src/lib/themes/songoskriti/ornament-presentation.test.tsx"
+    ],
+    "timeout_sec": 300
+  }
+}

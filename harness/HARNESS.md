@@ -7,7 +7,10 @@ Anything not recorded in the trace did not happen.
 ## 1. Identity
 
 - **Name:** `framique-harness`
-- **Version:** `0.1.0`
+- **Version:** `0.2.0`
+- **Covers:** commerce gates (12 tasks) plus the frame30 extension program
+  (6 tasks: real-editor registry, schema panel, render lanes, storefront
+  binding, pipeline/security matrix, Level B production E2E).
 - **What it is:** task runner + isolated environment + deterministic verifiers
   - trace recorder for this repo (Framique commerce platform).
 - **Division of responsibility:** the agent owns the loop (read, edit, iterate).

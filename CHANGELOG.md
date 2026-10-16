@@ -87,6 +87,23 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   run green in one pass) and CI restoration (config restored verbatim —
   remote builds still need owner token access).
 
+## [Unreleased] (frame30) — Harness covers the extension program
+
+### Added
+
+- Six guard/e2e tasks: `editor-extension-registry`,
+  `studio-schema-panel`, `studio-render-lanes`,
+  `storefront-dev-theme-binding`, `extension-pipeline-matrix`,
+  `levelb-production-e2e`. Harness at 18 tasks, version `0.2.0`.
+- Fixed a real runner/docs mismatch found while adding tasks: the runner
+  requires explicit `environment.ports` (`0` fast / `1` slow);
+  `AUTHORING.md` said fast tasks omit it — corrected.
+
+### Verification
+
+- `run.mjs --self-test` 11/11; all six new tasks reward `1.0` in isolated
+  worktrees (five fast + the slow production E2E).
+
 ## [Unreleased] (frame30) — Real editor wired end-to-end
 
 ### Added

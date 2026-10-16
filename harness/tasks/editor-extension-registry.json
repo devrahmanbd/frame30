@@ -1,0 +1,23 @@
+{
+  "cost": "fast",
+  "environment": {
+    "worktree": true,
+    "ports": 0
+  },
+  "id": "editor-extension-registry",
+  "instruction": "Keep the real-editor one-registry wiring green: content/editor builds ONE authorized tenant-aware registry (tenant plugins plus active approved theme defs, fail-closed to plugins-only) and threads it with the projected DevThemeBinding through EditorShell studioSeamProps into StudioBuilder's existing extensionRegistry prop. Run the verifier; every test in both editor-registry suites must pass. Do not weaken any assertion to get green; do not change the extensionRegistry prop shape.",
+  "kind": "guard",
+  "reward": {
+    "mode": "all-pass"
+  },
+  "title": "Real-editor one-registry wiring stays green",
+  "verifier": {
+    "command": [
+      "./node_modules/.bin/vitest",
+      "run",
+      "src/lib/editor/editor-registry.test.ts",
+      "src/routes/_authenticated/dashboard/content/editor-registry.test.ts"
+    ],
+    "timeout_sec": 180
+  }
+}

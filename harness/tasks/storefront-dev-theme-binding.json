@@ -1,0 +1,28 @@
+{
+  "cost": "fast",
+  "environment": {
+    "worktree": true,
+    "ports": 0
+  },
+  "id": "storefront-dev-theme-binding",
+  "instruction": "Keep Level B storefront binding green: public projection of the approved active release (fail-closed nulls), hash-asserted /t asset serving with traversal-proof semver pins, approved-only index.html synthesis, durable review store with idempotent approvals, and fingerprint-bound activation. Run the verifier; every listed test must pass. Do not weaken any assertion to get green.",
+  "kind": "guard",
+  "reward": {
+    "mode": "all-pass"
+  },
+  "title": "Level B projection, serving, and review store stay green",
+  "verifier": {
+    "command": [
+      "./node_modules/.bin/vitest",
+      "run",
+      "src/lib/storefront-dev-theme.server.test.ts",
+      "src/lib/dev-theme-projection.test.ts",
+      "src/lib/dev-theme-asset-serve.test.ts",
+      "src/lib/dev-theme-document.test.ts",
+      "src/lib/dev-theme-review-persist.test.ts",
+      "src/lib/dev-theme-activate.test.ts",
+      "src/routes/t.$.test.ts"
+    ],
+    "timeout_sec": 300
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "cost": "fast",
+  "environment": {
+    "worktree": true,
+    "ports": 0
+  },
+  "id": "studio-schema-panel",
+  "instruction": "Keep schema-generated studio inspector controls green: the SettingsPanel schema path renders generated controls from each selected extension widget's propsSchema (all kinds, nested group/repeater, media, responsive bp layers, keyed errors, reset), writes validated per-instance values only, and keeps the legacy panel byte-identical for empty-schema/unknown widgets. Run the verifier; every listed test must pass. Do not weaken any assertion to get green.",
+  "kind": "guard",
+  "reward": {
+    "mode": "all-pass"
+  },
+  "title": "Studio schema-generated settings panel stays green",
+  "verifier": {
+    "command": [
+      "./node_modules/.bin/vitest",
+      "run",
+      "src/components/builder/studio/SettingsPanel.schema.test.tsx",
+      "src/components/builder/SectionInspector.schema.test.tsx",
+      "src/components/builder/SchemaControls.test.tsx",
+      "src/lib/widget-props.test.ts"
+    ],
+    "timeout_sec": 240
+  }
+}
