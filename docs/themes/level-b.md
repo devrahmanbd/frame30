@@ -46,11 +46,17 @@ Root file `dev.theme.json` (never `theme.json`), validated by
   slots plus overlay zones: `header`, `main`, `footer`, `sidebar`,
   `drawer`, `popup`. Checkout-exclusive surfaces are absent — a developer
   section can never cover a payment step.
-- `settings`: `{key, label, type}` (≤ 128) with the closed six-type set:
-  `text`, `image`, `color`, `spacing`, `product-selection`, `animation`.
-  `code`, `html`, `url`, and every other kind are rejected at the manifest
-  gate. Props arriving at a component are the merchant's settings values
-  only.
+- `settings`: `{key, label, type}` (≤ 128) with the closed fifteen-type
+  set: `text`, `image`, `color`, `spacing`, `product-selection`,
+  `animation`, `number`, `boolean`, `select`, `link`, `group`, `repeater`,
+  `media`, `video`, `icon`. `code`, `html`, `url`, and every other kind
+  are rejected at the manifest gate. Declared modifiers ride existing
+  prop members only (`required`, `default`, `help`, `min`, `max`);
+  `options` is honoured on `select` only (1..32 closed `{value, label}`
+  entries — a select without options is rejected, never an open input)
+  and `fields` on `group`/`repeater` only (1..32 nested scalar settings,
+  one nested-group level flattened, never a nested repeater). Props
+  arriving at a component are the merchant's settings values only.
 - Forbidden top-level keys: `server`, `hooks`, `secrets`, `network`,
   `network-capability` (§7 non-goals: no server code, no secrets, no shell,
   no raw network imports in v1). Manifest JSON ≤ 64 KB.
@@ -120,14 +126,39 @@ author source → assemble → submit → review → publish → install → act
 `fromDevThemeManifest` (`src/lib/dev-theme-widgets.ts`) adapts a manifest's
 sections to one `theme:{themeId}/{sectionKey}` WidgetDef per section, all
 sharing the theme's settings schema mapped 1:1 onto the existing
-value-layer kinds (`text→text`, `image→image`, `color→color`,
-`spacing→spacing`, `product-selection→product`, `animation→animation` —
-every target kind already exists in `PROP_KINDS`; unknown types fail closed,
-never invent). Defs satisfy the shared `registerWidget` gate and validate
-through `validateProps`/`defaultsFor` like every other tier
-(`dev-theme-widgets.test.ts`). Renderer is `custom` (editor-only): schemas
-edit settings, they never execute code — storefront execution stays in the
-frame.
+value-layer kinds — every target kind already exists in `PROP_KINDS`;
+unknown types fail closed, never invent:
+
+| Setting type        | Prop kind (`→`)                    | Limits / notes                                              |
+| ------------------- | ---------------------------------- | ----------------------------------------------------------- |
+| `text`              | `text` (`multiline` → `richtext`)  | Declared modifiers only (`required/default/help/min/max`).  |
+| `image`             | `image`                            | Asset-library reference; uploads stay platform-side.        |
+| `color`             | `color`                            | Token-bound colour.                                         |
+| `spacing`           | `spacing`                          | Scale step; clamps ride `min`/`max`.                        |
+| `product-selection` | `product` (`multiple` → repeater)  | Yields ids only — never prices; nested `multiple` refused.  |
+| `animation`         | `animation`                        | Preset name only; page motion budget applies.               |
+| `number`            | `number`                           | Clamped by `min`/`max` through `validateProps`.             |
+| `boolean`           | `boolean`                          | Single checkbox.                                            |
+| `select`            | `select`                           | 1..32 closed `options`; hostile values refused; option-less |
+|                     |                                    | selects rejected, never widened to open input.              |
+| `link`              | `link`                             | `SAFE_HREF` policy (`https`/relative/`#`/`mailto:`/`tel:`). |
+| `group`             | `group`                            | 1..32 scalar `fields`, stored flat; one nested-group level  |
+|                     |                                    | flattens, deeper nesting refused (`nested_too_deep`).        |
+| `repeater`          | `repeater`                         | 1..32 scalar row `fields`; rows never nest                  |
+|                     |                                    | (`nested_repeater`); row cap is the value layer's.          |
+| `media`             | `media`                            | `SAFE_HREF` URL policy (`javascript:`/`data:` never survive).|
+| `video`             | `video`                            | Same URL policy as `media`.                                 |
+| `icon`              | `icon`                             | Named-icon token; markup stripped.                          |
+
+Cross-kind modifiers (`fields` on `text`, `options` on `number`) are
+ignored — the kind comes from the closed map only. Group leaves claim
+flat keys (duplicates/reserved `bp`/hostile keys refused); repeater row
+keys live in a row-local namespace. Defs satisfy the shared
+`registerWidget` gate and validate through `validateProps`/`defaultsFor`
+like every other tier (`dev-theme-widgets.test.ts`,
+`dev-theme-widgets-kinds.test.tsx`). Renderer is `custom` (editor-only):
+schemas edit settings, they never execute code — storefront execution
+stays in the frame.
 
 ## 5. Non-goals (v1, enforced)
 

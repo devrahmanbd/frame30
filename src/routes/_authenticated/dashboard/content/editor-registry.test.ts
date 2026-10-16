@@ -50,6 +50,17 @@ describe("real editor route registry/binding provisioning", () => {
     expect(ROUTE_SRC).not.toContain("registerWidget(");
     expect(ROUTE_SRC).not.toContain("clearRegistry");
   });
+
+  it("threads the exact registry build key as activeThemeKey (sourceKey identity)", () => {
+    // The registry is built with `themeKey: workspaceTheme?.sourceKey`;
+    // the shell must receive that SAME value so owning-theme defs
+    // (`theme:<sourceKey>/…`) resolve keyed. A uuid fallback would never
+    // match owner scope — fail-closed unkeyed instead.
+    expect(ROUTE_SRC).toContain("activeThemeKey={editorThemeKey}");
+    expect(ROUTE_SRC).toMatch(
+      /themeKey:\s*workspaceTheme\?\.sourceKey/,
+    );
+  });
 });
 
 describe("EditorShell studio seam provisioning", () => {

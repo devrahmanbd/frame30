@@ -46,8 +46,8 @@ export type DevThemeCapability = (typeof DEV_THEME_CAPABILITIES)[number];
 /**
  * Closed builder-field set for Level B settings schemas. Mirrors the
  * builder's declared field kinds (`src/lib/studio/controls.ts` content
- * controls + `builder-ast.ts` skin/typography props), narrowed to the six
- * kinds a reviewed theme may expose to merchants:
+ * controls + `builder-ast.ts` skin/typography props), narrowed to the
+ * fifteen kinds a reviewed theme may expose to merchants:
  *   text               — short/long copy (text/textarea controls)
  *   image              — asset-library reference (image control; uploads stay
  *                        platform-side, the theme receives a URL)
@@ -55,6 +55,24 @@ export type DevThemeCapability = (typeof DEV_THEME_CAPABILITIES)[number];
  *   spacing            — padding/gap scale step (slider/dimensions controls)
  *   product-selection  — catalogue picker yielding ids only (never prices)
  *   animation          — entrance preset + duration/delay (interactions tab)
+ *   number             — numeric input, clamped by optional min/max
+ *   boolean            — single checkbox
+ *   select             — closed option list (options 1..32, hostile values
+ *                        refused; a select without options is rejected at
+ *                        the adapter, never an open text input)
+ *   link               — URL input under the shared SAFE_HREF policy
+ *                        (https/http-relative/`#`/`mailto:`/`tel:` only)
+ *   group              — presentation-only cluster of nested scalar settings
+ *                        (`fields`, 1..32 entries, one nested-group level
+ *                        flattened, never a nested repeater); stores flat
+ *   repeater           — row list (`fields`, 1..32 scalar entries;
+ *                        repeater rows never nest, a nested group flattens
+ *                        to row leaves); rows capped by the value layer
+ *   media              — asset-library reference under SAFE_HREF (media
+ *                        control; `javascript:`/`data:` never survive)
+ *   video              — asset-library reference under SAFE_HREF (video
+ *                        control; same URL policy as media)
+ *   icon               — named-icon token (icon control; markup stripped)
  */
 export const DEV_THEME_FIELD_TYPES = [
   "text",
@@ -63,6 +81,15 @@ export const DEV_THEME_FIELD_TYPES = [
   "spacing",
   "product-selection",
   "animation",
+  "number",
+  "boolean",
+  "select",
+  "link",
+  "group",
+  "repeater",
+  "media",
+  "video",
+  "icon",
 ] as const;
 export type DevThemeFieldType = (typeof DEV_THEME_FIELD_TYPES)[number];
 

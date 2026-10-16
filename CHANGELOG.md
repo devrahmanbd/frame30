@@ -87,6 +87,25 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   run green in one pass) and CI restoration (config restored verbatim —
   remote builds still need owner token access).
 
+## [Unreleased] (frame30) — Remaining gaps: key identity, field parity, auth/CI walls
+
+### Fixed
+
+- Theme-key identity route→renderer CONFIRMED (route already passes the
+  exact `sourceKey` build key as `activeThemeKey`; the stale audit claim
+  predates the wiring) + pinned by test so it cannot regress.
+- Level B field parity 6→15 kinds (number, boolean, select, link, group,
+  repeater, media, video, icon) with nesting/depth/select-shape limits;
+  registry-mirror hostile check on nested leaves; SDK table updated.
+
+### Blocked (owner/infra action, evidence on file)
+
+- Authenticated E2E: local GoTrue is the wrong project/keys (prod
+  ShieldGate), no seeds/harness exist; re-pointing at prod auth would
+  pollute production — deliberately not attempted.
+- Remote CI run: no credentials in this environment; job wired and
+  waiting for an owner-triggered build.
+
 ## [Unreleased] (frame30) — Swarm audit close-out: production gaps fixed
 
 ### Fixed (adversarial audit → implementation, severity-ordered)

@@ -6,14 +6,23 @@
  * manifest's sections + settings into editor WidgetDefs through the SAME
  * value-layer shape every other tier uses (`PropField` in
  * `src/lib/widget-props.ts`, validated by `validateProps` / `defaultsFor`):
- * no new kind vocabulary is invented. The six closed Level B setting types
- * (`DEV_THEME_FIELD_TYPES` in `dev-theme-manifest.ts`) map onto existing
- * prop kinds:
+ * no new kind vocabulary is invented. The fifteen closed Level B setting
+ * types (`DEV_THEME_FIELD_TYPES` in `dev-theme-manifest.ts`) map onto
+ * existing prop kinds:
  *
  *   text → text (`multiline: true` → richtext — the SDK §4 text/textarea
  *     mirror), image → image, color → color, spacing → spacing,
  *   product-selection → product (`multiple: true` → repeater of product —
- *     the repeater-grade catalogue control), animation → animation.
+ *     the repeater-grade catalogue control), animation → animation,
+ *   number → number, boolean → boolean, select → select (closed `options`
+ *     list of 1..32 entries — a select without options fails closed, never
+ *     an open input), link → link, media → media, video → video,
+ *   icon → icon, group → group (nested scalar `fields`, one nested-group
+ *     level flattened into the parent fieldset so the inspector renders
+ *     exactly what validates — deeper nesting fails closed), repeater →
+ *   repeater (scalar row `fields`; a nested group flattens to row leaves,
+ *     a nested repeater fails closed — repeaters do not nest by
+ *     value-layer design).
  *
  * Two schema layers per def:
  * - SHARED: the theme-level `settings` array is carried by EVERY section
@@ -25,8 +34,13 @@
  *   closed — schemas can never silently mix.
  *
  * Declared modifiers ride on existing `PropField` members only
- * (`required`, `default`, `help`, `min`, `max`); unknown modifier keys are
- * ignored (forward-compatible metadata, never kinds). Declared defaults
+ * (`required`, `default`, `help`, `min`, `max`); `options` is honoured on
+ * select only (1..32 `{value, label}` string entries, hostile values fail
+ * closed), `fields` on group/repeater only (1..32 nested scalar settings,
+ * one flattened group level, never a nested repeater). Every other
+ * modifier key is ignored (forward-compatible metadata, never kinds), so a
+ * `fields` array on a text setting or an `options` array on a number
+ * setting can never confuse the kind. Declared defaults
  * are JSON-cloned and always re-validate through the value layer.
  *
  * Registry contract: each def satisfies the shared `registerWidget` gate
@@ -105,6 +119,15 @@ const SETTING_TO_PROP_KIND: Record<string, PropField["kind"]> = {
   spacing: "spacing",
   "product-selection": "product",
   animation: "animation",
+  number: "number",
+  boolean: "boolean",
+  select: "select",
+  link: "link",
+  group: "group",
+  repeater: "repeater",
+  media: "media",
+  video: "video",
+  icon: "icon",
 };
 
 /**
@@ -167,28 +190,46 @@ function jsonDefault(value: unknown): JsonValue | undefined {
 }
 
 /**
- * Map one Level B setting (+ its raw declarative modifiers) onto an
- * existing prop kind. Unknown setting types return null (fail closed —
- * never an invented kind). Grade modifiers select richer EXISTING kinds:
- * `multiline` text → richtext, `multiple` product-selection → repeater of
- * product. Every other modifier rides an existing `PropField` member.
+ * Adapter-side limits for the nested setting shapes (`select` options,
+ * `group`/`repeater` fields). Each stays inside the registry gate
+ * (`sanitizeDef` in `unified-widget-registry.ts`: 100 fields per level,
+ * depth 4, 32 options) and the value layer (`MAX_REPEATER_ITEMS`), so an
+ * adapted def always registers and validates — the adapter is stricter,
+ * never looser. Existing caps, bounds and forbidden keys are untouched.
  */
-function settingToField(
-  setting: DevThemeSetting,
+const MAX_SELECT_OPTIONS = 32;
+const MAX_NESTED_FIELDS = 32;
+/**
+ * Nested structural levels below a top-level group/repeater. One nested
+ * group level flattens into its container (group-in-group merges into the
+ * parent fieldset, group-in-repeater merges into the row leaves) so the
+ * inspector renders exactly what validates. Anything deeper — or any
+ * nested repeater, which the value layer would silently drop from rows —
+ * fails closed (`nested_too_deep` / `nested_repeater`).
+ */
+const MAX_NESTING_DEPTH = 1;
+const OPTION_VALUE_MAX = 120;
+/**
+ * Mirrors the registry gate's hostile field keys for option values AND
+ * nested group/repeater leaf keys (`sanitizeDef` refuses the same three:
+ * a `constructor` leaf would adapt cleanly yet never register, breaking
+ * the adapter's stricter-than-registry claim — so the adapter refuses it
+ * first, with the same shape code as any other hostile nested key).
+ * Top-level keys stay owned by the frozen manifest gate (unchanged).
+ */
+const HOSTILE_OPTION_VALUES: ReadonlySet<string> = new Set([
+  "__proto__",
+  "constructor",
+  "prototype",
+]);
+
+type FieldBuild = { ok: true; field: PropField } | { ok: false; error: string };
+
+/** Carry the declared modifiers onto an existing `PropField` member only. */
+function applyModifiers(
+  field: PropField,
   extras: Record<string, unknown>,
-): PropField | null {
-  const base = SETTING_TO_PROP_KIND[setting.type];
-  if (!base) return null;
-  let kind: PropField["kind"] = base;
-  let nested: PropField[] | undefined;
-  if (setting.type === "text" && extras.multiline === true) {
-    kind = "richtext";
-  }
-  if (setting.type === "product-selection" && extras.multiple === true) {
-    kind = "repeater";
-    nested = [{ key: "id", label: setting.label, kind: "product" }];
-  }
-  const field: PropField = { key: setting.key, label: setting.label, kind };
+): void {
   if (typeof extras.required === "boolean") field.required = extras.required;
   if (typeof extras.help === "string" && extras.help.trim()) {
     field.help = extras.help.trim().slice(0, HELP_MAX);
@@ -201,8 +242,295 @@ function settingToField(
   }
   const fallback = jsonDefault(extras.default);
   if (fallback !== undefined) field.default = fallback;
-  if (nested) field.fields = nested;
-  return field;
+}
+
+/**
+ * Closed `options` list for a select setting. Missing, empty, oversize or
+ * malformed options fail closed (`bad_select_options`) — a select without
+ * options is never widened into an open input, matching the registry gate
+ * (which refuses option-less selects).
+ */
+function selectOptionsFor(
+  extras: Record<string, unknown>,
+  ownerKey: string,
+):
+  | { ok: true; options: { value: string; label: string }[] }
+  | { ok: false; error: string } {
+  const raw = extras.options;
+  if (
+    !Array.isArray(raw) ||
+    raw.length === 0 ||
+    raw.length > MAX_SELECT_OPTIONS
+  ) {
+    return { ok: false, error: `widgets.bad_select_options:${ownerKey}` };
+  }
+  const options: { value: string; label: string }[] = [];
+  for (const entry of raw) {
+    if (!isRecord(entry) || typeof entry.value !== "string") {
+      return { ok: false, error: `widgets.bad_select_options:${ownerKey}` };
+    }
+    const value = entry.value.slice(0, OPTION_VALUE_MAX);
+    if (!value || HOSTILE_OPTION_VALUES.has(value)) {
+      return { ok: false, error: `widgets.bad_select_options:${ownerKey}` };
+    }
+    options.push({
+      value,
+      label:
+        typeof entry.label === "string" && entry.label
+          ? entry.label.slice(0, OPTION_VALUE_MAX)
+          : value,
+    });
+  }
+  return { ok: true, options };
+}
+
+/**
+ * Raw nested array for a group/repeater container. Canonical key `fields`;
+ * `settings` is accepted as an alias (section-level vocabulary). Both
+ * present as arrays is ambiguous and fails closed; present-but-not-an-array
+ * fails closed (never a silent empty container).
+ */
+function nestedRawArray(
+  extras: Record<string, unknown>,
+  ownerKey: string,
+): { ok: true; raw: unknown[] } | { ok: false; error: string } {
+  const fArr = Array.isArray(extras.fields);
+  const sArr = Array.isArray(extras.settings);
+  if (fArr && sArr) {
+    return { ok: false, error: `widgets.bad_nested_settings:${ownerKey}` };
+  }
+  const raw: unknown = fArr
+    ? extras.fields
+    : sArr
+      ? extras.settings
+      : undefined;
+  if (!Array.isArray(raw)) {
+    return { ok: false, error: `widgets.bad_nested_settings:${ownerKey}` };
+  }
+  if (raw.length === 0) {
+    return { ok: false, error: `widgets.bad_nested_settings:${ownerKey}` };
+  }
+  if (raw.length > MAX_NESTED_FIELDS) {
+    return { ok: false, error: `widgets.too_many_nested:${ownerKey}` };
+  }
+  return { ok: true, raw };
+}
+
+type LeafScope = {
+  /** Top-level setting key owning the container (error attribution). */
+  ownerKey: string;
+  /** Nested structural levels below the top-level container. */
+  depth: number;
+  /**
+   * Key namespace the leaves store into: the shared flat set for group
+   * leaves (groups store flat like `flattenFields`), a row-local set for
+   * repeater rows (row keys are namespaced per row by the value layer).
+   */
+  scope: Set<string>;
+};
+
+/**
+ * Build the flattened scalar leaves for a group/repeater container. Nested
+ * groups recurse (depth-limited) and merge into the container so rendering
+ * matches validation; nested repeaters — including a nested
+ * `multiple: true` product-selection, which grades to a repeater — fail
+ * closed, because the value layer skips repeaters inside rows (silent drop)
+ * and the inspector renders a single structural level (invisible fields).
+ */
+function buildContainerLeaves(
+  raw: unknown[],
+  ctx: LeafScope,
+): { ok: true; leaves: PropField[] } | { ok: false; error: string } {
+  const leaves: PropField[] = [];
+  for (let index = 0; index < raw.length; index++) {
+    const entry = raw[index];
+    if (!isRecord(entry)) {
+      return {
+        ok: false,
+        error: `widgets.bad_nested_setting:${ctx.ownerKey}:${index}`,
+      };
+    }
+    // Shape bar mirrors the frozen manifest gate's KEY_RE plus the
+    // registry gate's hostile keys (a `constructor` leaf passes the
+    // pattern yet would never register — refused here, same code).
+    if (
+      typeof entry.key !== "string" ||
+      !KEY_RE.test(entry.key) ||
+      HOSTILE_OPTION_VALUES.has(entry.key)
+    ) {
+      return {
+        ok: false,
+        error: `widgets.bad_nested_setting:${ctx.ownerKey}:${index}`,
+      };
+    }
+    if (typeof entry.label !== "string" || !entry.label.trim()) {
+      return {
+        ok: false,
+        error: `widgets.bad_nested_setting:${ctx.ownerKey}:${index}`,
+      };
+    }
+    if (
+      typeof entry.type !== "string" ||
+      !(SETTING_TO_PROP_KIND as Record<string, unknown>)[entry.type]
+    ) {
+      return {
+        ok: false,
+        error: `widgets.unknown_setting_type:${String(entry.type)}`,
+      };
+    }
+    const entryType = entry.type as string;
+    if (entryType === "group") {
+      if (ctx.depth >= MAX_NESTING_DEPTH) {
+        return { ok: false, error: `widgets.nested_too_deep:${ctx.ownerKey}` };
+      }
+      const nested = nestedRawArray(entry, ctx.ownerKey);
+      if (!nested.ok) return nested;
+      const inner = buildContainerLeaves(nested.raw, {
+        ...ctx,
+        depth: ctx.depth + 1,
+      });
+      if (!inner.ok) return inner;
+      leaves.push(...inner.leaves);
+      continue;
+    }
+    if (
+      entryType === "repeater" ||
+      (entryType === "product-selection" && entry.multiple === true)
+    ) {
+      return { ok: false, error: `widgets.nested_repeater:${ctx.ownerKey}` };
+    }
+    if (RESERVED_KEYS.has(entry.key)) {
+      return {
+        ok: false,
+        error: `widgets.reserved_setting_key:${entry.key}`,
+      };
+    }
+    if (ctx.scope.has(entry.key)) {
+      return { ok: false, error: `widgets.duplicate_setting:${entry.key}` };
+    }
+    const leaf = buildScalarLeaf(
+      {
+        key: entry.key,
+        label: entry.label.slice(0, LABEL_MAX),
+        type: entryType as DevThemeSetting["type"],
+      },
+      entry,
+      ctx.ownerKey,
+    );
+    if (!leaf.ok) return leaf;
+    ctx.scope.add(entry.key);
+    leaves.push(leaf.field);
+  }
+  return { ok: true, leaves };
+}
+
+/**
+ * Map one scalar Level B setting (+ its raw declarative modifiers) onto
+ * an existing prop kind. Grade modifiers select richer EXISTING kinds:
+ * `multiline` text → richtext. (`multiple` product-selection → repeater
+ * is handled by the caller — it is structural, never a scalar leaf.)
+ * Unknown setting types return an error (fail closed — never an invented
+ * kind). Modifiers from other kinds (`fields` on text, `options` on
+ * number) are ignored — the kind comes from the closed map only.
+ */
+function buildScalarLeaf(
+  setting: DevThemeSetting,
+  extras: Record<string, unknown>,
+  ownerKey: string,
+): FieldBuild {
+  const base = SETTING_TO_PROP_KIND[setting.type];
+  if (!base || base === "group" || base === "repeater") {
+    return {
+      ok: false,
+      error: `widgets.unknown_setting_type:${String(setting.type)}`,
+    };
+  }
+  let kind: PropField["kind"] = base;
+  if (setting.type === "text" && extras.multiline === true) {
+    kind = "richtext";
+  }
+  const field: PropField = { key: setting.key, label: setting.label, kind };
+  if (setting.type === "select") {
+    const parsed = selectOptionsFor(extras, ownerKey);
+    if (!parsed.ok) return parsed;
+    field.options = parsed.options;
+  }
+  applyModifiers(field, extras);
+  return { ok: true, field };
+}
+
+/**
+ * Map one Level B setting (+ its raw declarative modifiers) onto an
+ * existing prop kind. Unknown setting types fail closed (never an
+ * invented kind). Grade modifiers select richer EXISTING kinds:
+ * `multiline` text → richtext, `multiple` product-selection → repeater of
+ * product. `select` requires its closed `options` list; `group` flattens
+ * nested scalar `fields` (one nested-group level); `repeater` takes scalar
+ * row `fields` (a nested group flattens to row leaves). Every other
+ * modifier rides an existing `PropField` member. `used` is the flat key
+ * namespace (shared keys + this section's keys + flattened group leaves):
+ * group leaves store flat, so they claim flat keys; repeater row keys live
+ * in a row-local namespace instead.
+ */
+function settingToField(
+  setting: DevThemeSetting,
+  extras: Record<string, unknown>,
+  used: Set<string>,
+): FieldBuild {
+  const base = SETTING_TO_PROP_KIND[setting.type];
+  if (!base) {
+    return {
+      ok: false,
+      error: `widgets.unknown_setting_type:${String(setting.type)}`,
+    };
+  }
+  if (setting.type === "product-selection" && extras.multiple === true) {
+    const field: PropField = {
+      key: setting.key,
+      label: setting.label,
+      kind: "repeater",
+      fields: [{ key: "id", label: setting.label, kind: "product" }],
+    };
+    applyModifiers(field, extras);
+    return { ok: true, field };
+  }
+  if (setting.type === "group") {
+    const nested = nestedRawArray(extras, setting.key);
+    if (!nested.ok) return nested;
+    const built = buildContainerLeaves(nested.raw, {
+      ownerKey: setting.key,
+      depth: 0,
+      scope: used,
+    });
+    if (!built.ok) return built;
+    const field: PropField = {
+      key: setting.key,
+      label: setting.label,
+      kind: "group",
+      fields: built.leaves,
+    };
+    applyModifiers(field, extras);
+    return { ok: true, field };
+  }
+  if (setting.type === "repeater") {
+    const nested = nestedRawArray(extras, setting.key);
+    if (!nested.ok) return nested;
+    const built = buildContainerLeaves(nested.raw, {
+      ownerKey: setting.key,
+      depth: 0,
+      scope: new Set<string>(),
+    });
+    if (!built.ok) return built;
+    const field: PropField = {
+      key: setting.key,
+      label: setting.label,
+      kind: "repeater",
+      fields: built.leaves,
+    };
+    applyModifiers(field, extras);
+    return { ok: true, field };
+  }
+  return buildScalarLeaf(setting, extras, setting.key);
 }
 
 function extrasFor(
@@ -317,14 +645,15 @@ export function fromDevThemeManifest(input: unknown): DevThemeWidgetsVerdict {
       };
     }
     sharedKeys.add(setting.key);
-    const field = settingToField(setting, extrasFor(rawSettings, setting.key));
-    if (!field) {
-      return {
-        ok: false,
-        errors: [`widgets.unknown_setting_type:${String(setting.type)}`],
-      };
+    const built = settingToField(
+      setting,
+      extrasFor(rawSettings, setting.key),
+      sharedKeys,
+    );
+    if (!built.ok) {
+      return { ok: false, errors: [built.error] };
     }
-    sharedTemplates.push(field);
+    sharedTemplates.push(built.field);
   }
 
   const seen = new Set<string>();
@@ -374,16 +703,9 @@ export function fromDevThemeManifest(input: unknown): DevThemeWidgetsVerdict {
         };
       }
       used.add(checked.setting.key);
-      const field = settingToField(checked.setting, checked.extras);
-      if (!field) {
-        return {
-          ok: false,
-          errors: [
-            `widgets.unknown_setting_type:${String(checked.setting.type)}`,
-          ],
-        };
-      }
-      widgetFields.push(field);
+      const built = settingToField(checked.setting, checked.extras, used);
+      if (!built.ok) return { ok: false, errors: [built.error] };
+      widgetFields.push(built.field);
     }
 
     const schemaFields = [...sharedTemplates, ...widgetFields].map(cloneField);
