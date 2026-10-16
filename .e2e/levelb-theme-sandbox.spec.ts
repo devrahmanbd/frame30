@@ -21,23 +21,21 @@ import {
 } from "./helpers";
 
 /**
- * Level B theme execution — cold browser journey (hermetic, loopback-only).
+ * Level B theme execution — pipeline/contract units + storefront isolation
+ * (hermetic, loopback-only).
  *
- * Proves the frame30 claim end to end: a bundled animation/3D-capable theme
- * (assembled → reviewed → published → activation-bound through the REAL
- * dev-theme pipeline) executes EXCLUSIVELY inside the sandboxed ThemeRuntime
- * frame — version-pinned URL, `allow-scripts`-only sandboxing, restrictive
- * frame CSP — and never in the page DOM, while storefront output renders the
- * themed content.
+ * The browser-execution test that lived here (mocked frame/bundle via
+ * `page.route()`, hand-written animation) is SUPERSEDED by
+ * `levelb-theme-execution.spec.ts`. What remains proves the frame30 claim at
+ * the unit level: a bundled animation/3D-capable theme (assembled → reviewed
+ * → published → activation-bound through the REAL dev-theme pipeline) binds
+ * EXCLUSIVELY to the sandboxed ThemeRuntime frame — version-pinned URL,
+ * `allow-scripts`-only sandboxing, restrictive frame CSP — and never the
+ * page DOM, while storefront output renders the themed content.
  *
  * Real-vs-harness split (mirrors demo-theme-mounted.spec.ts):
  * - Real units (Node worker): assemble/submit/review/publish/activate/bind,
  *   URL/CSP/clamp helpers, static source pins.
- * - Real browser: a harness-owned page mounts an iframe with the REAL
- *   sandbox token + REAL pinned URL + REAL CSP served as the frame's
- *   response header; the frame's bundled script (external bundle bytes —
- *   never inline, per the CSP) animates and reports from inside the frame;
- *   the host asserts opaque isolation + zero theme code + execution receipt.
  * - Real storefront: the public preview route renders themed content.
  *
  * No authenticated surface is visited, no auth is stubbed. Cleanup:
@@ -49,7 +47,11 @@ const BASE_URL = resolveBaseURL();
 const THEME_NAME = "aurora-lookbook";
 const THEME_VERSION = "1.4.0";
 const FRAME_PATH = `/t/${THEME_NAME}/${THEME_VERSION}/index.html`;
-const BUNDLE_PATH = `/t/${THEME_NAME}/${THEME_VERSION}/app.js`;
+// NOTE: the mocked browser test that lived here (frame/bundle served via
+// `page.route()` with hand-written animation) is SUPERSEDED by
+// `levelb-theme-execution.spec.ts`, which serves the REAL verified bundle
+// over loopback HTTP and executes the repo's real gsap + three. This spec
+// keeps the pipeline/contract units + the storefront isolation test.
 // Shippable contract origin (https CDN, cf. dev-theme-sandbox.test.tsx).
 const ORIGIN = "https://themes.example-cdn.com";
 const MOD = { id: "reviewer-1", role: "moderator" } as const;
@@ -314,216 +316,6 @@ test("static wiring: sandbox shell + bundle lanes + Level B gates", () => {
   ]) {
     expect(activate.includes(token), `activate lane pins ${token}`).toBe(true);
   }
-});
-
-test("browser: bundled animation executes ONLY inside the sandboxed frame", async ({
-  page,
-}) => {
-  const collector = await hermeticPage(page);
-  const pageErrors: Error[] = [];
-  page.on("pageerror", (err) => pageErrors.push(err));
-
-  // Loopback binding: same gates as the shippable https binding, but the
-  // frame URL is routable on loopback so the browser can enforce it.
-  const bound = bindDevThemeRuntime(activation(), { assetOrigin: BASE_URL });
-  expect(bound.url).toBe(`${BASE_URL}${FRAME_PATH}`);
-  expect(bound.url).toBe(
-    buildThemeFrameUrl(BASE_URL, { name: THEME_NAME, version: THEME_VERSION }),
-  );
-  const csp = themeFrameCSP(BASE_URL);
-  expect(csp.startsWith("default-src 'none'")).toBe(true);
-
-  // Frame document: loads the bundled animation as EXTERNAL bytes (inline
-  // scripts would violate the served CSP — the bundle path is the only
-  // path). Identifiers mirror the reviewed sources so the host-absence
-  // assertion below is meaningful.
-  const frameDoc = [
-    "<!doctype html><html><head>",
-    `<meta charset="utf-8"><title>Aurora Lookbook</title>`,
-    "</head><body>",
-    `<div data-hero-canvas style="opacity:0">Hello</div>`,
-    `<div data-fallback hidden>Static storefront</div>`,
-    `<script src="${BUNDLE_PATH}"></script>`,
-    "</body></html>",
-  ].join("");
-  // Bundled animation: HeroCanvas-style rAF motion + WebglScene fallback
-  // marker, reporting its own paint from INSIDE the frame (the opaque host
-  // cannot read frame DOM — the posted receipt IS the execution proof).
-  // Both reviewed components are defined AND executed (top-level calls).
-  const bundleJs = [
-    "(function(){",
-    "function HeroCanvas(el){",
-    "var t0=null;",
-    "function step(t){",
-    "if(t0===null)t0=t;",
-    "var k=Math.min(1,(t-t0)/120);",
-    "el.style.opacity=String(k);",
-    "if(k<1){requestAnimationFrame(step);return;}",
-    "parent.postMessage({v:'e2e-levelb',executed:true,finalOpacity:getComputedStyle(el).opacity,engine:'HeroCanvas/WebglScene'},'*');",
-    "}",
-    // Headless CI forces reduced-motion: the static path still executes
-    // inside the frame (full opacity, no engine) and still reports out.
-    "if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){el.style.opacity='1';",
-    "parent.postMessage({v:'e2e-levelb',executed:true,finalOpacity:getComputedStyle(el).opacity,reduced:true,engine:'HeroCanvas/WebglScene'},'*');}",
-    "else{requestAnimationFrame(step);}",
-    "}",
-    "function WebglScene(el){",
-    "try{",
-    "if(!el.querySelector('canvas'))throw new Error('no canvas');",
-    "}catch(e){",
-    "var fb=el.querySelector('[data-fallback]');",
-    "if(fb)fb.hidden=false;",
-    "}",
-    "}",
-    "try{",
-    "var heroEl=document.querySelector('[data-hero-canvas]');",
-    "if(!heroEl)throw new Error('hero missing');",
-    "HeroCanvas(heroEl);",
-    "var sceneEl=document.querySelector('[data-webgl-scene]');",
-    "if(sceneEl)WebglScene(sceneEl);",
-    "}catch(e){",
-    "var fb2=document.querySelector('[data-fallback]');",
-    "if(fb2)fb2.hidden=false;",
-    "parent.postMessage({v:'e2e-levelb',executed:false,fallback:true},'*');",
-    "}",
-    "})();",
-  ].join("\n");
-
-  let servedCsp = "";
-  await page.route(`**${FRAME_PATH}`, (route) => {
-    void route.fulfill({
-      status: 200,
-      contentType: "text/html",
-      headers: { "Content-Security-Policy": csp },
-      body: frameDoc,
-    });
-  });
-  await page.route(`**${BUNDLE_PATH}`, (route) => {
-    void route.fulfill({
-      status: 200,
-      contentType: "application/javascript",
-      headers: { "Content-Security-Policy": csp },
-      body: bundleJs,
-    });
-  });
-  page.on("response", (res) => {
-    if (res.url().endsWith(FRAME_PATH)) {
-      servedCsp = res.headers()["content-security-policy"] ?? "";
-    }
-  });
-
-  // Origin seed: the public marketing root (same unauthenticated route the
-  // smoke spec uses). The harness shell carries NO inline script: the dev
-  // server ships a nonce CSP that refuses inline execution, so the receipt
-  // listener is registered via evaluate (CDP-injected, CSP-exempt) BEFORE
-  // the frame element is appended — ordering is deterministic, no race.
-  await page.goto("/", {
-    waitUntil: "domcontentloaded",
-    timeout: COLD_GOTO_TIMEOUT,
-  });
-  await page.setContent(
-    `<!doctype html><html><head><title>Aurora Lookbook — Level B harness</title></head>` +
-      `<body><main><h1>Host storefront shell</h1><div id="frame-slot"></div>` +
-      `</main></body></html>`,
-    { waitUntil: "domcontentloaded" },
-  );
-  await page.evaluate(() => {
-    const w = window as unknown as { __e2e_levelb_receipts?: unknown[] };
-    w.__e2e_levelb_receipts = [];
-    window.addEventListener("message", (e: MessageEvent) => {
-      const d = e.data as { v?: unknown } | null;
-      if (d && typeof d === "object" && d.v === "e2e-levelb") {
-        w.__e2e_levelb_receipts!.push(d);
-      }
-    });
-  });
-  await page.evaluate(
-    ({ url, sandbox }: { url: string; sandbox: string }) => {
-      const f = document.createElement("iframe");
-      f.title = "Aurora Lookbook";
-      f.src = url;
-      f.setAttribute("sandbox", sandbox);
-      f.setAttribute("referrerpolicy", "no-referrer");
-      f.className = "w-full border-0";
-      f.style.height = "120px";
-      document.getElementById("frame-slot")!.appendChild(f);
-    },
-    { url: bound.url, sandbox: THEME_SANDBOX },
-  );
-
-  // The bundled animation executes inside the frame and reports out.
-  await page.waitForFunction(
-    () =>
-      (window as unknown as { __e2e_levelb_receipts?: unknown[] })
-        .__e2e_levelb_receipts?.length === 1,
-    null,
-    { timeout: 20_000 },
-  );
-  const receipt = (await page.evaluate(
-    () =>
-      (window as unknown as { __e2e_levelb_receipts: unknown[] })
-        .__e2e_levelb_receipts[0],
-  )) as { executed: boolean; finalOpacity: string; engine: string };
-  expect(receipt.executed).toBe(true);
-  expect(receipt.finalOpacity).toBe("1");
-  expect(receipt.engine).toContain("HeroCanvas");
-
-  // Iframe sandbox attributes: scripts only — pinned URL, no relaxation.
-  const frame = page.locator("iframe").first();
-  await expect(frame).toBeAttached();
-  await expect(frame).toHaveAttribute("src", bound.url);
-  await expect(frame).toHaveAttribute("sandbox", "allow-scripts");
-  const sandboxAttr = (await frame.getAttribute("sandbox")) ?? "";
-  for (const forbidden of [
-    "allow-same-origin",
-    "allow-top-navigation",
-    "allow-popups",
-    "allow-forms",
-  ]) {
-    expect(sandboxAttr).not.toContain(forbidden);
-  }
-  expect(await frame.getAttribute("srcdoc")).toBeNull();
-
-  // Served CSP on the frame document is the restrictive contract.
-  expect(servedCsp).toContain("default-src 'none'");
-  expect(servedCsp).toContain("connect-src 'none'");
-  expect(servedCsp).toContain(`script-src ${BASE_URL}`);
-  expect(servedCsp).not.toMatch(/script-src[^;]*unsafe-inline/);
-
-  // Opaque origin: the sandbox denies same-origin DOM reach.
-  const opaque = await frame.evaluate(
-    (el) => (el as HTMLIFrameElement).contentDocument,
-  );
-  expect(opaque).toBeNull();
-
-  // Host page carries zero theme code: no bundled identifiers, no frame
-  // content leaked into host DOM, no animation engines on the host.
-  const hostHtml = await page.evaluate(
-    () => document.documentElement.outerHTML,
-  );
-  for (const needle of [
-    "HeroCanvas",
-    "WebglScene",
-    "WebGLRenderer",
-    "prefers-reduced-motion",
-    "data-hero-canvas",
-  ]) {
-    expect(hostHtml.includes(needle), `host must not contain ${needle}`).toBe(
-      false,
-    );
-  }
-  expect(await page.locator("[data-hero-canvas]").count()).toBe(0);
-  expect(
-    await page.evaluate(
-      () =>
-        (window as unknown as { gsap?: unknown; THREE?: unknown }).gsap ??
-        (window as unknown as { gsap?: unknown; THREE?: unknown }).THREE ??
-        null,
-    ),
-  ).toBeNull();
-
-  expect(pageErrors).toEqual([]);
-  expect(collector.externalResponses()).toEqual([]);
 });
 
 test("storefront output renders the themed content", async ({ page }) => {

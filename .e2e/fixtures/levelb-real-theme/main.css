@@ -1,0 +1,15 @@
+[data-theme-hero] {
+  opacity: 0;
+  transform: translateX(-24px);
+}
+
+[data-webgl-scene] canvas {
+  width: 320px;
+  height: 180px;
+  display: block;
+  background: #0b1020;
+}
+
+[data-fallback] {
+  padding: 16px;
+}

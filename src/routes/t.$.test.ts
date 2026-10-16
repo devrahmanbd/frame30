@@ -190,24 +190,74 @@ describe("/t/$ handler", () => {
     expect(res.status).toBe(200);
     expect(res.headers.get("content-type")).toContain("javascript");
     expect(res.headers.get("x-content-type-options")).toBe("nosniff");
+    // Opaque-frame CORS: the sandboxed frame fetches modules in CORS mode.
+    expect(res.headers.get("access-control-allow-origin")).toBe("*");
     expect(res.headers.get("cache-control")).toBe(
       "public, max-age=31536000, immutable",
     );
     expect(await res.text()).toBe(HERO_JS);
   });
 
-  it("refuses traversal, unknown versions, and index.html with no-store 404s", async () => {
+  it("refuses traversal, unknown versions, and refused kinds with no-store 404s", async () => {
     dbHolder.db = await installedDb();
     for (const splat of [
       "aurora-lookbook/1.0.0/../secret",
       "aurora-lookbook/1.0.0/%2e%2e/secret",
       "aurora-lookbook/9.9.9/components/Hero.js",
-      "aurora-lookbook/1.0.0/index.html",
+      "aurora-lookbook/9.9.9/index.html",
       "aurora-lookbook/latest/components/Hero.js",
+      "aurora-lookbook/latest/index.html",
     ]) {
       const res = await get(splat);
       expect(`${splat}: ${res.status}`).toBe(`${splat}: 404`);
       expect(res.headers.get("cache-control")).toBe("no-store");
     }
+  });
+
+  describe("index.html document lane", () => {
+    it("serves the synthesized document with pinned tags + frame CSP + immutable caching", async () => {
+      dbHolder.db = await installedDb();
+      const res = await get("aurora-lookbook/1.0.0/index.html");
+      expect(res.status).toBe(200);
+      expect(res.headers.get("content-type")).toBe("text/html; charset=utf-8");
+      expect(res.headers.get("x-content-type-options")).toBe("nosniff");
+      expect(res.headers.get("access-control-allow-origin")).toBe("*");
+      expect(res.headers.get("cache-control")).toBe(
+        "public, max-age=31536000, immutable",
+      );
+      // CSP header is the ThemeRuntime frame contract for the serving origin
+      // (the request URL host — https://shop.example in this harness).
+      const { themeFrameCSP } =
+        await import("@/components/theme-runtime/ThemeRuntime");
+      expect(res.headers.get("content-security-policy")).toBe(
+        themeFrameCSP("https://shop.example"),
+      );
+      const doc = await res.text();
+      const assets = dbHolder.db.rows("theme_assets") as { name: string }[];
+      const js = assets.find((a) => a.name.endsWith(".js"))!;
+      const jsPath = js.name.replace("dev-themes/", "/t/");
+      // Exact pinned tag, no inline code anywhere.
+      expect(doc).toContain(`<script type="module" src="${jsPath}"></script>`);
+      const scriptTags = doc.match(/<script[^>]*>/g) ?? [];
+      expect(scriptTags.length).toBeGreaterThan(0);
+      for (const tag of scriptTags) expect(tag).toContain("src=");
+      for (const needle of ["onload=", "onerror=", "javascript:", "<style"]) {
+        expect(
+          doc.includes(needle),
+          `document must not contain ${needle}`,
+        ).toBe(false);
+      }
+    });
+
+    it("404s the document when a referenced asset row drifts (byte leg)", async () => {
+      dbHolder.db = await installedDb();
+      const rows = dbHolder.db.rows("theme_assets") as { name: string }[];
+      const idx = rows.findIndex((a) => a.name.endsWith(".js"));
+      expect(idx).toBeGreaterThanOrEqual(0);
+      rows.splice(idx, 1);
+      const res = await get("aurora-lookbook/1.0.0/index.html");
+      expect(res.status).toBe(404);
+      expect(res.headers.get("cache-control")).toBe("no-store");
+    });
   });
 });

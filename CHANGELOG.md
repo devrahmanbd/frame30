@@ -87,6 +87,37 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   run green in one pass) and CI restoration (config restored verbatim —
   remote builds still need owner token access).
 
+## [Unreleased] (frame30) — Genuine Level B execution, production-proven
+
+### Added
+
+- Theme document builder (`dev-theme-document.ts`): `index.html` synthesis
+  for approved releases only — exact `/t/...` pinned asset tags, CSP meta
+  equal to the contract helper, zero inline code; unapproved/unknown →
+  404. Per-ref byte re-proof at serve time (drifted row 404s the document).
+- Genuine fixture theme through the REAL assemble → review → publish →
+  install → activate lanes, importing the repo's own `gsap`/ScrollTrigger
+  and `three` ESM sources (two genuine toolchain findings fixed: UMD
+  dists don't load as ESM; `three.core.js` has no `WebGLRenderer`).
+- Production E2E (`levelb-theme-execution.spec.ts`): real bundle over real
+  loopback HTTP into the real `ThemeRuntime` frame — GSAP timeline end
+  state + ScrollTrigger progress + real WebGL box draw asserted in-frame;
+  sandbox exactly `allow-scripts`, opaque origin, contract CSP, zero theme
+  code on host. No `page.route()` interception, no mocked documents. The
+  old mocked sandbox spec is superseded (removed).
+- Production ACAO `*` on `/t/...` 200s (opaque-origin module scripts
+  require it; public-by-design bytes) and same-origin `/harness` shell
+  (PNA-blocked `about:blank`+`setContent` replaced, same isolation).
+
+### Verification
+
+- New unit vectors 14/14; neighbors 89 green; E2E execution spec green
+  cold on lane + integrator runs; adjacent specs unregressed; `tsc` 0;
+  eslint clean; secret scan passed.
+- Proof-limited (documented in-code): install lane runs install-equivalent
+  `fakeDb` rows in the E2E worker (real-row serving pinned by
+  `t.$.test.ts`); loopback re-verifies a fixed snapshot per request.
+
 ## [Unreleased] (frame30) — Instance props reach renderers; uploaded themes render in sandbox
 
 ### Added
