@@ -783,6 +783,10 @@ export function EditorShell({
                       onPublish={publishFromStudio}
                       revisions={studioRevisions}
                       {...studioSeamProps}
+                      // Explicit (not in the seam object): `effectiveThemeId`
+                      // is defined below the seam. Absent keeps StudioBuilder's
+                      // legacy unkeyed composition.
+                      activeThemeKey={effectiveThemeId ?? undefined}
                       docId={doc.id ? `${kind}:${doc.id}` : null}
                       resetKey={
                         doc.id

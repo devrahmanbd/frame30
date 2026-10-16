@@ -60,6 +60,7 @@ import {
   type UnifiedRegistry,
   type WidgetDef,
 } from "@/lib/unified-widget-registry";
+import type { DevThemeBinding } from "../SectionRenderer";
 import { ownerForWidgetKey } from "@/lib/builder-ast";
 
 /**
@@ -221,6 +222,17 @@ export type StudioBuilderProps = {
    * byte-identical; registry misses keep the `app-block` fallback.
    */
   extensionRegistry?: UnifiedRegistry | null;
+  /**
+   * Frame30 one-registry — server-projected Level B runtime binding for the
+   * active approved theme. Absent keeps uploaded-theme canvas rendering
+   * fail-closed (explicit placeholder). Arrives via `studioSeamProps`.
+   */
+  devThemeBinding?: DevThemeBinding | null;
+  /**
+   * Active theme key driving per-theme canvas resolution. Absent keeps the
+   * legacy unkeyed composition. Arrives via `studioSeamProps`.
+   */
+  activeThemeKey?: string | null;
 };
 
 /** Elements panel shared by the plain and tabbed left-panel layouts. */
@@ -824,7 +836,12 @@ export function resolveExtensionTrayEntries(
         if (!entry || typeof entry !== "object" || Array.isArray(entry))
           continue;
         const def = entry as Partial<WidgetDef>;
-        if (def.namespace !== "plugin") continue;
+        // Plugin AND uploaded-theme defs: both insert through
+        // `buildExtensionInsert` from this same registry (theme defs carry
+        // the active approved theme's schemas). Offer only what the insert
+        // can build: misses stay hidden instead of landing on the legacy
+        // placeholder on click.
+        if (def.namespace !== "plugin" && def.namespace !== "theme") continue;
         if (typeof def.id !== "string" || !def.id.trim()) continue;
         const key = def.id.trim().slice(0, 120);
         if (seen.has(key)) continue;
@@ -996,6 +1013,8 @@ export function StudioBuilder({
   onRestoreRevision = null,
   pluginEntries = null,
   extensionRegistry = null,
+  devThemeBinding = null,
+  activeThemeKey = null,
 }: StudioBuilderProps) {
   const studio = useStudio(initialDoc, resetKey);
 
@@ -1161,6 +1180,18 @@ export function StudioBuilder({
     },
     [addParent, extensionRegistry, slot, studio],
   );
+
+  /**
+   * Frame30 discovery — explicit `pluginEntries` (with status metadata)
+   * win when provided; otherwise the tray derives insertable plugin AND
+   * uploaded-theme entries from the threaded authorized registry, so
+   * discovery never depends on a second prop. Absent everywhere keeps the
+   * tray hidden exactly as before.
+   */
+  const effectivePluginEntries =
+    pluginEntries && pluginEntries.length > 0
+      ? pluginEntries
+      : (resolveExtensionTrayEntries(extensionRegistry, null) ?? undefined);
 
   /** Globals-tab insert: editable copy (default) or linked `global_ref`. */
   const [globalInsertMode, setGlobalInsertMode] =
@@ -1629,6 +1660,7 @@ export function StudioBuilder({
                 node={selected}
                 device={device}
                 activeDevices={activeDevices}
+                registry={extensionRegistry ?? undefined}
                 onDevice={setDevice}
                 onChange={(key, value) =>
                   studio.setSetting(selected.id, key, value)
@@ -1684,7 +1716,7 @@ export function StudioBuilder({
                       globalInsertMode={globalInsertMode}
                       onGlobalInsertMode={setGlobalInsertMode}
                       addParent={addParent}
-                      pluginEntries={pluginEntries ?? undefined}
+                      pluginEntries={effectivePluginEntries}
                       onAddPlugin={addPluginNode}
                     />
                   )}
@@ -1700,7 +1732,7 @@ export function StudioBuilder({
                 globalInsertMode={globalInsertMode}
                 onGlobalInsertMode={setGlobalInsertMode}
                 addParent={addParent}
-                pluginEntries={pluginEntries ?? undefined}
+                pluginEntries={effectivePluginEntries}
                 onAddPlugin={addPluginNode}
               />
             )}
@@ -1862,6 +1894,9 @@ export function StudioBuilder({
                 setMenu({ id, at });
               }}
               onInlineEdit={(id, text) => studio.setSetting(id, "text", text)}
+              themeKey={activeThemeKey ?? null}
+              registry={extensionRegistry ?? undefined}
+              devThemeBinding={devThemeBinding ?? undefined}
             />
           </div>
 

@@ -87,6 +87,26 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   run green in one pass) and CI restoration (config restored verbatim —
   remote builds still need owner token access).
 
+## [Unreleased] (frame30) — Audit close-out: registry reaches every call site
+
+### Fixed
+
+- Wired the previously unwired seams the audit flagged: `SettingsPanel`
+  now receives the route registry (no silent singleton); `StudioCanvas`
+  receives registry + themeKey + binding; the tray derives insertable
+  plugin AND uploaded-theme entries from the threaded registry when no
+  explicit entries are passed (explicit entries still win); `EditorShell`
+  forwards `activeThemeKey`.
+- `resolveExtensionTrayEntries` was defined but never called — it is now
+  the single discovery path, extended to theme-namespace defs.
+
+### Verification
+
+- New seam suite 8/8 (discovery incl. theme defs, call-site pins);
+  neighbors 82 green; `tsc` 0; eslint 0 errors on own lines (2 prettier
+  errors at StudioBuilder 765/899 are pre-existing sibling lines, left
+  alone); secret scan passed.
+
 ## [Unreleased] (frame30) — Harness covers the extension program
 
 ### Added
