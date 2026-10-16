@@ -89,8 +89,30 @@ import { WidgetSandbox } from "@/components/marketplace/WidgetSandbox";
 import { PaymentMark } from "@/components/store/PaymentMarks";
 import { useInstalledPlugins } from "@/components/builder/PluginContext";
 import { resolvePluginWidget } from "@/lib/plugin-manifest";
+import {
+  BUILDER_API_VERSION,
+  parsePluginWidgetKey,
+  type InstalledPlugin,
+} from "@/lib/plugin-manifest";
+import { getOfficialPlugin, isOfficialPluginKey } from "@/lib/official-plugins";
+import {
+  ownerForWidgetKey,
+  type Breakpoint,
+  type Section,
+} from "@/lib/builder-ast";
+import type { UnifiedRegistry } from "@/lib/unified-widget-registry";
+import { resolveThemeOwnedComponent } from "@/lib/theme-presentations";
+import { validateProps } from "@/lib/widget-props";
+import { PluginBlock } from "../PluginBlock";
+import {
+  builtinTypeForPresentation,
+  resolveExtensionForRender,
+  type DevThemeBinding,
+} from "../SectionRenderer";
+import { ThemeWidgetPreview } from "../../theme-runtime/ThemeRuntime";
 import { WIDGET_API } from "@/lib/marketplace-scopes";
 import type { NodeSettings, StudioNode } from "@/lib/studio/model";
+import { WIDGET_BY_KEY } from "@/lib/studio/catalog";
 import {
   resolveMenuItems,
   staticMenuItems,
@@ -101,7 +123,7 @@ import {
   type DeviceKey,
   type Maybe,
 } from "@/lib/studio/responsive";
-import type { PropValue, Section } from "@/lib/builder-ast";
+import type { PropValue } from "@/lib/builder-ast";
 import { WIDGET_COMPONENTS, widgetReader } from "@/components/builder/widgets";
 import { cn } from "@/lib/utils";
 
@@ -234,6 +256,16 @@ export type RenderProps = {
    * The host (StudioCanvas/StudioBuilder) owns passing this down.
    */
   menus?: readonly StudioMenuSource[] | null;
+  /**
+   * Frame30 extension tree props. All optional: absent keeps every legacy
+   * node byte-identical. Extension twins (see `isStudioExtensionTwin`)
+   * resolve through the same `resolveExtensionForRender` outcomes as
+   * `SectionRenderer`'s extension branch; the uploaded-theme sandbox lane
+   * renders ONLY when `devThemeBinding` arrives through the canvas tree.
+   */
+  themeKey?: string | null;
+  registry?: UnifiedRegistry;
+  devThemeBinding?: DevThemeBinding;
 };
 
 function Placeholder({ label }: { label: string }) {
@@ -245,6 +277,350 @@ function Placeholder({ label }: { label: string }) {
 }
 
 /**
+ * Frame30 studio extension seam. Canonical extension nodes bridge to the
+ * studio as `app-block` twins (`studioNodeForExtension` in `plugin-tray.ts`):
+ * the widget address stays in `settings.pluginKey`, canonical per-instance
+ * props ride beside it, and the envelope (`extensionInstanceId` /
+ * `extensionApi` / `extensionVersion`) marks the twin. Legacy hand-authored
+ * `app-block` nodes carry no envelope and keep the legacy path below
+ * byte-identical.
+ */
+const STUDIO_TWIN_RESERVED = new Set([
+  "pluginKey",
+  "extensionInstanceId",
+  "extensionApi",
+  "extensionVersion",
+]);
+
+/** True for an extension twin bridged from a canonical node. Never throws. */
+export function isStudioExtensionTwin(node: StudioNode): boolean {
+  try {
+    const id = node.settings["extensionInstanceId"];
+    return typeof id === "string" && id.trim().length > 0;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Per-instance props for a twin: every setting except the twin envelope
+ * (`pluginKey` + `extension*`) and the twin-default echoes below. Globals
+ * are never read here — the install's global settings stay inside
+ * `PluginBlock` behind the scoped bridge.
+ *
+ * Twin-default echoes: `studioNodeForExtension` merges the `app-block`
+ * catalog defaults (today `{ pluginKey: "", height: 320 }`) UNDER the
+ * canonical props, so every twin setting bag carries them. `pluginKey` is
+ * already shed as the twin address (the section reads it separately); any
+ * REMAINING key whose value still deep-equals the live `app-block` catalog
+ * default is likewise not canonical data and is shed here, so the bridged
+ * section matches the canonical node exactly. This is lossless: every
+ * height consumer falls back to the same default (the legacy island clamp,
+ * both `PluginBlock` lanes, `SectionRenderer`, and the builtin renderers
+ * all default `320`), explicitly authored values — including a real
+ * `height`, a coincidental `320` under a DIFFERENT key, and responsive
+ * objects — never deep-equal a primitive default and always survive.
+ */
+function studioInstanceProps(node: StudioNode): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  try {
+    for (const [key, value] of Object.entries(node.settings)) {
+      if (STUDIO_TWIN_RESERVED.has(key)) continue;
+      if (isTwinDefaultEcho(key, value)) continue;
+      out[key] = value as unknown;
+    }
+  } catch {
+    // Hostile settings fall through empty (fail-closed downstream).
+  }
+  return out;
+}
+
+/** True when `value` is still the live `app-block` catalog default for `key`. */
+function isTwinDefaultEcho(key: string, value: unknown): boolean {
+  try {
+    const defaults = WIDGET_BY_KEY["app-block"]?.defaults;
+    if (!defaults || typeof defaults !== "object") return false;
+    if (!Object.prototype.hasOwnProperty.call(defaults, key)) return false;
+    const def = defaults[key];
+    if (Object.is(value, def)) return true;
+    if (
+      value !== null &&
+      typeof value === "object" &&
+      def !== null &&
+      typeof def === "object"
+    ) {
+      try {
+        return JSON.stringify(value) === JSON.stringify(def);
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  } catch {
+    return false;
+  }
+}
+
+/** The canonical extension section a twin bridges. Never throws. */
+function studioExtensionSection(node: StudioNode): Section {
+  let widgetKey = "";
+  let instanceId = node.id;
+  let apiVersion = BUILDER_API_VERSION;
+  let version: string | undefined;
+  try {
+    const s = node.settings;
+    if (typeof s["pluginKey"] === "string") widgetKey = s["pluginKey"].trim();
+    if (
+      typeof s["extensionInstanceId"] === "string" &&
+      s["extensionInstanceId"].trim()
+    ) {
+      instanceId = s["extensionInstanceId"].trim().slice(0, 64);
+    }
+    if (typeof s["extensionApi"] === "string" && s["extensionApi"].trim()) {
+      apiVersion = s["extensionApi"].trim().slice(0, 32);
+    }
+    if (
+      typeof s["extensionVersion"] === "string" &&
+      s["extensionVersion"].trim()
+    ) {
+      version = s["extensionVersion"].trim().slice(0, 32);
+    }
+  } catch {
+    // Hostile settings keep the defaults above; resolution misses below.
+  }
+  return {
+    id: node.id,
+    type: "extension",
+    instanceId,
+    owner: ownerForWidgetKey(widgetKey),
+    widgetKey,
+    apiVersion,
+    ...(version ? { version } : {}),
+    props: studioInstanceProps(node),
+  } as unknown as Section;
+}
+
+/**
+ * Studio twin resolution — the SAME outcomes as `SectionRenderer`'s
+ * extension branch (`resolveExtensionForRender` over the bridged section).
+ * Non-twins return null so the caller keeps the legacy path untouched.
+ * Never throws.
+ */
+export function resolveStudioExtension(
+  node: StudioNode,
+  themeKey: string | null | undefined,
+  registry?: UnifiedRegistry,
+  installedPlugins?: readonly InstalledPlugin[],
+): ReturnType<typeof resolveExtensionForRender> | null {
+  try {
+    if (!isStudioExtensionTwin(node)) return null;
+    return resolveExtensionForRender(
+      studioExtensionSection(node),
+      themeKey,
+      registry,
+      { installedPlugins },
+    );
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The reference implementation's unavailable placeholder, verbatim: the
+ * studio extension path renders no new placeholder design.
+ */
+function ExtensionUnavailable() {
+  return (
+    <div className="rounded-fq-md border border-dashed border-border p-4 text-sm text-muted-foreground">
+      Widget preview unavailable
+    </div>
+  );
+}
+
+function studioDeviceToBreakpoint(device: DeviceKey): Breakpoint {
+  if (device === "tablet") return "tablet";
+  if (device === "mobile" || device === "mobileLandscape") return "mobile";
+  return "desktop";
+}
+
+/**
+ * Studio twin of the old path's extension branch: resolves the twin through
+ * `resolveExtensionForRender` and renders each mode exactly like
+ * `SectionRenderer` — native-builtin via the studio native lane, plugin
+ * lanes (official / isolated / themeable) through the ONE `PluginBlock`
+ * with validated per-instance props, uploaded-theme widgets ONLY through
+ * the sandboxed `ThemeWidgetPreview` when the tree binding approves them.
+ * Missing and recoverable outcomes keep the explicit placeholder
+ * fail-closed, never another owner's component.
+ */
+function StudioExtensionBlock({
+  node,
+  device,
+  editing,
+  menus,
+  themeKey,
+  registry,
+  devThemeBinding,
+}: RenderProps & { themeKey?: string | null }) {
+  const installedPlugins = useInstalledPlugins();
+  const presentation = resolveStudioExtension(
+    node,
+    themeKey,
+    registry,
+    installedPlugins,
+  );
+
+  if (!presentation || !presentation.ok) {
+    return editing ? <ExtensionUnavailable /> : null;
+  }
+  if (
+    presentation.mode === "theme-owned" &&
+    presentation.presentation === "recoverable-fallback"
+  ) {
+    return editing ? <ExtensionUnavailable /> : null;
+  }
+  if (presentation.mode === "native-builtin") {
+    const builtinType = builtinTypeForPresentation(presentation);
+    if (builtinType) {
+      return (
+        <StudioWidget
+          node={{
+            ...node,
+            el: builtinType,
+            settings: presentation.props as unknown as NodeSettings,
+          }}
+          device={device}
+          editing={editing}
+          menus={menus}
+          themeKey={themeKey}
+          registry={registry}
+          devThemeBinding={devThemeBinding}
+        />
+      );
+    }
+    return editing ? <ExtensionUnavailable /> : null;
+  }
+  if (
+    presentation.mode === "official" ||
+    presentation.mode === "plugin-isolated" ||
+    presentation.mode === "plugin-themeable"
+  ) {
+    if (presentation.mode === "official") {
+      const parsed = parsePluginWidgetKey(presentation.widgetId);
+      const sourceId = parsed ? parsed.pluginId : "";
+      if (
+        !sourceId ||
+        !isOfficialPluginKey(sourceId) ||
+        !getOfficialPlugin(sourceId)
+      ) {
+        return editing ? <ExtensionUnavailable /> : null;
+      }
+    }
+    // Legacy `plugin_block` height contract (clamped 80–1200, 320
+    // default), read off the resolved props — never trusted blindly.
+    const rawHeight = presentation.props["height"];
+    const height =
+      typeof rawHeight === "number" && Number.isFinite(rawHeight)
+        ? Math.min(1200, Math.max(80, Math.trunc(rawHeight)))
+        : 320;
+    return (
+      <PluginBlock
+        pluginKey={presentation.widgetId}
+        height={height}
+        editing={editing ?? false}
+        themeKey={themeKey ?? null}
+        instanceProps={presentation.props}
+      />
+    );
+  }
+  if (
+    presentation.mode === "theme-owned" &&
+    presentation.presentation === "owner-definition"
+  ) {
+    const Owned = resolveThemeOwnedComponent(presentation.widgetId);
+    if (Owned) {
+      const extSection = studioExtensionSection(node);
+      const reader = widgetReader(extSection, undefined, "en");
+      const renderOwnedChildren = () =>
+        (node.children ?? []).map((child) => (
+          <StudioWidget
+            key={child.id}
+            node={child}
+            device={device}
+            editing={editing}
+            menus={menus}
+            themeKey={themeKey}
+            registry={registry}
+            devThemeBinding={devThemeBinding}
+          />
+        ));
+      return (
+        <Owned
+          section={extSection}
+          {...reader}
+          Heading="h2"
+          primary={false}
+          editing={editing ?? false}
+          device={studioDeviceToBreakpoint(device)}
+          locale="en"
+          link={(href: string) => href}
+          renderChildren={renderOwnedChildren}
+        />
+      );
+    }
+    // Level B uploaded-theme widget: no native in-repo component, but a
+    // `theme:<id>/...` def with `renderer: "custom"` plus a server-projected
+    // runtime binding whose pinned identity AND version match the def.
+    // Renders ONLY through the sandboxed `ThemeWidgetPreview` with
+    // schema-validated instance props — never page-DOM execution. Unbound
+    // falls through to the explicit placeholder below — fail-closed.
+    if (devThemeBinding) {
+      try {
+        const def = registry?.getWidget?.(presentation.widgetId);
+        const component =
+          typeof def?.themeComponent === "string"
+            ? def.themeComponent.trim()
+            : "";
+        const defThemeId = typeof def?.themeId === "string" ? def.themeId : "";
+        const bindingTheme = devThemeBinding.theme;
+        if (
+          def &&
+          def.namespace === "theme" &&
+          def.renderer === "custom" &&
+          component &&
+          defThemeId &&
+          bindingTheme &&
+          typeof bindingTheme.name === "string" &&
+          typeof bindingTheme.version === "string" &&
+          defThemeId === bindingTheme.name &&
+          def.version === bindingTheme.version
+        ) {
+          const clean = validateProps(
+            def.propsSchema,
+            (presentation.props ?? {}) as Record<string, unknown>,
+          ).clean;
+          return (
+            <ThemeWidgetPreview
+              assetOrigin={devThemeBinding.assetOrigin}
+              theme={bindingTheme}
+              widgetId={presentation.widgetId}
+              component={component}
+              instanceProps={clean}
+              granted={devThemeBinding.granted}
+              navigateAllowlist={devThemeBinding.navigateAllowlist ?? []}
+              onCall={devThemeBinding.onCall}
+            />
+          );
+        }
+      } catch {
+        // A hostile def shape must never break the render: placeholder.
+      }
+    }
+  }
+  return editing ? <ExtensionUnavailable /> : null;
+}
+
+/**
  * Studio twin of the old path's `PluginBlock`: resolves the `plugin:`-
  * namespaced key through the one shared resolver and renders the widget
  * bundle inside the null-origin `WidgetSandbox` island. Every failure —
@@ -252,15 +628,32 @@ function Placeholder({ label }: { label: string }) {
  * or disabled (merchant-off and the platform kill switch both surface as
  * `enabled: false`) — renders a labelled placeholder so the page always
  * renders. Without a plugin provider every key degrades the same way.
+ *
+ * Frame30: extension twins (bridged canonical nodes) resolve through the
+ * extension-aware `StudioExtensionBlock` instead — same modes, same
+ * fail-closed fallbacks as `SectionRenderer`'s extension branch. Legacy
+ * nodes keep the path below byte-identical.
  */
 function StudioAppBlock({
   pluginKey,
   height,
   editing,
+  node,
+  device,
+  menus,
+  themeKey,
+  registry,
+  devThemeBinding,
 }: {
   pluginKey: string;
   height: number;
   editing?: boolean;
+  node: StudioNode;
+  device: DeviceKey;
+  menus?: readonly StudioMenuSource[] | null;
+  themeKey?: string | null;
+  registry?: UnifiedRegistry;
+  devThemeBinding?: DevThemeBinding;
 }) {
   const plugins = useInstalledPlugins();
   const resolved = resolvePluginWidget(pluginKey, plugins);
@@ -270,6 +663,20 @@ function StudioAppBlock({
     if (!WIDGET_API[method]) throw new Error("unknown_method");
     return { ok: true };
   }, []);
+
+  if (node && isStudioExtensionTwin(node)) {
+    return (
+      <StudioExtensionBlock
+        node={node}
+        device={device}
+        editing={editing}
+        menus={menus}
+        themeKey={themeKey}
+        registry={registry}
+        devThemeBinding={devThemeBinding}
+      />
+    );
+  }
 
   if (!resolved.ok) {
     if (!editing && resolved.reason === "bad_key") return null;
@@ -397,7 +804,15 @@ function StudioHero({ s }: { s: NodeSettings }) {
   );
 }
 
-export function StudioWidget({ node, device, editing, menus }: RenderProps) {
+export function StudioWidget({
+  node,
+  device,
+  editing,
+  menus,
+  themeKey,
+  registry,
+  devThemeBinding,
+}: RenderProps) {
   const s = node.settings;
   const align = str(s, "textAlign", "left");
 
@@ -881,6 +1296,8 @@ export function StudioWidget({ node, device, editing, menus }: RenderProps) {
     case "app-block": {
       // Plugin widgets render in a sandboxed island, never inline — the same
       // contract as the old path's `plugin_block` (clamped 80–1200px).
+      // Extension twins additionally carry the tree props so the
+      // extension-aware lanes resolve; legacy nodes ignore them.
       const height = Math.min(
         1200,
         Math.max(80, num(s, "height", 320, device)),
@@ -890,6 +1307,12 @@ export function StudioWidget({ node, device, editing, menus }: RenderProps) {
           pluginKey={str(s, "pluginKey")}
           height={height}
           editing={editing}
+          node={node}
+          device={device}
+          menus={menus}
+          themeKey={themeKey}
+          registry={registry}
+          devThemeBinding={devThemeBinding}
         />
       );
     }

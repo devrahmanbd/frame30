@@ -39,6 +39,7 @@ import {
   isContainerNode,
   resolveStudioSlots,
   studioSlots,
+  uid,
   withSlot,
   type StudioDoc,
   type StudioMenuSource,
@@ -57,7 +58,9 @@ import {
   fromStudioCatalog,
   listWidgets as listSingletonWidgets,
   type UnifiedRegistry,
+  type WidgetDef,
 } from "@/lib/unified-widget-registry";
+import { ownerForWidgetKey } from "@/lib/builder-ast";
 
 /**
  * Plugin element accepted on the seam. `pluginName` stays optional so both
@@ -703,6 +706,275 @@ export function pluginEntryStatus(
     };
   } catch {
     return null;
+  }
+}
+
+/* ---------------- Frame30 extension intake/insert/selection (unit-tested) ---
+ *
+ * The route threads ONE authorized registry through `extensionRegistry` (a
+ * sibling lane owns provisioning; this lane only consumes it as documented
+ * on the prop: absent builds the builtin + studio + singleton fallback, and
+ * misses keep the `app-block` fallback). These pure helpers are the testable
+ * contract; the component wires them without touching the settings panel
+ * body, canvas, save/serialize internals (another lane owns those).
+ */
+
+/**
+ * Strict listing usability for the threaded registry: an object exposing
+ * both `resolveWidget` (insert) and `listWidgets` (tray). Anything else —
+ * absent, null, hostile, partially implemented, or throwing — falls back to
+ * today's `pluginEntries` prop byte-identically. Never throws.
+ */
+export function isUsableExtensionRegistry(
+  registry: unknown,
+): registry is UnifiedRegistry {
+  try {
+    if (!registry || typeof registry !== "object") return false;
+    const candidate = registry as Partial<UnifiedRegistry>;
+    return (
+      typeof candidate.resolveWidget === "function" &&
+      typeof candidate.listWidgets === "function"
+    );
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Insert-path usability (matches the `addPluginNode` contract on the prop
+ * docs): a registry that can resolve is usable for insertion even when it
+ * cannot list. Never throws.
+ */
+function hasExtensionResolver(registry: unknown): registry is UnifiedRegistry {
+  try {
+    return (
+      !!registry &&
+      typeof registry === "object" &&
+      typeof (registry as Partial<UnifiedRegistry>).resolveWidget ===
+        "function"
+    );
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Fallback registry for absent/unusable threaded registries: builtin +
+ * studio + singleton tiers (the same tiers `buildTrayRegistry` seeds minus
+ * installed plugins, which only the authorized threaded registry carries).
+ * A single bad adapter def never breaks the insert. Never throws.
+ */
+export function buildFallbackExtensionRegistry(): UnifiedRegistry {
+  const fallback = createWidgetRegistry();
+  try {
+    for (const def of [...fromBuiltinWidgets(), ...fromStudioCatalog()]) {
+      try {
+        fallback.registerWidget(def);
+      } catch {
+        // A single bad adapter def never breaks the insert.
+      }
+    }
+    try {
+      for (const def of listSingletonWidgets()) {
+        try {
+          fallback.registerWidget(def);
+        } catch {
+          // Hostile singleton entries are dropped, never stored.
+        }
+      }
+    } catch {
+      // Singleton unreadable — tier fallback still stands.
+    }
+  } catch {
+    // Registry construction never breaks the legacy path.
+  }
+  return fallback;
+}
+
+/**
+ * Tray listing source: plugin-namespace defs from the threaded registry when
+ * usable, otherwise today's `pluginEntries` prop untouched (same reference,
+ * so legacy callers render byte-identically). Registry-derived rows carry
+ * only `{ key, label, pluginName }` — no install-state display fields, so
+ * `pluginEntryStatus` stays null for them exactly as for legacy minimal
+ * rows. Only defs the insert path can build are offered (disabled and
+ * incompatible builder-API defs are excluded, so the tray can never offer a
+ * widget it cannot insert); builtin/studio/theme tiers keep their own rails
+ * and never leak into the Plugins group. Never throws; hostile defs or a
+ * throwing registry fall back instead of breaking the rail.
+ */
+export function resolveExtensionTrayEntries(
+  registry: UnifiedRegistry | null | undefined,
+  fallback: readonly StudioBuilderPluginEntry[] | null | undefined,
+): readonly StudioBuilderPluginEntry[] | undefined {
+  const legacy = fallback ?? undefined;
+  try {
+    if (!isUsableExtensionRegistry(registry)) return legacy;
+    let defs: unknown;
+    try {
+      defs = registry.listWidgets();
+    } catch {
+      return legacy;
+    }
+    if (!Array.isArray(defs)) return legacy;
+    const seen = new Set<string>();
+    const out: StudioBuilderPluginEntry[] = [];
+    for (const entry of defs) {
+      try {
+        if (!entry || typeof entry !== "object" || Array.isArray(entry))
+          continue;
+        const def = entry as Partial<WidgetDef>;
+        if (def.namespace !== "plugin") continue;
+        if (typeof def.id !== "string" || !def.id.trim()) continue;
+        const key = def.id.trim().slice(0, 120);
+        if (seen.has(key)) continue;
+        // Offer only what `buildExtensionInsert` can build from this same
+        // registry: misses (disabled/incompatible/uninstalled) stay hidden
+        // instead of inserting into the legacy placeholder on click.
+        let insertable = false;
+        try {
+          const resolved = registry.resolveWidget(key, { data: {} });
+          insertable =
+            !!resolved &&
+            (resolved as { ok?: unknown }).ok === true &&
+            !!(resolved as { ok: true; def: unknown }).def;
+        } catch {
+          insertable = false;
+        }
+        if (!insertable) continue;
+        const label =
+          typeof def.label === "string" && def.label.trim()
+            ? def.label.trim().slice(0, 120)
+            : key;
+        let pluginName = key;
+        try {
+          const owner = ownerForWidgetKey(key);
+          if (owner.id) pluginName = owner.id;
+        } catch {
+          pluginName = key;
+        }
+        seen.add(key);
+        out.push({ key, label, pluginName });
+      } catch {
+        // A single hostile def never breaks the tray.
+      }
+    }
+    return out;
+  } catch {
+    return legacy;
+  }
+}
+
+/**
+ * True for a studio `app-block` twin carrying the extension envelope
+ * (`studioNodeForExtension` writes `settings.extensionInstanceId` beside the
+ * canonical props). Legacy `app-block` nodes (no envelope) read false, so
+ * every pre-extension document keeps its current behavior. Never throws.
+ */
+export function isExtensionStudioNode(node: unknown): boolean {
+  try {
+    if (!node || typeof node !== "object" || Array.isArray(node)) return false;
+    const candidate = node as Partial<StudioNode>;
+    if (candidate.el !== "app-block") return false;
+    const settings = candidate.settings;
+    if (!settings || typeof settings !== "object" || Array.isArray(settings))
+      return false;
+    const marker = (settings as Record<string, unknown>)[
+      "extensionInstanceId"
+    ];
+    return typeof marker === "string" && marker.trim().length > 0;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Widget address carried by a studio node (`settings.pluginKey`), trimmed
+ * and clamped like the insert path. Blank/hostile reads `""`. Never throws.
+ */
+export function extensionWidgetKeyOf(node: unknown): string {
+  try {
+    if (!node || typeof node !== "object" || Array.isArray(node)) return "";
+    const settings = (node as Partial<StudioNode>).settings;
+    if (!settings || typeof settings !== "object" || Array.isArray(settings))
+      return "";
+    const raw = (settings as Record<string, unknown>)["pluginKey"];
+    return typeof raw === "string" ? raw.trim().slice(0, 120) : "";
+  } catch {
+    return "";
+  }
+}
+
+/**
+ * Selection helper: resolve the widget def for a selected studio node from
+ * the threaded registry. The selected node itself already reaches the
+ * settings panel through the existing `node={selected}` prop (untouched —
+ * another lane owns `SettingsPanel.tsx`); this selector lets any reader map
+ * that identity to its def. Returns `undefined` for legacy nodes, misses,
+ * and unusable registries. Never throws.
+ */
+export function extensionDefForNode(
+  node: StudioNode | null | undefined,
+  registry: UnifiedRegistry | null | undefined,
+): WidgetDef | undefined {
+  try {
+    if (!isExtensionStudioNode(node)) return undefined;
+    const key = extensionWidgetKeyOf(node);
+    if (!key) return undefined;
+    if (!hasExtensionResolver(registry)) return undefined;
+    const resolved = registry.resolveWidget(key, { data: {} });
+    if (!resolved || (resolved as { ok?: unknown }).ok !== true)
+      return undefined;
+    return (resolved as { ok: true; def: WidgetDef }).def;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Duplicate a studio node with independent extension identity: the clone
+ * keeps deep-cloned per-instance props (no shared references with the
+ * source), while every subtree node carrying the extension envelope gets a
+ * fresh `extensionInstanceId` pinned to its own new id. Legacy nodes (no
+ * envelope) return the plain `cloneNode` result untouched, so pre-extension
+ * duplication stays byte-identical. Never throws and never mutates the
+ * source.
+ */
+export function duplicateExtensionStudioNode(source: StudioNode): StudioNode {
+  try {
+    const copy = cloneNode(source);
+    const refresh = (node: StudioNode): void => {
+      try {
+        const settings = node.settings;
+        if (
+          settings &&
+          typeof settings === "object" &&
+          !Array.isArray(settings)
+        ) {
+          const current = (settings as Record<string, unknown>)[
+            "extensionInstanceId"
+          ];
+          if (typeof current === "string" && current.trim()) {
+            node.settings = { ...settings, extensionInstanceId: node.id };
+          }
+        }
+      } catch {
+        // A hostile settings bag keeps its cloned value.
+      }
+      try {
+        for (const child of node.children ?? []) refresh(child);
+      } catch {
+        // Hostile children keep their cloned values.
+      }
+    };
+    refresh(copy);
+    return copy;
+  } catch {
+    try {
+      return cloneNode(source);
+    } catch {
+      return { id: uid(), el: "app-block", settings: {} };
+    }
   }
 }
 

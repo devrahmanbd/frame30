@@ -10,6 +10,7 @@ import type { ReactNode } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { SectionRenderer } from "@/components/builder/SectionRenderer";
 import type { DevThemeBinding } from "@/components/builder/SectionRenderer";
+import type { UnifiedRegistry } from "@/lib/unified-widget-registry";
 import { CartProvider, useLiveCart } from "@/components/builder/CartContext";
 import { VitalsReporter } from "@/components/store/VitalsReporter";
 import { TrafficReporter } from "@/components/store/TrafficReporter";
@@ -92,6 +93,14 @@ type Props = {
    * to binding-only when it does.
    */
   devThemeBinding?: DevThemeBinding | null;
+  /**
+   * Frame30 Level B storefront — route-local registry carrying the approved
+   * theme defs the binding executes (built by the host from the PUBLISHED
+   * manifest via `activeDevThemeWidgetDefs`, never the global singleton).
+   * Absent keeps the legacy fallback registry path, byte-identical: binding
+   * without resolvable defs stays placeholder (fail-closed).
+   */
+  registry?: UnifiedRegistry | null;
   /**
    * Custom-isolated theme mount (ThemeRuntime activation). Only a record
    * flagged `runtime: "custom-isolated"` with a valid immutable descriptor
@@ -204,6 +213,7 @@ export function ThemeChrome({
   customCss = null,
   isolatedTheme = null,
   devThemeBinding = null,
+  registry = null,
 }: Props) {
   // Phase 2.1: language choice is remembered per storefront.
   useLangScope(storeSlug ?? null);

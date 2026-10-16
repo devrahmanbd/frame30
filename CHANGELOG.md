@@ -87,6 +87,39 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   run green in one pass) and CI restoration (config restored verbatim —
   remote builds still need owner token access).
 
+## [Unreleased] (frame30) — Real editor wired end-to-end
+
+### Added
+
+- Real editor (`content/editor` → `EditorShell` → `StudioBuilder`) on one
+  authorized tenant-aware registry (tenant plugins + active approved theme
+  defs, fail-closed to plugins-only) threaded to tray, inspector, canvas,
+  preview and binding; nothing touches the shared singleton.
+- Schema-generated studio `SettingsPanel`: generated controls from each
+  selected widget's `propsSchema` (all kinds, nested/group/repeater,
+  media, `bp` layers, keyed errors, reset); legacy panel byte-identical;
+  third-party widgets need no core changes (proven by fixture-only def).
+- Studio canvas on the extension-aware renderer (all modes, same
+  outcomes as the reference branch; twin default-echo shedding fixed).
+- Storefront live binding: public projection + server-revalidating
+  `onCall` for the published active theme; drafts never leak publicly.
+- Pipeline proofs (insert→edit→autosave→reload→duplicate→preview→publish,
+  legacy byte-identical) and a test-only security matrix (isolation,
+  grants, sandboxes, kill switches, revocation, hostile props).
+- Authenticated E2E: real login proven impossible in this env (dummy
+  Supabase host, unported local auth, no seeds — documented wall, no
+  stubbing); maximum reachable path pinned with static-chain specs +
+  switch→serve round-trip; prior stale tokens fixed.
+
+### Verification
+
+- New: settings 21, twin-parity 4, pipeline/security/storefront suites
+  144+, E2E wiring/switch specs 7; repaired render twins 86 + 1067
+  neighbors; `tsc` 0; eslint 0 errors; secret scan passed.
+- Skipped, not passed: 9 auth-gated E2E steps (3 anonymous + 3 registry +
+  3 authenticated) — a real session is the only unblocker; CI tokens
+  still owner-side.
+
 ## [Unreleased] (frame30) — Genuine Level B execution, production-proven
 
 ### Added

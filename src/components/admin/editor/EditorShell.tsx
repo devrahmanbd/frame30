@@ -75,6 +75,8 @@ import { PrePublishPanel } from "./PrePublishPanel";
 import { SeoMetaBox } from "@/components/admin/seo/metabox/SeoMetaBox";
 import { UnderlineTabs, fieldInput } from "./primitives";
 import { useEditorDoc } from "./useEditorDoc";
+import type { UnifiedRegistry } from "@/lib/unified-widget-registry";
+import type { DevThemeBinding } from "@/components/builder/SectionRenderer";
 
 const SIDEBAR_MIN = 320;
 const SIDEBAR_MAX = 420;
@@ -168,6 +170,8 @@ export function EditorShell({
   forceEditor = null,
   pluginEntries: pluginEntriesProp,
   plugins: pluginsProp,
+  extensionRegistry = null,
+  devThemeBinding = null,
 }: {
   kind: ContentKind;
   id: string | null;
@@ -183,6 +187,24 @@ export function EditorShell({
    */
   pluginEntries?: StudioPluginEntry[];
   plugins?: StudioPluginEntry[];
+  /**
+   * Frame30 one-registry (route-owned): the tenant-aware registry the route
+   * built via `buildEditorExtensionRegistry` (this tenant's authorized
+   * installs + active approved theme defs). Forwarded to the studio through
+   * `studioSeamProps`; absent keeps StudioBuilder's own fallback. The shell
+   * never builds a competing registry.
+   */
+  extensionRegistry?: UnifiedRegistry | null;
+  /**
+   * Frame30 Level B binding (route-owned): the single projected
+   * `DevThemeBinding` for the approved ACTIVE release, or explicit absent
+   * (null) when unprojected. Forwarded alongside the registry through
+   * `studioSeamProps` so canvas/inspector/preview share one build.
+   * Receiver-owned: spread (not an explicit attribute) so this file
+   * compiles while the studio has yet to declare the prop — inert until it
+   * does, flowing the moment it does.
+   */
+  devThemeBinding?: DevThemeBinding | null;
 }) {
   const { t, lang } = useLang();
   const navigate = useNavigate();
@@ -427,8 +449,15 @@ export function EditorShell({
   // explicit attributes) so this file compiles and runs unchanged today —
   // the extra props are inert until the owning track adds them — and flows
   // through the moment it does. `pluginEntries` only spreads when non-empty.
+  // Frame30 one-registry: the route-owned `extensionRegistry` (already
+  // declared by the studio, consumed by `addPluginNode`) plus the single
+  // projected `devThemeBinding` share this one seam object. Absent values
+  // are never spread (the studio default is explicit absent), so no second
+  // competing build can exist.
   const studioSeamProps = {
     ...(pluginEntries.length > 0 ? { pluginEntries } : null),
+    ...(extensionRegistry ? { extensionRegistry } : null),
+    ...(devThemeBinding ? { devThemeBinding } : null),
     onRestoreRevision: restoreStudioRevision,
   };
 

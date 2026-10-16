@@ -7,6 +7,8 @@ import {
   type ThemeTokens,
 } from "./builder-ast";
 import { publishedTheme } from "./themes.server";
+import type { DevThemeManifest } from "./dev-theme-manifest";
+import type { DevThemeBindingInputs } from "./themes.server";
 
 /**
  * Public variant rows for storefront reads.
@@ -112,6 +114,16 @@ async function loadPublished(
   tokens: ThemeTokens;
   themeKey: string | null;
   versionId: string;
+  /**
+   * Frame30 Level B storefront — public-safe binding inputs for the PUBLISHED
+   * active theme's approved release ONLY (allow-listed origin, pinned
+   * name+version, least-privilege grants). Null unless projected — the host
+   * keeps the explicit placeholder. Preview/draft paths never set this (see
+   * `resolveIndexTheme`: the preview branch bypasses `loadPublished`).
+   */
+  devThemeBinding?: DevThemeBindingInputs | null;
+  /** Approved manifest for the route-local theme registry. Absent unless projected. */
+  approvedDevManifest?: DevThemeManifest | null;
 } | null> {
   // Phase 8.7: render time is tracked per template, which is the unit a
   // merchant experiences and the unit the cache is keyed by.
@@ -130,11 +142,34 @@ async function loadPublished(
     main: ast.main,
     footer: ast.footer.length ? ast.footer : home.footer,
   };
+  // Level B public projection: approved release for the PUBLISHED active
+  // theme only; unapproved/inactive/missing/tampered yield null (fail-closed,
+  // never throws, never breaks the storefront render).
+  let devThemeBinding: DevThemeBindingInputs | null = null;
+  let approvedDevManifest: DevThemeManifest | null = null;
+  try {
+    const { loadPublishedDevThemeProjection } = await import(
+      "./storefront-dev-theme.server"
+    );
+    const projection = await loadPublishedDevThemeProjection(
+      publicClient(),
+      merchantId,
+    ).catch(() => null);
+    if (projection) {
+      devThemeBinding = projection.binding;
+      approvedDevManifest = projection.manifest;
+    }
+  } catch {
+    devThemeBinding = null;
+    approvedDevManifest = null;
+  }
   return {
     ast: withChrome,
     tokens: theme.tokens,
     themeKey: theme.themeKey,
     versionId: theme.versionId,
+    devThemeBinding,
+    approvedDevManifest,
   };
 }
 
@@ -162,6 +197,11 @@ export async function loadPageTemplate(
         tokens: pinned.tokens,
         themeKey: pinned.themeKey,
         versionId: pinned.versionId,
+        // Pinned-theme Level B stays placeholder: the public projection gates
+        // on the ACTIVE theme (is_active), so a pinned (possibly inactive)
+        // theme never mints a binding here — fail-closed, never a default.
+        devThemeBinding: null,
+        approvedDevManifest: null,
       };
   }
   return loadPublished(merchantId, "page");
@@ -205,6 +245,10 @@ export async function loadStoreChrome(slug: string, template: TemplateKey) {
     tokens: theme?.tokens ?? null,
     themeKey: theme?.themeKey ?? null,
     themeVersionId: theme?.versionId ?? null,
+    // PUBLISHED active-theme Level B binding + manifest (null unless the
+    // approved release projected — host keeps the placeholder otherwise).
+    devThemeBinding: theme?.devThemeBinding ?? null,
+    approvedDevManifest: theme?.approvedDevManifest ?? null,
     siteKit,
     menus,
     installedPlugins,
@@ -294,6 +338,8 @@ export async function loadStoreCollection(
     tokens: theme?.tokens ?? null,
     themeKey: theme?.themeKey ?? null,
     themeVersionId: theme?.versionId ?? null,
+    devThemeBinding: theme?.devThemeBinding ?? null,
+    approvedDevManifest: theme?.approvedDevManifest ?? null,
   };
 }
 
@@ -551,6 +597,14 @@ async function loadStorefrontUncached(
     themeKey: theme?.themeKey ?? null,
     themeVersionId: theme?.versionId ?? null,
     preview: theme?.preview ?? false,
+    // Preview drafts never carry a binding (resolveIndexTheme preview branch
+    // omits it); published spreads the Level B projection (null → placeholder).
+    devThemeBinding:
+      (theme as unknown as { devThemeBinding?: unknown } | null)?.devThemeBinding ??
+      null,
+    approvedDevManifest:
+      (theme as unknown as { approvedDevManifest?: unknown } | null)
+        ?.approvedDevManifest ?? null,
     widgetBundle,
     widgetData,
     customCode,
@@ -671,6 +725,8 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
     tokens: theme?.tokens ?? null,
     themeKey: theme?.themeKey ?? null,
     themeVersionId: theme?.versionId ?? null,
+    devThemeBinding: theme?.devThemeBinding ?? null,
+    approvedDevManifest: theme?.approvedDevManifest ?? null,
   };
 }
 

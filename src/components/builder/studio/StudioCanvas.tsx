@@ -35,6 +35,8 @@ import {
 } from "@/lib/studio/styles";
 import type { DeviceKey } from "@/lib/studio/responsive";
 import { StudioWidget } from "./renderers";
+import type { DevThemeBinding } from "../SectionRenderer";
+import type { UnifiedRegistry } from "@/lib/unified-widget-registry";
 
 export type CanvasProps = {
   doc: StudioDoc;
@@ -52,6 +54,16 @@ export type CanvasProps = {
   onSelectMode?: (id: string | null, mode: "replace" | "toggle") => void;
   /** Real menus for the widget→menu binding; forwarded to each widget. */
   menus?: readonly StudioMenuSource[] | null;
+  /**
+   * Frame30 extension tree props. All optional: absent keeps every legacy
+   * node byte-identical. Extension twins resolve through the same
+   * extension-aware outcomes as `SectionRenderer`'s extension branch; the
+   * uploaded-theme sandbox lane renders ONLY when `devThemeBinding`
+   * arrives here (absent keeps the explicit placeholder).
+   */
+  themeKey?: string | null;
+  registry?: UnifiedRegistry;
+  devThemeBinding?: DevThemeBinding;
   onDrop: (target: DropTarget) => void;
   onDragNode: (id: string) => void;
   onDuplicate: (id: string) => void;
@@ -297,14 +309,33 @@ function NodeView(props: NodeViewProps) {
 }
 
 function InlineWidget(props: NodeViewProps) {
-  const { node, device, selectedId, selectedIds, menus } = props;
+  const {
+    node,
+    device,
+    selectedId,
+    selectedIds,
+    menus,
+    themeKey,
+    registry,
+    devThemeBinding,
+  } = props;
   const editable = INLINE_EDITABLE.has(node.el);
   const key = node.el === "button" ? "label" : "text";
   const isSelected = selectedIds
     ? selectedIds.includes(node.id)
     : selectedId === node.id;
   if (!editable)
-    return <StudioWidget node={node} device={device} editing menus={menus} />;
+    return (
+      <StudioWidget
+        node={node}
+        device={device}
+        editing
+        menus={menus}
+        themeKey={themeKey}
+        registry={registry}
+        devThemeBinding={devThemeBinding}
+      />
+    );
   return (
     <div
       suppressContentEditableWarning
@@ -318,7 +349,15 @@ function InlineWidget(props: NodeViewProps) {
       tabIndex={isSelected ? 0 : undefined}
       data-inline-key={key}
     >
-      <StudioWidget node={node} device={device} editing menus={menus} />
+      <StudioWidget
+        node={node}
+        device={device}
+        editing
+        menus={menus}
+        themeKey={themeKey}
+        registry={registry}
+        devThemeBinding={devThemeBinding}
+      />
     </div>
   );
 }
