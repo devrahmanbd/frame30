@@ -16,10 +16,7 @@ describe("mintFallbackPassword", () => {
   });
 
   it("uses no Math.random in the mint path", () => {
-    const src = readFileSync(
-      "/opt/frame28/src/lib/owner-people.server.ts",
-      "utf8",
-    )
+    const src = readFileSync("src/lib/owner-people.server.ts", "utf8")
       .replace(/\/\*[\s\S]*?\*\//g, "")
       .replace(/\/\/.*$/gm, "");
     expect(src).not.toMatch(/Math\.random/);

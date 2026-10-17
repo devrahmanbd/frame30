@@ -62,10 +62,7 @@ describe("Frame30 official plugin installs without the archive pipeline", () => 
   });
 
   it("the official installer source never references the archive pipeline", () => {
-    const src = fs.readFileSync(
-      "/opt/frame28/src/lib/official-plugins.server.ts",
-      "utf8",
-    );
+    const src = fs.readFileSync("src/lib/official-plugins.server.ts", "utf8");
     const code = src
       .split("\n")
       .filter((line) => !/^\s*import type/.test(line))

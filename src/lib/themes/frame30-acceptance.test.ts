@@ -9,8 +9,11 @@
 import { describe, expect, it } from "vitest";
 import * as fs from "node:fs";
 
-const read = (f: string) => fs.readFileSync(`/opt/frame28/${f}`, "utf8");
-const exists = (f: string) => fs.existsSync(`/opt/frame28/${f}`);
+// Repo-relative: vitest runs with the repository root as cwd. CI checks
+// the repository out under a different absolute path than any dev box, so
+// a hard-coded prefix passes locally and dies with ENOENT on CI.
+const read = (f: string) => fs.readFileSync(f, "utf8");
+const exists = (f: string) => fs.existsSync(f);
 
 describe("frame30 acceptance", () => {
   it("1: official themes work from source without generating or installing ZIPs", async () => {

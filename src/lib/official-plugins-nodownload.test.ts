@@ -35,7 +35,7 @@ const { exportBuiltinPluginZip, exportPluginManifestZip } =
   await import("./plugin-package");
 const { extractPackageFiles, parseZip } = await import("./package-zip");
 
-const ROUTES_ROOT = "/opt/frame28/src/routes";
+const ROUTES_ROOT = "src/routes";
 
 /** Every shipped route module (test files excluded — they ship nothing). */
 function routeFiles(): string[] {

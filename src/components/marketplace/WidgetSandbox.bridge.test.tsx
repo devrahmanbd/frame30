@@ -356,7 +356,7 @@ describe("handleSandboxMessage — call timeout", () => {
       "src/components/marketplace/WidgetSandbox.tsx",
       "src/lib/bridge-flood-guard.ts",
     ]) {
-      const src = readFileSync(`/opt/frame28/${f}`, "utf8");
+      const src = readFileSync(f, "utf8");
       expect(src).not.toMatch(
         /islandFailed|checkMountWatch|createMountWatch|MountWatch|DEFAULT_MOUNT_BUDGET/,
       );

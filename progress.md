@@ -12,7 +12,7 @@
 ## CI failure inventory (verified locally, mirrors CI jobs 1:1)
 
 - [x] `lint-typecheck/eslint`: prettier drift swept repo-wide (behavior-safe per full suite); hooks/prop errors fixed except in-flight lanes; one resilience-vs-rule conflict resolved via documented disable (`ThemeChrome` provider-absent catch — a prior hoist broke 2 tests, reverted)
-- [ ] `unit-contract/vitest`: 1 pre-existing env failure (`site.server` missing-env guard)
+- [x] `unit-contract/vitest`: root cause found + fixed — fourteen test files read repo files through this machine's absolute checkout path (`/opt/frame28/...`): green on this host, `ENOENT` on CI (`~/project`). Reproduced byte-for-byte in a `cimg/node:24.21` container (2 vCPU / 4 GB / UTC, repo at `/work`): 13 files / 14 tests, all `ENOENT`; the same container is green after the cwd-relative fix. Guard added: `src/lib/repo-path-portability.test.ts` (negative control verified). Remote verdict on this push pending.
 - [ ] `e2e-critical`: references 8 `*_loop` suites that exist only as docs → "No tests found" exit 1
 - [ ] `scan`: green (secret/sast/diff+full/dep-audit all pass)
 - [ ] `build`: green (`vite build` verified)

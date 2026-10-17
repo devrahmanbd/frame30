@@ -12,7 +12,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 
 const SRC = readFileSync(
-  "/opt/frame28/src/routes/_authenticated/dashboard/builder.tsx",
+  "src/routes/_authenticated/dashboard/builder.tsx",
   "utf8",
 );
 

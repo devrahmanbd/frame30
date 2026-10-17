@@ -31,7 +31,7 @@ const VERSION = "55555555-5555-4555-8555-555555555555";
 const UNKNOWN_VERSION = "66666666-6666-4666-8666-666666666666";
 const ACTOR = "99999999-9999-4999-8999-999999999999";
 
-const FUNCTIONS_SRC = "/opt/frame28/src/lib/themes/appearance.functions.ts";
+const FUNCTIONS_SRC = "src/lib/themes/appearance.functions.ts";
 
 const SECRET = "sk-" + "abcdefghij0123456789ABCDEFGH0123";
 

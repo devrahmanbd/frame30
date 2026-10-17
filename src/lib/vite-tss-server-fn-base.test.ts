@@ -18,8 +18,10 @@ import {
  * with the exact value the Start plugin resolved.
  */
 
+// Machine-neutral root: the id only needs to carry the framework module
+// path (the transform matches by marker), not this box's checkout path.
 const CLIENT_RPC_ID =
-  "/opt/frame28/node_modules/@tanstack/start-client-core/dist/esm/client-rpc/createClientRpc.js";
+  "/repo/node_modules/@tanstack/start-client-core/dist/esm/client-rpc/createClientRpc.js";
 
 const BARE_CODE =
   "function createClientRpc(functionId) {\n" +
@@ -59,7 +61,7 @@ describe("rewriteTssServerFnBase", () => {
     expect(
       rewriteTssServerFnBase(
         BARE_CODE,
-        "/opt/frame28/src/lib/editor/editor.functions.ts",
+        "/repo/src/lib/editor/editor.functions.ts",
         { ssr: false },
         '"/_serverFn/"',
       ),

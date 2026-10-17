@@ -18,7 +18,7 @@ describe("frame30 source-direct runtime", () => {
       "src/lib/theme-preview-nav.ts",
     ];
     for (const f of runtimeFiles) {
-      const s = fs.readFileSync(`/opt/frame28/${f}`, "utf8");
+      const s = fs.readFileSync(f, "utf8");
       expect(s).not.toMatch(
         /official-artifact-bundle|official-artifacts|theme-export/,
       );

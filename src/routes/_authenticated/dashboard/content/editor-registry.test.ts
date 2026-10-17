@@ -13,11 +13,11 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 
 const ROUTE_SRC = readFileSync(
-  "/opt/frame28/src/routes/_authenticated/dashboard/content/editor.tsx",
+  "src/routes/_authenticated/dashboard/content/editor.tsx",
   "utf8",
 );
 const SHELL_SRC = readFileSync(
-  "/opt/frame28/src/components/admin/editor/EditorShell.tsx",
+  "src/components/admin/editor/EditorShell.tsx",
   "utf8",
 );
 

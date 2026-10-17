@@ -135,6 +135,46 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `tsgo --noEmit` clean; eslint 0 errors; prettier clean on all touched
   files; full vitest green in the exact CI shape.
 
+### Fixed — `unit-contract` root cause (machine-absolute checkout paths)
+
+- Fourteen test files resolved repository files through this machine's
+  absolute checkout path (`/opt/frame28/...`). That path exists on the dev
+  host, so the suite was green locally; on CircleCI the checkout is
+  `~/project`, so every one of those reads threw
+  `ENOENT … /opt/frame28/...` — the identical 13-file / 14-test set on all
+  three remote runs. Reproduced byte-for-byte in the exact CI image
+  (`cimg/node:24.21`, 2 vCPU / 4 GB / `CI=true` / UTC, no env files,
+  repository at `/work`): pre-fix 13 failed files, 14 failed tests, all
+  `ENOENT`; post-fix the same container is fully green. Reads now resolve
+  relative to the process working directory (vitest runs with the
+  repository root as cwd locally and on CI); the one string-only fixture
+  (`vite-tss-server-fn-base.test.ts`) was normalized to a machine-neutral
+  root — its transform matches by marker, not by prefix.
+- New portability guard `src/lib/repo-path-portability.test.ts`: scans
+  every file under `src/` for the literal machine checkout path (needle
+  assembled at runtime so the guard does not ban itself) and fails naming
+  any offender. Negative control verified — an injected file carrying the
+  path fails the guard; removing it restores green.
+- The earlier SEO-budget best-of-7 change stands as load-robustness
+  hardening, but the remote failure is fully explained by the path drift:
+  the pre-fix CI-image run on 2 vCPU shows zero timing failures — only the
+  `ENOENT` set.
+
+### Verification — `unit-contract` close-out (CI image)
+
+- Pre-fix CI shape: `bun run test` — 13 failed files / 14 failed tests /
+  4 skipped (574 files), every failure `ENOENT`; the run aborted before
+  the contract gate.
+- Post-fix, same container: `bun run test` — 574 passed | 1 skipped
+  (575 files), 8269 passed | 4 skipped (8273 tests), RC 0; new guard
+  green. `bun run test:contracts` — 13 suites, 258 cases, RC 0.
+- The extra tests over the pre-fix count are the previously
+  collection-failed files finally executing (0-test failures now
+  contribute their 4/8/4 tests) plus the new guard.
+- Local: targeted 15-file run 111 pass; `tsgo --noEmit` clean; eslint
+  0 errors; prettier clean on all touched files; `grep` for the machine
+  path under `src/` returns nothing.
+
 ### Added
 
 - Inspector resolves canonical extension nodes by `widgetKey`

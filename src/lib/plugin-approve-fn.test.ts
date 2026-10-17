@@ -29,7 +29,7 @@ const ACTOR = "99999999-9999-4999-8999-999999999999";
 const PLUGIN = "audit-probe";
 const VERSION = "1.0.0";
 
-const FUNCTIONS_SRC = "/opt/frame28/src/lib/plugins.functions.ts";
+const FUNCTIONS_SRC = "src/lib/plugins.functions.ts";
 
 const SECRET = "sk-" + "abcdefghij0123456789ABCDEFGH0123";
 

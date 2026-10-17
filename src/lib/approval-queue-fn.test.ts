@@ -16,7 +16,7 @@ import * as fs from "node:fs";
 
 const { approvalQueueFn } = await import("./approval-queue.functions");
 
-const FUNCTIONS_SRC = "/opt/frame28/src/lib/approval-queue.functions.ts";
+const FUNCTIONS_SRC = "src/lib/approval-queue.functions.ts";
 
 describe("approvalQueueFn wiring", () => {
   it("is exported from the approval-queue functions module", () => {

@@ -38,10 +38,7 @@ describe("frame30 official plugins source-registered", () => {
     expect(isOfficialPluginKey("loyalty-lite")).toBe(false);
   });
   it("plugin mutations stay behind tenant authorization", () => {
-    const src = fs.readFileSync(
-      "/opt/frame28/src/lib/plugins.functions.ts",
-      "utf8",
-    );
+    const src = fs.readFileSync("src/lib/plugins.functions.ts", "utf8");
     for (const fn of [
       "pluginInstallFn",
       "pluginToggleFn",
