@@ -41,7 +41,7 @@ export const Route = createFileRoute(
   component: OrderDetailPage,
   errorComponent: ({ error }) => (
     <p role="alert" className="text-sm text-danger-foreground">
-      {error.message}
+      {error instanceof Error ? error.message : ""}
     </p>
   ),
   notFoundComponent: () => (

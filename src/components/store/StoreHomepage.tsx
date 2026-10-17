@@ -1,9 +1,11 @@
+import { useMemo } from "react";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { StoreFooterMenus } from "@/components/store/StoreFooterMenus";
 import { StudioNodes } from "@/components/store/StudioNodes";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { PluginLayer } from "@/components/store/PluginLayer";
 import { useLang } from "@/lib/i18n";
+import { buildTrayRegistry } from "@/lib/unified-widget-registry";
 import type { getStorePageFn } from "@/lib/storefront-search.functions";
 
 type HomepageData = NonNullable<Awaited<ReturnType<typeof getStorePageFn>>>;
@@ -38,6 +40,13 @@ export function StoreHomepage({
     installedPlugins,
     themeKey,
   } = home;
+  // Frame30 one-registry (storefront): same authorized-defs threading as the
+  // page view — the authored twin tree resolves against the tenant installs,
+  // never the def-less fallback that misses every twin.
+  const registry = useMemo(
+    () => buildTrayRegistry(installedPlugins),
+    [installedPlugins],
+  );
 
   // Studio-authored pages are self-composed (hero/headings live inside
   // the nodes) — prepending the page title would duplicate H1s.
@@ -58,7 +67,11 @@ export function StoreHomepage({
       {studioNodes && studioNodes.length > 0 ? (
         // Studio-authored body: same components as the canvas preview.
         <div className="fq-builder-page mt-6">
-          <StudioNodes nodes={studioNodes} />
+          <StudioNodes
+            nodes={studioNodes}
+            registry={registry}
+            themeKey={themeKey}
+          />
         </div>
       ) : (
         <div
@@ -94,6 +107,7 @@ export function StoreHomepage({
         tokens={tokens}
         siteKit={siteKit}
         customCss={customCss}
+        registry={registry}
         ownsPrimary
         chrome={
           <StoreHeader

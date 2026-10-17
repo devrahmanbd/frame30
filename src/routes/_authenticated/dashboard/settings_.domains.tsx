@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  useRouter,
+  type ErrorComponentProps,
+} from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { btnPrimary, inputClass } from "@/components/admin/MarketingUi";
 import { SectionCard } from "@/components/admin/DeveloperUi";
@@ -92,15 +96,16 @@ function DomainsPending() {
   );
 }
 
-function DomainsError({ error }: { error: Error }) {
+function DomainsError({ error }: ErrorComponentProps) {
   const router = useRouter();
+  const message = error instanceof Error ? error.message : "";
   return (
     <div className="space-y-3 p-4 md:p-6" role="alert">
       <h1 className="font-bangla-display text-xl font-semibold">
         Custom domains
       </h1>
       <p className="text-sm text-muted-foreground">
-        Could not load your domains{error?.message ? `: ${error.message}` : "."}
+        Could not load your domains{message ? `: ${message}` : "."}
       </p>
       <button
         type="button"

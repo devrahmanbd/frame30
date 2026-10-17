@@ -52,6 +52,7 @@ import {
   studioNodeForExtension,
   type PluginTrayEntry,
 } from "./plugin-tray";
+import { createDebouncedFlush, type DebouncedFlush } from "./studio-doc-flush";
 import {
   createWidgetRegistry,
   fromBuiltinWidgets,
@@ -1297,19 +1298,40 @@ export function StudioBuilder({
     [],
   );
 
-  /* keep the host in sync without pushing on every keystroke */
-  /* Extension lifecycle: the host receives the normalized save
+  /* keep the host in sync without pushing on every keystroke.
+   * The timer is owned by the scheduler ref, never by effect cleanup: a host
+   * re-render delivers fresh `onChange` identities, and cleanup-based
+   * scheduling would clear the pending timer while the `lastSent` early
+   * return blocks any reschedule — the host then keeps a stale body until the
+   * next canvas edit (and the shell's Save draft persists that stale body).
+   * The latest callback/registry are read at fire time.
+   * Extension lifecycle: the host receives the normalized save
    * representation (legacy docs pass through by reference). */
+  const latestFlush = useRef({ doc, onChange, extensionRegistry });
+  useEffect(() => {
+    latestFlush.current = { doc, onChange, extensionRegistry };
+  });
+  const flushDocRef = useRef<DebouncedFlush | null>(null);
+  if (flushDocRef.current === null) {
+    flushDocRef.current = createDebouncedFlush(() => {
+      const latest = latestFlush.current;
+      latest.onChange(
+        normalizeExtensionDocForSave(latest.doc, latest.extensionRegistry),
+      );
+    });
+  }
   const lastSent = useRef(doc);
   useEffect(() => {
     if (lastSent.current === doc) return;
     lastSent.current = doc;
-    const id = window.setTimeout(
-      () => onChange(normalizeExtensionDocForSave(doc, extensionRegistry)),
-      400,
-    );
-    return () => window.clearTimeout(id);
-  }, [doc, onChange, extensionRegistry]);
+    flushDocRef.current!.schedule();
+  }, [doc]);
+  useEffect(
+    () => () => {
+      flushDocRef.current!.cancel();
+    },
+    [],
+  );
 
   /* ---------------- autosave + crash recovery ---------------- */
 

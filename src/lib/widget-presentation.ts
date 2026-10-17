@@ -994,9 +994,7 @@ export function checkThemeCompatibility(
         def.namespace === "plugin" &&
         Array.isArray(scoped) &&
         scoped.length > 0 &&
-        !scoped.some(
-          (t) => typeof t === "string" && t.trim() === key,
-        )
+        !scoped.some((t) => typeof t === "string" && t.trim() === key)
       ) {
         return {
           widgetId,

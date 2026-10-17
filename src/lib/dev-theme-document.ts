@@ -92,7 +92,7 @@ export function devThemeDocumentCSP(assetOrigin: string): string {
   return [
     "default-src 'none'",
     `script-src ${o}`,
-    `style-src ${o} 'unsafe-inline'`,
+    `style-src ${o} 'unsafe-inline'`, // sast-allow: csp-sandbox -- styles only; scripts stay origin-locked; connect/frame/form/base are 'none'
     `img-src ${o} data:`,
     `font-src ${o}`,
     "connect-src 'none'",

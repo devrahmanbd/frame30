@@ -49,6 +49,40 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   with 357 neighbors green; ornament 20/20 with 528 neighbors green;
   `tsgo` clean; eslint clean; secret scan passed.
 
+### Fixed — authenticated-journey close-out (dev define gap, studio flush race)
+
+- Dev-served editor crash root cause: `@tanstack/start-client-core`'s
+  `createClientRpc` reads `process.env.TSS_SERVER_FN_BASE` at module init, and
+  Vite `define` is not applied to raw-served optimizeDeps-excluded framework
+  files (upstream TanStack/router#7414). New dev-only plugin
+  `src/lib/vite-tss-server-fn-base.ts` (`apply: "serve"`, SSR untouched)
+  rewrites the read to the resolved define value; production was never
+  affected (bundle contains the token only inside the serialized
+  `import.meta.env` map). TDD: 7 new vectors.
+- Studio canvas→host flush race: the 400 ms debounce lived in an effect whose
+  cleanup was keyed on host callback identities, so any host re-render cleared
+  the pending timer while the unchanged-doc early return blocked any
+  reschedule — the shell's "Save draft" then persisted a stale `root:[]` body
+  until the next canvas edit. New `studio-doc-flush.ts` (ref-owned scheduler,
+  latest callback/registry read at fire time; host renders cannot cancel it),
+  wired into `StudioBuilder`; 5 TDD vectors.
+- Level B content-addressed theme asset gate fixed in
+  `src/lib/dev-theme-bundle.ts` (2 new TDD vectors).
+- `.circleci/config.yml`: hermetic `e2e-executor` boot env (reserved
+  `127.0.0.1:9`, fake keys — the dev server refuses to boot without Supabase
+  names; no real backend is ever contacted).
+
+### Verification — authenticated-journey close-out
+
+- Authenticated journey through the real UI (real GoTrue loopback,
+  `docker-compose.e2e.yml`; no auth stubbing): 6/6 green `--retries=0`,
+  including `save → reload → preview → publish → storefront`.
+- CI-parity browser lanes (env files hidden, dummy boot env), `--retries=0`:
+  `e2e:critical` 10/10, `e2e:security` 17/17, Level B 10/10 (in-frame WebGL
+  byte-proof).
+- Full vitest 8268 pass / 4 skip; `test:contracts` 258/258; `tsgo` clean;
+  `eslint .` 0 errors; secret scan, SAST, dep audit pass.
+
 ### Added
 
 - Inspector resolves canonical extension nodes by `widgetKey`

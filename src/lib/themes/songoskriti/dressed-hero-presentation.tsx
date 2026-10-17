@@ -35,9 +35,7 @@ export const SongoskritiDressedHeroPresentation: WidgetComponent = (ctx) => {
   );
 };
 
-export const SongoskritiDressedReviewsPresentation: WidgetComponent = (
-  ctx,
-) => {
+export const SongoskritiDressedReviewsPresentation: WidgetComponent = (ctx) => {
   const title = ctx.str("title");
   return (
     <aside

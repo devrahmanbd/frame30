@@ -334,7 +334,9 @@ function versionedCleanRecord(value: unknown): Record<string, unknown> {
   return out;
 }
 
-function versionedClone(value: Record<string, unknown>): Record<string, unknown> {
+function versionedClone(
+  value: Record<string, unknown>,
+): Record<string, unknown> {
   try {
     const parsed: unknown = JSON.parse(JSON.stringify(value));
     return versionedCleanRecord(parsed);
@@ -368,7 +370,11 @@ function parseVersionTriple(raw: unknown): VersionTriple | null {
   for (const part of parts) {
     if (part.length > VERSIONED_PART_MAX) return null;
   }
-  const triple: VersionTriple = [Number(parts[0]), Number(parts[1]), Number(parts[2])];
+  const triple: VersionTriple = [
+    Number(parts[0]),
+    Number(parts[1]),
+    Number(parts[2]),
+  ];
   if (!triple.every((n) => Number.isSafeInteger(n) && n >= 0)) return null;
   return triple;
 }
@@ -587,7 +593,12 @@ export function registerVersionedPresentation(entry: unknown): void {
         return;
       }
     }
-    bucket.push({ ...parsed, floor, component: bag.component, migrate: bag.migrate });
+    bucket.push({
+      ...parsed,
+      floor,
+      component: bag.component,
+      migrate: bag.migrate,
+    });
   } catch {
     versionedWarn("ignoring versioned registration after an internal error.");
   }
@@ -628,7 +639,9 @@ export function resolveVersionedPresentation(
     }
     return best ? best.component : fallback;
   } catch {
-    return opts && typeof opts.fallback === "function" ? opts.fallback : undefined;
+    return opts && typeof opts.fallback === "function"
+      ? opts.fallback
+      : undefined;
   }
 }
 
@@ -649,7 +662,9 @@ export function setVersionedPresentationAvailability(
       return;
     }
     if (typeof available !== "boolean") {
-      versionedWarn(`ignoring availability update for ${ownerKey}: not a boolean.`);
+      versionedWarn(
+        `ignoring availability update for ${ownerKey}: not a boolean.`,
+      );
       return;
     }
     VERSIONED_AVAILABILITY.set(ownerKey, available);
@@ -826,8 +841,7 @@ export function migrateVersionedProps(
     }
     if (!best)
       return { ok: false, reason: "unknown", preservedProps: preserved };
-    if (!best.migrate)
-      return { ok: true, migrated: false, props: preserved };
+    if (!best.migrate) return { ok: true, migrated: false, props: preserved };
     let next: unknown;
     try {
       next = best.migrate(preserved);

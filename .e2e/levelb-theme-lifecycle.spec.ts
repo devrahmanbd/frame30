@@ -238,13 +238,17 @@ test("install → activate → switch flips the live flag with per-switch audit"
   const prep = prepareRealTheme();
   const db = seedInstallMirrorDb(prep);
 
-  const first = await activateDevThemeInstall(db.asClient() as never, MERCHANT, {
-    themeId: "theme-1",
-    release: prep.release,
-    expectedFingerprint: prep.fingerprint,
-    expectedThemeId: REAL_THEME_ID,
-    actorId: "reviewer-1",
-  });
+  const first = await activateDevThemeInstall(
+    db.asClient() as never,
+    MERCHANT,
+    {
+      themeId: "theme-1",
+      release: prep.release,
+      expectedFingerprint: prep.fingerprint,
+      expectedThemeId: REAL_THEME_ID,
+      actorId: "reviewer-1",
+    },
+  );
   expect(first.fingerprint).toBe(prep.fingerprint);
 
   // Merchant installs the same approved bytes a second time (second
@@ -302,7 +306,10 @@ test("install → activate → switch flips the live flag with per-switch audit"
     theme_id: string;
   }[];
   const switched = audits.filter((a) => a.action === "dev_theme.activated");
-  expect(switched.map((a) => a.theme_id).sort()).toEqual(["theme-1", "theme-2"]);
+  expect(switched.map((a) => a.theme_id).sort()).toEqual([
+    "theme-1",
+    "theme-2",
+  ]);
 
   // Tampered bytes are refused BEFORE any flag flips (fresh mirror so the
   // live flag above is undisturbed).
@@ -422,9 +429,7 @@ test("static wiring: install → publish → serve production chain", () => {
     "src/routes/_authenticated/dashboard/marketplace/index.tsx",
   );
   for (const token of ["marketInstallFn", "InstallConsent", "InstalledApps"]) {
-    expect(marketplace.includes(token), `marketplace pins ${token}`).toBe(
-      true,
-    );
+    expect(marketplace.includes(token), `marketplace pins ${token}`).toBe(true);
   }
   const storefront = src("src/routes/store.$slug.index.tsx");
   expect(storefront.includes("themeKey"), "storefront pins themeKey").toBe(

@@ -93,7 +93,9 @@ describe("one-registry call-site pins (static)", () => {
   );
 
   it("SettingsPanel receives the threaded registry", () => {
-    expect(builder).toMatch(/<SettingsPanel[\s\S]*?registry=\{extensionRegistry/);
+    expect(builder).toMatch(
+      /<SettingsPanel[\s\S]*?registry=\{extensionRegistry/,
+    );
   });
 
   it("StudioCanvas receives registry, themeKey and binding", () => {

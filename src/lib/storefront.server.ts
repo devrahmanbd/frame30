@@ -148,9 +148,8 @@ async function loadPublished(
   let devThemeBinding: DevThemeBindingInputs | null = null;
   let approvedDevManifest: DevThemeManifest | null = null;
   try {
-    const { loadPublishedDevThemeProjection } = await import(
-      "./storefront-dev-theme.server"
-    );
+    const { loadPublishedDevThemeProjection } =
+      await import("./storefront-dev-theme.server");
     const projection = await loadPublishedDevThemeProjection(
       publicClient(),
       merchantId,
@@ -600,8 +599,8 @@ async function loadStorefrontUncached(
     // Preview drafts never carry a binding (resolveIndexTheme preview branch
     // omits it); published spreads the Level B projection (null → placeholder).
     devThemeBinding:
-      (theme as unknown as { devThemeBinding?: unknown } | null)?.devThemeBinding ??
-      null,
+      (theme as unknown as { devThemeBinding?: unknown } | null)
+        ?.devThemeBinding ?? null,
     approvedDevManifest:
       (theme as unknown as { approvedDevManifest?: unknown } | null)
         ?.approvedDevManifest ?? null,

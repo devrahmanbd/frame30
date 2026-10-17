@@ -34,10 +34,7 @@ import {
   resolvePluginWidget,
   type InstalledPlugin,
 } from "./plugin-manifest";
-import {
-  authorizeWidgetCall,
-  WIDGET_API,
-} from "./marketplace-scopes";
+import { authorizeWidgetCall, WIDGET_API } from "./marketplace-scopes";
 import { SCOPES } from "./marketplace-scopes";
 import {
   buildThemeGrants,
@@ -199,9 +196,7 @@ describe("tenant isolation — definitions never cross tenants", () => {
 
   it("an empty install set resolves nothing (no ambient definitions)", () => {
     const tray = buildTrayRegistry([]);
-    const miss = tray.resolveWidget(
-      pluginWidgetKey("acme-reviews", "reviews"),
-    );
+    const miss = tray.resolveWidget(pluginWidgetKey("acme-reviews", "reviews"));
     expect(miss.ok).toBe(false);
   });
 
@@ -248,7 +243,7 @@ describe("tenant isolation — definitions never cross tenants", () => {
       submittedBy: "dev-a",
       submittedAt: "2026-01-01T00:00:00.000Z",
     });
-    const actor = { id: "mod-1", role: "moderator" as const};
+    const actor = { id: "mod-1", role: "moderator" as const };
     let code: string | null = null;
     try {
       store.publish({
@@ -310,7 +305,12 @@ describe("capability authorization — ungranted methods denied", () => {
     expect(themeMethods.length).toBeGreaterThan(0);
     for (const method of themeMethods) {
       const v = authorizeThemeCall(
-        { v: THEME_BRIDGE_VERSION, id: "1", method, params: validThemeParams(method) },
+        {
+          v: THEME_BRIDGE_VERSION,
+          id: "1",
+          method,
+          params: validThemeParams(method),
+        },
         { granted: [] },
       );
       expect(v.allowed).toBe(false);
@@ -339,7 +339,11 @@ describe("capability authorization — ungranted methods denied", () => {
       },
       grants,
     );
-    expect(v).toEqual({ allowed: false, reason: "scope_denied", method: "navigate" });
+    expect(v).toEqual({
+      allowed: false,
+      reason: "scope_denied",
+      method: "navigate",
+    });
   });
 
   it("navigate granted explicitly: paths allowed, foreign origins denied", () => {
@@ -541,14 +545,17 @@ describe("kill switches — disabled extensions never execute", () => {
   });
 
   it("fromPluginManifest: disabled installs contribute zero definitions", () => {
-    expect(fromPluginManifest([pluginInstall("acme-reviews", { enabled: false })])).toEqual(
-      [],
-    );
+    expect(
+      fromPluginManifest([pluginInstall("acme-reviews", { enabled: false })]),
+    ).toEqual([]);
   });
 
   it("tray entries: disabled installs offer nothing", () => {
     expect(
-      pluginTrayEntries([pluginInstall("acme-reviews", { enabled: false })], "main"),
+      pluginTrayEntries(
+        [pluginInstall("acme-reviews", { enabled: false })],
+        "main",
+      ),
     ).toEqual([]);
   });
 
@@ -836,9 +843,7 @@ describe("wrong-widget safety — misses never substitute", () => {
 
   it("getWidget on unknown ids returns undefined (never a neighbor)", () => {
     const reg = tenantRegistry([pluginInstall("acme-reviews")]);
-    expect(
-      reg.getWidget(pluginWidgetKey("ghost", "missing")),
-    ).toBeUndefined();
+    expect(reg.getWidget(pluginWidgetKey("ghost", "missing"))).toBeUndefined();
   });
 
   it("updateWidget with a mismatched id refuses (no silent retarget)", () => {
@@ -908,9 +913,7 @@ describe("sandbox boundaries — null-origin island, opaque theme frame", () => 
     expect(csp.startsWith("default-src 'none'")).toBe(true);
     expect(csp).toContain("connect-src 'none'");
     expect(csp).toContain("form-action 'none'");
-    const scriptSrc = csp
-      .split("; ")
-      .find((d) => d.startsWith("script-src"))!;
+    const scriptSrc = csp.split("; ").find((d) => d.startsWith("script-src"))!;
     expect(scriptSrc).toBe(`script-src ${origin}`);
     expect(scriptSrc).not.toContain("unsafe-inline");
     expect(scriptSrc).not.toContain("blob:");
@@ -925,16 +928,27 @@ describe("sandbox boundaries — null-origin island, opaque theme frame", () => 
 
   it("theme URLs are version-pinned: latest/traversal/http refuse", () => {
     const origin = "https://assets.test";
-    expect(buildThemeFrameUrl(origin, { name: "my-theme", version: "1.2.3" })).toBe(
-      `${origin}/t/my-theme/1.2.3/index.html`,
-    );
-    expect(buildThemeFrameUrl(origin, { name: "my-theme", version: "latest" })).toBeNull();
-    expect(buildThemeFrameUrl(origin, { name: "../evil", version: "1.2.3" })).toBeNull();
-    expect(buildThemeFrameUrl(origin, { name: "my-theme", version: "1.2" })).toBeNull();
     expect(
-      buildThemeFrameUrl("http://assets.test", { name: "my-theme", version: "1.2.3" }),
+      buildThemeFrameUrl(origin, { name: "my-theme", version: "1.2.3" }),
+    ).toBe(`${origin}/t/my-theme/1.2.3/index.html`);
+    expect(
+      buildThemeFrameUrl(origin, { name: "my-theme", version: "latest" }),
     ).toBeNull();
-    expect(buildThemeFrameUrl("", { name: "my-theme", version: "1.2.3" })).toBeNull();
+    expect(
+      buildThemeFrameUrl(origin, { name: "../evil", version: "1.2.3" }),
+    ).toBeNull();
+    expect(
+      buildThemeFrameUrl(origin, { name: "my-theme", version: "1.2" }),
+    ).toBeNull();
+    expect(
+      buildThemeFrameUrl("http://assets.test", {
+        name: "my-theme",
+        version: "1.2.3",
+      }),
+    ).toBeNull();
+    expect(
+      buildThemeFrameUrl("", { name: "my-theme", version: "1.2.3" }),
+    ).toBeNull();
   });
 
   it("caller identity: primitives never authenticate, identity is window equality", () => {

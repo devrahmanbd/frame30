@@ -15,6 +15,7 @@ import type { DeviceKey, Maybe } from "./responsive";
 import { resolveResponsive } from "./responsive";
 import type { BuilderDoc, Widget as V1Widget } from "@/lib/page-builder";
 import { parseBuilderBody } from "@/lib/page-builder";
+import { unescapeMd } from "@/lib/editor/page-markdown";
 import { resolveStudioKey } from "./catalog";
 
 export type SettingValue =
@@ -753,7 +754,18 @@ export function parseStudioBody(
         JSON.parse(json.replace(/\\\[/g, "[").replace(/\\\]/g, "]")),
       );
     } catch {
-      return null;
+      // Second (deepest) tolerance layer: the old save path markdown-
+      // canonicalised envelopes, so every character in `escapeMd`'s set
+      // (backslash, backtick, `*`, `_`, `~`, `[`, `]`) came back escaped
+      // one extra time — and `\_` is not even a valid JSON escape, so a
+      // plain parse can never succeed. `unescapeMd` is the exact inverse;
+      // recovering the authored document beats blanking the canvas, and
+      // `canonicalBody` now stops new saves from being mangled at all.
+      try {
+        return parseStudioDoc(JSON.parse(unescapeMd(json)));
+      } catch {
+        return null;
+      }
     }
   }
 }

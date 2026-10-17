@@ -16,6 +16,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { normalizeBody, parseBody, validateBody } from "@/lib/blog-body";
 import { isBuilderBody } from "@/lib/page-builder";
+import { isStudioBody } from "@/lib/studio/model";
 import {
   buildPermalink,
   DEFAULT_PERMALINKS,
@@ -358,7 +359,14 @@ export type SaveResult = {
 };
 
 /** Canonicalise the body the same way the storefront renders it. */
-function canonicalBody(kind: ContentKind, body: string): string {
+export function canonicalBody(kind: ContentKind, body: string): string {
+  // Studio v2 envelopes are opaque to this pipeline: the storefront parses
+  // them with `readStudioBody`/`parseStudioBody`, never with markdown.
+  // Running one through the markdown round-trip escapes its JSON
+  // (`"` → `\"`, `[` → `\[`), which reloads as ZERO nodes and neuters
+  // `isWipeoutSave`'s baseline read (live save→reload wipeout). Envelopes
+  // pass through byte-identical by contract.
+  if (isStudioBody(body)) return body;
   if (isBuilderBody(body)) return body;
   if (kind === "page") return blocksToMarkdown(markdownToBlocks(body));
   const blocks = parseBody(body);
@@ -370,7 +378,9 @@ function canonicalBody(kind: ContentKind, body: string): string {
   return normalizeBody(body);
 }
 
-function plainText(kind: ContentKind, body: string): string {
+export function plainText(kind: ContentKind, body: string): string {
+  // Envelope payloads are not merchant copy; mirrors the builder branch.
+  if (isStudioBody(body)) return "";
   if (isBuilderBody(body)) return "";
   if (kind === "page") return markdownToText(body);
   return parseBody(body)

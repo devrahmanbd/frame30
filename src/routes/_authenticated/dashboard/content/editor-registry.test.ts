@@ -57,9 +57,7 @@ describe("real editor route registry/binding provisioning", () => {
     // (`theme:<sourceKey>/…`) resolve keyed. A uuid fallback would never
     // match owner scope — fail-closed unkeyed instead.
     expect(ROUTE_SRC).toContain("activeThemeKey={editorThemeKey}");
-    expect(ROUTE_SRC).toMatch(
-      /themeKey:\s*workspaceTheme\?\.sourceKey/,
-    );
+    expect(ROUTE_SRC).toMatch(/themeKey:\s*workspaceTheme\?\.sourceKey/);
   });
 });
 
@@ -74,5 +72,25 @@ describe("EditorShell studio seam provisioning", () => {
     expect(SHELL_SRC).not.toContain("buildTrayRegistry(");
     expect(SHELL_SRC).not.toContain("activeDevThemeWidgetDefs(");
     expect(SHELL_SRC).not.toContain("buildEditorExtensionRegistry(");
+  });
+});
+
+describe("editor route plugin context (canvas sandbox parity)", () => {
+  it("mounts PluginProvider with the server-authorized installs around the shell", () => {
+    // The canvas renderers (`StudioAppBlock` → `PluginBlock` →
+    // `useInstalledPlugins`) resolve installed plugins through the React
+    // `PluginContext`, NOT through the registry seam the inspector uses.
+    // Without a provider every installed widget degrades to the
+    // "This app is not installed" placeholder in the editor canvas even
+    // though the inspector shows full schema controls (observed live in
+    // the authenticated E2E on the real editor route). The provider must
+    // carry the SAME `authorizedPlugins` list the registry was built from.
+    expect(ROUTE_SRC).toContain('from "@/components/builder/PluginContext"');
+    const providerAt = ROUTE_SRC.indexOf("<PluginProvider");
+    const shellAt = ROUTE_SRC.indexOf("<EditorShell");
+    expect(providerAt).toBeGreaterThan(-1);
+    expect(shellAt).toBeGreaterThan(-1);
+    expect(providerAt).toBeLessThan(shellAt);
+    expect(ROUTE_SRC).toContain("plugins={authorizedPlugins}");
   });
 });

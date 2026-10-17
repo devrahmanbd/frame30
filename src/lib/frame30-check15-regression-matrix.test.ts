@@ -745,36 +745,33 @@ describe("matrix — known gaps (red-with-reason, sources owned by sibling lanes
   // incompatible under `songoskriti`. Fixed at integration: the allow-list
   // is enforced in `checkThemeCompatibility` for plugin defs (absent/empty
   // stays unscoped). The `it.fails` tripwire is retired to a passing test.
-  it(
-    "theme-scoped plugin widget reports incompatible outside its allow-list",
-    () => {
-      const registry = buildTrayRegistry([proofInstall()]);
-      const report = checkThemeCompatibility(
-        "songoskriti",
-        ["plugin:frame30-proof/shoppable_video"],
-        { registry, builderApi: BUILDER_API_VERSION },
-      );
-      expect(report.results).toEqual([
-        {
-          widgetId: "plugin:frame30-proof/shoppable_video",
-          compatible: false,
-          reason: "foreign-theme",
-        },
-      ]);
-      const home = checkThemeCompatibility(
-        "frame30-proof-theme",
-        ["plugin:frame30-proof/shoppable_video"],
-        { registry, builderApi: BUILDER_API_VERSION },
-      );
-      expect(home.results).toEqual([
-        {
-          widgetId: "plugin:frame30-proof/shoppable_video",
-          compatible: true,
-          reason: "compatible",
-        },
-      ]);
-    },
-  );
+  it("theme-scoped plugin widget reports incompatible outside its allow-list", () => {
+    const registry = buildTrayRegistry([proofInstall()]);
+    const report = checkThemeCompatibility(
+      "songoskriti",
+      ["plugin:frame30-proof/shoppable_video"],
+      { registry, builderApi: BUILDER_API_VERSION },
+    );
+    expect(report.results).toEqual([
+      {
+        widgetId: "plugin:frame30-proof/shoppable_video",
+        compatible: false,
+        reason: "foreign-theme",
+      },
+    ]);
+    const home = checkThemeCompatibility(
+      "frame30-proof-theme",
+      ["plugin:frame30-proof/shoppable_video"],
+      { registry, builderApi: BUILDER_API_VERSION },
+    );
+    expect(home.results).toEqual([
+      {
+        widgetId: "plugin:frame30-proof/shoppable_video",
+        compatible: true,
+        reason: "compatible",
+      },
+    ]);
+  });
 });
 
 describe("matrix — browser wall (auth-gated journeys stay skipped-with-reason)", () => {

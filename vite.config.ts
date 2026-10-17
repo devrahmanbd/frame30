@@ -5,6 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import browserslistToEsbuild from "browserslist-to-esbuild";
 import { fileURLToPath } from "node:url";
+import { tssServerFnBaseDevTransform } from "./src/lib/vite-tss-server-fn-base";
 
 export default defineConfig(async ({ command }): Promise<UserConfig> => {
   const plugins: PluginOption[] = [
@@ -42,7 +43,14 @@ export default defineConfig(async ({ command }): Promise<UserConfig> => {
     }
   }
 
-  plugins.push(viteReact(), tailwindcss(), tsconfigPaths());
+  // Dev-only: resolves the upstream TanStack Start
+  // `process.env.TSS_SERVER_FN_BASE` race (see src/lib/vite-tss-server-fn-base.ts).
+  plugins.push(
+    tssServerFnBaseDevTransform(),
+    viteReact(),
+    tailwindcss(),
+    tsconfigPaths(),
+  );
 
   return {
     server: {

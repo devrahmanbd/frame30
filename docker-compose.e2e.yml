@@ -1,0 +1,179 @@
+# Framique E2E loopback auth stack (THROWAWAY — never production).
+#
+# Purpose: give the `.e2e/plugin-*-journey` authenticated specs a LEGITIMATE
+# local Supabase backend (real GoTrue + PostgREST behind Kong on loopback)
+# so the real login form can mint a real session. No auth stubbing anywhere.
+#
+# Isolation contract (do not weaken):
+# - Separate compose project (`e2e-supabase`), own bridge network + volumes.
+#   Never attaches to the `framique` production network/volumes.
+# - Every published port binds 127.0.0.1 explicitly (db 55432, auth 59999,
+#   rest 53000, kong 58000). Nothing is reachable off-box.
+# - Secrets come from an UNSAVED env file OUTSIDE the repo, e.g.
+#   /tmp/opencode/e2e-auth/.e2e.env (fresh throwaway JWT/postgres secrets).
+#   This file contains NO secrets — only ${VAR} references.
+# - Vendored image pins match supabase/docker/docker-compose.yml
+#   (GoTrue v2.170.0 etc.); only auth/rest/kong/db run (no realtime,
+#   storage, meta — Kong routes to missing upstreams only fail if hit).
+# - GoTrue autoconfirms mail (GOTRUE_MAILER_AUTOCONFIRM=true) so the E2E
+#   merchant can sign in with no SMTP server; prod keeps autoconfirm off.
+#
+# Bring-up (from repo root):
+#   docker compose -f docker-compose.e2e.yml --env-file /tmp/opencode/e2e-auth/.e2e.env up -d
+#   # apply schema: supabase/baseline_parts/*.sql then supabase/migrations/*.sql
+#   PGPASSWORD=... psql -h 127.0.0.1 -p 55432 -U postgres -d postgres -f <file>
+# Tear-down (MANDATORY when done):
+#   docker compose -f docker-compose.e2e.yml --env-file /tmp/opencode/e2e-auth/.e2e.env down -v
+#   docker ps  # verify nothing of yours remains
+
+name: e2e-supabase
+
+networks:
+  e2e:
+    driver: bridge
+
+volumes:
+  e2e-db-data:
+
+services:
+  db:
+    image: supabase/postgres:15.8.1.060
+    restart: "no"
+    command:
+      - postgres
+      - -c
+      - config_file=/etc/postgresql/postgresql.conf
+      - -c
+      - shared_preload_libraries=pg_stat_statements,pg_cron,pgaudit
+      - -c
+      - cron.database_name=postgres
+      - -c
+      - max_connections=${POSTGRES_MAX_CONNECTIONS:-100}
+    environment:
+      POSTGRES_HOST: /var/run/postgresql
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET}
+      JWT_EXP: ${JWT_EXPIRY:-3600}
+    # NOTE: we deliberately do NOT mount supabase/docker/init here. That mount
+    # shadows the image's built-in /docker-entrypoint-initdb.d (init-scripts,
+    # migrate.sh) which creates the postgres/authenticator/supabase_* roles —
+    # with the shadow in place a FRESH volume dies in pg_cron's after-create
+    # grant to the never-created `postgres` role. The vendored roles file is
+    # idempotent, so it is applied manually post-boot via psql instead.
+    volumes:
+      - e2e-db-data:/var/lib/postgresql/data
+    networks: [e2e]
+    ports: ["127.0.0.1:55432:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -h 127.0.0.1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    stop_grace_period: 30s
+
+  auth:
+    image: supabase/gotrue:v2.170.0
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: ${SUPABASE_PUBLIC_URL:?set SUPABASE_PUBLIC_URL}
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-postgres}
+      GOTRUE_SITE_URL: ${SITE_URL:?set SITE_URL}
+      GOTRUE_URI_ALLOW_LIST: ${ADDITIONAL_REDIRECT_URLS:-}
+      GOTRUE_JWT_SECRET: ${JWT_SECRET}
+      GOTRUE_JWT_EXP: ${JWT_EXPIRY:-3600}
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_DISABLE_SIGNUP: "false"
+      GOTRUE_EXTERNAL_ANONYMOUS_USERS_ENABLED: "false"
+      # E2E ONLY: confirm without SMTP. Prod keeps both false.
+      GOTRUE_MAILER_AUTOCONFIRM: "true"
+      GOTRUE_SMS_AUTOCONFIRM: "true"
+      GOTRUE_MAILER_URLPATHS_CONFIRMATION: /auth/confirm
+      GOTRUE_MAILER_URLPATHS_RECOVERY: /auth/recover
+      GOTRUE_MAILER_URLPATHS_EMAIL_CHANGE: /auth/email-change
+      GOTRUE_MAILER_URLPATHS_INVITE: /auth/invite
+      GOTRUE_SMTP_HOST: ${SMTP_HOST:-localhost}
+      GOTRUE_SMTP_PORT: ${SMTP_PORT:-1025}
+      GOTRUE_SMTP_USER: ${SMTP_USER:-}
+      GOTRUE_SMTP_PASS: ${SMTP_PASS:-}
+      GOTRUE_SMTP_ADMIN_EMAIL: ${SMTP_ADMIN_EMAIL:-e2e@example.invalid}
+      GOTRUE_SMTP_SENDER_NAME: ${SMTP_SENDER_NAME:-Framique-e2e}
+      GOTRUE_EXTERNAL_GOOGLE_ENABLED: "false"
+      GOTRUE_LOG_LEVEL: ${GOTRUE_LOG_LEVEL:-error}
+      GOTRUE_METRICS_ENABLED: "false"
+    networks: [e2e]
+    ports: ["127.0.0.1:59999:9999"]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:9999/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 12
+
+  rest:
+    image: postgrest/postgrest:v12.2.8
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-postgres}
+      PGRST_DB_SCHEMAS: ${PGRST_DB_SCHEMAS:-public,storage,graphql_public}
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+      PGRST_DB_USE_LEGACY_GUCS: "false"
+      PGRST_APP_SETTINGS_JWT_SECRET: ${JWT_SECRET}
+      PGRST_APP_SETTINGS_JWT_EXP: ${JWT_EXPIRY:-3600}
+      PGRST_DB_MAX_ROWS: 1000
+      PGRST_DB_POOL: 10
+      PGRST_ADMIN_SERVER_PORT: 3001
+    networks: [e2e]
+    ports: ["127.0.0.1:53000:3000"]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3001/ready || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 12
+
+  kong:
+    image: kong:2.8.1
+    restart: "no"
+    depends_on:
+      auth:
+        condition: service_started
+      rest:
+        condition: service_started
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /home/kong/kong.yml
+      KONG_DNS_ORDER: LAST,A,CNAME
+      # NOTE: vendored KONG_PLUGINS omits `rate-limiting` though kong.yml uses
+      # it; Kong 2.8.1 fails to boot without it listed, so it is added here.
+      KONG_PLUGINS: request-transformer,cors,key-auth,acl,basic-auth,rate-limiting
+      KONG_NGINX_PROXY_PROXY_BUFFER_SIZE: 160k
+      KONG_NGINX_PROXY_PROXY_BUFFERS: 64 160k
+      SUPABASE_ANON_KEY: ${ANON_KEY}
+      SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
+    # E2E ONLY deviation: Kong 2.8.1 does not interpolate ${VAR} in DB-less
+    # config (stores the literal string as the key), so a PRE-RENDERED copy
+    # with the throwaway keys lives UNSAVED outside the repo at
+    # /tmp/opencode/e2e-auth/kong.yml (render: replace ${SUPABASE_ANON_KEY} /
+    # ${SUPABASE_SERVICE_KEY} in supabase/docker/kong.yml with the values from
+    # the e2e env file). Nothing secret is committed; the repo file is
+    # mounted read-only in production and is never modified here.
+    volumes:
+      - /tmp/opencode/e2e-auth/kong.yml:/home/kong/kong.yml:ro
+    networks: [e2e]
+    ports: ["127.0.0.1:58000:8000"]
+    healthcheck:
+      test: ["CMD-SHELL", "kong health"]
+      interval: 15s
+      timeout: 5s
+      retries: 12

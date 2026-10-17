@@ -26,7 +26,9 @@ const OWNER_A = "versioned-alpha";
 const OWNER_B = "versioned-beta";
 
 const AlphaHero: WidgetComponent = ({ section }) => (
-  <section data-dressing="alpha-hero">{String(section.props.title ?? "")}</section>
+  <section data-dressing="alpha-hero">
+    {String(section.props.title ?? "")}
+  </section>
 );
 const BetaHero: WidgetComponent = ({ section }) => (
   <div data-dressing="beta-hero">
@@ -87,12 +89,12 @@ describe("versioned registration key", () => {
       versionRange: "*",
       component: BetaHero,
     });
-    expect(
-      resolveVersionedPresentation(OWNER_A, "builtin:hero"),
-    ).toBe(AlphaHero);
-    expect(
-      resolveVersionedPresentation(OWNER_B, "builtin:hero"),
-    ).toBe(BetaHero);
+    expect(resolveVersionedPresentation(OWNER_A, "builtin:hero")).toBe(
+      AlphaHero,
+    );
+    expect(resolveVersionedPresentation(OWNER_B, "builtin:hero")).toBe(
+      BetaHero,
+    );
   });
 
   it("dresses built-in AND third-party widget ids", () => {
@@ -108,9 +110,9 @@ describe("versioned registration key", () => {
       versionRange: "^1.0.0",
       component: AlphaReviews,
     });
-    expect(
-      resolveVersionedPresentation(OWNER_A, "builtin:hero"),
-    ).toBe(AlphaHero);
+    expect(resolveVersionedPresentation(OWNER_A, "builtin:hero")).toBe(
+      AlphaHero,
+    );
     expect(
       resolveVersionedPresentation(OWNER_A, "plugin:acme/reviews", {
         widgetVersion: "1.2.0",
@@ -133,9 +135,9 @@ describe("versioned registration key", () => {
       component: BetaHero,
     });
     expect(warn).toHaveBeenCalled();
-    expect(
-      resolveVersionedPresentation(OWNER_A, "builtin:hero"),
-    ).toBe(AlphaHero);
+    expect(resolveVersionedPresentation(OWNER_A, "builtin:hero")).toBe(
+      AlphaHero,
+    );
   });
 
   it("clears with the shared test reset", () => {
@@ -252,9 +254,9 @@ describe("version gating", () => {
       versionRange: "*",
       component: AlphaHero,
     });
-    expect(
-      resolveVersionedPresentation(OWNER_A, "builtin:hero"),
-    ).toBe(AlphaHero);
+    expect(resolveVersionedPresentation(OWNER_A, "builtin:hero")).toBe(
+      AlphaHero,
+    );
   });
 });
 
@@ -360,9 +362,9 @@ describe("builder-API compatibility floor", () => {
         builderApi: "1.0.0",
       }),
     ).toBe(AlphaHero);
-    expect(
-      resolveVersionedPresentation(OWNER_A, "builtin:hero"),
-    ).toBe(AlphaHero);
+    expect(resolveVersionedPresentation(OWNER_A, "builtin:hero")).toBe(
+      AlphaHero,
+    );
   });
 });
 
@@ -400,9 +402,7 @@ describe("never-throw, never cross-owner", () => {
     expect(() =>
       resolveVersionedPresentation(OWNER_A, null as never),
     ).not.toThrow();
-    expect(() =>
-      registerVersionedPresentation(null as never),
-    ).not.toThrow();
+    expect(() => registerVersionedPresentation(null as never)).not.toThrow();
     expect(() =>
       registerVersionedPresentation({
         owner: "",

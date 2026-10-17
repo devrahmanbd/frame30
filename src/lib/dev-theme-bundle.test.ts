@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   DEV_THEME_BUNDLE_LIMITS,
   fingerprintDevThemeRelease,
+  hashBytes,
   validateDevThemeBundle,
   type DevThemeBundleFile,
 } from "./dev-theme-bundle";
@@ -542,7 +543,7 @@ describe("validateDevThemeBundle — dependency confusion + asset completeness (
     expect(verdict.errors.join(" ")).toMatch(/dependency_name/);
   });
 
-  it("refuses a dangling relative JS import (referenced asset must be present)", () => {
+  it("refuses a dangling relative JS import — referenced asset must be present", () => {
     const files = validFiles();
     files.push(
       file("components/app.js", `import "./missing.js"; export const x = 1;`),
@@ -584,6 +585,41 @@ describe("validateDevThemeBundle — dependency confusion + asset completeness (
       file("components/app.js", `import "./helper"; export const x = 1;`),
     );
     expect(validateDevThemeBundle(validInput({ files })).ok).toBe(true);
+  });
+
+  it("accepts a content-addressed import pinned to the present source hash (emit shape)", () => {
+    // The emit stage renames area files to `name.<sha8>.ext`, so authored
+    // bundles may reference the pinned OUTPUT name. The gate must accept the
+    // ref exactly when a present source hashes to the segment in the ref —
+    // that ref is guaranteed to exist in the shipped shape, never a 404.
+    const files = validFiles();
+    const libBytes = new TextEncoder().encode(`export const lib = 1;`);
+    const sha8 = hashBytes(libBytes).slice(0, 8);
+    files.push(
+      file(
+        "components/app.js",
+        `import "./vendor/lib.${sha8}.js"; export const x = 1;`,
+      ),
+      { path: "components/vendor/lib.js", bytes: libBytes },
+    );
+    expect(validateDevThemeBundle(validInput({ files })).ok).toBe(true);
+  });
+
+  it("refuses a content-addressed import whose sha8 does not match present bytes", () => {
+    // A stale or fabricated hash would resolve to nothing after the emit
+    // rename (404 at serve time), so it stays refused.
+    const files = validFiles();
+    files.push(
+      file(
+        "components/app.js",
+        `import "./vendor/lib.deadbeef.js"; export const x = 1;`,
+      ),
+      file("components/vendor/lib.js", `export const lib = 1;`),
+    );
+    const verdict = validateDevThemeBundle(validInput({ files }));
+    expect(verdict.ok).toBe(false);
+    if (verdict.ok) return;
+    expect(verdict.errors.join(" ")).toMatch(/asset_missing/);
   });
 
   it("refuses an oversized bundle (per-entry + total caps hold)", () => {

@@ -323,7 +323,7 @@ export function bindDevThemeRuntime(
   const csp = [
     "default-src 'none'",
     `script-src ${origin}`,
-    `style-src ${origin} 'unsafe-inline'`,
+    `style-src ${origin} 'unsafe-inline'`, // sast-allow: csp-sandbox -- styles only; scripts stay origin-locked; connect/frame/form/base are 'none'
     `img-src ${origin} data:`,
     `font-src ${origin}`,
     "connect-src 'none'",

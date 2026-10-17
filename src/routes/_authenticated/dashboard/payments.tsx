@@ -44,7 +44,7 @@ export const Route = createFileRoute("/_authenticated/dashboard/payments")({
       role="alert"
       className="rounded-fq-md border border-danger bg-danger-soft px-3 py-2 text-sm"
     >
-      {error.message}
+      {error instanceof Error ? error.message : ""}
     </p>
   ),
 });

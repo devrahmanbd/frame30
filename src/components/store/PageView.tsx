@@ -1,10 +1,12 @@
 import { Link, useRouterState } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { StudioNodes } from "@/components/store/StudioNodes";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { PluginLayer } from "@/components/store/PluginLayer";
 import { useLang } from "@/lib/i18n";
 import { isCustomHostPath } from "@/lib/storefront-url";
+import { buildTrayRegistry } from "@/lib/unified-widget-registry";
 import type { getStorePageFn } from "@/lib/storefront-search.functions";
 
 export type PagePayload = Exclude<
@@ -33,6 +35,14 @@ export function PageView({ data }: { data: PagePayload }) {
     themeKey,
   } = data;
   const slug = merchant.slug;
+  // Frame30 one-registry (storefront): the authored twin tree resolves against
+  // the SAME tenant-authorized defs as the editor — the tray registry is built
+  // from the loader's server-authorized installs (pure and deterministic in
+  // SSR + hydration), never the def-less fallback that misses every twin.
+  const registry = useMemo(
+    () => buildTrayRegistry(installedPlugins),
+    [installedPlugins],
+  );
 
   const breadcrumb = (
     <nav
@@ -74,7 +84,11 @@ export function PageView({ data }: { data: PagePayload }) {
       )}
       {studioNodes && studioNodes.length > 0 ? (
         <div className="fq-builder-page mt-6">
-          <StudioNodes nodes={studioNodes} />
+          <StudioNodes
+            nodes={studioNodes}
+            registry={registry}
+            themeKey={themeKey}
+          />
         </div>
       ) : (
         <div
@@ -147,7 +161,9 @@ export function PageView({ data }: { data: PagePayload }) {
         tokens={tokens}
         siteKit={siteKit}
         customCss={customCss}
+        registry={registry}
         ownsPrimary={custom}
+        contentSlot="page_content"
         chrome={
           <StoreHeader
             slug={slug}

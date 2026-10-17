@@ -473,7 +473,11 @@ async function runVerifier(task, envInfo) {
     `harness-verifier-${process.pid}-${Date.now()}.log`,
   );
   const childEnv = { ...process.env, ...envInfo.env };
-  const child = spawn(resolved.exe, command.slice(1), { cwd, env: childEnv, stdio: ["ignore", "pipe", "pipe"] }); // sast-allow: shell-exec -- verifier execution is the runner's job; exe resolved from task-declared command, no shell
+  const child = spawn(resolved.exe, command.slice(1), {
+    cwd,
+    env: childEnv,
+    stdio: ["ignore", "pipe", "pipe"],
+  }); // sast-allow: shell-exec -- verifier execution is the runner's job; exe resolved from task-declared command, no shell
 
   const out = fs.createWriteStream(logFile);
   let bytes = 0;
@@ -808,7 +812,10 @@ function sh(cmd, args, opts = {}) {
 
 function selfTestChild(args, extraEnv) {
   const childEnv = { ...process.env, ...extraEnv };
-  return spawnSync(process.execPath, [SCRIPT_PATH, ...args], { encoding: "utf8", env: childEnv }); // sast-allow: shell-exec -- self-test re-invokes this same script by absolute path, no shell
+  return spawnSync(process.execPath, [SCRIPT_PATH, ...args], {
+    encoding: "utf8",
+    env: childEnv,
+  }); // sast-allow: shell-exec -- self-test re-invokes this same script by absolute path, no shell
 }
 
 function hasStrandedWorktrees(listText) {

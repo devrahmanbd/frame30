@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { EditorShell } from "@/components/admin/editor/EditorShell";
+import { PluginProvider } from "@/components/builder/PluginContext";
 import { consoleRoute } from "@/lib/console-routes";
 import { builderWorkspaceFn } from "@/lib/builder-workspace.functions";
 import {
@@ -127,30 +128,41 @@ function EditorRoute() {
   );
 
   return (
-    <EditorShell
-      key={`${kind}:${id ?? "new"}`}
-      kind={kind}
-      id={id ?? null}
-      forceEditor={forced}
-      extensionRegistry={editorRegistry}
-      devThemeBinding={editorDevThemeBinding ?? null}
-      activeThemeKey={editorThemeKey}
-      listHref={
-        kind === "page"
-          ? "/dashboard/content/pages"
-          : "/dashboard/content/posts"
-      }
-      onCreated={(newId) =>
-        void navigate({
-          to: "/dashboard/content/editor",
-          search: {
-            kind,
-            id: newId,
-            editor: kind === "page" ? "builder" : (editor ?? "classic"),
-          },
-          replace: true,
-        })
-      }
-    />
+    // Frame30 canvas sandbox parity: the canvas renderers
+    // (`StudioAppBlock` → `PluginBlock` → `useInstalledPlugins`) resolve
+    // installed plugins through the React `PluginContext`, not through the
+    // registry seam the inspector/tray use. Without this provider every
+    // installed widget degraded to the "This app is not installed"
+    // placeholder in the canvas even though the inspector showed full
+    // schema controls (observed live in the authenticated E2E). The SAME
+    // `authorizedPlugins` list the registry was built from feeds the
+    // context, so tray, inspector and canvas share one truth.
+    <PluginProvider plugins={authorizedPlugins}>
+      <EditorShell
+        key={`${kind}:${id ?? "new"}`}
+        kind={kind}
+        id={id ?? null}
+        forceEditor={forced}
+        extensionRegistry={editorRegistry}
+        devThemeBinding={editorDevThemeBinding ?? null}
+        activeThemeKey={editorThemeKey}
+        listHref={
+          kind === "page"
+            ? "/dashboard/content/pages"
+            : "/dashboard/content/posts"
+        }
+        onCreated={(newId) =>
+          void navigate({
+            to: "/dashboard/content/editor",
+            search: {
+              kind,
+              id: newId,
+              editor: kind === "page" ? "builder" : (editor ?? "classic"),
+            },
+            replace: true,
+          })
+        }
+      />
+    </PluginProvider>
   );
 }

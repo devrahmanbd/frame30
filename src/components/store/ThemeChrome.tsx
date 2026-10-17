@@ -72,6 +72,14 @@ type Props = {
    * here so no admin route can ever load a merchant's pixels.
    */
   siteKit?: StorefrontSiteKit | null;
+  /**
+   * The context section through which THIS route's body flows (authored
+   * pages: `page_content`). The theme main renders only when it declares
+   * that section; otherwise the route owns the body and `fallback` renders
+   * in place of the theme's main — demo copy must never swallow merchant
+   * content. Routes that name no slot keep the legacy behavior.
+   */
+  contentSlot?: SectionType;
   ownsPrimary?: boolean;
   containerClassName?: string;
   /**
@@ -215,6 +223,7 @@ export function ThemeChrome({
   merchantId,
   siteKit,
   fallback,
+  contentSlot,
   ownsPrimary = false,
   containerClassName = "mx-auto max-w-6xl px-4 py-8",
   customCss = null,
@@ -285,7 +294,20 @@ export function ThemeChrome({
     : storeSlug
       ? `/store/${storeSlug}`
       : "";
-  const themed = ast && ast.main.length > 0 ? ast : null;
+  // A route may name the context section its body flows through
+  // (`page_content` for authored pages). The theme's main renders only when
+  // it declares that section — otherwise the theme's demo copy would
+  // swallow the body the route owns, and the route fallback renders
+  // instead. Chrome, tokens and CSS are unaffected.
+  const themed =
+    ast &&
+    ast.main.length > 0 &&
+    (!contentSlot ||
+      ast.main.some(
+        (section) => !section.invalid && section.type === contentSlot,
+      ))
+      ? ast
+      : null;
   // Header and footer are site chrome: they must survive a template whose body
   // the route renders itself (cart, checkout, search). Dropping them with the
   // body left shoppers on a page with no store navigation and no policy links.

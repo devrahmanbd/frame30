@@ -428,11 +428,33 @@ function resolveBundleRef(importer: string, ref: string): string | null {
   return resolved;
 }
 
+/**
+ * `dir/name.<sha8>.ext` → true when a present `dir/name.ext` hashes to
+ * `<sha8>` (the emit stage's content-addressed rename), else false. A stale
+ * or fabricated hash still fails: that ref would 404 after the rename.
+ */
+function isContentAddressedMatch(
+  resolved: string | null,
+  bytesByPath: Map<string, Uint8Array>,
+): boolean {
+  if (resolved === null) return false;
+  const slash = resolved.lastIndexOf("/");
+  const dir = slash === -1 ? "" : resolved.slice(0, slash);
+  const base = slash === -1 ? resolved : resolved.slice(slash + 1);
+  const m = /^(.*)\.([0-9a-f]{8})(\.[^./]+)$/.exec(base);
+  if (!m) return false;
+  const candidate = dir === "" ? `${m[1]}${m[3]}` : `${dir}/${m[1]}${m[3]}`;
+  const sourceBytes = bytesByPath.get(candidate);
+  if (sourceBytes === undefined) return false;
+  return hashBytes(sourceBytes).slice(0, 8) === m[2];
+}
+
 function checkAssetCompleteness(
   content: DevThemeBundleFile[],
   errors: string[],
 ): void {
   const present = new Set(content.map((f) => f.path));
+  const bytesByPath = new Map(content.map((f) => [f.path, f.bytes]));
   const textByPath = new Map<string, string>();
   for (const file of content) {
     const ext = extOf(file.path);
@@ -457,6 +479,11 @@ function checkAssetCompleteness(
       if (!base.includes(".")) continue;
       const resolved = resolveBundleRef(path, ref);
       if (resolved === null || !present.has(resolved)) {
+        // Authors may reference the emit stage's output name verbatim
+        // (`dir/name.<sha8>.ext`, matching `hashedOutputPath`): accepted
+        // exactly when a present source hashes to that segment, since then
+        // the ref names a file the shipped shape is guaranteed to contain.
+        if (isContentAddressedMatch(resolved, bytesByPath)) continue;
         errors.push(
           `bundle.asset_missing:${path.slice(0, 60)}:${ref.slice(0, 60)}`,
         );

@@ -489,14 +489,22 @@ describe("studio extension twins — per-instance props stay separate", () => {
   it("two instances of one widget render their own props only", () => {
     const reg = registryWith([pluginDef(REVIEW_KEY, true)]);
     const plugins = acmeInstalls();
-    const htmlA = renderStudio(twin(REVIEW_KEY, { title: "Alpha" }, reg), plugins, {
-      registry: reg,
-      editing: true,
-    });
-    const htmlB = renderStudio(twin(REVIEW_KEY, { title: "Beta" }, reg), plugins, {
-      registry: reg,
-      editing: true,
-    });
+    const htmlA = renderStudio(
+      twin(REVIEW_KEY, { title: "Alpha" }, reg),
+      plugins,
+      {
+        registry: reg,
+        editing: true,
+      },
+    );
+    const htmlB = renderStudio(
+      twin(REVIEW_KEY, { title: "Beta" }, reg),
+      plugins,
+      {
+        registry: reg,
+        editing: true,
+      },
+    );
     expect(htmlA).toContain("Alpha");
     expect(htmlA).not.toContain("Beta");
     expect(htmlB).toContain("Beta");
@@ -505,10 +513,14 @@ describe("studio extension twins — per-instance props stay separate", () => {
 
   it("global install settings never merge into instance props", () => {
     const reg = registryWith([pluginDef(REVIEW_KEY, true)]);
-    const html = renderStudio(twin(REVIEW_KEY, { title: "Hello ext" }, reg), acmeInstalls(), {
-      registry: reg,
-      editing: true,
-    });
+    const html = renderStudio(
+      twin(REVIEW_KEY, { title: "Hello ext" }, reg),
+      acmeInstalls(),
+      {
+        registry: reg,
+        editing: true,
+      },
+    );
     expect(html).toContain("Hello ext");
     // Globals stay behind the scoped bridge — never baked into the frame.
     expect(html).not.toContain("Hello!");
@@ -539,9 +551,7 @@ describe("studio extension twins — hostile props are neutralized", () => {
 
   it("drops proto-pollution keys without polluting", () => {
     const reg = registryWith([pluginDef(REVIEW_KEY, true)]);
-    const hostile = JSON.parse(
-      '{"__proto__":{"polluted":"yes"},"title":"ok"}',
-    );
+    const hostile = JSON.parse('{"__proto__":{"polluted":"yes"},"title":"ok"}');
     const html = renderStudio(twin(REVIEW_KEY, hostile, reg), acmeInstalls(), {
       registry: reg,
       editing: true,
@@ -567,10 +577,14 @@ describe("studio extension twins — missing/incompatible stay fail-closed", () 
   it("disabled installs keep the labelled placeholder, never the island", () => {
     const reg = registryWith([pluginDef(REVIEW_KEY, true)]);
     const disabled = acmeInstalls({ enabled: false });
-    const html = renderStudio(twin(REVIEW_KEY, { title: "Hi" }, reg), disabled, {
-      registry: reg,
-      editing: true,
-    });
+    const html = renderStudio(
+      twin(REVIEW_KEY, { title: "Hi" }, reg),
+      disabled,
+      {
+        registry: reg,
+        editing: true,
+      },
+    );
     expect(html).toContain("switched off");
     expect(html).not.toContain("<iframe");
   });
@@ -699,7 +713,11 @@ describe("studio legacy nodes — byte-identical with or without tree props", ()
   }
 
   it("legacy text widgets render byte-identically with tree props present", () => {
-    const node: StudioNode = { id: "t-1", el: "text", settings: { text: "Hi" } };
+    const node: StudioNode = {
+      id: "t-1",
+      el: "text",
+      settings: { text: "Hi" },
+    };
     const bare = renderStudio(node, acmeInstalls(), { editing: true });
     const wired = renderStudio(node, acmeInstalls(), {
       editing: true,

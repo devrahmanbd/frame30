@@ -78,6 +78,17 @@ function escapeMd(value: string): string {
   return value.replace(/([\\`*_~[\]])/g, "\\$1");
 }
 
+/**
+ * Exact inverse of `escapeMd`. The editor's save canonicalizer used to run
+ * studio v2 envelopes through the markdown round-trip (live save→reload
+ * wipeout), which escaped every character in the set above — `\_` is not
+ * even a valid JSON escape, so those payloads can only be revived by
+ * removing exactly one escaping layer.
+ */
+export function unescapeMd(value: string): string {
+  return value.replace(/\\([\\`*_~[\]])/g, "$1");
+}
+
 export function inlineToMarkdown(nodes: Inline[]): string {
   return nodes
     .map((node) => {

@@ -52,7 +52,10 @@ import {
 } from "./marketplace-scopes";
 import { createWidgetRegistry } from "./unified-widget-registry";
 
-const textField = (key = "title", extra: Partial<PropField> = {}): PropField => ({
+const textField = (
+  key = "title",
+  extra: Partial<PropField> = {},
+): PropField => ({
   key,
   label: key,
   kind: "text",
@@ -88,7 +91,7 @@ describe("hostile props — value layer (validateProps)", () => {
   it("neutralises scripts in plain text (no markup survives)", () => {
     const out = validateProps(
       { fields: [textField()] },
-      { title: '<script>alert(1)</script><img src=x onerror=alert(2)>hi' },
+      { title: "<script>alert(1)</script><img src=x onerror=alert(2)>hi" },
     );
     expect(out.clean.title).not.toContain("<");
     expect(out.clean.title).not.toContain(">");
@@ -127,7 +130,10 @@ describe("hostile props — value layer (validateProps)", () => {
       expect(out.ok).toBe(false);
       expect(out.errors).toContain("href.not_a_url");
     }
-    const ok = validateProps({ fields: [linkField()] }, { href: "/products/x" });
+    const ok = validateProps(
+      { fields: [linkField()] },
+      { href: "/products/x" },
+    );
     expect(ok.ok).toBe(true);
   });
 
@@ -146,12 +152,14 @@ describe("hostile props — value layer (validateProps)", () => {
   });
 
   it("bp override layers validate with the same schema (scripts die there too)", () => {
-    const out = validateProps({ fields: [textField()] }, {
-      title: "ok",
-      bp: { mobile: { title: "<script>alert(1)</script>m" } },
-    });
-    const bp = (out.clean.bp as Record<string, Record<string, unknown>>)
-      .mobile;
+    const out = validateProps(
+      { fields: [textField()] },
+      {
+        title: "ok",
+        bp: { mobile: { title: "<script>alert(1)</script>m" } },
+      },
+    );
+    const bp = (out.clean.bp as Record<string, Record<string, unknown>>).mobile;
     expect(String(bp.title)).not.toContain("<");
     const badBp = validateProps({ fields: [textField()] }, { bp: 42 });
     expect(badBp.errors).toContain("bp.type");
@@ -194,7 +202,7 @@ describe("hostile props — instance boundary (validateInstanceProps)", () => {
   it("legacy path: scripts stripped, text capped, depth capped", () => {
     const clean = validateInstanceProps(
       {
-        title: '<script>alert(1)</script>hello<img src=x onerror=y>',
+        title: "<script>alert(1)</script>hello<img src=x onerror=y>",
         deep: { a: { b: { c: { d: { e: "too-deep" } } } } },
       },
       null,
@@ -263,7 +271,13 @@ describe("hostile props — instance boundary (validateInstanceProps)", () => {
   });
 
   it("never throws on hostile input shapes", () => {
-    for (const bad of [null, 42, true, BigInt(7) as unknown, Symbol("s") as unknown]) {
+    for (const bad of [
+      null,
+      42,
+      true,
+      BigInt(7) as unknown,
+      Symbol("s") as unknown,
+    ]) {
       expect(() => validateInstanceProps(bad, null)).not.toThrow();
     }
   });
@@ -303,7 +317,10 @@ describe("hostile props — forbidden-field scan and sanitizer", () => {
   });
 
   it("sanitizer drops __proto__ keys outright", () => {
-    const raw = JSON.parse('{"a":1,"__proto__":{"p":1}}') as Record<string, unknown>;
+    const raw = JSON.parse('{"a":1,"__proto__":{"p":1}}') as Record<
+      string,
+      unknown
+    >;
     const { clean, stripped } = sanitizeThemeParams(raw);
     expect(clean).toEqual({ a: 1 });
     expect(stripped).toContain("__proto__");
@@ -424,7 +441,12 @@ describe("hostile props — theme bridge authorization", () => {
     }
     expect(
       authorizeThemeCall(
-        { v: THEME_BRIDGE_VERSION, id: "1", method: "variant.select", params: {} },
+        {
+          v: THEME_BRIDGE_VERSION,
+          id: "1",
+          method: "variant.select",
+          params: {},
+        },
         ctx,
       ),
     ).toEqual({
@@ -443,7 +465,12 @@ describe("hostile props — theme bridge authorization", () => {
       "blob:https://x/y",
     ]) {
       const v = authorizeThemeCall(
-        { v: THEME_BRIDGE_VERSION, id: "1", method: "navigate", params: { href } },
+        {
+          v: THEME_BRIDGE_VERSION,
+          id: "1",
+          method: "navigate",
+          params: { href },
+        },
         ctx,
       );
       expect(v).toEqual({
@@ -608,11 +635,23 @@ describe("hostile props — registration and frame document", () => {
     });
     expect(v.ok).toBe(true);
     if (!v.ok) return;
-    for (const key of ["scopes", "permissions", "capabilities", "entry", "bundle"]) {
+    for (const key of [
+      "scopes",
+      "permissions",
+      "capabilities",
+      "entry",
+      "bundle",
+    ]) {
       expect(key in v.def).toBe(false);
     }
     const stored = reg.getWidget("plugin:evil/w")!;
-    for (const key of ["scopes", "permissions", "capabilities", "entry", "bundle"]) {
+    for (const key of [
+      "scopes",
+      "permissions",
+      "capabilities",
+      "entry",
+      "bundle",
+    ]) {
       expect(key in stored).toBe(false);
     }
   });

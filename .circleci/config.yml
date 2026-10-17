@@ -21,6 +21,18 @@ executors:
     docker:
       - image: cimg/node:24.21-browsers
     resource_class: large
+    # Hermetic boot env: the dev server refuses to start without Supabase
+    # names (assertBootEnv, src/server.ts), while every browser spec in this
+    # workflow is loopback-only and never talks to a real backend. The values
+    # are deliberately fake and unreachable (reserved 127.0.0.1:9 discard
+    # port) — never secrets, never a placeholder host that could resolve.
+    environment:
+      SUPABASE_URL: "http://127.0.0.1:9"
+      SUPABASE_SERVICE_ROLE_KEY: "ci-placeholder-service-role-key"
+      SUPABASE_PUBLISHABLE_KEY: "ci-placeholder-publishable-key"
+      VITE_SUPABASE_URL: "http://127.0.0.1:9"
+      VITE_SUPABASE_PUBLISHABLE_KEY: "ci-placeholder-publishable-key"
+      AUTH_HASH_SALT: "ci-placeholder-salt"
 
 commands:
   setup-bun:
