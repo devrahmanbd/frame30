@@ -21,18 +21,14 @@ executors:
     docker:
       - image: cimg/node:24.21-browsers
     resource_class: large
-    # Hermetic boot env: the dev server refuses to start without Supabase
-    # names (assertBootEnv, src/server.ts), while every browser spec in this
-    # workflow is loopback-only and never talks to a real backend. The values
+    # No executor-wide environment. The hermetic browser-boot env lives on
+    # the three spec-run steps that actually spawn the dev server. An
+    # executor-wide copy also fed the headless release gates, and
+    # schema:check treats "credentials present" as "drift-check the live
+    # schema" — so the fake boot values failed e2e-levelb-production at the
+    # release gates before Playwright ever ran (first remote run). The values
     # are deliberately fake and unreachable (reserved 127.0.0.1:9 discard
     # port) — never secrets, never a placeholder host that could resolve.
-    environment:
-      SUPABASE_URL: "http://127.0.0.1:9"
-      SUPABASE_SERVICE_ROLE_KEY: "ci-placeholder-service-role-key"
-      SUPABASE_PUBLISHABLE_KEY: "ci-placeholder-publishable-key"
-      VITE_SUPABASE_URL: "http://127.0.0.1:9"
-      VITE_SUPABASE_PUBLISHABLE_KEY: "ci-placeholder-publishable-key"
-      AUTH_HASH_SALT: "ci-placeholder-salt"
 
 commands:
   setup-bun:
@@ -120,6 +116,27 @@ jobs:
             # vacuously — base established + zero changed lines stays a
             # genuine pass (e.g. post-merge builds on main).
             set -eu
+            # CircleCI checks out a depth-1 clone, which has no history for
+            # the range diff to anchor on: `git diff origin/<base>...HEAD`
+            # dies with "no merge base", and SAST_REQUIRE_BASE=1 rightly
+            # treats that as fatal (the first remote run of this job failed
+            # exactly there). Complete the local history before resolving
+            # the base. The fetch is fatal-by-design: an incompletable
+            # history fails the job right here — never a silent narrowing of
+            # the scan. (frame30 sits 133 commits ahead of main; the branch
+            # checkout itself is depth-1, so HEAD's ancestry is the missing
+            # side.)
+            if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then
+              UNSHALLOW_REF="${CIRCLE_BRANCH:-}"
+              if [ -z "$UNSHALLOW_REF" ]; then
+                UNSHALLOW_REF="$(git branch --show-current 2>/dev/null || true)"
+              fi
+              if [ -n "$UNSHALLOW_REF" ]; then
+                git fetch --unshallow origin "$UNSHALLOW_REF"
+              else
+                git fetch --unshallow origin
+              fi
+            fi
             BASE="${SAST_BASE:-}"
             TOKEN="${GITHUB_TOKEN:-${GH_TOKEN:-}}"
             if [ -z "$BASE" ] && [ -n "${CIRCLE_PR_NUMBER:-}" ] && [ -n "$TOKEN" ]; then
@@ -206,9 +223,21 @@ jobs:
       - run:
           name: Install Playwright Chromium
           command: bunx playwright install --with-deps chromium
+      # Browser-boot env for the Playwright-managed dev server ONLY:
+      # assertBootEnv (src/server.ts) refuses to start without Supabase
+      # names; every spec here is loopback-only and never reaches a backend.
+      # Deliberately fake, unreachable (reserved 127.0.0.1:9) — see the
+      # executor comment for why this is scoped to the step.
       - run:
           name: E2E critical suites
           command: bun run e2e:critical
+          environment:
+            SUPABASE_URL: "http://127.0.0.1:9"
+            SUPABASE_SERVICE_ROLE_KEY: "ci-placeholder-service-role-key"
+            SUPABASE_PUBLISHABLE_KEY: "ci-placeholder-publishable-key"
+            VITE_SUPABASE_URL: "http://127.0.0.1:9"
+            VITE_SUPABASE_PUBLISHABLE_KEY: "ci-placeholder-publishable-key"
+            AUTH_HASH_SALT: "ci-placeholder-salt"
 
   plugin-storefront-gate:
     executor: bun-executor
@@ -243,9 +272,17 @@ jobs:
       - run:
           name: Install Playwright Chromium
           command: bunx playwright install --with-deps chromium
+      # Browser-boot env scoped exactly like e2e-critical (Playwright webServer).
       - run:
           name: E2E adversarial security specs
           command: bun run e2e:security
+          environment:
+            SUPABASE_URL: "http://127.0.0.1:9"
+            SUPABASE_SERVICE_ROLE_KEY: "ci-placeholder-service-role-key"
+            SUPABASE_PUBLISHABLE_KEY: "ci-placeholder-publishable-key"
+            VITE_SUPABASE_URL: "http://127.0.0.1:9"
+            VITE_SUPABASE_PUBLISHABLE_KEY: "ci-placeholder-publishable-key"
+            AUTH_HASH_SALT: "ci-placeholder-salt"
 
   # Level B genuine-bundle production E2E (harness `levelb-production-e2e`).
   # Runs EXACTLY the harness verifier command — `npx playwright test -c
@@ -272,7 +309,9 @@ jobs:
           command: bunx playwright install --with-deps chromium
       # Headless release gates (static: no credentials, no GPU, no server).
       # - schema:check passes vacuously without SUPABASE creds (the script
-      #   skips with exit 0); WITH creds it drift-checks the live schema.
+      #   skips with exit 0); WITH creds it drift-checks the live schema —
+      #   hence the browser-boot env below is scoped to the spec step only,
+      #   never to this step or the executor.
       # - cron:check is a pure file compare (registry vs ops/cron/crontab).
       # - selfhost:preflight static half runs anywhere (YAML/shape checks);
       #   host-secret checks SKIP without --host by design.
@@ -294,9 +333,20 @@ jobs:
       #   running server plus long browser runtimes beyond this job's scope.
       # - e2e:browsers (browser-smoke) needs E2E_STORE_SLUG on a seeded store
       #   AND firefox+webkit installs (multi-engine cost).
+      # Browser-boot env for the Playwright-managed dev server ONLY (same
+      # scoping as e2e-critical/e2e-security): assertBootEnv refuses to boot
+      # without Supabase names; the specs are loopback-only. Deliberately
+      # fake, unreachable (reserved 127.0.0.1:9).
       - run:
           name: Level B production E2E (harness verifier, exact command)
           command: npx playwright test -c .e2e/playwright.config.ts levelb-theme-execution levelb-theme-switch-serve levelb-theme-lifecycle
+          environment:
+            SUPABASE_URL: "http://127.0.0.1:9"
+            SUPABASE_SERVICE_ROLE_KEY: "ci-placeholder-service-role-key"
+            SUPABASE_PUBLISHABLE_KEY: "ci-placeholder-publishable-key"
+            VITE_SUPABASE_URL: "http://127.0.0.1:9"
+            VITE_SUPABASE_PUBLISHABLE_KEY: "ci-placeholder-publishable-key"
+            AUTH_HASH_SALT: "ci-placeholder-salt"
 
 workflows:
   version: 2
