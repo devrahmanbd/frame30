@@ -240,3 +240,43 @@ imports pinned to the installed versions, lazy video gate with still
 fallback, versioned update + revoked-latest rollback, per-version
 activation with least-privilege grants, and a hash-pinned document with no
 inline code. Developer steps: `src/lib/dev-theme-starter-theme/README.md`.
+
+## 10. Verification map & limits
+
+What each automated layer actually proves, so no claim is read wider than
+its evidence:
+
+- **Real persistence (Postgres/GoTrue/PostgREST).** The authenticated
+  editor journey (`.e2e/plugin-authenticated-journey.spec.ts`, mode B per
+  `docs/15-e2e/loopback-auth-setup.md`) runs against the throwaway
+  loopback stack on a real database: plugin installs, document
+  save/reload, publish and the served storefront read back through real
+  PostgREST (6/6 twice — CHANGELOG close-out matrix). This lane proves the
+  editor/storefront rails; it does not exercise the Level B review store.
+- **Fixtures (vitest).** The Level B pipeline vectors — manifest/bundle
+  validation, dependency pins, asset completeness, review submit/approve,
+  activation/rollback, document build, widget schemas — run on fixture
+  bytes/snapshots. The durable review-store adapter is pinned against the
+  `fakeDb` double (`dev-theme-review-persist.test.ts`: submit → approve →
+  publish → load → activate through durable rows; DB faults fail closed;
+  duplicate re-approval writes nothing), never against a live database.
+  `levelb-theme-execution.spec.ts` states its own boundary: the worker
+  seeds install-EQUIVALENT rows field-for-field, and the real-adapter
+  install → serve round-trip is pinned by `dev-theme-asset-serve.test.ts`
+  - `t.$.test.ts`.
+- **Browser, sandboxed frame (Playwright).** The CI verifier set
+  (`levelb-theme-execution`, `levelb-theme-switch-serve`,
+  `levelb-theme-lifecycle`) loads real verified bytes over real loopback
+  HTTP into the real `ThemeRuntime` frame (`allow-scripts`-only, no
+  `page.route()` interception): GSAP + `THREE.WebGLRenderer` execute and
+  report inside the frame, the host holds opaque isolation and zero theme
+  code, and per-request approval/hash re-checks run on the fixed snapshot
+  (the live-row chain is pinned by `t.$.test.ts`).
+- **Hardware.** No physical GPU exists here: headless Chromium serves
+  WebGL through software rasterization (SwiftShader). When available the
+  spec asserts the REAL renderer path (`threeMode: "webgl"` + draw calls +
+  triangles — observed `path=webgl calls=1 triangles=12`); when absent it
+  asserts the genuine fallback path ran, and why. Driver-specific GL
+  behavior, real-GPU compositing and on-device performance are
+  hardware-dependent and not proven by any local/CI lane — only owner
+  GPU/device runs can assert them.

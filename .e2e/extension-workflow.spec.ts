@@ -67,16 +67,19 @@ test("editor requires a session: /dashboard/builder lands on /auth", async ({
   const response = await page.goto("/dashboard/builder", {
     waitUntil: "domcontentloaded",
     // Cold-sensitive: first hit compiles the builder route graph; the
-    // redirect assertion below keeps its strict timeout.
+    // redirect assertion below uses the suite's cold-aware budget.
     timeout: 180_000,
   });
   // The shell serves (ssr:false route) — the gate is the client-side
   // beforeLoad redirect, so the HTTP status stays 200 either way.
   expect(response?.status()).toBe(200);
   // No Supabase session on loopback ⇒ beforeLoad throws redirect to /auth.
+  // Cold-aware budget (same as the sibling test below): the builder route's
+  // client chunk compiles after DOM-ready, and the first compile can exceed
+  // 30 s on a fresh dev server. The gate assertion itself is unchanged.
   await expect(page, "unauthenticated editor redirects to /auth").toHaveURL(
     /\/auth/,
-    { timeout: 30_000 },
+    { timeout: 90_000 },
   );
   await expect(page).toHaveTitle(/Authentication/, { timeout: 15_000 });
   // The builder UI never mounts behind the gate: no canvas, no tray.

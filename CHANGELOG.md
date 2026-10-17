@@ -29,8 +29,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   auth-skips, 0 fail).
 - `.circleci/config.yml` restored verbatim from `1185f440^` (274 lines,
   YAML-validated, all 13 `bun run` targets + SAST flags + e2e spec refs
-  audited present). Remote builds still need owner token access — no green
-  claim; first post-restore build remains the verdict.
+  audited present). The verdict is in: the restored pipeline runs green —
+  `d8850df0` combined `success` with all 8 contexts success (see the
+  close-out evidence matrix below).
 - Durable Level B review store: `dev_theme_releases` (submit idempotency)
   - `dev_theme_reviews` (approval idempotency) with RLS mirroring
     `theme_submissions`; fail-closed on store/audit faults with flag revert
@@ -41,13 +42,49 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   explicit placeholders.
 - Fixed the pre-existing `extension-workflow.spec.ts` static-wiring token
   (tray now reads `buildTrayRegistry(plugins)`) and gave its cold redirect
-  assertion a 90s budget.
+  assertions a 90s budget (the close-out follow-up below completes this:
+  the first assertion was still on 30 s).
 
 ### Verification (close-out)
 
 - New: E2E 15 pass + 3 auth-skips cold; review-persist 9/9 (TDD red→green)
   with 357 neighbors green; ornament 20/20 with 528 neighbors green;
   `tsgo` clean; eslint clean; secret scan passed.
+
+### Verified — comprehensive close-out run (auth journeys + CI lanes)
+
+On the checked-in `frame30` revision (`d8850df0`) plus the two cold-start
+test-robustness fixes in this entry (a hydration readiness wait + two
+budget alignments — no assertion changed, no test skipped), fresh vite per
+suite, `--retries=0` everywhere (stricter than CI's `retries: 2`):
+
+- **Mode B — authenticated journey on the real stack** (vendored loopback
+  GoTrue/PostgREST/Postgres per `docs/15-e2e/loopback-auth-setup.md`):
+  `plugin-authenticated-journey` **6/6 passed, 0 skipped — twice** (run 1
+  cold server, 6.2 min; run 2 warm, 3.8 min): auth wall, editor gate,
+  static wiring, tray insert, schema-controls persist, save → reload →
+  preview → publish → storefront. Backed by Kong/GoTrue logs showing the
+  browser-origin `POST /auth/v1/token` + `GET /auth/v1/user` calls.
+- **Mode A — no auth stack** (`.env*` hidden + the exact CircleCI
+  browser-boot env): `plugin-anonymous-journey` 9 passed + 3 declared
+  skips; `plugin-registry-editor-wiring` 5 passed + 3 declared skips;
+  `extension-workflow` 5 passed; `plugin-authenticated-journey` 3 passed
+  - 3 credential skips. Declared skips are reported as skipped — never
+    counted as passes.
+- **CI lanes, exact spec sets**: `e2e:critical` 10/10; `e2e:security`
+  17/17; Level B verifier set 10/10
+  (`[e2e levelb-real] three path=webgl calls=1 triangles=12` — the WebGL
+  branch executed in the sandboxed frame under headless software
+  rasterization; no physical GPU here — `docs/themes/level-b.md` §10).
+- **Remote CI**: `d8850df0` combined `success` — all 8 contexts success
+  (`scan-1`, `plugin-storefront-gate`, `build`, `lint-typecheck`,
+  `e2e-levelb-production`, `e2e-critical`, `unit-contract`,
+  `e2e-security`); the pushed close-out head re-runs the same contexts for
+  its own verdict.
+
+Both fixes repair cold first-hit races observed while producing this
+matrix (a pre-hydration click on `/auth`; a 30 s redirect budget on the
+first `/dashboard/builder` hit); the assertions themselves are unchanged.
 
 ### Fixed — authenticated-journey close-out (dev define gap, studio flush race)
 
@@ -254,8 +291,9 @@ level-b.md` SDK contract. Data-only lane frozen and untouched; review
 
 - ~400 new tests across 8 lanes; neighbors 4000+ green; `tsgo` 0;
   eslint 0 errors on owned lines; secret scan passed; harness guards 1.0.
-- Open: 9 auth-gated E2E steps (proven wall), remote CI run (owner),
-  GPU proof (no GPU on server).
+- Later resolved (close-out above): the auth-gated steps run green in the
+  real-stack mode-B replica (6/6 twice); remote CI runs green; the GPU
+  limit stands and is documented in `docs/themes/level-b.md` §10.
 
 ## [Unreleased] (frame30) — Swarm: full checklist integration
 
@@ -290,8 +328,9 @@ level-b.md` SDK contract. Data-only lane frozen and untouched; review
 - ~500 new tests across 9 lanes; neighbors 3000+ green; `tsc` 0;
   eslint 0 errors on owned lines; secret scan passed; production E2E
   cold green; harness guards reward 1.0.
-- Open: 9 auth-gated E2E steps (proven wall, no stubbing), remote CI
-  tokens (owner), real-GPU proof (no GPU on server — SwiftShader stands).
+- Resolved (close-out above): auth-gated steps run green against the real
+  loopback stack (no stubbing), remote CI green; real-GPU proof remains
+  hardware-dependent — see `docs/themes/level-b.md` §10.
 
 ## [Unreleased] (frame30) — Audit close-out: registry reaches every call site
 

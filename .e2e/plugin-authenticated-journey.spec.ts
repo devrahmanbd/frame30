@@ -81,7 +81,10 @@ async function authStorageTokens(page: Page): Promise<string[]> {
 test("auth wall (real UI): actual login attempt creates no session", async ({
   page,
 }) => {
-  test.setTimeout(150_000);
+  // Same cold-dev budget as the sibling tests: the first /auth compile can
+  // spend COLD_GOTO_TIMEOUT on its own, and the feedback wait below is
+  // deliberately tolerant (a slow round-trip must not flake the proof).
+  test.setTimeout(300_000);
   const { collector, blocked } = await hermeticPage(page);
   const response = await page.goto("/auth", {
     waitUntil: "domcontentloaded",
@@ -102,6 +105,24 @@ test("auth wall (real UI): actual login attempt creates no session", async ({
   ).toBeVisible();
   await expect(submit, "real login form renders submit").toContainText(
     /sign in/i,
+  );
+
+  // Cold dev server: route modules stream in after DOM-ready, so a fill/click
+  // can land before React hydrates the form (observed cold: the click fired a
+  // NATIVE submit → /auth? reload → the click burned its 15 s waiting on that
+  // scheduled navigation). Wait for the hydrate-owned React props marker on
+  // the submit button — the real listeners are attached by then. No assertion
+  // semantics change: the same click, once hydrated.
+  await page.waitForFunction(
+    () => {
+      const btn = document.querySelector('button[type="submit"]');
+      return (
+        btn !== null &&
+        Object.keys(btn).some((key) => key.startsWith("__reactProps$"))
+      );
+    },
+    undefined,
+    { timeout: COLD_GOTO_TIMEOUT },
   );
 
   // Synthetic hermetic probe credential — syntactically valid (passes the

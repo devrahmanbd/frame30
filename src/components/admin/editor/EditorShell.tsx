@@ -208,9 +208,9 @@ export function EditorShell({
    * `DevThemeBinding` for the approved ACTIVE release, or explicit absent
    * (null) when unprojected. Forwarded alongside the registry through
    * `studioSeamProps` so canvas/inspector/preview share one build.
-   * Receiver-owned: spread (not an explicit attribute) so this file
-   * compiles while the studio has yet to declare the prop — inert until it
-   * does, flowing the moment it does.
+   * Receiver-owned: StudioBuilder declares `devThemeBinding` and consumes
+   * it from the seam spread; this shell only forwards (never an explicit
+   * attribute here), pinned by `editor-seam-wiring.test.ts`.
    */
   devThemeBinding?: DevThemeBinding | null;
   /**
@@ -485,8 +485,8 @@ export function EditorShell({
   );
 
   // Working restore for the studio History revisions tab. The studio owns
-  // the dialog chrome (other track); this callback is forwarded via
-  // `studioSeamProps` until the studio declares the prop (reported hunk).
+  // the dialog chrome and declares `onRestoreRevision`; this callback is
+  // forwarded through `studioSeamProps` (never an explicit attribute here).
   const restoreStudioRevision = useCallback(
     (revisionId: string) => {
       void state.restoreRevision(revisionId);
@@ -494,10 +494,11 @@ export function EditorShell({
     [state],
   );
 
-  // Receiver-owned props the studio does not declare yet. Spread (not
-  // explicit attributes) so this file compiles and runs unchanged today —
-  // the extra props are inert until the owning track adds them — and flows
-  // through the moment it does. `pluginEntries` only spreads when non-empty.
+  // Receiver-owned seam: StudioBuilder declares all of these props
+  // (`pluginEntries`, `extensionRegistry`, `devThemeBinding`,
+  // `onRestoreRevision`) and consumes them from this one spread, never
+  // from explicit attributes here. `pluginEntries` only spreads when
+  // non-empty.
   // Frame30 one-registry: the route-owned authorized instance (guarded to
   // the SAME reference or explicit absent — never a rebuild) plus the
   // single projected `devThemeBinding` share this one seam object, so tray
