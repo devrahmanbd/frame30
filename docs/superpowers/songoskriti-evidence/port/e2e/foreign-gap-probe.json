@@ -1,0 +1,53 @@
+{
+  "probe": "task9 foreign-theme studio-tray gating (controller, 2026-10-18)",
+  "test": "activate somvabona via real themeActivateFn; open /dashboard/content/editor?kind=page fresh; click Elements tab; inspect registry + tray + DOM; click the row; compare legacy builder page",
+  "authed": true,
+  "activation": {
+    "activated": "somvabona",
+    "id": "9f868b3d-88ad-4ca4-bd48-f6e9d1798952"
+  },
+  "tabVisible": true,
+  "workspace": {
+    "sourceKey": "somvabona",
+    "isActive": true,
+    "hasApprovedDevManifest": false
+  },
+  "registryProbe": {
+    "themeDefs": [
+      "theme:songoskriti/ornament"
+    ],
+    "resolved": {
+      "ok": true,
+      "hasDef": true
+    },
+    "tray": [
+      {
+        "key": "theme:songoskriti/ornament",
+        "label": "Songoskriti ornament",
+        "pluginName": "songoskriti"
+      }
+    ]
+  },
+  "rows": [
+    {
+      "title": "Songoskriti ornament — songoskriti",
+      "text": "Songoskriti ornamentsongoskriti",
+      "visible": true,
+      "w": 295,
+      "h": 44
+    }
+  ],
+  "rowCount": 1,
+  "insertOutcome": {
+    "fallback": true,
+    "ornamentRender": 0
+  },
+  "legacyBuilder": {
+    "url": "http://localhost:3020/dashboard/builder",
+    "bodyHasOrnament": false
+  },
+  "consoleErrors": [
+    "WebSocket connection to 'ws://127.0.0.1:58000/realtime/v1/websocket?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzkyMTgwMTk2LCJleHAiOjIxMDc1NDAyNTZ9.KN6-CujQZYEvKex3v4APm-wtpNeotbdy8hjsMD1xRJI&vsn=2",
+    "WebSocket connection to 'ws://127.0.0.1:58000/realtime/v1/websocket?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzkyMTgwMTk2LCJleHAiOjIxMDc1NDAyNTZ9.KN6-CujQZYEvKex3v4APm-wtpNeotbdy8hjsMD1xRJI&vsn=2"
+  ]
+}
