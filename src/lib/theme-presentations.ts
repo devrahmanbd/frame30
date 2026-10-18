@@ -990,7 +990,8 @@ const GENERIC_COMPONENTS = new Map<string, WidgetComponent>();
 function normalizeGenericWidgetId(value: unknown): string | null {
   if (typeof value !== "string") return null;
   const clean = value.trim().toLowerCase();
-  if (!clean || !VERSIONED_WIDGET_RE.test(clean)) return null;
+  if (!clean || clean.length > VERSIONED_WIDGET_MAX) return null;
+  if (!VERSIONED_WIDGET_RE.test(clean)) return null;
   return clean;
 }
 

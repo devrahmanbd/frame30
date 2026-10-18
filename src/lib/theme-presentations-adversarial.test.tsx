@@ -23,10 +23,15 @@ import { newSection, type Section } from "@/lib/builder-ast";
 import {
   checkVersionedCompatibility,
   clearThemePresentations,
+  hasGenericPresentation,
+  isThemeOwnerAvailable,
   isVersionedOwnerAvailable,
   migrateVersionedProps,
+  registerGenericPresentation,
   registerVersionedPresentation,
+  resolveGenericPresentation,
   resolveVersionedPresentation,
+  setThemeOwnerAvailability,
   setVersionedPresentationAvailability,
 } from "./theme-presentations";
 import {
@@ -821,5 +826,101 @@ describe("resolution entry points never throw, never cross owners", () => {
       reason: "bad_key",
       preservedProps: {},
     });
+  });
+});
+
+/**
+ * Universal generic-presentation registry (dress/body model) — the edges
+ * sibling maps already pin, now for the generic lane: hostile ids and
+ * non-components are dropped with a warning, first registration wins even
+ * across case/padding variants, the id length cap matches the versioned
+ * widget gate, `clearThemePresentations` resets the map, and owner
+ * availability never gates the universal body (R1 review finding 2).
+ */
+describe("universal generic-presentation registry contract", () => {
+  const GENERIC_ID = "theme:adv-generic/divider";
+  const GenericDivider: WidgetComponent = () => <div data-generic="adv" />;
+  const OtherDivider: WidgetComponent = () => <div data-generic="other" />;
+
+  it("drops invalid ids and non-components without throwing", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    for (const hostile of [
+      "",
+      "   ",
+      "no-namespace",
+      ":missing-namespace",
+      "theme:",
+      "theme:has space",
+      42,
+      null,
+      undefined,
+    ]) {
+      expect(() =>
+        registerGenericPresentation(hostile as never, GenericDivider),
+      ).not.toThrow();
+    }
+    expect(() =>
+      registerGenericPresentation(GENERIC_ID, null as never),
+    ).not.toThrow();
+    expect(warn).toHaveBeenCalled();
+    expect(resolveGenericPresentation(GENERIC_ID)).toBeUndefined();
+    // The map still accepts legitimate work afterwards.
+    registerGenericPresentation(GENERIC_ID, GenericDivider);
+    expect(resolveGenericPresentation(GENERIC_ID)).toBe(GenericDivider);
+  });
+
+  it("keeps the first registration across case/padding variants", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    registerGenericPresentation("  Theme:Adv-Generic/Divider ", GenericDivider);
+    registerGenericPresentation(GENERIC_ID, OtherDivider);
+    expect(warn).toHaveBeenCalled();
+    expect(resolveGenericPresentation(GENERIC_ID)).toBe(GenericDivider);
+    expect(hasGenericPresentation("  THEME:ADV-GENERIC/DIVIDER  ")).toBe(true);
+  });
+
+  it("refuses ids over the length cap, keeps ids at it", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const atCap = `theme:${"a".repeat(250)}`;
+    const overCap = `theme:${"a".repeat(251)}`;
+    registerGenericPresentation(atCap, GenericDivider);
+    registerGenericPresentation(overCap, OtherDivider);
+    expect(warn).toHaveBeenCalled();
+    expect(resolveGenericPresentation(atCap)).toBe(GenericDivider);
+    expect(hasGenericPresentation(overCap)).toBe(false);
+  });
+
+  it("resolution entry points never throw on garbage", () => {
+    registerGenericPresentation(GENERIC_ID, GenericDivider);
+    for (const hostile of [
+      null,
+      undefined,
+      42,
+      "",
+      "   ",
+      "no-namespace",
+      {},
+    ]) {
+      expect(resolveGenericPresentation(hostile as never)).toBeUndefined();
+      expect(hasGenericPresentation(hostile as never)).toBe(false);
+    }
+  });
+
+  it("clearThemePresentations resets generic claims", () => {
+    registerGenericPresentation(GENERIC_ID, GenericDivider);
+    expect(hasGenericPresentation(GENERIC_ID)).toBe(true);
+    clearThemePresentations();
+    expect(resolveGenericPresentation(GENERIC_ID)).toBeUndefined();
+    expect(hasGenericPresentation(GENERIC_ID)).toBe(false);
+  });
+
+  it("resolves independently of owner availability", () => {
+    const ownerId = "theme:songoskriti/adv-divider";
+    registerGenericPresentation(ownerId, GenericDivider);
+    setThemeOwnerAvailability("songoskriti", false);
+    expect(isThemeOwnerAvailable("songoskriti")).toBe(false);
+    expect(resolveGenericPresentation(ownerId)).toBe(GenericDivider);
+    expect(hasGenericPresentation(ownerId)).toBe(true);
+    setThemeOwnerAvailability("songoskriti", true);
+    expect(isThemeOwnerAvailable("songoskriti")).toBe(true);
   });
 });
