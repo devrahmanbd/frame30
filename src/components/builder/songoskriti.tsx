@@ -69,7 +69,6 @@ import {
   Star,
   Truck,
 } from "@/components/icons/tabler";
-import { registerSongoskritiPresentationClaims } from "@/lib/themes/songoskriti/presentation-claims";
 
 // Live-rendering activation (THEME-OWNED WIDGET lane, Task 7): side-effect
 // import of the ornament presentation pulls `ornament-def` into the editor
@@ -2634,8 +2633,14 @@ export const SONGOSKRITI_WIDGETS: Record<
   result_toolbar: SongoskritiResultToolbar,
 };
 
-// Live-rendering activation (PRESENTATION-CLAIMS lane): register the 13
-// Songoskriti presentation claims through the editor graph. The
-// already-claimed guard keeps this idempotent across the storefront carrier
+// Live-rendering activation (PRESENTATION-CLAIMS lane): the activator is
+// pulled by a lazy dynamic hop (never a value import — the platform
+// invariant in widget-registry.test.ts) and receives the pack HERE, after
+// this module's own evaluation has initialized it — no TDZ, no cycle. The
+// already-claimed guard keeps it idempotent across the storefront carrier
 // (preview.ts) and never evicts the live mega_menu claim.
-registerSongoskritiPresentationClaims(SONGOSKRITI_WIDGETS);
+void import("@/lib/themes/songoskriti/claims-activation")
+  .then((m) => m.activateSongoskritiPresentationClaims(SONGOSKRITI_WIDGETS))
+  .catch(() => {
+    /* activator unavailable; preview.ts still claims for the storefront */
+  });
