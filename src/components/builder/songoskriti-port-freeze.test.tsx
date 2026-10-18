@@ -155,7 +155,7 @@ describe("Task 3 — freeze: per-template zone/type composition", () => {
     it(`${key} template main zone is frozen`, () => {
       const source = songoskritiPreviewSource();
       const s = stubBuilder<SectionBuilder>();
-      const main = source.main(key as TemplateKey, s);
+      const main = source.main(key as TemplateKey, s)!;
       expect(main.map((x: Section) => x.type)).toEqual(TEMPLATE_MAIN[key]);
       const header = source.header(
         key as TemplateKey,
