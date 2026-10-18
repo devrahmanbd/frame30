@@ -17,6 +17,7 @@ import {
   type Section,
   type SectionType,
   type SectionBuilder,
+  type TemplateKey,
 } from "@/lib/builder-ast";
 import type { Locale } from "@/lib/bitext";
 import { widgetReader, type WidgetComponent, type WidgetCtx } from "./widgets";
@@ -24,7 +25,10 @@ import { SONGOSKRITI_WIDGETS } from "./songoskriti";
 import { HERITAGE_WIDGETS } from "./heritage";
 import { WIDGET_COMPONENTS } from "./widgets";
 import { buildHomepageMain as buildSongoskritiHomepage } from "@/lib/themes/songoskriti/homepage";
-import { buildSongoskritiFooter } from "@/lib/themes/songoskriti/footer";
+import {
+  buildSongoskritiFooter,
+  type FooterSectionBuilder,
+} from "@/lib/themes/songoskriti/footer";
 import { songoskritiPreviewSource } from "@/lib/themes/songoskriti/preview";
 
 function ctxFor(
@@ -52,7 +56,10 @@ function render(
   locale: Locale = "en",
 ): string {
   return renderToStaticMarkup(
-    createElement(Cmp as (p: WidgetCtx) => React.ReactElement, ctxFor(section, locale)),
+    createElement(
+      Cmp as (p: WidgetCtx) => React.ReactElement,
+      ctxFor(section, locale),
+    ),
   );
 }
 
@@ -66,15 +73,35 @@ function stubBuilder<T>(): T {
 
 const TEMPLATE_MAIN: Record<string, string[]> = {
   index: [
-    "hero_carousel", "department_grid", "product_rail", "craft_story",
-    "product_rail", "split_feature", "product_rail", "recently_viewed",
-    "finder_row", "split_feature", "product_rail", "product_rail",
-    "split_feature", "collection_story", "product_rail", "craft_story",
-    "ugc_gallery", "testimonials", "split_feature", "trust_footer",
+    "hero_carousel",
+    "department_grid",
+    "product_rail",
+    "craft_story",
+    "product_rail",
+    "split_feature",
+    "product_rail",
+    "recently_viewed",
+    "finder_row",
+    "split_feature",
+    "product_rail",
+    "product_rail",
+    "split_feature",
+    "collection_story",
+    "product_rail",
+    "craft_story",
+    "ugc_gallery",
+    "testimonials",
+    "split_feature",
+    "trust_footer",
     "store_locator",
   ],
   product: ["heading", "columns", "rich_text", "product_rail"],
-  collection: ["category_header", "result_toolbar", "product_grid", "product_rail"],
+  collection: [
+    "category_header",
+    "result_toolbar",
+    "product_grid",
+    "product_rail",
+  ],
   account: ["heading", "profile_card", "orders_list"],
   page: ["heading", "rich_text"],
   blog: ["heading", "image", "rich_text"],
@@ -87,11 +114,26 @@ describe("Task 3 — freeze: homepage composition", () => {
   it("homepage composition is frozen: 21 sections / 12 distinct types", () => {
     const sections = buildSongoskritiHomepage(stubBuilder<never>());
     expect(sections.map((x) => x.type)).toEqual([
-      "hero_carousel", "department_grid", "product_rail", "craft_story",
-      "product_rail", "split_feature", "product_rail", "recently_viewed",
-      "finder_row", "split_feature", "product_rail", "product_rail",
-      "split_feature", "collection_story", "product_rail", "craft_story",
-      "ugc_gallery", "testimonials", "split_feature", "trust_footer",
+      "hero_carousel",
+      "department_grid",
+      "product_rail",
+      "craft_story",
+      "product_rail",
+      "split_feature",
+      "product_rail",
+      "recently_viewed",
+      "finder_row",
+      "split_feature",
+      "product_rail",
+      "product_rail",
+      "split_feature",
+      "collection_story",
+      "product_rail",
+      "craft_story",
+      "ugc_gallery",
+      "testimonials",
+      "split_feature",
+      "trust_footer",
       "store_locator",
     ]);
     expect(new Set(sections.map((x) => x.type)).size).toBe(12);
@@ -99,19 +141,38 @@ describe("Task 3 — freeze: homepage composition", () => {
 });
 
 describe("Task 3 — freeze: per-template zone/type composition", () => {
-  for (const key of ["index", "product", "collection", "account", "page", "blog", "cart", "checkout", "search"]) {
+  for (const key of [
+    "index",
+    "product",
+    "collection",
+    "account",
+    "page",
+    "blog",
+    "cart",
+    "checkout",
+    "search",
+  ]) {
     it(`${key} template main zone is frozen`, () => {
       const source = songoskritiPreviewSource();
       const s = stubBuilder<SectionBuilder>();
-      const main = source.main(key as any, s);
+      const main = source.main(key as TemplateKey, s);
       expect(main.map((x: Section) => x.type)).toEqual(TEMPLATE_MAIN[key]);
-      const header = source.header(key as any, stubBuilder<SectionBuilder>());
-      const footer = source.footer(key as any, stubBuilder<SectionBuilder>());
+      const header = source.header(
+        key as TemplateKey,
+        stubBuilder<SectionBuilder>(),
+      );
+      const footer = source.footer(
+        key as TemplateKey,
+        stubBuilder<SectionBuilder>(),
+      );
       expect(header.map((x: Section) => x.type)).toEqual([]);
       if (key === "checkout") {
         expect(footer.map((x: Section) => x.type)).toEqual([]);
       } else {
-        expect(footer.map((x: Section) => x.type)).toEqual(["footer_sitemap", "rich_text"]);
+        expect(footer.map((x: Section) => x.type)).toEqual([
+          "footer_sitemap",
+          "rich_text",
+        ]);
       }
     });
   }
@@ -125,7 +186,8 @@ describe("Task 3 — freeze: chrome + singleton static pins", () => {
   });
 
   it("footer chrome (footer_sitemap) static pin", () => {
-    const sections = buildSongoskritiFooter(stubBuilder<any>());
+    const sections =
+      buildSongoskritiFooter(stubBuilder<FooterSectionBuilder>());
     const sitemap = sections.find((n) => n.type === "footer_sitemap")!;
     const html = render(SONGOSKRITI_WIDGETS["footer_sitemap"], sitemap, "en");
     expect(html).toContain("© 2026 Songoskriti");
