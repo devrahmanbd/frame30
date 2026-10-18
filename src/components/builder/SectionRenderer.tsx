@@ -31,6 +31,7 @@ import { useMotionFx } from "./motion-fx";
 import { widgetReader } from "./widgets";
 import { resolveWidgetComponent } from "./theme-widgets";
 import {
+  resolveGenericPresentation,
   resolveThemeOwnedComponent,
   resolveThemePresentation,
 } from "@/lib/theme-presentations";
@@ -702,6 +703,82 @@ export function SectionRenderer({
           } catch {
             // A hostile def shape must never break the render: placeholder.
           }
+        }
+      }
+      // Universal generic body (theme = dress, widget = body): under any
+      // non-owning active theme a registered generic presentation renders
+      // the widget's own neutral component through the SAME boundary +
+      // chrome wrap + child-recursion plumbing as the owner lane. A missing
+      // registration falls through to the explicit placeholder below —
+      // fail-closed, never another owner's component.
+      if (
+        presentation.ok &&
+        presentation.mode === "theme-owned" &&
+        presentation.presentation === "generic-presentation"
+      ) {
+        const Generic = resolveGenericPresentation(presentation.widgetId);
+        if (Generic) {
+          const renderGenericChildren = () =>
+            (section.children ?? []).map((child) => (
+              <SectionRenderer
+                key={child.id}
+                section={child}
+                productSlot={productSlot}
+                collectionSlot={collectionSlot}
+                contextSlots={contextSlots}
+                template={template}
+                storeSlug={storeSlug}
+                themeKey={themeKey}
+                editing={editing}
+                device={device}
+                locale={locale}
+                selectedIds={selectedIds}
+                onInlineEdit={onInlineEdit}
+                linkBase={linkBase}
+                registry={registry}
+                devThemeBinding={devThemeBinding}
+              />
+            ));
+          return wrap(
+            <WidgetBoundary type={section.type} editing={editing}>
+              <Generic
+                section={section}
+                str={str}
+                bool={bool}
+                int={int}
+                money={money}
+                locale={locale}
+                Heading={primary ? "h1" : "h2"}
+                primary={primary}
+                editing={editing}
+                device={device}
+                template={template}
+                storeSlug={storeSlug}
+                data={nodeData}
+                productSlot={productSlot}
+                collectionSlot={collectionSlot}
+                link={(href: string) => {
+                  if (
+                    !href ||
+                    href.startsWith("http") ||
+                    href.startsWith("mailto:") ||
+                    href.startsWith("tel:") ||
+                    href === "#"
+                  )
+                    return href;
+                  const h = href.startsWith("/") ? href : `/${href}`;
+                  return linkBase ? `${linkBase}${h}` : h;
+                }}
+                renderChildren={renderGenericChildren}
+                {...(onInlineEdit
+                  ? {
+                      inlineEdit: (key: string, value: string) =>
+                        onInlineEdit(section.id, key, value),
+                    }
+                  : {})}
+              />
+            </WidgetBoundary>,
+          );
         }
       }
       // Recoverable theme-owned outcome (foreign-theme fallback, missing

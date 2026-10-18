@@ -22,13 +22,16 @@
  *   `THEME_SANDBOX` and `plugin-theme-contract.ts`).
  * - `plugin-themeable` — community Class B: theme presentation over the
  *   declared public data, else the defined sandboxed-island fallback.
- * - `theme-owned` — owning-theme definition, else a recoverable fallback
- *   that preserves instance data (no renderer held, never another owner's).
+ * - `theme-owned` — theme = dress, widget = body: the owning theme's
+ *   definition (the dress) under its own key; else the widget's registered
+ *   universal generic presentation (the body) under any other theme; else a
+ *   recoverable fallback that preserves instance data (no renderer held,
+ *   never another owner's).
  *
  * Fail-closed rule: unknown / disabled / incompatible / uninstalled keys —
- * and theme-owned widgets under a non-owning theme — NEVER resolve to a
- * different owner's renderer. They resolve to `missing` (or the
- * recoverable fallback) with the authored props preserved.
+ * and theme-owned widgets with no owner definition AND no registered generic
+ * — NEVER resolve to a different owner's renderer. They resolve to `missing`
+ * (or the recoverable fallback) with the authored props preserved.
  *
  * No renderer rewiring here. Swap-in points (adopters wire these):
  * - renderer: `src/components/builder/SectionRenderer.tsx` beside the
@@ -45,6 +48,7 @@
 
 import { ownerForWidgetKey, type ExtensionNode } from "./builder-ast";
 import type { InstalledPlugin } from "./plugin-manifest";
+import { hasGenericPresentation } from "./theme-presentations";
 import {
   resolveWidget as resolveSingletonWidget,
   type UnifiedRegistry,
@@ -300,12 +304,18 @@ export type PresentationResult =
       widgetId: string;
       themeKey: string;
       def: WidgetDef;
-      presentation: "owner-definition" | "recoverable-fallback";
       /**
-       * `recoverable-fallback` holds NO renderer (null) and renders the
-       * existing placeholder; the instance recovers byte-identically under
-       * the owning theme. Never another owner's definition.
+       * Theme = dress, widget = body. Resolution order:
+       * `owner-definition` — the owning theme's dress under its own key;
+       * `generic-presentation` — the widget's universal, owner-independent
+       * body (registered via `registerGenericPresentation`) under any other
+       * theme; `recoverable-fallback` — neither dress nor body, the existing
+       * placeholder. Fallbacks hold NO renderer (null) and never another
+       * owner's definition; the instance recovers byte-identically under the
+       * owning theme.
        */
+      presentation:
+        "owner-definition" | "generic-presentation" | "recoverable-fallback";
       placeholder: boolean;
       renderer: null | undefined;
       props: Record<string, unknown>;
@@ -716,6 +726,23 @@ export function resolvePresentation(
           presentation: "owner-definition",
           placeholder: false,
           renderer: undefined,
+          props,
+        };
+      }
+      // Theme = dress, widget = body: a registered universal generic
+      // presentation (the body) renders under any non-owning theme — known
+      // foreign or unknown keys alike. No owner renderer is ever held; the
+      // dressing lane still resolves by widget id in the consumer.
+      if (hasGenericPresentation(def.id)) {
+        return {
+          ok: true,
+          mode: "theme-owned",
+          widgetId,
+          themeKey,
+          def,
+          presentation: "generic-presentation",
+          placeholder: false,
+          renderer: null,
           props,
         };
       }

@@ -42,6 +42,12 @@ import {
   type CommunityPresentationProps,
 } from "@/lib/plugin-theme-contract";
 import {
+  clearThemePresentations,
+  registerGenericPresentation,
+  registerThemeOwnedComponent,
+} from "@/lib/theme-presentations";
+import type { WidgetComponent } from "@/components/builder/widgets";
+import {
   createWidgetRegistry,
   type UnifiedRegistry,
   type WidgetDef,
@@ -468,6 +474,58 @@ describe("studio extension twins — render parity per lane", () => {
     const html = renderStudio(node, [], { editing: true });
     expect(html).toContain("Hello ext");
     expect(html).not.toContain("Widget preview unavailable");
+  });
+
+  it("foreign themed twins render the universal generic body, the dress under its own", () => {
+    const ID = "theme:synthetic/ornate";
+    const reg = registryWith([
+      {
+        id: ID,
+        namespace: "theme",
+        version: "1.0.0",
+        label: "Ornate",
+        category: "content",
+        slots: ["main"],
+        defaults: {},
+        propsSchema: { fields: [] },
+        renderer: "custom",
+        themes: ["synthetic"],
+      },
+    ]);
+    const Dress: WidgetComponent = (ctx) => (
+      <p data-synthetic-dress="yes">{ctx.str("kicker")}</p>
+    );
+    const Body: WidgetComponent = (ctx) => (
+      <p data-synthetic-body="yes">{ctx.str("kicker")}</p>
+    );
+    registerThemeOwnedComponent(ID, Dress);
+    registerGenericPresentation(ID, Body);
+    try {
+      // Theme = dress, widget = body: the twin renders the widget's own
+      // neutral body under a foreign active theme — never the old
+      // placeholder, never a cross-owner component.
+      const node = twin(ID, { kicker: "Kept" }, reg);
+      const foreign = renderStudio(node, [], {
+        registry: reg,
+        themeKey: "somvabona",
+        editing: true,
+      });
+      expect(foreign).toContain('data-synthetic-body="yes"');
+      expect(foreign).toContain("Kept");
+      expect(foreign).not.toContain('data-synthetic-dress="yes"');
+      expect(foreign).not.toContain("Widget preview unavailable");
+      // The owner's dress still wins under the owning theme.
+      const owner = renderStudio(node, [], {
+        registry: reg,
+        themeKey: "synthetic",
+        editing: true,
+      });
+      expect(owner).toContain('data-synthetic-dress="yes"');
+      expect(owner).toContain("Kept");
+      expect(owner).not.toContain('data-synthetic-body="yes"');
+    } finally {
+      clearThemePresentations();
+    }
   });
 
   it("official lane renders the sandboxed frame for installed officials", () => {

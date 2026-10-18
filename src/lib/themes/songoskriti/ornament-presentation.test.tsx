@@ -4,11 +4,14 @@
  * End-to-end contract for `theme:songoskriti/ornament`:
  * - the def lives in official theme source with a value-layer-shaped
  *   `propsSchema` (existing kinds only) and validating defaults;
- * - `resolvePresentation` recognizes the `theme:<owner>/...` identity
- *   (owner-definition under the owning theme, recoverable-fallback under a
- *   foreign theme, missing when unregistered — never another owner's brand);
+ * - `resolvePresentation` recognizes the `theme:<owner>/...` identity with
+ *   the dress/body resolution order (owner-definition under the owning
+ *   theme, generic-presentation under a foreign theme when the neutral body
+ *   is registered, recoverable-fallback only when neither exists — never
+ *   another owner's brand);
  * - `SectionRenderer` executes the owning-theme hit natively through the
- *   theme-owned branch (trusted in-repo source, no sandbox, no placeholder);
+ *   theme-owned branch (trusted in-repo source, no sandbox, no placeholder)
+ *   and the foreign-theme hit through the generic branch;
  * - the inspector resolves its schema (threaded registry + singleton paths).
  */
 import { beforeEach, describe, expect, it } from "vitest";
@@ -25,6 +28,7 @@ import {
 } from "@/lib/unified-widget-registry";
 import {
   clearThemePresentations,
+  registerGenericPresentation,
   registerThemeOwnedComponent,
   resolveThemeOwnedComponent,
 } from "@/lib/theme-presentations";
@@ -45,6 +49,7 @@ import {
   SongoskritiOrnamentDef,
 } from "./ornament-def";
 import { SongoskritiOrnamentPresentation } from "./ornament-presentation";
+import { SongoskritiOrnamentGenericPresentation } from "./ornament-generic-presentation";
 
 function ornamentNode(props: Record<string, unknown> = {}): Section {
   return {
@@ -114,6 +119,10 @@ beforeEach(() => {
     SONGOSKRITI_ORNAMENT_ID,
     SongoskritiOrnamentPresentation,
   );
+  registerGenericPresentation(
+    SONGOSKRITI_ORNAMENT_ID,
+    SongoskritiOrnamentGenericPresentation,
+  );
 });
 
 /* ------------------------------------------------------- def contract */
@@ -177,7 +186,7 @@ describe("songoskriti ornament — presentation resolution", () => {
     expect(result.props).toEqual(props);
   });
 
-  it("falls back recoverably under a foreign theme, holding no renderer", () => {
+  it("resolves the universal generic body under a foreign theme, holding no renderer", () => {
     const props = { eyebrow: "Heritage" };
     for (const themeKey of ["somvabona", "no-such-theme"]) {
       const result = resolvePresentation({
@@ -188,10 +197,10 @@ describe("songoskriti ornament — presentation resolution", () => {
       });
       expect(result.ok).toBe(true);
       if (!result.ok || result.mode !== "theme-owned") {
-        throw new Error("expected theme-owned recoverable-fallback");
+        throw new Error("expected theme-owned generic-presentation");
       }
-      expect(result.presentation).toBe("recoverable-fallback");
-      expect(result.placeholder).toBe(true);
+      expect(result.presentation).toBe("generic-presentation");
+      expect(result.placeholder).toBe(false);
       expect(result.renderer).toBeNull();
       expect(result.props).toEqual(props);
     }
@@ -282,17 +291,20 @@ describe("songoskriti ornament — native theme-owned render", () => {
     expect(renderDirect(node, "bn")).toContain("ঐতিহ্য");
   });
 
-  it("keeps the explicit placeholder under a foreign theme", () => {
+  it("renders the universal generic body under a foreign theme (no placeholder, no dress)", () => {
     const node = ornamentNode({ eyebrow: "Heritage" });
     const editing = renderEngine(node, {
       themeKey: "somvabona",
       editing: true,
     });
-    expect(editing).toContain("Widget preview unavailable");
+    expect(editing).toContain('data-ornament="generic"');
+    expect(editing).toContain("Heritage");
+    expect(editing).not.toContain("Widget preview unavailable");
     expect(editing).not.toContain('data-ornament="songoskriti"');
     const storefront = renderEngine(node, { themeKey: "somvabona" });
+    expect(storefront).toContain('data-ornament="generic"');
+    expect(storefront).toContain("Heritage");
     expect(storefront).not.toContain('data-ornament="songoskriti"');
-    expect(storefront).not.toContain("Heritage");
   });
 
   it("keeps the explicit placeholder when the def is missing", () => {

@@ -16,5 +16,10 @@ export {
   SongoskritiOrnamentDef,
 } from "./ornament-def";
 export { SongoskritiOrnamentPresentation } from "./ornament-presentation";
+// Universal-body activation: re-exporting the generic presentation pulls it
+// into the prod import graph, running its `registerGenericPresentation`
+// side effect so non-owning themes render the ornament's complete neutral
+// body (owner dress → generic body → placeholder).
+export { SongoskritiOrnamentGenericPresentation } from "./ornament-generic-presentation";
 export { HOMEPAGE_SECTION_TYPES } from "./types";
 export type { IntendedHomepageType, SectionBuilder } from "./types";

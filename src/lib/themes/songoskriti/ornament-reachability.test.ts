@@ -15,7 +15,10 @@ import {
   resolveInspectorSchema,
   resolvePresentation,
 } from "@/lib/widget-presentation";
-import { resolveThemeOwnedComponent } from "@/lib/theme-presentations";
+import {
+  resolveGenericPresentation,
+  resolveThemeOwnedComponent,
+} from "@/lib/theme-presentations";
 import type { Section } from "@/lib/builder-ast";
 
 const ID = "theme:songoskriti/ornament";
@@ -75,5 +78,12 @@ describe("songoskriti ornament — editor entry reachability", () => {
     expect(out.status).toBe("schema");
     if (out.status !== "schema") throw new Error("expected schema");
     expect(out.widgetId).toBe(ID);
+  });
+
+  it("carries its universal generic body through the editor entry", () => {
+    // Reachability: the editor graph that claims the def (`songoskriti.tsx`)
+    // imports the generic presentation module as well, so the neutral body
+    // registers on a foreign-theme cold load — not only the owner dress.
+    expect(resolveGenericPresentation(ID)).toBeDefined();
   });
 });

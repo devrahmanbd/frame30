@@ -17,6 +17,12 @@ import {
   resolveExtensionForRender,
 } from "./SectionRenderer";
 import { createWidgetRegistry } from "@/lib/unified-widget-registry";
+import {
+  clearThemePresentations,
+  registerGenericPresentation,
+  registerThemeOwnedComponent,
+} from "@/lib/theme-presentations";
+import type { WidgetComponent } from "./widgets";
 
 function render(section: Section, extra: Record<string, unknown> = {}): string {
   return renderToStaticMarkup(
@@ -93,6 +99,56 @@ describe("SectionRenderer extension swap-in", () => {
       { themeKey: "songoskriti", registry },
     );
     expect(foreign).toContain("Widget preview unavailable");
+  });
+
+  it("renders the universal generic body under a foreign theme, the dress under its own", () => {
+    const ID = "theme:elsewhere/ornate";
+    const registry = createWidgetRegistry();
+    expect(
+      registry.registerWidget({
+        id: ID,
+        namespace: "theme",
+        version: "1.0.0",
+        label: "Ornate",
+        category: "content",
+        slots: ["main"],
+        defaults: {},
+        propsSchema: { fields: [] },
+        renderer: "custom",
+        themes: ["elsewhere"],
+      }).ok,
+    ).toBe(true);
+    const Dress: WidgetComponent = (ctx) => (
+      <p data-synthetic-dress="yes">{ctx.str("title")}</p>
+    );
+    const Body: WidgetComponent = (ctx) => (
+      <p data-synthetic-body="yes">{ctx.str("title")}</p>
+    );
+    registerThemeOwnedComponent(ID, Dress);
+    registerGenericPresentation(ID, Body);
+    try {
+      // Theme = dress, widget = body: a foreign active theme renders the
+      // widget's own neutral body (never the old placeholder, never a
+      // cross-owner component).
+      const foreign = render(builtinExtension(ID, { title: "Kept" }), {
+        themeKey: "songoskriti",
+        registry,
+      });
+      expect(foreign).toContain('data-synthetic-body="yes"');
+      expect(foreign).toContain("Kept");
+      expect(foreign).not.toContain('data-synthetic-dress="yes"');
+      expect(foreign).not.toContain("Widget preview unavailable");
+      // The owner's dress still wins under the owning theme.
+      const owner = render(builtinExtension(ID, { title: "Kept" }), {
+        themeKey: "elsewhere",
+        registry,
+      });
+      expect(owner).toContain('data-synthetic-dress="yes"');
+      expect(owner).toContain("Kept");
+      expect(owner).not.toContain('data-synthetic-body="yes"');
+    } finally {
+      clearThemePresentations();
+    }
   });
 
   it("leaves the legacy built-in path byte-identical when inactive", () => {

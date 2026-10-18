@@ -101,7 +101,10 @@ import {
   type Section,
 } from "@/lib/builder-ast";
 import type { UnifiedRegistry } from "@/lib/unified-widget-registry";
-import { resolveThemeOwnedComponent } from "@/lib/theme-presentations";
+import {
+  resolveGenericPresentation,
+  resolveThemeOwnedComponent,
+} from "@/lib/theme-presentations";
 import { validateProps } from "@/lib/widget-props";
 import { PluginBlock } from "../PluginBlock";
 import {
@@ -626,6 +629,48 @@ function StudioExtensionBlock({
       } catch {
         // A hostile def shape must never break the render: placeholder.
       }
+    }
+  }
+  // Universal generic body (theme = dress, widget = body): under any
+  // non-owning active theme a registered generic presentation renders the
+  // widget's own neutral component with the same reader/child-recursion
+  // plumbing as the owner lane. A missing registration falls through to the
+  // explicit placeholder below — fail-closed, never another owner's.
+  if (
+    presentation.mode === "theme-owned" &&
+    presentation.presentation === "generic-presentation"
+  ) {
+    const Generic = resolveGenericPresentation(presentation.widgetId);
+    if (Generic) {
+      const extSection = studioExtensionSection(node);
+      const reader = widgetReader(extSection, undefined, "en");
+      const renderGenericChildren = () =>
+        (node.children ?? []).map((child) => (
+          <StudioWidget
+            key={child.id}
+            node={child}
+            device={device}
+            editing={editing}
+            storefront={storefront}
+            menus={menus}
+            themeKey={themeKey}
+            registry={registry}
+            devThemeBinding={devThemeBinding}
+          />
+        ));
+      return (
+        <Generic
+          section={extSection}
+          {...reader}
+          Heading="h2"
+          primary={false}
+          editing={editing ?? false}
+          device={studioDeviceToBreakpoint(device)}
+          locale="en"
+          link={(href: string) => href}
+          renderChildren={renderGenericChildren}
+        />
+      );
     }
   }
   return editing || storefront ? <ExtensionUnavailable /> : null;

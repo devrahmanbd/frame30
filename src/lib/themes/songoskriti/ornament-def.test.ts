@@ -14,6 +14,7 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 import { getWidget } from "@/lib/unified-widget-registry";
 import { buildTrayRegistry } from "@/lib/unified-widget-registry";
 import { themeTrayEntries } from "@/lib/widget-presentation";
+import { resolveGenericPresentation } from "@/lib/theme-presentations";
 import { studioPluginTrayEntries } from "@/components/builder/studio/plugin-tray";
 import { resolveSchemaForSection } from "@/components/builder/SectionInspector";
 import { PROP_KINDS, defaultsFor, validateProps } from "@/lib/widget-props";
@@ -121,5 +122,13 @@ describe("songoskriti ornament — registered def (productive path)", () => {
       studioPluginTrayEntries([], "songoskriti").map((e) => e.key),
     ).toContain(ID);
     expect(studioPluginTrayEntries([]).map((e) => e.key)).not.toContain(ID);
+  });
+
+  it("carries its universal generic body through the storefront carrier", () => {
+    // Reachability: the storefront graph that claims the def must ALSO claim
+    // the widget's neutral body (`preview.ts` imports both presentation
+    // modules), so a foreign-theme cold load registers the generic too —
+    // the body never shares the owner dress's owning-theme-only fate.
+    expect(resolveGenericPresentation(ID)).toBeDefined();
   });
 });

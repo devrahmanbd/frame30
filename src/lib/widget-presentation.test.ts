@@ -13,7 +13,12 @@ import {
   type WidgetDef,
 } from "./unified-widget-registry";
 import type { InstalledPlugin } from "./plugin-manifest";
+import type { WidgetComponent } from "@/components/builder/widgets";
 import { ownerForWidgetKey } from "./builder-ast";
+import {
+  clearThemePresentations,
+  registerGenericPresentation,
+} from "./theme-presentations";
 import {
   CLASS_B_FALLBACK,
   DEFAULT_BUILDER_API,
@@ -470,6 +475,49 @@ describe("resolvePresentation — theme-owned", () => {
     expect(result.presentation).toBe("recoverable-fallback");
     expect(result.renderer).toBeNull();
     expect(result.props).toEqual({ title: "Find craft" });
+  });
+
+  it("follows the resolution order: owner dress → universal body → placeholder", () => {
+    const Generic: WidgetComponent = () => null;
+    const base = {
+      widgetId: "theme:songoskriti/finder",
+      registry: ownedReg(),
+      props: { title: "Find craft" },
+    };
+    // No generic registered under a non-owning theme: recoverable fallback
+    // (existing fail-closed behavior preserved).
+    const before = resolvePresentation({ ...base, themeKey: "somvabona" });
+    if (!before.ok || before.mode !== "theme-owned") {
+      throw new Error("expected theme-owned fallback");
+    }
+    expect(before.presentation).toBe("recoverable-fallback");
+    expect(before.placeholder).toBe(true);
+    expect(before.renderer).toBeNull();
+    registerGenericPresentation("theme:songoskriti/finder", Generic);
+    try {
+      // Universal body wins under any non-owning theme (known or unknown).
+      for (const themeKey of ["somvabona", "no-such-theme"]) {
+        const generic = resolvePresentation({ ...base, themeKey });
+        expect(generic.ok).toBe(true);
+        if (!generic.ok || generic.mode !== "theme-owned") {
+          throw new Error("expected theme-owned generic presentation");
+        }
+        expect(generic.presentation).toBe("generic-presentation");
+        expect(generic.placeholder).toBe(false);
+        expect(generic.renderer).toBeNull();
+        expect(generic.props).toEqual({ title: "Find craft" });
+      }
+      // The owner's dress still wins under the owning theme.
+      const owner = resolvePresentation({ ...base, themeKey: "songoskriti" });
+      expect(owner.ok).toBe(true);
+      if (!owner.ok || owner.mode !== "theme-owned") {
+        throw new Error("expected theme-owned owner definition");
+      }
+      expect(owner.presentation).toBe("owner-definition");
+      expect(owner.placeholder).toBe(false);
+    } finally {
+      clearThemePresentations();
+    }
   });
 });
 

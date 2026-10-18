@@ -158,6 +158,7 @@ export function resolveThemePresentation(
 export function clearThemePresentations(): void {
   PRESENTATIONS.clear();
   THEME_OWNED_COMPONENTS.clear();
+  GENERIC_COMPONENTS.clear();
   VERSIONED_DRESSINGS.clear();
   VERSIONED_AVAILABILITY.clear();
   THEME_OWNER_AVAILABILITY.clear();
@@ -947,5 +948,116 @@ export function resolveThemeOwnedComponent(
     return THEME_OWNED_COMPONENTS.get(key);
   } catch {
     return undefined;
+  }
+}
+
+/* ------------------------------------------------- generic presentations */
+
+/**
+ * Universal widget bodies (GENERIC-PRESENTATION lane).
+ *
+ * Product model: the theme is the dress, the widget is the body — a theme
+ * never owns a widget, it dresses it. This map holds a widget's OWN neutral,
+ * token-driven presentation, keyed by the exact registry widget id the
+ * presentation resolver recognizes (`theme:<owner>/...` today), so the body
+ * renders under EVERY active theme — including foreign / unknown keys where
+ * the owner's dress (`THEME_OWNED_COMPONENTS` above) never resolves. The
+ * resolver consumes it in `src/lib/widget-presentation.ts` as the middle rung
+ * of the theme lane: owner-definition → generic-presentation →
+ * recoverable-fallback.
+ *
+ * Contracts (mirroring the tables above):
+ * - Registration is first-wins: a duplicate registration warns and keeps the
+ *   first Component. Registration never throws (invalid input warns and
+ *   returns, so a hostile id can never evict an approved component).
+ * - Resolution never throws: unknown / null / garbage ids return undefined
+ *   (the caller keeps the explicit recoverable placeholder).
+ * - NOT gated by `setThemeOwnerAvailability`: a universal body is not an
+ *   owner presentation — disabling an owner silences its dress, not the
+ *   widget's own neutral render.
+ * - This module names no theme and branches on no theme: lookup is an
+ *   opaque id → Component map. Only widget-owning modules call the register
+ *   side (at module init, through the same carriers that claim their defs).
+ */
+const GENERIC_COMPONENTS = new Map<string, WidgetComponent>();
+
+/**
+ * Normalize a registry widget id for the generic map (trim+lowercase), or
+ * null when it is not a namespaced id (`<ns>:<rest>`). Lowercasing merges
+ * case variants of the namespace AND widget segments — registry ids are
+ * lowercase by gate construction, so valid ids are fixed points.
+ */
+function normalizeGenericWidgetId(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const clean = value.trim().toLowerCase();
+  if (!clean || !VERSIONED_WIDGET_RE.test(clean)) return null;
+  return clean;
+}
+
+/**
+ * Claim one registry widget id for its universal generic Component. Owned by
+ * widget/theme modules: only they call this (typically at module init,
+ * alongside their WidgetDef registration and owner component). The id
+ * normalizes (trim+lowercase), so case/padding variants claim the SAME entry
+ * instead of shadowing. First registration wins; duplicates warn and are
+ * ignored. Never throws.
+ */
+export function registerGenericPresentation(
+  widgetId: string,
+  Component: WidgetComponent,
+): void {
+  const key = normalizeGenericWidgetId(widgetId);
+  if (!key) {
+    console.warn(
+      `[theme-presentations] ignoring generic registration for ${String(widgetId)}: not a registry widget id.`,
+    );
+    return;
+  }
+  if (typeof Component !== "function") {
+    console.warn(
+      `[theme-presentations] ignoring generic registration for ${key}: not a component.`,
+    );
+    return;
+  }
+  if (GENERIC_COMPONENTS.has(key)) {
+    console.warn(
+      `[theme-presentations] duplicate generic registration for ${key} ignored; keeping the first.`,
+    );
+    return;
+  }
+  GENERIC_COMPONENTS.set(key, Component);
+}
+
+/**
+ * Resolve the universal generic component for a registry widget id, or
+ * undefined when nothing is registered (the caller keeps the explicit
+ * recoverable placeholder). Never throws — unknown ids and garbage input
+ * resolve to undefined instead of leaking another owner's brand.
+ */
+export function resolveGenericPresentation(
+  widgetId: string | null | undefined,
+): WidgetComponent | undefined {
+  try {
+    const key = normalizeGenericWidgetId(widgetId);
+    if (!key) return undefined;
+    return GENERIC_COMPONENTS.get(key);
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Whether a universal generic component is registered for a registry widget
+ * id. Boolean sibling of `resolveGenericPresentation` for pure callers that
+ * only need the existence bit. Never throws.
+ */
+export function hasGenericPresentation(
+  widgetId: string | null | undefined,
+): boolean {
+  try {
+    const key = normalizeGenericWidgetId(widgetId);
+    return key ? GENERIC_COMPONENTS.has(key) : false;
+  } catch {
+    return false;
   }
 }

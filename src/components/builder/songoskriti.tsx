@@ -79,6 +79,12 @@ import { registerSongoskritiPresentationClaims } from "@/lib/themes/songoskriti/
 // unified-widget-registry.ts:110-127,927). The component registration itself
 // runs synchronously here; the registry claim is lazy in ornament-def.ts.
 import "@/lib/themes/songoskriti/ornament-presentation";
+// Universal-body activation (theme = dress, widget = body): the generic
+// presentation registers the ornament's neutral body for EVERY active theme,
+// so a foreign-theme cold load (somvabona etc.) renders a complete widget
+// instead of the unavailable placeholder. Wired through the SAME editor
+// carrier as the owner component above; the def claim stays lazy.
+import "@/lib/themes/songoskriti/ornament-generic-presentation";
 
 /* ---------------------------------------------------------------- helpers */
 
