@@ -1,8 +1,13 @@
 # Level B Developer Themes (code-capable lane)
 
-Author guide: `./creation.md`. Data-only contract: `./packages.md`. Runtime
-limits (SEO, hydration, a11y, motion/WebGL fallbacks): `../theme-runtime/limits.md`.
-Normative SDK contract: `../../openspec/changes/dev-theme-runtime/sdk-contract.md`.
+Last verified: 2026-10-18 @ 05917b962914
+
+Author guide: [creation.md](./creation.md). Data-only contract:
+[packages.md](./packages.md). Canonical package contract (three-lane
+lifecycle): [contract.md](../packages/contract.md). Runtime limits (SEO,
+hydration, a11y, motion/WebGL fallbacks):
+[the runtime limits](../theme-runtime/limits.md). Normative SDK contract:
+[the SDK contract](../../openspec/changes/dev-theme-runtime/sdk-contract.md).
 This page is the integrator's map of the Level B lane: what ships, how it is
 built, reviewed, installed, activated, and executed — and where the frozen
 data-only lane ends.
@@ -23,6 +28,13 @@ Level B manifest fails the frozen gate's required fields
 (lane-separation + executable-l10n + frozen-lane vectors). The data-only
 lane is never weakened to admit Level B: executables are still rejected
 there (`assetManifest[].path.executable` vector).
+
+**Where this fits.** The package contract defines three distribution
+cases for themes. Two of them are third-party packages: the declarative
+ZIP lane (data-only) and this reviewed executable lane (Level B). The
+third is Framique's own source-theme catalogue, shipped in-repo and
+never as a package archive. Lane taxonomy and the shared lifecycle:
+[the package contract](../packages/contract.md).
 
 ## 2. SDK contract (what a theme ships)
 

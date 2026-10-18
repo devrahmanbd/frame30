@@ -7,6 +7,10 @@ plugins. Format, manifest, lifecycle, sandbox, versioning, rollback,
 uninstall, and tenant isolation are defined here. Detail guides link
 here instead of restating it:
 
+- Theme authoring reference (registry, presentations, source
+  registration): [`docs/themes/creation.md`](../themes/creation.md)
+- Level B executable lane:
+  [`docs/themes/level-b.md`](../themes/level-b.md)
 - Theme validator detail: [`docs/themes/packages.md`](../themes/packages.md)
 - Theme install/publish pipeline:
   [`docs/themes/sdk.md`](../themes/sdk.md)
@@ -36,6 +40,17 @@ share runtime contracts — tenant authorization, ledger, audit, lifecycle
 guarantees — but never packaging internals
 (`installOfficialTheme`, `src/lib/themes/appearance.server.ts:354`;
 `installOfficialPlugin`, `src/lib/official-plugins.server.ts:182`).
+
+Official themes are not ZIP packages. <!-- doc-gate-ok: deliberate negative reference -->
+
+One canonical lifecycle spans three distribution cases. The lane decides
+the manifest, the gate, and the install path — never mix them:
+
+| Lane | What ships | Gate | Install / activation | Full spec |
+| ---- | ---------- | ---- | -------------------- | --------- |
+| Official source themes | registered source definitions; no archive transport | none (source is trusted) | `installCatalogTheme` — tenant rows from the registered definition | [the theme authoring guide](../themes/creation.md) |
+| Declarative ZIP themes | `.zip` with `theme.json` + tokens/templates; no executable code | `validateThemeManifest` | `installPackage` (theme lane) → publish → activate | [the theme package spec](../themes/packages.md) |
+| Reviewed executable themes (Level B) | executable bundle with `dev.theme.json`; code runs only in the runtime frame | `validateDevThemeBundle` | `installReviewedThemeBundle` → `activateDevThemeInstall` (fingerprint-bound) | [the Level B lane](../themes/level-b.md); authority: [contract.md](./contract.md) |
 
 ## 1. Format (ZIP layout)
 
@@ -189,7 +204,7 @@ for the walkthrough):
 Permission widening is detected by `permissionDiff`
 (`src/lib/plugin-manifest.ts:554`) and needs a fresh consent screen.
 
-## 3. Lifecycle (custom packages: one pipeline)
+## 3. Lifecycle (three distribution cases)
 
 ### 3.1 Theme install
 
@@ -273,11 +288,8 @@ row) and non-widening updates pass untouched.
   compensation on failure (`installOfficialPlugin`,
   `src/lib/official-plugins.server.ts:182`): the pipeline here is the
   shared security contract (sandbox, capabilities, lifecycle), not a
-  shared distribution mechanism — no official plugin ZIP is checked in
+  shared distribution mechanism — no official plugin ZIP is checked in <!-- doc-gate-ok: deliberate negative reference -->
   or downloadable.
-- Artifact pins are `official:<key>`
-  (`officialPinFor`, `src/lib/themes/appearance.ts:83`;
-  `officialPluginPinFor`, `src/lib/official-plugins.ts:52`).
 - Artifact pins are `official:<key>`
   (`officialPinFor`, `src/lib/themes/appearance.ts:83`;
   `officialPluginPinFor`, `src/lib/official-plugins.ts:52`).
@@ -341,6 +353,27 @@ never needs approval.
   (`captureCart`, `reserveStock`, `createOrder`, `applyImport`,
   `saveKindConfig`) accept an optional trailing `transport` for hermetic
   tests; production paths use the pinned default.
+
+### 3.7 Reviewed executable themes (Level B)
+
+The third distribution case, separate from both custom ZIP packages and
+official source themes: executable theme bundles pass a fingerprint-bound
+review store before anything can install or activate.
+
+- Root `dev.theme.json` (never `theme.json`); gate
+  `validateDevThemeBundle` (`src/lib/dev-theme-bundle.ts`).
+- Install re-validates and re-hashes the presented bytes; activation is
+  per version/fingerprint (`installReviewedThemeBundle`,
+  `src/lib/dev-theme-bundle-install.ts`; `activateDevThemeInstall`,
+  `src/lib/dev-theme-activate.ts`). Install never activates.
+- Code executes only inside the `ThemeRuntime` frame
+  (`sandbox="allow-scripts"`, no same-origin, `default-src 'none'`); the
+  data-only lane is never widened to admit executables, and no Level B
+  bundle passes `validateThemeManifest` — both gates refuse the other
+  lane's inputs by design.
+
+Canonical lifecycle, review requirements, serve-time re-checks, and
+runtime limits: [the Level B lane](../themes/level-b.md).
 
 ## 4. Sandbox
 

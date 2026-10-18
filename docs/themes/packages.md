@@ -1,5 +1,7 @@
 # Theme Packages (third-party developer spec)
 
+Last verified: 2026-10-18 @ 05917b962914
+
 > **NOTE — validator built; spec field names mapped below.** The validator
 > module now exists (`src/lib/theme-package.ts`): the canonical gate is
 > `validateThemeManifest`, and the spec name `validateThemePackage` is a
@@ -25,6 +27,18 @@ Spec → manifest field mapping (enforced names): `nameEn` → `name`
 `sortOrder`, and `tokens` have no manifest counterpart (curation-only
 metadata). The `templates` row below is the design-spec template map; the
 enforced field is the declared template-key subset (`templates`).
+
+## Which distribution lane?
+
+Theme distribution has three lanes — pick one before building:
+
+| Lane | You ship | Gate | Install / activation | Full spec |
+| ---- | -------- | ---- | -------------------- | --------- |
+| Official source themes | nothing — Framique builds them in-repo | none (trusted source) | catalogue install (`installCatalogTheme`) | [creation.md](./creation.md) |
+| Declarative ZIP theme (this page) | `theme.json` + tokens/templates; no executable code | `validateThemeManifest` | `installPackage` theme lane → publish → activate | this page; [contract.md](../packages/contract.md) |
+| Reviewed executable theme (Level B) | `dev.theme.json` + JS/CSS bundle; code runs only in the runtime frame | `validateDevThemeBundle` | review store → per-version activation | [level-b.md](./level-b.md); authority: [contract.md](../packages/contract.md) |
+
+Official themes are not ZIP packages. <!-- doc-gate-ok: deliberate negative reference -->
 
 ## Manifest fields
 
