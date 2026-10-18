@@ -1270,6 +1270,11 @@
       "template": "index",
       "width": 375,
       "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 375,
+        "height": 900
+      },
       "outfile": "chrome-mobile-drawer-375-bn.png",
       "status": "manual-review",
       "reason": "drawer did not open for lang=bn at 375px: hamburger button is visible and the click fires, but [data-nav=\"songoskriti-drawer\"] never becomes visible (failed original + retry). Recorded as manual-review; no baseline written until the bn drawer interaction is investigated.",

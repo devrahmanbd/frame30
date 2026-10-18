@@ -213,6 +213,8 @@ function recordManualReview(
 ): void {
   writeManifestEntry({
     ...fields,
+    reducedMotion: true,
+    viewport: { width: fields.width, height: HEIGHT },
     outfile,
     status: "manual-review",
     reason,
