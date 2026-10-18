@@ -26,7 +26,7 @@ one line below; open the guide for the full contract.
   working theme with a 5-test gate suite mirroring the shipped
   theme contracts; copy this folder to start.
 - [Starter plugin](../../examples/starter-plugin/) — valid
-  manifest, one widget, and a 31-test suite mirroring the real
+  manifest, one widget, and a 36-test suite mirroring the real
   validation gates; run its tests before adapting it.
 - [OpenAPI contract](../../openapi/openapi.yaml) — the
   machine-readable endpoint reference; normative wherever prose
