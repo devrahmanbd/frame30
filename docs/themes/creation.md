@@ -1,15 +1,23 @@
 # Creating a Framique theme (author guide)
 
+Last verified: 2026-10-18 @ 8609ac27e9d8
+
 This is the end-to-end guide for shipping a complete storefront theme —
 the single authoring reference for tokens, skins, homepage builders,
-`skins.css`, preview sources, and the theme test suite. It describes only
-what exists in this repo — every section links to the source it came from.
+`skins.css`, preview sources, the unified widget registry, and the theme
+test suite. It describes only what exists in this repo — every section
+links to the source it came from.
 Runtime theory (token channel, preview engine, persist shape, twin parity)
 lives in [the builder runtime guide](../04-builder/README.md); the
 integrator contract (server functions, tables, registry pipeline, error
 codes) lives in [the theme SDK](./sdk.md); the third-party package gates
 live in [the theme package spec](./packages.md). This guide links to those
 references instead of restating them.
+
+The registry sections (§14–§15) define how themes dress shared widgets,
+register theme-owned widgets, and reach productive graphs; §15 summarises
+the Songoskriti reference port, mapped row-by-row in
+[the Songoskriti port map](./songoskriti-port-map.md).
 
 ## 1. What a complete theme is (definition of done)
 
@@ -180,8 +188,9 @@ group | html | array | menu` (`src/lib/builder-ast.ts:429-446`).
 
 ### 2.4 Theme anatomy (what shipped themes actually contain)
 
-A theme is a folder under `src/lib/themes/<key>/` — no registry, no preset
-table. The shipped themes (Songoskriti, Somvabona) each contain:
+A theme is a folder under `src/lib/themes/<key>/` — no preset table; the
+shared registry layer is optional (§14). The shipped themes (Songoskriti,
+Somvabona) each contain:
 
 - `tokens.ts` — the `ThemeTokens` override (brand/accent/surface/ink plus
   layout knobs and an optional designed `dark` set).
@@ -193,6 +202,11 @@ table. The shipped themes (Songoskriti, Somvabona) each contain:
 - `preview.ts` — the `PreviewThemeSource` (demo bodies per template).
 - `skins.css` — token-only skin sheets + per-theme article rules.
 - `wiring.test.ts` / `skins.test.ts` / `preview.test.ts` — the pinned gates.
+- Registry layer (optional, §14) — presentation-claim registrars
+  (`src/lib/themes/songoskriti/presentation-claims.ts`), theme-owned widget
+  defs (`src/lib/themes/songoskriti/ornament-def.ts`), and their universal
+  bodies (`src/lib/themes/songoskriti/ornament-generic-presentation.tsx`).
+  A data-only theme skips this layer entirely.
 
 Sections are built through the shared factory so ids stay unique and
 বাংলা props are filled (`src/lib/theme-section.ts:44-68`). Catalogue
@@ -749,6 +763,12 @@ You need nothing installed — no checkout, no CLI, no repo access. If you
 can open the builder, you can ship a theme. The whole path is: get
 approved, build, export, submit, respond to review.
 
+> **Scope.** This export lane covers merchant and community submissions.
+> Official (Framique-built) themes are not ordinary exported packages:
+> they are source-owned and resolve through the built-in registry
+> (`src/lib/themes/builtin-themes.ts`). §14 is their contract; the
+> [theme package spec](./packages.md) does not describe them.
+
 ### 9.1 The path
 
 1. **Get approved.** Submission is allowlisted: your merchant account must
@@ -858,6 +878,12 @@ tokens, header, footer, main }`, where `main(template, s)` returns the
 - Register the source in `src/lib/preview-sources.ts:14-19` — that map is
   the only place that names themes for preview. The engine never imports a
   theme module directly.
+- Since the unified registry (§14.2), the preview source is also the
+  theme's storefront activation carrier: side-effect imports in
+  `preview.ts` (presentation claims, theme-owned widgets, universal
+  bodies) run when the storefront graph loads the source. Registration
+  placed behind the theme barrel (`src/lib/themes/songoskriti/index.ts`)
+  reaches no productive graph — a re-export is not an import root.
 - In-preview navigation maps demo links onto the preview's own template
   tabs, and focus links use the `?focus=` contract (never `?slug=`).
   Engine behavior, blocked paths, and demo-focus resolution are runtime
@@ -912,8 +938,9 @@ A theme **calls** engine widgets; it never **forks** them. Concretely:
 1. **One renderer per widget key.** Generic keys (`product_rail`,
    `footer_sitemap`, `store_locator`, …) have exactly one renderer in the
    shared packs. A theme that wants a different look registers a **skin**
-   (`WIDGET_SKINS` + `skins.css` + theme defaults, §4) or ships a **new
-   widget key** — it must never override a generic key in the global merge,
+   (`WIDGET_SKINS` + `skins.css` + theme defaults, §4), registers a **theme
+   presentation** (§14.1), or ships a **new theme-owned widget key**
+   (§14.1) — it must never override a generic key in the global merge,
    because last-write-wins then restyles every other theme.
 2. **No brand content in shared renderers.** Renderers read props, tokens
    and demo data. A theme name, slogan, copyright line or flagship list
@@ -930,3 +957,166 @@ A theme **calls** engine widgets; it never **forks** them. Concretely:
 
 Violating any of the four is a catalogue rejection for new themes and a
 must-fix for shipped ones.
+
+## 14. The unified widget registry — themes dress widgets
+
+The binding product model is **theme = dress, widget = body**. A
+`SectionType` key, its renderer contract, and its studio catalogue entry
+are platform surface — universal and theme-independent. A theme never
+forks them (§13); it dresses them, or — only when a capability is
+genuinely unique — ships its own widget under a namespaced id. The
+registry layer lives in `src/lib/unified-widget-registry.ts`
+(`registerWidget`, `src/lib/unified-widget-registry.ts:929`) plus the
+presentation registry `src/lib/theme-presentations.ts`.
+
+Canonical reference: this guide is the home of **theme presentations** and
+**source-owned** registration semantics — other documents link
+[the theme authoring guide](./creation.md) instead of restating them.
+
+### 14.1 Three layers on a theme's shelf
+
+1. **(a) Shared keys — reuse.** The key ships in the shared renderer maps
+   and renders theme-neutrally in every resolution graph. The keyed
+   storefront resolves a theme override else the generic map
+   (`resolveWidgetComponent`, `src/components/builder/theme-widgets.ts:73-78`);
+   the unkeyed editor/studio graph resolves the shared `WIDGET_COMPONENTS`
+   map (`src/components/builder/widgets.tsx`). A clean (a) row needs a
+   proof pin, not a change.
+2. **(b) Theme presentations — dress.** Same key, theme-owned
+   markup/styling: `registerThemePresentation(themeKey, widgetId,
+   Component)` (`src/lib/theme-presentations.ts:97`). Only the owning theme
+   renders the dress; every other theme keeps the generic fallback — never
+   another theme's brand. Versioned dressings
+   (`registerVersionedPresentation`) cover vendor widget versions. A claim
+   must be live in its target graph(s) and tested; dormancy requires a
+   proof of non-use or supersession.
+3. **(c) Theme-owned widgets — new bodies.** A genuinely unique capability
+   ships as one `WidgetDef` with `namespace: "theme"`, a namespaced id
+   `theme:<key>/<slug>`, a closed `propsSchema`, and `defaults` — registered
+   with `registerWidget` (`src/lib/unified-widget-registry.ts:929`).
+   Widgets are universal: the def stays insertable under every active
+   theme. Under the owning theme the owner component renders; under any
+   other theme resolution walks owner → universal body → recoverable
+   fallback (`resolvePresentation`, `src/lib/widget-presentation.ts:585`).
+   Register the universal body with `registerGenericPresentation(widgetId,
+   Component)` (`src/lib/theme-presentations.ts:1006`) so a foreign-theme
+   cold load renders a complete widget — "Widget preview unavailable" is
+   retired for registered components. Without a registered body, the
+   placeholder remains the fail-closed last resort (never another owner's
+   component).
+
+Tray visibility follows the same model: the studio extension tray lists
+registered defs under every active theme (`resolveExtensionTrayEntries`,
+`src/components/builder/studio/StudioBuilder.tsx:836`). The legacy
+per-theme claim seam (`themeTrayEntries`,
+`src/lib/widget-presentation.ts:856`) still powers the older
+platform-discovery surfaces; it does not decide renderability.
+
+### 14.2 Source registration — activation is an import graph
+
+Registration is inert until something imports it: a def or registrar
+module does nothing until a productive import graph evaluates it. Two
+carriers activate a theme:
+
+- **Editor carrier** — the theme's widget pack
+  (`src/components/builder/songoskriti.tsx`), reached because
+  `src/lib/unified-widget-registry.ts` statically imports the pack.
+- **Storefront carrier** — the theme's preview source
+  (`src/lib/themes/songoskriti/preview.ts`), reached through the
+  preview-source registry (`src/lib/preview-sources.ts`).
+
+**Productive-path rule.** A re-export is not an import root:
+`src/lib/themes/songoskriti/index.ts` is a convenience barrel and nothing
+in the production graph imports it, so registration placed behind it never
+runs. Prove activation by the graph that reaches the module, not by the
+barrel.
+
+**Cycle constraint.** The pack and the widget registry import each other's
+evaluation windows — a static theme-file → registry import can crash on a
+TDZ read or be silently swallowed. Theme-side registration therefore stays
+registry-import-free at runtime (type-only imports) and claims through one
+of two reviewed patterns: a guarded lazy dynamic self-claim
+(`src/lib/themes/songoskriti/ornament-def.ts` — idempotent, first-wins,
+rejection-handled) or a lazy hop that receives the already-evaluated pack
+(`src/lib/themes/songoskriti/claims-activation.ts`, called from
+`src/components/builder/songoskriti.tsx:2642`). Registrars are idempotent:
+calling one from every carrier is safe.
+
+### 14.3 Schemas, assets, bilingual copy
+
+The widget contract itself — identity, `propsSchema` (`PropField[]` from
+`src/lib/widget-props.ts`), `defaultProps`, slots, rendering modes, and
+`themeable` plugin widgets — is canonical in
+[the widget contract](../04-builder/app-blocks.md); this guide covers only
+what a theme adds. Kinds come from the closed `PROP_KINDS` vocabulary —
+unknown kinds fail closed, never a fallback input.
+
+Assets are theme-owned: `public/ph/<key>/…` referenced as
+`/ph/songoskriti/…`, with generators under `scripts/`
+(`scripts/gen-songoskriti-assets.mjs`). ZIP-lane packages carry an
+`assetManifest` instead — see [the package
+contract](../packages/contract.md) for the distribution lanes.
+
+Bilingual copy stays inline: every authored string carries its `_bn` twin
+filled through the factory dictionary (`src/lib/theme-section.ts`), and
+publishing gates বাংলা coverage at or above 90% (§7).
+
+### 14.4 Visual-parity tests
+
+Parity is proven per surface, from frozen artifacts:
+
+- Freeze fixtures pin serialized compositions and static markup:
+  `src/components/builder/songoskriti-port-freeze.test.tsx`.
+- Frozen reference stills + capture parameters:
+  `docs/superpowers/songoskriti-evidence/port/reference/` and
+  `docs/superpowers/songoskriti-evidence/port/reference-manifest.json`.
+- Post-port comparison + per-surface verdicts:
+  `docs/superpowers/songoskriti-evidence/port/parity-report.md` (after
+  stills under `docs/superpowers/songoskriti-evidence/port/after/`).
+- Browser journey: `.e2e/songoskriti-editor-journey.spec.ts`.
+- Row-level evidence: `docs/superpowers/songoskriti-evidence/port/inventory.md`
+  and `docs/superpowers/songoskriti-evidence/port/classification.md`.
+
+### 14.5 Migrating an existing theme (the port recipe)
+
+1. **Inventory** every surface: definition site, editor visibility,
+   winning renderer per resolution graph (keyed storefront, unkeyed
+   editor/studio), neutrality verdict.
+2. **Classify** each row (a)/(b)/(c) against the duplication bar — a
+   shared capability is (a) unless the theme needs its own markup (b);
+   only a genuinely unique capability is (c).
+3. **Land** the rows: prove (a) with per-graph neutrality tests; claim
+   (b) presentations through productive carriers; ship (c) defs plus
+   universal bodies. Keep carriers lazy and registrars idempotent (§14.2).
+4. **Freeze** reference stills before the port, run the after run against
+   the frozen manifest, and record verdicts.
+5. **Write the row map** and keep it with the port's evidence.
+
+Songoskriti followed exactly this recipe — the result is summarised below
+and mapped row-by-row in
+[the Songoskriti port map](./songoskriti-port-map.md).
+
+## 15. The Songoskriti reference port at a glance
+
+- **Homepage:** 21 sections / 12 distinct types emitted by
+  `buildHomepageMain` (`src/lib/themes/songoskriti/homepage.ts:23`); 9
+  intended types in `HOMEPAGE_SECTION_TYPES`
+  (`src/lib/themes/songoskriti/types.ts:17`); union 14 (emitted ∪
+  {`announcement_bar`, `circle_categories`}). Evidence:
+  `docs/superpowers/songoskriti-evidence/port/inventory.md` §§2, A1–A3.
+- **Rows:** 59 classified — (a) 11 reuse, (b) 22 presentation, (c) 26
+  theme-owned. Evidence:
+  `docs/superpowers/songoskriti-evidence/port/classification.md`.
+- **Live claims:** 13 theme-fixable presentation claims activated through
+  both carriers, plus `mega_menu` already live through its own
+  presentation. Dormant with proofs: `announcement_bar`, the
+  `footer_sitemap` proof variant, `dressed-hero`, `dressed-reviews`.
+- **Parity:** frozen reference at `9e680632`; after run at `b3258d8c` —
+  60 passed / 1 skipped (recorded manual-review) / 0 failed — see
+  `docs/superpowers/songoskriti-evidence/port/parity-report.md`.
+- **Escalated, docs-only this cycle:** the four shared keys with no
+  universal body yet (`finder_row`, `craft_story`, `testimonials`,
+  `trust_footer`) and the `product_grid` studio delegation bypass.
+
+Per-row lanes, per-graph neutrality verdicts, and live/dormant proof
+pointers: [the Songoskriti port map](./songoskriti-port-map.md).
