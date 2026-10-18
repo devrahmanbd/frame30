@@ -6,7 +6,7 @@ import type { SectionBuilder } from "./types";
 /**
  * Songoskriti homepage — deep fashion-catalog rebuild.
  *
- * Structural hierarchy (30+ sections, Nakhrali-depth commerce):
+ * Structural hierarchy (21 sections / 12 distinct types — port inventory A1):
  *
  * announcement → hero → visual category discovery
  * → saree collection rail → jamdani editorial → new arrivals
