@@ -1,0 +1,1331 @@
+{
+  "generatedAt": "2026-10-18T10:27:48.049Z",
+  "freezeSha": "9e6806329d47",
+  "catalogue": "demo seed",
+  "source": "public preview route /theme-preview/songoskriti",
+  "animations": "disabled",
+  "caret": "hide",
+  "reducedMotion": true,
+  "thresholds": {
+    "maxDiffPixelRatio": 0.02,
+    "threshold": 0.2
+  },
+  "captures": [
+    {
+      "url": "/theme-preview/songoskriti?template=index&lang=en",
+      "template": "index",
+      "width": 1440,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "outfile": "index-1440-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=product&lang=en",
+      "template": "product",
+      "width": 1440,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "outfile": "product-1440-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=collection&lang=en",
+      "template": "collection",
+      "width": 1440,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "outfile": "collection-1440-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=account&lang=en",
+      "template": "account",
+      "width": 1440,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "outfile": "account-1440-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=page&lang=en",
+      "template": "page",
+      "width": 1440,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "outfile": "page-1440-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=blog&lang=en",
+      "template": "blog",
+      "width": 1440,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "outfile": "blog-1440-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=cart&lang=en",
+      "template": "cart",
+      "width": 1440,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "outfile": "cart-1440-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=checkout&lang=en",
+      "template": "checkout",
+      "width": 1440,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "outfile": "checkout-1440-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=search&lang=en",
+      "template": "search",
+      "width": 1440,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "outfile": "search-1440-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=index&lang=bn",
+      "template": "index",
+      "width": 1440,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "outfile": "index-1440-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=product&lang=bn",
+      "template": "product",
+      "width": 1440,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "outfile": "product-1440-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=collection&lang=bn",
+      "template": "collection",
+      "width": 1440,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "outfile": "collection-1440-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=account&lang=bn",
+      "template": "account",
+      "width": 1440,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "outfile": "account-1440-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=page&lang=bn",
+      "template": "page",
+      "width": 1440,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "outfile": "page-1440-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=blog&lang=bn",
+      "template": "blog",
+      "width": 1440,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "outfile": "blog-1440-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=cart&lang=bn",
+      "template": "cart",
+      "width": 1440,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "outfile": "cart-1440-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=checkout&lang=bn",
+      "template": "checkout",
+      "width": 1440,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "outfile": "checkout-1440-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=search&lang=bn",
+      "template": "search",
+      "width": 1440,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "outfile": "search-1440-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=index&lang=en",
+      "template": "index",
+      "width": 768,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "outfile": "index-768-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=product&lang=en",
+      "template": "product",
+      "width": 768,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "outfile": "product-768-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=collection&lang=en",
+      "template": "collection",
+      "width": 768,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "outfile": "collection-768-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=account&lang=en",
+      "template": "account",
+      "width": 768,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "outfile": "account-768-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=page&lang=en",
+      "template": "page",
+      "width": 768,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "outfile": "page-768-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=blog&lang=en",
+      "template": "blog",
+      "width": 768,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "outfile": "blog-768-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=cart&lang=en",
+      "template": "cart",
+      "width": 768,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "outfile": "cart-768-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=checkout&lang=en",
+      "template": "checkout",
+      "width": 768,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "outfile": "checkout-768-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=search&lang=en",
+      "template": "search",
+      "width": 768,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "outfile": "search-768-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=index&lang=bn",
+      "template": "index",
+      "width": 768,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "outfile": "index-768-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=product&lang=bn",
+      "template": "product",
+      "width": 768,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "outfile": "product-768-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=collection&lang=bn",
+      "template": "collection",
+      "width": 768,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "outfile": "collection-768-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=account&lang=bn",
+      "template": "account",
+      "width": 768,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "outfile": "account-768-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=page&lang=bn",
+      "template": "page",
+      "width": 768,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "outfile": "page-768-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=blog&lang=bn",
+      "template": "blog",
+      "width": 768,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "outfile": "blog-768-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=cart&lang=bn",
+      "template": "cart",
+      "width": 768,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "outfile": "cart-768-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=checkout&lang=bn",
+      "template": "checkout",
+      "width": 768,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "outfile": "checkout-768-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=search&lang=bn",
+      "template": "search",
+      "width": 768,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "outfile": "search-768-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=index&lang=en",
+      "template": "index",
+      "width": 375,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 375,
+        "height": 900
+      },
+      "outfile": "index-375-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=product&lang=en",
+      "template": "product",
+      "width": 375,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 375,
+        "height": 900
+      },
+      "outfile": "product-375-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=collection&lang=en",
+      "template": "collection",
+      "width": 375,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 375,
+        "height": 900
+      },
+      "outfile": "collection-375-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=account&lang=en",
+      "template": "account",
+      "width": 375,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 375,
+        "height": 900
+      },
+      "outfile": "account-375-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=page&lang=en",
+      "template": "page",
+      "width": 375,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 375,
+        "height": 900
+      },
+      "outfile": "page-375-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=blog&lang=en",
+      "template": "blog",
+      "width": 375,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 375,
+        "height": 900
+      },
+      "outfile": "blog-375-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=cart&lang=en",
+      "template": "cart",
+      "width": 375,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 375,
+        "height": 900
+      },
+      "outfile": "cart-375-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=checkout&lang=en",
+      "template": "checkout",
+      "width": 375,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 375,
+        "height": 900
+      },
+      "outfile": "checkout-375-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=search&lang=en",
+      "template": "search",
+      "width": 375,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 375,
+        "height": 900
+      },
+      "outfile": "search-375-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=index&lang=bn",
+      "template": "index",
+      "width": 375,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 375,
+        "height": 900
+      },
+      "outfile": "index-375-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=product&lang=bn",
+      "template": "product",
+      "width": 375,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 375,
+        "height": 900
+      },
+      "outfile": "product-375-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=collection&lang=bn",
+      "template": "collection",
+      "width": 375,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 375,
+        "height": 900
+      },
+      "outfile": "collection-375-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=account&lang=bn",
+      "template": "account",
+      "width": 375,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 375,
+        "height": 900
+      },
+      "outfile": "account-375-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=page&lang=bn",
+      "template": "page",
+      "width": 375,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 375,
+        "height": 900
+      },
+      "outfile": "page-375-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=blog&lang=bn",
+      "template": "blog",
+      "width": 375,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 375,
+        "height": 900
+      },
+      "outfile": "blog-375-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=cart&lang=bn",
+      "template": "cart",
+      "width": 375,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 375,
+        "height": 900
+      },
+      "outfile": "cart-375-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=checkout&lang=bn",
+      "template": "checkout",
+      "width": 375,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 375,
+        "height": 900
+      },
+      "outfile": "checkout-375-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=search&lang=bn",
+      "template": "search",
+      "width": 375,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 375,
+        "height": 900
+      },
+      "outfile": "search-375-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=index&lang=en",
+      "template": "index",
+      "width": 1440,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "outfile": "chrome-mega-menu-1440-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=index&lang=en",
+      "template": "index",
+      "width": 375,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 375,
+        "height": 900
+      },
+      "outfile": "chrome-mobile-drawer-375-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=index&lang=bn",
+      "template": "index",
+      "width": 1440,
+      "locale": "bn",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "outfile": "chrome-mega-menu-1440-bn.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=index&lang=bn",
+      "template": "index",
+      "width": 375,
+      "locale": "bn",
+      "outfile": "chrome-mobile-drawer-375-bn.png",
+      "status": "manual-review",
+      "reason": "drawer did not open for lang=bn at 375px: hamburger button is visible and the click fires, but [data-nav=\"songoskriti-drawer\"] never becomes visible (failed original + retry). Recorded as manual-review; no baseline written until the bn drawer interaction is investigated.",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=index&lang=en&variation=minimal",
+      "template": "index",
+      "width": 1440,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "outfile": "index-minimal-1440-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    },
+    {
+      "url": "/theme-preview/songoskriti?template=index&lang=en&variation=festive",
+      "template": "index",
+      "width": 1440,
+      "locale": "en",
+      "reducedMotion": true,
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "outfile": "index-festive-1440-en.png",
+      "status": "pass",
+      "freezeSha": "9e6806329d47",
+      "catalogue": "demo seed",
+      "fontsReady": true,
+      "animations": "disabled",
+      "caret": "hide",
+      "thresholds": {
+        "maxDiffPixelRatio": 0.02,
+        "threshold": 0.2
+      }
+    }
+  ]
+}
