@@ -11,6 +11,14 @@ import { buildFooterMain } from "./footer";
 import { buildHomepageMain } from "./homepage";
 import { registerSongoskritiPresentationClaims } from "./presentation-claims";
 import { SONGOSKRITI_WIDGETS } from "../../../components/builder/songoskriti";
+// Live-rendering activation (THEME-OWNED WIDGET lane, Task 7): side-effect
+// import of the ornament presentation pulls `ornament-def` into the
+// storefront graph so its lazy registry claim self-registers
+// `theme:songoskriti/ornament` on the shared singleton (see ornament-def.ts
+// for the cycle mechanics: widgets.tsx:43,1666-1668 and
+// unified-widget-registry.ts:110-127,927). Mirrors the editor carrier in
+// songoskriti.tsx; the registry claim itself is lazy in ornament-def.ts.
+import "./ornament-presentation";
 // Live-rendering activation (HEADER DE-THEMING lane): this preview entry
 // is in the prod import graph (preview-sources → preview, dynamically
 // imported by storefront routes), so re-exporting the header presentation

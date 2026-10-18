@@ -71,6 +71,15 @@ import {
 } from "@/components/icons/tabler";
 import { registerSongoskritiPresentationClaims } from "@/lib/themes/songoskriti/presentation-claims";
 
+// Live-rendering activation (THEME-OWNED WIDGET lane, Task 7): side-effect
+// import of the ornament presentation pulls `ornament-def` into the editor
+// graph so its lazy registry claim self-registers `theme:songoskriti/ornament`
+// on the shared singleton after the static graph settles (no TDZ, no silent
+// skip — see ornament-def.ts, which cites widgets.tsx:43,1666-1668 and
+// unified-widget-registry.ts:110-127,927). The component registration itself
+// runs synchronously here; the registry claim is lazy in ornament-def.ts.
+import "@/lib/themes/songoskriti/ornament-presentation";
+
 /* ---------------------------------------------------------------- helpers */
 
 function t(locale: string, en: string, bn: string) {
