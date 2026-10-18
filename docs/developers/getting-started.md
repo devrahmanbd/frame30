@@ -1,6 +1,6 @@
 # Getting started as a third-party developer
 
-Last verified: 2026-10-06.
+Needs verification
 
 You are an independent developer building themes, widgets, plugins,
 themeable community widgets, or menu extensions on the platform. This

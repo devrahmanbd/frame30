@@ -1,6 +1,6 @@
 # Versioning, validation, and publishing
 
-Last verified: 2026-10-06.
+Needs verification
 
 Audience: third-party developers shipping and updating themes and
 plugins. Version numbers are promises the platform enforces: move

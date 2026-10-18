@@ -1,6 +1,6 @@
 # Menu extensions
 
-Last verified: 2026-10-06.
+Needs verification
 
 Audience: plugin developers contributing to navigation, and theme
 developers rendering it. Menus have platform-owned data; plugins

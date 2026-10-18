@@ -1,6 +1,6 @@
 # Security and the sandbox boundary
 
-Last verified: 2026-10-06.
+Needs verification
 
 Audience: every third-party developer. This page states the trust
 boundary your code runs against. Design for denial: any call outside

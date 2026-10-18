@@ -1,6 +1,6 @@
 # Themeable widgets (Class B)
 
-Last verified: 2026-10-06.
+Needs verification
 
 Audience: plugin developers who want every theme to dress their
 widget, and theme developers dressing a community widget. Class B

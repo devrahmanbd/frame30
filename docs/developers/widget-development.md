@@ -1,6 +1,6 @@
 # Widget development (built-in model)
 
-Last verified: 2026-10-06.
+Needs verification
 
 Audience: theme developers presenting built-in widgets, and plugin
 developers who need to understand what themes may and may not do with

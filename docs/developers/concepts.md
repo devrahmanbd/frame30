@@ -1,6 +1,6 @@
 # Concepts for third-party developers
 
-Last verified: 2026-10-06.
+Needs verification
 
 One page for the whole mental model. Read this before building
 anything.

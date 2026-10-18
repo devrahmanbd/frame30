@@ -1,6 +1,6 @@
 # Examples (minimal, verified)
 
-Last verified: 2026-10-06.
+Needs verification
 
 Copy-paste-concept snippets. Each uses only real APIs pinned to
 implementation; adapt names, never signatures. All snippets are

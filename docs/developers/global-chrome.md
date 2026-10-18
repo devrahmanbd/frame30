@@ -1,6 +1,6 @@
 # Global chrome: header, announcement, footer
 
-Last verified: 2026-10-06.
+Needs verification
 
 Audience: theme developers presenting store-wide chrome. Chrome is
 the three surfaces every storefront renders around page content:

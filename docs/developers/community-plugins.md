@@ -1,6 +1,6 @@
 # Community plugins (Class A, sandboxed)
 
-Last verified: 2026-10-06.
+Needs verification
 
 Audience: independent developers shipping functionality that runs
 isolated inside the storefront. Class A means the widget declares no
