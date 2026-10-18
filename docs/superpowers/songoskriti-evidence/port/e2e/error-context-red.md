@@ -1,7 +1,7 @@
 # Page snapshot
 
 ```yaml
-- generic [active] [ref=e1]:
+- generic [ref=e1]:
   - generic [ref=e2]:
     - banner [ref=e3]:
       - toolbar "Editor toolbar" [ref=e4]:
@@ -61,7 +61,7 @@
           - generic [ref=e94]:
             - generic [ref=e96]:
               - tablist "Studio side panel" [ref=e97]:
-                - tab "Elements" [selected] [ref=e98]
+                - tab "Elements" [active] [selected] [ref=e98]
                 - tab "SEO" [ref=e99]
               - generic [ref=e101]:
                 - heading "Elements" [level=2] [ref=e103]

@@ -118,11 +118,20 @@ test("songoskriti editor journey: tray → schema → save → reload → switch
   );
   expect(editorResponse?.status(), "editor route serves 200").toBe(200);
 
-  // The WidgetTray mounts inside the editor shell's "Add" panel; open it
-  // before asserting on theme-owned rows.
-  const addTab = page.locator('[role="tablist"] [role="tab"]').nth(1);
-  await expect(addTab, "editor Add tab opens").toBeVisible({ timeout: 30_000 });
-  await addTab.click();
+  // The WidgetTray lives in the studio side panel's "Elements" tab (its
+  // default). Select it explicitly — idempotent when already active — so a
+  // panel that starts elsewhere (or a stray switch) can never hide the
+  // tray: blindly taking the tablist's second tab lands on "SEO" and
+  // unmounts the tray (observed flaky: pre-hydration clicks got swallowed,
+  // post-hydration clicks switched the panel).
+  const elementsTab = page.getByRole("tab", {
+    name: "Elements",
+    exact: true,
+  });
+  await expect(elementsTab, "editor Elements tab is present").toBeVisible({
+    timeout: 30_000,
+  });
+  await elementsTab.click();
 
   // 3. The theme-owned tray row for "Songoskriti ornament" is insertable
   //    while songoskriti is active (discovered live locator: the Theme

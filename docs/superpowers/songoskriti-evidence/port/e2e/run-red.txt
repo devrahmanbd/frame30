@@ -1,0 +1,57 @@
+[e2e warm-up] SSR ready: http://localhost:3020/theme-preview/songoskriti answered 200 after 1 attempt(s)
+
+Running 1 test using 1 worker
+
+  ✘  1 [chromium] › .e2e/songoskriti-editor-journey.spec.ts:95:1 › songoskriti editor journey: tray → schema → save → reload → switch (3.3m)
+
+
+  1) [chromium] › .e2e/songoskriti-editor-journey.spec.ts:95:1 › songoskriti editor journey: tray → schema → save → reload → switch 
+
+    Error: theme-owned Songoskriti ornament row is insertable in the tray
+
+    [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('button:has-text("Songoskriti ornament")').first()
+    Expected: visible
+    Timeout: 120000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - theme-owned Songoskriti ornament row is insertable in the tray with timeout 120000ms[22m
+    [2m  - waiting for locator('button:has-text("Songoskriti ornament")').first()[22m
+
+
+      143 |     ornamentRow,
+      144 |     "theme-owned Songoskriti ornament row is insertable in the tray",
+    > 145 |   ).toBeVisible({ timeout: COLD_GOTO_TIMEOUT });
+          |     ^
+      146 |
+      147 |   // 4. Mint a unique doc (unique title ⇒ unique slug, no slug_taken
+      148 |   //    collisions across runs) and let the title autosave settle.
+        at /opt/frame28/.e2e/songoskriti-editor-journey.spec.ts:145:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .artifacts/e2e/test-results/songoskriti-editor-journey-e411d-ma-→-save-→-reload-→-switch-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    .artifacts/e2e/test-results/songoskriti-editor-journey-e411d-ma-→-save-→-reload-→-switch-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .artifacts/e2e/test-results/songoskriti-editor-journey-e411d-ma-→-save-→-reload-→-switch-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    .artifacts/e2e/test-results/songoskriti-editor-journey-e411d-ma-→-save-→-reload-→-switch-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace .artifacts/e2e/test-results/songoskriti-editor-journey-e411d-ma-→-save-→-reload-→-switch-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › .e2e/songoskriti-editor-journey.spec.ts:95:1 › songoskriti editor journey: tray → schema → save → reload → switch 
+
+To open last HTML report run:
+[36m[39m
+[36m  npx playwright show-report .artifacts/e2e/playwright-report[39m
+[36m[39m
