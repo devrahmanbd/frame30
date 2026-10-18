@@ -1,0 +1,12 @@
+[e2e warm-up] SSR ready: http://localhost:3020/theme-preview/songoskriti answered 200 after 1 attempt(s)
+
+Running 1 test using 1 worker
+
+  ✓  1 [chromium] › .e2e/songoskriti-editor-journey.spec.ts:97:1 › songoskriti editor journey: tray → schema → save → reload → switch (1.8m)
+
+  1 passed (2.4m)
+
+To open last HTML report run:
+[36m[39m
+[36m  npx playwright show-report .artifacts/e2e/playwright-report[39m
+[36m[39m
