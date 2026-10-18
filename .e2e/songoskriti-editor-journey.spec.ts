@@ -251,7 +251,10 @@ test("songoskriti editor journey: tray → schema → save → reload → switch
     waitUntil: "domcontentloaded",
     timeout: COLD_GOTO_TIMEOUT,
   });
-  await page.locator('[role="tablist"] [role="tab"]').nth(1).click();
+  // Same explicit selection as step 3 — never a blind `.nth(1)` (that lands
+  // on "SEO" and unmounts the tray, making the row-absent check pass for
+  // the wrong reason; Task 9 review finding).
+  await elementsTab.click();
   await expect(
     page.locator('button:has-text("Songoskriti ornament")'),
     "ornament row is not insertable under the foreign theme",

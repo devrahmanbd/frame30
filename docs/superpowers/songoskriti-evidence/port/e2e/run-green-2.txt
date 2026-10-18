@@ -2,9 +2,102 @@
 
 Running 1 test using 1 worker
 
-  ✓  1 [chromium] › .e2e/songoskriti-editor-journey.spec.ts:95:1 › songoskriti editor journey: tray → schema → save → reload → switch (1.3m)
+  ✘  1 [chromium] › .e2e/songoskriti-editor-journey.spec.ts:95:1 › songoskriti editor journey: tray → schema → save → reload → switch (1.5m)
+  ✘  2 [chromium] › .e2e/songoskriti-editor-journey.spec.ts:95:1 › songoskriti editor journey: tray → schema → save → reload → switch (retry #1) (1.5m)
 
-  1 passed (1.4m)
+
+  1) [chromium] › .e2e/songoskriti-editor-journey.spec.ts:95:1 › songoskriti editor journey: tray → schema → save → reload → switch 
+
+    Error: ornament row is not insertable under the foreign theme
+
+    [2mexpect([22m[31mlocator[39m[2m).[22mtoHaveCount[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator:  locator('button:has-text("Songoskriti ornament")')
+    Expected: [32m0[39m
+    Received: [31m1[39m
+    Timeout:  15000ms
+
+    Call log:
+    [2m  - ornament row is not insertable under the foreign theme with timeout 15000ms[22m
+    [2m  - waiting for locator('button:has-text("Songoskriti ornament")')[22m
+    [2m    18 × locator resolved to 1 element[22m
+    [2m       - unexpected value "1"[22m
+
+
+      259 |     page.locator('button:has-text("Songoskriti ornament")'),
+      260 |     "ornament row is not insertable under the foreign theme",
+    > 261 |   ).toHaveCount(0);
+          |     ^
+      262 |   await expect(
+      263 |     page.getByText("Widget preview unavailable", { exact: true }),
+      264 |     "saved instance renders the recoverable fallback under somvabona",
+        at /opt/frame28/.e2e/songoskriti-editor-journey.spec.ts:261:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .artifacts/e2e/test-results/songoskriti-editor-journey-e411d-ma-→-save-→-reload-→-switch-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    .artifacts/e2e/test-results/songoskriti-editor-journey-e411d-ma-→-save-→-reload-→-switch-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .artifacts/e2e/test-results/songoskriti-editor-journey-e411d-ma-→-save-→-reload-→-switch-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    .artifacts/e2e/test-results/songoskriti-editor-journey-e411d-ma-→-save-→-reload-→-switch-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace .artifacts/e2e/test-results/songoskriti-editor-journey-e411d-ma-→-save-→-reload-→-switch-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: ornament row is not insertable under the foreign theme
+
+    [2mexpect([22m[31mlocator[39m[2m).[22mtoHaveCount[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator:  locator('button:has-text("Songoskriti ornament")')
+    Expected: [32m0[39m
+    Received: [31m1[39m
+    Timeout:  15000ms
+
+    Call log:
+    [2m  - ornament row is not insertable under the foreign theme with timeout 15000ms[22m
+    [2m  - waiting for locator('button:has-text("Songoskriti ornament")')[22m
+    [2m    18 × locator resolved to 1 element[22m
+    [2m       - unexpected value "1"[22m
+
+
+      259 |     page.locator('button:has-text("Songoskriti ornament")'),
+      260 |     "ornament row is not insertable under the foreign theme",
+    > 261 |   ).toHaveCount(0);
+          |     ^
+      262 |   await expect(
+      263 |     page.getByText("Widget preview unavailable", { exact: true }),
+      264 |     "saved instance renders the recoverable fallback under somvabona",
+        at /opt/frame28/.e2e/songoskriti-editor-journey.spec.ts:261:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .artifacts/e2e/test-results/songoskriti-editor-journey-e411d-ma-→-save-→-reload-→-switch-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    .artifacts/e2e/test-results/songoskriti-editor-journey-e411d-ma-→-save-→-reload-→-switch-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .artifacts/e2e/test-results/songoskriti-editor-journey-e411d-ma-→-save-→-reload-→-switch-chromium-retry1/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    .artifacts/e2e/test-results/songoskriti-editor-journey-e411d-ma-→-save-→-reload-→-switch-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace .artifacts/e2e/test-results/songoskriti-editor-journey-e411d-ma-→-save-→-reload-→-switch-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › .e2e/songoskriti-editor-journey.spec.ts:95:1 › songoskriti editor journey: tray → schema → save → reload → switch 
 
 To open last HTML report run:
 [36m[39m
