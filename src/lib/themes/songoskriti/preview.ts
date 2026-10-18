@@ -9,11 +9,18 @@ import {
 import { buildHeaderMain } from "./header";
 import { buildFooterMain } from "./footer";
 import { buildHomepageMain } from "./homepage";
+import { registerSongoskritiPresentationClaims } from "./presentation-claims";
+import { SONGOSKRITI_WIDGETS } from "../../../components/builder/songoskriti";
 // Live-rendering activation (HEADER DE-THEMING lane): this preview entry
 // is in the prod import graph (preview-sources → preview, dynamically
 // imported by storefront routes), so re-exporting the header presentation
 // runs its `registerThemePresentation` side effect for live rendering.
 export { SongoskritiHeaderPresentation } from "./header-presentation";
+// Live-rendering activation (PRESENTATION-CLAIMS lane): register the 13
+// Songoskriti presentation claims through the storefront graph. The
+// already-claimed guard keeps this idempotent across the editor carrier
+// (songoskriti.tsx) and never evicts the live mega_menu claim.
+registerSongoskritiPresentationClaims(SONGOSKRITI_WIDGETS);
 
 /**
  * Songoskriti's preview source — theme-owned demo content for the

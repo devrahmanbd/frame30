@@ -69,6 +69,7 @@ import {
   Star,
   Truck,
 } from "@/components/icons/tabler";
+import { registerSongoskritiPresentationClaims } from "@/lib/themes/songoskriti/presentation-claims";
 
 /* ---------------------------------------------------------------- helpers */
 
@@ -2617,3 +2618,9 @@ export const SONGOSKRITI_WIDGETS: Record<
   category_header: SongoskritiCategoryHeader,
   result_toolbar: SongoskritiResultToolbar,
 };
+
+// Live-rendering activation (PRESENTATION-CLAIMS lane): register the 13
+// Songoskriti presentation claims through the editor graph. The
+// already-claimed guard keeps this idempotent across the storefront carrier
+// (preview.ts) and never evicts the live mega_menu claim.
+registerSongoskritiPresentationClaims(SONGOSKRITI_WIDGETS);
