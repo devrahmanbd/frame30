@@ -139,6 +139,6 @@ Spec-faithful harness — same viewport (375×900), locale, and waits (lang appl
 
 - **Stack rebuilt from scratch** (Task 4's teardown removed the volumes): `bringup2/bringup.sh` (compose up → roles → relay → schema → GoTrue merchant `1d23d2c0-…` → seed, 0 error lines) plus `bringup2/repair.sh` for the known late-policy files of a fresh bring-up (15 policies re-verified). Vite on `:3020` with loopback overrides (`VITE_SUPABASE_URL=http://127.0.0.1:58000`, `DISABLE_HMR=true`); catalogue "demo seed".
 - **Frozen manifest preserved:** the spec unconditionally rewrites `reference-manifest.json` in any mode; after the run the file was restored byte-identical (`freezeSha: 9e6806329d47`). The raw after-run copy is kept outside the repo (`/tmp/opencode/task8/after-run-manifest.json`: 60 entries — 59 `pass`, 1 `manual-review`).
-- Secrets (`.e2e.env`, `creds.json`) stayed in `/tmp`, were never printed and never committed.
+- Secrets (`.e2e.env`, `creds.env`) stayed in `/tmp`, were never printed and never committed.
 - Teardown per `docs/15-e2e/loopback-auth-setup.md` §5: vite + socat relay stopped; `docker compose -f docker-compose.e2e.yml --env-file /tmp/opencode/e2e-auth/.e2e.env down -v`; no `e2e-supabase` containers remain; ports 3020/58000 free.
 - Parity stills are human evidence; the machine baselines remain the frozen `.e2e/…-snapshots/` PNGs. Legacy theme removal is out of scope for this cycle.
