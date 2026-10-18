@@ -1,5 +1,12 @@
 # 04 — Builder: Sections & Template Library
 
+> **HISTORICAL — pre-build planning doc.** The shipped editor and its
+> canonical contract live in `docs/04-builder/README.md` (editor source of
+> truth) and `docs/04-builder/app-blocks.md` (widget contract). Surface
+> labels below (for example `admin/builder/templates` in §7) are planning
+> names that never shipped as routes; where this file contradicts HEAD, HEAD
+> wins.
+
 Status: Planning · Approved plan (parent: `04-builder/README.md`) · Slice S1 (skeleton) / S7 (full editor)
 Owners: Builder Platform + Frontend Platform
 References: `04-builder/README.md` (engine, data model, publish machine) · `theme-registry.md` (theme pins, AST contract) · `theme-runtime.md` (TR-1/TR-2) · `03-storefront/README.md` (rendered surfaces) · `16-product-pricing/README.md` (entitlements) · `00-meta/design-system.md` §1, §2, §5, §10
