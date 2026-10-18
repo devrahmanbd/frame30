@@ -10,7 +10,10 @@ import {
   SERVER_HOOKS,
   parseManifest,
   parsePluginWidgetKey,
+  sanitizePluginWidgetPropsSchema,
 } from "../../../src/lib/plugin-manifest";
+import { isPluginThemeContract } from "../../../src/lib/plugin-theme-contract";
+import { PROP_KINDS } from "../../../src/lib/widget-props";
 import manifestJson from "../manifest.json";
 import { NAMESPACED_KEY, WIDGET_ENTRY } from "../src/widget";
 
@@ -149,5 +152,58 @@ describe("starter manifest rejections mirror the real errors", () => {
     expect(verdict.ok).toBe(false);
     if (verdict.ok) return;
     expect(verdict.errors).toContain("widgets[0].entry.dynamic_code");
+  });
+});
+
+function starterWidget() {
+  const verdict = parseManifest(manifest);
+  if (!verdict.ok) throw new Error("fixture must parse");
+  const widget = verdict.manifest.widgets[0];
+  if (!widget) throw new Error("fixture must declare one widget");
+  return widget;
+}
+
+describe("starter widget declares the Frame30 widget contract", () => {
+  it("declares propsSchema fields from the closed PropKind set", () => {
+    const widget = starterWidget();
+    expect(widget.propsSchema?.map((f) => f.kind)).toEqual([
+      "text",
+      "select",
+      "boolean",
+    ]);
+    for (const field of widget.propsSchema ?? []) {
+      expect(PROP_KINDS as readonly string[]).toContain(field.kind);
+    }
+  });
+
+  it("re-runs the shared propsSchema sanitizer the adapter uses", () => {
+    const checked = sanitizePluginWidgetPropsSchema(starterWidget().propsSchema);
+    expect(checked.ok).toBe(true);
+    if (checked.ok) expect(checked.fields).toHaveLength(3);
+  });
+
+  it("keeps every defaultProps key inside propsSchema", () => {
+    const widget = starterWidget();
+    const keys = new Set((widget.propsSchema ?? []).map((f) => f.key));
+    const declared = Object.keys(widget.defaultProps ?? {});
+    expect(declared.length).toBeGreaterThan(0);
+    for (const key of declared) expect(keys.has(key)).toBe(true);
+  });
+
+  it("declares a well-formed v1 themeable contract", () => {
+    const widget = starterWidget();
+    expect(isPluginThemeContract(widget.themeable)).toBe(true);
+    expect(widget.themeable).toEqual({
+      version: 1,
+      schema: "greeting:v1",
+      states: ["ready"],
+    });
+  });
+
+  it("keeps the install-global settings schema unchanged", () => {
+    const verdict = parseManifest(manifest);
+    if (!verdict.ok) throw new Error("fixture must parse");
+    expect(verdict.manifest.settings.map((s) => s.key)).toEqual(["greeting"]);
+    expect(verdict.manifest.settings[0]?.kind).toBe("text");
   });
 });

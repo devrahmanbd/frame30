@@ -11,7 +11,42 @@
       "label": "Hello greeting",
       "slots": ["main"],
       "entry": "var box=document.createElement(\"div\");box.textContent=\"Hello from the starter plugin.\";framique.mount(box);",
-      "height": 160
+      "height": 160,
+      "propsSchema": [
+        {
+          "key": "heading",
+          "label": "Greeting text",
+          "kind": "text",
+          "max": 120,
+          "default": "Hello from the starter plugin."
+        },
+        {
+          "key": "tone",
+          "label": "Tone",
+          "kind": "select",
+          "options": [
+            { "value": "plain", "label": "Plain" },
+            { "value": "warm", "label": "Warm" }
+          ],
+          "default": "plain"
+        },
+        {
+          "key": "show_note",
+          "label": "Show note",
+          "kind": "boolean",
+          "default": false
+        }
+      ],
+      "defaultProps": {
+        "heading": "Hello from the starter plugin.",
+        "tone": "plain",
+        "show_note": false
+      },
+      "themeable": {
+        "version": 1,
+        "schema": "greeting:v1",
+        "states": ["ready"]
+      }
     }
   ],
   "hooks": ["order.created"],
