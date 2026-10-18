@@ -9,6 +9,11 @@ one line below; open the guide for the full contract.
 - [Build a Framique plugin](plugins.md) — manifest validation,
   sandbox limits, namespaced widgets, signed server hooks, install
   and consent lifecycle, review checklist, and monetization rails.
+- [Use the editor with your extension](editor.md) — the real developer
+  journey: install and activate, find widgets in the tray, insert, edit
+  schema-generated settings, responsive views, preview, save, publish,
+  plus troubleshooting for schemas, compatibility, disabled packages,
+  and fallbacks.
 - [Third-Party SDK and API Guide](sdk.md) — versioned REST
   adapter, authentication, OAuth grants, envelopes and pagination,
   rate limits, idempotency, error model, webhooks, and exports;
