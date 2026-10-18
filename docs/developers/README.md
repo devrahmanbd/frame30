@@ -35,9 +35,9 @@ one line below; open the guide for the full contract.
 - [Concepts](concepts.md) — Widget vs Theme, registries, Class A vs B, public vs internal.
 - [Widget development](widget-development.md) — built-in model and theme-never-replaces-logic.
 - [Community plugins](community-plugins.md) — Class A path, manifest, tray, failure modes.
-- [Themeable widgets](themeable-widgets.md) — Class B contract and theme dressing.
+- [Themeable widgets](themeable-widgets.md) — Class B contract and theme dressing; base contract: [app blocks](../04-builder/app-blocks.md).
 - [Menu extensions](menu-extensions.md) — data, fill points, replacement, fail-open.
-- [Global chrome](global-chrome.md) — header, announcement, footer theme presentation.
+- [Global chrome](global-chrome.md) — header, announcement, footer theme presentation; see [theme authoring](../themes/creation.md).
 - [Security and sandbox](security-sandbox.md) — frame, bridge, bundle and scope rules.
 - [Versioning and publishing](versioning-publishing.md) — semver, validation, failure behavior.
 - [Examples](examples.md) — minimal snippets pinned to real APIs.
