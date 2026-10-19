@@ -131,17 +131,6 @@ describe("songoskriti asset manifest", () => {
       expect(a.aspect).toMatch(/^\d+:\d+$/);
     }
   });
-  it("pins every entry's name, format and floors", () => {
-    expect(
-      ASSETS.map((a) => ({
-        name: a.name,
-        format: a.format,
-        minWidth: a.minWidth,
-        minHeight: a.minHeight,
-      })),
-    ).toMatchSnapshot();
-  });
-
   it("pins the size budgets", () => {
     expect(BUDGETS.maxFileBytes).toBe(3_000_000);
     expect(BUDGETS.maxTotalBytes).toBe(28_000_000);
@@ -917,6 +906,17 @@ Then the fixtures (each asserts the **exact** multiset):
 
 ```ts
 describe("songoskriti asset gate", () => {
+  it("pins every manifest entry's name, format and floors", () => {
+    expect(
+      ASSETS.map((a) => ({
+        name: a.name,
+        format: a.format,
+        minWidth: a.minWidth,
+        minHeight: a.minHeight,
+      })),
+    ).toMatchSnapshot();
+  });
+
   it("the repository is green", () => {
     const result = checkSongoskritiAssets(defaultWorld());
     expect(result.findings.map((f) => `${f.code} ${f.path}`)).toEqual([]);
