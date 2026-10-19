@@ -1,0 +1,68 @@
+doc gate self-test
+
+  PASS check1 1 source-refs — pass: 4, fail: 3
+  PASS check2 2 commands — pass: 2, fail: 2
+  PASS check3 3 routes — pass: 2, fail: 2
+  PASS check4 4 manifest-examples — pass: 2, fail: 3
+  PASS check5 5 field-kinds — pass: 2, fail: 1
+  PASS check6 6 authority-links — pass: 1, fail: 1
+  PASS check7 7 verification-status — pass: 4, fail: 3
+  PASS check8 8 contradictions — pass: 7, fail: 6
+  PASS unknown-flag rejection — exit 2; no CLI suppression capability in source
+
+self-test: PASS
+
+=== Red/confirmations notes ===
+
+(a) Red evidence — why a single-binary red run is not possible.
+This gate's CLI accepts only `--self-test` and `--json`; it has no path/tree
+argument, and `expandInScope()` always scans the pinned IN_SCOPE set from the
+repo root — so the binary cannot be pointed at
+`scripts/fixtures/doc-gate/*/fail/` for a plain findings run (plan Task 19
+Step 3 fallback). The red evidence is therefore the seeded self-test log above:
+each `fail/` fixture is loaded and the loaded check must produce a finding for
+it (exit 2 on any mismatch), while each `pass/` fixture must stay finding-free.
+All nine lines above PASS — every fail fixture was detected — and the
+negative-control probe confirms the exit-2 path ("unknown-flag rejection —
+exit 2; no CLI suppression capability in source").
+
+(b) `<!-- doc-gate-ok:` occurrences in repo docs vs the gate report.
+Raw repo-wide grep (`grep -rn "doc-gate-ok:" docs/`) finds 12 textual hits:
+the same 4 real in-scope markers below, plus 8 prose/code references inside
+`docs/superpowers/plans/2026-10-18-songoskriti-unified-port.md` (6) and
+`docs/superpowers/specs/2026-10-18-songoskriti-unified-port-design.md` (2)
+that describe the marker mechanism. `docs/superpowers/**` is outside IN_SCOPE,
+so the gate never scans those and they are not suppression instances.
+
+The same 4 in-scope markers (`grep -rn "<!-- doc-gate-ok:" docs/ | grep -v docs/superpowers/`; listed here in gate-report order):
+  docs/developers/themes.md:68 — deliberate negative reference
+  docs/packages/contract.md:44 — deliberate negative reference
+  docs/packages/contract.md:291 — deliberate negative reference
+  docs/themes/packages.md:41 — deliberate negative reference
+
+Gate report suppression list (run.txt, "suppressions: 4"):
+  docs/developers/themes.md:68 — deliberate negative reference
+  docs/packages/contract.md:44 — deliberate negative reference
+  docs/packages/contract.md:291 — deliberate negative reference
+  docs/themes/packages.md:41 — deliberate negative reference
+
+Line-by-line comparison: identical — same 4 file:line:reason triples, no doc
+marker missing from the report and no report entry lacking a doc marker.
+
+(c) No suppression flag in the gate CLI.
+  $ grep -n -- "--allow" scripts/doc-gate.mjs
+  (no match; exit 1)
+  $ grep -n "allow" scripts/doc-gate.mjs
+  153:    allow: [
+  173:    allow: [
+  553:      const unknown = keys.filter((key) => !spec.allow.includes(key));
+The only `allow`-token hits are the pinned LABEL_KEYS config fields: the
+`allow:` key-set definitions for `plugin-manifest` (line 153) and
+`theme-manifest.json` (line 173), plus their consumer `spec.allow` (line 553).
+No CLI suppression flag exists; an unknown `--allow` probe exits 2 (asserted
+by the self-test's negative control above).
+
+(d) Determinism note. run.txt and selftest.txt are byte-deterministic.
+run.json is the raw `--json` payload; its only non-deterministic field is the
+gate's `generatedAt` ISO timestamp (scope, counts, findings and suppressions
+are pinned content).

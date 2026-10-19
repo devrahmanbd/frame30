@@ -1,0 +1,206 @@
+{
+  "gate": "doc-gate",
+  "generatedAt": "2026-10-19T06:15:41.803Z",
+  "exitCode": 0,
+  "scope": [
+    "docs/04-builder/README.md",
+    "docs/04-builder/app-blocks.md",
+    "docs/developers/README.md",
+    "docs/developers/community-plugins.md",
+    "docs/developers/concepts.md",
+    "docs/developers/editor.md",
+    "docs/developers/examples.md",
+    "docs/developers/getting-started.md",
+    "docs/developers/global-chrome.md",
+    "docs/developers/guidelines.md",
+    "docs/developers/menu-extensions.md",
+    "docs/developers/plugins.md",
+    "docs/developers/review-policy.md",
+    "docs/developers/sdk.md",
+    "docs/developers/security-sandbox.md",
+    "docs/developers/theme-updates.md",
+    "docs/developers/themeable-widgets.md",
+    "docs/developers/themes.md",
+    "docs/developers/versioning-publishing.md",
+    "docs/developers/widget-development.md",
+    "docs/packages/contract.md",
+    "docs/themes/creation.md",
+    "docs/themes/level-b.md",
+    "docs/themes/packages.md"
+  ],
+  "selfTest": {
+    "ok": true,
+    "checks": [
+      {
+        "id": "check1",
+        "name": "1 source-refs",
+        "ok": true,
+        "pass": [
+          "bundle-internal.md",
+          "doc-relative.md",
+          "existing-path.md",
+          "extension-list.md"
+        ],
+        "fail": [
+          "bundle-doc-missing-repo-path.md",
+          "missing-doc-relative.md",
+          "missing-repo-path.md"
+        ],
+        "passLeaks": [],
+        "failMisses": []
+      },
+      {
+        "id": "check2",
+        "name": "2 commands",
+        "ok": true,
+        "pass": [
+          "binary.md",
+          "valid-script.md"
+        ],
+        "fail": [
+          "invalid-script.md",
+          "unknown-binary.md"
+        ],
+        "passLeaks": [],
+        "failMisses": []
+      },
+      {
+        "id": "check3",
+        "name": "3 routes",
+        "ok": true,
+        "pass": [
+          "admin-builder-bannered.md",
+          "resolvable-route.md"
+        ],
+        "fail": [
+          "admin-builder-unbannered.md",
+          "unresolvable-route.md"
+        ],
+        "passLeaks": [],
+        "failMisses": []
+      },
+      {
+        "id": "check4",
+        "name": "4 manifest-examples",
+        "ok": true,
+        "pass": [
+          "plugin-manifest.md",
+          "theme-manifest.md"
+        ],
+        "fail": [
+          "malformed-json.md",
+          "missing-required.md",
+          "unknown-key.md"
+        ],
+        "passLeaks": [],
+        "failMisses": []
+      },
+      {
+        "id": "check5",
+        "name": "5 field-kinds",
+        "ok": true,
+        "pass": [
+          "install-package-theme.md",
+          "valid-kind.md"
+        ],
+        "fail": [
+          "banana-kind.md"
+        ],
+        "passLeaks": [],
+        "failMisses": []
+      },
+      {
+        "id": "check6",
+        "name": "6 authority-links",
+        "ok": true,
+        "pass": [
+          "keyword-with-authority-link.md"
+        ],
+        "fail": [
+          "keyword-without-link.md"
+        ],
+        "passLeaks": [],
+        "failMisses": []
+      },
+      {
+        "id": "check7",
+        "name": "7 verification-status",
+        "ok": true,
+        "pass": [
+          "fenced-example-above-real-line.md",
+          "historical.md",
+          "needs-verification.md",
+          "valid-sha.md"
+        ],
+        "fail": [
+          "fenced-only.md",
+          "nonresolving-sha.md",
+          "two-status-lines.md"
+        ],
+        "passLeaks": [],
+        "failMisses": []
+      },
+      {
+        "id": "check8",
+        "name": "8 contradictions",
+        "ok": true,
+        "pass": [
+          "admin-builder.md",
+          "levelb-official.md",
+          "no-e2e.md",
+          "no-playwright.md",
+          "official-as-zip.md",
+          "songoskriti-as-package.md",
+          "suppression.md"
+        ],
+        "fail": [
+          "admin-builder.md",
+          "levelb-official.md",
+          "no-e2e.md",
+          "no-playwright.md",
+          "official-as-zip.md",
+          "songoskriti-as-package.md"
+        ],
+        "passLeaks": [],
+        "failMisses": [],
+        "suppressionListed": true
+      },
+      {
+        "id": "cli",
+        "name": "unknown-flag rejection",
+        "ok": true,
+        "detail": "exit 2; no CLI suppression capability in source"
+      }
+    ]
+  },
+  "counts": {
+    "documents": 24,
+    "statusRequired": 23,
+    "findings": 0,
+    "suppressions": 4,
+    "byCheck": {}
+  },
+  "findings": [],
+  "suppressions": [
+    {
+      "file": "docs/developers/themes.md",
+      "line": 68,
+      "reason": "deliberate negative reference"
+    },
+    {
+      "file": "docs/packages/contract.md",
+      "line": 44,
+      "reason": "deliberate negative reference"
+    },
+    {
+      "file": "docs/packages/contract.md",
+      "line": 291,
+      "reason": "deliberate negative reference"
+    },
+    {
+      "file": "docs/themes/packages.md",
+      "line": 41,
+      "reason": "deliberate negative reference"
+    }
+  ]
+}

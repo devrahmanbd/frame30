@@ -74,6 +74,9 @@ jobs:
       - run:
           name: Contract gate
           command: bun run test:contracts
+      - run:
+          name: Documentation gate
+          command: bun run doc:gate
 
   scan:
     parameters:

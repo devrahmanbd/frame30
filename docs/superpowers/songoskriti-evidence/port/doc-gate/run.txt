@@ -1,0 +1,11 @@
+doc gate — canonical documentation checks
+scope: 24 documents (23 require a status line)
+self-test: PASS
+
+findings: 0
+
+suppressions: 4
+  docs/developers/themes.md:68 — deliberate negative reference
+  docs/packages/contract.md:44 — deliberate negative reference
+  docs/packages/contract.md:291 — deliberate negative reference
+  docs/themes/packages.md:41 — deliberate negative reference
