@@ -3,6 +3,12 @@
  * and no retired filename may survive in live source. Retired names are
  * built by concatenation so this file never carries a literal that looks
  * like a stale reference.
+ *
+ * The suite also proves the RENAME was complete: every file the rename
+ * touched (the escalated tests, the frozen snapshot and the tracked scratch
+ * captures) must carry the new `.jpg` name and none of the retired `.png`
+ * ones. Those files are outside every scan root, so the live-source rule
+ * above cannot see them.
  */
 import { describe, expect, it } from "vitest";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
@@ -34,6 +40,73 @@ const RENAMED = [
   "hero-weaves",
   "ugc-1",
   "ugc-2",
+];
+
+/**
+ * The files the rename touched, and the asset bases each of them named with
+ * the retired `.png` extension. The bases are the ones that existed at the
+ * pre-rename commit (`b5d81fba`) — spec §9.3's test and snapshot rows plus
+ * the three tracked scratch captures. They are stored WITHOUT the extension
+ * so this file never carries a literal that looks like a stale reference;
+ * the extension is concatenated at use.
+ */
+const RENAME_COMPLETENESS: { file: string; bases: string[] }[] = [
+  {
+    file: "src/lib/phase3-section.test.ts",
+    bases: ["cat-men", "edit-festive-main", "ugc-1", "ugc-2"],
+  },
+  {
+    file: "src/lib/theme-asset-url.test.ts",
+    bases: ["cat-men", "hero-festive"],
+  },
+  {
+    file: "src/components/store/CollectionView.test.tsx",
+    bases: ["hero-festive"],
+  },
+  {
+    file: "src/components/store/ProductView.test.tsx",
+    bases: ["hero-artisans"],
+  },
+  {
+    file: "src/components/builder/songoskriti.test.tsx",
+    bases: ["cat-men"],
+  },
+  {
+    file: "src/components/builder/songoskriti-debrand.test.tsx",
+    bases: ["ugc-1"],
+  },
+  {
+    file: "src/components/builder/songoskriti-snapshots.test.tsx",
+    bases: ["cat-men", "hero-festive", "ugc-1", "ugc-2"],
+  },
+  {
+    file: "src/components/builder/__snapshots__/songoskriti-snapshots.test.tsx.snap",
+    bases: ["cat-men", "hero-festive", "ugc-1", "ugc-2"],
+  },
+  {
+    file: "men.html",
+    bases: [
+      "cat-kids",
+      "cat-men",
+      "hero-artisans",
+      "hero-festive",
+      "hero-weaves",
+    ],
+  },
+  {
+    file: "women.html",
+    bases: [
+      "cat-kids",
+      "cat-men",
+      "hero-artisans",
+      "hero-festive",
+      "hero-weaves",
+    ],
+  },
+  {
+    file: "preview_out.html",
+    bases: ["cat-kids", "cat-men", "hero-artisans", "hero-festive"],
+  },
 ];
 
 function filesUnder(rel: string): string[] {
@@ -81,5 +154,32 @@ describe("songoskriti asset paths", () => {
       }
     }
     expect(hits).toEqual([]);
+  });
+
+  it("every renamed file names the new asset and none of the retired ones", () => {
+    // The rename touched files that live outside every scan root — the
+    // escalated tests, the frozen snapshot and the tracked scratch captures
+    // — so the live-source rule above cannot police them. For each of them
+    // the retired `<base>.png` string must be gone and the corresponding
+    // `<base>.jpg` string must be present.
+    const problems: string[] = [];
+    for (const { file, bases } of RENAME_COMPLETENESS) {
+      const path = resolve(ROOT, file);
+      if (!existsSync(path)) {
+        problems.push(`${file}: the file does not exist`);
+        continue;
+      }
+      const text = readFileSync(path, "utf8");
+      for (const base of bases) {
+        const retired = `${base}.png`;
+        const current = `${base}.jpg`;
+        if (text.includes(retired))
+          problems.push(`${file}: still names ${retired}`);
+        if (!text.includes(current)) {
+          problems.push(`${file}: does not name ${current}`);
+        }
+      }
+    }
+    expect(problems).toEqual([]);
   });
 });
