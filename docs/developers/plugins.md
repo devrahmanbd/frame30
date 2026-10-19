@@ -369,7 +369,7 @@ purged`, mirrored in the audit log at each step.
    install lane: a version that adds manifest permissions fails with
    `package.consent_required` unless `consentScopes` covers every
    addition by exact match
-   (`src/lib/package-install.server.ts:1092-1100`). The consent screen
+   (`src/lib/package-install.server.ts:1449-1462`). The consent screen
    also lists the version's external-URL inventory when present
    (`src/components/marketplace/InstallConsent.tsx:76-85`).
 3. **Enable.** Merchants pause and resume with an enabled flag. Reads fold the
