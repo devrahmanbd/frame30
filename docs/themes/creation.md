@@ -1,6 +1,6 @@
 # Creating a Framique theme (author guide)
 
-Last verified: 2026-10-20 @ be9342cd9158
+Last verified: 2026-10-20 @ 5dbc473f3395
 
 This is the end-to-end guide for shipping a complete storefront theme —
 the single authoring reference for tokens, skins, homepage builders,
@@ -1109,19 +1109,39 @@ re-seed:
 select public.theme_apply_songoskriti_asset_paths();
 ```
 
-Verify afterwards that no retired path remains:
+Verify afterwards that no retired path remains. The check must cover the
+product **and** the collection catalogue: the migration repairs three
+collection rows too, and those are the tiles a re-seed brings back, so a
+products-only check would report a clean catalogue while three collection
+tiles still point at retired assets.
 
 ```sql
-select image_url from public.products
- where image_url like '/ph/songoskriti/%' and image_url ~ '\.png$'
-   and image_url not in ('/ph/songoskriti/prod-panjabi.png',
-                         '/ph/songoskriti/prod-saree.png',
-                         '/ph/songoskriti/prod-necklace.png',
-                         '/ph/songoskriti/cat-women.png',
-                         '/ph/songoskriti/cat-newin.png',
-                         '/ph/songoskriti/cat-living.png',
-                         '/ph/songoskriti/cat-jewelry.png');
+with allowed(path) as (
+  values ('/ph/songoskriti/prod-panjabi.png'),
+         ('/ph/songoskriti/prod-saree.png'),
+         ('/ph/songoskriti/prod-necklace.png'),
+         ('/ph/songoskriti/cat-women.png'),
+         ('/ph/songoskriti/cat-newin.png'),
+         ('/ph/songoskriti/cat-living.png'),
+         ('/ph/songoskriti/cat-jewelry.png')
+)
+select 'product' as source, p.id::text as id, p.image_url
+  from public.products p
+ where p.image_url like '/ph/songoskriti/%'
+   and p.image_url ~ '\.png$'
+   and not exists (select 1 from allowed a where a.path = p.image_url)
+union all
+select 'collection' as source, c.id::text as id, c.image_url
+  from public.collections c
+ where c.image_url like '/ph/songoskriti/%'
+   and c.image_url ~ '\.png$'
+   and not exists (select 1 from allowed a where a.path = c.image_url);
 ```
+
+It must return **zero rows**. The seven allow-listed paths are the assets that
+legitimately keep a `.png` name; every other `.png` path under
+`/ph/songoskriti/` is retired. A row in the result is a retired path still in
+use — re-run the repair above, then check again.
 
 ### 14.4 Visual-parity tests
 
