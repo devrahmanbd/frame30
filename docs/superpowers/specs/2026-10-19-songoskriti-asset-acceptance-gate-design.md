@@ -318,7 +318,7 @@ at `src/components/builder/songoskriti.tsx:2056` — is **out of scope**.
 | `asset.duplicate` | identical sha256 twice in the directory, or a theme raster's sha256 found elsewhere under `public/` outside `public/ph/songoskriti/` (build outputs excluded) |
 | `asset.unreferenced` | a manifest file that no live reference points at |
 | `asset.invalid_svg` | the brand SVG is not a parseable `<svg>` document |
-| `asset.expectation_drift` | manifest ↔ expectation ↔ tree disagree (name set, format, geometry or digest) |
+| `asset.expectation_drift` | manifest ↔ expectation ↔ tree disagree (name set, format, geometry or digest), or an approved artifact is not in the tree |
 
 *References and URLs* — CLI
 
@@ -543,7 +543,7 @@ norm in `supabase/migrations/`):
   authenticated role (or the function owner) can call it; without them an
   anonymous caller could drive a SECURITY DEFINER write into the
   RLS-protected catalogue, and every call would write a fresh row version
-  (8 products + 3 collections) — that sets
+  (5 products + 3 collections) — that sets
   `image_url`
   **by row id** for the 13 seeded products and 5 seeded collections: 6 rows
   get their renamed `.jpg` path (`cat-kids` ×2, `cat-men`, `hero-festive`,
@@ -622,6 +622,18 @@ cannot police them — the rename updates them mechanically.
 
 - `supabase/migrations/20261019000000_songoskriti_asset_paths.sql` (§9.2)
 
+*New vitest-side source module*
+
+- `src/lib/themes/songoskriti-assets.ts` — the font, icon and packaging
+  checks, which need this repo's TypeScript modules (node cannot import
+  them). It is a **new** file under `src/` that is **not** under
+  `src/lib/themes/songoskriti/**`, so it falls under the port spec §7
+  Prohibited clause and is escalated here and there. It is imported by the
+  test suite only — never by app code: it pulls in `node:fs` and a server
+  module, so an app import would break the client bundle. Its packaging
+  check reuses the CLI gate's duplicate predicate instead of
+  re-implementing it, so that rule has one implementation.
+
 *Wiring*
 
 - `package.json` — gate scripts + one `gates:release` entry (wiring only)
@@ -678,12 +690,16 @@ the file's bytes or its name, the expectation entry is regenerated from the
 mutated tree (same name, same declared format, new digest) so the digest leg
 stays consistent. Only the drift fixture mutates the expectation itself. The
 digest/geometry leg is evaluated **only for files that exist on disk** — a
-missing file is reported by `asset.missing`, never as drift.
+file that is absent from the tree raises **both** `asset.missing` (the
+manifest entry has no file on disk) **and** `asset.expectation_drift` (the
+approved artifact is not in the tree). The drift code is the fail-closed
+half: it names the approved artifact whose bytes are gone, so the anchor
+stays honest and a missing file can never read as a clean tree.
 
 Every fixture mutates exactly one thing and asserts the **exact multiset**
 of finding codes:
 
-- missing file → `{asset.missing}`
+- missing file → `{asset.missing, asset.expectation_drift}`
 - orphan file in the asset dir → `{asset.unexpected}`
 - JPEG bytes in a `.png`-named file whose manifest entry declares `jpeg` →
   `{asset.format_mismatch, asset.extension_mismatch}`
@@ -727,7 +743,8 @@ of finding codes:
 - an assertion that the excluded test files were updated — e.g.
   `src/components/builder/songoskriti-debrand.test.tsx` asserts
   `expect(html).toContain("ugc-1.png")` today and would fail on its own
-  after the rename; the new suite asserts, for every file in §9.3's
+  after the rename; the suite `src/lib/themes/songoskriti-asset-paths.test.ts`
+  asserts, for every file in §9.3's
   test/snapshot rows **and** the three tracked scratch HTML files, that the
   retired name is **absent** and the new name is **present** (for the
   comma-joined gallery literals, that the whole literal was rewritten).
