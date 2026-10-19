@@ -161,6 +161,10 @@ gate names the missing one):
    theme asset must be referenced by live code, or `asset.unreferenced`
    fires.
 
+`--bless-expectation` in the same commit restores green for a removed
+asset, so the **reviewed expectation diff** (and the commit message's
+old→new mapping) is the actual control, not the gate.
+
 **Re-blessing changed bytes** is a command, not a hand edit:
 `node scripts/songoskriti-assets-check.mjs --bless-expectation` rewrites the
 expectation file from the tree, prints the paths it touched, and the result
@@ -181,7 +185,10 @@ The placeholder lane is exempt from `url.wrong_form` for **any** segment
 count. The one finding inside that lane is a *file-shaped placeholder* — a
 path that claims a file the placeholder endpoint does not own, e.g.
 `/api/public/ph/songoskriti/…` — and it applies in **owned roots only**
-(§5.4).
+(§5.4). The placeholder lane is **not reference-extracted**: a
+file-shaped placeholder yields `url.wrong_form` only, never `ref.unknown`
+(its literal contains `/ph/songoskriti/…` as a substring, which would
+otherwise be extracted as a reference).
 
 ### 5.4 The gate
 
@@ -229,7 +236,7 @@ multi-theme: `src/lib/demo-catalog.ts` legitimately references
 |---|---|---|
 | `src/lib/themes/songoskriti/**` | owned | full set: `ref.unknown`, `url.wrong_form`, `url.cross_theme`, `video.*`, `note.computed_ref` (asset-shaped template literals only) |
 | `src/components/builder/songoskriti.tsx`, `src/components/builder/songoskriti-motion.ts` | owned | full set (same as above) |
-| `src/lib/demo-catalog.ts`, `src/lib/header-copy.ts`, `src/components/store/**`, `src/routes/**` | shared | **scoped to the `/ph/songoskriti/…` namespace only**: `ref.unknown` for `/ph/songoskriti/…` refs; `url.wrong_form` and `url.cross_theme` do **not** apply (other themes' refs and the placeholder lane are legitimate here) |
+| `src/lib/demo-catalog.ts`, `src/lib/header-copy.ts`, `src/components/store/**`, `src/routes/**` | shared | **scoped to the `/ph/songoskriti/…` namespace only**: `ref.unknown` for `/ph/songoskriti/…` refs; `url.wrong_form` and `url.cross_theme` do **not** apply (other themes' refs and the placeholder lane are legitimate here); `note.computed_ref` is counted (asset-shaped template literals only), non-fatal |
 | `supabase/migrations/**` | advisory | `note.migration_ref` only — never fails the gate, never feeds `asset.unreferenced` |
 
 **Docs are not a scanned root.** Documentation is a duty, not a gate input:
@@ -362,7 +369,7 @@ assertion and cites the existing lock rather than replacing it.
 |---|---|
 | `pkg.asset_manifest` | the official songoskriti package carries an `assetManifest` or an embedded asset payload — official themes are source-rendered, never packaged |
 | `pkg.package_ref` | a package-form `assets/…` reference inside official templates (`findPackageRefs` is reused, not re-implemented) |
-| `pkg.asset_copy` | a theme raster checksum under `public/` outside `public/ph/songoskriti/` (build outputs excluded) |
+| `pkg.asset_copy` | the **same predicate** as the CLI's `asset.duplicate` outside-the-theme-dir arm (a theme raster checksum under `public/` outside `public/ph/songoskriti/`, build outputs excluded), re-evaluated by the packaging suite through the shared helper — there is one implementation, two suites |
 | `pkg.official_zip` | a **packaged theme artifact** exists: a repo-relative directory `dist/themes/songoskriti*`, or a file matching `*.songoskriti.zip` anywhere under a build root. `buildRoots = ["dist", ".output", ".vinxi"]`. Deliberately narrow, so the tracked Playwright trace `docs/superpowers/songoskriti-evidence/port/e2e/trace-red.zip` is not a finding; `docs/superpowers/songoskriti-evidence/**`, `node_modules/**` and `.output-snapshots/**` are excluded |
 
 ### 5.5 Generator reproducibility
@@ -428,6 +435,10 @@ failure.
   | `songoskriti-as-package` | `/\bSongoskriti\b[^\n.]*\b(package|downloadable|ZIP)\b/i` | "Songoskriti" together with "package", "downloadable" or "ZIP" |
   | `levelb-official` | `/\bofficial themes?[^\n.]*\bLevel B\b/i` | "official theme(s)" together with "Level B" |
 
+  The gate also pins three further patterns that the new prose must not
+  trip: `admin-builder` (a bare `/admin/builder` mention needs a `legacy`
+  token on the same line), `no-playwright` and `no-e2e` (never write "no
+  Playwright" or "no `.e2e`").
   A compliant sentence for `docs/themes/creation.md` §14.3: *"Official
   themes render from source; they are never published as an archive."*
   Backticked paths are checked by `isPathCandidate` (`doc-gate.mjs:276-286`):
@@ -673,13 +684,18 @@ of finding codes:
 - a copy of the asset inside the asset dir under a second name →
   `{asset.duplicate, asset.unexpected}` (the copy is also an orphan); the
   same copy placed in another `public/` directory → `{asset.duplicate}`
-  only
+  only, and the packaging suite reports the same copy as
+  `pkg.asset_copy`
 - a reference to a name that is not in the manifest → `{ref.unknown}`
 - a package-form / external-in-asset-slot / file-shaped-placeholder URL in
-  an owned root → `{url.wrong_form}`
+  an owned root → `{url.wrong_form}` (the file-shaped placeholder payload is
+  a manifest name, e.g. `/api/public/ph/songoskriti/hero-festive.jpg`, so
+  the lane exemption is the only rule in play)
 - a cross-theme `/ph/<other>/…` reference in an owned root →
   `{url.cross_theme}`
 - a cross-theme reference in a shared root → **no** finding (scope rule)
+- a `/ph/songoskriti/…` reference to a non-manifest name in a shared root →
+  `{ref.unknown}` (shared roots still police the songoskriti namespace)
 - a retired path inside the sentinel migration → `note.migration_ref` — a
   **note**, not a finding
 - the expectation's digest edited → `{asset.expectation_drift}`
@@ -701,9 +717,9 @@ of finding codes:
   `src/components/builder/songoskriti-debrand.test.tsx` asserts
   `expect(html).toContain("ugc-1.png")` today and would fail on its own
   after the rename; the new suite asserts, for every file in §9.3's
-  test/snapshot rows, that the retired name is **absent** and the new name
-  is **present** (for the comma-joined gallery literals, that the whole
-  literal was rewritten).
+  test/snapshot rows **and** the three tracked scratch HTML files, that the
+  retired name is **absent** and the new name is **present** (for the
+  comma-joined gallery literals, that the whole literal was rewritten).
 
 **Fonts / icons / packaging** (vitest, TS)
 
@@ -723,9 +739,10 @@ of finding codes:
 - Targeted vitest for the new suite and every suite touching renamed assets.
 - `bun run test`, `bun run typecheck`, `bun run lint`, and
   `bunx prettier --check <the files this change touches>`. Repo-wide
-  `prettier --check .` is **pre-existing red** (29 unrelated files, no
-  `.prettierrc`/`.prettierignore` in the repo); that debt is recorded, not
-  fixed here, and it is not an acceptance criterion for this change. The new
+  `prettier --check .` is **pre-existing red** (40 tracked files, 2,498
+  reported paths including untracked build output; no `.prettierrc` and no
+  `.prettierignore` in the repo); that debt is recorded, not fixed here,
+  and it is not an acceptance criterion for this change. The new
   `.mjs` files *are* linted by `eslint.config.js`, which applies
   `eslint-plugin-prettier` to `**/*.mjs`.
 - `bun run db:migrate:check` green, and after the migration the **retired**
