@@ -1619,19 +1619,36 @@ re-seed:
 select public.theme_apply_songoskriti_asset_paths();
 ```
 
-Verify afterwards that no retired path remains:
+Verify afterwards that no retired path remains. The check must cover the
+product **and** the collection catalogue — the migration repairs three
+collection rows too, so a products-only check reports a clean catalogue
+while three collection tiles still point at retired assets. This is the
+runbook's canonical query (`docs/themes/creation.md` §14.3):
 
 ```sql
-select image_url from public.products
- where image_url like '/ph/songoskriti/%' and image_url ~ '\.png$'
-   and image_url not in ('/ph/songoskriti/prod-panjabi.png',
-                         '/ph/songoskriti/prod-saree.png',
-                         '/ph/songoskriti/prod-necklace.png',
-                         '/ph/songoskriti/cat-women.png',
-                         '/ph/songoskriti/cat-newin.png',
-                         '/ph/songoskriti/cat-living.png',
-                         '/ph/songoskriti/cat-jewelry.png');
+with allowed(path) as (
+  values ('/ph/songoskriti/prod-panjabi.png'),
+         ('/ph/songoskriti/prod-saree.png'),
+         ('/ph/songoskriti/prod-necklace.png'),
+         ('/ph/songoskriti/cat-women.png'),
+         ('/ph/songoskriti/cat-newin.png'),
+         ('/ph/songoskriti/cat-living.png'),
+         ('/ph/songoskriti/cat-jewelry.png')
+)
+select 'product' as source, p.id::text as id, p.image_url
+  from public.products p
+ where p.image_url like '/ph/songoskriti/%'
+   and p.image_url ~ '\.png$'
+   and not exists (select 1 from allowed a where a.path = p.image_url)
+union all
+select 'collection' as source, c.id::text as id, c.image_url
+  from public.collections c
+ where c.image_url like '/ph/songoskriti/%'
+   and c.image_url ~ '\.png$'
+   and not exists (select 1 from allowed a where a.path = c.image_url);
 ```
+
+It must return **zero rows**.
 ```
 
 **Wording check before committing** (the doc gate is CI): the new prose must not put `official` with `downloadable`/`ZIP`, `Songoskriti` with `package`/`downloadable`/`ZIP`, or `official theme(s)` with `Level B` on one line. Run `node scripts/doc-gate.mjs` — it must report 0 findings.
@@ -1698,7 +1715,7 @@ git commit -m "chore(songoskriti): wire the asset gate and document the asset ru
 cd /opt/frame28
 node scripts/songoskriti-assets-check.mjs; echo "exit=$?"
 ```
-Expected: `songoskriti asset gate — 0 finding(s), N note(s).` and `exit=0`.
+Expected: `songoskriti asset gate GREEN — 0 findings, N note(s).` and `exit=0`.
 
 - [ ] **Step 2: Run the generator check**
 
@@ -1739,13 +1756,29 @@ query in the runbook (Task 8), but the actual result is an **operator step**:
 
 ```sql
 select public.theme_apply_songoskriti_asset_paths();
-select image_url from public.products
- where image_url = any (array['/ph/songoskriti/campaign-men.png',
-   '/ph/songoskriti/cat-kids.png', '/ph/songoskriti/cat-men.png',
-   '/ph/songoskriti/edit-festive-main.png', '/ph/songoskriti/hero-artisans.png',
-   '/ph/songoskriti/hero-festive.png', '/ph/songoskriti/hero-weaves.png',
-   '/ph/songoskriti/ugc-1.png', '/ph/songoskriti/ugc-2.png',
-   '/ph/songoskriti/prod-kurta.png', '/ph/songoskriti/prod-kantha.png']);
+-- The canonical verification query is the runbook's union over products AND
+-- collections (docs/themes/creation.md §14.3). A products-only query misses
+-- the three collection rows the migration repairs and reports a false clean.
+with allowed(path) as (
+  values ('/ph/songoskriti/prod-panjabi.png'),
+         ('/ph/songoskriti/prod-saree.png'),
+         ('/ph/songoskriti/prod-necklace.png'),
+         ('/ph/songoskriti/cat-women.png'),
+         ('/ph/songoskriti/cat-newin.png'),
+         ('/ph/songoskriti/cat-living.png'),
+         ('/ph/songoskriti/cat-jewelry.png')
+)
+select 'product' as source, p.id::text as id, p.image_url
+  from public.products p
+ where p.image_url like '/ph/songoskriti/%'
+   and p.image_url ~ '\.png$'
+   and not exists (select 1 from allowed a where a.path = p.image_url)
+union all
+select 'collection' as source, c.id::text as id, c.image_url
+  from public.collections c
+ where c.image_url like '/ph/songoskriti/%'
+   and c.image_url ~ '\.png$'
+   and not exists (select 1 from allowed a where a.path = c.image_url);
 -- must return 0 rows
 ```
 
