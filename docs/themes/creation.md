@@ -1,6 +1,6 @@
 # Creating a Framique theme (author guide)
 
-Last verified: 2026-10-18 @ 8609ac27e9d8
+Last verified: 2026-10-20 @ be9342cd9158
 
 This is the end-to-end guide for shipping a complete storefront theme —
 the single authoring reference for tokens, skins, homepage builders,
@@ -984,7 +984,7 @@ Canonical reference: this guide is the home of **theme presentations** and
    proof pin, not a change.
 2. **(b) Theme presentations — dress.** Same key, theme-owned
    markup/styling: `registerThemePresentation(themeKey, widgetId,
-   Component)` (`src/lib/theme-presentations.ts:97`). Only the owning theme
+Component)` (`src/lib/theme-presentations.ts:97`). Only the owning theme
    renders the dress; every other theme keeps the generic fallback — never
    another theme's brand. Versioned dressings
    (`registerVersionedPresentation`) cover vendor widget versions. A claim
@@ -999,7 +999,7 @@ Canonical reference: this guide is the home of **theme presentations** and
    other theme resolution walks owner → universal body → recoverable
    fallback (`resolvePresentation`, `src/lib/widget-presentation.ts:585`).
    Register the universal body with `registerGenericPresentation(widgetId,
-   Component)` (`src/lib/theme-presentations.ts:1006`) so a foreign-theme
+Component)` (`src/lib/theme-presentations.ts:1006`) so a foreign-theme
    cold load renders a complete widget — "Widget preview unavailable" is
    retired for registered components. Without a registered body, the
    placeholder remains the fail-closed last resort (never another owner's
@@ -1060,6 +1060,68 @@ contract](../packages/contract.md) for the distribution lanes.
 Bilingual copy stays inline: every authored string carries its `_bn` twin
 filled through the factory dictionary (`src/lib/theme-section.ts`), and
 publishing gates বাংলা coverage at or above 90% (§7).
+
+#### Songoskriti asset rules
+
+Theme art lives in `public/ph/songoskriti/` and is referenced as
+`/ph/songoskriti/<file>`. `scripts/songoskriti-assets-manifest.mjs` is the
+single source of truth for the file set (21 files), and
+`scripts/songoskriti-assets-expected.json` freezes each shipped file's
+format, geometry and digest.
+
+**Format rule.** A file's bytes must match its extension — JPEG bytes under
+a `.png` name are a defect, not a rename. The generator refuses to write a
+mismatched payload, and the gate reports `asset.extension_mismatch` and
+`asset.format_mismatch` against the manifest.
+
+**Budgets.** 3,000,000 B per file, 28,000,000 B for the set, 2.0 B/px for
+PNG, 1.0 B/px for JPEG. A file that breaks one of those budgets is a
+finding, not a note.
+
+**Approved locations.** Theme art is the only theme-owned raster set; a copy
+of one outside `public/ph/songoskriti/` is a finding too. Alongside it the
+theme may use:
+
+- `/api/public/ph/<seed>` placeholder URLs served by the public asset lane —
+  never a file-shaped path under `/api/public/ph/songoskriti/…`;
+- merchant fonts from the closed catalogue in `src/lib/theme-fonts.ts`;
+- the two approved Google font origins, `https://fonts.googleapis.com` and
+  `https://fonts.gstatic.com`;
+- inline Tabler icon components imported from
+  `src/components/icons/tabler.tsx` — never an icon file referenced by URL.
+
+**Commands.** `bun run assets:songoskriti` reports every finding across the
+theme's asset surface; `bun run assets:songoskriti:gen` replays the
+generator's plan against the frozen expectation and prints GREEN when the
+set matches. Both run keyless and offline. The release chain runs the first
+one (`gates:release`). The font, icon and packaging rules are covered
+vitest-side in `src/lib/themes/songoskriti-assets.test.ts`.
+
+##### Seeded catalogue paths
+
+The seeded Songoskriti catalogue is repaired by
+`supabase/migrations/20261019000000_songoskriti_asset_paths.sql`, which
+creates `public.theme_apply_songoskriti_asset_paths()`. The applied seed
+re-applies the retired paths after any demo purge, so re-apply them after a
+re-seed:
+
+```sql
+select public.theme_apply_songoskriti_asset_paths();
+```
+
+Verify afterwards that no retired path remains:
+
+```sql
+select image_url from public.products
+ where image_url like '/ph/songoskriti/%' and image_url ~ '\.png$'
+   and image_url not in ('/ph/songoskriti/prod-panjabi.png',
+                         '/ph/songoskriti/prod-saree.png',
+                         '/ph/songoskriti/prod-necklace.png',
+                         '/ph/songoskriti/cat-women.png',
+                         '/ph/songoskriti/cat-newin.png',
+                         '/ph/songoskriti/cat-living.png',
+                         '/ph/songoskriti/cat-jewelry.png');
+```
 
 ### 14.4 Visual-parity tests
 

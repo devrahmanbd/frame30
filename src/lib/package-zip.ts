@@ -28,8 +28,9 @@ export class PackageZipError extends Error {
 }
 
 /** Archive-level + per-entry caps. Tunable per call via {@link ZipLimits}. */
-/* 32MB default: official Songoskriti ships ~25MB of imagery; review-gated
-   uploads stay bounded while real theme packages pass. */
+/* 32MB default: the cap protects the review-gated upload lane (a custom
+   theme package with its own assets); it has nothing to do with official
+   themes, which are source-rendered and never packaged as archives. */
 export const PKG_MAX_ARCHIVE_BYTES = 32 * 1024 * 1024;
 export const PKG_MAX_FILES = 500;
 export const PKG_MAX_ENTRY_BYTES = 5 * 1024 * 1024;
