@@ -1,7 +1,12 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
-import { DEFAULT_TOKENS, FONT_PAIRINGS, applyFontPairing } from "./builder-ast";
+import {
+  DEFAULT_TOKENS,
+  FONT_PAIRINGS,
+  applyFontPairing,
+  tokensToCss,
+} from "./builder-ast";
 import {
   FONT_BUDGET,
   FONT_FAMILIES,
@@ -48,6 +53,47 @@ describe("phase 3 — font resolver", () => {
     const stack = resolveFontStack("Inter", "en");
     expect(stack).toContain("Inter Fallback");
     expect(stack.at(-1)).toBe("sans-serif");
+  });
+});
+
+describe("phase 3 — theme font variables", () => {
+  it("emits a stack every locale can render for every pairing", () => {
+    for (const pairing of Object.keys(
+      FONT_PAIRINGS,
+    ) as (keyof typeof FONT_PAIRINGS)[]) {
+      const vars = tokensToCss(applyFontPairing(DEFAULT_TOKENS, pairing));
+      for (const role of [
+        "--theme-font-display",
+        "--theme-font-body",
+      ] as const) {
+        const value = vars[role] ?? "";
+        const families = [...value.matchAll(/"([^"]+)"/g)].map((m) => m[1]!);
+        for (const script of ["latin", "bengali"] as const) {
+          expect(
+            families.some((family) => coversScript(family, script)),
+            `${pairing} ${role} "${value}" must cover ${script}`,
+          ).toBe(true);
+        }
+      }
+    }
+  });
+
+  it("keeps the theme face first and appends বাংলা coverage only when missing", () => {
+    const editorial = tokensToCss(
+      applyFontPairing(DEFAULT_TOKENS, "editorial-serif"),
+    );
+    expect(editorial["--theme-font-display"]).toBe(
+      '"Playfair Display", "Noto Sans Bengali", system-ui, sans-serif',
+    );
+    expect(editorial["--theme-font-body"]).toBe(
+      '"Inter", "Noto Sans Bengali", system-ui, sans-serif',
+    );
+    const bengali = tokensToCss(
+      applyFontPairing(DEFAULT_TOKENS, "bengali-classic"),
+    );
+    expect(bengali["--theme-font-body"]).toBe(
+      '"Noto Sans Bengali", system-ui, sans-serif',
+    );
   });
 });
 

@@ -7114,8 +7114,8 @@ export const FONT_PAIRINGS = {
   "bengali-modern": { display: "Hind Siliguri", body: "Noto Sans Bengali" },
   "modern-sans": { display: "Inter", body: "Inter" },
   "editorial-mix": { display: "Hind Siliguri", body: "Inter" },
-  // Editorial pairings for the Atelier blueprint. Both keep a Bangla-capable
-  // body face (or fall back to the Bangla stack declared in styles.css), so a
+  // Editorial pairings for the Atelier blueprint. The faces stay latin-only on
+  // purpose: `tokensToCss` appends the Bangla face to the emitted stacks, so a
   // locale switch never lands on a face that cannot render the script.
   "editorial-serif": { display: "Playfair Display", body: "Inter" },
   "editorial-bangla": { display: "Hind Siliguri", body: "Noto Sans Bengali" },
@@ -7313,6 +7313,25 @@ export function inkOn(background: string, ink: string): string {
   );
 }
 
+/**
+ * The face every theme stack falls back to for বাংলা. Latin-only theme faces
+ * (Playfair Display, Inter) name it right after the theme face, so a বাংলা
+ * storefront never lands on a glyph-less face — the 2026-10-19 tofu failure
+ * was `"Playfair Display", system-ui, sans-serif` on a machine with no Bengali
+ * system font, blanking every heading, button, nav link and card title.
+ * This is `SCRIPT_DEFAULT.bengali` in `theme-fonts.ts` (and the first face of
+ * `--font-bangla` in `styles.css`); that module imports this one, so the
+ * literal lives here and phase 3's "emits a stack every locale can render"
+ * test keeps the two in sync.
+ */
+const BENGALI_FALLBACK_FACE = "Noto Sans Bengali";
+
+function themedFontStack(family: string): string {
+  const face = `"${family}"`;
+  if (family === BENGALI_FALLBACK_FACE) return `${face}, system-ui, sans-serif`;
+  return `${face}, "${BENGALI_FALLBACK_FACE}", system-ui, sans-serif`;
+}
+
 /** Theme tokens as CSS custom properties for the storefront runtime. */
 export function tokensToCss(tokens: ThemeTokens): Record<string, string> {
   return {
@@ -7331,8 +7350,8 @@ export function tokensToCss(tokens: ThemeTokens): Record<string, string> {
     "--theme-border": `color-mix(in srgb, ${tokens.ink} 16%, ${tokens.surface})`,
     "--theme-radius": tokens.radius,
     "--theme-container": tokens.container,
-    "--theme-font-display": `"${tokens.fontDisplay}", system-ui, sans-serif`,
-    "--theme-font-body": `"${tokens.fontBody}", system-ui, sans-serif`,
+    "--theme-font-display": themedFontStack(tokens.fontDisplay),
+    "--theme-font-body": themedFontStack(tokens.fontBody),
     "--theme-gap":
       tokens.density === "dense"
         ? "0.75rem"
