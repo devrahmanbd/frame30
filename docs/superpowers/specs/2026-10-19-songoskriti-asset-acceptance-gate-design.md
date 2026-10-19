@@ -154,9 +154,12 @@ gate names the missing one):
 1. `scripts/songoskriti-assets-manifest.mjs` — the entry (name, format,
    floors, prompt);
 2. `scripts/songoskriti-assets-expected.json` — the approved record;
-3. a live reference **in theme code** — the seeded catalogue does **not**
-   count (migrations are advisory, §5.4), so a new theme asset must be
-   referenced by the theme itself, or `asset.unreferenced` fires.
+3. a live reference in **live code — any scan root except migrations** (owned
+   *and* shared roots count; `logo-lockup.svg`, `prod-necklace.png` and
+   `prod-panjabi.png` are referenced only from shared roots). The seeded
+   catalogue does **not** count (migrations are advisory, §5.4), so a new
+   theme asset must be referenced by live code, or `asset.unreferenced`
+   fires.
 
 **Re-blessing changed bytes** is a command, not a hand edit:
 `node scripts/songoskriti-assets-check.mjs --bless-expectation` rewrites the
@@ -224,8 +227,8 @@ multi-theme: `src/lib/demo-catalog.ts` legitimately references
 
 | Root | Kind | Rules applied |
 |---|---|---|
-| `src/lib/themes/songoskriti/**` | owned | full set: `ref.unknown`, `url.wrong_form`, `url.cross_theme`, `video.*` |
-| `src/components/builder/songoskriti.tsx`, `src/components/builder/songoskriti-motion.ts` | owned | full set |
+| `src/lib/themes/songoskriti/**` | owned | full set: `ref.unknown`, `url.wrong_form`, `url.cross_theme`, `video.*`, `note.computed_ref` (asset-shaped template literals only) |
+| `src/components/builder/songoskriti.tsx`, `src/components/builder/songoskriti-motion.ts` | owned | full set (same as above) |
 | `src/lib/demo-catalog.ts`, `src/lib/header-copy.ts`, `src/components/store/**`, `src/routes/**` | shared | **scoped to the `/ph/songoskriti/…` namespace only**: `ref.unknown` for `/ph/songoskriti/…` refs; `url.wrong_form` and `url.cross_theme` do **not** apply (other themes' refs and the placeholder lane are legitimate here) |
 | `supabase/migrations/**` | advisory | `note.migration_ref` only — never fails the gate, never feeds `asset.unreferenced` |
 
@@ -250,10 +253,13 @@ are historical records and keep their historical filenames.
 string literal**, not the literal itself: every literal is scanned with a
 global `/ph/<theme>/<file>` match, so a comma-joined gallery literal
 contributes N references. `src/lib/themes/songoskriti/homepage.ts:384` is one
-literal that contributes six references (`ugc-1…ugc-6`) — those four assets
-are referenced **only** there. A literal built by a template literal or
-concatenation cannot be resolved statically: it is skipped and counted as
-`note.computed_ref` (§6).
+literal that contributes six references (`ugc-1…ugc-6`) — all six are
+referenced **only** there. `homepage.ts:481` is a second comma-joined
+literal (three references). A literal built by a template literal or
+concatenation cannot be resolved statically: it is skipped and, **when the
+literal is asset-shaped** (it contains `/ph/` or `/api/public/ph/`), counted
+as `note.computed_ref` (§6). Non-asset template literals (category hrefs
+such as `` `${c}/sarees` ``) are not counted, so the note stays signal.
 
 **Migration rule.** Migration files are immutable history: the applied seed
 permanently contains the retired `.png` names, and a re-run of that seed
@@ -274,9 +280,11 @@ literals only. A literal is a candidate when it is (a) a package-form
 `assets/…` path, (b) a protocol-relative or absolute URL used in an asset
 slot (`src`, an `<img>`/`<source>` `href`, `poster`, `srcSet`,
 `backgroundImage`), or (c) a placeholder path in the `/api/public/ph/` lane.
+An **asset slot** is `src`, an `<img>`/`<source>` `href`, `poster`, `srcSet`
+or `backgroundImage`; a non-asset link slot (e.g. `handleHref`) is not one.
 A `href` to a non-asset origin — e.g. the social profile
-`https://instagram.com` in `src/lib/themes/songoskriti/homepage.ts:382` — is
-**out of scope**.
+`https://instagram.com` at `src/lib/themes/songoskriti/homepage.ts:382` and
+at `src/components/builder/songoskriti.tsx:2056` — is **out of scope**.
 
 **Set-equality directions** (each code owns exactly one direction):
 
@@ -284,7 +292,7 @@ A `href` to a non-asset origin — e.g. the social profile
 |---|---|
 | disk ⊆ manifest | `asset.unexpected` |
 | refs ⊆ manifest | `ref.unknown` |
-| manifest ⊆ refs (live code) | `asset.unreferenced` |
+| manifest ⊆ refs (live code — any scan root except migrations) | `asset.unreferenced` |
 
 **Codes**
 
@@ -355,7 +363,7 @@ assertion and cites the existing lock rather than replacing it.
 | `pkg.asset_manifest` | the official songoskriti package carries an `assetManifest` or an embedded asset payload — official themes are source-rendered, never packaged |
 | `pkg.package_ref` | a package-form `assets/…` reference inside official templates (`findPackageRefs` is reused, not re-implemented) |
 | `pkg.asset_copy` | a theme raster checksum under `public/` outside `public/ph/songoskriti/` (build outputs excluded) |
-| `pkg.official_zip` | a **packaged theme artifact** exists: a file matching `*.songoskriti.zip` or a directory `dist/themes/songoskriti*` under `buildRoots`. Deliberately narrow, so the tracked Playwright trace `docs/superpowers/songoskriti-evidence/port/e2e/trace-red.zip` is not a finding; `docs/superpowers/songoskriti-evidence/**`, `node_modules/**` and `.output-snapshots/**` are excluded |
+| `pkg.official_zip` | a **packaged theme artifact** exists: a repo-relative directory `dist/themes/songoskriti*`, or a file matching `*.songoskriti.zip` anywhere under a build root. `buildRoots = ["dist", ".output", ".vinxi"]`. Deliberately narrow, so the tracked Playwright trace `docs/superpowers/songoskriti-evidence/port/e2e/trace-red.zip` is not a finding; `docs/superpowers/songoskriti-evidence/**`, `node_modules/**` and `.output-snapshots/**` are excluded |
 
 ### 5.5 Generator reproducibility
 
@@ -411,13 +419,27 @@ failure.
   and the escalation record agree; the misleading comment in
   `src/lib/package-zip.ts:31` ("official Songoskriti ships ~25MB of
   imagery") is corrected — official themes are never packaged as archives.
-  **Doc-gate constraints** (`scripts/doc-gate.mjs`): on any line that
-  mentions "Songoskriti", avoid the words *package*, *downloadable* and
-  *ZIP*; on any line that mentions "official themes", avoid *Level B*; and
-  backticked **repo-relative** paths (containing a slash, not starting with
-  `/`) must exist — site-absolute URLs are not path candidates. The
-  `docs/themes/creation.md` status line (`Last verified: <date> @ <sha>`)
-  must be refreshed to a sha that resolves via `git rev-parse --verify`.
+  **Doc-gate constraints** (`scripts/doc-gate.mjs`). Three contradiction
+  patterns fire on a single line and must be avoided in the new prose:
+
+  | id | pattern | avoid on one line |
+  |---|---|---|
+  | `official-as-zip` | `/\bofficial\b[^\n.]*\b(downloadable|ZIP)\b/i` | "official" together with "downloadable" or "ZIP" |
+  | `songoskriti-as-package` | `/\bSongoskriti\b[^\n.]*\b(package|downloadable|ZIP)\b/i` | "Songoskriti" together with "package", "downloadable" or "ZIP" |
+  | `levelb-official` | `/\bofficial themes?[^\n.]*\bLevel B\b/i` | "official theme(s)" together with "Level B" |
+
+  A compliant sentence for `docs/themes/creation.md` §14.3: *"Official
+  themes render from source; they are never published as an archive."*
+  Backticked paths are checked by `isPathCandidate` (`doc-gate.mjs:276-286`):
+  a token is a path candidate only when it contains a slash and is not a
+  scheme-prefixed URL, not site-absolute (leading `/`), not a template
+  (`{}<>…$`), and not a MIME type or extension list — and a candidate path
+  must exist in the repo.
+  The `docs/themes/creation.md` status line (`Last verified: <date> @ <sha>`)
+  must be refreshed to a **12-char** sha taken with
+  `git rev-parse --short=12 HEAD` **before** the commit that adds the
+  status line — never the header's own commit (port plan Global Constraint
+  7).
 
 ## 6. Limits of the rules (stated, not hidden)
 
@@ -468,8 +490,10 @@ findings (defects → exit 1)   notes (observations → summary only)
 ### 9.1 Order
 
 1. **Escalation record** — the port spec (§7 allow-list amendment + §10
-   acceptance list) and the SDD ledger record the approved escalation and
-   the exact file list in §9.3.
+   acceptance list) and the SDD ledger
+   (`.superpowers/sdd/2026-10-18-songoskriti-unified-port/progress.md`,
+   local and untracked) record the approved escalation and the exact file
+   list in §9.3.
 2. **Shared manifest + expectation** — `scripts/songoskriti-assets-manifest.mjs`,
    `scripts/songoskriti-assets-expected.json` (digests of the shipped bytes).
 3. **Rename** — `git mv` the nine `.png` files to `.jpg` (bytes unchanged),
@@ -506,7 +530,9 @@ norm in `supabase/migrations/`):
   `cat-living.png`);
 - calls the function once in the migration body;
 - contains **no retired asset path** (updates are keyed by row id, never by
-  old URL) — which the gate's `note.migration_ref` rule machine-checks.
+  old URL) — the gate's `note.migration_ref` rule reports any retired path
+  in the summary (notes never fail the gate), so a non-zero count is a
+  review failure.
 
 **Re-seed hazard (must be handled, not assumed away).** The applied seed
 `20260924_songoskriti_demo.sql` is idempotent with
@@ -590,6 +616,10 @@ cannot police them — the rename updates them mechanically.
 - `docs/superpowers/specs/2026-10-18-songoskriti-unified-port-design.md` —
   §7 allow-list amendment + §10 acceptance entry (the escalation record)
 
+*SDD ledger (local, untracked — not part of the commit)*
+
+- `.superpowers/sdd/2026-10-18-songoskriti-unified-port/progress.md`
+
 *Asset tree*
 
 - `public/ph/songoskriti/*` — nine `git mv` renames, bytes unchanged.
@@ -619,29 +649,41 @@ on the **exact multiset** of finding codes equal to the expected set (not
 
 `cleanWorld()` is a minimal synthetic world containing: one raster manifest
 entry with its file on disk, one live source file that references it, and a
-matching expectation entry. Every fixture mutates exactly one of those three.
+matching expectation entry.
 
-- missing file → `asset.missing`
-- orphan file → `asset.unexpected`
+The expectation entry is a **derived** component: for a fixture that mutates
+the file's bytes or its name, the expectation entry is regenerated from the
+mutated tree (same name, same declared format, new digest) so the digest leg
+stays consistent. Only the drift fixture mutates the expectation itself. The
+digest/geometry leg is evaluated **only for files that exist on disk** — a
+missing file is reported by `asset.missing`, never as drift.
+
+Every fixture mutates exactly one thing and asserts the **exact multiset**
+of finding codes:
+
+- missing file → `{asset.missing}`
+- orphan file in the asset dir → `{asset.unexpected}`
 - JPEG bytes in a `.png`-named file whose manifest entry declares `jpeg` →
-  `asset.format_mismatch` **and** `asset.extension_mismatch`
+  `{asset.format_mismatch, asset.extension_mismatch}`
 - manifest declares `png` for a `.png`-named file whose bytes are JPEG →
-  `asset.format_mismatch` only
-- undersized file → `asset.undersized`
-- oversized file → `asset.oversized`
-- over-density file → `asset.density`
-- two identical files → `asset.duplicate`
-- a theme raster copied into another `public/` directory → `asset.duplicate`
-- a reference to a non-manifest file → `ref.unknown`
+  `{asset.format_mismatch}`
+- undersized file → `{asset.undersized}`
+- oversized file → `{asset.oversized}`
+- over-density file → `{asset.density}`
+- a copy of the asset inside the asset dir under a second name →
+  `{asset.duplicate, asset.unexpected}` (the copy is also an orphan); the
+  same copy placed in another `public/` directory → `{asset.duplicate}`
+  only
+- a reference to a name that is not in the manifest → `{ref.unknown}`
 - a package-form / external-in-asset-slot / file-shaped-placeholder URL in
-  an owned root → `url.wrong_form`
+  an owned root → `{url.wrong_form}`
 - a cross-theme `/ph/<other>/…` reference in an owned root →
-  `url.cross_theme`
+  `{url.cross_theme}`
 - a cross-theme reference in a shared root → **no** finding (scope rule)
-- a retired path inside the sentinel migration → `note.migration_ref` (a
-  note, not a finding)
-- manifest ↔ expectation ↔ tree drift → `asset.expectation_drift`
-- a manifest file nothing references → `asset.unreferenced`
+- a retired path inside the sentinel migration → `note.migration_ref` — a
+  **note**, not a finding
+- the expectation's digest edited → `{asset.expectation_drift}`
+- the live reference removed → `{asset.unreferenced}`
 
 **Generator**
 
@@ -679,15 +721,40 @@ matching expectation entry. Every fixture mutates exactly one of those three.
 - `node scripts/songoskriti-assets-check.mjs` → green, exit 0.
 - `node scripts/gen-songoskriti-assets.mjs --check` → green, exit 0, no key.
 - Targeted vitest for the new suite and every suite touching renamed assets.
-- `bun run test`, `bun run typecheck`, `bun run lint`, `bunx prettier --check .`
-  (the new `.mjs` files are linted by `eslint.config.js`, which applies
-  `eslint-plugin-prettier` to `**/*.mjs`).
-- `bun run db:migrate:check` green, and after the migration:
-  `select image_url from public.products where merchant_id = 'b50a0000-0000-4000-8000-000000000001' and image_url like '/ph/songoskriti/%'` returns **no** `.png` path (same query for
-  `public.collections`).
+- `bun run test`, `bun run typecheck`, `bun run lint`, and
+  `bunx prettier --check <the files this change touches>`. Repo-wide
+  `prettier --check .` is **pre-existing red** (29 unrelated files, no
+  `.prettierrc`/`.prettierignore` in the repo); that debt is recorded, not
+  fixed here, and it is not an acceptance criterion for this change. The new
+  `.mjs` files *are* linted by `eslint.config.js`, which applies
+  `eslint-plugin-prettier` to `**/*.mjs`.
+- `bun run db:migrate:check` green, and after the migration the **retired**
+  paths must be gone from the seeded catalogue. The retired set is the nine
+  renamed names plus the two dead ones:
+
+  ```
+  /ph/songoskriti/campaign-men.png   /ph/songoskriti/cat-kids.png
+  /ph/songoskriti/cat-men.png        /ph/songoskriti/edit-festive-main.png
+  /ph/songoskriti/hero-artisans.png  /ph/songoskriti/hero-festive.png
+  /ph/songoskriti/hero-weaves.png    /ph/songoskriti/ugc-1.png
+  /ph/songoskriti/ugc-2.png          /ph/songoskriti/prod-kurta.png
+  /ph/songoskriti/prod-kantha.png
+  ```
+
+  ```sql
+  select image_url from public.products
+   where image_url = any (array['/ph/songoskriti/campaign-men.png', ...]);
+  -- must return 0 rows; same query for public.collections
+  ```
+
+  Nine seeded rows legitimately keep a `.png` path — `prod-panjabi`,
+  `prod-saree`, `prod-necklace`, `cat-women` (×2), `cat-newin`,
+  `cat-living`, `cat-jewelry` and the `cat-newin` collection — because those
+  are true PNG assets that are not renamed. The predicate is "no **retired**
+  path", never "no `.png` path".
 - Re-seed drill: after a `theme_purge_demo` + re-seed cycle, run
   `select public.theme_apply_songoskriti_asset_paths();` and re-run the
-  query above — it must still return no `.png` path.
+  retired-path query — it must still return 0 rows.
 - Preview smoke: the renamed assets and the repaired editorial images return
   200 from `/ph/songoskriti/…`; the rendered pages are unchanged apart from
   the corrected URLs.
