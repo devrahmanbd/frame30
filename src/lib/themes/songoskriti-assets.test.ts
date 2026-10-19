@@ -2,6 +2,7 @@ import { describe, expect, it, afterEach } from "vitest";
 import { execFileSync } from "node:child_process";
 import {
   copyFileSync,
+  linkSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -30,6 +31,9 @@ import {
 import {
   assertFormatMatches,
   buildPlan,
+  diffAssetSets,
+  findExtraFiles,
+  isUpToDate,
 } from "../../../scripts/gen-songoskriti-assets.mjs";
 import expectation from "../../../scripts/songoskriti-assets-expected.json";
 
@@ -445,7 +449,19 @@ describe("songoskriti asset gate", () => {
   });
 });
 
+/**
+ * The scratch roots the generator fixtures create. They are removed after
+ * every test so repeated runs leave nothing behind.
+ */
+const generatorScratchRoots: string[] = [];
+
 describe("songoskriti asset generator", () => {
+  afterEach(() => {
+    for (const root of generatorScratchRoots.splice(0)) {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
   it("refuses JPEG bytes under a .png name", () => {
     const jpeg = readFileSync(
       resolve(ROOT, "public/ph/songoskriti/hero-festive.jpg"),
@@ -475,6 +491,86 @@ describe("songoskriti asset generator", () => {
         env: { ...process.env, GEMINI_API_KEY: "" },
       },
     );
-    expect(out).toMatch(/check/i);
+    expect(out).toMatch(/GREEN/);
+    // The verdict alone is not enough: the plan must cover the whole
+    // manifest, the hand-built brand asset included.
+    expect(out).toContain("logo-lockup.svg");
+  });
+
+  it("treats an existing .jpg as present, not absent", () => {
+    // Regression guard for the nine renamed assets: the old PNG-only check
+    // treated every .jpg as absent and overwrote it.
+    const jpeg = fileInfo(resolve(ASSET_DIR, "hero-festive.jpg"));
+    expect(isUpToDate({ format: "jpeg" }, jpeg)).toBe(true);
+    expect(isUpToDate({ format: "png" }, jpeg)).toBe(false);
+    expect(isUpToDate({ format: "jpeg" }, null)).toBe(false);
+    const png = fileInfo(resolve(ASSET_DIR, "cat-women.png"));
+    expect(isUpToDate({ format: "png" }, png)).toBe(true);
+  });
+
+  it("compares the manifest's formats with the expectation's", () => {
+    expect(
+      diffAssetSets(
+        ASSETS,
+        expectation.assets,
+        "the manifest",
+        "the expectation",
+      ),
+    ).toEqual([]);
+    // A manifest that declares a different format than the expectation is a
+    // defect, not a rename.
+    const drifted = ASSETS.map((a) =>
+      a.name === "cat-women.png" ? { ...a, format: "jpeg" } : a,
+    );
+    const problems = diffAssetSets(
+      drifted,
+      expectation.assets,
+      "the manifest",
+      "the expectation",
+    );
+    expect(problems).toHaveLength(1);
+    expect(problems[0]).toContain("cat-women.png");
+    expect(problems[0]).toContain("jpeg");
+  });
+
+  it("reports a file the expectation does not name", () => {
+    const dir = mkdtempSync(join(tmpdir(), "songoskriti-extra-"));
+    generatorScratchRoots.push(dir);
+    writeFileSync(join(dir, "stray.png"), "not an asset");
+    expect(findExtraFiles(dir, ["cat-women.png"])).toEqual(["stray.png"]);
+    expect(findExtraFiles(dir, ["cat-women.png", "stray.png"])).toEqual([]);
+    expect(findExtraFiles(join(dir, "absent"), ["cat-women.png"])).toEqual([]);
+  });
+
+  it("--check reports an extra file in the output directory", () => {
+    const dir = mkdtempSync(join(tmpdir(), "songoskriti-extra-cli-"));
+    generatorScratchRoots.push(dir);
+    // Hard links: the approved bytes under the approved names, without
+    // copying 25 MB into the scratch directory.
+    for (const record of expectation.assets) {
+      linkSync(resolve(ASSET_DIR, record.name), join(dir, record.name));
+    }
+    writeFileSync(join(dir, "stray.png"), "not an asset");
+    let status = 0;
+    let stderr = "";
+    try {
+      execFileSync(
+        "node",
+        ["scripts/gen-songoskriti-assets.mjs", "--check", "--out", dir],
+        {
+          cwd: ROOT,
+          encoding: "utf8",
+          env: { ...process.env, GEMINI_API_KEY: "" },
+        },
+      );
+    } catch (error) {
+      const failure = error as { status?: number; stderr?: string };
+      status = failure.status ?? 0;
+      stderr = String(failure.stderr ?? "");
+    }
+    expect(status).toBe(1);
+    expect(stderr).toContain("extra file in the output directory: stray.png");
+    // The stray file is the ONLY problem: nothing is missing.
+    expect(stderr).not.toContain("missing:");
   });
 });

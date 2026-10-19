@@ -27,14 +27,25 @@
  *   - The bytes the API returns must match the format the file NAME claims.
  *     JPEG bytes under a .png name are refused before they reach the disk —
  *     that drift is exactly what the acceptance gate exists to catch.
+ *   - `--check` needs no key and no network: it compares the plan with the
+ *     manifest, the manifest with the frozen expectation (names AND
+ *     formats), and the expectation with the tree (format, geometry, digest)
+ *     — and it reports a file the expectation does not name.
  *   - Do NOT run until the owner confirms the key rotation.
  *
  * Usage:
  *   GEMINI_API_KEY=... node scripts/gen-songoskriti-assets.mjs [--force] [--out public/ph/songoskriti]
- *   node scripts/gen-songoskriti-assets.mjs --check   # keyless + offline: plan vs expectation
+ *   node scripts/gen-songoskriti-assets.mjs --check   # keyless + offline: the three legs above
  *   node scripts/songoskriti-assets-check.mjs          # gate: GREEN when complete
  */
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -106,8 +117,8 @@ export function writeAssetBytes(name, bytes) {
 /**
  * The plan the generator intends to satisfy: every manifest entry, in
  * manifest order. The hand-built brand asset is part of the plan (it ships
- * under the same names and is covered by the same expectation) but it is
- * never generated, so it carries no aspect ratio.
+ * under the same name and is covered by the same expectation) but it is
+ * never generated, so its aspect is reported as `n/a`.
  *
  * @returns {{name: string, aspect: string, format: string}[]}
  */
@@ -117,6 +128,78 @@ export function buildPlan() {
     aspect: a.aspect ?? "n/a",
     format: a.format,
   }));
+}
+
+/**
+ * Is the file on disk already the artifact the manifest entry describes?
+ *
+ * The check is format-aware: a `.jpg` entry is satisfied by JPEG bytes —
+ * the nine renamed assets — which the old PNG-only check treated as absent
+ * and then overwrote.
+ *
+ * @param {{format: string}} entry the manifest entry
+ * @param {{format: string | null} | null} info what `fileInfo` reports
+ * @returns {boolean} true when the file is present with the right format
+ */
+export function isUpToDate(entry, info) {
+  return Boolean(info) && info.format === entry.format;
+}
+
+/**
+ * The files in a directory that a set of approved names does not cover — an
+ * orphan the standalone check must not ignore.
+ *
+ * @param {string} dir the directory to list
+ * @param {string[]} approvedNames the names the expectation approves
+ * @returns {string[]} the unapproved file names, sorted
+ */
+export function findExtraFiles(dir, approvedNames) {
+  if (!existsSync(dir)) return [];
+  if (!statSync(dir).isDirectory()) return [];
+  const approved = new Set(approvedNames);
+  return readdirSync(dir, { withFileTypes: true })
+    .filter((entry) => entry.isFile())
+    .map((entry) => entry.name)
+    .filter((name) => !approved.has(name))
+    .sort();
+}
+
+/**
+ * Compare two asset sets — arrays of `{name, format}` — on BOTH the name and
+ * the format. The format is part of an asset's identity: the manifest's
+ * format is authoritative, so a manifest that declares a different format
+ * than the expectation is a defect, not a rename.
+ *
+ * @param {{name: string, format: string}[]} left the first set
+ * @param {{name: string, format: string}[]} right the second set
+ * @param {string} leftLabel how the first set is named in the messages
+ * @param {string} rightLabel how the second set is named in the messages
+ * @returns {string[]} one message per difference
+ */
+export function diffAssetSets(left, right, leftLabel, rightLabel) {
+  const leftMap = new Map(left.map((entry) => [entry.name, entry.format]));
+  const rightMap = new Map(right.map((entry) => [entry.name, entry.format]));
+  const problems = [];
+  for (const [name, format] of leftMap) {
+    if (!rightMap.has(name)) {
+      problems.push(
+        `${leftLabel} has ${name} (${format}) but ${rightLabel} does not`,
+      );
+      continue;
+    }
+    const other = rightMap.get(name);
+    if (other === format) continue;
+    problems.push(
+      `${leftLabel} declares ${name} as ${format} but ${rightLabel} declares it as ${other}`,
+    );
+  }
+  for (const [name, format] of rightMap) {
+    if (leftMap.has(name)) continue;
+    problems.push(
+      `${rightLabel} has ${name} (${format}) but ${leftLabel} does not`,
+    );
+  }
+  return problems;
 }
 
 /**
@@ -164,7 +247,8 @@ async function generateAsset(entry, apiKey) {
   const { name, aspect, prompt } = entry;
   const path = resolve(OUT, name);
   const existing = fileInfo(path);
-  if (!FORCE && existing && existing.format === entry.format) {
+  // Format-aware: a .jpg asset is present when its bytes are JPEG.
+  if (!FORCE && isUpToDate(entry, existing)) {
     console.log(
       `skip (exists ${existing.width}x${existing.height} ${existing.format}): ${name}`,
     );
@@ -193,40 +277,66 @@ async function generateAsset(entry, apiKey) {
 }
 
 /**
- * The keyless, offline check: the plan must cover the manifest, the
- * expectation must match the manifest, and every approved artifact must be
- * in the tree with the approved format, geometry and digest.
+ * The keyless, offline check. Three legs:
+ *
+ *   1. plan ↔ manifest — an identity by construction (the plan is built
+ *      from the manifest); it is printed so the operator sees exactly what a
+ *      run would produce, and compared so the tripwire fires if that changes.
+ *   2. manifest ↔ expectation — names AND formats must match exactly. The
+ *      manifest's format is authoritative.
+ *   3. expectation ↔ tree — format, geometry and digest must match, and the
+ *      output directory must hold the expected set and nothing else.
  */
 function runCheck() {
   const plan = buildPlan();
   const expected = JSON.parse(readFileSync(EXPECTATION_PATH, "utf8"));
   const problems = [];
-  const planNames = plan.map((p) => p.name).sort();
-  const expectedNames = expected.assets.map((a) => a.name).sort();
-  const manifestNames = ASSETS.map((a) => a.name).sort();
-  if (JSON.stringify(planNames) !== JSON.stringify(manifestNames)) {
+
+  // Leg 1 — plan ↔ manifest.
+  const planDiff = diffAssetSets(plan, ASSETS, "the plan", "the manifest");
+  if (planDiff.length > 0) {
     problems.push("plan does not cover the manifest");
+    problems.push(...planDiff);
   }
-  if (JSON.stringify(expectedNames) !== JSON.stringify(manifestNames)) {
+
+  // Leg 2 — manifest ↔ expectation (names and formats).
+  const expectationDiff = diffAssetSets(
+    ASSETS,
+    expected.assets,
+    "the manifest",
+    "the expectation",
+  );
+  if (expectationDiff.length > 0) {
     problems.push("expectation does not match the manifest");
+    problems.push(...expectationDiff);
   }
+
+  // Leg 3 — expectation ↔ tree.
   for (const rec of expected.assets) {
     const info = fileInfo(resolve(OUT, rec.name));
     if (!info) {
       problems.push(`missing: ${rec.name}`);
       continue;
     }
+    if (info.format !== rec.format) {
+      problems.push(
+        `format differs from the expectation: ${rec.name} is ${info.format}, the expectation says ${rec.format}`,
+      );
+    }
+    if (info.width !== rec.width || info.height !== rec.height) {
+      problems.push(`geometry differs from the expectation: ${rec.name}`);
+    }
     if (info.sha256 !== rec.sha256) {
       problems.push(`digest differs from the expectation: ${rec.name}`);
     }
-    if (
-      info.format !== rec.format ||
-      info.width !== rec.width ||
-      info.height !== rec.height
-    ) {
-      problems.push(`geometry differs from the expectation: ${rec.name}`);
-    }
   }
+
+  // The output directory holds the expected set and nothing else.
+  const approvedNames = expected.assets.map((a) => a.name);
+  for (const name of findExtraFiles(OUT, approvedNames)) {
+    problems.push(`extra file in the output directory: ${name}`);
+  }
+
   for (const p of plan) console.log(`plan ${p.name} ${p.aspect} ${p.format}`);
   if (problems.length > 0) {
     console.error(
