@@ -62,7 +62,7 @@ recorded approval before it goes live (`theme.approved` /
 | Failure                                                        | Shopper sees                                                                                                            |
 | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | Bad key, missing/disabled/incompatible install, unknown widget | Labeled placeholder for exactly that reason (`src/lib/plugin-manifest.ts:650-683`)                                      |
-| Unregistered theme presentation pair                           | Existing fallback resolution (`src/components/builder/SectionRenderer.tsx:272-275`)                                     |
+| Unregistered [theme presentation](../themes/creation.md) pair                           | Existing fallback resolution (`src/components/builder/SectionRenderer.tsx:272-275`)                                     |
 | Undressed Class B widget                                       | Generic sandboxed island (`src/lib/plugin-theme-contract.ts:266-297`)                                                   |
 | Unapproved / scope-denied / throwing menu swap                 | Theme default navigation (fail-open; `src/lib/plugin-manifest.ts:102-160`)                                              |
 | Blocked publish gate                                           | Refused publish with the first five blocking messages (see [review policy](review-policy.md#per-gate-checklist-output)) |

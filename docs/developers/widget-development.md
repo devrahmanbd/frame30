@@ -6,7 +6,8 @@ Audience: theme developers presenting built-in widgets, and plugin
 developers who need to understand what themes may and may not do with
 widgets. For the theme build path read the [Theme guide](themes.md);
 for plugin-owned widgets read [Community Plugins](community-plugins.md)
-and [Themeable Widgets](themeable-widgets.md).
+and [Themeable Widgets](themeable-widgets.md) (base contract:
+[app blocks](../04-builder/app-blocks.md)).
 
 ## The built-in model: schema, data, actions + theme presentation
 
@@ -27,7 +28,7 @@ catalog entry (props, slots)  -->  section data  -->  renderer reads props
 - Templates are `{ header, main, footer }`, each widget sits in a
   legal slot, and props are flat scalars plus capped repeatable rows
   (see [Theme guide](themes.md#compose-the-homepage-hero-first)).
-- The theme presentation receives a widget context (`ctx`) with
+- The [theme presentation](../themes/creation.md) receives a widget context (`ctx`) with
   `section`, `locale`, `link`, and typed prop readers (`str`, `int`,
   `bool`) plus row data — the same context every theme adapter reads
   (for example `src/lib/themes/songoskriti/footer-proof-presentation.tsx:17-215`).

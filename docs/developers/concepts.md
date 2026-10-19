@@ -26,7 +26,7 @@ anything.
   widget logic — it claims a presentation pair and renders the same
   data differently.
 - Proof the split holds: the same announcement data renders two
-  different markups through two theme presentations
+  different markups through two [theme presentations](../themes/creation.md)
   (`src/lib/themes/announcement-presentations-proof.test.tsx:134-158`),
   and the same footer data renders two different grids
   (`src/lib/themes/footer-presentations-proof.test.tsx:184-206`).
@@ -42,7 +42,7 @@ presentation.
 
 | #   | Registry                       | Key shape               | Claim with                                                                   | Resolve with                                                                |
 | --- | ------------------------------ | ----------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| 1   | Widget presentations           | `themeKey x widgetType` | `registerThemePresentation` (`src/lib/theme-presentations.ts:35-64`)         | `resolveThemePresentation` (`src/lib/theme-presentations.ts:72-83`)         |
+| 1   | Widget presentations           | `themeKey x widgetType` | [`registerThemePresentation`](../themes/creation.md) (`src/lib/theme-presentations.ts:35-64`)         | `resolveThemePresentation` (`src/lib/theme-presentations.ts:72-83`)         |
 | 2   | Community presentations        | `themeKey x pluginKey`  | `registerCommunityPresentation` (`src/lib/plugin-theme-contract.ts:165-200`) | `resolveCommunityPresentation` (`src/lib/plugin-theme-contract.ts:208-220`) |
 | 3   | Menu renderers (approved only) | `pluginId x menu slot`  | `registerMenuRenderer` (`src/lib/plugin-menu-renderers.ts:51-86`)            | `selectPluginMenuRenderer` (`src/lib/plugin-menu-renderers.ts:120-135`)     |
 
@@ -72,7 +72,7 @@ manifest widget with valid `themeable` contract (version 1)
 
 - **Class A (isolated):** the bundle owns arbitrary UI inside the
   sandbox frame. The theme cannot restyle inside it.
-- **Class B (themeable):** the plugin declares the theme-safe
+- **Class B ([themeable](../04-builder/app-blocks.md)):** the plugin declares the theme-safe
   contract (`version`, `schema`, optional `data`, `actions`,
   `slots`, `states`; `src/lib/plugin-theme-contract.ts:44-56`). The
   theme dresses it through registry 2; when no theme dresses it, the

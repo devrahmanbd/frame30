@@ -24,8 +24,8 @@ export const MyRail: WidgetComponent = (ctx) => {
 registerThemePresentation("my-theme", "product_rail", MyRail);
 ```
 
-Contract: `src/lib/theme-presentations.ts:35-83`. Unregistered
-pairs fall back with zero behavior change
+Contract: `src/lib/theme-presentations.ts:35-83` ([theme authoring](../themes/creation.md)).
+Unregistered pairs fall back with zero behavior change
 (`src/components/builder/SectionRenderer.tsx:272-275`).
 
 ## 2. Ship a Class A widget (plugin)
@@ -59,7 +59,8 @@ Renders at `plugin:my-reviews/summary`
 
 ## 3. Declare and dress a Class B widget (plugin + theme)
 
-Plugin manifest widget — the `themeable` block makes it Class B:
+Plugin manifest widget — the [`themeable`](../04-builder/app-blocks.md)
+block makes it Class B:
 
 ```json
 {

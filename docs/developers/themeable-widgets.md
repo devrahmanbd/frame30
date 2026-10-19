@@ -5,7 +5,8 @@ Needs verification
 Audience: plugin developers who want every theme to dress their
 widget, and theme developers dressing a community widget. Class B
 means the widget declares the versioned theme-safe contract
-(`themeable`) in its manifest: schema, data, actions, slots, states.
+([`themeable`](../04-builder/app-blocks.md)) in its manifest: schema,
+data, actions, slots, states.
 The theme owns every pixel; the bundle never executes on the dressed
 path, so sandboxing is never weakened
 (`src/lib/plugin-theme-contract.ts:1-30`).
@@ -103,7 +104,7 @@ The single decision point is `resolveCommunityRender` (**internal**,
 | `blocked` | One of the five labeled failures; placeholder        |
 | `sandbox` | Class A; the iframe island, unchanged                |
 | `island`  | Class B but undressed; generic sandboxed island      |
-| `theme`   | Class B dressed; theme presentation owns every pixel |
+| `theme`   | Class B dressed; [theme presentation](../themes/creation.md) owns every pixel |
 
 `PluginBlock` renders the dressed path only when the decision is
 `theme` **and** a presentation resolves; every other outcome falls

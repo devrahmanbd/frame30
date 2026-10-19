@@ -194,7 +194,8 @@ plugin requesting `read_shop`. Until a theme-adapter contract lands in
 code, do not promise merchants that switching themes re-skins installed
 plugin widgets.
 
-> Status update: Class B themeable widgets now implement this — a plugin
-> declares the theme-safe contract and the active theme dresses it via the
-> community presentation registry, with the sandboxed island as fallback
+> Status update: Class B [themeable widgets](../04-builder/app-blocks.md)
+> now implement this — a plugin declares the theme-safe contract and the
+> active theme dresses it via the community presentation registry, with
+> the sandboxed island as fallback
 > (see `themeable-widgets.md`). Class A widgets remain as described above.

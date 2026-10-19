@@ -51,7 +51,7 @@ platform data (menus, chrome copy, footer data)
 | Announcement | `themeKey x announcement_bar` | `registerThemePresentation("songoskriti", "announcement_bar", ...)` (`src/lib/themes/songoskriti/announcement-presentation.tsx:108-112`) |
 | Footer       | `themeKey x footer_sitemap`   | `registerThemePresentation("songoskriti", "footer_sitemap", ...)` (`src/lib/themes/songoskriti/footer-proof-presentation.tsx:215`)       |
 
-Registry semantics are identical to widget presentations: first wins,
+Registry semantics are identical to [widget presentations](../themes/creation.md): first wins,
 never throws, unknown keys fall back
 (`src/lib/theme-presentations.ts:35-83`). Same data through two
 themes renders different markup and nothing else — pinned for

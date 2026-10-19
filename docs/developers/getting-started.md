@@ -3,8 +3,9 @@
 Needs verification
 
 You are an independent developer building themes, widgets, plugins,
-themeable community widgets, or menu extensions on the platform. This
-page is the start of the path; each step links to the next.
+[themeable](../04-builder/app-blocks.md) community widgets, or menu
+extensions on the platform. This page is the start of the path; each
+step links to the next.
 
 ```text
 Getting Started (this page)

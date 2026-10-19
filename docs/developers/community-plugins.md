@@ -4,8 +4,9 @@ Needs verification
 
 Audience: independent developers shipping functionality that runs
 isolated inside the storefront. Class A means the widget declares no
-`themeable` contract: its bundle owns arbitrary UI inside the sandbox
-frame. If you want themes to dress your widget instead, read
+[`themeable`](../04-builder/app-blocks.md) contract: its bundle owns
+arbitrary UI inside the sandbox frame. If you want themes to dress your
+widget instead, read
 [Themeable Widgets](themeable-widgets.md).
 
 The [Plugin guide](plugins.md) is normative for manifests, sandbox
