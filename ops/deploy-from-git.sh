@@ -272,8 +272,28 @@ run_contract_checks() {
   fi
   # Unmapped custom hosts must serve nothing (bare 404 — no CMS site, no
   # featured-store fallback). microscrop.shop lost its mapping in the
-  # flamelancer.com rename, so it pins this gate.
-  check "https://microscrop.shop/" "404"
+  # flamelancer.com rename, so it pins this gate. Its DNS delegation later
+  # went dead (REFUSED at the registry NS, 2026-10-19) so the name cannot
+  # resolve from anywhere; when that happens, pin the same edge contract
+  # edge-direct via --resolve (raw curl, so set -e can't kill the script),
+  # keeping the check's teeth instead of skipping it.
+  if getent hosts microscrop.shop >/dev/null 2>&1; then
+    check "https://microscrop.shop/" "404"
+  else
+    edge_ip="$(getent hosts framique.qubickle.com | awk 'NR==1{print $1}')"
+    if [ -z "$edge_ip" ]; then
+      echo "VERIFY FAIL: microscrop.shop DNS is dead and framique.qubickle.com did not resolve for an edge-direct probe"
+      fail=1
+    else
+      um_code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 --resolve "microscrop.shop:443:$edge_ip" "https://microscrop.shop/") || um_code="000"
+      if [ "$um_code" = "404" ]; then
+        echo "VERIFY OK: microscrop.shop (edge-direct via $edge_ip; DNS delegation dead) -> 404"
+      else
+        echo "VERIFY FAIL: microscrop.shop (edge-direct via $edge_ip) -> $um_code (want 404)"
+        fail=1
+      fi
+    fi
+  fi
   check "https://framique.qubickle.com/api/public/ph/x" "200"
 }
 
