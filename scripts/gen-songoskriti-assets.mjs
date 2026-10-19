@@ -2,14 +2,17 @@
 /**
  * Songoskriti imagery generator — spec §4.
  *
- * Generates the 14 raster assets of the manifest via the Gemini Imagen REST
- * API; the 15th file (logo-lockup.svg) is hand-built and committed directly.
+ * Generates the raster assets of the shared manifest
+ * (scripts/songoskriti-assets-manifest.mjs) via the Gemini Imagen REST API.
+ * The brand file (logo-lockup.svg) is hand-built and committed directly, so
+ * the manifest marks it `generated: false` and this script never writes it.
  *
  *   POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-image:generateContent
  *
  * Security (non-negotiable):
- *   - The key is read ONLY from process.env.GEMINI_API_KEY. When absent the
- *     script throws a clear error and exits non-zero before any network call.
+ *   - The key is read ONLY from process.env.GEMINI_API_KEY, and ONLY on the
+ *     generation path. The key check lives in the generation path, never at
+ *     module scope, so `--check` runs offline with no key in the environment.
  *   - The key is NEVER logged, printed (not even a prefix), persisted, or
  *     written to disk. It travels only in the Authorization header of the
  *     Imagen request.
@@ -18,133 +21,122 @@
  *   - Retry ×2 per asset (3 attempts total), then skip-on-fail with a warning
  *     — the storefront fallback (file-if-exists else /api/public/ph) covers
  *     missing files, so one failed asset never fails the whole run.
- *   - Idempotent: existing files at the target size are skipped unless --force.
+ *   - Idempotent: an existing file whose BYTES carry the manifest's format is
+ *     skipped unless --force. The skip is format-aware: a .jpg asset is not
+ *     treated as absent just because its bytes are not a PNG.
+ *   - The bytes the API returns must match the format the file NAME claims.
+ *     JPEG bytes under a .png name are refused before they reach the disk —
+ *     that drift is exactly what the acceptance gate exists to catch.
  *   - Do NOT run until the owner confirms the key rotation.
  *
  * Usage:
  *   GEMINI_API_KEY=... node scripts/gen-songoskriti-assets.mjs [--force] [--out public/ph/songoskriti]
- *   node scripts/songoskriti-assets-check.mjs   # gate: GREEN when complete
+ *   node scripts/gen-songoskriti-assets.mjs --check   # keyless + offline: plan vs expectation
+ *   node scripts/songoskriti-assets-check.mjs          # gate: GREEN when complete
  */
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { pngSize } from "./songoskriti-assets-check.mjs";
+import { pathToFileURL } from "node:url";
+
+import { ASSETS, ASSET_DIR } from "./songoskriti-assets-manifest.mjs";
+import { fileInfo, imageInfo } from "./songoskriti-assets-image.mjs";
 
 const ENDPOINT =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-image:generateContent";
 const MAX_ATTEMPTS = 3; // initial try + retry x2
 
-const apiKey = process.env.GEMINI_API_KEY;
-if (!apiKey) {
-  throw new Error(
-    "GEMINI_API_KEY is not set. Export it in the environment (never commit it) " +
-      "and re-run. Generation is blocked until the owner confirms key rotation.",
-  );
-}
+/** The frozen expectation the approved artifacts are compared against. */
+const EXPECTATION_PATH = resolve(
+  import.meta.dirname,
+  "songoskriti-assets-expected.json",
+);
 
 const argv = process.argv.slice(2);
 const FORCE = argv.includes("--force");
+const CHECK = argv.includes("--check");
 const outFlag = argv.indexOf("--out");
 const OUT = resolve(
   import.meta.dirname,
   "..",
-  outFlag === -1 ? "public/ph/songoskriti" : argv[outFlag + 1],
+  outFlag === -1 ? ASSET_DIR : argv[outFlag + 1],
 );
 
 /**
- * [filename, aspect ratio for the model, prompt].
- * Prompts are art-directed for a cohesive terracotta/ivory heritage look.
- * No people-identifiable faces in prompts where avoidable; commercial-safe.
+ * The format a file NAME claims — the claim, not the truth about the bytes.
  */
-const ASSETS = [
-  [
-    "hero-festive.png",
-    "16:9",
-    "Festive Bengali Eid clothing market at golden hour, terracotta and ivory " +
-      "fabric banners, editorial e-commerce hero photograph, warm light, no text",
-  ],
-  [
-    "hero-weaves.png",
-    "16:9",
-    "Close-up of a traditional Bengali handloom with terracotta jamdani weave " +
-      "in progress, artisan hands, ivory threads, editorial craft photograph, no text",
-  ],
-  [
-    "hero-artisans.png",
-    "16:9",
-    "Bengali artisan workshop weaving kantha quilts, warm window light, " +
-      "terracotta and ivory textiles, documentary e-commerce hero photograph, no text",
-  ],
-  [
-    "cat-women.png",
-    "1:1",
-    "Elegant Bengali jamdani saree in terracotta and ivory draped flat-lay, " +
-      "e-commerce category tile, centered, plain warm background, no text",
-  ],
-  [
-    "cat-men.png",
-    "1:1",
-    "Crisp ivory panjabi kurta with subtle terracotta embroidery flat-lay, " +
-      "e-commerce category tile, centered, plain warm background, no text",
-  ],
-  [
-    "cat-kids.png",
-    "1:1",
-    "Cheerful small Bengali festive kurta for a child in ivory with terracotta " +
-      "trim flat-lay, e-commerce category tile, plain warm background, no text",
-  ],
-  [
-    "cat-living.png",
-    "1:1",
-    "Handwoven Bengali kantha throw in terracotta and ivory folded on a jute " +
-      "chair, home-living e-commerce category tile, warm light, no text",
-  ],
-  [
-    "cat-jewelry.png",
-    "1:1",
-    "Terracotta-and-gold Bengali temple necklace on ivory silk, jewelry " +
-      "e-commerce category tile, centered, plain warm background, no text",
-  ],
-  [
-    "cat-newin.png",
-    "1:1",
-    "Fresh festive Bengali outfit arrangement with marigold accents in " +
-      "terracotta and ivory, new-arrivals e-commerce category tile, no text",
-  ],
-  [
-    "prod-panjabi.png",
-    "3:4",
-    "Ivory men's panjabi kurta with terracotta thread embroidery on a ghost " +
-      "mannequin, e-commerce product photo, plain warm studio background, no text",
-  ],
-  [
-    "prod-saree.png",
-    "3:4",
-    "Terracotta jamdani saree with ivory motifs draped for e-commerce product " +
-      "photo, plain warm studio background, no text",
-  ],
-  [
-    "prod-kurta.png",
-    "3:4",
-    "Women's ivory kurta with terracotta kantha stitch detail on a hanger, " +
-      "e-commerce product photo, plain warm studio background, no text",
-  ],
-  [
-    "prod-kantha.png",
-    "3:4",
-    "Folded kantha-stitched quilt in terracotta and ivory layers, e-commerce " +
-      "product photo, plain warm studio background, no text",
-  ],
-  [
-    "prod-necklace.png",
-    "3:4",
-    "Bengali terracotta temple necklace with gold accents upright on ivory " +
-      "stand, e-commerce jewelry product photo, plain warm background, no text",
-  ],
-];
+function expectedFormatFor(name) {
+  if (name.endsWith(".jpg")) return "jpeg";
+  if (name.endsWith(".png")) return "png";
+  return "svg";
+}
+
+/**
+ * Refuse bytes whose format contradicts the file name they would be written
+ * under. This is the guard against the drift that shipped nine JPEG assets
+ * under .png names.
+ *
+ * @param {string} name the file name the bytes would be written under
+ * @param {Buffer} bytes the bytes the image API returned
+ */
+export function assertFormatMatches(name, bytes) {
+  const info = imageInfo(bytes);
+  const expected = expectedFormatFor(name);
+  if (!info.format) {
+    throw new Error(`unreadable image bytes for ${name}`);
+  }
+  if (info.format !== expected) {
+    throw new Error(
+      `format mismatch for ${name}: bytes are ${info.format}, name says ${expected}`,
+    );
+  }
+}
+
+/**
+ * Write generated bytes to the target directory — but only after the name and
+ * the bytes agree on their format.
+ *
+ * @param {string} name the file name under the target directory
+ * @param {Buffer} bytes the bytes the image API returned
+ */
+export function writeAssetBytes(name, bytes) {
+  assertFormatMatches(name, bytes);
+  writeFileSync(resolve(OUT, name), bytes);
+}
+
+/**
+ * The plan the generator intends to satisfy: every manifest entry, in
+ * manifest order. The hand-built brand asset is part of the plan (it ships
+ * under the same names and is covered by the same expectation) but it is
+ * never generated, so it carries no aspect ratio.
+ *
+ * @returns {{name: string, aspect: string, format: string}[]}
+ */
+export function buildPlan() {
+  return ASSETS.map((a) => ({
+    name: a.name,
+    aspect: a.aspect ?? "n/a",
+    format: a.format,
+  }));
+}
+
+/**
+ * The key is read here and nowhere else. `--check` never reaches this
+ * function, so the check mode needs neither a key nor a network.
+ */
+function requireApiKey() {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error(
+      "GEMINI_API_KEY is not set. Export it in the environment (never commit it) " +
+        "and re-run. Generation is blocked until the owner confirms key rotation.",
+    );
+  }
+  return apiKey;
+}
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-async function generateOnce(prompt, aspectRatio) {
+async function generateOnce(prompt, aspectRatio, apiKey) {
   const res = await fetch(ENDPOINT, {
     method: "POST",
     headers: {
@@ -168,20 +160,22 @@ async function generateOnce(prompt, aspectRatio) {
   return Buffer.from(img.inlineData.data, "base64");
 }
 
-async function generateAsset([name, aspectRatio, prompt]) {
+async function generateAsset(entry, apiKey) {
+  const { name, aspect, prompt } = entry;
   const path = resolve(OUT, name);
-  if (!FORCE && existsSync(path)) {
-    const size = pngSize(path);
-    if (size) {
-      console.log(`skip (exists ${size.width}x${size.height}): ${name}`);
-      return "skipped";
-    }
+  const existing = fileInfo(path);
+  if (!FORCE && existing && existing.format === entry.format) {
+    console.log(
+      `skip (exists ${existing.width}x${existing.height} ${existing.format}): ${name}`,
+    );
+    return "skipped";
   }
   let lastError = null;
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     try {
-      const bytes = await generateOnce(prompt, aspectRatio);
-      writeFileSync(path, bytes);
+      const bytes = await generateOnce(prompt, aspect, apiKey);
+      // The write refuses bytes whose format contradicts the name.
+      writeAssetBytes(name, bytes);
       console.log(`ok: ${name} (${bytes.length} bytes)`);
       return "ok";
     } catch (error) {
@@ -198,14 +192,83 @@ async function generateAsset([name, aspectRatio, prompt]) {
   return "failed";
 }
 
-mkdirSync(OUT, { recursive: true });
-const results = [];
-for (const asset of ASSETS) {
-  results.push(await generateAsset(asset));
-  await sleep(4000); // gentle pacing across assets (free-tier quota)
+/**
+ * The keyless, offline check: the plan must cover the manifest, the
+ * expectation must match the manifest, and every approved artifact must be
+ * in the tree with the approved format, geometry and digest.
+ */
+function runCheck() {
+  const plan = buildPlan();
+  const expected = JSON.parse(readFileSync(EXPECTATION_PATH, "utf8"));
+  const problems = [];
+  const planNames = plan.map((p) => p.name).sort();
+  const expectedNames = expected.assets.map((a) => a.name).sort();
+  const manifestNames = ASSETS.map((a) => a.name).sort();
+  if (JSON.stringify(planNames) !== JSON.stringify(manifestNames)) {
+    problems.push("plan does not cover the manifest");
+  }
+  if (JSON.stringify(expectedNames) !== JSON.stringify(manifestNames)) {
+    problems.push("expectation does not match the manifest");
+  }
+  for (const rec of expected.assets) {
+    const info = fileInfo(resolve(OUT, rec.name));
+    if (!info) {
+      problems.push(`missing: ${rec.name}`);
+      continue;
+    }
+    if (info.sha256 !== rec.sha256) {
+      problems.push(`digest differs from the expectation: ${rec.name}`);
+    }
+    if (
+      info.format !== rec.format ||
+      info.width !== rec.width ||
+      info.height !== rec.height
+    ) {
+      problems.push(`geometry differs from the expectation: ${rec.name}`);
+    }
+  }
+  for (const p of plan) console.log(`plan ${p.name} ${p.aspect} ${p.format}`);
+  if (problems.length > 0) {
+    console.error(
+      `songoskriti asset check RED — ${problems.length} problem(s):`,
+    );
+    for (const p of problems) console.error(`  - ${p}`);
+    process.exit(1);
+  }
+  console.log(
+    `songoskriti asset check GREEN — ${plan.length} planned assets match the expectation.`,
+  );
+  process.exit(0);
 }
-const failed = results.filter((r) => r === "failed").length;
-console.log(
-  `done: ${results.length - failed}/${results.length} generated` +
-    (failed ? `, ${failed} skipped-on-fail (fallback covers them)` : ""),
-);
+
+/**
+ * The generation path. The key is required HERE, after the check mode has
+ * had its chance to run without one.
+ */
+async function runGeneration() {
+  const apiKey = requireApiKey();
+  mkdirSync(OUT, { recursive: true });
+  const results = [];
+  for (const asset of ASSETS.filter((a) => a.generated)) {
+    results.push(await generateAsset(asset, apiKey));
+    await sleep(4000); // gentle pacing across assets (free-tier quota)
+  }
+  const failed = results.filter((r) => r === "failed").length;
+  console.log(
+    `done: ${results.length - failed}/${results.length} generated` +
+      (failed ? `, ${failed} skipped-on-fail (fallback covers them)` : ""),
+  );
+}
+
+async function runCli() {
+  if (CHECK) {
+    runCheck();
+    return;
+  }
+  await runGeneration();
+}
+
+const cliEntry = process.argv[1] ? pathToFileURL(process.argv[1]).href : null;
+if (import.meta.url === cliEntry) {
+  await runCli();
+}

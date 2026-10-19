@@ -1,4 +1,5 @@
 import { describe, expect, it, afterEach } from "vitest";
+import { execFileSync } from "node:child_process";
 import {
   copyFileSync,
   mkdirSync,
@@ -25,6 +26,11 @@ import {
   checkSongoskritiAssets,
   defaultWorld,
 } from "../../../scripts/songoskriti-assets-check.mjs";
+// Plain .mjs module — the generator stays dependency-free and keyless at import.
+import {
+  assertFormatMatches,
+  buildPlan,
+} from "../../../scripts/gen-songoskriti-assets.mjs";
 import expectation from "../../../scripts/songoskriti-assets-expected.json";
 
 const ROOT = resolve(import.meta.dirname, "..", "..", "..");
@@ -436,5 +442,39 @@ describe("songoskriti asset gate", () => {
     const world = blessWorld();
     expect(world.expectation).toBeNull();
     expect(world.assetDir).toContain("public/ph/songoskriti");
+  });
+});
+
+describe("songoskriti asset generator", () => {
+  it("refuses JPEG bytes under a .png name", () => {
+    const jpeg = readFileSync(
+      resolve(ROOT, "public/ph/songoskriti/hero-festive.jpg"),
+    );
+    expect(() => assertFormatMatches("cat-women.png", jpeg)).toThrow(/format/i);
+    const png = readFileSync(
+      resolve(ROOT, "public/ph/songoskriti/cat-women.png"),
+    );
+    expect(() => assertFormatMatches("cat-women.png", png)).not.toThrow();
+  });
+
+  it("plans the 21 assets deterministically", () => {
+    const a = buildPlan();
+    const b = buildPlan();
+    expect(a).toEqual(b);
+    expect(a).toHaveLength(21);
+    expect(a.every((p) => p.name && p.aspect && p.format)).toBe(true);
+  });
+
+  it("--check passes without a key and without network", () => {
+    const out = execFileSync(
+      "node",
+      ["scripts/gen-songoskriti-assets.mjs", "--check"],
+      {
+        cwd: ROOT,
+        encoding: "utf8",
+        env: { ...process.env, GEMINI_API_KEY: "" },
+      },
+    );
+    expect(out).toMatch(/check/i);
   });
 });
