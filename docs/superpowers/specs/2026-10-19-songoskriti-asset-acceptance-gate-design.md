@@ -1,6 +1,6 @@
 # Songoskriti asset acceptance gate — design
 
-**Date:** 2026-10-19 · **Branch:** `frame30` · **Revision:** 2 (after spec review) · **Status:** design approved in conversation; implementation planned separately.
+**Date:** 2026-10-19 · **Branch:** `frame30` · **Revision:** 3 (after two spec reviews) · **Status:** design approved in conversation; implementation planned separately.
 
 ## 1. Problem
 
@@ -58,8 +58,10 @@ explicit acceptance gate.
 - Re-encoding or re-compressing any existing asset (bytes stay identical).
 - Generating new artwork (needs `GEMINI_API_KEY`; blocked by policy).
 - Changing the preview/storefront rendering of any asset.
-- Packaging official themes as ZIPs (forbidden by `docs/packages/contract.md`
-  §"Official themes are not ZIP packages").
+- Packaging official themes as archives (forbidden by
+  `docs/packages/contract.md` §"Official themes are not ZIP packages").
+- Statically verifying the **database** — the seeded catalogue is verified by
+  migration + operator evidence (§9.2, §11), not by the file gate.
 - Detecting *slot-level* reuse of one file in several editorial slots — see
   §6 (limit of the duplicate rule).
 
@@ -69,9 +71,9 @@ explicit acceptance gate.
 |---|---|---|
 | JPEG-in-`.png` files | Rename to `.jpg`, update every reference | Byte-identical pixels, no size growth, URLs become honest |
 | Missing editorial art | Reuse existing theme art | women → `edit-festive-main.jpg`, men → `campaign-men.jpg`, heritage → `hero-artisans.jpg`; no broken refs, no new generation |
-| "Unnecessarily large" policy | Budgets only, pixels untouched | ≤ 3 MB/file, ≤ 28 MB total, PNG ≤ 2.0 B/px, JPEG ≤ 1.0 B/px; current worst cases 2.53 MB / 25.35 MB / 1.88 B/px / 0.90 B/px all pass |
+| "Unnecessarily large" policy | Budgets only, pixels untouched | ≤ 3,000,000 B/file, ≤ 28,000,000 B total, PNG ≤ 2.0 B/px, JPEG ≤ 1.0 B/px; current worst cases 2,531,520 B / 25,345,762 B / 1.88 B/px / 0.90 B/px all pass |
 | Gate architecture | Shared manifest + CLI + generator `--check` + vitest + release wiring | Deterministic, keyless, structurally immune to generator/checker drift |
-| Port boundary | **Escalation approved by the owner**: rename + core reference edits + existing-test value changes + reviewed snapshot refresh + one new migration, all recorded in the port spec | The rename cannot be done without crossing the port spec's "no core files" rule (§7); the owner approved the escalation with the exact diff list in §9.3 |
+| Port boundary | **Escalation approved by the owner**: rename + core reference edits + existing-test value changes + reviewed snapshot refresh + one new migration, all recorded in §9.3 | The rename cannot be done without crossing the port spec's "no core files" rule (§7); the owner approved the escalation with the exact diff list in §9.3 |
 | Slot reuse created by the editorial fix | Accepted and documented | `hero-artisans.jpg` and `hero-festive.jpg` each appear in more than one slot. The duplicate rule is byte-level (§6) and cannot see this; it is recorded here rather than hidden |
 
 ## 5. Architecture
@@ -87,8 +89,8 @@ export const ASSETS = [
   {
     name: "hero-festive.jpg",
     format: "jpeg",          // png | jpeg | svg  (authoritative)
-    minWidth: 1024,           // authoritative — the per-class table below is
-    minHeight: 768,           // informational only
+    minWidth: 1024,           // floor — authoritative for `asset.undersized`
+    minHeight: 768,
     generated: true,
     aspect: "16:9",           // generation hint, not a check constraint
     prompt: "…",              // generation prompt
@@ -101,7 +103,7 @@ Both `scripts/songoskriti-assets-check.mjs` and
 `scripts/gen-songoskriti-assets.mjs` import it, so the checker and the
 generator can never describe different file sets.
 
-Informational class floors (each file's own `minWidth`/`minHeight` is
+Informational class floors (each entry's own `minWidth`/`minHeight` is
 authoritative; every shipped file satisfies its floor):
 
 | Class | Floor | Members |
@@ -133,25 +135,49 @@ artifacts**:
 It exists because "the manifest equals itself" proves nothing: an operator
 could delete a file *and* its manifest entry and the gate would go green.
 The expectation is the third leg of the triangle — **manifest (plan) ==
-expectation (approved artifacts) == tree (reality)** — and it is changed only
-through a reviewed diff. Digests are the sha256 of the shipped bytes; a
-re-generated asset therefore requires an explicit, reviewed expectation
-update, which is exactly the "reproduces the expected outputs" contract.
+expectation (approved artifacts) == tree (reality)** — and it changes only
+through a reviewed diff. `width`/`height` are the **actual geometry** and are
+compared with the tree; the manifest's `minWidth`/`minHeight` are floors
+only. Digests are the sha256 of the shipped bytes.
+
+The digest comparison is a **drift** check, not a reproducibility proof:
+image generation is non-deterministic, so no digest-level reproduction is
+achievable. What the gate proves is that the tree still contains the
+approved artifacts, and that the generator's plan still names exactly the
+approved set.
+
+**Adding a new asset touches three places** (all three are required; the
+gate reports which is missing):
+
+1. `scripts/songoskriti-assets-manifest.mjs` — the entry (name, format,
+   floors, prompt);
+2. `scripts/songoskriti-assets-expected.json` — the approved record;
+3. a live reference (theme code or the seeded catalogue) — otherwise
+   `asset.unreferenced` fires.
+
+**Re-blessing changed bytes** is a command, not a hand edit:
+`node scripts/songoskriti-assets-check.mjs --bless-expectation` rewrites the
+expectation file from the tree, and the result must land as a reviewed diff.
 
 ### 5.3 Approved locations
 
 | Location | Approved for |
 |---|---|
 | `/ph/songoskriti/<file>` | theme-owned art (source form — `src/lib/theme-asset-url.ts`) |
-| `/api/public/ph/<seed>` | deterministic local SVG placeholder endpoint (`src/routes/api/public/ph.$.ts`) — not a file; used by `src/components/builder/songoskriti.tsx` |
+| `/api/public/ph/<seed>` and `/api/public/ph/<dept>/<seed>` | deterministic local SVG placeholder endpoint (`src/routes/api/public/ph.$.ts` — the splat route accepts any number of segments; the last segment seeds the art, a first segment tints it by department). Not a file; used by `src/components/builder/songoskriti.tsx` and `src/lib/demo-catalog.ts` |
 | `/api/public/font/<uuid>/<family>/<weight>.woff2` | merchant-uploaded face (`src/lib/theme-fonts.ts`) — only when the font row exists |
 | `https://fonts.googleapis.com`, `https://fonts.gstatic.com` | webfont provider (`FONT_ORIGINS`) |
 | inline React icon components | `@/components/icons/tabler` (generated module) |
 | *nothing else* | any other asset URL is a finding |
 
+The placeholder lane is exempt from `url.wrong_form` for **any** segment
+count. A finding in that lane is only raised when a placeholder path is
+*file-shaped for a theme asset* — i.e. `/api/public/ph/songoskriti/…`,
+which claims a file the placeholder endpoint does not own.
+
 ### 5.4 The gate
 
-`node scripts/songoskriti-assets-check.mjs [--json] [--root <repoRoot>]`
+`node scripts/songoskriti-assets-check.mjs [--json] [--bless-expectation]`
 
 Exit codes: `0` green · `1` findings · `2` harness error (a harness error is
 never a pass).
@@ -161,11 +187,18 @@ fixtures instead of a temp cwd:
 
 ```js
 export function checkSongoskritiAssets(world): Finding[]
-// world = { assetDir, publicDir, scanRoots, manifest, expectation }
+export function defaultWorld(): World          // derived from import.meta.dirname
+
+// world = { repoRoot, assetDir, publicDir, scanRoots, migrationsRoot, buildRoots, manifest, expectation }
 ```
 
-The CLI only supplies the default `world` (repo root layout) and prints
-findings. `Finding = { code, path, message }`.
+`defaultWorld()` is derived from `import.meta.dirname` — never
+`process.cwd()` — and is consumed by **both** the CLI and the vitest suite,
+so the green path and the CLI exercise the same code and the same layout.
+The TS test imports the `.mjs` module; `tsconfig.json` sets
+`allowJs: true`, so that import resolves.
+
+`Finding = { code, path, message }`.
 
 **Runner split** (node cannot import this repo's TypeScript: `theme-fonts.ts`
 imports extensionless `./builder-ast`, `tabler.tsx` is TSX, and
@@ -173,34 +206,53 @@ imports extensionless `./builder-ast`, `tabler.tsx` is TSX, and
 
 | Runner | Checks |
 |---|---|
-| CLI (`node scripts/*.mjs`, no deps, no TS import) | `asset.*`, `ref.*`, `url.*`, `video.*` |
+| CLI (`node scripts/*.mjs`, no deps, no TS import) | `asset.*`, `ref.*`, `url.*`, `video.*`, `note.*` |
 | vitest (`src/**/*.test.ts`, TS + aliases) | `font.*`, `icon.*`, `pkg.*` |
 
-**Scan roots** (live code that may reference theme art):
+**Scan roots and their rule profiles.** Roots differ because some files are
+multi-theme: `src/lib/demo-catalog.ts` legitimately references
+`/ph/somvabona/…` (10 live refs) and 16 two-segment placeholder URLs.
 
-- `src/lib/themes/songoskriti/**`
-- `src/components/builder/songoskriti.tsx`, `src/components/builder/songoskriti-motion.ts`
-- `src/lib/demo-catalog.ts`, `src/lib/header-copy.ts`
-- `src/components/store/**`
-- `src/routes/**`
-- `supabase/migrations/**` — see the migration rule below
+| Root | Kind | Rules applied |
+|---|---|---|
+| `src/lib/themes/songoskriti/**` | owned | full set: `ref.unknown`, `url.wrong_form`, `url.cross_theme`, `video.*` |
+| `src/components/builder/songoskriti.tsx`, `src/components/builder/songoskriti-motion.ts` | owned | full set |
+| `src/lib/demo-catalog.ts`, `src/lib/header-copy.ts`, `src/components/store/**`, `src/routes/**` | shared | **scoped to the `/ph/songoskriti/…` namespace only**: `ref.unknown` for `/ph/songoskriti/…` refs; `url.wrong_form` and `url.cross_theme` do **not** apply (other themes' refs and the placeholder lane are legitimate here) |
+| `supabase/migrations/**` | advisory | `note.migration_ref` only — never fails the gate, never feeds `asset.unreferenced` |
 
 **Exclusions** (with reasons):
 
 - `**/*.test.ts`, `**/*.test.tsx`, `**/__snapshots__/**` — test fixtures and
   helper examples (e.g. `src/lib/theme-asset-url.test.ts` uses
   `hero-festive.png` as a sample argument), not live references. The rename
-  updates them, and the new suite asserts they were updated.
-- `docs/**` — frozen evidence is a historical record, not a live reference.
+  updates them, and §10 asserts they were updated.
+- `docs/superpowers/songoskriti-evidence/**` — frozen evidence is a
+  historical record, not a live reference. (Other docs are **live** and are
+  updated: `docs/themes/creation.md` §14.3 and
+  `docs/themes/songoskriti-port-map.md`.)
 - `.artifacts/**`, `.output-snapshots/**`, `dist/**`, `.output/**`,
   `node_modules/**`, `.git/**` — build output.
 
-**Migration rule.** Migration files are immutable history, and the applied
-seed permanently contains the old `.png` names. The gate therefore scans
-**only the newest migration file (highest timestamp prefix) that mentions
-`/ph/songoskriti/`** — the file that supersedes the others. After this
-work that is the new asset-path migration, whose references are all current.
-Earlier migrations are never liveness-scanned.
+**Migration rule.** Migration files are immutable history: the applied seed
+permanently contains the retired `.png` names, and a re-run of that seed
+re-applies them (§9.2). The gate therefore treats migrations as **advisory**:
+it reads the newest asset-path migration (the file carrying the sentinel
+`-- songoskriti-asset-paths: current`, chosen by lexicographically greatest
+filename — the ordering `scripts/db-migrate.mjs` uses) and reports any
+`/ph/songoskriti/…` reference in it as `note.migration_ref`. Advisory notes
+never fail the gate and never feed `asset.unreferenced`; the live-code scan
+already covers all 21 shipped assets. The new migration is written so that
+it contains **no retired asset path** (updates are keyed by row id, never by
+old URL), and its filename sorts strictly after
+`20260924_songoskriti_demo.sql`.
+
+**Set-equality directions** (each code owns exactly one direction):
+
+| Direction | Code |
+|---|---|
+| disk ⊆ manifest | `asset.unexpected` |
+| refs ⊆ manifest | `ref.unknown` |
+| manifest ⊆ refs (live code) | `asset.unreferenced` |
 
 **Codes**
 
@@ -211,23 +263,23 @@ Earlier migrations are never liveness-scanned.
 | `asset.missing` | manifest entry has no file on disk |
 | `asset.unexpected` | a file in `public/ph/songoskriti/` is not in the manifest (orphan / stale copy) |
 | `asset.format_mismatch` | the file's bytes disagree with the manifest's declared `format` |
-| `asset.extension_mismatch` | the file's bytes disagree with its extension (e.g. JPEG bytes in a `.png` file) |
+| `asset.extension_mismatch` | the file's **name extension** disagrees with the manifest's declared `format` (distinct from the byte check) |
 | `asset.undersized` | below the entry's `minWidth`/`minHeight` |
-| `asset.oversized` | above 3 MB |
+| `asset.oversized` | above 3,000,000 B |
 | `asset.density` | above 2.0 B/px (PNG) / 1.0 B/px (JPEG) |
-| `asset.total_size` | theme directory above 28 MB |
+| `asset.total_size` | theme directory above 28,000,000 B |
 | `asset.duplicate` | identical sha256 twice in the directory, or a theme raster's sha256 found anywhere else under `public/` (a copy smuggled into a shared core directory) |
-| `asset.unreferenced` | a manifest file that no live reference and no newest-migration reference points at |
+| `asset.unreferenced` | a manifest file that no live reference points at |
 | `asset.invalid_svg` | the brand SVG is not a parseable `<svg>` document |
-| `asset.expectation_drift` | manifest ↔ expectation ↔ tree disagree (name set, format, or digest) |
+| `asset.expectation_drift` | manifest ↔ expectation ↔ tree disagree (name set, format, geometry or digest) |
 
 *References and URLs* — CLI
 
 | Code | Condition |
 |---|---|
-| `ref.unknown` | a `/ph/songoskriti/<file>` reference names a file that is neither in the manifest nor on disk (the message states which) |
-| `url.wrong_form` | a theme-art reference outside the approved set (§5.3): package form (`assets/…`), a file-shaped ref into the placeholder lane (`/api/public/ph/songoskriti/…`), an external absolute URL, or a protocol-relative URL |
-| `url.cross_theme` | a `/ph/<other-theme>/…` reference inside songoskriti-owned code |
+| `ref.unknown` | a reference names a file that is **not in the manifest** (the message states whether it is also absent from disk) |
+| `url.wrong_form` | a theme-art reference outside the approved set (§5.3): package form (`assets/…`), an external absolute or protocol-relative URL, or a file-shaped placeholder ref (`/api/public/ph/songoskriti/…`) |
+| `url.cross_theme` | a `/ph/<other-theme>/…` reference inside **owned** roots |
 
 *Video* — CLI
 
@@ -236,14 +288,26 @@ Earlier migrations are never liveness-scanned.
 | `video.missing` | a `.mp4/.webm/.mov/.m4v` reference that does not resolve under `/ph/songoskriti/` (none today; the rule stays) |
 | `video.format_mismatch` | a video file whose bytes contradict its extension |
 
+*Advisory* — CLI (never fails the gate)
+
+| Code | Condition |
+|---|---|
+| `note.migration_ref` | a `/ph/songoskriti/…` reference inside the newest asset-path migration |
+| `note.computed_ref` | a reference built by a template literal or concatenation (not statically checkable — see §6); the count is reported in the summary so coverage loss is visible |
+
 *Fonts* — vitest
 
 | Code | Condition |
 |---|---|
 | `font.unknown_family` | a family named in the theme's emitted stack is neither in the closed catalogue (`FONT_FAMILIES`) nor a declared local fallback |
 | `font.bad_origin` | a font stylesheet URL points outside `FONT_ORIGINS` |
-| `font.bengali_not_loaded` | the document-level `FONT_PRELOAD` does not load `Noto Sans Bengali` with `subset=latin,bengali` |
-| `font.theme_stack_not_bengali` | the songoskriti pairing's emitted stack names no Bengali-capable family (the invariant established by `26f3447f`) |
+| `font.bengali_not_loaded` | the document-level `FONT_PRELOAD` (`src/lib/web-vitals.ts`) does not load `Noto Sans Bengali` with `subset=latin,bengali` |
+| `font.theme_stack_not_bengali` | the songoskriti pairing's emitted stack names no Bengali-capable family |
+
+These **restate** locks that already exist in `src/lib/phase3-fonts.test.ts`
+(the `applyFontPairing` invariant added by `26f3447f`, and the
+`FONT_PRELOAD` assertion). The new suite adds the *songoskriti-scoped*
+assertion and cites the existing lock rather than replacing it.
 
 *Icons* — vitest
 
@@ -259,7 +323,7 @@ Earlier migrations are never liveness-scanned.
 | `pkg.asset_manifest` | the official songoskriti package carries an `assetManifest` or an embedded asset payload — official themes are source-rendered, never packaged |
 | `pkg.package_ref` | a package-form `assets/…` reference inside official templates (`findPackageRefs` is reused, not re-implemented) |
 | `pkg.asset_copy` | a theme raster checksum outside `public/ph/songoskriti/` |
-| `pkg.official_zip` | a songoskriti package/zip artifact exists in the repo or build output |
+| `pkg.official_zip` | a songoskriti package/zip artifact exists under `repoRoot` or `buildRoots` (both are in the world shape; `.output/**` is excluded from *reference scanning* but is scanned for artifacts) |
 
 ### 5.5 Generator reproducibility
 
@@ -270,12 +334,12 @@ Earlier migrations are never liveness-scanned.
   be imported by tests and by `--check`.
 - Prints a deterministic plan (name, aspect, format) — byte-identical across
   runs.
-- The plan must equal the expectation file and the tree (same file set, same
-  formats, same digests). The three-way agreement is the real check; the
-  manifest alone is not compared with itself.
-- Every planned file must exist with matching format and dimensions.
-- Exits `1` listing the offending entries when plan, expectation and tree
-  disagree.
+- The three comparisons are explicit:
+  1. `plan.names + plan.formats` == `manifest.names + manifest.formats`;
+  2. `manifest.names + manifest.formats` == `expectation.names + expectation.formats`;
+  3. `expectation` (geometry + digest) == the tree.
+  The digest leg is a drift check (§5.2), not a reproduction proof.
+- Exits `1` listing the offending entries when the three legs disagree.
 
 Two exported pure functions make the write path testable offline:
 
@@ -286,26 +350,35 @@ Two exported pure functions make the write path testable offline:
 
 The generator's "already present" test becomes format-aware (`imageInfo`
 returns `{format, width, height}` for PNG/JPEG/SVG), so the nine renamed
-`.jpg` files are skipped rather than regenerated and overwritten. Regeneration
-still needs `GEMINI_API_KEY`, still retries ×2, still skips on failure.
+`.jpg` files are skipped rather than regenerated and overwritten.
+Regeneration still needs `GEMINI_API_KEY`, still retries ×2, still skips on
+failure.
 
 ### 5.6 Wiring
 
 - `package.json`: `assets:songoskriti` → `node scripts/songoskriti-assets-check.mjs`;
   `assets:songoskriti:gen` → `node scripts/gen-songoskriti-assets.mjs --check`.
   `assets:songoskriti` is inserted into `gates:release` before the browser
-  gates (fast, no server, no network). The port spec §7 allows wiring-only
-  `package.json` edits for gate-chain entries.
+  gates (fast, no server, no network). This is a gate-chain entry, the shape
+  the port spec §7 allows for `package.json`.
 - New test file `src/lib/themes/songoskriti-assets.test.ts` (a **new** file,
   permitted by the port spec) holds the acceptance case: *"songoskriti asset
-  correctness is green"*, invoking the shared checker function — not a
-  re-implementation — so CI's `unit-contract` job (`bun run test`) enforces
-  the gate. `gates:release` itself is owner-run pre-release, not CI.
+  correctness is green"*, calling `checkSongoskritiAssets(defaultWorld())` —
+  the shared function, not a re-implementation — so CI's `unit-contract` job
+  (`bun run test`, `.circleci/config.yml`) enforces the gate. `gates:release`
+  itself is owner-run pre-release, not CI.
 - Docs: `docs/themes/creation.md` §14.3 gains the approved locations, the
-  format rules and the gate command; the port spec's acceptance list gains
-  the asset gate and the recorded escalation; the misleading comment in
-  `src/lib/package-zip.ts:31` ("official Songoskriti ships ~25MB of
-  imagery") is corrected — official themes are never packaged as archives.
+  format rules, the gate command and the seed-repair runbook;
+  `docs/themes/songoskriti-port-map.md` gains the updated asset-path row;
+  the port spec's acceptance list gains the asset gate and the recorded
+  escalation; the misleading comment in `src/lib/package-zip.ts:31`
+  ("official Songoskriti ships ~25MB of imagery") is corrected — official
+  themes are never packaged as archives.
+  **Wording constraint:** `scripts/doc-gate.mjs` flags a line that contains
+  "official" or "Songoskriti" together with the token "ZIP"
+  (`/\bofficial\b[^\n.]*\b(downloadable|ZIP)\b/i`). New prose therefore says
+  "archives", never "ZIP", on such lines, and backticks only real paths
+  (the doc-gate checks that every backticked path exists).
 
 ## 6. Limits of the rules (stated, not hidden)
 
@@ -315,6 +388,13 @@ still needs `GEMINI_API_KEY`, still retries ×2, still skips on failure.
   elsewhere under `public/`.
 - The editorial fix intentionally reuses existing art in more than one slot
   (§4); this is a design decision, not a detected duplicate.
+- **Only static string literals are scanned.** References built by template
+  literals or concatenation (e.g. `` `/api/public/ph/${placeholderSeed("craft")}` ``
+  in `src/components/builder/songoskriti.tsx`) cannot be resolved
+  statically; they are skipped and counted as `note.computed_ref`, so the
+  coverage loss is visible in the summary.
+- The gate is a **file** gate: it cannot see the database. The seeded
+  catalogue is verified by the migration + operator evidence in §9.2/§11.
 
 ## 7. Data flow
 
@@ -335,8 +415,9 @@ findings (code + path + message)  ──►  exit 0 | 1 | 2
 - A malformed manifest or expectation entry (unknown format, bad name) is a
   harness error (exit 2), never a silent pass.
 - Unreadable files are reported per file; one bad file never hides the rest.
-- The gate never mutates the tree. Remediation is a separate, reviewed
-  change set.
+- The gate never mutates the tree, except in the explicit
+  `--bless-expectation` mode, which rewrites the expectation file and
+  prints the paths it touched.
 - `--json` emits machine-readable findings; the default output is
   human-readable.
 
@@ -350,7 +431,8 @@ findings (code + path + message)  ──►  exit 0 | 1 | 2
    `scripts/songoskriti-assets-expected.json` (digests of the shipped bytes).
 3. **Rename** — `git mv` the nine `.png` files to `.jpg` (bytes unchanged),
    then update every reference: live code (§9.3), existing tests, the frozen
-   snapshot (reviewed diff), and the seed migration (**new** file).
+   snapshot (reviewed diff), the tracked scratch HTML files (§9.3) and the
+   seeded catalogue (new migration, §9.2).
 4. **TBD editorial fix** — the three dangling editorial references in
    `src/lib/themes/songoskriti/archetypes.ts` (theme-owned, editable).
 5. **Gate** — the checker rewritten on the shared manifest: inventory,
@@ -360,55 +442,92 @@ findings (code + path + message)  ──►  exit 0 | 1 | 2
 7. **Fonts / icons / packaging checks** — in the vitest suite.
 8. **Test suite** — green path + negative fixtures.
 9. **Wiring + docs** — `package.json`, new acceptance test file,
-   `docs/themes/creation.md`, port spec.
+   `docs/themes/creation.md`, `docs/themes/songoskriti-port-map.md`, port spec.
 
-### 9.2 Seed migration (new file, never an edit)
+### 9.2 Seeded catalogue (new migration, never an edit)
 
-`supabase/migrations/<timestamp>_songoskriti_asset_paths.sql`:
+`supabase/migrations/20261019000000_songoskriti_asset_paths.sql` (14-digit
+prefix, so it sorts after the applied seed):
 
-- re-points the seeded `image_url` values of the five renamed files
-  (`cat-kids`, `cat-men`, `hero-festive`, `hero-weaves`, `hero-artisans`) to
-  their new `.jpg` paths;
-- re-points the two dead products — `Comilla Handspun Khadi Kurta`
-  (`prod-kurta`) and `Jessore Nakshi Kantha Quilt` (`prod-kantha`) — to
-  existing art (`prod-panjabi.png`, `cat-living.png`);
-- the applied migration `20260924_songoskriti_demo.sql` is **not** touched
-  (the drift gate in `scripts/db-migrate.mjs` forbids editing applied
-  migrations).
+- carries the sentinel `-- songoskriti-asset-paths: current`;
+- creates an idempotent function
+  `public.theme_apply_songoskriti_asset_paths()` that sets `image_url` **by
+  row id** for the 13 seeded products and 5 seeded collections — 6 rows get
+  their renamed `.jpg` path (`cat-kids` ×2, `cat-men`, `hero-festive`,
+  `hero-weaves`, `hero-artisans`), and 2 dead rows are re-pointed to
+  existing art (`prod-kurta` → `prod-panjabi.png`, `prod-kantha` →
+  `cat-living.png`);
+- calls the function once in the migration body;
+- contains **no retired asset path** (updates are keyed by row id, never by
+  old URL).
+
+**Re-seed hazard (must be handled, not assumed away).** The applied seed
+`20260924_songoskriti_demo.sql` is idempotent with
+`on conflict (id) do update set … image_url = excluded.image_url`
+(lines 75-78, 115-117) and its header says it is "safe to re-run". A
+`theme_purge_demo` + re-seed cycle therefore restores the retired `.png`
+paths — and the migration itself is never re-run, because `db-migrate`
+records it as applied. The runbook, published in
+`docs/themes/creation.md` §14.3, is therefore: **after any demo purge or
+re-seed, re-apply the paths with
+`select public.theme_apply_songoskriti_asset_paths();`** — the function
+exists precisely so this is one command, not a hand-written UPDATE.
+
+The applied migration `20260924_songoskriti_demo.sql` is **not** touched
+(the drift gate in `scripts/db-migrate.mjs` forbids editing applied
+migrations).
 
 ### 9.3 Escalated file list (owner-approved)
 
 Port spec §7 prohibits editing existing tests, frozen snapshots and
 everything else under `src/`. The owner approved the escalation for the
-rename. Exact surface, all changes are **URL values only** — no assertion
-loses strength, no test is deleted or skipped:
+rename. Counts are "occurrences (distinct assets)". All changes are **URL
+values only** — no assertion loses strength, no test is deleted or skipped:
 
 *Core source (URL values only)*
 
-- `src/lib/demo-catalog.ts` (7 refs)
-- `src/lib/header-copy.ts` (4 refs)
-- `src/components/store/CollectionView.tsx` (2 refs)
-- `src/components/store/ProductView.tsx` (1 ref)
+- `src/lib/demo-catalog.ts` — 15 occurrences (7 distinct assets)
+- `src/lib/header-copy.ts` — 4 occurrences (3 distinct assets)
+- `src/components/store/CollectionView.tsx` — 2 occurrences (2 distinct)
+- `src/components/store/ProductView.tsx` — 1 occurrence (1 distinct)
+- `src/lib/package-zip.ts` — 1 comment (line 31), no code change
 
 *Existing tests (expected values only)*
 
-- `src/lib/phase3-section.test.ts` (4 refs)
-- `src/lib/theme-asset-url.test.ts` (12 refs — sample arguments)
-- `src/components/store/CollectionView.test.tsx` (1 ref)
-- `src/components/store/ProductView.test.tsx` (3 refs)
-- `src/components/builder/songoskriti.test.tsx` (1 ref)
-- `src/components/builder/songoskriti-debrand.test.tsx` (1 ref)
-- `src/components/builder/songoskriti-snapshots.test.tsx` (4 refs)
+- `src/lib/phase3-section.test.ts` — 8 occurrences (4 distinct)
+- `src/lib/theme-asset-url.test.ts` — 12 occurrences (2 distinct; sample
+  arguments)
+- `src/components/store/CollectionView.test.tsx` — 1 occurrence (1 distinct)
+- `src/components/store/ProductView.test.tsx` — 3 occurrences (1 distinct)
+- `src/components/builder/songoskriti.test.tsx` — 1 occurrence (1 distinct)
+- `src/components/builder/songoskriti-debrand.test.tsx` — 1 occurrence
+  (1 distinct)
+- `src/components/builder/songoskriti-snapshots.test.tsx` — 4 occurrences
+  (4 distinct)
 
 *Frozen snapshot*
 
 - `src/components/builder/__snapshots__/songoskriti-snapshots.test.tsx.snap`
-  (4 refs) — regenerated with a **reviewed diff**, named in the commit
-  message, never a blind `-u` (port spec §9).
+  — 8 occurrences (4 distinct) — regenerated with a **reviewed diff**, named
+  in the commit message, never a blind `-u` (port spec §9).
+
+*Tracked scratch HTML (repo root — URL values only)*
+
+- `men.html` — 34 occurrences
+- `women.html` — 36 occurrences
+- `preview_out.html` — 20 occurrences
+
+These are tracked scratch captures; they reference five renamed assets and
+would 404 after the rename. They are outside every scan root, so the gate
+cannot police them — the rename updates them mechanically.
 
 *New migration*
 
-- `supabase/migrations/<timestamp>_songoskriti_asset_paths.sql` (§9.2)
+- `supabase/migrations/20261019000000_songoskriti_asset_paths.sql` (§9.2)
+
+*Wiring*
+
+- `package.json` — gate scripts + one `gates:release` entry (wiring only)
 
 *Theme-owned (editable without escalation)*
 
@@ -428,25 +547,30 @@ the port spec):
 
 **Green path**
 
-- the repo passes the CLI gate with zero findings;
-- the expectation file matches the tree's digests;
-- every manifest file is referenced by live code or the newest songoskriti
-  migration, and every live reference resolves.
+- `checkSongoskritiAssets(defaultWorld())` returns **zero** findings;
+- the expectation file matches the tree's digests and geometry;
+- every manifest file is referenced by live code, and every live reference
+  resolves to a manifest entry.
 
-**Negative fixtures** (temporary directories, never the repo; driven through
-the exported pure function with a synthetic `world`):
+**Negative fixtures** — each fixture is a `cleanWorld()` asserted to produce
+**zero** findings, plus exactly **one** mutation; the assertion is on the
+**exact multiset** of finding codes equal to `{expected code}` (not
+`toContain`), so a fixture cannot pass for the wrong reason:
 
 - missing file → `asset.missing`
 - orphan file → `asset.unexpected`
-- JPEG bytes in a `.png` name → `asset.format_mismatch` / `asset.extension_mismatch`
+- JPEG bytes in a `.png` name → `asset.format_mismatch` + `asset.extension_mismatch`
+- manifest format disagreeing with the file name → `asset.extension_mismatch`
 - undersized file → `asset.undersized`
 - oversized file → `asset.oversized`
 - over-density file → `asset.density`
 - two identical files → `asset.duplicate`
 - a theme raster copied into another `public/` directory → `asset.duplicate`
-- a reference to a non-existent file → `ref.unknown`
-- a package-form / wrong-lane / external URL → `url.wrong_form`
-- a cross-theme `/ph/<other>/…` reference → `url.cross_theme`
+- a reference to a non-manifest file → `ref.unknown`
+- a package-form / external / file-shaped-placeholder URL in an owned root →
+  `url.wrong_form`
+- a cross-theme `/ph/<other>/…` reference in an owned root → `url.cross_theme`
+- a cross-theme reference in a shared root → **no** finding (scope rule)
 - manifest ↔ expectation ↔ tree drift → `asset.expectation_drift`
 - a manifest file nothing references → `asset.unreferenced`
 
@@ -460,11 +584,20 @@ the exported pure function with a synthetic `world`):
 - the "already present" check skips an existing `.jpg` file (regression guard
   for the renamed assets).
 
+**Rename completeness**
+
+- an assertion that the excluded test files were updated — e.g.
+  `src/components/builder/songoskriti-debrand.test.tsx` asserts
+  `expect(html).toContain("ugc-1.png")` today and would fail on its own
+  after the rename; the new suite asserts the updated value is present and
+  the retired name is absent in the files §9.3 lists.
+
 **Fonts / icons / packaging** (vitest, TS)
 
 - the songoskriti pairing resolves to catalogue families;
 - the theme stylesheet URL uses only approved origins;
-- `FONT_PRELOAD` loads `Noto Sans Bengali` with `subset=latin,bengali`;
+- `FONT_PRELOAD` (`src/lib/web-vitals.ts`) loads `Noto Sans Bengali` with
+  `subset=latin,bengali`;
 - the songoskriti emitted stack names a Bengali-capable family;
 - every tabler import used by songoskriti code exists as an export;
 - the official package carries no `assetManifest` and no package-form refs
@@ -478,6 +611,9 @@ the exported pure function with a synthetic `world`):
 - `bun run test`, `bun run typecheck`, `bun run lint`, `bunx prettier --check .`
   (the new `.mjs` files are linted by `eslint.config.js`, which applies
   `eslint-plugin-prettier` to `**/*.mjs`).
+- `bun run db:migrate:check` green, and after the migration:
+  `select image_url from public.products where merchant_id = 'b50a0000-0000-4000-8000-000000000001' and image_url like '/ph/songoskriti/%'` returns **no** `.png` path (same query for
+  `public.collections`).
 - Preview smoke: the renamed assets and the repaired editorial images return
   200 from `/ph/songoskriti/…`; the rendered pages are unchanged apart from
   the corrected URLs.
