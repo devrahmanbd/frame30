@@ -2,7 +2,6 @@ import { describe, expect, it, afterEach } from "vitest";
 import { execFileSync } from "node:child_process";
 import {
   copyFileSync,
-  linkSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -545,10 +544,12 @@ describe("songoskriti asset generator", () => {
   it("--check reports an extra file in the output directory", () => {
     const dir = mkdtempSync(join(tmpdir(), "songoskriti-extra-cli-"));
     generatorScratchRoots.push(dir);
-    // Hard links: the approved bytes under the approved names, without
-    // copying 25 MB into the scratch directory.
+    // Copies, not hard links: a hard link needs the workspace and TMPDIR on
+    // one filesystem, and CI's checkout and TMPDIR may sit on different
+    // mounts (EXDEV). The copy costs ~25 MB of scratch space, which the
+    // afterEach removes.
     for (const record of expectation.assets) {
-      linkSync(resolve(ASSET_DIR, record.name), join(dir, record.name));
+      copyFileSync(resolve(ASSET_DIR, record.name), join(dir, record.name));
     }
     writeFileSync(join(dir, "stray.png"), "not an asset");
     let status = 0;
