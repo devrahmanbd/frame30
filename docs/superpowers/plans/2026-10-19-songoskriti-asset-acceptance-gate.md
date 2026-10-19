@@ -481,7 +481,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import { ASSETS } from "../../../scripts/songoskriti-assets-manifest.mjs";
 
-const ROOT = resolve(import.meta.dirname, "..", "..");
+const ROOT = resolve(import.meta.dirname, "..", "..", "..");
 const ASSET_DIR = resolve(ROOT, "public/ph/songoskriti");
 
 /** Live code that may reference theme art. */
@@ -647,10 +647,10 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { imageInfo, sha256, fileInfo } from "../../../scripts/songoskriti-assets-image.mjs";
 
-const ROOT = resolve(import.meta.dirname, "..", "..");
+const ROOT = resolve(import.meta.dirname, "..", "..", "..");
 import expectation from "../../../scripts/songoskriti-assets-expected.json";
 
-const ROOT = resolve(import.meta.dirname, "..", "..");
+const ROOT = resolve(import.meta.dirname, "..", "..", "..");
 const ASSET_DIR = resolve(ROOT, "public/ph/songoskriti");
 
 describe("songoskriti asset bytes", () => {
