@@ -99,7 +99,7 @@ graph, completeness, idempotence) and `claims-activation.test.ts`.
 | HP-TRUST-FOOTER         | `trust_footer`     | escalated (core-required)                                                                                     | classification.md §Escalations                                                                                                      |
 | HP-STORE-LOCATOR        | `store_locator`    | live — claimed this cycle                                                                                     | same                                                                                                                                |
 | HP-ANNOUNCEMENT-BAR     | `announcement_bar` | dormant (proof) — module is test-only; no productive importer                                                | `src/lib/themes/songoskriti/announcement-presentation.tsx:108`; A8 grep; `dormant-presentation-claims.test.ts`                       |
-| RK-PRODUCT-GRID         | `product_grid`     | live — claimed this cycle; studio delegation bypass open (`src/components/builder/studio/renderers.tsx:1457`) | activation tests; classification.md §Escalations                                                                                    |
+| RK-PRODUCT-GRID         | `product_grid`     | live — claimed this cycle; studio delegation bypass open (`src/components/builder/studio/renderers.tsx:1502-1531`) | activation tests; classification.md §Escalations                                                                               |
 | RK-RICH-TEXT            | `rich_text`        | live — claimed this cycle                                                                                     | same as HP-DEPARTMENT-GRID                                                                                                          |
 | RK-NEWSLETTER           | `newsletter`       | live — claimed this cycle                                                                                     | same                                                                                                                                |
 | RK-FOOTER-SITEMAP       | `footer_sitemap`   | live — claimed this cycle; the `footer-proof` variant stays dormant with proof                                | `src/lib/themes/songoskriti/footer-proof-presentation.tsx:217`; `footer-presentations-proof.test.tsx`; `dormant-presentation-claims.test.ts` |
@@ -203,8 +203,8 @@ import (registry-import-free at runtime; creation.md §14.2). Proof suites:
    stay global and their branded look is dress, not body. Tracked core
    item; docs-only here.
 2. **`product_grid` studio delegation bypass** —
-   `src/components/builder/studio/renderers.tsx:1457` resolves
-   `WIDGET_COMPONENTS.product_grid` directly and bypasses
+   `src/components/builder/studio/renderers.tsx:1502-1531`: `:1522`
+   resolves `WIDGET_COMPONENTS.product_grid` directly and bypasses
    `resolveThemePresentation`, so the themed grid cannot go live in the
    studio without a core edit (prohibited scope for the port cycle;
    classification.md §Escalations).

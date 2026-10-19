@@ -33,10 +33,10 @@ for catalogue review.
 | 4   | Product pages        | `product` template: media, price, variant/size, buy box, delivery, reviews/Q&A, related                                                                                                                    | `src/lib/themes/songoskriti/preview.ts` (`product` case), `src/lib/builder-ast.ts` PDP widgets                                                             |
 | 5   | Collection pages     | `collection` template: category header, facets, toolbar, grid, pagination, empty state                                                                                                                     | `src/lib/themes/songoskriti/preview.ts` (`collection` case), `src/lib/builder-ast.ts` listing widgets                                                      |
 | 6   | Posts / blog         | `blog` template: `blog_terms` + `blog_archive` + `blog_pager` + newsletter                                                                                                                                 | `src/lib/themes/songoskriti/preview.ts` (`blog` case), per-theme article CSS in `skins.css`                                                                |
-| 7   | Menus                | Header nav (`mega_menu`, `nav_menu`, `search_command`, `account_cart`) driven by taxonomy/menu data                                                                                                        | `src/lib/builder-ast.ts:1440-1519`, `src/lib/studio/catalog.ts:2090-2107`                                                                                  |
+| 7   | Menus                | Header nav (`mega_menu`, `nav_menu`, `search_command`, `account_cart`) driven by taxonomy/menu data                                                                                                        | `src/lib/builder-ast.ts:1440-1519`, `src/lib/studio/catalog.ts:1396-1404`                                                                                  |
 | 8   | Footer               | `footer_sitemap`, `payment_icons`, `social_strip`/`support_strip`, about `rich_text`                                                                                                                       | `src/lib/themes/songoskriti/footer.ts:160`, shared copy in `src/lib/footer-copy.ts`                                                                        |
 | 9   | Widgets with presets | Every widget the theme renders has catalogue defaults and bilingual props filled at build                                                                                                                  | `src/lib/theme-section.ts:44-68`, `src/lib/studio/catalog.ts:48-64`                                                                                        |
-| 10  | Forms                | Contact (`form`), newsletter, search, quiz/consult/trade-in submittable patterns (see §5)                                                                                                                  | `src/lib/studio/catalog.ts:2071-2088`, `src/lib/studio/catalog.ts:2109-2120`, `src/lib/contact.functions.ts:4-24`, `src/lib/newsletter.functions.ts:13-50` |
+| 10  | Forms                | Contact (`form`), newsletter, search, quiz/consult/trade-in submittable patterns (see §5)                                                                                                                  | `src/lib/studio/catalog.ts:1388-1395`, `src/lib/studio/catalog.ts:1405-1412`, `src/lib/contact.functions.ts:4-24`, `src/lib/newsletter.functions.ts:13-50` |
 | 11  | Sign in              | Storefront account entry: header `account_cart` link + `src/routes/store.$slug.account.tsx` + `src/routes/account.tsx`; there is **no** sign-in theme template — the theme's job is the link, not the form | `src/lib/studio/catalog.ts:1737-1743`, `src/routes/store.$slug.account.tsx`, `src/routes/account.tsx`                                                      |
 | 12  | Sign up              | Same surface as sign in (merchant console auth at `src/routes/auth.tsx`); theme must not invent its own credential form                                                                                    | `src/routes/auth.tsx`                                                                                                                                      |
 
@@ -466,8 +466,8 @@ state machine behind it.
   merchandising `:1521-1660`, PDP `:1661-1895`, collection/search
   `:1896-...`, cart/checkout, Atelier/Circuit/Rupaboti/heritage packs).
   The studio panel mirror is `WIDGETS` in `src/lib/studio/catalog.ts:48+`
-  with per-widget `defaults` (e.g. `form` `:2071-2088`, `nav_menu`
-  `:2090-2107`, `newsletter` `:2109-2120`).
+  with per-widget `defaults` (e.g. `form` `:1388-1395`, `nav_menu`
+  `:1396-1404`, `newsletter` `:1405-1412`).
 - Prop conventions: **flat scalars** (`string | number | boolean`) plus
   repeatable `PropRow[]` arrays (`src/lib/builder-ast.ts:245-250`).
   Bilingual text uses `bitext` fields with `${key}_bn` twins filled via
@@ -536,13 +536,13 @@ hex literals or raw colour utilities` in
 Submittable patterns (server validates, client never decides):
 
 - **Contact**: fixed `form` widget defaults
-  (`src/lib/studio/catalog.ts:2071-2088`: heading/body/labels/button/
+  (`src/lib/builder-ast.ts:4712-4723`: heading/body/labels/button/
   successText/consentText/showPhone) → `submitContactFn`
   (`src/lib/contact.functions.ts:4-24`) with
   `{ name, email, phone?, topic: "sales"|"support"|"migration", message,
 locale, honeypot?, renderedAt? }`.
 - **Newsletter**: `newsletter` widget (`src/lib/builder-ast.ts:827-845`,
-  `src/lib/studio/catalog.ts:2109-2120`) → `subscribeNewsletterFn` /
+  `src/lib/builder-ast.ts:1434-1439`) → `subscribeNewsletterFn` /
   `verifyNewsletterFn` / `unsubscribeNewsletterFn`
   (`src/lib/newsletter.functions.ts:13-50`).
 - **Search**: `search_command` widget (`src/lib/builder-ast.ts:1971`)
