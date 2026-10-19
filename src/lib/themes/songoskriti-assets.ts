@@ -4,6 +4,11 @@
  * `themes.server.ts`).
  *
  * Each function returns a list of findings; an empty list is green.
+ *
+ * TEST-SIDE MODULE: it imports `node:fs` (through the CLI gate) and a
+ * server module (`@/lib/themes.server`), so app code must never import it —
+ * that would pull `node:fs` into the client bundle. Only the test suite
+ * imports it.
  */
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { relative, resolve } from "node:path";

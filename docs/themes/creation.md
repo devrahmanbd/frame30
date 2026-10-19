@@ -1084,7 +1084,8 @@ theme may use:
 
 - `/api/public/ph/<seed>` placeholder URLs served by the public asset lane —
   never a file-shaped path under `/api/public/ph/songoskriti/…`;
-- merchant fonts from the closed catalogue in `src/lib/theme-fonts.ts`;
+- merchant fonts from the closed catalogue in `src/lib/theme-fonts.ts`, served
+  from `/api/public/font/<uuid>/<family>/<weight>.woff2`;
 - the two approved Google font origins, `https://fonts.googleapis.com` and
   `https://fonts.gstatic.com`;
 - inline Tabler icon components imported from
