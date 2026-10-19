@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, afterEach } from "vitest";
 import {
   copyFileSync,
   mkdirSync,
@@ -20,6 +20,8 @@ import {
   fileInfo,
 } from "../../../scripts/songoskriti-assets-image.mjs";
 import {
+  blessExpectationFile,
+  blessWorld,
   checkSongoskritiAssets,
   defaultWorld,
 } from "../../../scripts/songoskriti-assets-check.mjs";
@@ -132,8 +134,15 @@ type AssetWorld = {
   };
 };
 
+/**
+ * The synthetic roots the fixtures create. They are removed after every
+ * test so repeated runs do not pile ~27 MB of copied assets into /tmp.
+ */
+const syntheticRoots: string[] = [];
+
 function cleanWorld() {
   const root = mkdtempSync(join(tmpdir(), "songoskriti-assets-"));
+  syntheticRoots.push(root);
   const assetDir = join(root, "public/ph/songoskriti");
   const publicDir = join(root, "public");
   const ownedDir = join(root, "src/lib/themes/songoskriti");
@@ -209,6 +218,12 @@ function codes(result: {
 }
 
 describe("songoskriti asset gate", () => {
+  afterEach(() => {
+    for (const root of syntheticRoots.splice(0)) {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
   it("pins every manifest entry's name, format and floors", async () => {
     await expect(
       ASSETS.map((a) => ({
@@ -369,5 +384,57 @@ describe("songoskriti asset gate", () => {
     expect(codes(checkSongoskritiAssets(world))).toEqual([
       "asset.expectation_drift",
     ]);
+  });
+
+  it("flags a video file whose bytes contradict its extension", () => {
+    const { world } = cleanWorld();
+    // The manifest declares raster and SVG assets only, so a video in the
+    // asset directory is an orphan as well as a container mismatch. The
+    // bytes are a PNG that is NOT the asset's own bytes, so the duplicate
+    // rule stays out of this fixture (copying cat-women.png would also
+    // raise asset.duplicate — correctly).
+    const png = readFileSync(
+      resolve(ROOT, "public/ph/songoskriti/cat-jewelry.png"),
+    );
+    writeFileSync(join(world.assetDir, "clip.mp4"), png);
+    expect(codes(checkSongoskritiAssets(world))).toEqual([
+      "asset.unexpected",
+      "video.format_mismatch",
+    ]);
+  });
+
+  it("does not flag an absolute placeholder-lane URL", () => {
+    const { world } = cleanWorld();
+    ownedSource(
+      world,
+      'cdn: "https://cdn.example.com/api/public/ph/womens/x.svg",',
+    );
+    expect(codes(checkSongoskritiAssets(world))).toEqual([]);
+  });
+
+  it("blesses a corrupt expectation file", () => {
+    const { world } = cleanWorld();
+    const expectationPath = join(
+      world.repoRoot,
+      "scripts/songoskriti-assets-expected.json",
+    );
+    mkdirSync(join(world.repoRoot, "scripts"), { recursive: true });
+    writeFileSync(expectationPath, "{ this is not json");
+    // The CLI's bless action, against a scratch tree with a corrupt
+    // expectation: it must rewrite the file instead of failing on it.
+    const blessed = blessExpectationFile({ repoRoot: world.repoRoot });
+    expect(blessed).toEqual(["cat-women.png"]);
+    const written = JSON.parse(readFileSync(expectationPath, "utf8"));
+    expect(written.assets).toHaveLength(1);
+    expect(written.assets[0].name).toBe("cat-women.png");
+    expect(written.assets[0].sha256).toBe(
+      sha256(readFileSync(join(world.assetDir, "cat-women.png"))),
+    );
+  });
+
+  it("builds the bless world without reading the expectation", () => {
+    const world = blessWorld();
+    expect(world.expectation).toBeNull();
+    expect(world.assetDir).toContain("public/ph/songoskriti");
   });
 });

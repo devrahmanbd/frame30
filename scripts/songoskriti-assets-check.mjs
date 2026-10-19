@@ -48,6 +48,13 @@ const EXPECTATION_PATH = resolve(
 /** The deterministic local placeholder endpoint lane (spec §5.3). */
 const PLACEHOLDER_LANE = "/api/public/ph/";
 
+/**
+ * The placeholder lane inside a literal. The lane is a PATH, so it is
+ * recognised wherever it appears at a path boundary — including inside an
+ * absolute URL such as `https://cdn.example.com/api/public/ph/…`.
+ */
+const PLACEHOLDER_LANE_PATTERN = /\/api\/public\/ph\/[^\s"',)]*/;
+
 /** Source extensions the reference scanner reads. */
 const SCAN_EXTENSIONS = [".ts", ".tsx", ".js", ".jsx", ".mjs"];
 
@@ -64,6 +71,26 @@ const EXCLUDED_DIRS = new Set([
 
 /** Video extensions resolved under the theme namespace. */
 const VIDEO_EXTENSIONS = [".mp4", ".webm", ".mov", ".m4v"];
+
+/**
+ * The container signature each video extension promises. ISO BMFF (mp4, m4v,
+ * mov) carries the `ftyp` box type at offset 4; WebM carries the EBML magic
+ * at offset 0.
+ */
+const VIDEO_SIGNATURES = {
+  mp4: (buffer) =>
+    buffer.length >= 8 && buffer.subarray(4, 8).toString("ascii") === "ftyp",
+  m4v: (buffer) =>
+    buffer.length >= 8 && buffer.subarray(4, 8).toString("ascii") === "ftyp",
+  mov: (buffer) =>
+    buffer.length >= 8 && buffer.subarray(4, 8).toString("ascii") === "ftyp",
+  webm: (buffer) =>
+    buffer.length >= 4 &&
+    buffer[0] === 0x1a &&
+    buffer[1] === 0x45 &&
+    buffer[2] === 0xdf &&
+    buffer[3] === 0xa3,
+};
 
 /** The sentinel that marks the current asset-path migration (spec §5.4). */
 const MIGRATION_SENTINEL = "-- songoskriti-asset-paths: current";
@@ -121,36 +148,71 @@ export function formatFromName(name) {
  * `process.cwd()` — so the CLI and the vitest suite exercise the same tree.
  */
 export function defaultWorld() {
+  return buildWorld(readExpectation());
+}
+
+/**
+ * The world for `--bless-expectation`: the expectation file is NOT read, so
+ * the bless path — the escape hatch for a broken expectation — works
+ * exactly when the expectation is corrupt.
+ */
+export function blessWorld(options = {}) {
+  const root = options.repoRoot ?? REPO_ROOT;
+  return buildWorld(
+    null,
+    root,
+    options.expectationPath ??
+      resolve(root, "scripts/songoskriti-assets-expected.json"),
+  );
+}
+
+/**
+ * The `--bless-expectation` action: rewrite the expectation from the tree.
+ * It never reads the expectation, so it works exactly when the expectation
+ * file is corrupt.
+ */
+export function blessExpectationFile(options = {}) {
+  return blessExpectation(blessWorld(options));
+}
+
+/** The frozen expectation, parsed. */
+function readExpectation() {
+  return JSON.parse(readFileSync(EXPECTATION_PATH, "utf8"));
+}
+
+function buildWorld(
+  expectation,
+  root = REPO_ROOT,
+  expectationPath = EXPECTATION_PATH,
+) {
   return {
-    repoRoot: REPO_ROOT,
-    assetDir: resolve(REPO_ROOT, ASSET_DIR),
-    publicDir: resolve(REPO_ROOT, "public"),
+    repoRoot: root,
+    assetDir: resolve(root, ASSET_DIR),
+    publicDir: resolve(root, "public"),
+    expectationPath,
     scanRoots: [
-      { path: resolve(REPO_ROOT, "src/lib/themes/songoskriti"), kind: "owned" },
+      { path: resolve(root, "src/lib/themes/songoskriti"), kind: "owned" },
       {
-        path: resolve(REPO_ROOT, "src/components/builder/songoskriti.tsx"),
+        path: resolve(root, "src/components/builder/songoskriti.tsx"),
         kind: "owned",
       },
       {
-        path: resolve(
-          REPO_ROOT,
-          "src/components/builder/songoskriti-motion.ts",
-        ),
+        path: resolve(root, "src/components/builder/songoskriti-motion.ts"),
         kind: "owned",
       },
-      { path: resolve(REPO_ROOT, "src/lib/demo-catalog.ts"), kind: "shared" },
-      { path: resolve(REPO_ROOT, "src/lib/header-copy.ts"), kind: "shared" },
-      { path: resolve(REPO_ROOT, "src/components/store"), kind: "shared" },
-      { path: resolve(REPO_ROOT, "src/routes"), kind: "shared" },
+      { path: resolve(root, "src/lib/demo-catalog.ts"), kind: "shared" },
+      { path: resolve(root, "src/lib/header-copy.ts"), kind: "shared" },
+      { path: resolve(root, "src/components/store"), kind: "shared" },
+      { path: resolve(root, "src/routes"), kind: "shared" },
     ],
-    migrationsRoot: resolve(REPO_ROOT, "supabase/migrations"),
+    migrationsRoot: resolve(root, "supabase/migrations"),
     buildRoots: [
-      resolve(REPO_ROOT, "dist"),
-      resolve(REPO_ROOT, ".output"),
-      resolve(REPO_ROOT, ".vinxi"),
+      resolve(root, "dist"),
+      resolve(root, ".output"),
+      resolve(root, ".vinxi"),
     ],
     manifest: ASSETS,
-    expectation: JSON.parse(readFileSync(EXPECTATION_PATH, "utf8")),
+    expectation,
   };
 }
 
@@ -192,6 +254,16 @@ export function checkSongoskritiAssets(world) {
       code: "asset.unexpected",
       path: relativePath(world.repoRoot, file.path),
       message: "the file is not in the manifest (orphan or stale copy)",
+    });
+  }
+
+  // --- video files whose bytes contradict their extension --------------
+  for (const file of disk) {
+    if (!videoFormatMismatch(file)) continue;
+    findings.push({
+      code: "video.format_mismatch",
+      path: relativePath(world.repoRoot, file.path),
+      message: `the bytes are not a ${extensionOf(file.name)} container`,
     });
   }
 
@@ -245,7 +317,7 @@ export function blessExpectation(world) {
     sha256: file.sha256,
   }));
   writeFileSync(
-    EXPECTATION_PATH,
+    world.expectationPath ?? EXPECTATION_PATH,
     `${JSON.stringify({ assets: records }, null, 2)}\n`,
   );
   return records.map((record) => record.name);
@@ -491,18 +563,19 @@ function scanLiveCode(world, manifestNames) {
       }
 
       // The placeholder lane is an endpoint, not a file: it is exempt from
-      // the URL rules and it is never reference-extracted.
-      if (value.startsWith(PLACEHOLDER_LANE)) {
-        const segments = value.slice(PLACEHOLDER_LANE.length).split("/");
-        if (file.kind === "owned" && segments.includes(THEME)) {
-          findings.push({
-            code: "url.wrong_form",
-            path: at,
-            message: `the placeholder lane does not own theme files (${value})`,
-          });
-        }
-        continue;
+      // the URL rules wherever it appears at a path boundary, and it is
+      // never reference-extracted — its text may contain `/ph/<theme>/…`
+      // as a substring, which would otherwise be read as a theme
+      // reference.
+      const lane = placeholderLane(value);
+      if (lane && file.kind === "owned" && lane.segments.includes(THEME)) {
+        findings.push({
+          code: "url.wrong_form",
+          path: at,
+          message: `the placeholder lane does not own theme files (${lane.text})`,
+        });
       }
+      const referenceText = lane ? lane.head : value;
 
       if (file.kind === "owned" && PACKAGE_FORM_PATTERN.test(value)) {
         findings.push({
@@ -513,7 +586,7 @@ function scanLiveCode(world, manifestNames) {
       }
 
       let matched = false;
-      for (const match of value.matchAll(REFERENCE_PATTERN)) {
+      for (const match of referenceText.matchAll(REFERENCE_PATTERN)) {
         matched = true;
         const theme = match[1];
         const name = match[2];
@@ -555,12 +628,13 @@ function scanLiveCode(world, manifestNames) {
 
       if (
         !matched &&
-        (value.includes("/ph/") || value.includes(PLACEHOLDER_LANE))
+        (referenceText.includes("/ph/") ||
+          referenceText.includes(PLACEHOLDER_LANE))
       ) {
         notes.push({
           code: "note.computed_ref",
           path: at,
-          message: `"${value}" is a path prefix that cannot be resolved statically`,
+          message: `"${referenceText}" is a path prefix that cannot be resolved statically`,
         });
       }
     }
@@ -679,6 +753,26 @@ function readAssetDir(assetDir) {
 }
 
 /**
+ * The placeholder lane inside a literal, if any. The lane is a PATH: it is
+ * recognised wherever it appears at a path boundary, so an absolute URL such
+ * as `https://cdn.example.com/api/public/ph/womens/x.svg` is in the lane
+ * too. `head` is the literal with the lane removed — the lane is never
+ * reference-extracted, because its text may contain `/ph/<theme>/…` as a
+ * substring.
+ */
+function placeholderLane(value) {
+  const match = value.match(PLACEHOLDER_LANE_PATTERN);
+  if (!match) return null;
+  const text = match[0];
+  const index = match.index ?? 0;
+  return {
+    text,
+    head: value.slice(0, index) + value.slice(index + text.length),
+    segments: text.slice(PLACEHOLDER_LANE.length).split("/"),
+  };
+}
+
+/**
  * The live source files of the scan roots. A file that sits under an owned
  * root AND a shared root is owned — the owned rules are the stricter ones.
  */
@@ -730,6 +824,24 @@ function extensionOf(name) {
 
 function isVideoName(name) {
   return VIDEO_EXTENSIONS.includes(extensionOf(name));
+}
+
+/**
+ * A video file whose bytes contradict its extension (spec §5.4). The
+ * manifest declares raster and SVG assets only, so the rule is reachable
+ * through a file in the theme's asset directory.
+ */
+function videoFormatMismatch(file) {
+  const extension = extensionOf(file.name).replace(/^\./, "");
+  const signature = VIDEO_SIGNATURES[extension];
+  if (!signature) return false;
+  let buffer;
+  try {
+    buffer = readFileSync(file.path);
+  } catch {
+    return false;
+  }
+  return !signature(buffer);
 }
 
 function isParseableSvg(path) {
@@ -893,7 +1005,10 @@ function printReport(result) {
 function runCli(argv) {
   if (argv.includes("--bless-expectation")) {
     try {
-      const touched = blessExpectation(defaultWorld());
+      // The bless path never reads the expectation: it is the escape hatch
+      // for a corrupt expectation file and must work exactly when the
+      // expectation is broken.
+      const touched = blessExpectationFile();
       for (const name of touched) console.log(`blessed ${name}`);
       console.log(
         `songoskriti expectation blessed — ${touched.length} record(s).`,
