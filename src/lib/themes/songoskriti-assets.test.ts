@@ -41,6 +41,7 @@ import {
   checkSongoskritiPackaging,
 } from "./songoskriti-assets";
 import { SONGOSKRITI_TOKENS } from "@/lib/themes/songoskriti/tokens";
+import { FONT_PRELOAD } from "@/lib/web-vitals";
 
 const ROOT = resolve(import.meta.dirname, "..", "..", "..");
 const ASSET_DIR = resolve(ROOT, "public/ph/songoskriti");
@@ -583,20 +584,205 @@ describe("songoskriti asset generator", () => {
 });
 
 describe("songoskriti fonts, icons and packaging", () => {
+  /**
+   * The scratch roots the fixtures below create. They are removed after
+   * every test so repeated runs leave nothing behind.
+   */
+  const scratchRoots: string[] = [];
+
+  afterEach(() => {
+    for (const root of [
+      ...syntheticRoots.splice(0),
+      ...scratchRoots.splice(0),
+    ]) {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  /** A scratch tree with one theme-owned icon consumer. */
+  function scratchIconConsumer(source: string): string {
+    const root = mkdtempSync(join(tmpdir(), "songoskriti-icons-"));
+    scratchRoots.push(root);
+    const dir = join(root, "src/lib/themes/songoskriti");
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, "header-presentation.tsx"), source);
+    return root;
+  }
+
   it("every font family the theme names is in the closed catalogue", () => {
     expect(checkSongoskritiFonts()).toEqual([]);
   });
 
   it("the theme pairing names a Bengali-capable family", () => {
+    // The property is the EMITTED stack, not the literal pair: a pairing of
+    // two Latin-only families is fine as long as the emitted stack names a
+    // Bengali-capable face. Pinning the literal pair alone proves nothing —
+    // it stays green when the emitted stack loses its Bengali face.
+    expect(
+      checkSongoskritiFonts().filter(
+        (finding) => finding.code === "font.theme_stack_not_bengali",
+      ),
+    ).toEqual([]);
+  });
+
+  it("the theme's brand pairing is the editorial serif", () => {
     expect(SONGOSKRITI_TOKENS.fontDisplay).toBe("Playfair Display");
     expect(SONGOSKRITI_TOKENS.fontBody).toBe("Inter");
+  });
+
+  it("flags a family the closed catalogue does not know", () => {
+    const findings = checkSongoskritiFonts({
+      ...SONGOSKRITI_TOKENS,
+      fontDisplay: "Comic Sans MS",
+    });
+    expect(findings.map((f) => f.code)).toContain("font.unknown_family");
+    expect(findings.map((f) => f.message).join(" ")).toContain("Comic Sans MS");
+  });
+
+  it("flags a preload that drops the Bengali face", () => {
+    const findings = checkSongoskritiFonts(SONGOSKRITI_TOKENS, {
+      ...FONT_PRELOAD,
+      stylesheet:
+        "https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap",
+    });
+    expect(findings.map((f) => f.code)).toContain("font.bengali_not_loaded");
+  });
+
+  it("flags a preload that points outside the approved origins", () => {
+    const findings = checkSongoskritiFonts(SONGOSKRITI_TOKENS, {
+      ...FONT_PRELOAD,
+      stylesheet:
+        "https://fonts.example.com/css2?family=Noto+Sans+Bengali&subset=latin,bengali",
+    });
+    expect(findings.map((f) => f.code)).toContain("font.bad_origin");
   });
 
   it("every tabler icon the theme imports exists in the generated module", () => {
     expect(checkSongoskritiIcons(ROOT)).toEqual([]);
   });
 
+  it("flags an icon imported from the generated module but not exported by it", () => {
+    const root = scratchIconConsumer(
+      'import { GhostIcon } from "@/components/icons/tabler";\n',
+    );
+    const findings = checkSongoskritiIcons(root);
+    expect(findings.map((f) => f.code)).toEqual(["icon.unknown"]);
+    expect(findings[0]?.message).toContain("GhostIcon");
+  });
+
+  it("flags an icon referenced as a URL instead of an inline component", () => {
+    const root = scratchIconConsumer(
+      [
+        'import { Search } from "@/components/icons/tabler";',
+        'const cart = "/icons/cart.svg";',
+        'export const Icon = () => <img src={"/icons/cart.svg"} />;',
+        "",
+      ].join("\n"),
+    );
+    const findings = checkSongoskritiIcons(root);
+    expect(findings.map((f) => f.code)).toEqual(["icon.url_ref"]);
+    expect(findings[0]?.message).toContain("/icons/cart.svg");
+  });
+
+  it("does not flag the icon module path or a theme raster", () => {
+    const root = scratchIconConsumer(
+      [
+        'import { Search } from "@/components/icons/tabler";',
+        'const logo = "/ph/songoskriti/logo-lockup.svg";',
+        "",
+      ].join("\n"),
+    );
+    expect(checkSongoskritiIcons(root)).toEqual([]);
+  });
+
   it("the official package carries no asset manifest and no package-form refs", () => {
     expect(checkSongoskritiPackaging(defaultWorld())).toEqual([]);
+  });
+
+  /**
+   * A minimal, known-clean package. The rule fixtures below inject one
+   * defect into it, so each test pins exactly one rule; the LIVE package is
+   * pinned separately by the green-path test above.
+   */
+  const basePackage = {
+    templates: { index: { header: [], main: [], footer: [] } },
+    tokens: SONGOSKRITI_TOKENS,
+    version: "1.0.0",
+  };
+
+  it("flags a package that carries an asset manifest", () => {
+    const { world } = cleanWorld();
+    const findings = checkSongoskritiPackaging(world, {
+      ...basePackage,
+      assetManifest: { files: [] },
+    });
+    expect(findings.map((f) => f.code)).toEqual(["pkg.asset_manifest"]);
+  });
+
+  it("flags a package that carries an embedded asset payload", () => {
+    const { world } = cleanWorld();
+    const findings = checkSongoskritiPackaging(world, {
+      ...basePackage,
+      filesBase64: ["aGk="],
+    });
+    expect(findings.map((f) => f.code)).toEqual(["pkg.asset_manifest"]);
+    expect(findings[0]?.message).toContain("filesBase64");
+  });
+
+  it("flags a package-form ref inside the official templates", () => {
+    const { world } = cleanWorld();
+    const findings = checkSongoskritiPackaging(world, {
+      ...basePackage,
+      templates: {
+        index: {
+          header: [],
+          main: [
+            {
+              id: "image-1",
+              type: "image",
+              props: { src: "assets/cat-women.png" },
+            },
+          ],
+          footer: [],
+        },
+      },
+    });
+    expect(findings.map((f) => f.code)).toEqual(["pkg.package_ref"]);
+    expect(findings[0]?.message).toContain("assets/cat-women.png");
+  });
+
+  it("flags a theme raster copied outside the theme asset directory", () => {
+    const { world } = cleanWorld();
+    const other = join(world.publicDir, "media");
+    mkdirSync(other, { recursive: true });
+    copyFileSync(
+      join(world.assetDir, "cat-women.png"),
+      join(other, "cat-women.png"),
+    );
+    const findings = checkSongoskritiPackaging(world);
+    expect(findings.map((f) => f.code)).toEqual(["pkg.asset_copy"]);
+    expect(findings[0]?.path).toContain("media/cat-women.png");
+  });
+
+  it("flags a packaged theme directory under a build root", () => {
+    const { world } = cleanWorld();
+    mkdirSync(join(world.buildRoots[0], "themes", "songoskriti"), {
+      recursive: true,
+    });
+    const findings = checkSongoskritiPackaging(world);
+    expect(findings.map((f) => f.code)).toEqual(["pkg.official_zip"]);
+    expect(findings[0]?.path).toContain("themes/songoskriti");
+  });
+
+  it("flags a packaged theme artifact file under a build root", () => {
+    const { world } = cleanWorld();
+    mkdirSync(join(world.buildRoots[0], "theme"), { recursive: true });
+    writeFileSync(
+      join(world.buildRoots[0], "theme", "songoskriti.songoskriti.zip"),
+      "PK",
+    );
+    const findings = checkSongoskritiPackaging(world);
+    expect(findings.map((f) => f.code)).toEqual(["pkg.official_zip"]);
+    expect(findings[0]?.path).toContain("songoskriti.songoskriti.zip");
   });
 });
