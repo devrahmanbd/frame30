@@ -52,8 +52,8 @@ rule holds on the package install lane, where widening is
 `diffCapabilities` (`src/lib/package-review.ts:168`), coverage is
 `coversWidening` (`src/lib/package-review.ts:90`), and an uncovered
 update fails with `package.consent_required`
-(`src/lib/package-install.server.ts:730-738` for themes,
-`:1092-1100` for plugins). Flagged content additionally needs a
+(`src/lib/package-install.server.ts:1020-1029` for themes,
+`:1449-1462` for plugins). Flagged content additionally needs a
 recorded approval before it goes live (`theme.approved` /
 `plugin.approved`; see [the package contract](../packages/contract.md)).
 
