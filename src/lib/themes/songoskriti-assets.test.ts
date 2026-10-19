@@ -1,9 +1,20 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 // Plain .mjs module — imported across runners, so it must stay dependency-free.
 import {
   ASSETS,
   BUDGETS,
 } from "../../../scripts/songoskriti-assets-manifest.mjs";
+import {
+  imageInfo,
+  sha256,
+  fileInfo,
+} from "../../../scripts/songoskriti-assets-image.mjs";
+import expectation from "../../../scripts/songoskriti-assets-expected.json";
+
+const ROOT = resolve(import.meta.dirname, "..", "..", "..");
+const ASSET_DIR = resolve(ROOT, "public/ph/songoskriti");
 
 describe("songoskriti asset manifest", () => {
   it("declares 21 unique theme assets with a valid format and extension", () => {
@@ -37,5 +48,40 @@ describe("songoskriti asset manifest", () => {
     expect(BUDGETS.maxTotalBytes).toBe(28_000_000);
     expect(BUDGETS.maxBytesPerPixel.png).toBe(2);
     expect(BUDGETS.maxBytesPerPixel.jpeg).toBe(1);
+  });
+});
+
+describe("songoskriti asset bytes", () => {
+  it("decodes PNG and JPEG geometry from the bytes alone", () => {
+    const png = imageInfo(readFileSync(resolve(ASSET_DIR, "cat-women.png")));
+    expect(png.format).toBe("png");
+    expect(png.width).toBe(1024);
+    expect(png.height).toBe(1024);
+    const jpeg = imageInfo(
+      readFileSync(resolve(ASSET_DIR, "hero-festive.jpg")),
+    );
+    expect(jpeg.format).toBe("jpeg");
+    expect(jpeg.width).toBe(1376);
+    expect(jpeg.height).toBe(768);
+    const svg = imageInfo(readFileSync(resolve(ASSET_DIR, "logo-lockup.svg")));
+    expect(svg.format).toBe("svg");
+  });
+
+  it("the expectation matches the shipped bytes exactly", () => {
+    expect(expectation.assets).toHaveLength(21);
+    for (const rec of expectation.assets) {
+      const info = fileInfo(resolve(ASSET_DIR, rec.name));
+      expect(info, rec.name).not.toBeNull();
+      expect(info?.format).toBe(rec.format);
+      expect(info?.width).toBe(rec.width);
+      expect(info?.height).toBe(rec.height);
+      expect(info?.sha256).toBe(rec.sha256);
+    }
+  });
+
+  it("the expectation and the manifest name the same set", () => {
+    expect(expectation.assets.map((a) => a.name).sort()).toEqual(
+      ASSETS.map((a) => a.name).sort(),
+    );
   });
 });

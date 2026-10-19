@@ -1,0 +1,151 @@
+{
+  "assets": [
+    {
+      "name": "campaign-men.jpg",
+      "format": "jpeg",
+      "width": 896,
+      "height": 1200,
+      "sha256": "a99fcdf72d2d5119043d02f0e7cc6a48f68361e89fc3dc163782dbba2d2f76a4"
+    },
+    {
+      "name": "cat-jewelry.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "e5d042f1f9577ae0f7b66416daee796e4f9397bcdb749e6157cfb8e94f25ee82"
+    },
+    {
+      "name": "cat-kids.jpg",
+      "format": "jpeg",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "bdff81cd0b52543574d4a7d3f643f7d03742912adf956c64ff08b88f9b5475bb"
+    },
+    {
+      "name": "cat-living.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "85e05cc8d591f68053e7d142f642d175480d2cdc59aa0422b785abf297751855"
+    },
+    {
+      "name": "cat-men.jpg",
+      "format": "jpeg",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "af29610372fbf0fa75c0d3223f0866912c8b2818a2fb249515e2be63e619e4a4"
+    },
+    {
+      "name": "cat-newin.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "b38ec97d7e3d8fdb96b5cf067d408d5b6bed4388f9f22b032cdc1fcc1578e69d"
+    },
+    {
+      "name": "cat-women.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "e5488a09b6f07bf953d22266abf9edecab46db5e73f03de24d527c8edfed07a5"
+    },
+    {
+      "name": "edit-festive-main.jpg",
+      "format": "jpeg",
+      "width": 896,
+      "height": 1200,
+      "sha256": "de2fca2861fb4b8ca9f480858201ec3ae9e3f48071edfb8d939b62ff52af05d9"
+    },
+    {
+      "name": "hero-artisans.jpg",
+      "format": "jpeg",
+      "width": 1376,
+      "height": 768,
+      "sha256": "3e82feef72d67ba61dee2398602edfc39fa83bb62a96f69df8b7582e1b416781"
+    },
+    {
+      "name": "hero-festive.jpg",
+      "format": "jpeg",
+      "width": 1376,
+      "height": 768,
+      "sha256": "62084a21978d95894c6318014c494f23399b44f1472bd30f5aff3768851aef8e"
+    },
+    {
+      "name": "hero-weaves.jpg",
+      "format": "jpeg",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "ce593e5329eea73fdc6496294376d16948f19f92fec969e3fb455f99927933bc"
+    },
+    {
+      "name": "logo-lockup.svg",
+      "format": "svg",
+      "width": null,
+      "height": null,
+      "sha256": "a76db7c44b3f449a31ce6a81c5e8f882351d38ceecbef8d6dafbc6980f8892d0"
+    },
+    {
+      "name": "prod-necklace.png",
+      "format": "png",
+      "width": 900,
+      "height": 1200,
+      "sha256": "714b3069600f6479eeecb6ccc00d749dac5acc189cd1d6f3ec89eb34cbd9e100"
+    },
+    {
+      "name": "prod-panjabi.png",
+      "format": "png",
+      "width": 900,
+      "height": 1200,
+      "sha256": "8e8b92752c0a78c876a835496ed6fa257316e69dd5ea48dd3428d08f96dd0beb"
+    },
+    {
+      "name": "prod-saree.png",
+      "format": "png",
+      "width": 900,
+      "height": 1200,
+      "sha256": "e00db562470b505835c30bf534dd94124bc1429a0f08aeeec2a1e44dc80bd871"
+    },
+    {
+      "name": "ugc-1.jpg",
+      "format": "jpeg",
+      "width": 896,
+      "height": 1200,
+      "sha256": "58be24ba8be30d6ed8ad0fb2d91e5524acfe44f46ca54032c968facfb976b80e"
+    },
+    {
+      "name": "ugc-2.jpg",
+      "format": "jpeg",
+      "width": 896,
+      "height": 1200,
+      "sha256": "3331b49afe6cef2dbf1bca56c6e566fe0fb0c2edb63006f83617ba20fe33d11d"
+    },
+    {
+      "name": "ugc-3.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "89675fff1a66ac4cdd0daeed3dade48a33496e8527332426994b7023388c1c8a"
+    },
+    {
+      "name": "ugc-4.png",
+      "format": "png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "ac2afc1c1e29489f01a16f2395d14e8ec4c92512767981c6367f8cfede998e4b"
+    },
+    {
+      "name": "ugc-5.jpg",
+      "format": "jpeg",
+      "width": 896,
+      "height": 1200,
+      "sha256": "5ae1bc150ed189b12fa080c261883b8321e42cb343d8a734f483a749fb963fe6"
+    },
+    {
+      "name": "ugc-6.jpg",
+      "format": "jpeg",
+      "width": 896,
+      "height": 1200,
+      "sha256": "e7f81c755af86572d26f113912f07f82d2a8981bd1d58176480e5d1e9123a59e"
+    }
+  ]
+}
