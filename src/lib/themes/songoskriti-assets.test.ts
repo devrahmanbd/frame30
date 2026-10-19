@@ -14,6 +14,7 @@ import { join, resolve } from "node:path";
 import {
   ASSETS,
   BUDGETS,
+  formatFromName,
 } from "../../../scripts/songoskriti-assets-manifest.mjs";
 import {
   imageInfo,
@@ -78,6 +79,19 @@ describe("songoskriti asset manifest", () => {
     expect(BUDGETS.maxTotalBytes).toBe(28_000_000);
     expect(BUDGETS.maxBytesPerPixel.png).toBe(2);
     expect(BUDGETS.maxBytesPerPixel.jpeg).toBe(1);
+  });
+
+  it("owns the one name-to-format rule the gate and the generator share", () => {
+    // The gate compares the bytes against this claim and the generator's
+    // write path refuses a payload that contradicts it, so the rule has ONE
+    // implementation. An extension that claims no known format claims none
+    // at all — never a guess.
+    expect(formatFromName("hero-festive.jpg")).toBe("jpeg");
+    expect(formatFromName("hero-festive.jpeg")).toBe("jpeg");
+    expect(formatFromName("cat-women.png")).toBe("png");
+    expect(formatFromName("logo-lockup.svg")).toBe("svg");
+    expect(formatFromName("clip.mp4")).toBeNull();
+    expect(formatFromName("cat-women")).toBeNull();
   });
 });
 
@@ -226,11 +240,56 @@ function ownedSource(world: AssetWorld, line: string) {
   );
 }
 
+/**
+ * The bytes of a PNG that CLAIMS the given geometry and is exactly `bytes`
+ * long.
+ *
+ * The budget rules compare the file's SIZE against the geometry it claims,
+ * and that pair is all the gate reads: the format comes from the PNG
+ * signature, the geometry from the IHDR chunk, the size from the file
+ * length. So the fixture patches the IHDR fields and pads the file to the
+ * wanted length — the bytes stay a PNG, and the two numbers the rules
+ * measure are the two the fixture controls.
+ */
+function pngClaiming(width: number, height: number, bytes: number): Buffer {
+  const source = readFileSync(
+    resolve(ROOT, "public/ph/songoskriti/cat-women.png"),
+  );
+  const buffer = Buffer.alloc(bytes);
+  source.copy(buffer, 0);
+  buffer.writeUInt32BE(width, 16);
+  buffer.writeUInt32BE(height, 20);
+  return buffer;
+}
+
+/**
+ * Re-derive the expectation entry from the mutated tree (spec §10): the
+ * digest leg stays consistent, so the fixture measures the rule it is about
+ * and not the drift that every byte change would otherwise raise.
+ */
+function regenerateExpectation(world: AssetWorld, name = "cat-women.png") {
+  const info = fileInfo(join(world.assetDir, name));
+  const record = world.expectation.assets.find((a) => a.name === name);
+  if (!info || !record)
+    throw new Error("the fixture has no expectation record");
+  if (info.format === null) {
+    throw new Error("the fixture's file has no readable format");
+  }
+  record.format = info.format;
+  record.width = info.width;
+  record.height = info.height;
+  record.sha256 = info.sha256;
+}
+
 function codes(result: {
   findings: { code: string }[];
   notes: { code: string }[];
 }) {
   return result.findings.map((f) => f.code).sort();
+}
+
+function noteCodes(result: { notes: { code: string }[] }) {
+  return result.notes.map((n) => n.code).sort();
 }
 
 describe("songoskriti asset gate", () => {
@@ -428,6 +487,78 @@ describe("songoskriti asset gate", () => {
     expect(codes(checkSongoskritiAssets(world))).toEqual([]);
   });
 
+  it("flags an oversized file", () => {
+    const { world } = cleanWorld();
+    // 3,000,001 B over a 2048x2048 claim: over the 3,000,000 B file budget
+    // but only 0.72 B/px, under the 2.0 B/px density budget — so the
+    // oversized rule fires alone.
+    writeFileSync(
+      join(world.assetDir, "cat-women.png"),
+      pngClaiming(2048, 2048, 3_000_001),
+    );
+    regenerateExpectation(world);
+    expect(codes(checkSongoskritiAssets(world))).toEqual(["asset.oversized"]);
+  });
+
+  it("flags an over-density file", () => {
+    const { world } = cleanWorld();
+    // 2,500,000 B over the real 1024x1024 claim: 2.38 B/px, over the
+    // 2.0 B/px density budget, but under the 3,000,000 B file budget — so
+    // the density rule fires alone.
+    writeFileSync(
+      join(world.assetDir, "cat-women.png"),
+      pngClaiming(1024, 1024, 2_500_000),
+    );
+    regenerateExpectation(world);
+    expect(codes(checkSongoskritiAssets(world))).toEqual(["asset.density"]);
+  });
+
+  it("flags JPEG bytes under a .png name whose manifest entry declares png", () => {
+    const { world } = cleanWorld();
+    // The manifest still declares `png` and the name still says `.png`, so
+    // the name and the declaration agree with each other: only the BYTES
+    // disagree, and the format rule fires alone.
+    const jpeg = readFileSync(
+      resolve(ROOT, "public/ph/songoskriti/hero-festive.jpg"),
+    );
+    writeFileSync(join(world.assetDir, "cat-women.png"), jpeg);
+    regenerateExpectation(world);
+    expect(codes(checkSongoskritiAssets(world))).toEqual([
+      "asset.format_mismatch",
+    ]);
+  });
+
+  it("flags an external absolute URL in an asset slot", () => {
+    const { world } = cleanWorld();
+    writeFileSync(
+      join(world.scanRoots[0].path, "homepage.ts"),
+      'image: "/ph/songoskriti/cat-women.png",\n' +
+        'const art = <img src="https://cdn.example.com/x.png" />;\n',
+    );
+    expect(codes(checkSongoskritiAssets(world))).toEqual(["url.wrong_form"]);
+  });
+
+  it("flags a video reference that does not resolve", () => {
+    const { world } = cleanWorld();
+    ownedSource(world, 'clip: "/ph/songoskriti/clip.mp4",');
+    expect(codes(checkSongoskritiAssets(world))).toEqual(["video.missing"]);
+  });
+
+  it("reports a retired path in the sentinel migration as a note", () => {
+    const { world } = cleanWorld();
+    const migrations = join(world.repoRoot, "supabase/migrations");
+    mkdirSync(migrations, { recursive: true });
+    writeFileSync(
+      join(migrations, "20261019000000_songoskriti_asset_paths.sql"),
+      "-- songoskriti-asset-paths: current\n" +
+        "-- update public.products set image_url = '/ph/songoskriti/cat-men.png';\n",
+    );
+    const result = checkSongoskritiAssets(world);
+    // A note, never a finding: the gate stays green.
+    expect(codes(result)).toEqual([]);
+    expect(noteCodes(result)).toEqual(["note.migration_ref"]);
+  });
+
   it("blesses a corrupt expectation file", () => {
     const { world } = cleanWorld();
     const expectationPath = join(
@@ -477,6 +608,21 @@ describe("songoskriti asset generator", () => {
       resolve(ROOT, "public/ph/songoskriti/cat-women.png"),
     );
     expect(() => assertFormatMatches("cat-women.png", png)).not.toThrow();
+  });
+
+  it("refuses a file name whose extension claims no known format", () => {
+    // The old rule assumed "svg" for every name that was not a .jpg or a
+    // .png, so a typo wrote a PNG payload under a name that claimed
+    // nothing. The shared rule claims no format, so the write is refused.
+    const png = readFileSync(
+      resolve(ROOT, "public/ph/songoskriti/cat-women.png"),
+    );
+    expect(() => assertFormatMatches("cat-women.webp", png)).toThrow(
+      /unsupported format/i,
+    );
+    expect(() => assertFormatMatches("cat-women", png)).toThrow(
+      /unsupported format/i,
+    );
   });
 
   it("plans the 21 assets deterministically", () => {
@@ -580,6 +726,41 @@ describe("songoskriti asset generator", () => {
     expect(stderr).toContain("extra file in the output directory: stray.png");
     // The stray file is the ONLY problem: nothing is missing.
     expect(stderr).not.toContain("missing:");
+  });
+
+  it("--check reports a missing file in the output directory", () => {
+    const dir = mkdtempSync(join(tmpdir(), "songoskriti-missing-cli-"));
+    generatorScratchRoots.push(dir);
+    const missing = "ugc-6.jpg";
+    // Copies, not hard links: a hard link needs the workspace and TMPDIR on
+    // one filesystem, and CI's checkout and TMPDIR may sit on different
+    // mounts (EXDEV). The copy costs ~25 MB of scratch space, which the
+    // afterEach removes.
+    for (const record of expectation.assets) {
+      if (record.name === missing) continue;
+      copyFileSync(resolve(ASSET_DIR, record.name), join(dir, record.name));
+    }
+    let status = 0;
+    let stderr = "";
+    try {
+      execFileSync(
+        "node",
+        ["scripts/gen-songoskriti-assets.mjs", "--check", "--out", dir],
+        {
+          cwd: ROOT,
+          encoding: "utf8",
+          env: { ...process.env, GEMINI_API_KEY: "" },
+        },
+      );
+    } catch (error) {
+      const failure = error as { status?: number; stderr?: string };
+      status = failure.status ?? 0;
+      stderr = String(failure.stderr ?? "");
+    }
+    expect(status).toBe(1);
+    expect(stderr).toContain(`missing: ${missing}`);
+    // The missing file is the ONLY problem: nothing extra is there.
+    expect(stderr).not.toContain("extra file in the output directory:");
   });
 });
 
