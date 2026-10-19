@@ -2,9 +2,12 @@
  * Byte-level asset utilities — no dependencies, no image libraries.
  *
  * PNG geometry comes from the IHDR chunk; JPEG geometry from the first
- * SOF0/SOF1/SOF2 marker; SVG is detected from the root element. The
- * returned `format` is what the BYTES are, which is what the gate compares
- * against the file name and the manifest.
+ * start-of-frame marker of the SOF range (0xC0-0xCF, minus the DHT 0xC4,
+ * JPG 0xC8 and DAC 0xCC markers, which are not frame headers — the whole
+ * range is accepted, so progressive JPEGs, whose SOF is 0xC2, are read too);
+ * SVG is detected from the root element. The returned `format` is what the
+ * BYTES are, which is what the gate compares against the file name and the
+ * manifest.
  */
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";

@@ -1,7 +1,8 @@
 /**
  * Songoskriti asset inventory — the single source of truth shared by the
  * gate (scripts/songoskriti-assets-check.mjs) and the generator
- * (scripts/gen-songoskriti-assets.mjs). Data only: no fs, no network.
+ * (scripts/gen-songoskriti-assets.mjs). Data and pure logic only: no fs,
+ * no network.
  *
  * `name` is the shipped file name; `format` is authoritative and always
  * agrees with the name's extension. `minWidth`/`minHeight` are floors the
@@ -14,6 +15,26 @@ export const BUDGETS = {
   maxTotalBytes: 28_000_000,
   maxBytesPerPixel: { png: 2, jpeg: 1 },
 };
+
+/**
+ * The format a file NAME claims — the claim, not the truth about the bytes.
+ *
+ * This is the ONE implementation: the gate compares the bytes against it
+ * and the generator's write path refuses a payload that contradicts it. An
+ * unknown extension claims no format at all (null), so a caller must
+ * reject it rather than guess one.
+ *
+ * @param {string} name the file name to read
+ * @returns {"jpeg" | "png" | "svg" | null} the claimed format, or null
+ */
+export function formatFromName(name) {
+  const dot = name.lastIndexOf(".");
+  const extension = dot === -1 ? "" : name.slice(dot + 1).toLowerCase();
+  if (extension === "jpg" || extension === "jpeg") return "jpeg";
+  if (extension === "png") return "png";
+  if (extension === "svg") return "svg";
+  return null;
+}
 
 export const ASSETS = [
   {

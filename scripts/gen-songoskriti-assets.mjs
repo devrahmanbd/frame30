@@ -49,7 +49,11 @@ import {
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
-import { ASSETS, ASSET_DIR } from "./songoskriti-assets-manifest.mjs";
+import {
+  ASSETS,
+  ASSET_DIR,
+  formatFromName,
+} from "./songoskriti-assets-manifest.mjs";
 import { fileInfo, imageInfo } from "./songoskriti-assets-image.mjs";
 
 const ENDPOINT =
@@ -73,25 +77,26 @@ const OUT = resolve(
 );
 
 /**
- * The format a file NAME claims — the claim, not the truth about the bytes.
- */
-function expectedFormatFor(name) {
-  if (name.endsWith(".jpg")) return "jpeg";
-  if (name.endsWith(".png")) return "png";
-  return "svg";
-}
-
-/**
  * Refuse bytes whose format contradicts the file name they would be written
  * under. This is the guard against the drift that shipped nine JPEG assets
  * under .png names.
+ *
+ * The name's claim comes from the shared manifest module (`formatFromName`)
+ * — the same implementation the gate uses — so the two can never disagree
+ * about what a name means. A name whose extension claims no known format is
+ * refused outright rather than assumed to be SVG.
  *
  * @param {string} name the file name the bytes would be written under
  * @param {Buffer} bytes the bytes the image API returned
  */
 export function assertFormatMatches(name, bytes) {
   const info = imageInfo(bytes);
-  const expected = expectedFormatFor(name);
+  const expected = formatFromName(name);
+  if (!expected) {
+    throw new Error(
+      `unsupported format for ${name}: the file name claims no known format`,
+    );
+  }
   if (!info.format) {
     throw new Error(`unreadable image bytes for ${name}`);
   }

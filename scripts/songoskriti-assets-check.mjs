@@ -33,7 +33,12 @@ import {
 import { join, relative, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
-import { ASSETS, ASSET_DIR, BUDGETS } from "./songoskriti-assets-manifest.mjs";
+import {
+  ASSETS,
+  ASSET_DIR,
+  BUDGETS,
+  formatFromName,
+} from "./songoskriti-assets-manifest.mjs";
 import { fileInfo, imageInfo, sha256 } from "./songoskriti-assets-image.mjs";
 
 /** The theme whose public asset namespace this gate owns. */
@@ -105,41 +110,12 @@ const PACKAGE_FORM_PATTERN =
 /** The formats the manifest and the expectation may declare. */
 const KNOWN_FORMATS = new Set(["png", "jpeg", "svg"]);
 
-/**
- * Legacy manifest shape (`[name, minWidth, minHeight]`), kept so the
- * generator's import keeps working until it is rewired to the shared
- * manifest.
- */
-export const MANIFEST = ASSETS.map((entry) => [
-  entry.name,
-  entry.minWidth,
-  entry.minHeight,
-]);
-
-/** Decode PNG width/height from the IHDR chunk; null when not a PNG. */
-export function pngSize(path) {
-  const buf = readFileSync(path);
-  if (buf.length < 24 || buf.readUInt32BE(0) !== 0x89504e47) return null;
-  if (buf.toString("ascii", 12, 16) !== "IHDR") return null;
-  return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
-}
-
 /** A malformed manifest or expectation is a harness error, never a pass. */
 export class HarnessError extends Error {
   constructor(message) {
     super(message);
     this.name = "HarnessError";
   }
-}
-
-/** The format a file NAME claims — the claim, not the truth about the bytes. */
-export function formatFromName(name) {
-  const dot = name.lastIndexOf(".");
-  const extension = dot === -1 ? "" : name.slice(dot + 1).toLowerCase();
-  if (extension === "jpg" || extension === "jpeg") return "jpeg";
-  if (extension === "png") return "png";
-  if (extension === "svg") return "svg";
-  return null;
 }
 
 /**
