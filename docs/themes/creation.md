@@ -462,20 +462,20 @@ state machine behind it.
 
 - Register catalogue widgets a theme renders by using their exact
   `SectionType` and prop keys. The builder catalogue is `BASE_CATALOG` +
-  phase packs in `src/lib/builder-ast.ts` (chrome `:1280-1519`,
-  merchandising `:1521-1660`, PDP `:1661-1895`, collection/search
-  `:1896-...`, cart/checkout, Atelier/Circuit/Rupaboti/heritage packs).
+  phase packs in `src/lib/builder-ast.ts` (chrome `:1927-2277`,
+  merchandising `:2279-2435`, PDP `:2437-2687`, collection/search
+  `:2689-2844`, cart/checkout, Atelier/Circuit/Rupaboti/heritage packs).
   The studio panel mirror is `WIDGETS` in `src/lib/studio/catalog.ts:122+`
   with per-widget `defaults` (e.g. `form` `:1388-1395`, `nav_menu`
   `:1396-1404`, `newsletter` `:1405-1412`).
 - Prop conventions: **flat scalars** (`string | number | boolean`) plus
-  repeatable `PropRow[]` arrays (`src/lib/builder-ast.ts:245-250`).
+  repeatable `PropRow[]` arrays (`src/lib/builder-ast.ts:390-393`).
   Bilingual text uses `bitext` fields with `${key}_bn` twins filled via
   `withBn()` at construction (`src/lib/theme-section.ts:23-39`) — pass the
   theme dictionary (a `Record<string, string>`, empty is fine) to `sectionFactory()`
   (`src/lib/theme-section.ts:61-68`).
 - Responsive: `hidden: ["mobile"]` and `bp: { tablet: {...}, mobile: {...} }`
-  on any section (`src/lib/builder-ast.ts:317-324`); per-device layers only
+  on any section (`src/lib/builder-ast.ts:412-417`); per-device layers only
   accept responsive-flagged fields (see the per-device reference on the
   shipped homepages: Songoskriti MOST LOVED, Somvabona recently-viewed).
 - Containers only: `children` is accepted solely on catalogue entries
@@ -545,7 +545,7 @@ locale, honeypot?, renderedAt? }`.
   `src/lib/studio/catalog.ts:1405-1412`) → `subscribeNewsletterFn` /
   `verifyNewsletterFn` / `unsubscribeNewsletterFn`
   (`src/lib/newsletter.functions.ts:13-50`).
-- **Search**: `search_command` widget (`src/lib/builder-ast.ts:1971`)
+- **Search**: `search_command` widget (`src/lib/builder-ast.ts:2239-2264`)
   rendering into the `search` template (reuse the theme's `collection`
   listing pattern — see §2.5).
 - **Other submittables**: `quiz`, `trade_in`, `back_in_stock`,
