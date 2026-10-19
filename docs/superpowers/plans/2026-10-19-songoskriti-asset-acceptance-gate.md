@@ -1049,6 +1049,7 @@ describe("songoskriti asset gate", () => {
     expect(codes(checkSongoskritiAssets(world))).toEqual(["asset.expectation_drift"]);
   });
 });
+```
 
 ### Task 5: The generator becomes reproducible
 
