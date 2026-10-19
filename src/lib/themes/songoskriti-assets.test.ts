@@ -35,6 +35,12 @@ import {
   isUpToDate,
 } from "../../../scripts/gen-songoskriti-assets.mjs";
 import expectation from "../../../scripts/songoskriti-assets-expected.json";
+import {
+  checkSongoskritiFonts,
+  checkSongoskritiIcons,
+  checkSongoskritiPackaging,
+} from "./songoskriti-assets";
+import { SONGOSKRITI_TOKENS } from "@/lib/themes/songoskriti/tokens";
 
 const ROOT = resolve(import.meta.dirname, "..", "..", "..");
 const ASSET_DIR = resolve(ROOT, "public/ph/songoskriti");
@@ -573,5 +579,24 @@ describe("songoskriti asset generator", () => {
     expect(stderr).toContain("extra file in the output directory: stray.png");
     // The stray file is the ONLY problem: nothing is missing.
     expect(stderr).not.toContain("missing:");
+  });
+});
+
+describe("songoskriti fonts, icons and packaging", () => {
+  it("every font family the theme names is in the closed catalogue", () => {
+    expect(checkSongoskritiFonts()).toEqual([]);
+  });
+
+  it("the theme pairing names a Bengali-capable family", () => {
+    expect(SONGOSKRITI_TOKENS.fontDisplay).toBe("Playfair Display");
+    expect(SONGOSKRITI_TOKENS.fontBody).toBe("Inter");
+  });
+
+  it("every tabler icon the theme imports exists in the generated module", () => {
+    expect(checkSongoskritiIcons(ROOT)).toEqual([]);
+  });
+
+  it("the official package carries no asset manifest and no package-form refs", () => {
+    expect(checkSongoskritiPackaging(defaultWorld())).toEqual([]);
   });
 });

@@ -226,7 +226,7 @@ imports extensionless `./builder-ast`, `tabler.tsx` is TSX, and
 | Runner | Entry point | Checks |
 |---|---|---|
 | CLI (`node scripts/*.mjs`, no deps, no TS import) | `checkSongoskritiAssets(world)` | `asset.*`, `ref.*`, `url.*`, `video.*`, `note.*` |
-| vitest (`src/lib/themes/songoskriti-assets.test.ts`) | `checkSongoskritiFonts()` and `checkSongoskritiPackaging(world)` — both defined in that test file, using the TS modules they need | `font.*`, `icon.*`, `pkg.*` |
+| vitest (`src/lib/themes/songoskriti-assets.test.ts`) | `checkSongoskritiFonts()` and `checkSongoskritiPackaging(world)` — both defined in `src/lib/themes/songoskriti-assets.ts`, using the TS modules they need | `font.*`, `icon.*`, `pkg.*` |
 
 **Scan roots and their rule profiles.** Roots differ because some files are
 multi-theme: `src/lib/demo-catalog.ts` legitimately references
