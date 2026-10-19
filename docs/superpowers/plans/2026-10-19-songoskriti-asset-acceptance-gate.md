@@ -21,6 +21,7 @@
 - **Status-line sha.** `docs/themes/creation.md`'s `Last verified: <date> @ <sha>` uses a **12-char** `git rev-parse --short=12 HEAD` taken **before** the commit that adds the line — never that commit's own sha.
 - **The gate must be green.** On the post-implementation tree, `node scripts/songoskriti-assets-check.mjs` exits 0 with **zero findings** (notes are allowed and are non-fatal).
 - **No deploy in this plan.** Nothing here touches production; the port's deploy is a separate decision.
+- **Tooling.** `bun` exists at `/root/.bun/bin/bun` but is **not on `PATH`**; the repo's tools are in `node_modules/.bin/` (`vitest`, `eslint`, `tsgo`, `prettier`). Run `node_modules/.bin/vitest run <path>`, `node_modules/.bin/tsgo --noEmit`, `node_modules/.bin/eslint .`, `node_modules/.bin/prettier --check <files>`. `/root/.bun/bin/bun run <script>` also works for the package.json scripts.
 
 ## Review Focus
 
@@ -130,6 +131,17 @@ describe("songoskriti asset manifest", () => {
       expect(a.aspect).toMatch(/^\d+:\d+$/);
     }
   });
+  it("pins every entry's name, format and floors", () => {
+    expect(
+      ASSETS.map((a) => ({
+        name: a.name,
+        format: a.format,
+        minWidth: a.minWidth,
+        minHeight: a.minHeight,
+      })),
+    ).toMatchSnapshot();
+  });
+
   it("pins the size budgets", () => {
     expect(BUDGETS.maxFileBytes).toBe(3_000_000);
     expect(BUDGETS.maxTotalBytes).toBe(28_000_000);
