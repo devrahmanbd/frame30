@@ -1050,6 +1050,24 @@ describe("songoskriti asset gate", () => {
   });
 });
 
+### Task 5: The generator becomes reproducible
+
+**Files:**
+- Modify: `scripts/gen-songoskriti-assets.mjs`
+- Test: `src/lib/themes/songoskriti-assets.test.ts` (append)
+
+**Interfaces:**
+- Consumes: `ASSETS`, `ASSET_DIR` (Task 1), `imageInfo`/`fileInfo` (Task 3), the expectation JSON (Task 3).
+- Produces: `assertFormatMatches(name, bytes)`, `writeAssetBytes(name, bytes)`, `buildPlan()`; the `--check` mode.
+
+- [ ] **Step 1: Write the failing tests**
+
+Append to `src/lib/themes/songoskriti-assets.test.ts`:
+
+```ts
+import { execFileSync } from "node:child_process";
+import { assertFormatMatches, buildPlan } from "../../../scripts/gen-songoskriti-assets.mjs";
+
 describe("songoskriti asset generator", () => {
   it("refuses JPEG bytes under a .png name", () => {
     const jpeg = readFileSync(resolve(ROOT, "public/ph/songoskriti/hero-festive.jpg"));
@@ -1079,7 +1097,7 @@ describe("songoskriti asset generator", () => {
 
 - [ ] **Step 2: Run the tests to verify they fail**
 
-Run: `bun run vitest run src/lib/themes/songoskriti-assets.test.ts`
+Run: `node_modules/.bin/vitest run src/lib/themes/songoskriti-assets.test.ts`
 Expected: FAIL — `assertFormatMatches`/`buildPlan` are not exported, and `--check` does not exist.
 
 - [ ] **Step 3: Rewrite the generator**
