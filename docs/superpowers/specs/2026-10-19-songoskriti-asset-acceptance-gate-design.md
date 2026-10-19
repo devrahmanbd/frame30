@@ -532,8 +532,19 @@ norm in `supabase/migrations/`):
 - creates an idempotent function
   `public.theme_apply_songoskriti_asset_paths()` — `language plpgsql`,
   `security definer set search_path = public`, `returns void`, with
+  `revoke execute on function public.theme_apply_songoskriti_asset_paths() from public;`
+  **and**
+  `revoke execute on function public.theme_apply_songoskriti_asset_paths() from anon;`
+  **before**
   `grant execute on function public.theme_apply_songoskriti_asset_paths() to authenticated`
-  (the pattern `public.theme_purge_demo(uuid)` uses) — that sets `image_url`
+  (the pattern `public.theme_purge_demo(uuid)` uses) — the two revokes drop
+  the default `PUBLIC` EXECUTE **and** the `anon` EXECUTE the baseline's
+  `ALTER DEFAULT PRIVILEGES` grants on new public functions, so only an
+  authenticated role (or the function owner) can call it; without them an
+  anonymous caller could drive a SECURITY DEFINER write into the
+  RLS-protected catalogue, and every call would write a fresh row version
+  (8 products + 3 collections) — that sets
+  `image_url`
   **by row id** for the 13 seeded products and 5 seeded collections: 6 rows
   get their renamed `.jpg` path (`cat-kids` ×2, `cat-men`, `hero-festive`,
   `hero-weaves`, `hero-artisans`) and 2 dead rows are re-pointed to existing

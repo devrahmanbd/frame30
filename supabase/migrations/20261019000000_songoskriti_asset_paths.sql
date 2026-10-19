@@ -43,6 +43,16 @@ begin
 end;
 $$;
 
+-- Postgres grants EXECUTE on a new function to PUBLIC by default, and this
+-- function is SECURITY DEFINER: without the revoke below, an anonymous
+-- caller could drive a write into the RLS-protected catalogue, and every
+-- call would write a fresh row version (8 products + 3 collections).
+revoke execute on function public.theme_apply_songoskriti_asset_paths() from public;
+-- The PUBLIC revoke is not enough on its own: the baseline also grants
+-- EXECUTE on new public functions to anon through
+-- ALTER DEFAULT PRIVILEGES (migration/0001_baseline.sql), so anon keeps its
+-- own EXECUTE grant and can still call this function.
+revoke execute on function public.theme_apply_songoskriti_asset_paths() from anon;
 grant execute on function public.theme_apply_songoskriti_asset_paths() to authenticated;
 
 select public.theme_apply_songoskriti_asset_paths();
