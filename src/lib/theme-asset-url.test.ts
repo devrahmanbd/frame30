@@ -9,16 +9,16 @@ import {
 
 describe("theme-asset-url boundary", () => {
   it("source URLs are absolute /ph/ paths", () => {
-    expect(toSourceUrl("hero-festive.png", "songoskriti")).toBe(
-      "/ph/songoskriti/hero-festive.png",
+    expect(toSourceUrl("hero-festive.jpg", "songoskriti")).toBe(
+      "/ph/songoskriti/hero-festive.jpg",
     );
-    expect(isSourceUrl("/ph/songoskriti/hero-festive.png")).toBe(true);
-    expect(isSourceUrl("assets/hero-festive.png")).toBe(false);
+    expect(isSourceUrl("/ph/songoskriti/hero-festive.jpg")).toBe(true);
+    expect(isSourceUrl("assets/hero-festive.jpg")).toBe(false);
   });
   it("package refs are bare assets/ paths for ZIP context only", () => {
-    expect(toPackageRef("hero-festive.png")).toBe("assets/hero-festive.png");
-    expect(isPackageRef("assets/hero-festive.png")).toBe(true);
-    expect(isPackageRef("/ph/songoskriti/hero-festive.png")).toBe(false);
+    expect(toPackageRef("hero-festive.jpg")).toBe("assets/hero-festive.jpg");
+    expect(isPackageRef("assets/hero-festive.jpg")).toBe(true);
+    expect(isPackageRef("/ph/songoskriti/hero-festive.jpg")).toBe(false);
   });
   it("strips stray prefixes instead of stacking them", () => {
     expect(toSourceUrl("/ph/songoskriti/cat-women.png", "somvabona")).toBe(
@@ -30,11 +30,11 @@ describe("theme-asset-url boundary", () => {
   it("findPackageRefs reports bare assets/ refs and ignores source URLs", () => {
     expect(
       findPackageRefs({
-        hero: "/ph/songoskriti/hero-festive.png",
-        gallery: ["assets/hero-festive.png", "/ph/songoskriti/cat-men.png"],
+        hero: "/ph/songoskriti/hero-festive.jpg",
+        gallery: ["assets/hero-festive.jpg", "/ph/songoskriti/cat-men.jpg"],
         nested: { deep: "assets/cat-women.png" },
       }),
-    ).toEqual(["assets/hero-festive.png", "assets/cat-women.png"]);
+    ).toEqual(["assets/hero-festive.jpg", "assets/cat-women.png"]);
     expect(findPackageRefs({ hero: "/ph/somvabona/x.png" })).toEqual([]);
     expect(findPackageRefs(null)).toEqual([]);
   });

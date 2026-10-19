@@ -211,8 +211,8 @@ describe("lane D3 — theme-emitted sections survive parse→serialize→parse",
           ctaLabel2: "SHOP MEN",
           ctaLabel2_bn: "পুরুষদের কেনাকাটা",
           ctaUrl2: "/c/men",
-          primaryImage: "/ph/songoskriti/edit-festive-main.png",
-          secondaryImage: "/ph/songoskriti/cat-men.png",
+          primaryImage: "/ph/songoskriti/edit-festive-main.jpg",
+          secondaryImage: "/ph/songoskriti/cat-men.jpg",
           layout: "image_left",
         },
       },
@@ -224,7 +224,7 @@ describe("lane D3 — theme-emitted sections survive parse→serialize→parse",
           heading_bn: "আপনার পরিধানে",
           subhead: "SONGOSKRITI IN THE WORLD",
           subhead_bn: "সংস্কৃতি সারা দুনিয়ায়",
-          images: "/ph/songoskriti/ugc-1.png, /ph/songoskriti/ugc-2.png",
+          images: "/ph/songoskriti/ugc-1.jpg, /ph/songoskriti/ugc-2.jpg",
         },
       },
       {
@@ -259,8 +259,8 @@ describe("lane D3 — theme-emitted sections survive parse→serialize→parse",
     expect(finder["buttonLabel"]).toBe("BROWSE ALL OCCASIONS");
     expect(finder["buttonHref"]).toBe("/c/occasions");
     const split = byId["split"]!.props as Record<string, unknown>;
-    expect(split["primaryImage"]).toBe("/ph/songoskriti/edit-festive-main.png");
-    expect(split["secondaryImage"]).toBe("/ph/songoskriti/cat-men.png");
+    expect(split["primaryImage"]).toBe("/ph/songoskriti/edit-festive-main.jpg");
+    expect(split["secondaryImage"]).toBe("/ph/songoskriti/cat-men.jpg");
     expect(split["ctaUrl"]).toBe("/c/women");
     expect(split["ctaLabel2"]).toBe("SHOP MEN");
     expect(split["ctaLabel2_bn"]).toBe("পুরুষদের কেনাকাটা");
@@ -270,7 +270,7 @@ describe("lane D3 — theme-emitted sections survive parse→serialize→parse",
     expect(ugc["subhead"]).toBe("SONGOSKRITI IN THE WORLD");
     expect(ugc["subhead_bn"]).toBe("সংস্কৃতি সারা দুনিয়ায়");
     expect(ugc["images"]).toBe(
-      "/ph/songoskriti/ugc-1.png, /ph/songoskriti/ugc-2.png",
+      "/ph/songoskriti/ugc-1.jpg, /ph/songoskriti/ugc-2.jpg",
     );
     const rail = byId["rail"]!.props as Record<string, unknown>;
     expect(rail["skin"]).toBe("compact");

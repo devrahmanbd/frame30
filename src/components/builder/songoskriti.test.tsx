@@ -532,7 +532,7 @@ describe("songoskriti categories rhythm (browser-verified 2026-09-24)", () => {
       c1Image: "/ph/songoskriti/cat-women.png",
       c1Href: "/c/women",
       c2Title: "Men",
-      c2Image: "/ph/songoskriti/cat-men.png",
+      c2Image: "/ph/songoskriti/cat-men.jpg",
       c2Href: "/c/men",
       c3Title: "",
       c3Image: "",

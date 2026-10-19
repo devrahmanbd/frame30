@@ -411,7 +411,7 @@ export function ProductCraftStory({
           <div className="aspect-[4/5] bg-[var(--theme-surface)] overflow-hidden">
             {isSongoskriti ? (
               <img
-                src="/ph/songoskriti/hero-artisans.png"
+                src="/ph/songoskriti/hero-artisans.jpg"
                 alt="Artisan weaving jamdani"
                 className="w-full h-full object-cover grayscale opacity-90 mix-blend-multiply"
                 onError={(e) => {

@@ -32,7 +32,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       skin: "fullbleed",
       slides: [
         {
-          image: "/ph/songoskriti/hero-festive.png",
+          image: "/ph/songoskriti/hero-festive.jpg",
           headline: "HERITAGE,\nWOVEN FOR TODAY",
           headline_bn: "ঐতিহ্য,\nআজকের জন্য বোনা",
           subhead:
@@ -45,7 +45,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
           caption_bn: "ঐতিহ্য অন্বেষণ করুন",
         },
         {
-          image: "/ph/songoskriti/edit-festive-main.png",
+          image: "/ph/songoskriti/edit-festive-main.jpg",
           headline: "THE FESTIVE\nEDIT",
           headline_bn: "উৎসবের\nবিশেষ সংগ্রহ",
           subhead:
@@ -58,7 +58,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
           caption_bn: "নারীর সংগ্রহ",
         },
         {
-          image: "/ph/songoskriti/hero-weaves.png",
+          image: "/ph/songoskriti/hero-weaves.jpg",
           headline: "THE ART OF\nJAMDANI",
           headline_bn: "জামদানির\nশিল্পকলা",
           subhead:
@@ -92,17 +92,17 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
         },
         {
           title: "Panjabi",
-          image: "/ph/songoskriti/cat-men.png",
+          image: "/ph/songoskriti/cat-men.jpg",
           href: `${c}/panjabi`,
         },
         {
           title: "Festive",
-          image: "/ph/songoskriti/hero-festive.png",
+          image: "/ph/songoskriti/hero-festive.jpg",
           href: `${c}/festive`,
         },
         {
           title: "Wedding",
-          image: "/ph/songoskriti/edit-festive-main.png",
+          image: "/ph/songoskriti/edit-festive-main.jpg",
           href: `${c}/wedding`,
         },
         {
@@ -112,7 +112,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
         },
         {
           title: "Heritage",
-          image: "/ph/songoskriti/hero-weaves.png",
+          image: "/ph/songoskriti/hero-weaves.jpg",
           href: `${c}/heritage`,
         },
       ],
@@ -146,7 +146,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       body_bn: "সূক্ষ্ম সুতো। ধৈর্যশীল হাত। এক ঐতিহ্য যা এখনও এগিয়ে চলে।",
       ctaLabel: "EXPLORE JAMDANI",
       ctaHref: `${c}/jamdani`,
-      imageUrl: "/ph/songoskriti/hero-weaves.png",
+      imageUrl: "/ph/songoskriti/hero-weaves.jpg",
       scrim: true,
       advMotion: "fade",
     }),
@@ -179,8 +179,8 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       ctaUrl: `${c}/women`,
       ctaLabel2: "SHOP MEN",
       ctaUrl2: `${c}/men`,
-      primaryImage: "/ph/songoskriti/edit-festive-main.png",
-      secondaryImage: "/ph/songoskriti/cat-men.png",
+      primaryImage: "/ph/songoskriti/edit-festive-main.jpg",
+      secondaryImage: "/ph/songoskriti/cat-men.jpg",
       layout: "image_left",
     }),
 
@@ -246,8 +246,8 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       body_bn: "ঐতিহ্য, আজকের জন্য কাটা। বিশেষ হাতে বোনা ও কটন পাঞ্জাবি।",
       ctaLabel: "SHOP PANJABI",
       ctaUrl: `${c}/panjabi`,
-      primaryImage: "/ph/songoskriti/campaign-men.png",
-      secondaryImage: "/ph/songoskriti/cat-men.png",
+      primaryImage: "/ph/songoskriti/campaign-men.jpg",
+      secondaryImage: "/ph/songoskriti/cat-men.jpg",
       layout: "image_right",
     }),
 
@@ -294,7 +294,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       ctaUrl: `${c}/wedding`,
       ctaLabel2: "SHOP GROOM",
       ctaUrl2: `${c}/groom`,
-      primaryImage: "/ph/songoskriti/edit-festive-main.png",
+      primaryImage: "/ph/songoskriti/edit-festive-main.jpg",
       secondaryImage: "/ph/songoskriti/prod-saree.png",
       layout: "image_left",
     }),
@@ -311,7 +311,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       collections: [
         {
           title: "Jamdani",
-          image: "/ph/songoskriti/hero-weaves.png",
+          image: "/ph/songoskriti/hero-weaves.jpg",
           href: `${c}/jamdani`,
           subtitle: "UNESCO Heritage",
         },
@@ -365,7 +365,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
         "টাঙ্গাইল, সোনারগাঁয়ে প্রজন্মের পর প্রজন্ম তাঁতিরা সংরক্ষণ করছেন যে কৌশল।",
       ctaLabel: "MEET THE ARTISANS",
       ctaHref: "/blog/artisan-story",
-      imageUrl: "/ph/songoskriti/hero-artisans.png",
+      imageUrl: "/ph/songoskriti/hero-artisans.jpg",
       scrim: true,
       advMotion: "line-reveal",
     }),
@@ -381,7 +381,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       handleLabel: "Follow @SONGOSKRITI",
       handleHref: "https://instagram.com",
       images:
-        "/ph/songoskriti/ugc-1.png, /ph/songoskriti/ugc-2.png, /ph/songoskriti/ugc-3.png, /ph/songoskriti/ugc-4.png, /ph/songoskriti/ugc-5.jpg, /ph/songoskriti/ugc-6.jpg",
+        "/ph/songoskriti/ugc-1.jpg, /ph/songoskriti/ugc-2.jpg, /ph/songoskriti/ugc-3.png, /ph/songoskriti/ugc-4.png, /ph/songoskriti/ugc-5.jpg, /ph/songoskriti/ugc-6.jpg",
     }),
 
     // ────────────────────────────────────────────────────────────────────
@@ -430,8 +430,8 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       ctaUrl: "/blog/authentic-jamdani",
       ctaLabel2: "WHAT TO WEAR TO A BENGALI WEDDING →",
       ctaUrl2: "/blog/bengali-wedding",
-      primaryImage: "/ph/songoskriti/hero-weaves.png",
-      secondaryImage: "/ph/songoskriti/hero-artisans.png",
+      primaryImage: "/ph/songoskriti/hero-weaves.jpg",
+      secondaryImage: "/ph/songoskriti/hero-artisans.jpg",
       layout: "image_right",
     }),
 
@@ -478,7 +478,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       heading: "VISIT SONGOSKRITI",
       heading_bn: "সংস্কৃতি দেখুন",
       images:
-        "/ph/songoskriti/cat-women.png, /ph/songoskriti/cat-men.png, /ph/songoskriti/hero-festive.png",
+        "/ph/songoskriti/cat-women.png, /ph/songoskriti/cat-men.jpg, /ph/songoskriti/hero-festive.jpg",
       s1Name: "Uttara Flagship",
       s1Hours: "Open 10am – 9pm daily",
       s2Name: "Gulshan Showroom",

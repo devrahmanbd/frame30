@@ -220,7 +220,7 @@ describe("Task 2 parity pins — songoskriti default output", () => {
     expect(html).toContain("SONGOSKRITI IN THE WORLD");
     expect(html).toContain("Follow @SONGOSKRITI");
     expect(html).toContain("https://instagram.com");
-    expect(html).toContain("ugc-1.png");
+    expect(html).toContain("ugc-1.jpg");
   });
 });
 

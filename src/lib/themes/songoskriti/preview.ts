@@ -219,7 +219,7 @@ export function songoskritiPreviewSource(
           return [
             s("heading", { text: "Journal", text_bn: "জার্নাল" }),
             s("image", {
-              src: "/ph/songoskriti/hero-artisans.png",
+              src: "/ph/songoskriti/hero-artisans.jpg",
               alt: "Artisans weaving on a wooden loom",
               ratio: "16/9",
               caption: "Artisan owned",

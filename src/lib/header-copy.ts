@@ -65,7 +65,7 @@ export const HEADER_FALLBACK_MENU = [
     id: "men",
     label: "Men",
     url: "/c/men",
-    image: "/ph/songoskriti/cat-men.png",
+    image: "/ph/songoskriti/cat-men.jpg",
     children: [
       {
         id: "m-panjabi",
@@ -98,7 +98,7 @@ export const HEADER_FALLBACK_MENU = [
     id: "kids",
     label: "Kids",
     url: "/c/kids",
-    image: "/ph/songoskriti/cat-kids.png",
+    image: "/ph/songoskriti/cat-kids.jpg",
     children: [
       {
         id: "k-boys",
@@ -125,7 +125,7 @@ export const HEADER_FALLBACK_MENU = [
     id: "festive",
     label: "Festive",
     url: "/c/festive",
-    image: "/ph/songoskriti/hero-festive.png",
+    image: "/ph/songoskriti/hero-festive.jpg",
     children: [
       {
         id: "f-occ",
@@ -146,7 +146,7 @@ export const HEADER_FALLBACK_MENU = [
     id: "heritage",
     label: "Heritage",
     url: "/c/heritage",
-    image: "/ph/songoskriti/hero-artisans.png",
+    image: "/ph/songoskriti/hero-artisans.jpg",
     children: [
       {
         id: "h-weaves",

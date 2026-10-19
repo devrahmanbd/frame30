@@ -2624,11 +2624,11 @@ const SONGOSKRITI: DemoCatalog = {
       image_url: "/ph/songoskriti/prod-saree.png",
       images: [
         "/ph/songoskriti/prod-saree.png",
-        "/ph/songoskriti/hero-festive.png",
-        "/ph/songoskriti/hero-weaves.png",
+        "/ph/songoskriti/hero-festive.jpg",
+        "/ph/songoskriti/hero-weaves.jpg",
         "/ph/songoskriti/cat-women.png",
-        "/ph/songoskriti/hero-artisans.png",
-        "/ph/songoskriti/edit-festive-main.png",
+        "/ph/songoskriti/hero-artisans.jpg",
+        "/ph/songoskriti/edit-festive-main.jpg",
       ],
 
       variants: [
@@ -2640,8 +2640,8 @@ const SONGOSKRITI: DemoCatalog = {
           stock: 5,
           images: [
             "/ph/songoskriti/prod-saree.png",
-            "/ph/songoskriti/hero-festive.png",
-            "/ph/songoskriti/hero-weaves.png",
+            "/ph/songoskriti/hero-festive.jpg",
+            "/ph/songoskriti/hero-weaves.jpg",
           ],
         },
         {
@@ -2651,8 +2651,8 @@ const SONGOSKRITI: DemoCatalog = {
           stock: 4,
           images: [
             "/ph/songoskriti/cat-women.png",
-            "/ph/songoskriti/hero-artisans.png",
-            "/ph/songoskriti/edit-festive-main.png",
+            "/ph/songoskriti/hero-artisans.jpg",
+            "/ph/songoskriti/edit-festive-main.jpg",
           ],
         },
       ],
@@ -2684,12 +2684,12 @@ const SONGOSKRITI: DemoCatalog = {
       category: "men",
       collections: ["bestsellers", "festive"],
       tags: ["khadi", "kurta", "cotton", "handloom"],
-      image_url: "/ph/songoskriti/cat-men.png",
+      image_url: "/ph/songoskriti/cat-men.jpg",
       images: [
-        "/ph/songoskriti/cat-men.png",
+        "/ph/songoskriti/cat-men.jpg",
         "/ph/songoskriti/prod-panjabi.png",
-        "/ph/songoskriti/campaign-men.png",
-        "/ph/songoskriti/hero-artisans.png",
+        "/ph/songoskriti/campaign-men.jpg",
+        "/ph/songoskriti/hero-artisans.jpg",
       ],
       variants: [
         {
@@ -2755,7 +2755,7 @@ const SONGOSKRITI: DemoCatalog = {
       category: "kids",
       collections: ["new-in", "festive", "gifting"],
       tags: ["kids", "silk", "festive", "ghagra"],
-      image_url: "/ph/songoskriti/cat-kids.png",
+      image_url: "/ph/songoskriti/cat-kids.jpg",
       variants: [
         {
           name: "Age 8-10 Yrs - Coral Rose",
@@ -2793,7 +2793,7 @@ const SONGOSKRITI: DemoCatalog = {
       category: "kids",
       collections: ["new-in", "festive"],
       tags: ["kids", "panjabi", "silk", "festive"],
-      image_url: "/ph/songoskriti/cat-kids.png",
+      image_url: "/ph/songoskriti/cat-kids.jpg",
       variants: [
         {
           name: "Age 6-8 Yrs - Golden Beige",
@@ -2831,7 +2831,7 @@ const SONGOSKRITI: DemoCatalog = {
       category: "men",
       collections: ["new-in", "bestsellers"],
       tags: ["taaga-man", "shirt", "khadi", "mens"],
-      image_url: "/ph/songoskriti/cat-men.png",
+      image_url: "/ph/songoskriti/cat-men.jpg",
       variants: [
         {
           name: "Size L - Slate Olive",

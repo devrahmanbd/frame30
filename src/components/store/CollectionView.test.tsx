@@ -132,7 +132,7 @@ describe("CollectionView hero images follow the theme key, never the slug", () =
     const src = readFileSync("src/components/store/CollectionView.tsx", "utf8");
     expect(src).toMatch(/if \(isSongoskriti\) \{\s*\n\s*showHero = true;/);
     expect(src).toContain("/ph/songoskriti/cat-women.png");
-    expect(src).toContain("/ph/songoskriti/hero-festive.png");
+    expect(src).toContain("/ph/songoskriti/hero-festive.jpg");
     const html = renderCollection({
       themeKey: "songoskriti",
       collectionSlug: "women",

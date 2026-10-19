@@ -36,7 +36,7 @@ export const SONGOSKRITI_COLLECTIONS: Record<string, CollectionConfig> = {
     ],
     featuredCollection: "women",
     editorial: {
-      image: "/ph/songoskriti/songoskriti_saree.jpg", // TBD
+      image: "/ph/songoskriti/edit-festive-main.jpg",
       heading: "The Art of the Saree",
       heading_bn: "শাড়ির শিল্প",
       body: "Woven by hand, shaped for today.",
@@ -48,7 +48,7 @@ export const SONGOSKRITI_COLLECTIONS: Record<string, CollectionConfig> = {
     type: "department",
     title: "Men",
     title_bn: "পুরুষ",
-    heroImage: "/ph/songoskriti/cat-men.png",
+    heroImage: "/ph/songoskriti/cat-men.jpg",
     categories: [
       { iLabel: "Panjabi", iHref: "/c/panjabi" },
       { iLabel: "Festive", iHref: "/c/festive" },
@@ -59,7 +59,7 @@ export const SONGOSKRITI_COLLECTIONS: Record<string, CollectionConfig> = {
     ],
     featuredCollection: "men",
     editorial: {
-      image: "/ph/songoskriti/songoskriti_men.jpg", // TBD
+      image: "/ph/songoskriti/campaign-men.jpg",
       heading: "Crafted for the Modern Man",
       heading_bn: "আধুনিক পুরুষের জন্য তৈরি",
       body: "Heritage techniques meet contemporary tailoring.",
@@ -71,7 +71,7 @@ export const SONGOSKRITI_COLLECTIONS: Record<string, CollectionConfig> = {
     type: "department",
     title: "Kids",
     title_bn: "বাচ্চাদের",
-    heroImage: "/ph/songoskriti/cat-kids.png",
+    heroImage: "/ph/songoskriti/cat-kids.jpg",
     categories: [
       { iLabel: "Girls", iHref: "/c/girls" },
       { iLabel: "Boys", iHref: "/c/boys" },
@@ -81,7 +81,7 @@ export const SONGOSKRITI_COLLECTIONS: Record<string, CollectionConfig> = {
     ],
     featuredCollection: "kids",
     editorial: {
-      image: "/ph/songoskriti/hero-festive.png",
+      image: "/ph/songoskriti/hero-festive.jpg",
       heading: "Festive Little Ones",
       heading_bn: "উৎসবে ছোটরা",
       body: "Playful, comfortable, and beautifully crafted.",
@@ -94,7 +94,7 @@ export const SONGOSKRITI_COLLECTIONS: Record<string, CollectionConfig> = {
     title_bn: "উৎসব",
     subtitle: "Celebrate in authentic Bangladeshi craft.",
     subtitle_bn: "আসল বাংলাদেশি কারুশিল্পে উদযাপন করুন।",
-    heroImage: "/ph/songoskriti/hero-festive.png",
+    heroImage: "/ph/songoskriti/hero-festive.jpg",
     categories: [
       { iLabel: "Women", iHref: "/c/women" },
       { iLabel: "Men", iHref: "/c/men" },
@@ -102,7 +102,7 @@ export const SONGOSKRITI_COLLECTIONS: Record<string, CollectionConfig> = {
     ],
     featuredCollection: "festive",
     editorial: {
-      image: "/ph/songoskriti/hero-artisans.png",
+      image: "/ph/songoskriti/hero-artisans.jpg",
       heading: "Woven for Celebration",
       heading_bn: "উদযাপনের জন্য বোনা",
       body: "Pieces designed to be cherished for generations.",
@@ -115,7 +115,7 @@ export const SONGOSKRITI_COLLECTIONS: Record<string, CollectionConfig> = {
     title_bn: "ঐতিহ্য",
     subtitle: "The crafts of Bangladesh.",
     subtitle_bn: "বাংলাদেশের কারুশিল্প।",
-    heroImage: "/ph/songoskriti/hero-artisans.png",
+    heroImage: "/ph/songoskriti/hero-artisans.jpg",
     categories: [
       { iLabel: "Jamdani", iHref: "/c/jamdani" },
       { iLabel: "Tangail", iHref: "/c/tangail" },
@@ -125,7 +125,7 @@ export const SONGOSKRITI_COLLECTIONS: Record<string, CollectionConfig> = {
     ],
     featuredCollection: "heritage",
     editorial: {
-      image: "/ph/songoskriti/songoskriti_artisan.jpg",
+      image: "/ph/songoskriti/hero-artisans.jpg",
       heading: "The Hands Behind the Weave",
       heading_bn: "বুননের পেছনের হাত",
       body: "Supporting artisan communities across 64 districts.",
@@ -140,7 +140,7 @@ export const SONGOSKRITI_COLLECTIONS: Record<string, CollectionConfig> = {
       "Explore the stories, occasions and craft traditions behind Songoskriti.",
     subtitle_bn:
       "সংস্কৃতির পেছনের গল্প, উৎসব এবং কারুশিল্পের ঐতিহ্য অন্বেষণ করুন।",
-    heroImage: "/ph/songoskriti/hero-weaves.png",
+    heroImage: "/ph/songoskriti/hero-weaves.jpg",
     categories: [
       { iLabel: "New Arrivals", iHref: "/c/new-in" },
       { iLabel: "Best Sellers", iHref: "/c/bestsellers" },

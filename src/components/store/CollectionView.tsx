@@ -87,7 +87,7 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
       showHero = true;
       if (collection.slug === "women")
         heroImage = "/ph/songoskriti/cat-women.png";
-      if (collection.slug === "men") heroImage = "/ph/songoskriti/cat-men.png";
+      if (collection.slug === "men") heroImage = "/ph/songoskriti/cat-men.jpg";
     }
   } else if (
     ["festive", "wedding", "eid", "heritage"].includes(collection.slug)
@@ -97,7 +97,7 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
     // Fix round: same key gate as above — campaign art is theme-owned.
     if (isSongoskriti) {
       showHero = true;
-      heroImage = "/ph/songoskriti/hero-festive.png";
+      heroImage = "/ph/songoskriti/hero-festive.jpg";
     }
   } else {
     // normal category like sarees, panjabi
