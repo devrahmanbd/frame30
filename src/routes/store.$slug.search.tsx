@@ -22,6 +22,7 @@ import {
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { PluginLayer } from "@/components/store/PluginLayer";
 import { SupportWidget } from "@/components/store/SupportWidget";
+import { CollectionQueryProvider } from "@/components/builder/collection";
 import {
   PAGE_SIZE,
   SORTS,
@@ -181,350 +182,403 @@ function SearchPage() {
   const pages = pageCount(result?.total ?? 0, result?.limit ?? PAGE_SIZE);
   const filters = activeFilterCount(params);
 
-  // The whole listing — query box, facets, results, pager — is one block so a
-  // theme's search template can place and style it wherever it likes.
-  const listing = (
-    <>
-      <form
-        className="mt-4 flex flex-wrap items-end gap-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          apply({ q: term.trim() });
-        }}
+  // Phase 2 (Task 9.3) — the listing is split into NAMED PIECES, so that every
+  // piece has exactly ONE owner: the results block the theme places (the
+  // productSlot), or the platform's own widget. Every piece keeps its existing
+  // markup and its existing `t()` calls — the split MOVES markup into named
+  // constants; it does not redesign the platform's UI.
+  //
+  //   queryBox        the search form
+  //   filtersPanel    the category/kind chips, the price bounds, the stock
+  //                   toggle and the clear button
+  //   resultCount     the count branch of the summary
+  //   searchNotice    every other branch of it
+  //   summaryAndSort  the summary row and the sort control
+  //   degradedNotice  the degraded-engine notice
+  //   emptyState      the no-results panel
+  //   results         the results grid
+  //   pager           the pager
+  const queryBox = (
+    <form
+      className="mt-4 flex flex-wrap items-end gap-2"
+      onSubmit={(e) => {
+        e.preventDefault();
+        apply({ q: term.trim() });
+      }}
+    >
+      <div className="min-w-0 flex-1">
+        <label
+          htmlFor="sf-q"
+          className="block text-xs font-medium text-muted-foreground"
+        >
+          {t("Product name, description or tag", "পণ্যের নাম, বিবরণ বা ট্যাগ")}
+        </label>
+        <div className="relative mt-1">
+          <Search
+            className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+            aria-hidden
+          />
+          <input
+            id="sf-q"
+            type="search"
+            value={term}
+            maxLength={80}
+            onChange={(e) => setTerm(e.target.value)}
+            placeholder={t("e.g. jamdani shari", "যেমন: জামদানি শাড়ি")}
+            className="min-h-11 w-full rounded-fq-md border border-border bg-card pl-9 pr-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          />
+        </div>
+      </div>
+      <button
+        type="submit"
+        className="min-h-11 rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground"
       >
-        <div className="min-w-0 flex-1">
-          <label
-            htmlFor="sf-q"
-            className="block text-xs font-medium text-muted-foreground"
-          >
-            {t(
-              "Product name, description or tag",
-              "পণ্যের নাম, বিবরণ বা ট্যাগ",
-            )}
-          </label>
-          <div className="relative mt-1">
-            <Search
-              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-              aria-hidden
+        {t("Search", "খুঁজুন")}
+      </button>
+      <button
+        type="button"
+        onClick={() => setShowFilters((v) => !v)}
+        aria-expanded={showFilters}
+        className="inline-flex min-h-11 items-center gap-2 rounded-fq-md border border-border bg-card px-3 text-sm"
+      >
+        <SlidersHorizontal className="size-4" aria-hidden />
+        {t("Filters", "ফিল্টার")}
+        {filters > 0 && (
+          <span className="money rounded-full bg-primary px-2 text-xs text-primary-foreground">
+            {filters}
+          </span>
+        )}
+      </button>
+    </form>
+  );
+
+  const filtersPanel =
+    showFilters && facets ? (
+      <section
+        aria-label={t("Filters", "ফিল্টার")}
+        className="mt-4 space-y-4 rounded-fq-lg border border-border bg-card p-4"
+      >
+        <fieldset>
+          <legend className="text-xs font-medium text-muted-foreground">
+            {t("Category", "ক্যাটাগরি")}
+          </legend>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <Chip
+              active={!params.category}
+              label={t("All", "সব")}
+              onClick={() => apply({ category: null })}
             />
-            <input
-              id="sf-q"
-              type="search"
-              value={term}
-              maxLength={80}
-              onChange={(e) => setTerm(e.target.value)}
-              placeholder={t("e.g. jamdani shari", "যেমন: জামদানি শাড়ি")}
-              className="min-h-11 w-full rounded-fq-md border border-border bg-card pl-9 pr-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            {facets.categories.map((c) => (
+              <Chip
+                key={c.slug}
+                active={params.category === c.slug}
+                label={`${c.name} (${c.count})`}
+                onClick={() =>
+                  apply({
+                    category: params.category === c.slug ? null : c.slug,
+                  })
+                }
+              />
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend className="text-xs font-medium text-muted-foreground">
+            {t("Product type", "পণ্যের ধরন")}
+          </legend>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <Chip
+              active={!params.kind}
+              label={t("All", "সব")}
+              onClick={() => apply({ kind: null })}
+            />
+            {facets.kinds.map((k) => (
+              <Chip
+                key={k.kind}
+                active={params.kind === k.kind}
+                label={`${k.kind} (${k.count})`}
+                onClick={() =>
+                  apply({
+                    kind:
+                      params.kind === k.kind
+                        ? null
+                        : (k.kind as SearchParams["kind"]),
+                  })
+                }
+              />
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend className="text-xs font-medium text-muted-foreground">
+            {t("Price range", "দামের সীমা")}{" "}
+            {facets.price_min_minor !== null && (
+              <span className="money">
+                {fmtMinor(facets.price_min_minor, currency)} –{" "}
+                {fmtMinor(facets.price_max_minor ?? 0, currency)}
+              </span>
+            )}
+          </legend>
+          <div className="mt-2 flex flex-wrap items-end gap-2">
+            <MoneyBound
+              id="sf-min"
+              label={t("Minimum", "সর্বনিম্ন")}
+              currency={currency}
+              valueMinor={params.minMinor}
+              onCommit={(v) => apply({ minMinor: v })}
+            />
+            <MoneyBound
+              id="sf-max"
+              label={t("Maximum", "সর্বোচ্চ")}
+              currency={currency}
+              valueMinor={params.maxMinor}
+              onCommit={(v) => apply({ maxMinor: v })}
             />
           </div>
-        </div>
-        <button
-          type="submit"
-          className="min-h-11 rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground"
-        >
-          {t("Search", "খুঁজুন")}
-        </button>
-        <button
-          type="button"
-          onClick={() => setShowFilters((v) => !v)}
-          aria-expanded={showFilters}
-          className="inline-flex min-h-11 items-center gap-2 rounded-fq-md border border-border bg-card px-3 text-sm"
-        >
-          <SlidersHorizontal className="size-4" aria-hidden />
-          {t("Filters", "ফিল্টার")}
-          {filters > 0 && (
-            <span className="money rounded-full bg-primary px-2 text-xs text-primary-foreground">
-              {filters}
-            </span>
-          )}
-        </button>
-      </form>
+        </fieldset>
 
-      {showFilters && facets && (
-        <section
-          aria-label={t("Filters", "ফিল্টার")}
-          className="mt-4 space-y-4 rounded-fq-lg border border-border bg-card p-4"
-        >
-          <fieldset>
-            <legend className="text-xs font-medium text-muted-foreground">
-              {t("Category", "ক্যাটাগরি")}
-            </legend>
-            <div className="mt-2 flex flex-wrap gap-2">
-              <Chip
-                active={!params.category}
-                label={t("All", "সব")}
-                onClick={() => apply({ category: null })}
-              />
-              {facets.categories.map((c) => (
-                <Chip
-                  key={c.slug}
-                  active={params.category === c.slug}
-                  label={`${c.name} (${c.count})`}
-                  onClick={() =>
-                    apply({
-                      category: params.category === c.slug ? null : c.slug,
-                    })
-                  }
-                />
-              ))}
-            </div>
-          </fieldset>
-
-          <fieldset>
-            <legend className="text-xs font-medium text-muted-foreground">
-              {t("Product type", "পণ্যের ধরন")}
-            </legend>
-            <div className="mt-2 flex flex-wrap gap-2">
-              <Chip
-                active={!params.kind}
-                label={t("All", "সব")}
-                onClick={() => apply({ kind: null })}
-              />
-              {facets.kinds.map((k) => (
-                <Chip
-                  key={k.kind}
-                  active={params.kind === k.kind}
-                  label={`${k.kind} (${k.count})`}
-                  onClick={() =>
-                    apply({
-                      kind:
-                        params.kind === k.kind
-                          ? null
-                          : (k.kind as SearchParams["kind"]),
-                    })
-                  }
-                />
-              ))}
-            </div>
-          </fieldset>
-
-          <fieldset>
-            <legend className="text-xs font-medium text-muted-foreground">
-              {t("Price range", "দামের সীমা")}{" "}
-              {facets.price_min_minor !== null && (
-                <span className="money">
-                  {fmtMinor(facets.price_min_minor, currency)} –{" "}
-                  {fmtMinor(facets.price_max_minor ?? 0, currency)}
-                </span>
-              )}
-            </legend>
-            <div className="mt-2 flex flex-wrap items-end gap-2">
-              <MoneyBound
-                id="sf-min"
-                label={t("Minimum", "সর্বনিম্ন")}
-                currency={currency}
-                valueMinor={params.minMinor}
-                onCommit={(v) => apply({ minMinor: v })}
-              />
-              <MoneyBound
-                id="sf-max"
-                label={t("Maximum", "সর্বোচ্চ")}
-                currency={currency}
-                valueMinor={params.maxMinor}
-                onCommit={(v) => apply({ maxMinor: v })}
-              />
-            </div>
-          </fieldset>
-
-          <label className="flex items-center gap-2 text-sm">
-            <input
-              type="checkbox"
-              checked={params.inStock}
-              onChange={(e) => apply({ inStock: e.target.checked })}
-              className="size-4 accent-[var(--bd-teal-700)]"
-            />
-            {t("In stock only", "শুধু স্টকে আছে")}{" "}
-            <span className="money text-xs text-muted-foreground">
-              ({facets.in_stock})
-            </span>
-          </label>
-
-          {filters > 0 && (
-            <button
-              type="button"
-              onClick={() =>
-                apply({
-                  category: null,
-                  collection: null,
-                  kind: null,
-                  minMinor: null,
-                  maxMinor: null,
-                  inStock: false,
-                })
-              }
-              className="inline-flex min-h-9 items-center gap-1 text-sm text-primary underline"
-            >
-              <X className="size-3.5" aria-hidden />{" "}
-              {t("Clear filters", "ফিল্টার মুছুন")}
-            </button>
-          )}
-        </section>
-      )}
-
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-        <p aria-live="polite" className="text-sm text-muted-foreground">
-          {query.isPending
-            ? t("Searching…", "খোঁজা হচ্ছে…")
-            : outcome?.status === "ok"
-              ? t(
-                  `${result?.total ?? 0} ${result?.total === 1 ? "product" : "products"}`,
-                  `${result?.total ?? 0} টি পণ্য`,
-                )
-              : outcome?.status === "rate_limited"
-                ? t(
-                    "Too many searches — try again shortly.",
-                    "অনেক বেশি সার্চ — কিছুক্ষণ পরে চেষ্টা করুন।",
-                  )
-                : outcome?.status === "not_found"
-                  ? t(
-                      "This store is not published.",
-                      "এই দোকানটি প্রকাশিত নয়।",
-                    )
-                  : t(
-                      "Search is unavailable right now.",
-                      "সার্চ এখন কাজ করছে না।",
-                    )}
-        </p>
         <label className="flex items-center gap-2 text-sm">
-          <span className="text-muted-foreground">{t("Sort", "সাজান")}</span>
-          <select
-            value={params.sort}
-            onChange={(e) => apply({ sort: e.target.value as SortKey })}
-            className="min-h-11 rounded-fq-md border border-border bg-card px-2 text-sm"
-          >
-            {SORTS.map((s) => (
-              <option key={s} value={s}>
-                {s === "relevance"
-                  ? t("Best match", "সবচেয়ে মিল")
-                  : s === "price_asc"
-                    ? t("Price: low to high", "দাম: কম থেকে বেশি")
-                    : s === "price_desc"
-                      ? t("Price: high to low", "দাম: বেশি থেকে কম")
-                      : s === "newest"
-                        ? t("Newest", "নতুন")
-                        : t("Name", "নাম")}
-              </option>
-            ))}
-          </select>
+          <input
+            type="checkbox"
+            checked={params.inStock}
+            onChange={(e) => apply({ inStock: e.target.checked })}
+            className="size-4 accent-[var(--bd-teal-700)]"
+          />
+          {t("In stock only", "শুধু স্টকে আছে")}{" "}
+          <span className="money text-xs text-muted-foreground">
+            ({facets.in_stock})
+          </span>
         </label>
-      </div>
 
-      {result?.degraded && (
-        // The search engine is down and Postgres answered instead. Ranking is
-        // simpler, so say so plainly rather than let shoppers assume the
-        // catalogue shrank.
-        <p className="mt-4 rounded-fq-md border border-border bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
+        {filters > 0 && (
+          <button
+            type="button"
+            onClick={() =>
+              apply({
+                category: null,
+                collection: null,
+                kind: null,
+                minMinor: null,
+                maxMinor: null,
+                inStock: false,
+              })
+            }
+            className="inline-flex min-h-9 items-center gap-1 text-sm text-primary underline"
+          >
+            <X className="size-3.5" aria-hidden />{" "}
+            {t("Clear filters", "ফিল্টার মুছুন")}
+          </button>
+        )}
+      </section>
+    ) : null;
+
+  // The count — the "ok" branch of the summary. It keeps the original
+  // paragraph wrapper, so the summary row keeps its single live region.
+  const resultCount =
+    !query.isPending && outcome?.status === "ok" ? (
+      <p aria-live="polite" className="text-sm text-muted-foreground">
+        {t(
+          `${result?.total ?? 0} ${result?.total === 1 ? "product" : "products"}`,
+          `${result?.total ?? 0} টি পণ্য`,
+        )}
+      </p>
+    ) : null;
+
+  // The notice — every other branch of the summary: pending, rate-limited,
+  // not published and unavailable. Exactly one of the count and the notice
+  // renders at a time, and the notice renders NOTHING in the "ok" case (on a
+  // themed page the count comes from the granted result_toolbar widget).
+  const searchNotice =
+    query.isPending || outcome?.status !== "ok" ? (
+      <p aria-live="polite" className="text-sm text-muted-foreground">
+        {query.isPending
+          ? t("Searching…", "খোঁজা হচ্ছে…")
+          : outcome?.status === "rate_limited"
+            ? t(
+                "Too many searches — try again shortly.",
+                "অনেক বেশি সার্চ — কিছুক্ষণ পরে চেষ্টা করুন।",
+              )
+            : outcome?.status === "not_found"
+              ? t("This store is not published.", "এই দোকানটি প্রকাশিত নয়।")
+              : t("Search is unavailable right now.", "সার্চ এখন কাজ করছে না।")}
+      </p>
+    ) : null;
+
+  const summaryAndSort = (
+    <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+      {resultCount}
+      {searchNotice}
+      <label className="flex items-center gap-2 text-sm">
+        <span className="text-muted-foreground">{t("Sort", "সাজান")}</span>
+        <select
+          value={params.sort}
+          onChange={(e) => apply({ sort: e.target.value as SortKey })}
+          className="min-h-11 rounded-fq-md border border-border bg-card px-2 text-sm"
+        >
+          {SORTS.map((s) => (
+            <option key={s} value={s}>
+              {s === "relevance"
+                ? t("Best match", "সবচেয়ে মিল")
+                : s === "price_asc"
+                  ? t("Price: low to high", "দাম: কম থেকে বেশি")
+                  : s === "price_desc"
+                    ? t("Price: high to low", "দাম: বেশি থেকে কম")
+                    : s === "newest"
+                      ? t("Newest", "নতুন")
+                      : t("Name", "নাম")}
+            </option>
+          ))}
+        </select>
+      </label>
+    </div>
+  );
+
+  const degradedNotice = result?.degraded ? (
+    // The search engine is down and Postgres answered instead. Ranking is
+    // simpler, so say so plainly rather than let shoppers assume the
+    // catalogue shrank.
+    <p className="mt-4 rounded-fq-md border border-border bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
+      {t(
+        "Showing basic results while search is recovering — ordering may be less precise.",
+        "সার্চ ঠিক হওয়া পর্যন্ত সাধারণ ফলাফল দেখানো হচ্ছে — ক্রম কম নিখুঁত হতে পারে।",
+      )}
+    </p>
+  ) : null;
+
+  const emptyState =
+    result && result.items.length === 0 && !query.isPending ? (
+      <div className="mt-8 rounded-fq-lg border border-border bg-card p-6">
+        <h2 className="font-bangla-display text-lg font-semibold">
+          {t("No products matched", "কোনো পণ্য মেলেনি")}
+        </h2>
+        <p className="mt-1 text-sm text-muted-foreground">
           {t(
-            "Showing basic results while search is recovering — ordering may be less precise.",
-            "সার্চ ঠিক হওয়া পর্যন্ত সাধারণ ফলাফল দেখানো হচ্ছে — ক্রম কম নিখুঁত হতে পারে।",
+            "Try a shorter word, or clear a filter to widen the results.",
+            "ছোট শব্দ লিখুন, বা একটি ফিল্টার সরিয়ে ফলাফল বাড়ান।",
           )}
         </p>
-      )}
-
-      {result && result.items.length === 0 && !query.isPending && (
-        <div className="mt-8 rounded-fq-lg border border-border bg-card p-6">
-          <h2 className="font-bangla-display text-lg font-semibold">
-            {t("No products matched", "কোনো পণ্য মেলেনি")}
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {t(
-              "Try a shorter word, or clear a filter to widen the results.",
-              "ছোট শব্দ লিখুন, বা একটি ফিল্টার সরিয়ে ফলাফল বাড়ান।",
-            )}
-          </p>
-          <Link
-            to="/store/$slug"
-            search={{ preview_token: undefined }}
-            params={{ slug }}
-            className="mt-3 inline-block text-sm text-primary underline"
-          >
-            {t("Browse everything", "সব পণ্য দেখুন")}
-          </Link>
-        </div>
-      )}
-
-      {result && result.items.length > 0 && (
-        <ul className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {result.items.map((p) => (
-            <li key={p.id}>
-              <Link
-                to="/store/$slug/p/$productSlug"
-                params={{ slug, productSlug: p.slug }}
-                className="group block overflow-hidden rounded-fq-lg border border-border bg-card transition-transform duration-200 hover:-translate-y-0.5"
-              >
-                <div className="aspect-square bg-muted">
-                  <StoreImage
-                    image={p.image ?? null}
-                    fallbackSrc={p.image_url}
-                    alt={p.title}
-                    seed={p.id}
-                    sizes="(max-width: 768px) 50vw, 300px"
-                    className="size-full object-cover"
-                  />
-                </div>
-                <div className="p-3">
-                  <h2 className="line-clamp-2 text-sm font-medium">
-                    {p.title}
-                  </h2>
-                  <p className="money mt-1 text-sm font-semibold">
-                    {fmtMinor(p.price_minor, currency)}
-                  </p>
-                  <p
-                    className={`mt-1 text-xs ${p.stock > 0 ? "text-success-foreground" : "text-danger-foreground"}`}
-                  >
-                    {p.stock > 0
-                      ? t("In stock", "স্টকে আছে")
-                      : t("Out of stock", "স্টক নেই")}
-                  </p>
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {pages > 1 && (
-        <nav
-          aria-label={t("Pages", "পেজ")}
-          className="mt-8 flex items-center justify-center gap-2"
+        <Link
+          to="/store/$slug"
+          search={{ preview_token: undefined }}
+          params={{ slug }}
+          className="mt-3 inline-block text-sm text-primary underline"
         >
-          {/* Phase 7.1: real hrefs — a crawler (and a JS-less shopper) must be
-                able to walk the whole result set, so these are links, not buttons. */}
-          <Link
-            to="/store/$slug/search"
-            params={{ slug }}
-            search={toSearchQuery({
-              ...params,
-              page: Math.max(1, params.page - 1),
-            })}
-            rel="prev"
-            aria-disabled={params.page <= 1}
-            className={`min-h-11 rounded-fq-md border border-border bg-card px-3 text-sm leading-[2.75rem] ${
-              params.page <= 1 ? "pointer-events-none opacity-40" : ""
-            }`}
-          >
-            {t("Previous", "আগের")}
-          </Link>
-          <span className="money text-sm text-muted-foreground">
-            {params.page} / {pages}
-          </span>
-          <Link
-            to="/store/$slug/search"
-            params={{ slug }}
-            search={toSearchQuery({
-              ...params,
-              page: Math.min(pages, params.page + 1),
-            })}
-            rel="next"
-            aria-disabled={params.page >= pages}
-            className={`min-h-11 rounded-fq-md border border-border bg-card px-3 text-sm leading-[2.75rem] ${
-              params.page >= pages ? "pointer-events-none opacity-40" : ""
-            }`}
-          >
-            {t("Next", "পরের")}
-          </Link>
-        </nav>
-      )}
+          {t("Browse everything", "সব পণ্য দেখুন")}
+        </Link>
+      </div>
+    ) : null;
+
+  const results =
+    result && result.items.length > 0 ? (
+      <ul className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        {result.items.map((p) => (
+          <li key={p.id}>
+            <Link
+              to="/store/$slug/p/$productSlug"
+              params={{ slug, productSlug: p.slug }}
+              className="group block overflow-hidden rounded-fq-lg border border-border bg-card transition-transform duration-200 hover:-translate-y-0.5"
+            >
+              <div className="aspect-square bg-muted">
+                <StoreImage
+                  image={p.image ?? null}
+                  fallbackSrc={p.image_url}
+                  alt={p.title}
+                  seed={p.id}
+                  sizes="(max-width: 768px) 50vw, 300px"
+                  className="size-full object-cover"
+                />
+              </div>
+              <div className="p-3">
+                <h2 className="line-clamp-2 text-sm font-medium">{p.title}</h2>
+                <p className="money mt-1 text-sm font-semibold">
+                  {fmtMinor(p.price_minor, currency)}
+                </p>
+                <p
+                  className={`mt-1 text-xs ${p.stock > 0 ? "text-success-foreground" : "text-danger-foreground"}`}
+                >
+                  {p.stock > 0
+                    ? t("In stock", "স্টকে আছে")
+                    : t("Out of stock", "স্টক নেই")}
+                </p>
+              </div>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    ) : null;
+
+  const pager =
+    pages > 1 ? (
+      <nav
+        aria-label={t("Pages", "পেজ")}
+        className="mt-8 flex items-center justify-center gap-2"
+      >
+        {/* Phase 7.1: real hrefs — a crawler (and a JS-less shopper) must be
+              able to walk the whole result set, so these are links, not buttons. */}
+        <Link
+          to="/store/$slug/search"
+          params={{ slug }}
+          search={toSearchQuery({
+            ...params,
+            page: Math.max(1, params.page - 1),
+          })}
+          rel="prev"
+          aria-disabled={params.page <= 1}
+          className={`min-h-11 rounded-fq-md border border-border bg-card px-3 text-sm leading-[2.75rem] ${
+            params.page <= 1 ? "pointer-events-none opacity-40" : ""
+          }`}
+        >
+          {t("Previous", "আগের")}
+        </Link>
+        <span className="money text-sm text-muted-foreground">
+          {params.page} / {pages}
+        </span>
+        <Link
+          to="/store/$slug/search"
+          params={{ slug }}
+          search={toSearchQuery({
+            ...params,
+            page: Math.min(pages, params.page + 1),
+          })}
+          rel="next"
+          aria-disabled={params.page >= pages}
+          className={`min-h-11 rounded-fq-md border border-border bg-card px-3 text-sm leading-[2.75rem] ${
+            params.page >= pages ? "pointer-events-none opacity-40" : ""
+          }`}
+        >
+          {t("Next", "পরের")}
+        </Link>
+      </nav>
+    ) : null;
+
+  // The whole listing — the `fallback`'s content: every piece, in today's
+  // order, so a store with NO published search template still gets today's
+  // page, content for content.
+  const listing = (
+    <>
+      {queryBox}
+      {filtersPanel}
+      {summaryAndSort}
+      {degradedNotice}
+      {emptyState}
+      {results}
+      {pager}
+    </>
+  );
+
+  // The results block — what the theme's `product_grid` receives as
+  // `productSlot`. It carries the query box and the platform's category/kind
+  // chips (search EXECUTION and AUTHORIZATION, not presentation), the
+  // search-status notice, the degraded notice and the results grid.
+  const resultsBlock = (
+    <>
+      {queryBox}
+      {filtersPanel}
+      {searchNotice}
+      {degradedNotice}
+      {results}
     </>
   );
 
@@ -536,34 +590,68 @@ function SearchPage() {
 
   return (
     <PluginLayer plugins={chrome?.installedPlugins ?? []}>
-      <ThemeChrome
-        template="search"
-        storeSlug={slug}
-        themeKey={chrome?.themeKey ?? null}
-        merchantId={chrome?.merchant.id ?? null}
-        ast={chrome?.ast ?? null}
-        tokens={chrome?.tokens ?? null}
-        siteKit={chrome?.siteKit ?? null}
-        chrome={
-          <>
-            <StoreHeader
-              slug={slug}
-              name={chrome?.merchant.name ?? slug}
-              menus={chrome?.menus}
-              themeKey={chrome?.themeKey ?? null}
-            />
-            {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
-            {/* <SupportWidget slug={slug} /> */}
-          </>
-        }
-        productSlot={listing}
-        fallback={
-          <>
-            {heading}
-            {listing}
-          </>
-        }
-      />
+      {/*
+        Phase 2 (Task 9.3) — the theme's facet, sort and pager widgets compute
+        REAL links, so the provider carries the LIVE query: the live params,
+        the live total, the store's search path and the route's own `apply()`.
+      */}
+      <CollectionQueryProvider
+        value={{
+          params,
+          total: result?.total ?? 0,
+          basePath: `/store/${slug}/search`,
+          navigate: (next) => apply(next),
+        }}
+      >
+        <ThemeChrome
+          template="search"
+          storeSlug={slug}
+          themeKey={chrome?.themeKey ?? null}
+          merchantId={chrome?.merchant.id ?? null}
+          ast={chrome?.ast ?? null}
+          tokens={chrome?.tokens ?? null}
+          siteKit={chrome?.siteKit ?? null}
+          chrome={
+            <>
+              <StoreHeader
+                slug={slug}
+                name={chrome?.merchant.name ?? slug}
+                menus={chrome?.menus}
+                themeKey={chrome?.themeKey ?? null}
+              />
+              {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
+              {/* <SupportWidget slug={slug} /> */}
+            </>
+          }
+          // The storefront grants five of the platform's search widgets;
+          // `facet_sidebar` stays preview-only because its rows come from the
+          // widget-data pipeline (D7). A themed storefront search page therefore
+          // has NO independent facet sidebar — the platform's own category/kind
+          // chips remain visible inside the results block, which is where the
+          // shopper filters the search.
+          contextSlots={{
+            result_toolbar: null,
+            filter_chips: null,
+            pagination: null,
+            // The `empty_state` widget renders its panel unconditionally
+            // (`src/components/builder/collection.tsx:707-753`), so the GRANT
+            // is what decides whether the theme's empty copy appears — it is
+            // granted only when the platform's own empty state would have
+            // shown.
+            ...(result && result.items.length === 0 && !query.isPending
+              ? { empty_state: null }
+              : {}),
+            category_header: null,
+          }}
+          productSlot={resultsBlock}
+          fallback={
+            <>
+              {heading}
+              {listing}
+            </>
+          }
+        />
+      </CollectionQueryProvider>
     </PluginLayer>
   );
 }
