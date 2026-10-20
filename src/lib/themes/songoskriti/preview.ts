@@ -216,21 +216,28 @@ export function songoskritiPreviewSource(
             s("page_content", {}),
           ];
         case "blog":
+          // The platform's blog pack renders the listing: the terms rail, the
+          // archive grid and the pager (`src/components/builder/blog.tsx:392-394`).
+          // The theme owns the composition — which pack sections, in which
+          // order — and the platform owns the feed
+          // (`BlogFeedProvider`). No authored story body: the demo story the
+          // preview used to show ("Meet the makers") is retired.
           return [
-            s("heading", { text: "Journal", text_bn: "জার্নাল" }),
-            s("image", {
-              src: "/ph/songoskriti/hero-artisans.jpg",
-              alt: "Artisans weaving on a wooden loom",
-              ratio: "16/9",
-              caption: "Artisan owned",
+            s("blog_terms", {
+              heading: "Browse the journal",
+              style: "pills",
+              showCounts: true,
             }),
-            s("rich_text", {
-              heading: "Meet the makers",
-              heading_bn: "কারিগরদের চিনুন",
-              body: "Demo story. Kantha embroidery stitched by rural artisans — full articles ship with the theme.",
-              body_bn:
-                "ডেমো গল্প। গ্রামের কারিগরদের হাতে সেলাই করা কাঁথা — পূর্ণ নিবন্ধ থিমের সাথেই আসে।",
+            s("blog_archive", {
+              heading: "From the journal",
+              layout: "magazine",
+              columns: 3,
+              limit: 9,
+              showCover: true,
+              showExcerpt: true,
+              showMeta: true,
             }),
+            s("blog_pager", { align: "center" }),
           ];
         case "search":
           // The platform owns the search: it executes the query, authorizes the
