@@ -7,16 +7,16 @@
 
 ## 0. How to read this
 
-| § | For you if you want… |
-|---|---|
-| 1 | the problem, in the state it was found |
-| 2 | **every question I asked on implementation and the answer I received** |
-| 3 | what has shipped since, with the live evidence |
-| 4 | the platform map (what exists vs. what is missing) — the facts an expert needs |
-| 5 | **the open questions**, each with the evidence that settles it |
-| 6 | the constraints that bound any solution |
-| 7 | the file map and how to reproduce every claim |
-| 8 | the rulings I made on your behalf — challenge these |
+| §   | For you if you want…                                                           |
+| --- | ------------------------------------------------------------------------------ |
+| 1   | the problem, in the state it was found                                         |
+| 2   | **every question I asked on implementation and the answer I received**         |
+| 3   | what has shipped since, with the live evidence                                 |
+| 4   | the platform map (what exists vs. what is missing) — the facts an expert needs |
+| 5   | **the open questions**, each with the evidence that settles it                 |
+| 6   | the constraints that bound any solution                                        |
+| 7   | the file map and how to reproduce every claim                                  |
+| 8   | the rulings I made on your behalf — challenge these                            |
 
 ---
 
@@ -42,17 +42,17 @@ And the pages that prompted the second half of this work:
 
 These are the questions I put to you while implementing, with the options offered and the answer chosen. Each answer unlocked the work noted.
 
-| # | Question | Options offered | **Your answer** | What it unlocked |
-|---|---|---|---|---|
-| Q1 | The 9 JPEG-in-`.png` assets — how to make them honest? | rename to `.jpg` · transcode to true PNG · allowlist the mismatch | **Rename to `.jpg`, update every reference** (byte-identical pixels, URLs become truthful) | The rename + its full reference sweep + the live asset gate |
-| Q2 | The 3 `// TBD` editorial references point at files that never existed | reuse existing theme art · drop the editorial sections · block on new generation | **Reuse existing theme art** — women → `edit-festive-main.jpg`, men → `campaign-men.jpg`, heritage → `hero-artisans.jpg` | No broken references, no new generation, no new assets |
-| Q3 | "Unnecessarily large files" — how strict? | budgets only (pixels exact) · optimise the current assets too · warn only | **Budgets only, keep pixels exact** (≤ 3,000,000 B/file, ≤ 28,000,000 B total, ≤ 2.0 B/px PNG, ≤ 1.0 B/px JPEG) | The gate's size rules with zero recompression |
-| Q4 | How should the gate be built? | A: shared manifest + CLI + generator `--check` + vitest + release wiring · B: vitest-only · C: browser/network gate | **A — shared manifest + CLI** | One manifest + one frozen expectation + one gate that both the CLI and CI run |
-| Q5 | The port spec §7 forbids editing core files; the rename needs two existing test files moved | two test files only · **also fix the preview's page tab** | **Also fix the preview's page tab** (a three-file escalation: the two pins + `ThemePreviewFrame.tsx`) | The preview keeps showing real content instead of going empty |
-| Q6 | How to proceed with Phase 1? | execute now with subagents · commit the documents first · hold | **Execute Phase 1 now with subagents** | 7 implementation commits + a review after each |
-| Q7 | Integration of the asset-gate branch | push and deploy · push only · keep local | **Push and deploy** | `40673d3a` live; the live asset verification |
-| Q8 | Integration of Phase 1 | push and deploy · push only · hold | **Push and deploy** | `c9ec4a45` live, then `2327fc3e` after the closure pass |
-| Q9 | "Close all the opened task" | — | **Close every open item** | The closing wave: the lint key, the nav restore, the label localisation, the JWT redaction, the record corrections, and the remaining minors |
+| #   | Question                                                                                    | Options offered                                                                                                     | **Your answer**                                                                                                          | What it unlocked                                                                                                                             |
+| --- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Q1  | The 9 JPEG-in-`.png` assets — how to make them honest?                                      | rename to `.jpg` · transcode to true PNG · allowlist the mismatch                                                   | **Rename to `.jpg`, update every reference** (byte-identical pixels, URLs become truthful)                               | The rename + its full reference sweep + the live asset gate                                                                                  |
+| Q2  | The 3 `// TBD` editorial references point at files that never existed                       | reuse existing theme art · drop the editorial sections · block on new generation                                    | **Reuse existing theme art** — women → `edit-festive-main.jpg`, men → `campaign-men.jpg`, heritage → `hero-artisans.jpg` | No broken references, no new generation, no new assets                                                                                       |
+| Q3  | "Unnecessarily large files" — how strict?                                                   | budgets only (pixels exact) · optimise the current assets too · warn only                                           | **Budgets only, keep pixels exact** (≤ 3,000,000 B/file, ≤ 28,000,000 B total, ≤ 2.0 B/px PNG, ≤ 1.0 B/px JPEG)          | The gate's size rules with zero recompression                                                                                                |
+| Q4  | How should the gate be built?                                                               | A: shared manifest + CLI + generator `--check` + vitest + release wiring · B: vitest-only · C: browser/network gate | **A — shared manifest + CLI**                                                                                            | One manifest + one frozen expectation + one gate that both the CLI and CI run                                                                |
+| Q5  | The port spec §7 forbids editing core files; the rename needs two existing test files moved | two test files only · **also fix the preview's page tab**                                                           | **Also fix the preview's page tab** (a three-file escalation: the two pins + `ThemePreviewFrame.tsx`)                    | The preview keeps showing real content instead of going empty                                                                                |
+| Q6  | How to proceed with Phase 1?                                                                | execute now with subagents · commit the documents first · hold                                                      | **Execute Phase 1 now with subagents**                                                                                   | 7 implementation commits + a review after each                                                                                               |
+| Q7  | Integration of the asset-gate branch                                                        | push and deploy · push only · keep local                                                                            | **Push and deploy**                                                                                                      | `40673d3a` live; the live asset verification                                                                                                 |
+| Q8  | Integration of Phase 1                                                                      | push and deploy · push only · hold                                                                                  | **Push and deploy**                                                                                                      | `c9ec4a45` live, then `2327fc3e` after the closure pass                                                                                      |
+| Q9  | "Close all the opened task"                                                                 | —                                                                                                                   | **Close every open item**                                                                                                | The closing wave: the lint key, the nav restore, the label localisation, the JWT redaction, the record corrections, and the remaining minors |
 
 **Escalations granted** (each is an explicit exception to port spec §7, recorded in `docs/superpowers/songoskriti-evidence/port/phase1-page-content-escalation.md`):
 
@@ -66,7 +66,7 @@ These are the questions I put to you while implementing, with the options offere
 
 ### 3.1 The asset acceptance gate (live on `40673d3a`)
 
-- **One manifest** (`scripts/songoskriti-assets-manifest.mjs`, 21 entries) + **one frozen expectation** (`scripts/songoskriti-assets-expected.json`, 21 sha256 digests) + the tree. The gate compares all three, so deleting a file *and* its manifest entry can no longer go green.
+- **One manifest** (`scripts/songoskriti-assets-manifest.mjs`, 21 entries) + **one frozen expectation** (`scripts/songoskriti-assets-expected.json`, 21 sha256 digests) + the tree. The gate compares all three, so deleting a file _and_ its manifest entry can no longer go green.
 - **The gate** (`scripts/songoskriti-assets-check.mjs`): one pure `checkSongoskritiAssets(world) → {findings, notes}`. Rules: missing, orphan, byte-vs-name and name-vs-manifest format mismatch, undersized, oversized, over-dense, total size, duplicate (in-dir **and** a theme raster copied elsewhere under `public/`), unreferenced, invalid SVG, expectation drift, dangling reference, wrong URL form, cross-theme reference, video mismatch, and a retired path in the newest migration (advisory). Exit 0/1/2; notes never fail it.
 - **The generator** (`scripts/gen-songoskriti-assets.mjs --check`): keyless, offline, proves plan ↔ expectation ↔ tree, and its write path **refuses** a payload whose format contradicts the file name.
 - **Live proof**: the 9 renamed URLs → **200**, the 9 retired `.png` URLs → **404**, the 7 untouched assets → 200; all 21 referenced assets resolve across index/collection/product.
@@ -90,19 +90,19 @@ These are the questions I put to you while implementing, with the options offere
 
 **Legend:** ✅ exists today · ⚠️ exists but incomplete/wrong · ❌ absent.
 
-| | search | cart | account | blog | checkout | archive | page |
-|---|---|---|---|---|---|---|---|
-| **A. key defined** | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ **absent** | ✅ |
-| **B. per-theme default AST** | ✅ | ✅ | ✅ | ⚠️ demo copy, no `blog_archive` | ✅ | ❌ | ✅ **now** (was ⚠️) |
-| **C. merchant edits it** | ✅ selector (`BuilderTopBar.tsx:413`), persisted per template (`use-builder-editor.ts:332-345`) | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| **D. route-owned data** | ⚠️ one opaque `productSlot`, not per-widget slots | ✅ `contextSlots` + live `CartProvider` | ✅ `accountSlots` | ✅ `BlogFeedProvider` | ⚠️ `ast={null}` — tokens only | ❌ | ✅ real page record → `PageView` |
-| **E. rendered in production** | ⚠️ partial | ✅ | ✅ | ❌ `ast={null}` (`BlogArchiveTheme.tsx:29-33`) | ❌ `ast={null}` (`store.$slug.checkout.tsx:418`) | ❌ | ✅ **now** |
+|                               | search                                                                                          | cart                                    | account           | blog                                           | checkout                                         | archive       | page                             |
+| ----------------------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------- | ----------------- | ---------------------------------------------- | ------------------------------------------------ | ------------- | -------------------------------- |
+| **A. key defined**            | ✅                                                                                              | ✅                                      | ✅                | ✅                                             | ✅                                               | ❌ **absent** | ✅                               |
+| **B. per-theme default AST**  | ✅                                                                                              | ✅                                      | ✅                | ⚠️ demo copy, no `blog_archive`                | ✅                                               | ❌            | ✅ **now** (was ⚠️)              |
+| **C. merchant edits it**      | ✅ selector (`BuilderTopBar.tsx:413`), persisted per template (`use-builder-editor.ts:332-345`) | ✅                                      | ✅                | ✅                                             | ✅                                               | ❌            | ✅                               |
+| **D. route-owned data**       | ⚠️ one opaque `productSlot`, not per-widget slots                                               | ✅ `contextSlots` + live `CartProvider` | ✅ `accountSlots` | ✅ `BlogFeedProvider`                          | ⚠️ `ast={null}` — tokens only                    | ❌            | ✅ real page record → `PageView` |
+| **E. rendered in production** | ⚠️ partial                                                                                      | ✅                                      | ✅                | ❌ `ast={null}` (`BlogArchiveTheme.tsx:29-33`) | ❌ `ast={null}` (`store.$slug.checkout.tsx:418`) | ❌            | ✅ **now**                       |
 
 **Three structural findings that drive everything else:**
 
 1. **The `index` template has no production render path.** The only `template="index"` is inside `src/components/store/StorefrontPage.tsx:294`, and `StorefrontPage` is imported nowhere (only a doc comment and a test that reads it as text). Both storefront index routes render either the CMS-designated page (wearing `template="page"`) or `StoreWelcome`.
 2. **The `checkout` template has no production render path either** — the route fetches the checkout chrome and throws the AST away.
-3. **The storefront blog route is deliberately themeless** — `BlogArchiveTheme` passes `ast={null} tokens={null}` with the comment *"the render stays generic for every key **by design** — pinned in `BlogArchiveTheme.test.tsx`"*. The brief's §8 therefore contradicts a **test-pinned product decision**, not just an implementation gap.
+3. **The storefront blog route is deliberately themeless** — `BlogArchiveTheme` passes `ast={null} tokens={null}` with the comment _"the render stays generic for every key **by design** — pinned in `BlogArchiveTheme.test.tsx`"_. The brief's §8 therefore contradicts a **test-pinned product decision**, not just an implementation gap.
 
 **What already exists and does not need rebuilding** (the brief's premises that the audit corrected): the per-template editor and selector; the route-owned context/data system (`widget-data.ts` → `collectWidgetRequests`, `ContextSlot`); the theme presentation registry; the **blog archive pack** (`blog_archive` / `blog_terms` / `blog_pager` — the exact pattern the brief reinvents for search/archive, already built and already in a live theme's AST, but **not connected** to the storefront blog route); the platform-wide definition-of-done test (`src/lib/definition-of-done.test.ts`).
 
@@ -114,13 +114,13 @@ These are the questions I put to you while implementing, with the options offere
 
 Each carries the evidence that settles it. **D1–D3 and D5 are yours; D4 and D6 are now recorded but still need a ruling.**
 
-### D1 — Does `archive` need to be a template *key* at all? *(the judgement call the audit flagged)*
+### D1 — Does `archive` need to be a template _key_ at all? _(the judgement call the audit flagged)_
 
 **Question:** is "Archive" the **blog taxonomy** surface (index / category / tag / author — the only route-level taxonomy archives that exist) or a **product-side** listing archive (category / brand / search-kind, where "brand" has no route at all)?
 
 - **If blog-only** → **no new key is needed**: the `blog` template + the blog pack already cover it, and the platform already supports suffixed variant keys (`templateSuffixFromOverride` / `resolveTemplateCandidates`, `builder-ast.ts:8203-8280`) — `blog_category`, `blog_tag`, `blog_author` would work today.
 - **If product-side** → a new `archive` key touches **16 `TEMPLATE_KEYS` sites, 7 `Record<TemplateKey,…>`/switch maps, 41 per-widget `templates:` allowlists, a hand-written `z.enum` (`src/lib/storefront.functions.ts:97-107` that no compiler sees), the theme-package contract and `THEME_API_RANGE` ("^3.0.0")** — and every one of those files is prohibited by §7, so the whole phase is an escalation. Note also that `parseTemplates` **silently drops unknown keys**, so a key added to the editor but not to the parser would appear in the builder and vanish from every page.
-- **Settled by:** `grep -rn 'template="' src/routes/` + `grep -rn 'activeSlug\|termArchivePath' src/routes/blog.*.tsx` + the product ruling *"must merchants design a product-category listing distinct from the Collection template?"*
+- **Settled by:** `grep -rn 'template="' src/routes/` + `grep -rn 'activeSlug\|termArchivePath' src/routes/blog.*.tsx` + the product ruling _"must merchants design a product-category listing distinct from the Collection template?"_
 
 ### D2 — Is the checkout template meant to be themeable at all?
 
@@ -155,7 +155,7 @@ The live DB holds three `store_themes` rows (Atelier, classic, Supershop) — **
 
 ## 6. The constraints that bound any solution
 
-- **Port spec §7** (`docs/superpowers/specs/2026-10-18-songoskriti-unified-port-design.md`): editable = `src/lib/themes/songoskriti/**`, `src/components/builder/songoskriti*.ts(x)`, **new** test/fixture files, **new** `.e2e/` files, `docs/**`, `scripts/**`, wiring-only `package.json`/`.circleci` edits. Prohibited = `src/routes/**`, `src/lib/builder-ast.ts`, `src/components/builder/widgets.tsx`, existing tests and their `.snap` files, existing `.e2e/**`, everything else under `src/`. Escalation rule: *"any required capability missing in core → stop, report, wait for a decision. Never edit silently."*
+- **Port spec §7** (`docs/superpowers/specs/2026-10-18-songoskriti-unified-port-design.md`): editable = `src/lib/themes/songoskriti/**`, `src/components/builder/songoskriti*.ts(x)`, **new** test/fixture files, **new** `.e2e/` files, `docs/**`, `scripts/**`, wiring-only `package.json`/`.circleci` edits. Prohibited = `src/routes/**`, `src/lib/builder-ast.ts`, `src/components/builder/widgets.tsx`, existing tests and their `.snap` files, existing `.e2e/**`, everything else under `src/`. Escalation rule: _"any required capability missing in core → stop, report, wait for a decision. Never edit silently."_
 - **Gates that must stay green**: asset gate, generator check, `doc-gate` (0 findings), `tsgo --noEmit`, eslint (0 errors), prettier on touched files, `bun run test`.
 - **Known pre-existing reds** (not ours, none blocking): `src/lib/site.server.test.ts` — a local `.env` env flake that passes in CI; `contract-gate` exits 2 locally (`spawnSync bunx ENOENT` — `bun` is not on PATH here); `schema-fingerprint --check` exits 1 (needs a live Supabase RPC); `secret-scan` locally reports 8 findings, all inside the untracked `.output-snapshots/` (green in a clean checkout since the JWT redaction); 12 stale parity baselines (D6); 35 dangling `/plan.md` references in `BUILD.md`/`README.md`/`docs/01…17-*` that name a **different, long-gone** S1–S8 master roadmap (pre-existing, deliberately not repointed).
 - **Security invariants** the brief restates and the repo enforces: the theme controls presentation, never data access, prices, stock, payment state or authorization; search stays tenant-scoped and limit-bound; account shows only the signed-in customer's rows; checkout totals are server-authoritative; preview data is synthetic and labelled.
@@ -208,4 +208,4 @@ Each is a judgement I took to keep momentum, with what it costs if it was wrong.
 
 ---
 
-*Prepared for expert review. Every claim above is traceable to a file:line or a command in §7; the open questions in §5 are the ones I could not decide on your behalf.*
+_Prepared for expert review. Every claim above is traceable to a file:line or a command in §7; the open questions in §5 are the ones I could not decide on your behalf._
