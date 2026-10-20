@@ -17,6 +17,7 @@ import { describe, expect, it, vi } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { TemplateKey, ThemeAst } from "@/lib/builder-ast";
+import { LanguageProvider } from "@/lib/i18n";
 
 // The frame syncs the URL on every switch via useNavigate, and the store
 // chrome reads the router state — this suite renders without a router.
@@ -97,16 +98,27 @@ function templates(): Record<TemplateKey, ThemeAst> {
 }
 
 function renderPage(): string {
+  return renderPageIn("en");
+}
+
+/**
+ * The preview's page template localised: the "Last updated" label must follow
+ * the preview's own locale, exactly as the production route does
+ * (`src/components/store/PageView.tsx:104` → `t("Last updated", "সর্বশেষ হালনাগাদ")`).
+ */
+function renderPageIn(lang: "en" | "bn"): string {
   return renderToStaticMarkup(
-    createElement(ThemePreviewFrame, {
-      themeName: source.themeName,
-      author: source.author,
-      blueprintKey: source.key,
-      tokens: source.tokens,
-      templates: templates(),
-      initialTemplate: "page",
-      onClose: () => {},
-    }),
+    <LanguageProvider initialLang={lang}>
+      <ThemePreviewFrame
+        themeName={source.themeName}
+        author={source.author}
+        blueprintKey={source.key}
+        tokens={source.tokens}
+        templates={templates()}
+        initialTemplate="page"
+        onClose={() => {}}
+      />
+    </LanguageProvider>,
   );
 }
 
@@ -138,5 +150,29 @@ describe("songoskriti preview — the page template's body", () => {
       "title",
       "updated_at",
     ]);
+  });
+});
+
+describe("songoskriti preview — the page template's 'Last updated' label", () => {
+  it("renders the English label in an English preview", () => {
+    const html = renderPageIn("en");
+    expect(html).toContain("Last updated");
+    expect(html).not.toContain("সর্বশেষ হালনাগাদ");
+  });
+
+  it("renders the Bengali label in a Bengali preview", () => {
+    const html = renderPageIn("bn");
+    expect(html).toContain("সর্বশেষ হালনাগাদ");
+    expect(html).not.toContain("Last updated");
+  });
+
+  it("keeps the label's shape: the timestamp follows it in both locales", () => {
+    for (const lang of ["en", "bn"] as const) {
+      const html = renderPageIn(lang);
+      const label = lang === "en" ? "Last updated" : "সর্বশেষ হালনাগাদ";
+      expect(html).toContain(`${label}:`);
+      // The `<time>` element and its date are untouched by the localisation.
+      expect(html).toMatch(/<time dateTime="[^"]+"/);
+    }
   });
 });

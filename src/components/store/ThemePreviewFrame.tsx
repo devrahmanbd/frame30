@@ -530,7 +530,7 @@ export function ThemePreviewFrame({
       return { bundle, map: previewDemoMap(bundle, blueprintKey) };
     }, [ast, focusedMain, blueprintKey]);
 
-  const { lang } = useLang();
+  const { lang, t } = useLang();
   // Account center is context-gated: feed the merchant sections demo rows
   // so the account tab renders instead of parking on skeletons.
   const productSlots = useMockProductSlots(
@@ -581,6 +581,9 @@ export function ThemePreviewFrame({
   // node. Without one the fixed page template renders chrome with an empty
   // body. The demo fixture mirrors the production payload shape
   // (`src/components/store/PageView.tsx:73-110`) and is labelled as demo.
+  // The "Last updated" label is localised through the SAME `t` the
+  // production route uses (`src/components/store/PageView.tsx:104`), so the
+  // preview follows its own locale instead of hardcoding English.
   const pageSlots = useMemo(() => {
     if (template !== "page") return undefined;
     const page = PREVIEW_DEMO_PAGE;
@@ -596,7 +599,7 @@ export function ThemePreviewFrame({
             dangerouslySetInnerHTML={{ __html: page.html }} // sast-allow: html-sink -- static first-party demo literal from src/lib/preview-page-data.ts, no merchant or shopper data reaches this sink
           />
           <p className="mt-8 text-xs text-muted-foreground">
-            Last updated:{" "}
+            {t("Last updated", "সর্বশেষ হালনাগাদ")}:{" "}
             <time dateTime={page.updated_at} className="money">
               {new Date(page.updated_at).toLocaleDateString("en-GB")}
             </time>
@@ -604,7 +607,7 @@ export function ThemePreviewFrame({
         </article>
       ),
     };
-  }, [template]);
+  }, [template, t]);
 
   return (
     <div
