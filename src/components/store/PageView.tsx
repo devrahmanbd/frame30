@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { StudioNodes } from "@/components/store/StudioNodes";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
+import { themeRendersBody } from "@/lib/theme-body-slot";
 import { PluginLayer } from "@/components/store/PluginLayer";
 import { useLang } from "@/lib/i18n";
 import { isCustomHostPath } from "@/lib/storefront-url";
@@ -150,6 +151,38 @@ export function PageView({ data }: { data: PagePayload }) {
     </aside>
   );
 
+  // The ONE predicate that decides which path this page renders through:
+  // does the THEME render the body? It is the same question `ThemeChrome`
+  // asks itself (`themeRendersBody`), imported rather than re-derived, so the
+  // theme's choice and this route's layout can never disagree.
+  //
+  //  - themed: the theme's main declares this route's `page_content` slot, so
+  //    the theme's layout renders and the route's `fallback` never does.
+  //  - unthemed: no theme AST, or a main without the slot — the route's
+  //    fallback renders the body and the nav beside it.
+  const themeOwnsBody = themeRendersBody(ast, "page_content");
+
+  // In the themed path the route's fallback is not rendered at all, so the
+  // sibling-page nav has to travel THROUGH the theme's content slot: below
+  // the merchant's own body, as a sibling of their `<article>` — never inside
+  // it, and the merchant's content AST is untouched.
+  const pageContent = themeOwnsBody ? (
+    <>
+      {content}
+      {sidebar}
+    </>
+  ) : (
+    content
+  );
+
+  // The two-column grid belongs to the fallback path only: there the nav is a
+  // sibling column. When the theme renders the body the container has a
+  // single child, so reserving `lg:grid-cols-[1fr_15rem]` would leave an
+  // empty 15rem gutter at `lg+`.
+  const containerClassName = themeOwnsBody
+    ? "mx-auto max-w-5xl px-4 py-8"
+    : "mx-auto grid max-w-5xl gap-8 px-4 py-8 lg:grid-cols-[1fr_15rem]";
+
   return (
     <PluginLayer plugins={installedPlugins}>
       <ThemeChrome
@@ -172,8 +205,8 @@ export function PageView({ data }: { data: PagePayload }) {
             themeKey={themeKey ?? null}
           />
         }
-        contextSlots={{ breadcrumb, page_content: content }}
-        containerClassName="mx-auto grid max-w-5xl gap-8 px-4 py-8 lg:grid-cols-[1fr_15rem]"
+        contextSlots={{ breadcrumb, page_content: pageContent }}
+        containerClassName={containerClassName}
         fallback={
           <>
             <div>

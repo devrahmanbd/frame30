@@ -37,6 +37,7 @@ import {
   type ThemeTokens,
 } from "@/lib/builder-ast";
 import { primarySectionId, usedWidgetSkins } from "@/lib/builder-ast";
+import { themeRendersBody } from "@/lib/theme-body-slot";
 import { filterSkinCss } from "@/lib/themes/assets";
 
 type Props = {
@@ -299,15 +300,10 @@ export function ThemeChrome({
   // it declares that section — otherwise the theme's demo copy would
   // swallow the body the route owns, and the route fallback renders
   // instead. Chrome, tokens and CSS are unaffected.
-  const themed =
-    ast &&
-    ast.main.length > 0 &&
-    (!contentSlot ||
-      ast.main.some(
-        (section) => !section.invalid && section.type === contentSlot,
-      ))
-      ? ast
-      : null;
+  // `themeRendersBody` is the shared predicate: the hosts that lay the page
+  // out around the theme's body ask the SAME question, so the theme's choice
+  // and the host's layout can never disagree.
+  const themed = themeRendersBody(ast, contentSlot) ? ast : null;
   // Header and footer are site chrome: they must survive a template whose body
   // the route renders itself (cart, checkout, search). Dropping them with the
   // body left shoppers on a page with no store navigation and no policy links.
