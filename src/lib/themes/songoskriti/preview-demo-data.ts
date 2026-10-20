@@ -19,6 +19,8 @@ import type {
   CartContextValue,
   CartTotals,
 } from "@/components/builder/CartContext";
+import type { BlogFeed } from "@/components/builder/blog";
+import type { BlogCardData } from "@/components/store/BlogList";
 import type { CartLine } from "@/lib/cart";
 import type { PaymentMethodKey } from "@/lib/payment-rails";
 import type { WidgetRow } from "@/lib/widget-data";
@@ -268,3 +270,114 @@ export function songoskritiPreviewProfile(): WidgetRow {
  * `result.total`, and no merchant query ever sees 38.
  */
 export const SONGOSKRITI_PREVIEW_SEARCH_TOTAL = 38;
+
+/* --------------------------------------------------------------------- blog */
+
+/**
+ * The preview's **demo blog feed** — five Songoskriti-flavoured articles.
+ *
+ * The platform's blog pack reads its articles through `BlogFeedProvider`
+ * (`src/components/builder/blog.tsx:32`); with no provider it falls back to
+ * the pack's own `SAMPLE` rows ("Sample article 1"…, `blog.tsx:51-62`). This
+ * feed is what the Songoskriti preview shows instead: the articles are about
+ * the house's own craft, their categories are the taxonomy the terms rail
+ * shows, and the pager's base path points at the **preview's own blog tab**
+ * (`/theme-preview/<key>?template=blog`) rather than at a storefront route
+ * that does not exist for a demo.
+ *
+ * The copy is **synthetic demo content**, never a merchant's post — the same
+ * contract as the cart lines and the order rows above.
+ */
+export function songoskritiPreviewFeed(): BlogFeed {
+  const articles: BlogCardData[] = [
+    {
+      slug: "the-jamdani-loom",
+      title: "The jamdani loom, and the eleven days one saree takes",
+      titleEn: null,
+      excerpt:
+        "A jamdani saree is not woven, it is drawn: the motif is built on the loom with a separate thread for each colour, and a fine jamdani takes eleven days of a weaver's time.",
+      coverImageUrl: null,
+      publishedAt: "2026-08-14T00:00:00.000Z",
+      merchantName: "Songoskriti",
+      merchantSlug: "songoskriti",
+      category: { slug: "craft", name: "Craft" },
+      readingMinutes: 6,
+    },
+    {
+      slug: "what-jamdani-means",
+      title: "What a jamdani actually is, and how to tell a real one",
+      titleEn: null,
+      excerpt:
+        "The word names a technique, not a pattern: a jamdani is any motif drawn on the loom rather than woven into it, and the tell is the loose thread end on the reverse.",
+      coverImageUrl: null,
+      publishedAt: "2026-09-02T00:00:00.000Z",
+      merchantName: "Songoskriti",
+      merchantSlug: "songoskriti",
+      category: { slug: "fabric", name: "Fabric" },
+      readingMinutes: 5,
+    },
+    {
+      slug: "washing-handloom-cotton",
+      title: "Five ways to wash a handloom cotton at home",
+      titleEn: null,
+      excerpt:
+        "Cold water, no wringing, dried flat in the shade: the three rules that keep a handloom cotton's sizing and its weave intact for a decade of wear.",
+      coverImageUrl: null,
+      publishedAt: "2026-09-21T00:00:00.000Z",
+      merchantName: "Songoskriti",
+      merchantSlug: "songoskriti",
+      category: { slug: "care", name: "Care" },
+      readingMinutes: 4,
+    },
+    {
+      slug: "weaving-clusters",
+      title: "From Tangail to Sonargaon: a map of the weaving clusters",
+      titleEn: null,
+      excerpt:
+        "Each cluster weaves what it knows best — Tangail for the fine cottons, Sonargaon for the jamdani, Comilla for the khadi, Dhamrai for the brass — and the price on the tag is the price of that work.",
+      coverImageUrl: null,
+      publishedAt: "2026-10-05T00:00:00.000Z",
+      merchantName: "Songoskriti",
+      merchantSlug: "songoskriti",
+      category: { slug: "provenance", name: "Provenance" },
+      readingMinutes: 7,
+    },
+    {
+      slug: "why-khadi-softens",
+      title: "Why a khadi kurta softens for years and a printed one never does",
+      titleEn: null,
+      excerpt:
+        "Handspun khadi keeps a little slack in the yarn, so it relaxes with every wash instead of pilling — which is why the same cotton can cost differently from one cluster to the next.",
+      coverImageUrl: null,
+      publishedAt: "2026-10-12T00:00:00.000Z",
+      merchantName: "Songoskriti",
+      merchantSlug: "songoskriti",
+      category: { slug: "fabric", name: "Fabric" },
+      readingMinutes: 5,
+    },
+  ];
+  const facets: BlogFeed["facets"] = [
+    { slug: "craft", name: "Craft", kind: "category", count: 1 },
+    { slug: "fabric", name: "Fabric", kind: "category", count: 2 },
+    { slug: "care", name: "Care", kind: "category", count: 1 },
+    { slug: "provenance", name: "Provenance", kind: "category", count: 1 },
+    { slug: "handloom", name: "handloom", kind: "tag", count: 3 },
+  ];
+  return {
+    articles,
+    facets,
+    paging: {
+      page: 1,
+      pageSize: 9,
+      total: articles.length,
+      lastPage: 1,
+      from: 1,
+      to: articles.length,
+      overrun: false,
+      prevPath: null,
+      nextPath: null,
+    },
+    basePath: (page: number) =>
+      `/theme-preview/songoskriti?template=blog&page=${page}`,
+  };
+}

@@ -33,7 +33,6 @@ import {
   type DemoVariant,
 } from "@/lib/demo-catalog";
 import { ThemeSurface } from "@/components/builder/ThemeSurface";
-import { CheckoutMock } from "@/components/store/CheckoutMock";
 import { OrderConfirmationMock } from "@/components/store/OrderConfirmationMock";
 import {
   StoreHeader,
@@ -41,6 +40,9 @@ import {
 } from "@/components/store/StoreHeader";
 import { SectionRenderer } from "@/components/builder/SectionRenderer";
 import { WidgetDataProvider } from "@/components/builder/WidgetDataContext";
+import { CartProvider } from "@/components/builder/CartContext";
+import { BlogFeedProvider } from "@/components/builder/blog";
+import { CollectionQueryProvider } from "@/components/builder/collection";
 import {
   collectWidgetRequests,
   type WidgetDataBundle,
@@ -48,6 +50,19 @@ import {
 } from "@/lib/widget-data";
 import { previewDemoMap } from "@/lib/preview-demo-data";
 import { PREVIEW_DEMO_PAGE } from "@/lib/preview-page-data";
+import { normalizeSearchParams } from "@/lib/storefront-search";
+// Phase 2 — the theme-owned demo data (Task 2 / Task 4 / Task 7). Used
+// ONLY for the Songoskriti blueprint; every other blueprint keeps today's
+// behaviour byte-for-byte. The data is SYNTHETIC and labelled as such.
+import {
+  SONGOSKRITI_PREVIEW_SEARCH_TOTAL,
+  songoskritiPreviewCart,
+  songoskritiPreviewFacets,
+  songoskritiPreviewFeed,
+  songoskritiPreviewOrders,
+  songoskritiPreviewProfile,
+} from "@/lib/themes/songoskriti/preview-demo-data";
+import { SONGOSKRITI_PREVIEW_PAGE } from "@/lib/themes/songoskriti/preview-page";
 import { OrdersList, ProfileCard } from "@/components/builder/account";
 import { accountSlotCtx } from "./account-slots";
 import { useLang } from "@/lib/i18n";
@@ -484,6 +499,12 @@ export function ThemePreviewFrame({
   };
 
   const ast = templates[template] ?? templates.index;
+  // Phase 2 (Task 7): the theme-owned demo data — the synthetic cart, the
+  // demo feed, the demo query and the labelled sample page — belongs to the
+  // Songoskriti blueprint alone. Every other blueprint keeps today's
+  // behaviour byte-for-byte (the studio's `DEMO_CART` fallback, the pack's
+  // own `SAMPLE` blog rows, the shared `PREVIEW_DEMO_PAGE`).
+  const isSongoskriti = blueprintKey === "songoskriti";
   const demoFocus =
     focus && focus.template === template
       ? resolveDemoFocus(blueprintKey, focus.template, focus.slug)
@@ -527,8 +548,23 @@ export function ThemePreviewFrame({
       // Focused rails request the focused collection, so bundle from the
       // focused sections — otherwise rows would not match the heading.
       const bundle = collectWidgetRequests({ ...ast, main: focusedMain });
-      return { bundle, map: previewDemoMap(bundle, blueprintKey) };
-    }, [ast, focusedMain, blueprintKey]);
+      const map = previewDemoMap(bundle, blueprintKey);
+      if (isSongoskriti) {
+        // The theme's own rows replace the studio's generic ones for the
+        // two sources the Songoskriti compositions need: the `facets` rows
+        // the search sidebar and the toolbar read, and the shopper-scoped
+        // `orders` / `profile` rows the account template reads.
+        const facets = songoskritiPreviewFacets();
+        for (const request of bundle.requests) {
+          if (request.source === "facets") map[request.key] = facets;
+          else if (request.source === "orders")
+            map[request.key] = songoskritiPreviewOrders();
+          else if (request.source === "profile")
+            map[request.key] = [songoskritiPreviewProfile()];
+        }
+      }
+      return { bundle, map };
+    }, [ast, focusedMain, blueprintKey, isSongoskriti]);
 
   const { lang, t } = useLang();
   // Account center is context-gated: feed the merchant sections demo rows
@@ -565,14 +601,53 @@ export function ThemePreviewFrame({
     };
   }, [template, ast, previewData, lang, blueprintKey]);
 
+  // The five cart slots keep their `null` values: `null` is the platform's
+  // "granted" token, and the widgets read the cart CONTEXT themselves —
+  // exactly what the live cart route does ("the keys simply tell the
+  // renderer this page owns the cart context"). The slots are granted for
+  // the `checkout` template too: the authored checkout body is full of
+  // context widgets (`checkout_steps` / `payment_methods` /
+  // `cart_summary`), and an ungranted context widget renders `null` when
+  // `editing={false}`.
   const cartSlots =
-    template === "cart"
+    template === "cart" || template === "checkout"
       ? {
           cart_lines: null,
           cart_summary: null,
           cart_drawer: null,
           checkout_steps: null,
           payment_methods: null,
+        }
+      : undefined;
+
+  // The six Phase-2.4 search widgets are CONTEXT widgets: they render only
+  // where the host grants permission (`SectionRenderer.tsx:814-833`). The
+  // preview grants the five the storefront grants — `result_toolbar`,
+  // `filter_chips`, `pagination`, `empty_state`, `category_header` — PLUS
+  // `facet_sidebar`, which is preview-only: the preview is the only host
+  // that mounts a `WidgetDataProvider` (D7).
+  const searchSlots =
+    template === "search"
+      ? {
+          result_toolbar: null,
+          filter_chips: null,
+          pagination: null,
+          empty_state: null,
+          category_header: null,
+          facet_sidebar: null,
+        }
+      : undefined;
+
+  // The blog pack is a context widget set too (`blog_terms` /
+  // `blog_archive` / `blog_pager` carry a `templates:` allowlist), so the
+  // preview grants them on the `blog` template: the pack then reads the
+  // demo feed the host mounts below instead of rendering nothing.
+  const blogSlots =
+    template === "blog"
+      ? {
+          blog_terms: null,
+          blog_archive: null,
+          blog_pager: null,
         }
       : undefined;
 
@@ -586,7 +661,9 @@ export function ThemePreviewFrame({
   // preview follows its own locale instead of hardcoding English.
   const pageSlots = useMemo(() => {
     if (template !== "page") return undefined;
-    const page = PREVIEW_DEMO_PAGE;
+    // The Songoskriti blueprint shows the theme's own labelled sample page;
+    // every other blueprint keeps the shared demo page.
+    const page = isSongoskriti ? SONGOSKRITI_PREVIEW_PAGE : PREVIEW_DEMO_PAGE;
     return {
       page_content: (
         <article>
@@ -607,7 +684,217 @@ export function ThemePreviewFrame({
         </article>
       ),
     };
-  }, [template, t]);
+  }, [template, t, isSongoskriti]);
+
+  // The theme's own demo providers — the Songoskriti blueprint only. The
+  // `CartProvider` wrap goes around the WHOLE preview canvas — BOTH
+  // branches, the authored checkout body and the ordinary canvas — so the
+  // cart widgets read one cart context (the synthetic cart, not the studio's
+  // `DEMO_CART` fallback). The `BlogFeedProvider` wrap carries the demo
+  // feed the blog pack reads. The `CollectionQueryProvider` carries the
+  // demo query, so the theme's facet, sort and pager widgets compute REAL
+  // links in the preview. Every other blueprint keeps today's behaviour
+  // byte-for-byte.
+  const previewCart = useMemo(() => songoskritiPreviewCart(), []);
+  const previewFeed = useMemo(() => songoskritiPreviewFeed(), []);
+  const previewQuery = useMemo(
+    () => ({
+      params: normalizeSearchParams({ q: "jamdani" }),
+      // The demo total is the explicit, labelled 38 — NOT the demo
+      // catalogue's own 13 products: the platform pages at `PAGE_SIZE = 24`
+      // and the pager renders only above one page, so a catalogue-derived
+      // total would render no pager at all in the preview.
+      total: SONGOSKRITI_PREVIEW_SEARCH_TOTAL,
+      basePath: "/store/songoskriti/search",
+      navigate: undefined,
+    }),
+    [],
+  );
+
+  // ---- preview canvas: full-bleed, no frame. Clicks navigate between
+  // templates in place; actions and submits are blocked. ----
+  const canvas = (
+    <div
+      className="flex-1 overflow-auto bg-background"
+      onClickCapture={(event) =>
+        handlePreviewCanvasClick(event, switchTo, (message) =>
+          toast.info(message),
+        )
+      }
+      onSubmitCapture={(event) =>
+        handlePreviewCanvasSubmit(event, (message) => toast.info(message))
+      }
+    >
+      <div className="mx-auto" style={{ maxWidth: "100%" }}>
+        <ThemeSurface tokens={tokens} skinCss={skinCss}>
+          {/* Per-device overrides, same contract as ThemeChrome:
+                verbatim stylesheet, inside the theme scope. */}
+          {responsive.css ? (
+            <style
+              data-fq-responsive={String(responsive.rules)}
+              dangerouslySetInnerHTML={{ __html: responsive.css }} // sast-allow: html-sink -- compileResponsiveCss EMITTERS emit only clamped numbers and oneOf vocabulary values under generated selectors
+            />
+          ) : null}
+
+          {/* Top-level ribbon bar (e.g. subbrand_bar) rendered above the store masthead */}
+          {ast.header
+            .filter((section) => section.type === "subbrand_bar")
+            .map((section) => (
+              <SectionRenderer
+                key={section.id}
+                section={section}
+                template={template}
+                editing={false}
+                storeSlug={blueprintKey}
+                themeKey={blueprintKey}
+                contextSlots={accountSlots || productSlots || undefined}
+              />
+            ))}
+
+          {/* Wordmark row, as on a live storefront — the blueprint's
+                navigation sections render beneath it. */}
+          {template === "checkout" ? (
+            <>
+              {/* The AUTHORED checkout template, rendered through the same
+                    SectionRenderer the storefront uses — not `CheckoutMock`.
+                    The five cart slots are granted above, so the platform's
+                    `checkout_steps` / `payment_methods` / `cart_summary`
+                    widgets render against the synthetic cart context.
+                    `MinimalCheckoutHeader` is the CHROME (the header
+                    lockup), never the body. */}
+              <MinimalCheckoutHeader
+                slug={blueprintKey}
+                name={themeName}
+                themeKey={blueprintKey}
+              />
+              {focusedMain.length > 0 ? (
+                <main className="space-y-12 sm:space-y-16 pb-16">
+                  {focusedMain.map((section) => (
+                    <SectionRenderer
+                      key={section.id}
+                      section={section}
+                      template={template}
+                      editing={false}
+                      storeSlug={blueprintKey}
+                      themeKey={blueprintKey}
+                      contextSlots={{
+                        ...accountSlots,
+                        ...productSlots,
+                        ...cartSlots,
+                        ...searchSlots,
+                        ...blogSlots,
+                        ...pageSlots,
+                      }}
+                      primary={section.id === primaryId}
+                    />
+                  ))}
+                </main>
+              ) : (
+                <div className="grid min-h-[40vh] place-items-center p-8 text-sm text-muted-foreground">
+                  No sections authored for this template.
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <StoreHeader
+                slug={blueprintKey}
+                name={themeName}
+                menus={null}
+                themeKey={blueprintKey}
+              />
+              <WidgetDataProvider
+                bundle={previewData.bundle}
+                map={previewData.map}
+              >
+                {/* Header sections below the masthead (e.g. mega_menu) */}
+                {ast.header
+                  .filter((section) => section.type !== "subbrand_bar")
+                  .map((section) => (
+                    <SectionRenderer
+                      key={section.id}
+                      section={section}
+                      template={template}
+                      editing={false}
+                      storeSlug={blueprintKey}
+                      themeKey={blueprintKey}
+                      contextSlots={{
+                        ...accountSlots,
+                        ...productSlots,
+                        ...cartSlots,
+                        ...searchSlots,
+                        ...blogSlots,
+                        ...pageSlots,
+                      }}
+                    />
+                  ))}
+
+                {/* main slot */}
+                {mockOrder ? (
+                  <OrderConfirmationMock
+                    slug={blueprintKey}
+                    themeName={themeName}
+                    status={mockOrder}
+                  />
+                ) : focusedMain.length > 0 ? (
+                  <main className="space-y-12 sm:space-y-16 pb-16 [&>[data-fq-node^='announcement_bar']]:!mt-0 [&>[data-fq-node^='announcement_bar']+*]:!mt-0">
+                    {focusedMain.map((section) => (
+                      <SectionRenderer
+                        key={section.id}
+                        section={section}
+                        template={template}
+                        editing={false}
+                        storeSlug={blueprintKey}
+                        themeKey={blueprintKey}
+                        contextSlots={{
+                          ...accountSlots,
+                          ...productSlots,
+                          ...cartSlots,
+                          ...searchSlots,
+                          ...blogSlots,
+                          ...pageSlots,
+                        }}
+                        primary={section.id === primaryId}
+                      />
+                    ))}
+                  </main>
+                ) : (
+                  <div className="grid min-h-[40vh] place-items-center p-8 text-sm text-muted-foreground">
+                    No sections authored for this template.
+                  </div>
+                )}
+
+                {/* footer slot — landmark parity with ThemeChrome */}
+                {ast.footer.length > 0 && (
+                  <footer className="border-t border-border bg-card/40 mt-16 pt-12 pb-16">
+                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
+                      {ast.footer.map((section) => (
+                        <SectionRenderer
+                          key={section.id}
+                          section={section}
+                          template={template}
+                          editing={false}
+                          themeKey={blueprintKey}
+                          contextSlots={{
+                            ...accountSlots,
+                            ...productSlots,
+                            ...cartSlots,
+                            ...searchSlots,
+                            ...blogSlots,
+                            ...pageSlots,
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </footer>
+                )}
+              </WidgetDataProvider>
+            </>
+          )}
+        </ThemeSurface>
+      </div>
+    </div>
+  );
 
   return (
     <div
@@ -625,146 +912,15 @@ export function ThemePreviewFrame({
         />
       )}
 
-      {/* ---- preview canvas: full-bleed, no frame. Clicks navigate between
-          templates in place; actions and submits are blocked. ---- */}
-      <div
-        className="flex-1 overflow-auto bg-background"
-        onClickCapture={(event) =>
-          handlePreviewCanvasClick(event, switchTo, (message) =>
-            toast.info(message),
-          )
-        }
-        onSubmitCapture={(event) =>
-          handlePreviewCanvasSubmit(event, (message) => toast.info(message))
-        }
-      >
-        <div className="mx-auto" style={{ maxWidth: "100%" }}>
-          <ThemeSurface tokens={tokens} skinCss={skinCss}>
-            {/* Per-device overrides, same contract as ThemeChrome:
-                verbatim stylesheet, inside the theme scope. */}
-            {responsive.css ? (
-              <style
-                data-fq-responsive={String(responsive.rules)}
-                dangerouslySetInnerHTML={{ __html: responsive.css }} // sast-allow: html-sink -- compileResponsiveCss EMITTERS emit only clamped numbers and oneOf vocabulary values under generated selectors
-              />
-            ) : null}
-
-            {/* Top-level ribbon bar (e.g. subbrand_bar) rendered above the store masthead */}
-            {ast.header
-              .filter((section) => section.type === "subbrand_bar")
-              .map((section) => (
-                <SectionRenderer
-                  key={section.id}
-                  section={section}
-                  template={template}
-                  editing={false}
-                  storeSlug={blueprintKey}
-                  themeKey={blueprintKey}
-                  contextSlots={accountSlots || productSlots || undefined}
-                />
-              ))}
-
-            {/* Wordmark row, as on a live storefront — the blueprint's
-                navigation sections render beneath it. */}
-            {template === "checkout" ? (
-              <CheckoutMock
-                slug={blueprintKey}
-                themeName={themeName}
-                themeKey={blueprintKey}
-              />
-            ) : (
-              <>
-                <StoreHeader
-                  slug={blueprintKey}
-                  name={themeName}
-                  menus={null}
-                  themeKey={blueprintKey}
-                />
-                <WidgetDataProvider
-                  bundle={previewData.bundle}
-                  map={previewData.map}
-                >
-                  {/* Header sections below the masthead (e.g. mega_menu) */}
-                  {ast.header
-                    .filter((section) => section.type !== "subbrand_bar")
-                    .map((section) => (
-                      <SectionRenderer
-                        key={section.id}
-                        section={section}
-                        template={template}
-                        editing={false}
-                        storeSlug={blueprintKey}
-                        themeKey={blueprintKey}
-                        contextSlots={{
-                          ...accountSlots,
-                          ...productSlots,
-                          ...cartSlots,
-                          ...pageSlots,
-                        }}
-                      />
-                    ))}
-
-                  {/* main slot */}
-                  {mockOrder ? (
-                    <OrderConfirmationMock
-                      slug={blueprintKey}
-                      themeName={themeName}
-                      status={mockOrder}
-                    />
-                  ) : focusedMain.length > 0 ? (
-                    <main className="space-y-12 sm:space-y-16 pb-16 [&>[data-fq-node^='announcement_bar']]:!mt-0 [&>[data-fq-node^='announcement_bar']+*]:!mt-0">
-                      {focusedMain.map((section) => (
-                        <SectionRenderer
-                          key={section.id}
-                          section={section}
-                          template={template}
-                          editing={false}
-                          storeSlug={blueprintKey}
-                          themeKey={blueprintKey}
-                          contextSlots={{
-                            ...accountSlots,
-                            ...productSlots,
-                            ...cartSlots,
-                            ...pageSlots,
-                          }}
-                          primary={section.id === primaryId}
-                        />
-                      ))}
-                    </main>
-                  ) : (
-                    <div className="grid min-h-[40vh] place-items-center p-8 text-sm text-muted-foreground">
-                      No sections authored for this template.
-                    </div>
-                  )}
-
-                  {/* footer slot — landmark parity with ThemeChrome */}
-                  {ast.footer.length > 0 && (
-                    <footer className="border-t border-border bg-card/40 mt-16 pt-12 pb-16">
-                      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
-                        {ast.footer.map((section) => (
-                          <SectionRenderer
-                            key={section.id}
-                            section={section}
-                            template={template}
-                            editing={false}
-                            themeKey={blueprintKey}
-                            contextSlots={{
-                              ...accountSlots,
-                              ...productSlots,
-                              ...cartSlots,
-                              ...pageSlots,
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </footer>
-                  )}
-                </WidgetDataProvider>
-              </>
-            )}
-          </ThemeSurface>
-        </div>
-      </div>
+      {isSongoskriti ? (
+        <CartProvider value={previewCart}>
+          <CollectionQueryProvider value={previewQuery}>
+            <BlogFeedProvider value={previewFeed}>{canvas}</BlogFeedProvider>
+          </CollectionQueryProvider>
+        </CartProvider>
+      ) : (
+        canvas
+      )}
     </div>
   );
 }
