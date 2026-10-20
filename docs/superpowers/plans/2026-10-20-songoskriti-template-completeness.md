@@ -404,6 +404,7 @@ These decisions are the human's, not the engineer's. **Three of them are now RUL
 **Files:**
 - Modify: `src/components/builder/songoskriti-port-freeze.test.tsx` (the `TEMPLATE_MAIN.search` literal, `:110`) — **escalation** (existing test file)
 - Modify: `src/lib/theme-preview-nav.test.ts` (the `FIRST_SECTION` map, `:120-130`) — **escalation** (existing test file)
+- Modify: `src/lib/themes/songoskriti/skins.test.ts` (the `search`/`cart` body assertions, `:146-165`) — **NO escalation**: the file is under `src/lib/themes/songoskriti/**`, which port spec §7 already makes editable. It pins that the `search` and `cart` bodies author a `product_rail`, which this plan removes, so it must move with them.
 - Reference (unchanged): `docs/superpowers/songoskriti-evidence/port/phase2-template-completeness-escalation.md` §(b)
 
 **Interfaces:**
