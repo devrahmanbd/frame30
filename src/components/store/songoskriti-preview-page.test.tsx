@@ -127,7 +127,9 @@ describe("songoskriti preview — the page template's body", () => {
     const html = renderPage();
     expect(html).toContain("<article");
     expect(html).toContain("</article>");
-    expect(html).toContain("Demo page body.");
+    // The Songoskriti blueprint renders the theme's OWN labelled sample
+    // page (`SONGOSKRITI_PREVIEW_PAGE`), not the shared studio fixture.
+    expect(html).toContain("Sample page — Songoskriti sizing and care");
   });
 
   it("renders exactly one h1 (the route owns it)", () => {
