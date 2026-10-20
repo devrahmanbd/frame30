@@ -873,3 +873,903 @@ Decision **D4** now covers **six** existing files (the four of §(e), the theme-
 | `src/components/store/songoskriti-preview-compositions.test.tsx` | the retargeted payment assertion; the facet-label assertions; the search-input assertion; the tightened count; the empty-state absence | §(j.1)–§(j.3), §(j.6) — a NEW file this plan created (not an existing test) |
 
 **Not touched, by rule:** `src/components/builder/cart.tsx` (the payment-rails defect — §7-prohibited, recorded as an OPEN item), the production storefront routes (including `src/routes/store.$slug.search.tsx`), `src/components/store/BlogArchiveTheme.tsx`, `src/components/store/PageView.tsx`, `src/components/store/CheckoutMock.tsx`, and the three churn files plus `.output-snapshots/`.
+
+---
+
+## (k) Task 9's real search-route hunk — the pieces, the provider and the two slots _(appended 2026-10-21)_
+
+**Appended, not a rewrite: sections (a)–(j) stand as written.** §(b.4) recorded the **contract** for the search route — the nine named pieces, the `CollectionQueryProvider` mount, the `contextSlots` permission map and the `productSlot`/`fallback` split — and said that Task 9 writes the exact code. **This section records the code that was actually written**, so the record and the tree agree.
+
+**The contract was implemented as written.** No part of §(b.4)'s scope line was narrowed, and nothing outside it was touched: the loader, the head, the canonical policy, the rate-limit handling, the `apply()` helper and the tenant scoping are **byte-identical** to the pre-change file. The only change above the listing is **one import** (`CollectionQueryProvider`).
+
+### (k.1) The per-piece ownership table, as implemented
+
+| piece                                                                                                                                          | where it lives in the route                                                               | owner on a themed page                                                        | owner on an unthemed store |
+| ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | -------------------------- |
+| the query box (the `<form>` + the `<input type="search">` + the Filters toggle)                                                                | `const queryBox`                                                                          | the **results block** (`productSlot`)                                         | the `fallback`             |
+| the filters panel — the category/kind `Chip` rows, the price bounds, the stock toggle, the clear button                                        | `const filtersPanel` (guarded by `showFilters && facets`)                                 | the **results block** (`productSlot`)                                         | the `fallback`             |
+| the result count (the "ok" branch of the summary)                                                                                              | `const resultCount`                                                                       | the granted **`result_toolbar`** widget                                       | the `fallback`             |
+| the search-status notice — the "Searching…", "Too many searches", "This store is not published" and "Search is unavailable right now" branches | `const searchNotice`                                                                      | the **results block** (`productSlot`)                                         | the `fallback`             |
+| the sort control                                                                                                                               | `const summaryAndSort` (with `{resultCount}{searchNotice}`)                               | the granted **`result_toolbar`** widget                                       | the `fallback`             |
+| the degraded notice                                                                                                                            | `const degradedNotice` (guarded by `result?.degraded`)                                    | the **results block** (`productSlot`)                                         | the `fallback`             |
+| the empty state                                                                                                                                | `const emptyState` (guarded by `result && result.items.length === 0 && !query.isPending`) | the granted **`empty_state`** widget                                          | the `fallback`             |
+| the results grid                                                                                                                               | `const results` (guarded by `result && result.items.length > 0`)                          | the **results block** (`productSlot`), rendered by the theme's `product_grid` | the `fallback`             |
+| the pager                                                                                                                                      | `const pager` (guarded by `pages > 1`)                                                    | the granted **`pagination`** widget                                           | the `fallback`             |
+| the page `<h1>`                                                                                                                                | `const heading`                                                                           | the granted **`category_header`** widget                                      | the `fallback`             |
+
+**The two composites** (exactly as §(b.4) specified):
+
+- `listing` = `queryBox + filtersPanel + summaryAndSort + degradedNotice + emptyState + results + pager` — the `fallback`'s content, in today's order;
+- `resultsBlock` = `queryBox + filtersPanel + searchNotice + degradedNotice + results` — the `productSlot`'s content.
+
+**Every piece has exactly one owner on each page.** `resultCount` and `summaryAndSort` are in `listing` only; `searchNotice` is in `resultsBlock` only (and inside `listing` it is reached through `summaryAndSort`, so it renders once); `emptyState` and `pager` are in `listing` only. The two branches of the summary's five-way ternary became the two named constants `resultCount` and `searchNotice`, each keeping the original `<p aria-live="polite" className="text-sm text-muted-foreground">` wrapper, so the summary row still renders exactly one live region.
+
+**The granted set is exactly five, and `facet_sidebar` is absent.** `empty_state` is granted **conditionally** — only when the platform's own empty state would have shown — because the platform's `EmptyState` widget renders its panel unconditionally (`src/components/builder/collection.tsx:707-753`), so the _grant_ is what decides whether the theme's empty copy appears. The residual is stated in the code comment above the map, as §(b.4) requires.
+
+### (k.2) The real hunk
+
+The diff is large because the whole listing block was re-indented into named constants; **every markup line is byte-identical to the line it came from**, and every `t()` call travels with its markup (the summary's five-way ternary is the only markup that was _split_, into `resultCount` and `searchNotice`, each keeping the original paragraph wrapper).
+
+```diff
+diff --git a/src/routes/store.$slug.search.tsx b/src/routes/store.$slug.search.tsx
+index 4398afad..669858c5 100644
+--- a/src/routes/store.$slug.search.tsx
++++ b/src/routes/store.$slug.search.tsx
+@@ -22,6 +22,7 @@ import {
+ import { ThemeChrome } from "@/components/store/ThemeChrome";
+ import { PluginLayer } from "@/components/store/PluginLayer";
+ import { SupportWidget } from "@/components/store/SupportWidget";
++import { CollectionQueryProvider } from "@/components/builder/collection";
+ import {
+   PAGE_SIZE,
+   SORTS,
+@@ -181,350 +182,403 @@ function SearchPage() {
+   const pages = pageCount(result?.total ?? 0, result?.limit ?? PAGE_SIZE);
+   const filters = activeFilterCount(params);
+
+-  // The whole listing — query box, facets, results, pager — is one block so a
+-  // theme's search template can place and style it wherever it likes.
+-  const listing = (
+-    <>
+-      <form
+-        className="mt-4 flex flex-wrap items-end gap-2"
+-        onSubmit={(e) => {
+-          e.preventDefault();
+-          apply({ q: term.trim() });
+-        }}
+-      >
+-        <div className="min-w-0 flex-1">
+-          <label
+-            htmlFor="sf-q"
+-            className="block text-xs font-medium text-muted-foreground"
+-          >
+-            {t(
+-              "Product name, description or tag",
+-              "পণ্যের নাম, বিবরণ বা ট্যাগ",
+-            )}
+-          </label>
+-          <div className="relative mt-1">
+-            <Search
+-              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+-              aria-hidden
+-            />
+-            <input
+-              id="sf-q"
+-              type="search"
+-              value={term}
+-              maxLength={80}
+-              onChange={(e) => setTerm(e.target.value)}
+-              placeholder={t("e.g. jamdani shari", "যেমন: জামদানি শাড়ি")}
+-              className="min-h-11 w-full rounded-fq-md border border-border bg-card pl-9 pr-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+-            />
+-          </div>
+-        </div>
+-        <button
+-          type="submit"
+-          className="min-h-11 rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground"
+-        >
+-          {t("Search", "খুঁজুন")}
+-        </button>
+-        <button
+-          type="button"
+-          onClick={() => setShowFilters((v) => !v)}
+-          aria-expanded={showFilters}
+-          className="inline-flex min-h-11 items-center gap-2 rounded-fq-md border border-border bg-card px-3 text-sm"
++  // Phase 2 (Task 9.3) — the listing is split into NAMED PIECES, so that every
++  // piece has exactly ONE owner: the results block the theme places (the
++  // productSlot), or the platform's own widget. Every piece keeps its existing
++  // markup and its existing `t()` calls — the split MOVES markup into named
++  // constants; it does not redesign the platform's UI.
++  //
++  //   queryBox        the search form
++  //   filtersPanel    the category/kind chips, the price bounds, the stock
++  //                   toggle and the clear button
++  //   resultCount     the count branch of the summary
++  //   searchNotice    every other branch of it
++  //   summaryAndSort  the summary row and the sort control
++  //   degradedNotice  the degraded-engine notice
++  //   emptyState      the no-results panel
++  //   results         the results grid
++  //   pager           the pager
++  const queryBox = (
++    <form
++      className="mt-4 flex flex-wrap items-end gap-2"
++      onSubmit={(e) => {
++        e.preventDefault();
++        apply({ q: term.trim() });
++      }}
++    >
++      <div className="min-w-0 flex-1">
++        <label
++          htmlFor="sf-q"
++          className="block text-xs font-medium text-muted-foreground"
+         >
+-          <SlidersHorizontal className="size-4" aria-hidden />
+-          {t("Filters", "ফিল্টার")}
+-          {filters > 0 && (
+-            <span className="money rounded-full bg-primary px-2 text-xs text-primary-foreground">
+-              {filters}
+-            </span>
+-          )}
+-        </button>
+-      </form>
++          {t("Product name, description or tag", "পণ্যের নাম, বিবরণ বা ট্যাগ")}
++        </label>
++        <div className="relative mt-1">
++          <Search
++            className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
++            aria-hidden
++          />
++          <input
++            id="sf-q"
++            type="search"
++            value={term}
++            maxLength={80}
++            onChange={(e) => setTerm(e.target.value)}
++            placeholder={t("e.g. jamdani shari", "যেমন: জামদানি শাড়ি")}
++            className="min-h-11 w-full rounded-fq-md border border-border bg-card pl-9 pr-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
++          />
++        </div>
++      </div>
++      <button
++        type="submit"
++        className="min-h-11 rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground"
++      >
++        {t("Search", "খুঁজুন")}
++      </button>
++      <button
++        type="button"
++        onClick={() => setShowFilters((v) => !v)}
++        aria-expanded={showFilters}
++        className="inline-flex min-h-11 items-center gap-2 rounded-fq-md border border-border bg-card px-3 text-sm"
++      >
++        <SlidersHorizontal className="size-4" aria-hidden />
++        {t("Filters", "ফিল্টার")}
++        {filters > 0 && (
++          <span className="money rounded-full bg-primary px-2 text-xs text-primary-foreground">
++            {filters}
++          </span>
++        )}
++      </button>
++    </form>
++  );
+
+-      {showFilters && facets && (
+-        <section
+-          aria-label={t("Filters", "ফিল্টার")}
+-          className="mt-4 space-y-4 rounded-fq-lg border border-border bg-card p-4"
+-        >
+-          <fieldset>
+-            <legend className="text-xs font-medium text-muted-foreground">
+-              {t("Category", "ক্যাটাগরি")}
+-            </legend>
+-            <div className="mt-2 flex flex-wrap gap-2">
++  const filtersPanel =
++    showFilters && facets ? (
++      <section
++        aria-label={t("Filters", "ফিল্টার")}
++        className="mt-4 space-y-4 rounded-fq-lg border border-border bg-card p-4"
++      >
++        <fieldset>
++          <legend className="text-xs font-medium text-muted-foreground">
++            {t("Category", "ক্যাটাগরি")}
++          </legend>
++          <div className="mt-2 flex flex-wrap gap-2">
++            <Chip
++              active={!params.category}
++              label={t("All", "সব")}
++              onClick={() => apply({ category: null })}
++            />
++            {facets.categories.map((c) => (
+               <Chip
+-                active={!params.category}
+-                label={t("All", "সব")}
+-                onClick={() => apply({ category: null })}
++                key={c.slug}
++                active={params.category === c.slug}
++                label={`${c.name} (${c.count})`}
++                onClick={() =>
++                  apply({
++                    category: params.category === c.slug ? null : c.slug,
++                  })
++                }
+               />
+-              {facets.categories.map((c) => (
+-                <Chip
+-                  key={c.slug}
+-                  active={params.category === c.slug}
+-                  label={`${c.name} (${c.count})`}
+-                  onClick={() =>
+-                    apply({
+-                      category: params.category === c.slug ? null : c.slug,
+-                    })
+-                  }
+-                />
+-              ))}
+-            </div>
+-          </fieldset>
++            ))}
++          </div>
++        </fieldset>
+
+-          <fieldset>
+-            <legend className="text-xs font-medium text-muted-foreground">
+-              {t("Product type", "পণ্যের ধরন")}
+-            </legend>
+-            <div className="mt-2 flex flex-wrap gap-2">
++        <fieldset>
++          <legend className="text-xs font-medium text-muted-foreground">
++            {t("Product type", "পণ্যের ধরন")}
++          </legend>
++          <div className="mt-2 flex flex-wrap gap-2">
++            <Chip
++              active={!params.kind}
++              label={t("All", "সব")}
++              onClick={() => apply({ kind: null })}
++            />
++            {facets.kinds.map((k) => (
+               <Chip
+-                active={!params.kind}
+-                label={t("All", "সব")}
+-                onClick={() => apply({ kind: null })}
++                key={k.kind}
++                active={params.kind === k.kind}
++                label={`${k.kind} (${k.count})`}
++                onClick={() =>
++                  apply({
++                    kind:
++                      params.kind === k.kind
++                        ? null
++                        : (k.kind as SearchParams["kind"]),
++                  })
++                }
+               />
+-              {facets.kinds.map((k) => (
+-                <Chip
+-                  key={k.kind}
+-                  active={params.kind === k.kind}
+-                  label={`${k.kind} (${k.count})`}
+-                  onClick={() =>
+-                    apply({
+-                      kind:
+-                        params.kind === k.kind
+-                          ? null
+-                          : (k.kind as SearchParams["kind"]),
+-                    })
+-                  }
+-                />
+-              ))}
+-            </div>
+-          </fieldset>
+-
+-          <fieldset>
+-            <legend className="text-xs font-medium text-muted-foreground">
+-              {t("Price range", "দামের সীমা")}{" "}
+-              {facets.price_min_minor !== null && (
+-                <span className="money">
+-                  {fmtMinor(facets.price_min_minor, currency)} –{" "}
+-                  {fmtMinor(facets.price_max_minor ?? 0, currency)}
+-                </span>
+-              )}
+-            </legend>
+-            <div className="mt-2 flex flex-wrap items-end gap-2">
+-              <MoneyBound
+-                id="sf-min"
+-                label={t("Minimum", "সর্বনিম্ন")}
+-                currency={currency}
+-                valueMinor={params.minMinor}
+-                onCommit={(v) => apply({ minMinor: v })}
+-              />
+-              <MoneyBound
+-                id="sf-max"
+-                label={t("Maximum", "সর্বোচ্চ")}
+-                currency={currency}
+-                valueMinor={params.maxMinor}
+-                onCommit={(v) => apply({ maxMinor: v })}
+-              />
+-            </div>
+-          </fieldset>
++            ))}
++          </div>
++        </fieldset>
+
+-          <label className="flex items-center gap-2 text-sm">
+-            <input
+-              type="checkbox"
+-              checked={params.inStock}
+-              onChange={(e) => apply({ inStock: e.target.checked })}
+-              className="size-4 accent-[var(--bd-teal-700)]"
++        <fieldset>
++          <legend className="text-xs font-medium text-muted-foreground">
++            {t("Price range", "দামের সীমা")}{" "}
++            {facets.price_min_minor !== null && (
++              <span className="money">
++                {fmtMinor(facets.price_min_minor, currency)} –{" "}
++                {fmtMinor(facets.price_max_minor ?? 0, currency)}
++              </span>
++            )}
++          </legend>
++          <div className="mt-2 flex flex-wrap items-end gap-2">
++            <MoneyBound
++              id="sf-min"
++              label={t("Minimum", "সর্বনিম্ন")}
++              currency={currency}
++              valueMinor={params.minMinor}
++              onCommit={(v) => apply({ minMinor: v })}
+             />
+-            {t("In stock only", "শুধু স্টকে আছে")}{" "}
+-            <span className="money text-xs text-muted-foreground">
+-              ({facets.in_stock})
+-            </span>
+-          </label>
+-
+-          {filters > 0 && (
+-            <button
+-              type="button"
+-              onClick={() =>
+-                apply({
+-                  category: null,
+-                  collection: null,
+-                  kind: null,
+-                  minMinor: null,
+-                  maxMinor: null,
+-                  inStock: false,
+-                })
+-              }
+-              className="inline-flex min-h-9 items-center gap-1 text-sm text-primary underline"
+-            >
+-              <X className="size-3.5" aria-hidden />{" "}
+-              {t("Clear filters", "ফিল্টার মুছুন")}
+-            </button>
+-          )}
+-        </section>
+-      )}
++            <MoneyBound
++              id="sf-max"
++              label={t("Maximum", "সর্বোচ্চ")}
++              currency={currency}
++              valueMinor={params.maxMinor}
++              onCommit={(v) => apply({ maxMinor: v })}
++            />
++          </div>
++        </fieldset>
+
+-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+-        <p aria-live="polite" className="text-sm text-muted-foreground">
+-          {query.isPending
+-            ? t("Searching…", "খোঁজা হচ্ছে…")
+-            : outcome?.status === "ok"
+-              ? t(
+-                  `${result?.total ?? 0} ${result?.total === 1 ? "product" : "products"}`,
+-                  `${result?.total ?? 0} টি পণ্য`,
+-                )
+-              : outcome?.status === "rate_limited"
+-                ? t(
+-                    "Too many searches — try again shortly.",
+-                    "অনেক বেশি সার্চ — কিছুক্ষণ পরে চেষ্টা করুন।",
+-                  )
+-                : outcome?.status === "not_found"
+-                  ? t(
+-                      "This store is not published.",
+-                      "এই দোকানটি প্রকাশিত নয়।",
+-                    )
+-                  : t(
+-                      "Search is unavailable right now.",
+-                      "সার্চ এখন কাজ করছে না।",
+-                    )}
+-        </p>
+         <label className="flex items-center gap-2 text-sm">
+-          <span className="text-muted-foreground">{t("Sort", "সাজান")}</span>
+-          <select
+-            value={params.sort}
+-            onChange={(e) => apply({ sort: e.target.value as SortKey })}
+-            className="min-h-11 rounded-fq-md border border-border bg-card px-2 text-sm"
+-          >
+-            {SORTS.map((s) => (
+-              <option key={s} value={s}>
+-                {s === "relevance"
+-                  ? t("Best match", "সবচেয়ে মিল")
+-                  : s === "price_asc"
+-                    ? t("Price: low to high", "দাম: কম থেকে বেশি")
+-                    : s === "price_desc"
+-                      ? t("Price: high to low", "দাম: বেশি থেকে কম")
+-                      : s === "newest"
+-                        ? t("Newest", "নতুন")
+-                        : t("Name", "নাম")}
+-              </option>
+-            ))}
+-          </select>
++          <input
++            type="checkbox"
++            checked={params.inStock}
++            onChange={(e) => apply({ inStock: e.target.checked })}
++            className="size-4 accent-[var(--bd-teal-700)]"
++          />
++          {t("In stock only", "শুধু স্টকে আছে")}{" "}
++          <span className="money text-xs text-muted-foreground">
++            ({facets.in_stock})
++          </span>
+         </label>
+-      </div>
+
+-      {result?.degraded && (
+-        // The search engine is down and Postgres answered instead. Ranking is
+-        // simpler, so say so plainly rather than let shoppers assume the
+-        // catalogue shrank.
+-        <p className="mt-4 rounded-fq-md border border-border bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
+-          {t(
+-            "Showing basic results while search is recovering — ordering may be less precise.",
+-            "সার্চ ঠিক হওয়া পর্যন্ত সাধারণ ফলাফল দেখানো হচ্ছে — ক্রম কম নিখুঁত হতে পারে।",
+-          )}
+-        </p>
+-      )}
+-
+-      {result && result.items.length === 0 && !query.isPending && (
+-        <div className="mt-8 rounded-fq-lg border border-border bg-card p-6">
+-          <h2 className="font-bangla-display text-lg font-semibold">
+-            {t("No products matched", "কোনো পণ্য মেলেনি")}
+-          </h2>
+-          <p className="mt-1 text-sm text-muted-foreground">
+-            {t(
+-              "Try a shorter word, or clear a filter to widen the results.",
+-              "ছোট শব্দ লিখুন, বা একটি ফিল্টার সরিয়ে ফলাফল বাড়ান।",
+-            )}
+-          </p>
+-          <Link
+-            to="/store/$slug"
+-            search={{ preview_token: undefined }}
+-            params={{ slug }}
+-            className="mt-3 inline-block text-sm text-primary underline"
++        {filters > 0 && (
++          <button
++            type="button"
++            onClick={() =>
++              apply({
++                category: null,
++                collection: null,
++                kind: null,
++                minMinor: null,
++                maxMinor: null,
++                inStock: false,
++              })
++            }
++            className="inline-flex min-h-9 items-center gap-1 text-sm text-primary underline"
+           >
+-            {t("Browse everything", "সব পণ্য দেখুন")}
+-          </Link>
+-        </div>
+-      )}
++            <X className="size-3.5" aria-hidden />{" "}
++            {t("Clear filters", "ফিল্টার মুছুন")}
++          </button>
++        )}
++      </section>
++    ) : null;
++
++  // The count — the "ok" branch of the summary. It keeps the original
++  // paragraph wrapper, so the summary row keeps its single live region.
++  const resultCount =
++    !query.isPending && outcome?.status === "ok" ? (
++      <p aria-live="polite" className="text-sm text-muted-foreground">
++        {t(
++          `${result?.total ?? 0} ${result?.total === 1 ? "product" : "products"}`,
++          `${result?.total ?? 0} টি পণ্য`,
++        )}
++      </p>
++    ) : null;
+
+-      {result && result.items.length > 0 && (
+-        <ul className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+-          {result.items.map((p) => (
+-            <li key={p.id}>
+-              <Link
+-                to="/store/$slug/p/$productSlug"
+-                params={{ slug, productSlug: p.slug }}
+-                className="group block overflow-hidden rounded-fq-lg border border-border bg-card transition-transform duration-200 hover:-translate-y-0.5"
+-              >
+-                <div className="aspect-square bg-muted">
+-                  <StoreImage
+-                    image={p.image ?? null}
+-                    fallbackSrc={p.image_url}
+-                    alt={p.title}
+-                    seed={p.id}
+-                    sizes="(max-width: 768px) 50vw, 300px"
+-                    className="size-full object-cover"
+-                  />
+-                </div>
+-                <div className="p-3">
+-                  <h2 className="line-clamp-2 text-sm font-medium">
+-                    {p.title}
+-                  </h2>
+-                  <p className="money mt-1 text-sm font-semibold">
+-                    {fmtMinor(p.price_minor, currency)}
+-                  </p>
+-                  <p
+-                    className={`mt-1 text-xs ${p.stock > 0 ? "text-success-foreground" : "text-danger-foreground"}`}
+-                  >
+-                    {p.stock > 0
+-                      ? t("In stock", "স্টকে আছে")
+-                      : t("Out of stock", "স্টক নেই")}
+-                  </p>
+-                </div>
+-              </Link>
+-            </li>
++  // The notice — every other branch of the summary: pending, rate-limited,
++  // not published and unavailable. Exactly one of the count and the notice
++  // renders at a time, and the notice renders NOTHING in the "ok" case (on a
++  // themed page the count comes from the granted result_toolbar widget).
++  const searchNotice =
++    query.isPending || outcome?.status !== "ok" ? (
++      <p aria-live="polite" className="text-sm text-muted-foreground">
++        {query.isPending
++          ? t("Searching…", "খোঁজা হচ্ছে…")
++          : outcome?.status === "rate_limited"
++            ? t(
++                "Too many searches — try again shortly.",
++                "অনেক বেশি সার্চ — কিছুক্ষণ পরে চেষ্টা করুন।",
++              )
++            : outcome?.status === "not_found"
++              ? t("This store is not published.", "এই দোকানটি প্রকাশিত নয়।")
++              : t("Search is unavailable right now.", "সার্চ এখন কাজ করছে না।")}
++      </p>
++    ) : null;
++
++  const summaryAndSort = (
++    <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
++      {resultCount}
++      {searchNotice}
++      <label className="flex items-center gap-2 text-sm">
++        <span className="text-muted-foreground">{t("Sort", "সাজান")}</span>
++        <select
++          value={params.sort}
++          onChange={(e) => apply({ sort: e.target.value as SortKey })}
++          className="min-h-11 rounded-fq-md border border-border bg-card px-2 text-sm"
++        >
++          {SORTS.map((s) => (
++            <option key={s} value={s}>
++              {s === "relevance"
++                ? t("Best match", "সবচেয়ে মিল")
++                : s === "price_asc"
++                  ? t("Price: low to high", "দাম: কম থেকে বেশি")
++                  : s === "price_desc"
++                    ? t("Price: high to low", "দাম: বেশি থেকে কম")
++                    : s === "newest"
++                      ? t("Newest", "নতুন")
++                      : t("Name", "নাম")}
++            </option>
+           ))}
+-        </ul>
++        </select>
++      </label>
++    </div>
++  );
++
++  const degradedNotice = result?.degraded ? (
++    // The search engine is down and Postgres answered instead. Ranking is
++    // simpler, so say so plainly rather than let shoppers assume the
++    // catalogue shrank.
++    <p className="mt-4 rounded-fq-md border border-border bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
++      {t(
++        "Showing basic results while search is recovering — ordering may be less precise.",
++        "সার্চ ঠিক হওয়া পর্যন্ত সাধারণ ফলাফল দেখানো হচ্ছে — ক্রম কম নিখুঁত হতে পারে।",
+       )}
++    </p>
++  ) : null;
+
+-      {pages > 1 && (
+-        <nav
+-          aria-label={t("Pages", "পেজ")}
+-          className="mt-8 flex items-center justify-center gap-2"
++  const emptyState =
++    result && result.items.length === 0 && !query.isPending ? (
++      <div className="mt-8 rounded-fq-lg border border-border bg-card p-6">
++        <h2 className="font-bangla-display text-lg font-semibold">
++          {t("No products matched", "কোনো পণ্য মেলেনি")}
++        </h2>
++        <p className="mt-1 text-sm text-muted-foreground">
++          {t(
++            "Try a shorter word, or clear a filter to widen the results.",
++            "ছোট শব্দ লিখুন, বা একটি ফিল্টার সরিয়ে ফলাফল বাড়ান।",
++          )}
++        </p>
++        <Link
++          to="/store/$slug"
++          search={{ preview_token: undefined }}
++          params={{ slug }}
++          className="mt-3 inline-block text-sm text-primary underline"
+         >
+-          {/* Phase 7.1: real hrefs — a crawler (and a JS-less shopper) must be
+-                able to walk the whole result set, so these are links, not buttons. */}
+-          <Link
+-            to="/store/$slug/search"
+-            params={{ slug }}
+-            search={toSearchQuery({
+-              ...params,
+-              page: Math.max(1, params.page - 1),
+-            })}
+-            rel="prev"
+-            aria-disabled={params.page <= 1}
+-            className={`min-h-11 rounded-fq-md border border-border bg-card px-3 text-sm leading-[2.75rem] ${
+-              params.page <= 1 ? "pointer-events-none opacity-40" : ""
+-            }`}
+-          >
+-            {t("Previous", "আগের")}
+-          </Link>
+-          <span className="money text-sm text-muted-foreground">
+-            {params.page} / {pages}
+-          </span>
+-          <Link
+-            to="/store/$slug/search"
+-            params={{ slug }}
+-            search={toSearchQuery({
+-              ...params,
+-              page: Math.min(pages, params.page + 1),
+-            })}
+-            rel="next"
+-            aria-disabled={params.page >= pages}
+-            className={`min-h-11 rounded-fq-md border border-border bg-card px-3 text-sm leading-[2.75rem] ${
+-              params.page >= pages ? "pointer-events-none opacity-40" : ""
+-            }`}
+-          >
+-            {t("Next", "পরের")}
+-          </Link>
+-        </nav>
+-      )}
++          {t("Browse everything", "সব পণ্য দেখুন")}
++        </Link>
++      </div>
++    ) : null;
++
++  const results =
++    result && result.items.length > 0 ? (
++      <ul className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
++        {result.items.map((p) => (
++          <li key={p.id}>
++            <Link
++              to="/store/$slug/p/$productSlug"
++              params={{ slug, productSlug: p.slug }}
++              className="group block overflow-hidden rounded-fq-lg border border-border bg-card transition-transform duration-200 hover:-translate-y-0.5"
++            >
++              <div className="aspect-square bg-muted">
++                <StoreImage
++                  image={p.image ?? null}
++                  fallbackSrc={p.image_url}
++                  alt={p.title}
++                  seed={p.id}
++                  sizes="(max-width: 768px) 50vw, 300px"
++                  className="size-full object-cover"
++                />
++              </div>
++              <div className="p-3">
++                <h2 className="line-clamp-2 text-sm font-medium">{p.title}</h2>
++                <p className="money mt-1 text-sm font-semibold">
++                  {fmtMinor(p.price_minor, currency)}
++                </p>
++                <p
++                  className={`mt-1 text-xs ${p.stock > 0 ? "text-success-foreground" : "text-danger-foreground"}`}
++                >
++                  {p.stock > 0
++                    ? t("In stock", "স্টকে আছে")
++                    : t("Out of stock", "স্টক নেই")}
++                </p>
++              </div>
++            </Link>
++          </li>
++        ))}
++      </ul>
++    ) : null;
++
++  const pager =
++    pages > 1 ? (
++      <nav
++        aria-label={t("Pages", "পেজ")}
++        className="mt-8 flex items-center justify-center gap-2"
++      >
++        {/* Phase 7.1: real hrefs — a crawler (and a JS-less shopper) must be
++              able to walk the whole result set, so these are links, not buttons. */}
++        <Link
++          to="/store/$slug/search"
++          params={{ slug }}
++          search={toSearchQuery({
++            ...params,
++            page: Math.max(1, params.page - 1),
++          })}
++          rel="prev"
++          aria-disabled={params.page <= 1}
++          className={`min-h-11 rounded-fq-md border border-border bg-card px-3 text-sm leading-[2.75rem] ${
++            params.page <= 1 ? "pointer-events-none opacity-40" : ""
++          }`}
++        >
++          {t("Previous", "আগের")}
++        </Link>
++        <span className="money text-sm text-muted-foreground">
++          {params.page} / {pages}
++        </span>
++        <Link
++          to="/store/$slug/search"
++          params={{ slug }}
++          search={toSearchQuery({
++            ...params,
++            page: Math.min(pages, params.page + 1),
++          })}
++          rel="next"
++          aria-disabled={params.page >= pages}
++          className={`min-h-11 rounded-fq-md border border-border bg-card px-3 text-sm leading-[2.75rem] ${
++            params.page >= pages ? "pointer-events-none opacity-40" : ""
++          }`}
++        >
++          {t("Next", "পরের")}
++        </Link>
++      </nav>
++    ) : null;
++
++  // The whole listing — the `fallback`'s content: every piece, in today's
++  // order, so a store with NO published search template still gets today's
++  // page, content for content.
++  const listing = (
++    <>
++      {queryBox}
++      {filtersPanel}
++      {summaryAndSort}
++      {degradedNotice}
++      {emptyState}
++      {results}
++      {pager}
++    </>
++  );
++
++  // The results block — what the theme's `product_grid` receives as
++  // `productSlot`. It carries the query box and the platform's category/kind
++  // chips (search EXECUTION and AUTHORIZATION, not presentation), the
++  // search-status notice, the degraded notice and the results grid.
++  const resultsBlock = (
++    <>
++      {queryBox}
++      {filtersPanel}
++      {searchNotice}
++      {degradedNotice}
++      {results}
+     </>
+   );
+
+@@ -536,34 +590,68 @@ function SearchPage() {
+
+   return (
+     <PluginLayer plugins={chrome?.installedPlugins ?? []}>
+-      <ThemeChrome
+-        template="search"
+-        storeSlug={slug}
+-        themeKey={chrome?.themeKey ?? null}
+-        merchantId={chrome?.merchant.id ?? null}
+-        ast={chrome?.ast ?? null}
+-        tokens={chrome?.tokens ?? null}
+-        siteKit={chrome?.siteKit ?? null}
+-        chrome={
+-          <>
+-            <StoreHeader
+-              slug={slug}
+-              name={chrome?.merchant.name ?? slug}
+-              menus={chrome?.menus}
+-              themeKey={chrome?.themeKey ?? null}
+-            />
+-            {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
+-            {/* <SupportWidget slug={slug} /> */}
+-          </>
+-        }
+-        productSlot={listing}
+-        fallback={
+-          <>
+-            {heading}
+-            {listing}
+-          </>
+-        }
+-      />
++      {/*
++        Phase 2 (Task 9.3) — the theme's facet, sort and pager widgets compute
++        REAL links, so the provider carries the LIVE query: the live params,
++        the live total, the store's search path and the route's own `apply()`.
++      */}
++      <CollectionQueryProvider
++        value={{
++          params,
++          total: result?.total ?? 0,
++          basePath: `/store/${slug}/search`,
++          navigate: (next) => apply(next),
++        }}
++      >
++        <ThemeChrome
++          template="search"
++          storeSlug={slug}
++          themeKey={chrome?.themeKey ?? null}
++          merchantId={chrome?.merchant.id ?? null}
++          ast={chrome?.ast ?? null}
++          tokens={chrome?.tokens ?? null}
++          siteKit={chrome?.siteKit ?? null}
++          chrome={
++            <>
++              <StoreHeader
++                slug={slug}
++                name={chrome?.merchant.name ?? slug}
++                menus={chrome?.menus}
++                themeKey={chrome?.themeKey ?? null}
++              />
++              {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
++              {/* <SupportWidget slug={slug} /> */}
++            </>
++          }
++          // The storefront grants five of the platform's search widgets;
++          // `facet_sidebar` stays preview-only because its rows come from the
++          // widget-data pipeline (D7). A themed storefront search page therefore
++          // has NO independent facet sidebar — the platform's own category/kind
++          // chips remain visible inside the results block, which is where the
++          // shopper filters the search.
++          contextSlots={{
++            result_toolbar: null,
++            filter_chips: null,
++            pagination: null,
++            // The `empty_state` widget renders its panel unconditionally
++            // (`src/components/builder/collection.tsx:707-753`), so the GRANT
++            // is what decides whether the theme's empty copy appears — it is
++            // granted only when the platform's own empty state would have
++            // shown.
++            ...(result && result.items.length === 0 && !query.isPending
++              ? { empty_state: null }
++              : {}),
++            category_header: null,
++          }}
++          productSlot={resultsBlock}
++          fallback={
++            <>
++              {heading}
++              {listing}
++            </>
++          }
++        />
++      </CollectionQueryProvider>
+     </PluginLayer>
+   );
+ }
+```
+
+### (k.3) The new test file
+
+**`src/routes/store.$slug.search-composition.test.tsx`** — a NEW file (the §7 carve-out is "NEW test/fixture files"). It does **not** import the route module (that would pull the whole server graph); it reads the route file as **text** and asserts the composition contract, the way `src/components/store/chrome-localization.test.tsx` and `src/routes/store.$slug.index.isolated-route.test.ts` read source files. Its six cases are:
+
+1. the route mounts a `CollectionQueryProvider` whose value carries `params`, `total: result?.total ?? 0`, the store's own search base path and `navigate: (next) => apply(next)` — the facet, sort and pager links are real links;
+2. the `contextSlots` map grants **exactly** `result_toolbar`, `filter_chips`, `pagination`, `empty_state`, `category_header` and **not** `facet_sidebar`, and the `empty_state` grant is conditional on the platform's own empty-state condition;
+3. the identifier handed to `productSlot` is **not** the one handed to `fallback`, the results block still carries the query box and the filters panel (the category and product-type `Chip` rows), and it does **not** carry the count/sort row — those belong to the granted toolbar;
+4. the `fallback` is still the whole listing (all seven pieces) plus the route's own `<h1>`;
+5. the route still calls `searchStorefrontFn` and still asks `getStoreChrome` for `template: "search"` — the platform still executes and authorizes the search;
+6. the route still computes `policy`/`listingPolicy` and returns `buildSearchHead` — the canonical and robots discipline is untouched.
+
+On the pre-change file the suite is **red** with a clear message (`expected 'import { createFileRoute, Link, useNa…' to contain 'CollectionQueryProvider'`); on the post-change file it is **green** (6 passed).
+
+### (k.4) The proof that the shopper's result set did not change
+
+The change is a **presentation-channel** change: the loader, the query validation, the tenant scoping, the filtering, the result authorization and the result limits are byte-identical, and the results grid renders the same `result.items`. It was verified **by rendering**, not by assertion:
+
+- the route's listing markup was extracted from the pre-change file and from the post-change file, given the **same** fixture (3 result rows, `total: 9`, `limit: 3` → 3 pages, one category facet, one kind facet, a search term and a sort), and rendered with `react-dom/server`;
+- the rendered **fallback** HTML is **byte-identical** before and after (`cmp` → identical, 7 325 bytes) — same rows, same prices, same "9 products" count, same "1 / 3" pager, same chips, same search input — and identical again in the degraded, empty, pending and rate-limited states;
+- the rendered **results block** (the new `productSlot`) carries the search input, the category and kind chips and the same three rows, and does **not** carry the count — the count is the granted `result_toolbar` widget's.
+
+**Nothing in this section widens the escalation.** The two files touched by Task 9 are the search route (escalated by Decision **D4**, and named here) and the new test file (a NEW file). No other file was edited.
