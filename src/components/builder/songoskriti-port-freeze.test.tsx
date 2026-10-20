@@ -103,7 +103,7 @@ const TEMPLATE_MAIN: Record<string, string[]> = {
     "product_rail",
   ],
   account: ["heading", "profile_card", "orders_list"],
-  page: ["heading", "rich_text"],
+  page: ["breadcrumb", "page_content"],
   blog: ["heading", "image", "rich_text"],
   cart: ["heading", "columns", "product_rail"],
   checkout: ["heading", "columns"],

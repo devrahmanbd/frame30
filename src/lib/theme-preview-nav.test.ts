@@ -2,7 +2,7 @@
  * In-preview navigation — TDD: demo links stay inside the preview frame.
  */
 import { describe, expect, it } from "vitest";
-import { flattenSections } from "./builder-ast";
+import { flattenSections, type TemplateKey } from "./builder-ast";
 import { registerStaticPreviewSource } from "./preview-sources";
 import { songoskritiPreviewSource } from "./themes/songoskriti/preview";
 import { somvabonaPreviewSource } from "./themes/somvabona/preview";
@@ -114,6 +114,20 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
       );
     }
   });
+  // Every template's opener is pinned explicitly: six of the nine used to
+  // fall through a default branch to the literal "heading", so a template
+  // that changed its opener was only caught for index and collection.
+  const FIRST_SECTION: Record<TemplateKey, string> = {
+    index: "hero_carousel",
+    product: "heading",
+    collection: "category_header",
+    account: "heading",
+    page: "breadcrumb",
+    blog: "heading",
+    cart: "heading",
+    checkout: "heading",
+    search: "heading",
+  };
   it("authors demo content for every template (no empty sub-pages)", () => {
     const preset = resolveThemePreview("songoskriti")!;
     for (const key of [
@@ -140,11 +154,7 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
       // the collection (category_header breadcrumb/title/subnav) templates,
       // which own the page h1 through their dedicated openers.
       expect(ast.main[0]!.type, `${key} first section`).toBe(
-        key === "index"
-          ? "hero_carousel"
-          : key === "collection"
-            ? "category_header"
-            : "heading",
+        FIRST_SECTION[key],
       );
     }
     // Spot-check demo bodies use proven renderers.
