@@ -55,7 +55,7 @@ The assertion at `:159` — `expect(main.map((x: Section) => x.type)).toEqual(TE
  import { registerStaticPreviewSource } from "./preview-sources";
  import { songoskritiPreviewSource } from "./themes/songoskriti/preview";
  import { somvabonaPreviewSource } from "./themes/somvabona/preview";
-@@ -114,6 +114,20 @@
+@@ -114,6 +114,20 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
        );
      }
    });
@@ -76,22 +76,22 @@ The assertion at `:159` — `expect(main.map((x: Section) => x.type)).toEqual(TE
    it("authors demo content for every template (no empty sub-pages)", () => {
      const preset = resolveThemePreview("songoskriti")!;
      for (const key of [
-@@ -139,13 +153,7 @@
-       // Main opens with a heading — except the index (hero carousel) and
+@@ -140,11 +154,7 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
        // the collection (category_header breadcrumb/title/subnav) templates,
        // which own the page h1 through their dedicated openers.
--      expect(ast.main[0]!.type, `${key} first section`).toBe(
+       expect(ast.main[0]!.type, `${key} first section`).toBe(
 -        key === "index"
 -          ? "hero_carousel"
 -          : key === "collection"
 -            ? "category_header"
 -            : "heading",
--      );
-+      expect(ast.main[0]!.type, `${key} first section`).toBe(FIRST_SECTION[key]);
++        FIRST_SECTION[key],
+       );
      }
      // Spot-check demo bodies use proven renderers.
-     expect(preset.templates.collection.main.map((s) => s.type)).toContain(
 ```
+
+The block above is the committed diff **verbatim** — `git diff 78421884^ 293d798f -- src/lib/theme-preview-nav.test.ts` — so it applies byte-exactly to the base file and reproduces `293d798f:src/lib/theme-preview-nav.test.ts` with no residue. (Note the `@@` header on the third hunk: the committed edit replaces only the five-line ternary, leaving `expect(…).toBe(` and `);` as context — it is not a re-wrap of the whole call.)
 
 `TemplateKey` is **not** currently imported in that file — the import at `src/lib/theme-preview-nav.test.ts:5` is `import { flattenSections } from "./builder-ast";` — so it becomes `import { flattenSections, type TemplateKey } from "./builder-ast";` (one added type import, no assertion removed).
 
@@ -123,7 +123,16 @@ Nothing is weakened by the move:
 
 - The freeze suite's `TEMPLATE_MAIN.page` was a two-element ordered list; it becomes a two-element ordered list that names the route's content slot and the breadcrumb that opens the body. Same shape, same totality, stronger content.
 - The preview-nav suite's ternary default silently accepted `"heading"` for six of the nine templates. The explicit map pins all nine openers by name, and it pins the new `page` opener as `"breadcrumb"`.
-- No assertion is deleted, skipped or weakened in either file. `expect(main.map((x: Section) => x.type)).toEqual(TEMPLATE_MAIN[key])` (`:159`) and `expect(ast.main[0]!.type, \`${key} first section\`).toBe(FIRST_SECTION[key])` both remain.
+- No assertion is deleted, skipped or weakened in either file. `expect(main.map((x: Section) => x.type)).toEqual(TEMPLATE_MAIN[key])` (`:159`) and
+
+  <!-- prettier-ignore -->
+  ```ts
+  expect(ast.main[0]!.type, `${key} first section`).toBe(
+    FIRST_SECTION[key],
+  );
+  ```
+
+  both remain — the second is the committed form (`src/lib/theme-preview-nav.test.ts:156-158`), with `expect(…).toBe(` and `);` kept as context and only the five-line ternary replaced.
 
 The `page` template is a **route-h1** template (`ROUTE_H1_TEMPLATES`, `src/lib/builder-ast.ts:68`; `routeSuppliesH1`, `src/lib/builder-ast.ts:77`): the route owns the `<h1>`, so the template elects no primary section (`primarySectionId`, `src/lib/builder-ast.ts:88`). The `breadcrumb` section is the first section because the route's furniture must survive above the merchant's body, and `page_content` is second because it _is_ the body.
 
@@ -156,14 +165,16 @@ The two existing test files are prohibited by port spec §7 (_"existing test fil
 
 ## (f) The lint-key consequence (Corrections §5 of this plan)
 
-**The change leaves the page template with no h1-claiming widget, which is correct for a route-h1 template, but both live `lintTemplate` call sites pass no template key (`src/hooks/use-builder-editor.ts:635`, `src/lib/themes.server.ts:284`), so the route-h1 exemption is not applied and the builder reports `'No primary heading on this template.'` for the `page` template alone.**
+**The change leaves the page template with no h1-claiming widget, which is correct for a route-h1 template, but of the four live `lintTemplate` call sites only two pass no template key (`src/hooks/use-builder-editor.ts:635`, `src/lib/themes.server.ts:284`) — and those two are the ones that surface the warning, so the route-h1 exemption is not applied there and the builder reports `'No primary heading on this template.'` for the `page` template alone.**
 
-`lintTemplate(ast, template?)` (`src/lib/builder-ast.ts:8380`) only applies the route-h1 exemption (`src/lib/builder-ast.ts:8427` — _"the h1 claimant is declared, not inferred. On `ROUTE_H1_TEMPLATES`…"_) when the template key is passed. Both live call sites omit it:
+`lintTemplate(ast, template?)` (`src/lib/builder-ast.ts:8380`) only applies the route-h1 exemption (`src/lib/builder-ast.ts:8427` — _"the h1 claimant is declared, not inferred. On `ROUTE_H1_TEMPLATES`…"_) when the template key is passed. There are **four** live call sites; two omit the key and therefore surface the warn, two pass it and therefore do not:
 
-- `src/hooks/use-builder-editor.ts:635` — `out[key] = lintTemplate(doc.templates[key] ?? EMPTY_AST);`
-- `src/lib/themes.server.ts:284` — `issues[key] = lintTemplate(templateOf(templates, key));`
+- `src/hooks/use-builder-editor.ts:635` — `out[key] = lintTemplate(doc.templates[key] ?? EMPTY_AST);` — **no key → surfaces the warn.**
+- `src/lib/themes.server.ts:284` — `issues[key] = lintTemplate(templateOf(templates, key));` — **no key → surfaces the warn.**
+- `src/lib/themes.server.ts:850` — `lintTemplate(templateOf(templates, key), key).filter((issue) => issue.level === "error")` — **passes the key**, and keeps only `issue.level === "error"`, so the warn never surfaces there.
+- `src/lib/themes.server.ts:1492` — `lintTemplate(templates[templateKey]!, templateKey).filter((issue) => issue.level === "error")` — **passes the key**, and keeps only `issue.level === "error"`, so the warn never surfaces there.
 
-**A merchant who adds a heading in response produces a second `<h1>` on a path host.** The fix is to pass the template key to `lintTemplate` in both call sites; both files are prohibited by port spec §7, so this plan records and escalates the defect rather than fixing it. **Recorded for the D4 boundary decision.**
+**A merchant who adds a heading in response produces a second `<h1>` on a path host.** The fix is to pass the template key to `lintTemplate` in the two unkeyed call sites; all four live call sites live in files prohibited by port spec §7, so this plan records and escalates the defect rather than fixing it. **Recorded for the D4 boundary decision.**
 
 ---
 
@@ -292,7 +303,9 @@ Every reference in this record was grepped out of the tree at `71271834` and res
 | `"Size guide"` / `"How to measure"` / `"Demo article"` | `src/lib/themes/songoskriti/preview.ts:209` / `:211` / `:213`                     |
 | `useMockProductSlots`                                  | `src/components/store/ThemePreviewFrame.tsx:256` (definition), `:535` (call site) |
 | `page_content: pageContent,`                           | `src/components/store/ThemePreviewFrame.tsx:415`                                  |
-| `lintTemplate` call site (builder editor)              | `src/hooks/use-builder-editor.ts:635`                                             |
-| `lintTemplate` call site (theme server)                | `src/lib/themes.server.ts:284`                                                    |
+| `lintTemplate` call site (builder editor, unkeyed)     | `src/hooks/use-builder-editor.ts:635`                                             |
+| `lintTemplate` call site (theme server, unkeyed)       | `src/lib/themes.server.ts:284`                                                    |
+| `lintTemplate` call site (theme publish, keyed)        | `src/lib/themes.server.ts:850`                                                    |
+| `lintTemplate` call site (theme update, keyed)         | `src/lib/themes.server.ts:1492`                                                   |
 | `ROUTE_H1_TEMPLATES`                                   | `src/lib/builder-ast.ts:68`                                                       |
 | context-widget `null` render                           | `src/components/builder/SectionRenderer.tsx:825-833`                              |

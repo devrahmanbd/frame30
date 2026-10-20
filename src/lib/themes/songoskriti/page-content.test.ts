@@ -13,6 +13,7 @@
  */
 import { describe, expect, it } from "vitest";
 import {
+  catalogEntry,
   lintTemplate,
   primarySectionId,
   routeSuppliesH1,
@@ -68,6 +69,15 @@ describe("Songoskriti page template — the route's content slot", () => {
   it("elects no primary section: the route supplies the h1", () => {
     const ast = { header: [], main: pageMain(), footer: [] };
     expect(routeSuppliesH1("page")).toBe(true);
+    // `routeSuppliesH1` is a constant-set lookup, so it passes on its own.
+    // Pin the property that ACTUALLY changed next to it: no section in this
+    // template is a type the CATALOG flags as a heading claimant (the old
+    // `heading` opener was one, and `hero` / `category_header` still would
+    // be). That is what makes the exemption above meaningful rather than
+    // decorative.
+    expect(
+      ast.main.filter((x) => catalogEntry(x.type)?.heading).map((x) => x.type),
+    ).toEqual([]);
     expect(primarySectionId(ast)).toBeNull();
   });
 
