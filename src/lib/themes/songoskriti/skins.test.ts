@@ -151,16 +151,24 @@ describe("factory output carries theme defaults", () => {
       type,
       props: { ...props },
     });
-    for (const template of [
-      "collection",
-      "product",
-      "search",
-      "cart",
-    ] as const) {
+    // The search and cart templates author NO merchandising rail: the
+    // search body is the platform's own search widgets, and the cart body
+    // is the platform's two commerce widgets — a "you may also like" rail
+    // is the generic demo shape the distinctness gate rejects. The
+    // templates that DO author a rail must carry the theme's default skin.
+    for (const template of ["collection", "product"] as const) {
       const main = source.main(template, s)!;
       const rails = main.filter((x) => x.type === "product_rail");
       expect(rails.length, template).toBeGreaterThan(0);
       for (const rail of rails) expect(rail.props.skin).toBe("editorial");
+    }
+    // …and the two commerce templates must author NO rail at all.
+    for (const template of ["search", "cart"] as const) {
+      const main = source.main(template, s)!;
+      expect(
+        main.filter((x) => x.type === "product_rail").length,
+        template,
+      ).toBe(0);
     }
   });
 });

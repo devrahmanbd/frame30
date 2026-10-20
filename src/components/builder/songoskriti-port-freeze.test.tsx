@@ -107,7 +107,15 @@ const TEMPLATE_MAIN: Record<string, string[]> = {
   blog: ["blog_terms", "blog_archive", "blog_pager"],
   cart: ["heading", "columns"],
   checkout: ["heading", "checkout_steps", "columns"],
-  search: ["heading", "rich_text", "product_rail"],
+  search: [
+    "category_header",
+    "result_toolbar",
+    "facet_sidebar",
+    "filter_chips",
+    "product_grid",
+    "pagination",
+    "empty_state",
+  ],
 };
 
 describe("Task 3 — freeze: homepage composition", () => {

@@ -126,7 +126,7 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
     blog: "blog_terms",
     cart: "heading",
     checkout: "heading",
-    search: "heading",
+    search: "category_header",
   };
   it("authors demo content for every template (no empty sub-pages)", () => {
     const preset = resolveThemePreview("songoskriti")!;
