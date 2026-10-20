@@ -24,6 +24,21 @@
  * expectations, its documented exceptions and the nine bodies that actually
  * ship (`songoskritiPreviewSource()`, `src/lib/themes/songoskriti/preview.ts:70`).
  *
+ * **Two rules state their own scope, because the scope matters.**
+ * `R1` rejects a *generic* body: the engine's own demo body, or a
+ * heading-led body that carries a generic demo shape **and is missing the
+ * template's own composition** (it carries none of the template's required
+ * types, or it misses a required functional slot). The demo shapes are read
+ * **per template** — a shape the template's row *requires* (`product_rail`
+ * on `index`) is never treated as a demo shape — and the composition clause
+ * is never vacuous, so the next legitimate change (opening the homepage
+ * with an editorial heading) passes the gate it must pass.
+ * `R7` counts the `<h1>` claimants of the **body** under test; the platform
+ * counts the whole AST (`src/lib/builder-ast.ts:8496-8514` flattens
+ * header + main + footer) — the two are equal today (the chrome is an empty
+ * header and a `footer_sitemap` + `rich_text` footer, both `heading: false`
+ * in the catalogue), and the finding says so in its own message.
+ *
  * The checker is a pure function over `(template, body)`: no React, no
  * filesystem, no network.
  */
@@ -259,8 +274,29 @@ function plainBuilder(): SectionBuilder {
  * The engine's generic demo sections — the shapes a "demo" body is made of.
  * `genericDemoMain` builds `["heading","rich_text"]` for every template
  * (`src/lib/theme-preview-nav.ts:357-373`).
+ *
+ * The set is consulted **template-aware** (see `templateDemoSections`): a
+ * type the template's own row *requires* is not a demo shape for that
+ * template.
  */
 const GENERIC_DEMO_SECTIONS = ["rich_text", "product_rail"] as const;
+
+/**
+ * The generic demo sections **for one template** — the engine's generic
+ * shapes minus the ones that template's own row requires.
+ *
+ * `product_rail` is a required type on `index`, so a rail on the homepage is
+ * the theme's own composition, not a demo shape: treating it as one would
+ * make the expectation table self-contradictory — the row would require the
+ * very shape the rule rejects.
+ */
+function templateDemoSections(
+  expectation: TemplateExpectation,
+): readonly SectionType[] {
+  return GENERIC_DEMO_SECTIONS.filter(
+    (type) => !expectation.requiredTypes.includes(type),
+  );
+}
 
 /** The retired demo strings (the copy Phase 1 removed). */
 export const SONOSKRITI_RETIRED_DEMO_STRINGS = [
@@ -312,10 +348,16 @@ function blankHeading(section: Section): boolean {
  * `heading: true` counts unless its `heading` prop is deliberately blank
  * (`:8506-8513`).
  *
- * The count is over the **body** under test. The theme's chrome contributes
- * no claimant — measured: the header/footer widgets are `mega_menu`,
- * `footer_sitemap` and `rich_text`, all `heading: false` in the catalogue —
- * so the body count equals the platform's whole-template count.
+ * **KNOWN LIMIT — the count is over the BODY under test.** The platform
+ * counts the **whole AST** — it flattens header + main + footer
+ * (`src/lib/builder-ast.ts:8496-8514`). The two counts are equal today:
+ * measured, the theme's chrome is an **empty header** (the storefront's
+ * `StoreHeader` renders the masthead — `src/lib/themes/songoskriti/header.ts:17-19`)
+ * and a footer of `footer_sitemap` + `rich_text`, both `heading: false` in
+ * the catalogue — so the chrome contributes no claimant. A future
+ * heading-capable chrome widget would make the platform's count one higher
+ * than this one; the `R7` finding states the scope in its own message so it
+ * cannot be missed.
  */
 export function countPrimaryHeadingClaimants(
   sections: readonly Section[],
@@ -330,6 +372,28 @@ export function countPrimaryHeadingClaimants(
     claimants.push(section.id);
   }
   return claimants;
+}
+
+/**
+ * The compound demo markers — `DemoPage`, `demo_page`, `demoMode` — that a
+ * word-boundary match misses. The brief's wording is a literal `"Demo"`
+ * marker, so the gate matches `/demo/i` on every prop **key** and every prop
+ * **value** (a nested object value is matched on its serialised form).
+ */
+function demoMarkerInProps(sections: readonly Section[]): string[] {
+  const found: string[] = [];
+  for (const section of sections) {
+    for (const [key, value] of Object.entries(section.props)) {
+      if (/demo/i.test(key)) found.push(`prop key "${key}"`);
+      if (typeof value === "string") {
+        if (/demo/i.test(value)) found.push(`prop "${key}" = "${value}"`);
+      } else if (value && typeof value === "object") {
+        const text = JSON.stringify(value);
+        if (/demo/i.test(text)) found.push(`prop "${key}" = ${text}`);
+      }
+    }
+  }
+  return found;
 }
 
 /** The gate's inputs — the machinery is theme-agnostic. */
@@ -360,12 +424,19 @@ const EMPTY_EXPECTATION: TemplateExpectation = {
  * `R1` — the body must not be a **generic demo body**. Two shapes qualify:
  * **(a)** the engine's own generic body (`genericDemoMain`), and **(b)** a
  * *heading-led* body — its first section is a `heading` widget — that
- * carries at least one of the engine's generic demo sections (`rich_text`,
- * `product_rail`) **and none** of the template's own required functional
- * slots. The "none of the required slots" clause is what makes the rule
- * honest about the legacy bodies **and** protects the bodies the gate must
- * pass: the shipped `product` body is heading-led and carries demo sections,
- * but it also carries all four of its required slots.
+ * carries at least one of the engine's generic demo sections **and is
+ * missing the template's own composition**.
+ *
+ * The demo set is **template-aware**: a shape the template's row *requires*
+ * is not a demo shape for it (`product_rail` is a required type on `index`).
+ *
+ * The composition clause is the **types+slots** clause — the body carries
+ * none of the template's required types, **or** misses a required
+ * functional slot. It is deliberately not a slots-only clause: that clause
+ * was vacuous for the two slot-less templates (`index`, `collection`), so
+ * any heading-led body carrying a rail tripped the rule, and the next
+ * legitimate change — opening the homepage with an editorial heading —
+ * would have been rejected by the gate it is supposed to pass.
  */
 export function checkTemplateDistinctness(
   template: TemplateKey,
@@ -388,12 +459,23 @@ export function checkTemplateDistinctness(
     mainTypes.length === genericTypes.length &&
     mainTypes.every((type, index) => type === genericTypes[index]);
   const headingLed = mainTypes[0] === "heading";
-  const demoSections = GENERIC_DEMO_SECTIONS.filter((type) =>
+  const demoSections = templateDemoSections(expectation).filter((type) =>
     typeSet.has(type),
   );
-  const carriesNoRequiredSlot = expectation.requiredSlots.every(
+  /* The composition clause — never vacuous. A template that declares no
+   * required composition (the gate is not configured for it) has nothing to
+   * be missing, so the clause cannot fire there. */
+  const declaresComposition =
+    expectation.requiredTypes.length > 0 ||
+    expectation.requiredSlots.length > 0;
+  const carriesNoRequiredType =
+    expectation.requiredTypes.length > 0 &&
+    expectation.requiredTypes.every((type) => !typeSet.has(type));
+  const missingSlots = expectation.requiredSlots.filter(
     (type) => !typeSet.has(type),
   );
+  const compositionMissing =
+    declaresComposition && (carriesNoRequiredType || missingSlots.length > 0);
   if (isGenericBody) {
     issues.push({
       rule: "R1-not-generic",
@@ -403,16 +485,27 @@ export function checkTemplateDistinctness(
       details: [`generic body: ${genericTypes.join(", ")}`],
       exception: null,
     });
-  } else if (headingLed && demoSections.length > 0 && carriesNoRequiredSlot) {
+  } else if (headingLed && demoSections.length > 0 && compositionMissing) {
+    const compositionGaps: string[] = [];
+    if (carriesNoRequiredType) {
+      compositionGaps.push(
+        `carries none of its required types (${expectation.requiredTypes.join(", ")})`,
+      );
+    }
+    if (missingSlots.length > 0) {
+      compositionGaps.push(
+        `misses a required functional slot (${missingSlots.join(", ")})`,
+      );
+    }
     issues.push({
       rule: "R1-not-generic",
       template,
-      message: `the ${template} body is heading-led and carries the generic demo section(s) ${demoSections.join(", ")} but none of its required functional slots — a generic heading-plus-demo-rail layout must never pass`,
+      message: `the ${template} body is heading-led and carries the generic demo section(s) ${demoSections.join(", ")} but not the template's own composition — a generic heading-plus-demo-rail layout must never pass`,
       sectionId: null,
       details: [
         `heading-led: ${mainTypes.join(", ")}`,
         `generic demo section(s): ${demoSections.join(", ")}`,
-        "carries none of its required functional slots",
+        ...compositionGaps,
       ],
       exception: null,
     });
@@ -477,6 +570,14 @@ export function checkTemplateDistinctness(
     }
     if (/\bdemo\b/i.test(serialised)) {
       hits.push(`a "Demo" marker in the ${template} body`);
+    } else {
+      // The compound forms a word boundary misses — `DemoPage`, `demo_page`.
+      const compound = demoMarkerInProps(flat);
+      if (compound.length > 0) {
+        hits.push(
+          `a "Demo" marker in the ${template} body: ${compound.join("; ")}`,
+        );
+      }
     }
     if (hits.length > 0) {
       issues.push({
@@ -532,11 +633,12 @@ export function checkTemplateDistinctness(
     issues.push({
       rule: "R7-one-primary-heading",
       template,
-      message: `the ${template} body has ${claimants.length} <h1> claimants — a page has one primary heading`,
+      message: `the ${template} body has ${claimants.length} <h1> claimants — a page has one primary heading (count scope: the BODY under test; the platform counts the whole AST — header + main + footer — whose chrome contributes no claimant today)`,
       sectionId: claimants[1] ?? null,
       details: [
         ...claimants.map((id) => `claims the page <h1>: ${id}`),
         `primary section: ${primary ?? "none"}`,
+        "count scope: the body under test (the platform counts the whole AST — header + main + footer)",
       ],
       exception: null,
     });

@@ -22,6 +22,8 @@
  * The gate's subject is composition, functional slots and structure — never
  * lint cleanliness (`src/lib/themes/songoskriti/template-distinctness.ts`).
  */
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
   TEMPLATE_KEYS,
@@ -108,6 +110,59 @@ function ruleIdsOf(template: TemplateKey, main: readonly Section[]): string[] {
   return checkSongoskritiTemplateDistinctness(template, { main }).map(
     (issue) => issue.rule,
   );
+}
+
+/**
+ * The engine's generic demo shapes — the two the gate reads **per template**
+ * (`templateDemoSections`, `template-distinctness.ts`): the engine's generic
+ * shapes minus the ones the template's own row *requires* (`product_rail` is
+ * a required type on `index`, so a rail on the homepage is the theme's own
+ * composition, not a demo shape).
+ */
+const ENGINE_GENERIC_DEMO_SHAPES = ["rich_text", "product_rail"] as const;
+
+function demoShapesFor(template: TemplateKey): string[] {
+  const required = SONOSKRITI_TEMPLATE_EXPECTATIONS[template].requiredTypes;
+  return ENGINE_GENERIC_DEMO_SHAPES.filter(
+    (shape) => !required.includes(shape as SectionType),
+  );
+}
+
+/**
+ * A body with TWO `heading: true` widgets that are not the `heading` type —
+ * the shipped cart body's shape BEFORE Task 6 fixed it (the lines block and
+ * the summary both claimed the page `<h1>`).
+ */
+function twoClaimantCartBody(): Section[] {
+  const body = fixtureBody(["heading", "columns"]);
+  const columns = body[1];
+  columns.children = [
+    {
+      id: "container-0",
+      type: "container",
+      props: {},
+      children: [
+        {
+          id: "cart_lines-0",
+          type: "cart_lines",
+          props: { heading: "Items" },
+        },
+      ],
+    },
+    {
+      id: "container-1",
+      type: "container",
+      props: {},
+      children: [
+        {
+          id: "cart_summary-0",
+          type: "cart_summary",
+          props: { heading: "Order summary" },
+        },
+      ],
+    },
+  ];
+  return body;
 }
 
 describe("songoskriti template distinctness gate", () => {
@@ -256,6 +311,68 @@ describe("songoskriti template distinctness gate", () => {
     );
   });
 
+  it("accepts the shipped bodies opened with an editorial heading — the next legitimate change must pass", () => {
+    // The regression this locks: the shipped `index` and `collection` bodies
+    // are the two whose rows declare NO functional slots, so the old
+    // slots-only clause of `R1` was vacuous for them — ANY heading-led body
+    // that carried a `product_rail` tripped the rule. Prepending a plain
+    // intro heading to a body that actually ships is exactly the change the
+    // gate must allow (measured before the fix: `R1-not-generic` on both).
+    for (const key of ["index", "collection"] as const) {
+      const main = shippedMain(key);
+      const led: Section[] = [
+        {
+          id: "intro-heading",
+          type: "heading",
+          props: { text: "Editorial intro", text_bn: "সম্পাদকীয় পরিচিতি" },
+        },
+        ...main,
+      ];
+
+      // The fixture really is the shape that used to trip the gate: it is
+      // heading-led and it carries the demo shape the old rule treated as
+      // "demo" on every template.
+      expect(led[0]!.type, "the fixture must be heading-led").toBe("heading");
+      expect(
+        led.map((section) => section.type),
+        "the fixture must carry the rail the old rule called a demo shape",
+      ).toContain("product_rail");
+
+      const issues = checkSongoskritiTemplateDistinctness(key, { main: led });
+      expect(
+        issues.map((issue) => `${issue.rule}: ${issue.message}`),
+        `the shipped ${key} body opened with a heading must pass the gate`,
+      ).toEqual([]);
+    }
+  });
+
+  it("still rejects a heading-plus-demo-rail body on every template", () => {
+    for (const key of TEMPLATE_KEYS) {
+      // (a) the engine's own generic body — the exact-body clause.
+      const generic = genericDemoMain(key, plainBuilder());
+      expect(
+        ruleIdsOf(key, generic),
+        `the engine's generic body must be rejected on ${key}`,
+      ).toEqual(expect.arrayContaining(["R1-not-generic"]));
+
+      // (b) the heading-led clause: a body that opens with a heading and
+      // carries the template's generic demo shapes while missing the
+      // template's own composition. The trailing filler section keeps the
+      // body from BEING the engine's generic body, so this exercises the
+      // heading-led clause and not the exact-body clause.
+      const demoShapes = demoShapesFor(key);
+      expect(
+        demoShapes.length,
+        `the ${key} row must leave at least one generic demo shape`,
+      ).toBeGreaterThan(0);
+      const body = fixtureBody(["heading", ...demoShapes, "image"]);
+      expect(
+        ruleIdsOf(key, body),
+        `a heading-plus-demo-rail body must be rejected on ${key}`,
+      ).toEqual(expect.arrayContaining(["R1-not-generic"]));
+    }
+  });
+
   it("has a firing fixture for every rule", () => {
     // R4 — the `page` body carrying a demo string: the Phase-1 defect's
     // shape. The demo copy would impersonate the merchant's CMS record.
@@ -273,37 +390,43 @@ describe("songoskriti template distinctness gate", () => {
       expect.arrayContaining(["R4-no-demo-copy"]),
     );
 
+    // The COMPOUND demo markers a word-boundary match misses: `DemoPage` in
+    // a value and `demo_page` in a prop KEY.
+    const compoundPage = fixtureBody(["breadcrumb", "page_content"], {
+      page_content: { body: "DemoPage fallback" },
+    });
+    expect(ruleIdsOf("page", compoundPage)).toEqual(
+      expect.arrayContaining(["R4-no-demo-copy"]),
+    );
+    const keyMarkerPage = fixtureBody(["breadcrumb", "page_content"], {
+      page_content: { demo_page: "fallback" },
+    });
+    expect(ruleIdsOf("page", keyMarkerPage)).toEqual(
+      expect.arrayContaining(["R4-no-demo-copy"]),
+    );
+
+    // The six retired strings are still matched as EXACT substrings.
+    for (const retired of [
+      "Demo search",
+      "Meet the makers",
+      "Size guide",
+      "How to measure",
+      "Demo article",
+      "Demo story",
+    ]) {
+      const retiredPage = fixtureBody(["breadcrumb", "page_content"], {
+        page_content: { body: retired },
+      });
+      expect(
+        ruleIdsOf("page", retiredPage),
+        `the retired demo string "${retired}" must be caught`,
+      ).toEqual(expect.arrayContaining(["R4-no-demo-copy"]));
+    }
+
     // R7 — a body carrying TWO `heading: true` widgets that are not the
     // `heading` type: the shipped cart body's shape BEFORE Task 6 fixed it
     // (the lines block and the summary both claimed the page `<h1>`).
-    const twoClaimants = fixtureBody(["heading", "columns"]);
-    const columns = twoClaimants[1];
-    columns.children = [
-      {
-        id: "container-0",
-        type: "container",
-        props: {},
-        children: [
-          {
-            id: "cart_lines-0",
-            type: "cart_lines",
-            props: { heading: "Items" },
-          },
-        ],
-      },
-      {
-        id: "container-1",
-        type: "container",
-        props: {},
-        children: [
-          {
-            id: "cart_summary-0",
-            type: "cart_summary",
-            props: { heading: "Order summary" },
-          },
-        ],
-      },
-    ];
+    const twoClaimants = twoClaimantCartBody();
     expect(claimantsOf(twoClaimants)).toHaveLength(2);
     expect(ruleIdsOf("cart", twoClaimants)).toEqual(
       expect.arrayContaining(["R7-one-primary-heading"]),
@@ -333,6 +456,44 @@ describe("songoskriti template distinctness gate", () => {
     ]);
     expect([...fired].sort()).toEqual(
       [...SONOSKRITI_DISTINCTNESS_RULES].sort(),
+    );
+  });
+
+  it("counts the <h1> claimants over the body — and says so in the finding", () => {
+    // The KNOWN LIMIT of `R7`: the count is over the BODY under test, while
+    // the platform counts the WHOLE AST — it flattens header + main + footer
+    // (`src/lib/builder-ast.ts:8496-8514`). The two counts are equal today:
+    // measured, the theme's chrome contributes no claimant — the header AST
+    // is empty (the storefront's `StoreHeader` renders the masthead) and the
+    // footer is `footer_sitemap` + `rich_text`, both `heading: false` in the
+    // catalogue. A future heading-capable chrome widget would make the
+    // platform's count one higher — so the finding states its own scope.
+    const source = songoskritiPreviewSource();
+    const chromeTypes = new Set<SectionType>();
+    for (const key of TEMPLATE_KEYS) {
+      for (const section of [
+        ...source.header(key, plainBuilder()),
+        ...source.footer(key, plainBuilder()),
+      ]) {
+        chromeTypes.add(section.type);
+      }
+    }
+    expect([...chromeTypes].sort()).toEqual(["footer_sitemap", "rich_text"]);
+    for (const type of chromeTypes) {
+      expect(
+        catalogEntry(type)?.heading,
+        `the chrome widget ${type} must not claim the page <h1>`,
+      ).toBe(false);
+    }
+
+    const finding = checkSongoskritiTemplateDistinctness("cart", {
+      main: twoClaimantCartBody(),
+    }).find((issue) => issue.rule === "R7-one-primary-heading");
+    expect(finding, "the two-claimant body must trip R7").toBeDefined();
+    expect(finding?.message).toContain("count scope");
+    expect(finding?.message).toContain("the BODY under test");
+    expect(finding?.details.join(" ")).toContain(
+      "the platform counts the whole AST",
     );
   });
 
@@ -392,49 +553,80 @@ describe("songoskriti template distinctness gate", () => {
       "R6-distinct-across-templates",
       "R7-one-primary-heading",
     ]);
+
+    // The rule-id list above cannot see a future `lintTemplate` import, so
+    // the module's OWN SOURCE is read here: the gate stays
+    // composition-only — it never imports the platform's lint.
+    const moduleSource = readFileSync(
+      fileURLToPath(new URL("./template-distinctness.ts", import.meta.url)),
+      "utf8",
+    );
+    const importStatements =
+      moduleSource.match(/^import[\s\S]*?from\s+"[^"]+";/gm) ?? [];
+    expect(
+      importStatements.length,
+      "the module must have import statements",
+    ).toBeGreaterThan(0);
+    expect(
+      importStatements.join("\n"),
+      "the gate must not import the platform's lint",
+    ).not.toContain("lintTemplate");
+    expect(
+      moduleSource,
+      "the gate must not call the platform's lint",
+    ).not.toMatch(/\blintTemplate\s*\(/);
   });
 });
 
 describe("the distinctness gate is theme-agnostic", () => {
-  it("runs against another theme's bodies — Somvabona's un-authored templates are the engine's generic body", () => {
+  it("rejects the engine's generic body for every template a theme does not author", () => {
     const source = somvabonaPreviewSource();
-    const authored: TemplateKey[] = [];
-    const generic: TemplateKey[] = [];
+
+    // The PROPERTY, not the other theme's inventory: a template the theme
+    // does not author has NO theme-owned body — the engine synthesises its
+    // generic demo body (`assemblePreviewTemplates`,
+    // `src/lib/theme-preview-nav.ts:400`) — and the gate rejects that body.
+    // (The suite deliberately does NOT pin Somvabona's current inventory: the
+    // day it authors a fourth surface the assertion must still hold.)
+    let unAuthored = 0;
     for (const key of TEMPLATE_KEYS) {
       const main = source.main(key, plainBuilder());
-      if (main === null) generic.push(key);
-      else authored.push(key);
+      if (main !== null) {
+        // An authored body is the theme's own — never the generic demo body.
+        expect(
+          main.map((section) => section.type),
+          `the authored ${key} body must not be the engine's generic body`,
+        ).not.toEqual(["heading", "rich_text"]);
+        continue;
+      }
+      unAuthored += 1;
+
+      // The fall-through body IS the engine's generic demo body ...
+      const generic = genericDemoMain(key, plainBuilder());
+      expect(
+        generic.map((section) => section.type),
+        `the ${key} fall-through body must be the engine's generic body`,
+      ).toEqual(["heading", "rich_text"]);
+
+      // ... and the gate REJECTS it. Songoskriti's expectations are NOT
+      // applied to Somvabona — Decision **D3** scopes the table to
+      // Songoskriti — so the gate runs here on the MACHINERY alone.
+      const issues = checkTemplateDistinctness(
+        key,
+        { main: generic },
+        {
+          expectations: {},
+          peerMainTypes: previewSourceMainTypes(source),
+        },
+      );
+      expect(
+        issues.map((issue) => issue.rule),
+        `the gate must reject the generic body for the un-authored ${key}`,
+      ).toEqual(expect.arrayContaining(["R1-not-generic"]));
     }
-
-    // Measured: Somvabona authors three surfaces; the other six fall through
-    // to the engine's generic demo body.
-    expect(authored).toEqual(["index", "product", "collection"]);
-    expect(generic).toEqual([
-      "account",
-      "page",
-      "blog",
-      "cart",
-      "checkout",
-      "search",
-    ]);
-    expect(
-      genericDemoMain("search", plainBuilder()).map((section) => section.type),
-    ).toEqual(["heading", "rich_text"]);
-
-    // The gate's MACHINERY is theme-agnostic: the same checker, reading this
-    // theme's own bodies, rejects the generic body. Songoskriti's
-    // expectations are NOT applied to Somvabona — Decision **D3** scopes the
-    // table to Songoskriti.
-    const issues = checkTemplateDistinctness(
-      "search",
-      { main: genericDemoMain("search", plainBuilder()) },
-      {
-        expectations: {},
-        peerMainTypes: previewSourceMainTypes(source),
-      },
-    );
-    expect(issues.map((issue) => issue.rule)).toEqual(
-      expect.arrayContaining(["R1-not-generic"]),
-    );
+    // The theme authors at least one surface — otherwise the loop above
+    // would prove nothing.
+    expect(unAuthored).toBeGreaterThan(0);
+    expect(unAuthored).toBeLessThan(TEMPLATE_KEYS.length);
   });
 });
