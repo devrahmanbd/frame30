@@ -47,6 +47,7 @@ import {
   type WidgetDataMap,
 } from "@/lib/widget-data";
 import { previewDemoMap } from "@/lib/preview-demo-data";
+import { PREVIEW_DEMO_PAGE } from "@/lib/preview-page-data";
 import { OrdersList, ProfileCard } from "@/components/builder/account";
 import { accountSlotCtx } from "./account-slots";
 import { useLang } from "@/lib/i18n";
@@ -575,6 +576,36 @@ export function ThemePreviewFrame({
         }
       : undefined;
 
+  // The preview has no CMS page record: `page_content` is a CONTEXT widget
+  // (`src/components/builder/widgets.tsx:1617`), so the host must hand it a
+  // node. Without one the fixed page template renders chrome with an empty
+  // body. The demo fixture mirrors the production payload shape
+  // (`src/components/store/PageView.tsx:73-110`) and is labelled as demo.
+  const pageSlots = useMemo(() => {
+    if (template !== "page") return undefined;
+    const page = PREVIEW_DEMO_PAGE;
+    return {
+      page_content: (
+        <article>
+          <h1 className="font-bangla-display text-3xl font-bold">
+            {page.title}
+          </h1>
+          <p className="mt-2 text-muted-foreground">{page.excerpt}</p>
+          <div
+            className="fq-prose mt-6 space-y-4 text-sm leading-relaxed"
+            dangerouslySetInnerHTML={{ __html: page.html }} // sast-allow: html-sink -- static first-party demo literal from src/lib/preview-page-data.ts, no merchant or shopper data reaches this sink
+          />
+          <p className="mt-8 text-xs text-muted-foreground">
+            Last updated:{" "}
+            <time dateTime={page.updated_at} className="money">
+              {new Date(page.updated_at).toLocaleDateString("en-GB")}
+            </time>
+          </p>
+        </article>
+      ),
+    };
+  }, [template]);
+
   return (
     <div
       role="dialog"
@@ -665,6 +696,7 @@ export function ThemePreviewFrame({
                           ...accountSlots,
                           ...productSlots,
                           ...cartSlots,
+                          ...pageSlots,
                         }}
                       />
                     ))}
@@ -690,6 +722,7 @@ export function ThemePreviewFrame({
                             ...accountSlots,
                             ...productSlots,
                             ...cartSlots,
+                            ...pageSlots,
                           }}
                           primary={section.id === primaryId}
                         />
@@ -716,6 +749,7 @@ export function ThemePreviewFrame({
                               ...accountSlots,
                               ...productSlots,
                               ...cartSlots,
+                              ...pageSlots,
                             }}
                           />
                         ))}
