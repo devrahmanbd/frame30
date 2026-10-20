@@ -17,6 +17,16 @@
  * Every expected string is DERIVED from the theme's own demo fixtures, so
  * the suite cannot drift from the data it checks: a number typed twice is a
  * number that can disagree with itself.
+ *
+ * One known PLATFORM defect is deliberately not asserted here: the
+ * platform's `payment_methods` widget renders NO payment-method radios,
+ * because it indexes `groupMethods()`'s ARRAY by group name
+ * (`src/components/builder/cart.tsx:560`, `:584` against
+ * `src/lib/payment-rails.ts:358-363`). The file that fixes it is
+ * §7-prohibited, so the defect is recorded as an OPEN item in
+ * `docs/superpowers/songoskriti-evidence/port/phase2-template-completeness-escalation.md`
+ * §(j.3) and in the evidence record's open list — and the checkout case
+ * asserts the theme's payment MARKS, which is what actually renders.
  */
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -169,27 +179,66 @@ describe("songoskriti preview — the search composition", () => {
     const html = render("search");
     // The theme's own search heading.
     expect(html).toContain("Search the collection");
-    // The demo facet rows (categories and kinds) reach the widgets: the
-    // theme's toolbar renders its filter control ONLY when the platform
-    // handed the widget real facet rows — and the host merges the theme's
-    // own facet rows into the widget-data map. (The facet LABELS live in
-    // the theme's filter drawer, which is client-side: the theme's
-    // authored `facet_sidebar` does not enable the catalogue's
-    // category/kind groups — its prop set is pinned by Task 2's
-    // `search-template.test.ts` to exactly ["collapsed","heading","limit"]
-    // — so a static-markup render cannot show them.)
+    // The demo facet labels reach the theme's facet SIDEBAR — the granted
+    // `facet_sidebar` widget — and not only the toolbar. The sidebar is
+    // sliced out of the markup so the assertion cannot be satisfied by the
+    // platform's chips (which live in the host's search block instead).
+    const sidebar = html.slice(
+      html.indexOf('<aside aria-label="Filters"'),
+      html.indexOf("</aside>"),
+    );
+    expect(sidebar).toContain("Jewellery");
+    expect(sidebar).toContain("physical");
+    // The theme's toolbar renders its filter control ONLY when the
+    // platform handed the widget real facet rows — and the host merges the
+    // theme's own facet rows into the widget-data map.
     expect(html).toMatch(/>Filter<\/button>/);
     // The demo catalogue's products, named by the results grid.
     expect(html).toContain("Dhakai Jamdani Heritage Saree");
     // The demo result count the toolbar reads from the demo query — the
-    // fixture's own total, never a number typed twice.
-    expect(html).toContain(String(SONGOSKRITI_PREVIEW_SEARCH_TOTAL));
+    // fixture's own total, never a number typed twice. The assertion is
+    // the RENDERED count ("38 products"), not a bare "38" that any number
+    // anywhere in the markup would satisfy.
+    expect(html).toContain(`${SONGOSKRITI_PREVIEW_SEARCH_TOTAL} products`);
     // The pager: the platform's `Pagination` widget builds a real page-2
     // link from the demo query (it renders only above one page, which is
     // why the demo total is 38 and not the catalogue's 13 products).
     expect(html).toContain("page=2");
     // The retired demo copy never reaches the Songoskriti preview.
     expect(html).not.toContain("Demo search");
+  });
+
+  it("hands the theme the platform's search block — the query box and the chips", () => {
+    const html = render("search");
+    // The storefront hands the theme ONE opaque block (`productSlot`,
+    // `src/routes/store.$slug.search.tsx:559`): the platform's query box,
+    // the platform's category/kind chips and the results grid. The preview
+    // hands the same shape, so the preview demonstrates the contract the
+    // storefront relies on — and the theme's grid honours it.
+    expect(html).toContain('type="search"');
+    expect(html).toContain('id="fq-preview-search"');
+    // The platform's query box carries the platform's own label.
+    expect(html).toContain("Product name, description or tag");
+    // The platform's category/kind chips are LINKS built from the demo
+    // query, not buttons — and their fieldset legend ("Product type") is
+    // the chips' own, not the sidebar's group title ("Type").
+    expect(html).toContain("/store/songoskriti/search?q=jamdani&amp;category=");
+    expect(html).toContain("Product type");
+    // The platform's results grid — the demo rows, rendered by the
+    // platform's own card.
+    expect(html).toContain('data-part="price"');
+  });
+
+  it("does not render the empty state under a non-empty result set", () => {
+    const html = render("search");
+    // The platform's `EmptyState` widget renders its panel UNCONDITIONALLY
+    // (`src/components/builder/collection.tsx:707-753`), so the GRANT is
+    // what decides whether the theme's empty copy appears — and the
+    // storefront grants it only when the result set is empty. The preview
+    // mirrors that contract, so the theme's "Nothing matches those filters"
+    // panel never sits underneath a grid of results.
+    expect(html).not.toContain("Nothing matches those filters");
+    expect(html).not.toContain("Clear all filters");
   });
 });
 
@@ -225,8 +274,17 @@ describe("songoskriti preview — the checkout composition", () => {
   it("renders the AUTHORED checkout body, not the generic mock", () => {
     const html = render("checkout");
     expect(html).toContain("Checkout");
-    expect(html).toContain("Cash on delivery");
     expect(html).toContain("Order summary");
+    // The theme's OWN payment marks — the `payment_icons` section's marks
+    // ("bKash, Nagad, Rocket, Visa, Mastercard, Cash on delivery",
+    // `src/lib/themes/songoskriti/preview.ts`), rendered as brand badges
+    // and one text chip. This is what the preview shows for payment.
+    expect(html).toContain("We accept");
+    expect(html).toContain('aria-label="bKash"');
+    expect(html).toContain("Cash on delivery");
+    // The platform's `payment_methods` widget is granted and renders its
+    // own fieldset legend.
+    expect(html).toContain("Payment method");
     // The synthetic order the demo cart quotes — the money comes from the
     // synthetic cart context, never from a literal.
     const cart = songoskritiPreviewCart();

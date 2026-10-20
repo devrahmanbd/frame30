@@ -42,15 +42,21 @@ import { SectionRenderer } from "@/components/builder/SectionRenderer";
 import { WidgetDataProvider } from "@/components/builder/WidgetDataContext";
 import { CartProvider } from "@/components/builder/CartContext";
 import { BlogFeedProvider } from "@/components/builder/blog";
-import { CollectionQueryProvider } from "@/components/builder/collection";
+import {
+  CollectionQueryProvider,
+  groupFacetRows,
+} from "@/components/builder/collection";
+import { ProductCard } from "@/components/builder/primitives/ProductCard";
 import {
   collectWidgetRequests,
   type WidgetDataBundle,
   type WidgetDataMap,
+  type WidgetRow,
 } from "@/lib/widget-data";
 import { previewDemoMap } from "@/lib/preview-demo-data";
 import { PREVIEW_DEMO_PAGE } from "@/lib/preview-page-data";
 import { normalizeSearchParams } from "@/lib/storefront-search";
+import { facetHref, toggleFacet } from "@/lib/facet-url";
 // Phase 2 — the theme-owned demo data (Task 2 / Task 4 / Task 7). Used
 // ONLY for the Songoskriti blueprint; every other blueprint keeps today's
 // behaviour byte-for-byte. The data is SYNTHETIC and labelled as such.
@@ -91,6 +97,17 @@ import { useSectionChannel } from "@/components/builder/useSectionChannel";
 
 /* Click routing (block checks, href parsing, click/submit interception) lives in
    @/lib/theme-preview-nav — the single source. This frame only imports it. */
+
+/**
+ * The preview's demo search term — the one the `CollectionQueryProvider`
+ * carries, the one the demo query box pre-fills and the one the demo facet
+ * links are built from. One constant, so the demo query and the demo query
+ * box cannot disagree.
+ */
+const SONGOSKRITI_PREVIEW_QUERY_TERM = "jamdani";
+
+/** The demo query's store path — the base every demo facet link hangs off. */
+const SONGOSKRITI_PREVIEW_SEARCH_PATH = "/store/songoskriti/search";
 
 export type ThemePreviewFrameProps = {
   /** Blueprint name for the header. */
@@ -620,23 +637,144 @@ export function ThemePreviewFrame({
         }
       : undefined;
 
+  // The demo rows the search template's grid node resolves: the demo
+  // catalogue's products, priced by the demo map. They are the preview's
+  // demo RESULT SET — the thing the `empty_state` grant and the demo
+  // `productSlot` below both read.
+  const searchDemoRows = useMemo<WidgetRow[]>(() => {
+    if (template !== "search" || !isSongoskriti) return [];
+    const grid = focusedMain.find((section) => section.type === "product_grid");
+    const key = grid ? previewData.bundle.byNode[grid.id] : undefined;
+    return (key ? previewData.map[key] : undefined) ?? [];
+  }, [template, isSongoskriti, focusedMain, previewData]);
+
   // The six Phase-2.4 search widgets are CONTEXT widgets: they render only
   // where the host grants permission (`SectionRenderer.tsx:814-833`). The
-  // preview grants the five the storefront grants — `result_toolbar`,
-  // `filter_chips`, `pagination`, `empty_state`, `category_header` — PLUS
-  // `facet_sidebar`, which is preview-only: the preview is the only host
-  // that mounts a `WidgetDataProvider` (D7).
+  // preview grants the storefront's set — `result_toolbar`, `filter_chips`,
+  // `pagination`, `category_header` and (conditionally) `empty_state` —
+  // PLUS `facet_sidebar`, which is preview-only: the preview is the only
+  // host that mounts a `WidgetDataProvider` (D7).
+  //
+  // `empty_state` is the ONE conditional grant, and it mirrors the
+  // storefront's own contract: the platform's `EmptyState` widget renders
+  // its panel UNCONDITIONALLY (`collection.tsx:707-753`), so the GRANT is
+  // what decides whether the theme's empty copy appears — and the
+  // storefront grants it only when the platform's own empty state would
+  // have shown (`store.$slug.search.tsx:424-444`, mirrored in §(b.4)'s
+  // `contextSlots` hunk). The preview mirrors it against its own demo
+  // result set: the grant is present iff the demo results are empty. The
+  // demo catalogue is never empty, so the theme's "Nothing matches those
+  // filters" panel never renders UNDERNEATH a grid of results.
   const searchSlots =
     template === "search"
       ? {
           result_toolbar: null,
           filter_chips: null,
           pagination: null,
-          empty_state: null,
           category_header: null,
           facet_sidebar: null,
+          ...(searchDemoRows.length === 0 ? { empty_state: null } : {}),
         }
       : undefined;
+
+  // The demo `productSlot` for the search template — the storefront's shape.
+  // The storefront hands the theme ONE opaque block (`productSlot`,
+  // `src/routes/store.$slug.search.tsx:559`): the platform's query box, the
+  // platform's category/kind chips and the results grid. The theme's grid
+  // honours that block on the `search` template
+  // (`src/components/builder/songoskriti.tsx:906-…`: `const host = template
+  // === "search" ? productSlot : undefined`), so the preview hands the SAME
+  // shape and demonstrates the same contract: the query box and the
+  // category/kind chips stay reachable on a themed search page, exactly as
+  // §(b.4) requires of the storefront.
+  //
+  // Mutation safety: the query box's `<form>` lives inside the preview
+  // canvas, so the canvas's capture-phase submit handler intercepts it
+  // ("Disabled in preview"); the facet links are preview hrefs the canvas's
+  // click handler resolves to the preview's own search tab; the results
+  // grid renders the platform's card with NO store slug in context, so it
+  // stays a plain anchor with no wishlist or quick-view hooks.
+  const searchProductSlot = useMemo(() => {
+    if (template !== "search" || !isSongoskriti) return undefined;
+    const facets = groupFacetRows(songoskritiPreviewFacets());
+    const params = normalizeSearchParams({ q: SONGOSKRITI_PREVIEW_QUERY_TERM });
+    const chip = (key: "category" | "kind", row: WidgetRow) => (
+      <a
+        key={`${key}:${row.id}`}
+        href={facetHref(
+          SONGOSKRITI_PREVIEW_SEARCH_PATH,
+          toggleFacet(params, key, row.id),
+        )}
+        className="inline-flex min-h-11 items-center gap-2 rounded-fq-md border border-border bg-card px-3 text-sm"
+      >
+        {row.title}
+        {typeof row.count === "number" ? ` (${row.count})` : ""}
+      </a>
+    );
+    return (
+      <div className="space-y-6">
+        {/* The platform's query box — search EXECUTION, not presentation.
+            The platform owns it; no theme can author one. */}
+        <form
+          className="flex flex-wrap items-end gap-2"
+          onSubmit={(event) => event.preventDefault()}
+        >
+          <div className="min-w-0 flex-1">
+            <label
+              htmlFor="fq-preview-search"
+              className="block text-xs font-medium text-muted-foreground"
+            >
+              {t(
+                "Product name, description or tag",
+                "পণ্যের নাম, বিবরণ বা ট্যাগ",
+              )}
+            </label>
+            <input
+              id="fq-preview-search"
+              name="q"
+              type="search"
+              defaultValue={SONGOSKRITI_PREVIEW_QUERY_TERM}
+              maxLength={80}
+              placeholder={t("e.g. jamdani shari", "যেমন: জামদানি শাড়ি")}
+              className="min-h-11 w-full rounded-fq-md border border-border bg-card px-3 text-sm"
+            />
+          </div>
+          <button
+            type="submit"
+            className="min-h-11 rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground"
+          >
+            {t("Search", "খুঁজুন")}
+          </button>
+        </form>
+        {/* The platform's category/kind chips — real links built from the
+            demo query, so the preview shows the filters are links. */}
+        <fieldset>
+          <legend className="text-xs font-medium text-muted-foreground">
+            {t("Category", "ক্যাটাগরি")}
+          </legend>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {facets.category.map((row) => chip("category", row))}
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend className="text-xs font-medium text-muted-foreground">
+            {t("Product type", "পণ্যের ধরন")}
+          </legend>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {facets.kind.map((row) => chip("kind", row))}
+          </div>
+        </fieldset>
+        {/* The platform's results grid — the demo rows above. */}
+        <ul className="m-0 grid list-none grid-cols-2 gap-4 p-0 md:grid-cols-3 xl:grid-cols-4">
+          {searchDemoRows.map((row) => (
+            <li key={row.id}>
+              <ProductCard row={row} locale={lang} variant="standard" />
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }, [template, isSongoskriti, searchDemoRows, lang, t]);
 
   // The blog pack is a context widget set too (`blog_terms` /
   // `blog_archive` / `blog_pager` carry a `templates:` allowlist), so the
@@ -699,13 +837,13 @@ export function ThemePreviewFrame({
   const previewFeed = useMemo(() => songoskritiPreviewFeed(), []);
   const previewQuery = useMemo(
     () => ({
-      params: normalizeSearchParams({ q: "jamdani" }),
+      params: normalizeSearchParams({ q: SONGOSKRITI_PREVIEW_QUERY_TERM }),
       // The demo total is the explicit, labelled 38 — NOT the demo
       // catalogue's own 13 products: the platform pages at `PAGE_SIZE = 24`
       // and the pager renders only above one page, so a catalogue-derived
       // total would render no pager at all in the preview.
       total: SONGOSKRITI_PREVIEW_SEARCH_TOTAL,
-      basePath: "/store/songoskriti/search",
+      basePath: SONGOSKRITI_PREVIEW_SEARCH_PATH,
       navigate: undefined,
     }),
     [],
@@ -785,6 +923,7 @@ export function ThemePreviewFrame({
                         ...blogSlots,
                         ...pageSlots,
                       }}
+                      productSlot={searchProductSlot}
                       primary={section.id === primaryId}
                     />
                   ))}
@@ -854,6 +993,7 @@ export function ThemePreviewFrame({
                           ...blogSlots,
                           ...pageSlots,
                         }}
+                        productSlot={searchProductSlot}
                         primary={section.id === primaryId}
                       />
                     ))}
