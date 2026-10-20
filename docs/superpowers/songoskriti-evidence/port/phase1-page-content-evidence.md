@@ -527,6 +527,22 @@ $ git diff --stat      # unstaged, tracked
 
 The only test-level red in the whole suite (6.6/6.7, `src/lib/site.server.test.ts`) is the documented local-only env flake, and step 6.6's second run proves it (`3 passed (3)` with the Supabase env emptied).
 
+## Post-verification commits — **§6.13 above is a pre-commit snapshot**
+
+**The controller committed all five plan documents in `16f2743d`** — *"docs(songoskriti): phase-1 plan, the Phase-0 audit, the brief review and the verification evidence"*:
+
+| Document | Published path |
+| -------- | -------------- |
+| This plan | `docs/superpowers/plans/2026-10-20-theme-editable-templates.md` |
+| The Phase-0 audit | `docs/superpowers/songoskriti-evidence/port/phase0-implementation-map.md` |
+| The brief (the reviewed artefact) | `docs/superpowers/plans/2026-10-20-theme-editable-templates-brief.md` |
+| The brief's review | `docs/superpowers/plans/2026-10-20-theme-editable-templates-brief-review.md` |
+| This evidence document | `docs/superpowers/songoskriti-evidence/port/phase1-page-content-evidence.md` |
+
+(The brief and its review were untracked files at the repo root when this verification ran; the controller published both under `docs/superpowers/plans/` — the paths above — so that the plan's "the four inputs are never staged" constraint holds in the tracked tree, and committed them with the plan, the audit and this document.)
+
+**§6.13's status list is a snapshot of the pre-commit tree.** It was taken before `16f2743d`, when the four input documents were untracked and the index was clean — which is exactly what the plan's Global Constraints required of them *at that time*. The controller's decision to publish them afterwards changes their tracked status; it does not make the observation recorded in §6.13 inaccurate.
+
 ---
 
 ## Summary of the verification
@@ -558,6 +574,8 @@ The only test-level red in the whole suite (6.6/6.7, `src/lib/site.server.test.t
 | 6.15 | Commit the verification log | **NOT EXECUTED — deliberately** (see note below) |
 
 **Note on 5.8 and 6.15.** The brief asks for the evidence doc to be staged and committed in two commits. The instruction that governed this verification run was **"DO NOT PUSH, DO NOT DEPLOY, DO NOT COMMIT"** — the controller performs the push, the deploy and the commits. This document therefore exists in the working tree, **untracked and uncommitted**, and the controller should commit it as the two commits the brief names:
+
+> **Superseded (post-verification).** The controller has since committed this document together with the plan, the Phase-0 audit, the brief and the brief's review in `16f2743d` — see the "Post-verification commits" section above. The paragraph below records the state of the tree *at the time of the verification run*; the two commits it names were folded into the controller's single commit.
 
 ```
 git add docs/superpowers/songoskriti-evidence/port/phase1-page-content-evidence.md

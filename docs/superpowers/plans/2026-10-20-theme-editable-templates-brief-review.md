@@ -1,6 +1,6 @@
-# Review — `plan.md` "Theme-Editable CMS Templates — Frame30"
+# Review — `docs/superpowers/plans/2026-10-20-theme-editable-templates-brief.md` "Theme-Editable CMS Templates — Frame30"
 
-**Reviewed artefact:** `/opt/frame28/plan.md` (353 lines)
+**Reviewed artefact:** `/opt/frame28/docs/superpowers/plans/2026-10-20-theme-editable-templates-brief.md` (353 lines; it was an untracked file at the repo root when the review ran)
 **Repository:** `/opt/frame28`, branch `frame30`; `origin/frame30` == `origin/main` == `7127183406e3e80fea2b13039720b1000125ed2c`
 **Review date:** 2026-10-20 · **Mode:** read-only. No file in the repository was edited except this one.
 **Tooling note:** `bun` is not on `PATH` in this environment; every command below uses `node` / `node_modules/.bin/…` or plain `git` / `grep`.
@@ -327,7 +327,7 @@ Each row: the brief's wording, what the repository actually does (with evidence)
 | No mention of the frozen parity baseline | `docs/superpowers/songoskriti-evidence/port/reference/` (54+ stills) + `reference-manifest.json` (freeze SHA `9e6806329d47`) + `.e2e/songoskriti-port-parity.spec.ts` | Any change to shared widget markup or to the theme's seeded bodies moves every still. "Run the real tests rather than treating the existence of test files as completion" (§17) is right; add "and never `-u` a parity baseline without a recorded, approved diff". |
 | No mention of the asset gate | `scripts/songoskriti-assets-check.mjs` + `scripts/songoskriti-assets-{manifest,image}.mjs` + `scripts/songoskriti-assets-expected.json`; `package.json` `assets:songoskriti`, `assets:songoskriti:gen`; first step of `gates:release` | §17/§19's "asset checks pass" is already a merge blocker. A new template that references new art must extend the expected-asset file, or the release gate fails. |
 | No mention of the "distinctness" gap | `report.md` §5: *"no gate asks 'is this template actually a Songoskriti design, or the shared default with the theme's logo on top?'"*; the port map records **ownership** (lane c) but never **distinctness** (`docs/superpowers/songoskriti-evidence/port/classification.md`, rows `TPL-SEARCH`/`TPL-CART`/`TPL-ACCOUNT`/`TPL-PAGE`/`TPL-BLOG` → `preview.ts:214/232/297/186/197`) | The single acceptance criterion the whole programme needs is missing from the brief. See the re-cut plan Phase 1. |
-| No per-task sequencing, acceptance, file targets, or ownership | `plan.md` has none of these anywhere | A brief of this size with 19 sections, 7 surfaces and no ordered task list with per-task acceptance is a **scope document**. It cannot be handed to an implementer. See §6. |
+| No per-task sequencing, acceptance, file targets, or ownership | the brief (`docs/superpowers/plans/2026-10-20-theme-editable-templates-brief.md`) has none of these anywhere | A brief of this size with 19 sections, 7 surfaces and no ordered task list with per-task acceptance is a **scope document**. It cannot be handed to an implementer. See §6. |
 | Scope contradiction | §13 *"every supported template in each official theme"* vs Mission *"Songoskriti as the primary implementation and visual-verification target"* | Unfunded ambiguity of ≈9 template bodies (P11). Must be resolved by the owner (J3). |
 
 ---
@@ -493,7 +493,7 @@ Run from `/opt/frame28`. Read-only; nothing below writes to the repository. `bun
 cd /opt/frame28
 git rev-parse origin/main origin/frame30      # both 7127183406e3e80fea2b13039720b1000125ed2c
 git log --oneline -5
-git status --short                             # .artifacts/..., ops/routing/*.conf, .output-snapshots/, plan.md
+git status --short                             # .artifacts/..., ops/routing/*.conf, .output-snapshots/, the brief (docs/superpowers/plans/2026-10-20-theme-editable-templates-brief.md)
 git log -S "No designated homepage" --oneline -- src/routes/store.\$slug.index.tsx   # b08f6819
 ```
 
@@ -669,7 +669,7 @@ node_modules/.bin/vitest run src/lib/definition-of-done.test.ts
 node_modules/.bin/vitest run src/lib/themes/songoskriti-assets.test.ts src/lib/themes/songoskriti-asset-paths.test.ts
 node_modules/.bin/tsgo --noEmit
 node_modules/.bin/eslint src/lib/builder-ast.ts src/routes/store.\$slug.search.tsx
-node_modules/.bin/prettier --check plan.md
+node_modules/.bin/prettier --check docs/superpowers/plans/2026-10-20-theme-editable-templates-brief.md
 ```
 
 ---

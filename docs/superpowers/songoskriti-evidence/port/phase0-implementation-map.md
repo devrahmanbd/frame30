@@ -1,6 +1,6 @@
 # Phase 0 — Implementation Map: Theme-Editable CMS Templates (Frame30)
 
-**Audit target:** `/opt/frame28/plan.md` §1 (the implementation brief), branch `frame30`, HEAD `71271834`.
+**Audit target:** `docs/superpowers/plans/2026-10-20-theme-editable-templates-brief.md` §1 (the implementation brief; it was an untracked root-level file when the audit ran), branch `frame30`, HEAD `71271834`.
 **Date of audit:** 2026-10-20.
 **Nature of this document:** read-only audit. No source file was edited, created, committed or deleted to produce it (the only file written is this one). Every substantive claim carries a `file:line` citation. Where something could not be verified, it is marked **UNVERIFIED** with the reason.
 
