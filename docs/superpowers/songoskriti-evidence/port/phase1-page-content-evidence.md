@@ -488,6 +488,8 @@ exit=1
 
 This plan's commits touch only `src/lib/themes/songoskriti/preview.ts`, the three new test files, the NEW fixture `src/lib/preview-page-data.ts`, the escalated preview frame `src/components/store/ThemePreviewFrame.tsx`, the two frozen pins and the two new `docs/**` records — none of which contains a JWT, and none of which can change the finding count. **Not fixed**: rewriting or removing a committed evidence file is an owner decision.
 
+> **Update (2026-10-20, after the run recorded above).** The owner ruled on that file and the two TRACKED findings are closed by redacting the credential IN PLACE: `docs/superpowers/songoskriti-evidence/port/e2e/foreign-gap-probe.json` now carries `<redacted-anon-key>` where the committed anon JWT used to sit, and a `"redaction"` field in the same file records what was redacted, why, and that the captured error's shape is unchanged (same wording, same `ws://127.0.0.1:58000` URL, same `vsn=2`, same position in the `consoleErrors` array). The scanner was NOT relaxed — `scripts/secret-scan.mjs` is unchanged, because a committed JWT must never live in the repo even when it is a loopback anon key. A clean checkout now reports only the 8 untracked `.output-snapshots/` findings, so CI's `secrets:scan` job is green again. The transcript above is left verbatim as the record of the run that found the condition.
+
 ## 6.13 — Nothing unwanted staged; the churn files untouched — **PASS**
 
 ```

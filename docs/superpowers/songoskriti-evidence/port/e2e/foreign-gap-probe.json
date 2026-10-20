@@ -13,9 +13,7 @@
     "hasApprovedDevManifest": false
   },
   "registryProbe": {
-    "themeDefs": [
-      "theme:songoskriti/ornament"
-    ],
+    "themeDefs": ["theme:songoskriti/ornament"],
     "resolved": {
       "ok": true,
       "hasDef": true
@@ -46,8 +44,14 @@
     "url": "http://localhost:3020/dashboard/builder",
     "bodyHasOrnament": false
   },
+  "redaction": {
+    "redacted": "the `apikey` query-parameter value of each captured console error below — a Supabase anon-role JWT issued by the loopback dev server on 127.0.0.1:58000",
+    "marker": "<redacted-anon-key>",
+    "why": "a committed JWT must never live in the repo, even when it is a loopback anon key: the secret scanner is a strict security gate, and a credential-shaped string in the tree is a finding for anyone who can read the history — so the value was replaced in place instead of the scanner being taught to ignore it",
+    "shape": "unchanged — each captured console error keeps its wording, its ws:// scheme, its host and port, its `vsn=2` parameter and its position in the `consoleErrors` array; only the credential value is replaced by the marker, so the evidence still shows the error's shape"
+  },
   "consoleErrors": [
-    "WebSocket connection to 'ws://127.0.0.1:58000/realtime/v1/websocket?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzkyMTgwMTk2LCJleHAiOjIxMDc1NDAyNTZ9.KN6-CujQZYEvKex3v4APm-wtpNeotbdy8hjsMD1xRJI&vsn=2",
-    "WebSocket connection to 'ws://127.0.0.1:58000/realtime/v1/websocket?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzkyMTgwMTk2LCJleHAiOjIxMDc1NDAyNTZ9.KN6-CujQZYEvKex3v4APm-wtpNeotbdy8hjsMD1xRJI&vsn=2"
+    "WebSocket connection to 'ws://127.0.0.1:58000/realtime/v1/websocket?apikey=<redacted-anon-key>&vsn=2",
+    "WebSocket connection to 'ws://127.0.0.1:58000/realtime/v1/websocket?apikey=<redacted-anon-key>&vsn=2"
   ]
 }
