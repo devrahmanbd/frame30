@@ -280,8 +280,12 @@ export async function loadWorkspace(
     }
 
     const issues: BuilderWorkspace["issues"] = {};
+    // Keyed lint (like the publish gate at :850 and the update gate at :1492):
+    // the template key is what lets `lintTemplate` honour the route-owned-h1
+    // templates, so the editor never warns a merchant about a heading the
+    // route supplies.
     for (const key of TEMPLATE_KEYS)
-      issues[key] = lintTemplate(templateOf(templates, key));
+      issues[key] = lintTemplate(templateOf(templates, key), key);
 
     // Frame30 Level B — project the approved ACTIVE release onto the
     // workspace theme (approved manifest for the `activeDevThemeWidgetDefs`

@@ -631,8 +631,13 @@ export function useBuilderEditor(
   const issues = useMemo(() => {
     if (!doc) return {} as Record<TemplateKey, ReturnType<typeof lintTemplate>>;
     const out = {} as Record<TemplateKey, ReturnType<typeof lintTemplate>>;
+    // The template KEY is part of the lint contract: templates whose <h1> is
+    // supplied by the ROUTE (`ROUTE_H1_TEMPLATES`) must not be told they are
+    // missing a primary heading, or a merchant who obeys the warning adds a
+    // second <h1> next to the route's own. Every other template still owns
+    // its heading, so the warning stays exactly as strict as before.
     for (const key of TEMPLATE_KEYS)
-      out[key] = lintTemplate(doc.templates[key] ?? EMPTY_AST);
+      out[key] = lintTemplate(doc.templates[key] ?? EMPTY_AST, key);
     return out;
   }, [doc]);
 
