@@ -1773,3 +1773,242 @@ The change is a **presentation-channel** change: the loader, the query validatio
 - the rendered **results block** (the new `productSlot`) carries the search input, the category and kind chips and the same three rows, and does **not** carry the count — the count is the granted `result_toolbar` widget's.
 
 **Nothing in this section widens the escalation.** The two files touched by Task 9 are the search route (escalated by Decision **D4**, and named here) and the new test file (a NEW file). No other file was edited.
+
+---
+
+## (l) The archive contract and the explicit unsupported state _(appended 2026-10-21 by Task 10)_
+
+**Appended, not a rewrite: sections (a)–(k) stand as written.** §(b.5) carried the
+contract's _shape_ ("the archive surface is the blog taxonomy surface (index /
+category / tag / author); it wears the `blog` template and the existing blog pack;
+`?template=archive` is unsupported and must produce the explicit unsupported state,
+not a homepage redirect") and said that Task 10 writes the exact wording and the exact
+code. **This section records both**, so the record and the tree agree.
+
+### (l.1) The contract, in the words the plan fixes
+
+> **Archive contract (Decision D1, Option A).** The archive-like surfaces the platform
+> serves are the blog listing and its three taxonomy kinds — **category, tag, author** —
+> plus the blog index itself: `src/routes/blog.index.tsx`,
+> `src/routes/blog.category.$slug.tsx`, `src/routes/blog.tag.$slug.tsx`,
+> `src/routes/blog.author.$slug.tsx` and the storefront's
+> `src/routes/store.$slug.blog.index.tsx`. They are served by `BlogArchiveTheme`
+> (`src/components/store/BlogArchiveTheme.tsx:29-33`) and backed by the existing blog
+> pack (`blog_terms` / `blog_archive` / `blog_pager`,
+> `src/lib/builder-ast.ts:4834-4925`), and they wear the **`blog`** template. **No
+> `archive` template key is added**: a key would need edits to
+> `src/lib/builder-ast.ts` (`TEMPLATE_KEYS` `:46-59`, `TEMPLATE_ZONES` `:156`,
+> `ROUTE_H1_TEMPLATES` `:68-75`, the 41 catalogue `templates:` allowlists, the
+> `required` table `:8438-8462`, `parseTemplates` `:8117`),
+> `src/lib/theme-package.ts:172`, `src/lib/theme-preview-nav.ts:340` and `:82-99`,
+> `src/lib/widget-weight.ts:205`, `src/lib/builder-seo.ts:317`,
+> `src/components/builder/BuilderTopBar.tsx:6`,
+> `src/routes/_authenticated/dashboard/builder.tsx:205` and the hand-written `z.enum`
+> at `src/lib/storefront.functions.ts:97-107` — **every one prohibited by §7** — for a
+> surface the `blog` template already covers; and no compiler sees that `z.enum`, so a
+> key added to the editor but not to the parser and the `z.enum` would appear in the
+> builder and vanish from every page (`phase0-implementation-map.md:308`).
+> `?template=archive` therefore remains **unsupported**, and the preview must **say so
+> explicitly** rather than redirect to the homepage. The storefront side of the blog —
+> whether the route wears the theme's `blog` template — stays behind Decision D5 and is
+> not touched by this plan.
+
+**The citation note (measured on this tree, 2026-10-21, before the edit).** Every
+`file:line` in the contract was re-read. They all resolve, with **one** drift the
+record already corrected in §(h) item 5: the hand-written `z.enum` is at
+`src/lib/storefront.functions.ts:98-108` (the contract sentence above quotes the
+plan's original `:97-107`; the two ranges overlap and name the same nine keys).
+`TEMPLATE_KEYS` `:46-59`, `TEMPLATE_ZONES` `:156`, `ROUTE_H1_TEMPLATES` `:68-75`, the
+`required` table `:8438-8462` and `parseTemplates` `:8117` are as quoted; the **41**
+catalogue `templates:` allowlists still measure 41
+(`grep -c 'templates: \[' src/lib/builder-ast.ts` → `41`);
+`src/components/store/BlogArchiveTheme.tsx:29-33` is the
+`ThemeChrome template="blog" ast={null}` block; and the blog pack's three entries are
+`blog_archive` `:4834`, `blog_terms` `:4886`, `blog_pager` `:4909`.
+
+**The blast radius, re-measured.** §(a)(iv) measured what a key would have cost:
+**11** files referencing `TEMPLATE_KEYS` and **9** files carrying `Record<TemplateKey, …>`
+(**16** occurrences). **Task 8 added one theme-owned file to each count** —
+`src/lib/themes/songoskriti/template-distinctness.ts`, which references `TEMPLATE_KEYS`
+(`:46`, `:610`) and carries three `Record<TemplateKey, …>` maps. The counts are
+therefore now **12 files** and **10 files / 19 occurrences**. The drift is **+1 file in
+each count and +3 occurrences**, all inside a §7-**editable** theme-owned file;
+**no core file changed**, so the ruling's shape is untouched and the ruling still
+holds.
+
+### (l.2) The unsupported state — the contract, recorded before the edit
+
+**The defect.** `src/components/store/ThemePreviewFrame.tsx:518` read
+`const ast = templates[template] ?? templates.index;` — a template the theme does not
+author rendered the **homepage**, silently. Nothing in the preview said the template
+was unsupported: the merchant saw a store that looked like the theme's home page and
+concluded the template "works". This is the "unsupported routes must not silently
+redirect to the homepage" half of the expert's archive item.
+
+**The contract.**
+
+1. The panel's heading reads exactly **"This template is not supported by this theme"**.
+2. It **names the template key** — the key the preview was asked for, printed verbatim.
+3. It **links back to the home tab**: an in-canvas `/` link, which the canvas's
+   capture-phase click handler resolves to the `index` template
+   (`src/lib/theme-preview-nav.ts:96-98`, `:159-180`) — the preview never leaves the
+   frame and never falls back to a page the theme did not author.
+4. It carries **no demo copy**: none of `"Demo page"`, `"Demo search"`,
+   `"Meet the makers"`, `"Sample product"`, `"Demo"`. The panel is a statement about
+   the theme's coverage, not a demo — the demo-copy defect Phase 1 removed from the
+   theme's bodies must not come back through the host's own panel. (The engine's
+   generic body still carries `"Demo page. The live theme authors this template — what
+you see here is the engine fallback."`, `src/lib/theme-preview-nav.ts:367`; that
+   generic body is a **different** surface and is not touched by this section.)
+5. It **states the contract**: the archive surfaces are the blog listing and its
+   category / tag / author archives, and they wear the `blog` template.
+6. It is shown **only** when the theme does not author the requested template. A
+   template the theme _does_ author renders exactly as it does today — the panel is
+   never shown for an authored template, and no assertion in
+   `src/components/store/ThemePreviewFrame.test.tsx` (frozen by §7) changes.
+
+**The copy, fixed by this record.** Two constants in
+`src/components/store/ThemePreviewFrame.tsx` carry the panel's copy; the contract test
+reads them out of the file:
+
+- `UNSUPPORTED_TEMPLATE_TITLE` = "This template is not supported by this theme"
+- `UNSUPPORTED_TEMPLATE_BODY` = "The theme does not author a body for this template, so there is nothing to preview. The archive surfaces are the blog listing and its category, tag and author archives, and they wear the blog template."
+
+### (l.3) The exact code
+
+**The fallback — the flag, and the flag's consumption.** The bare `?? templates.index`
+is gone. The lookup is widened to a _partial_ map first, so an unauthored template is
+a **known** state rather than an accidental one:
+
+```tsx
+// D1 (Option A) — an unsupported template is an EXPLICIT state, never a
+// silent redirect to the homepage. `?template=archive` is unsupported: the
+// archive surface is the blog taxonomy surface (index / category / tag /
+// author) and it wears the `blog` template, so no `archive` key exists
+// (this record's §(l.1)). When the theme does not author the requested
+// template the canvas renders the named "not supported by this theme"
+// panel instead of the homepage body.
+const templatesByKey: Partial<Record<TemplateKey, ThemeAst>> = templates;
+const authored = templatesByKey[template];
+const unsupported = authored === undefined;
+const ast = authored ?? templatesByKey.index ?? EMPTY_AST;
+```
+
+**The panel.** `EMPTY_AST` (`src/lib/builder-ast.ts:519`) is the empty body the canvas
+computes from when even the homepage is unauthored — it is a **read-only** import; the
+file is not edited.
+
+```tsx
+/**
+ * The unsupported-template panel's copy.
+ *
+ * The panel states a fact about the THEME's coverage — it is not a demo, so
+ * it carries none of the retired demo strings ("Demo page", "Demo search",
+ * "Meet the makers", "Sample product", "Demo"). The contract test
+ * (`src/lib/themes/songoskriti/archive-contract.test.ts`) reads these two
+ * constants straight out of this file, so the copy cannot drift back into
+ * demo copy without failing a test.
+ */
+const UNSUPPORTED_TEMPLATE_TITLE =
+  "This template is not supported by this theme";
+const UNSUPPORTED_TEMPLATE_BODY =
+  "The theme does not author a body for this template, so there is nothing to preview. The archive surfaces are the blog listing and its category, tag and author archives, and they wear the blog template.";
+
+/**
+ * The explicit unsupported state — a named panel, never a redirect.
+ *
+ * It NAMES the template key, LINKS BACK to the home tab (an in-canvas `/`
+ * link, which the canvas's capture-phase handler resolves to the `index`
+ * template — `src/lib/theme-preview-nav.ts:96-98`, `:159-180`), and carries
+ * no demo copy.
+ */
+function UnsupportedTemplateNotice({ template }: { template: string }) {
+  return (
+    <div className="mx-auto max-w-2xl px-4 py-20 text-center">
+      <h1 className="font-bangla-display text-2xl font-semibold">
+        {UNSUPPORTED_TEMPLATE_TITLE}
+      </h1>
+      <p className="mt-3 text-sm text-muted-foreground">
+        {UNSUPPORTED_TEMPLATE_BODY}
+      </p>
+      <p className="mt-4 text-sm">
+        The requested template key is{" "}
+        <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">
+          {template}
+        </code>
+        .
+      </p>
+      <a
+        href="/"
+        className="mt-6 inline-flex min-h-11 items-center justify-center rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground"
+      >
+        Back to the home tab
+      </a>
+    </div>
+  );
+}
+```
+
+**The render site — the flag is consumed.** The `ThemeSurface`'s content becomes the
+`: (` branch; the homepage body is **not** rendered when the flag is true.
+
+```tsx
+<ThemeSurface tokens={tokens} skinCss={skinCss}>
+  {/*
+            The `unsupported` flag (the fallback above) is CONSUMED here: when
+            the theme does not author the requested template the canvas
+            renders the named "not supported by this theme" PANEL and the
+            homepage body is NOT rendered. When the flag is false the canvas
+            renders exactly as it does today.
+          */}
+  {unsupported ? (
+    <UnsupportedTemplateNotice template={template} />
+  ) : (
+    <>{/* … the existing ThemeSurface content, unchanged … */}</>
+  )}
+</ThemeSurface>
+```
+
+**What this section does not widen.** One existing file — the preview host
+`src/components/store/ThemePreviewFrame.tsx`, already escalated by Decision **D4**
+(§(e), §(h) item 6) — and one **NEW** test file,
+`src/lib/themes/songoskriti/archive-contract.test.ts`. **No** `archive` key is added;
+**no** file under `src/lib/builder-ast.ts`, `src/lib/storefront.functions.ts`,
+`src/lib/theme-preview-nav.ts`, `src/lib/theme-package.ts`, `src/lib/widget-weight.ts`,
+`src/lib/builder-seo.ts`, `src/components/builder/BuilderTopBar.tsx` or
+`src/routes/_authenticated/dashboard/builder.tsx` is edited.
+
+### (l.4) The contract test
+
+`src/lib/themes/songoskriti/archive-contract.test.ts` — a **NEW** file (§7's carve-out
+is "NEW test/fixture files"). It reads the tree as **text** (the same pattern as
+`src/routes/store.$slug.search-composition.test.tsx`), so it never imports the preview
+host or any route module. Its **five** cases are:
+
+1. **the archive-like routes the platform actually has are enumerated** — the route
+   directory holds `blog.index.tsx`, `blog.category.$slug.tsx`, `blog.tag.$slug.tsx`,
+   `blog.author.$slug.tsx` and `store.$slug.blog.index.tsx`;
+2. **the product-side taxonomy surfaces are not routes** — there is no
+   `$categorySlug` route and no brand route, and `src/lib/storefront-search.ts`
+   carries `category` as a search facet (`category: string | null;` and
+   `out["category"] = p.category;`);
+3. **no unsupported template silently redirects to the homepage** — the preview host's
+   fallback is **not** the bare `?? templates.index`, the `unsupported` flag exists
+   and is **consumed** at the render site, and the storefront's own blog routes answer
+   an unknown slug with their **own 404** (`throw notFound()`), never a redirect;
+4. **the unsupported state's copy is not demo copy** — the panel's copy (its two
+   constants and the panel's own JSX) contains **none** of `"Demo page"`,
+   `"Demo search"`, `"Meet the makers"`, `"Sample product"`, `"Demo"`;
+5. **the contract is written down** — this record carries the sentence, so the
+   contract cannot be deleted without failing a test.
+
+**The render, verified separately.** The committed suite is **text-based** (the brief
+fixes it at five cases, and the text is what the contract is about). The panel's
+_render_ was therefore verified on its own, with a scratch render of the preview host
+that was deleted after the run and is **not** part of this commit: with a `templates`
+map missing the requested key the markup carried the panel's heading, the named key and
+the home link, and did **not** carry the homepage body; with an **authored** template
+the frame rendered exactly as before; with an authored but **empty** body the frame
+still rendered the platform's own "No sections authored for this template." copy — the
+panel is shown only when the template is **unauthored**. The scratch run reported
+`Test Files 1 passed (1)` / `Tests 3 passed (3)`.

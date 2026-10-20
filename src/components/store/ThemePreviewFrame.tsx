@@ -81,6 +81,7 @@ import {
   type ThemeTokens,
 } from "@/lib/builder-ast";
 import {
+  EMPTY_AST,
   primarySectionId,
   combineUsedSkinCss,
   usedWidgetSkins,
@@ -108,6 +109,55 @@ const SONGOSKRITI_PREVIEW_QUERY_TERM = "jamdani";
 
 /** The demo query's store path — the base every demo facet link hangs off. */
 const SONGOSKRITI_PREVIEW_SEARCH_PATH = "/store/songoskriti/search";
+
+/**
+ * The unsupported-template panel's copy.
+ *
+ * The panel states a fact about the THEME's coverage — it is not a demo, so
+ * it carries none of the retired demo strings ("Demo page", "Demo search",
+ * "Meet the makers", "Sample product", "Demo"). The contract test
+ * (`src/lib/themes/songoskriti/archive-contract.test.ts`) reads these two
+ * constants straight out of this file, so the copy cannot drift back into
+ * demo copy without failing a test.
+ */
+const UNSUPPORTED_TEMPLATE_TITLE =
+  "This template is not supported by this theme";
+const UNSUPPORTED_TEMPLATE_BODY =
+  "The theme does not author a body for this template, so there is nothing to preview. The archive surfaces are the blog listing and its category, tag and author archives, and they wear the blog template.";
+
+/**
+ * The explicit unsupported state — a named panel, never a redirect.
+ *
+ * It NAMES the template key, LINKS BACK to the home tab (an in-canvas `/`
+ * link, which the canvas's capture-phase handler resolves to the `index`
+ * template — `src/lib/theme-preview-nav.ts:96-98`, `:159-180`), and carries
+ * no demo copy.
+ */
+function UnsupportedTemplateNotice({ template }: { template: string }) {
+  return (
+    <div className="mx-auto max-w-2xl px-4 py-20 text-center">
+      <h1 className="font-bangla-display text-2xl font-semibold">
+        {UNSUPPORTED_TEMPLATE_TITLE}
+      </h1>
+      <p className="mt-3 text-sm text-muted-foreground">
+        {UNSUPPORTED_TEMPLATE_BODY}
+      </p>
+      <p className="mt-4 text-sm">
+        The requested template key is{" "}
+        <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">
+          {template}
+        </code>
+        .
+      </p>
+      <a
+        href="/"
+        className="mt-6 inline-flex min-h-11 items-center justify-center rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground"
+      >
+        Back to the home tab
+      </a>
+    </div>
+  );
+}
 
 export type ThemePreviewFrameProps = {
   /** Blueprint name for the header. */
@@ -515,7 +565,17 @@ export function ThemePreviewFrame({
     } as never);
   };
 
-  const ast = templates[template] ?? templates.index;
+  // D1 (Option A) — an unsupported template is an EXPLICIT state, never a
+  // silent redirect to the homepage. `?template=archive` is unsupported: the
+  // archive surface is the blog taxonomy surface (index / category / tag /
+  // author) and it wears the `blog` template, so no `archive` key exists
+  // (the escalation record's §(l.1)). When the theme does not author the
+  // requested template the canvas renders the named "not supported by this
+  // theme" panel instead of the homepage body.
+  const templatesByKey: Partial<Record<TemplateKey, ThemeAst>> = templates;
+  const authored = templatesByKey[template];
+  const unsupported = authored === undefined;
+  const ast = authored ?? templatesByKey.index ?? EMPTY_AST;
   // Phase 2 (Task 7): the theme-owned demo data — the synthetic cart, the
   // demo feed, the demo query and the labelled sample page — belongs to the
   // Songoskriti blueprint alone. Every other blueprint keeps today's
@@ -865,155 +925,108 @@ export function ThemePreviewFrame({
     >
       <div className="mx-auto" style={{ maxWidth: "100%" }}>
         <ThemeSurface tokens={tokens} skinCss={skinCss}>
-          {/* Per-device overrides, same contract as ThemeChrome:
-                verbatim stylesheet, inside the theme scope. */}
-          {responsive.css ? (
-            <style
-              data-fq-responsive={String(responsive.rules)}
-              dangerouslySetInnerHTML={{ __html: responsive.css }} // sast-allow: html-sink -- compileResponsiveCss EMITTERS emit only clamped numbers and oneOf vocabulary values under generated selectors
-            />
-          ) : null}
-
-          {/* Top-level ribbon bar (e.g. subbrand_bar) rendered above the store masthead */}
-          {ast.header
-            .filter((section) => section.type === "subbrand_bar")
-            .map((section) => (
-              <SectionRenderer
-                key={section.id}
-                section={section}
-                template={template}
-                editing={false}
-                storeSlug={blueprintKey}
-                themeKey={blueprintKey}
-                contextSlots={accountSlots || productSlots || undefined}
-              />
-            ))}
-
-          {/* Wordmark row, as on a live storefront — the blueprint's
-                navigation sections render beneath it. */}
-          {template === "checkout" ? (
+          {/*
+            The `unsupported` flag (the fallback above) is CONSUMED here: when
+            the theme does not author the requested template the canvas
+            renders the named "not supported by this theme" PANEL and the
+            homepage body is NOT rendered. When the flag is false the canvas
+            renders exactly as it does today.
+          */}
+          {unsupported ? (
+            <UnsupportedTemplateNotice template={template} />
+          ) : (
             <>
-              {/* The AUTHORED checkout template, rendered through the same
+              {/* Per-device overrides, same contract as ThemeChrome:
+                verbatim stylesheet, inside the theme scope. */}
+              {responsive.css ? (
+                <style
+                  data-fq-responsive={String(responsive.rules)}
+                  dangerouslySetInnerHTML={{ __html: responsive.css }} // sast-allow: html-sink -- compileResponsiveCss EMITTERS emit only clamped numbers and oneOf vocabulary values under generated selectors
+                />
+              ) : null}
+
+              {/* Top-level ribbon bar (e.g. subbrand_bar) rendered above the store masthead */}
+              {ast.header
+                .filter((section) => section.type === "subbrand_bar")
+                .map((section) => (
+                  <SectionRenderer
+                    key={section.id}
+                    section={section}
+                    template={template}
+                    editing={false}
+                    storeSlug={blueprintKey}
+                    themeKey={blueprintKey}
+                    contextSlots={accountSlots || productSlots || undefined}
+                  />
+                ))}
+
+              {/* Wordmark row, as on a live storefront — the blueprint's
+                navigation sections render beneath it. */}
+              {template === "checkout" ? (
+                <>
+                  {/* The AUTHORED checkout template, rendered through the same
                     SectionRenderer the storefront uses — not `CheckoutMock`.
                     The five cart slots are granted above, so the platform's
                     `checkout_steps` / `payment_methods` / `cart_summary`
                     widgets render against the synthetic cart context.
                     `MinimalCheckoutHeader` is the CHROME (the header
                     lockup), never the body. */}
-              <MinimalCheckoutHeader
-                slug={blueprintKey}
-                name={themeName}
-                themeKey={blueprintKey}
-              />
-              {focusedMain.length > 0 ? (
-                <main className="space-y-12 sm:space-y-16 pb-16">
-                  {focusedMain.map((section) => (
-                    <SectionRenderer
-                      key={section.id}
-                      section={section}
-                      template={template}
-                      editing={false}
-                      storeSlug={blueprintKey}
-                      themeKey={blueprintKey}
-                      contextSlots={{
-                        ...accountSlots,
-                        ...productSlots,
-                        ...cartSlots,
-                        ...searchSlots,
-                        ...blogSlots,
-                        ...pageSlots,
-                      }}
-                      productSlot={searchProductSlot}
-                      primary={section.id === primaryId}
-                    />
-                  ))}
-                </main>
-              ) : (
-                <div className="grid min-h-[40vh] place-items-center p-8 text-sm text-muted-foreground">
-                  No sections authored for this template.
-                </div>
-              )}
-            </>
-          ) : (
-            <>
-              <StoreHeader
-                slug={blueprintKey}
-                name={themeName}
-                menus={null}
-                themeKey={blueprintKey}
-              />
-              <WidgetDataProvider
-                bundle={previewData.bundle}
-                map={previewData.map}
-              >
-                {/* Header sections below the masthead (e.g. mega_menu) */}
-                {ast.header
-                  .filter((section) => section.type !== "subbrand_bar")
-                  .map((section) => (
-                    <SectionRenderer
-                      key={section.id}
-                      section={section}
-                      template={template}
-                      editing={false}
-                      storeSlug={blueprintKey}
-                      themeKey={blueprintKey}
-                      contextSlots={{
-                        ...accountSlots,
-                        ...productSlots,
-                        ...cartSlots,
-                        ...searchSlots,
-                        ...blogSlots,
-                        ...pageSlots,
-                      }}
-                    />
-                  ))}
-
-                {/* main slot */}
-                {mockOrder ? (
-                  <OrderConfirmationMock
+                  <MinimalCheckoutHeader
                     slug={blueprintKey}
-                    themeName={themeName}
-                    status={mockOrder}
+                    name={themeName}
+                    themeKey={blueprintKey}
                   />
-                ) : focusedMain.length > 0 ? (
-                  <main className="space-y-12 sm:space-y-16 pb-16 [&>[data-fq-node^='announcement_bar']]:!mt-0 [&>[data-fq-node^='announcement_bar']+*]:!mt-0">
-                    {focusedMain.map((section) => (
-                      <SectionRenderer
-                        key={section.id}
-                        section={section}
-                        template={template}
-                        editing={false}
-                        storeSlug={blueprintKey}
-                        themeKey={blueprintKey}
-                        contextSlots={{
-                          ...accountSlots,
-                          ...productSlots,
-                          ...cartSlots,
-                          ...searchSlots,
-                          ...blogSlots,
-                          ...pageSlots,
-                        }}
-                        productSlot={searchProductSlot}
-                        primary={section.id === primaryId}
-                      />
-                    ))}
-                  </main>
-                ) : (
-                  <div className="grid min-h-[40vh] place-items-center p-8 text-sm text-muted-foreground">
-                    No sections authored for this template.
-                  </div>
-                )}
-
-                {/* footer slot — landmark parity with ThemeChrome */}
-                {ast.footer.length > 0 && (
-                  <footer className="border-t border-border bg-card/40 mt-16 pt-12 pb-16">
-                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
-                      {ast.footer.map((section) => (
+                  {focusedMain.length > 0 ? (
+                    <main className="space-y-12 sm:space-y-16 pb-16">
+                      {focusedMain.map((section) => (
                         <SectionRenderer
                           key={section.id}
                           section={section}
                           template={template}
                           editing={false}
+                          storeSlug={blueprintKey}
+                          themeKey={blueprintKey}
+                          contextSlots={{
+                            ...accountSlots,
+                            ...productSlots,
+                            ...cartSlots,
+                            ...searchSlots,
+                            ...blogSlots,
+                            ...pageSlots,
+                          }}
+                          productSlot={searchProductSlot}
+                          primary={section.id === primaryId}
+                        />
+                      ))}
+                    </main>
+                  ) : (
+                    <div className="grid min-h-[40vh] place-items-center p-8 text-sm text-muted-foreground">
+                      No sections authored for this template.
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  <StoreHeader
+                    slug={blueprintKey}
+                    name={themeName}
+                    menus={null}
+                    themeKey={blueprintKey}
+                  />
+                  <WidgetDataProvider
+                    bundle={previewData.bundle}
+                    map={previewData.map}
+                  >
+                    {/* Header sections below the masthead (e.g. mega_menu) */}
+                    {ast.header
+                      .filter((section) => section.type !== "subbrand_bar")
+                      .map((section) => (
+                        <SectionRenderer
+                          key={section.id}
+                          section={section}
+                          template={template}
+                          editing={false}
+                          storeSlug={blueprintKey}
                           themeKey={blueprintKey}
                           contextSlots={{
                             ...accountSlots,
@@ -1025,10 +1038,70 @@ export function ThemePreviewFrame({
                           }}
                         />
                       ))}
-                    </div>
-                  </footer>
-                )}
-              </WidgetDataProvider>
+
+                    {/* main slot */}
+                    {mockOrder ? (
+                      <OrderConfirmationMock
+                        slug={blueprintKey}
+                        themeName={themeName}
+                        status={mockOrder}
+                      />
+                    ) : focusedMain.length > 0 ? (
+                      <main className="space-y-12 sm:space-y-16 pb-16 [&>[data-fq-node^='announcement_bar']]:!mt-0 [&>[data-fq-node^='announcement_bar']+*]:!mt-0">
+                        {focusedMain.map((section) => (
+                          <SectionRenderer
+                            key={section.id}
+                            section={section}
+                            template={template}
+                            editing={false}
+                            storeSlug={blueprintKey}
+                            themeKey={blueprintKey}
+                            contextSlots={{
+                              ...accountSlots,
+                              ...productSlots,
+                              ...cartSlots,
+                              ...searchSlots,
+                              ...blogSlots,
+                              ...pageSlots,
+                            }}
+                            productSlot={searchProductSlot}
+                            primary={section.id === primaryId}
+                          />
+                        ))}
+                      </main>
+                    ) : (
+                      <div className="grid min-h-[40vh] place-items-center p-8 text-sm text-muted-foreground">
+                        No sections authored for this template.
+                      </div>
+                    )}
+
+                    {/* footer slot — landmark parity with ThemeChrome */}
+                    {ast.footer.length > 0 && (
+                      <footer className="border-t border-border bg-card/40 mt-16 pt-12 pb-16">
+                        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
+                          {ast.footer.map((section) => (
+                            <SectionRenderer
+                              key={section.id}
+                              section={section}
+                              template={template}
+                              editing={false}
+                              themeKey={blueprintKey}
+                              contextSlots={{
+                                ...accountSlots,
+                                ...productSlots,
+                                ...cartSlots,
+                                ...searchSlots,
+                                ...blogSlots,
+                                ...pageSlots,
+                              }}
+                            />
+                          ))}
+                        </div>
+                      </footer>
+                    )}
+                  </WidgetDataProvider>
+                </>
+              )}
             </>
           )}
         </ThemeSurface>
