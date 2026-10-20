@@ -22,6 +22,10 @@ import type {
 import type { CartLine } from "@/lib/cart";
 import type { PaymentMethodKey } from "@/lib/payment-rails";
 import type { WidgetRow } from "@/lib/widget-data";
+import {
+  mapOrdersToRows,
+  mapProfileToRow,
+} from "@/components/store/account-slots";
 import { demoCatalogFor } from "../../demo-catalog";
 
 /** The Songoskriti demo catalogue — the one source of truth for this file. */
@@ -196,13 +200,71 @@ export function songoskritiPreviewCart(): CartContextValue {
 /* ----------------------------------------------------------------- account */
 
 /**
- * The preview's shopper profile and order history arrive with the account
- * surface (Task 4 of this plan).
+ * The preview's order history — three rows built with the **same mapping
+ * the live account route uses** (`mapOrdersToRows`,
+ * `src/components/store/account-slots.tsx:31`), so the row contract cannot
+ * drift from the storefront's. Each order's total is the catalogue price of
+ * the product it names.
  */
+export function songoskritiPreviewOrders(): WidgetRow[] {
+  return mapOrdersToRows([
+    {
+      id: "songoskriti-demo-order-2451",
+      order_number: "ORD-2451",
+      status: "delivered",
+      total_minor_int: demoLine("dhakai-jamdani-heritage-saree").lineTotalMinor,
+      currency_code: "BDT",
+      created_at: "2026-09-12T09:30:00.000Z",
+    },
+    {
+      id: "songoskriti-demo-order-2468",
+      order_number: "ORD-2468",
+      status: "shipped",
+      total_minor_int: demoLine("comilla-khadi-casual-kurta").lineTotalMinor,
+      currency_code: "BDT",
+      created_at: "2026-09-29T13:05:00.000Z",
+    },
+    {
+      id: "songoskriti-demo-order-2477",
+      order_number: "ORD-2477",
+      status: "packed",
+      total_minor_int: demoLine("dhamrai-brass-heritage-necklace")
+        .lineTotalMinor,
+      currency_code: "BDT",
+      created_at: "2026-10-06T08:15:00.000Z",
+    },
+  ]);
+}
+
+/**
+ * The preview's shopper profile. The title carries the **visible demo
+ * indicator** and the email uses the reserved `.example` domain (RFC 2606),
+ * so the address can never be mistaken for a real customer's.
+ */
+export function songoskritiPreviewProfile(): WidgetRow {
+  const row = mapProfileToRow({
+    name: "Rumana Haque (demo shopper)",
+    email: "rumana@example.com",
+    phone: "01700000000",
+  });
+  return { ...row!, id: "songoskriti-demo-profile" };
+}
 
 /* ------------------------------------------------------------ search total */
 
 /**
- * The preview's **demo** result count arrives with the search surface
- * (Task 4 of this plan).
+ * The preview's **demo** result count.
+ *
+ * The Songoskriti demo catalogue holds **13** products
+ * (`src/lib/demo-catalog.ts`, the `SONGOSKRITI` catalogue's `products`
+ * array), and the platform pages at `PAGE_SIZE = 24`
+ * (`src/lib/storefront-search.ts:29`), so a fixture-derived total of 13 would
+ * render **no pager** — the `Pagination` widget returns `null` when
+ * `pageCount(total) <= 1` (`src/components/builder/collection.tsx:537-541`).
+ * The preview therefore carries an explicit, representative demo total of
+ * **38** — two pages — so the preview shows the pager the storefront shows.
+ *
+ * This number is **preview-only**: the storefront's count is the live
+ * `result.total`, and no merchant query ever sees 38.
  */
+export const SONGOSKRITI_PREVIEW_SEARCH_TOTAL = 38;
