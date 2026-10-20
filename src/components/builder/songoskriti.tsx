@@ -47,6 +47,15 @@ import type {
 import type { WidgetComponent, WidgetCtx } from "./widgets";
 import type { WidgetRow } from "@/lib/widget-data";
 import { parsePickedHandles, resolveSkin } from "@/lib/builder-ast";
+import {
+  clearFacets,
+  facetHref,
+  toggleFacet,
+  withSort,
+  type FacetKey,
+  type SearchParams,
+} from "@/lib/facet-url";
+import { groupFacetRows, useCollectionQuery } from "./collection";
 import { useCarouselCycle, useScrollReveals } from "./songoskriti-motion";
 import { MediaFrame } from "./primitives/MediaFrame";
 import {
@@ -895,14 +904,27 @@ const SongoskritiProductRail: WidgetComponent = (ctx) => {
 };
 
 const SongoskritiProductGrid: WidgetComponent = (ctx) => {
-  const { str, data, locale, Heading } = ctx;
+  const { str, data, locale, Heading, productSlot, template } = ctx;
+  // The search route hands the theme ONE opaque block (`productSlot`,
+  // `store.$slug.search.tsx:559`) — the platform's executed and priced
+  // results. On the search template that block IS the result set, so it
+  // wins. Every other template keeps the theme's own row grid: the
+  // collection route passes a differently-shaped slot (`c.$collectionSlug
+  // .tsx:220`) and must not lose its styled cards.
+  const host = template === "search" ? productSlot : undefined;
   const rows = data?.rows;
   const heading = str("heading");
   const subhead = str("subhead");
   const badgeLabel = str("badgeLabel");
   const promise = str("promise");
 
-  if (rows !== undefined && rows.length === 0 && !data?.pending) return null;
+  if (
+    host === undefined &&
+    rows !== undefined &&
+    rows.length === 0 &&
+    !data?.pending
+  )
+    return null;
 
   return (
     <section className="w-full bg-[var(--theme-surface)] py-16 sm:py-24">
@@ -920,24 +942,25 @@ const SongoskritiProductGrid: WidgetComponent = (ctx) => {
           </div>
         )}
 
-        {data?.pending || rows === undefined ? (
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-12 sm:gap-x-8 sm:gap-y-16">
-            {Array.from({ length: 8 }, (_, i) => (
-              <ProductCardSkeleton key={i} variant="standard" />
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-12 sm:gap-x-8 sm:gap-y-16">
-            {rows.map((row) => (
-              <SongoskritiProductCard
-                key={row.id}
-                row={row}
-                promise={promise}
-                badge={badgeLabel}
-              />
-            ))}
-          </div>
-        )}
+        {host ??
+          (data?.pending || rows === undefined ? (
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-12 sm:gap-x-8 sm:gap-y-16">
+              {Array.from({ length: 8 }, (_, i) => (
+                <ProductCardSkeleton key={i} variant="standard" />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-12 sm:gap-x-8 sm:gap-y-16">
+              {rows.map((row) => (
+                <SongoskritiProductCard
+                  key={row.id}
+                  row={row}
+                  promise={promise}
+                  badge={badgeLabel}
+                />
+              ))}
+            </div>
+          ))}
       </div>
     </section>
   );
@@ -2350,73 +2373,81 @@ const SongoskritiCategoryHeader: WidgetComponent = ({
 /* --------------------------------------------------- result_toolbar */
 
 /**
- * Collection page toolbar: product count + filter drawer trigger + sort.
+ * Collection / search toolbar: product count + filter drawer trigger + sort.
  * Renders a compact bar that sticks just below the mega-menu on scroll.
  *
+ * **Live-capable.** The count is the *live* collection query's total — the
+ * storefront's search route mounts the provider with the server's
+ * `result.total` — and the sort entries are *real links* built from that
+ * query (`facetHref` / `withSort`, `src/lib/facet-url.ts`), the same helpers
+ * the platform's own toolbar uses
+ * (`src/components/builder/collection.tsx:475-535`). There is no hard-coded
+ * taxonomy: the filter drawer renders only the platform's real facet rows
+ * (`groupFacetRows`, `src/components/builder/collection.tsx:94`), so on a
+ * storefront — where the widget-data pipeline is absent (Decision D7) — the
+ * drawer has no rows and its "Filters" control does not render at all.
+ *
  * Props:
- *   countLabel / countLabel_bn — e.g. "24 Products"
+ *   countLabel / countLabel_bn — e.g. "24 products"
  *   sortDefault               — default sort label (e.g. "Featured")
  */
 const SongoskritiResultToolbar: WidgetComponent = ({ str, data, locale }) => {
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
+  const query = useCollectionQuery();
 
-  const count = data?.rows?.length ?? 0;
+  // The count is the live query's total; the studio canvas has no provider
+  // total, so it falls back to the rows the widget was handed.
+  const count = query.total || (data?.rows?.length ?? 0);
+  const noun = str("countLabel") || (locale === "bn" ? "পণ্য" : "products");
   const countLabel =
     count > 0
-      ? t(locale, `${count} Products`, `${count}টি পণ্য`)
-      : t(locale, "Products", "পণ্য");
+      ? t(locale, `${count} ${noun}`, `${count}টি ${noun}`)
+      : t(locale, noun, noun);
   const sortLabel = str("sortDefault") || t(locale, "Featured", "বৈশিষ্ট্য");
 
   const filterLabel = t(locale, "Filter", "ফিল্টার");
   const sortByLabel = t(locale, "Sort:", "সাজান:");
   const clearLabel = t(locale, "Clear All", "সব মুছুন");
   const applyLabel = t(locale, "Apply", "প্রয়োগ করুন");
-  const filtersLabel = t(locale, "Filters", "ফিল্টার");
+  const filtersLabel = str("filtersLabel") || t(locale, "Filters", "ফিল্টার");
 
-  // Filter groups for this Songoskriti context
-  // In a live implementation these come from real facet data;
-  // for the preview/theme system they are representative placeholders.
-  const FILTER_GROUPS: { title: string; items: string[] }[] = [
+  // The platform's real facet rows — never a representative taxonomy.
+  const facets = groupFacetRows(data?.rows);
+  const facetGroups = (
+    [
+      {
+        title: t(locale, "Category", "ক্যাটাগরি"),
+        key: "category" as const,
+        rows: facets.category,
+      },
+      {
+        title: t(locale, "Type", "ধরন"),
+        key: "kind" as const,
+        rows: facets.kind,
+      },
+    ] satisfies { title: string; key: FacetKey; rows: WidgetRow[] }[]
+  ).filter((group) => group.rows.length > 0);
+  const hasFacets = facetGroups.length > 0;
+
+  const SORT_OPTIONS: { key: string; en: string; bn: string }[] = [
+    { key: "relevance", en: "Featured", bn: "বৈশিষ্ট্য" },
+    { key: "newest", en: "Newest first", bn: "সর্বশেষ" },
     {
-      title: t(locale, "Category", "ক্যাটাগরি"),
-      items:
-        locale === "bn"
-          ? ["শাড়ি", "পাঞ্জাবি", "শিশু", "গহনা"]
-          : ["Sarees", "Panjabi", "Kids", "Jewellery"],
+      key: "price_asc",
+      en: "Price: low to high",
+      bn: "দাম: কম থেকে বেশি",
     },
     {
-      title: t(locale, "Occasion", "উপলক্ষ"),
-      items:
-        locale === "bn"
-          ? ["উৎসব", "বিয়ে", "প্রতিদিন", "ঈদ"]
-          : ["Festive", "Wedding", "Everyday", "Eid"],
-    },
-    {
-      title: t(locale, "Price", "মূল্য"),
-      items:
-        locale === "bn"
-          ? ["৳৫,০০০-এর নিচে", "৳৫,০০০–১০,০০০", "৳১০,০০০-এর বেশি"]
-          : ["Under ৳5,000", "৳5,000–10,000", "Above ৳10,000"],
-    },
-    {
-      title: t(locale, "Availability", "প্রাপ্যতা"),
-      items:
-        locale === "bn"
-          ? ["স্টকে আছে", "স্টক নেই"]
-          : ["In Stock", "Out of Stock"],
+      key: "price_desc",
+      en: "Price: high to low",
+      bn: "দাম: বেশি থেকে কম",
     },
   ];
 
-  const SORT_OPTIONS: string[] =
-    locale === "bn"
-      ? ["বৈশিষ্ট্য", "সর্বশেষ", "দাম: কম থেকে বেশি", "দাম: বেশি থেকে কম"]
-      : [
-          "Featured",
-          "Newest first",
-          "Price: low to high",
-          "Price: high to low",
-        ];
+  // Real, crawlable hrefs — the same contract the platform's own toolbar
+  // uses (`src/components/builder/collection.tsx:475-535`).
+  const href = (next: SearchParams) => facetHref(query.basePath, next);
 
   return (
     <>
@@ -2424,46 +2455,50 @@ const SongoskritiResultToolbar: WidgetComponent = ({ str, data, locale }) => {
       <div className="w-full bg-[var(--theme-surface)] border-b border-[var(--theme-border)]">
         <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-8">
           <div className="flex items-center justify-between h-12 gap-4">
-            {/* Filter button */}
-            <button
-              onClick={() => setFilterOpen(true)}
-              className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.15em] text-[var(--theme-ink)] hover:opacity-60 transition-opacity"
-            >
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 14 14"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
+            {/* Filter button — only when the platform handed the widget real
+                facet rows. On a storefront there are none (no widget-data
+                pipeline, Decision D7), so the control does not render. */}
+            {hasFacets && (
+              <button
+                onClick={() => setFilterOpen(true)}
+                className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.15em] text-[var(--theme-ink)] hover:opacity-60 transition-opacity"
               >
-                <line x1="1" y1="3.5" x2="13" y2="3.5" />
-                <line x1="1" y1="7" x2="13" y2="7" />
-                <line x1="1" y1="10.5" x2="13" y2="10.5" />
-                <circle
-                  cx="4"
-                  cy="3.5"
-                  r="1.5"
-                  fill="currentColor"
-                  stroke="none"
-                />
-                <circle
-                  cx="9"
-                  cy="7"
-                  r="1.5"
-                  fill="currentColor"
-                  stroke="none"
-                />
-                <circle
-                  cx="4"
-                  cy="10.5"
-                  r="1.5"
-                  fill="currentColor"
-                  stroke="none"
-                />
-              </svg>
-              {filterLabel}
-            </button>
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                >
+                  <line x1="1" y1="3.5" x2="13" y2="3.5" />
+                  <line x1="1" y1="7" x2="13" y2="7" />
+                  <line x1="1" y1="10.5" x2="13" y2="10.5" />
+                  <circle
+                    cx="4"
+                    cy="3.5"
+                    r="1.5"
+                    fill="currentColor"
+                    stroke="none"
+                  />
+                  <circle
+                    cx="9"
+                    cy="7"
+                    r="1.5"
+                    fill="currentColor"
+                    stroke="none"
+                  />
+                  <circle
+                    cx="4"
+                    cy="10.5"
+                    r="1.5"
+                    fill="currentColor"
+                    stroke="none"
+                  />
+                </svg>
+                {filterLabel}
+              </button>
+            )}
 
             {/* Count — center on desktop */}
             <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-[var(--theme-ink)]/40 hidden sm:block">
@@ -2487,28 +2522,56 @@ const SongoskritiResultToolbar: WidgetComponent = ({ str, data, locale }) => {
               >
                 <polyline points="2,3.5 5,6.5 8,3.5" />
               </svg>
-              {/* Sort dropdown */}
+              {/* Sort dropdown — real links, so the sort is crawlable and
+                  works without JavaScript. */}
               {sortOpen && (
                 <ul className="absolute top-full right-0 mt-1 w-52 bg-[var(--theme-surface)] border border-[var(--theme-border)] shadow-lg z-40 py-1">
-                  {SORT_OPTIONS.map((opt) => (
-                    <li key={opt}>
-                      <button
-                        onClick={() => setSortOpen(false)}
-                        className="w-full text-left px-4 py-2.5 text-[11px] font-medium uppercase tracking-[0.12em] text-[var(--theme-ink)] hover:bg-[var(--theme-surface)] transition-colors"
-                      >
-                        {opt}
-                      </button>
-                    </li>
-                  ))}
+                  {SORT_OPTIONS.map((opt) => {
+                    const next = withSort(query.params, opt.key);
+                    return (
+                      <li key={opt.key}>
+                        <a
+                          href={href(next)}
+                          onClick={
+                            query.navigate
+                              ? (e) => {
+                                  e.preventDefault();
+                                  query.navigate?.(next);
+                                  setSortOpen(false);
+                                }
+                              : undefined
+                          }
+                          className="block w-full text-left px-4 py-2.5 text-[11px] font-medium uppercase tracking-[0.12em] text-[var(--theme-ink)] hover:bg-[var(--theme-surface)] transition-colors"
+                        >
+                          {locale === "bn" ? opt.bn : opt.en}
+                        </a>
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
             </button>
+
+            {/* Crawlable equivalents of the dropdown, for clients without
+                JavaScript — the same contract the platform's own toolbar
+                uses (`src/components/builder/collection.tsx:518-529`). */}
+            <noscript>
+              {SORT_OPTIONS.map((opt) => (
+                <a
+                  key={opt.key}
+                  href={href(withSort(query.params, opt.key))}
+                  className="px-1 text-[11px] underline"
+                >
+                  {locale === "bn" ? opt.bn : opt.en}
+                </a>
+              ))}
+            </noscript>
           </div>
         </div>
       </div>
 
       {/* ── Filter drawer ───────────────────────────────────── */}
-      {filterOpen && (
+      {filterOpen && hasFacets && (
         <>
           {/* Backdrop */}
           <div
@@ -2542,24 +2605,51 @@ const SongoskritiResultToolbar: WidgetComponent = ({ str, data, locale }) => {
               </button>
             </div>
 
-            {/* Filter groups */}
+            {/* Filter groups — the platform's real facet rows */}
             <div className="flex-1 overflow-y-auto px-6 py-6 space-y-8">
-              {FILTER_GROUPS.map((group) => (
-                <div key={group.title}>
+              {facetGroups.map((group) => (
+                <div key={group.key}>
                   <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--theme-ink)]/40 mb-4">
                     {group.title}
                   </h3>
                   <ul className="space-y-3">
-                    {group.items.map((item) => (
-                      <li key={item} className="flex items-center gap-3">
-                        <span className="size-4 border border-[var(--theme-ink)]/20 flex items-center justify-center flex-shrink-0">
-                          {/* Checkbox visual */}
-                        </span>
-                        <span className="text-[13px] text-[var(--theme-ink)]/80 font-sans">
-                          {item}
-                        </span>
-                      </li>
-                    ))}
+                    {group.rows.map((row) => {
+                      const value = row.href ?? row.id;
+                      const next = toggleFacet(query.params, group.key, value);
+                      const active =
+                        group.key === "category"
+                          ? query.params.category
+                          : query.params.kind;
+                      return (
+                        <li key={row.id} className="flex items-center gap-3">
+                          <a
+                            href={href(next)}
+                            onClick={
+                              query.navigate
+                                ? (e) => {
+                                    e.preventDefault();
+                                    query.navigate?.(next);
+                                    setFilterOpen(false);
+                                  }
+                                : undefined
+                            }
+                            className="flex items-center gap-3 text-[13px] text-[var(--theme-ink)]/80 font-sans"
+                          >
+                            <span className="size-4 border border-[var(--theme-ink)]/20 flex items-center justify-center flex-shrink-0">
+                              {active === value && (
+                                <span className="size-2 bg-[var(--theme-ink)]" />
+                              )}
+                            </span>
+                            <span>{row.title}</span>
+                            {typeof row.count === "number" && (
+                              <span className="text-[11px] text-[var(--theme-ink)]/40">
+                                {row.count}
+                              </span>
+                            )}
+                          </a>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               ))}
@@ -2567,12 +2657,21 @@ const SongoskritiResultToolbar: WidgetComponent = ({ str, data, locale }) => {
 
             {/* Footer actions */}
             <div className="px-6 py-5 border-t border-[var(--theme-border)] grid grid-cols-2 gap-3">
-              <button
-                onClick={() => setFilterOpen(false)}
-                className="py-3 text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--theme-ink)] border border-[var(--theme-ink)]/20 hover:border-[var(--theme-ink)]/40 transition-colors bg-transparent"
+              <a
+                href={href(clearFacets(query.params))}
+                onClick={
+                  query.navigate
+                    ? (e) => {
+                        e.preventDefault();
+                        query.navigate?.(clearFacets(query.params));
+                        setFilterOpen(false);
+                      }
+                    : undefined
+                }
+                className="py-3 text-center text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--theme-ink)] border border-[var(--theme-ink)]/20 hover:border-[var(--theme-ink)]/40 transition-colors bg-transparent"
               >
                 {clearLabel}
-              </button>
+              </a>
               <button
                 onClick={() => setFilterOpen(false)}
                 className="py-3 text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--theme-surface)] bg-[var(--theme-ink)] hover:bg-[var(--theme-ink)]/90 transition-colors"

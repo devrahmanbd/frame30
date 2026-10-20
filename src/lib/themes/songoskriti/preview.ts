@@ -233,22 +233,51 @@ export function songoskritiPreviewSource(
             }),
           ];
         case "search":
+          // The platform owns the search: it executes the query, authorizes the
+          // tenant and prices the results (`store.$slug.search.tsx:42-105`),
+          // and it hands the theme ONE opaque block (`productSlot`, `:559`).
+          // The theme owns the composition around it — the section order, the
+          // filters column, the results area, the pager and the empty state.
+          // No authored copy of the platform's pieces (no heading, no rich_text):
+          // the route's own query box, summary and labels stay the single
+          // source of truth (`Review Focus 2` in the plan).
           return [
-            s("heading", { text: "Search results", text_bn: "খোঁজার ফলাফল" }),
-            s("rich_text", {
-              heading: "Demo search",
-              heading_bn: "ডেমো খোঁজ",
-              body: "Live search runs on the storefront. Below is what a results rail looks like.",
-              body_bn: "লাইভ খোঁজ দোকানে চলে। নিচে ফলাফলের একটি নমুনা দেখুন।",
+            s("category_header", {
+              text: "Search the collection",
+              text_bn: "কালেকশনে খুঁজুন",
+              description:
+                "Every result is priced and stocked by the store — filters only narrow what is already published.",
+              description_bn:
+                "প্রতিটি ফলাফলের দাম ও স্টক দোকানই নির্ধারণ করে — ফিল্টার শুধু প্রকাশিত পণ্য ফলাক করে।",
+              heading: "Search the collection",
+              body: "Every result is priced and stocked by the store — filters only narrow what is already published.",
+              homeLabel: "Home",
             }),
-            rail(
-              s,
-              "Popular right now",
-              "এখন জনপ্রিয়",
-              "festive",
-              "Loved across 64 districts",
-              "সারা দেশে জনপ্রিয়",
-            ),
+            s("result_toolbar", {
+              countLabel: "products",
+              filtersLabel: "Filters",
+              sortLabel: "Sort",
+              sortDefault: "Featured",
+            }),
+            s("facet_sidebar", {
+              heading: "Filters",
+              limit: 12,
+              collapsed: false,
+            }),
+            s("filter_chips", { clearLabel: "Clear all" }),
+            s("product_grid", {
+              heading: "Results",
+              limit: 24,
+              columns: 4,
+              skin: "cards",
+            }),
+            s("pagination", { mode: "numbered", pageLabel: "Page" }),
+            s("empty_state", {
+              heading: "Nothing matches those filters",
+              body: "Try a shorter word, or clear a filter to widen the results.",
+              clearLabel: "Clear all filters",
+              limit: 4,
+            }),
           ];
         case "cart":
           return [
