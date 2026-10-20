@@ -50,6 +50,13 @@
     "why": "a committed JWT must never live in the repo, even when it is a loopback anon key: the secret scanner is a strict security gate, and a credential-shaped string in the tree is a finding for anyone who can read the history — so the value was replaced in place instead of the scanner being taught to ignore it",
     "shape": "unchanged — each captured console error keeps its wording, its ws:// scheme, its host and port, its `vsn=2` parameter and its position in the `consoleErrors` array; only the credential value is replaced by the marker, so the evidence still shows the error's shape"
   },
+  "history": {
+    "residual": "the SAME credential value was committed in 044624af and REMAINS in this repository's git history — redacting the working tree does not erase it from the objects, so anyone who can read the history can still recover the original JWT. This field exists so that residual is disclosed rather than left to be discovered: the note above argues that a credential-shaped string in the tree is a finding for anyone who can read the history, and the same is true of the history itself",
+    "commit": "044624af",
+    "credential": "a Supabase anon-role JWT issued by the loopback dev server on 127.0.0.1:58000 — a loopback dev-server anon key that was never valid against a hosted project, so it grants access to no deployed environment and no production data",
+    "why": "redacting the tree is sufficient for the scan gate: `scripts/secret-scan.mjs` scans the checked-out files, so a clean checkout no longer contains the credential and the scan gate stays green. The residual in the history is a separate, already-disclosed fact — it is named here, not concealed",
+    "action": "the commit is named above so the residual is not forgotten. If this project is shared with anyone who has clone access to the history, the owner should rotate that dev anon key"
+  },
   "consoleErrors": [
     "WebSocket connection to 'ws://127.0.0.1:58000/realtime/v1/websocket?apikey=<redacted-anon-key>&vsn=2",
     "WebSocket connection to 'ws://127.0.0.1:58000/realtime/v1/websocket?apikey=<redacted-anon-key>&vsn=2"
