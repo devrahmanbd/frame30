@@ -205,6 +205,8 @@ describe("songoskriti search template composition", () => {
       "collapsed",
       "heading",
       "limit",
+      "showCategories",
+      "showKinds",
     ]);
     expect(propKeys.get("filter_chips")).toEqual(["clearLabel"]);
     expect(propKeys.get("product_grid")).toEqual([

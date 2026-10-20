@@ -270,6 +270,15 @@ export function songoskritiPreviewSource(
               heading: "Filters",
               limit: 12,
               collapsed: false,
+              // The category and kind groups are ON: the platform's facet
+              // panel renders them only when these two switches are true
+              // (`collection.tsx:157`, `:177`; `bool()` is
+              // `props[key] === true`), so an absent prop renders a sidebar
+              // with its heading and "Clear all" and nothing else. Both are
+              // catalogue fields (`builder-ast.ts:2742-2743`), so a merchant
+              // sees them in the builder.
+              showCategories: true,
+              showKinds: true,
             }),
             s("filter_chips", { clearLabel: "Clear all" }),
             s("product_grid", {
