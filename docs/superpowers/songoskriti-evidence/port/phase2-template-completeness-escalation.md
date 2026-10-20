@@ -308,3 +308,59 @@ Every reference in this record was grepped out of the tree and resolves:
 | `export const AccountSlots` / `accountSlotCtx`        | `src/components/store/account-slots.tsx:54`               |
 | `export const OrdersList` / `ProfileCard`             | `src/components/builder/account.tsx:70` / `:141`          |
 | `export function genericDemoMain`                     | `src/lib/theme-preview-nav.ts:357`                        |
+
+---
+
+## (g) A third stale composition pin — `src/lib/themes/songoskriti/skins.test.ts` _(appended by Task 2)_
+
+**This section is appended, not a rewrite: sections (a)–(f) stand as written in Task 1.**
+
+**The finding.** §(b) named two files that pin the theme's template compositions. **There is a third**, and it was found by measurement, not by reading: Task 2's neighbourhood run (`node_modules/.bin/vitest run … src/lib/themes/songoskriti/skins.test.ts …`) fails with
+
+```
+FAIL  src/lib/themes/songoskriti/skins.test.ts > factory output carries theme defaults > preview rails on non-homepage templates carry the default too
+AssertionError: search: expected 0 to be greater than 0
+ ❯ src/lib/themes/songoskriti/skins.test.ts:162:38
+```
+
+**Why it fails.** The case at `src/lib/themes/songoskriti/skins.test.ts:146-165` asserts that every non-homepage template in the list `["collection", "product", "search", "cart"]` authors **at least one** `product_rail` and that each of those rails carries the theme's default skin `editorial`. The new `search` body (`src/lib/themes/songoskriti/preview.ts`, the `case "search":` branch) is the platform's six search widgets plus the results grid — **no merchandising rail** — and the new `cart` body is the two platform commerce widgets — **no merchandising rail** either (a "you may also like" rail is the generic demo shape the distinctness gate rejects). The assertion therefore pins the very demo rail this plan removes: **it is stale for the same reason the two §(b) pins are.**
+
+**The file was NOT edited by this plan.** It is an existing test file, and the owner's Decision **D4** relaxation is _exactly four_ files (§(e)); `src/lib/themes/songoskriti/skins.test.ts` is not one of them. Applying the diff below needs the owner's approval to widen D4 to a fifth file, or a dispatch that carries that approval.
+
+**The exact old → new diff**, recorded here before any update, per §9:
+
+```diff
+@@ -151,14 +151,23 @@
+       type,
+       props: { ...props },
+     });
++    // The search and cart templates author NO merchandising rail: the
++    // search body is the platform's own search widgets, and the cart body
++    // is the platform's two commerce widgets — a "you may also like" rail
++    // is the generic demo shape the distinctness gate rejects. The
++    // templates that DO author a rail must carry the theme's default skin.
+     for (const template of [
+       "collection",
+       "product",
+-      "search",
+-      "cart",
+     ] as const) {
+       const main = source.main(template, s)!;
+       const rails = main.filter((x) => x.type === "product_rail");
+       expect(rails.length, template).toBeGreaterThan(0);
+       for (const rail of rails) expect(rail.props.skin).toBe("editorial");
+     }
++    // …and the two commerce templates must author NO rail at all.
++    for (const template of ["search", "cart"] as const) {
++      const main = source.main(template, s)!;
++      expect(
++        main.filter((x) => x.type === "product_rail").length,
++        template,
++      ).toBe(0);
++    }
+   });
+```
+
+**The replacement is strictly stronger, not weaker.** The assertion's _subject_ — "every rail the theme authors carries the theme's default skin" — is untouched and still total over the templates that author rails. What changes is the **list of templates that author one**, and the removal is then **pinned positively**: the two commerce templates must author **no** rail at all. No assertion is deleted, skipped or weakened; the case count is unchanged (20 tests in the file, before and after).
+
+**Scope.** One file, one `it` block, one added `for` loop. Nothing else in `src/lib/themes/songoskriti/skins.test.ts` changes — the skin-vocabulary cases, the CSS cases and the reduced-motion case are untouched.
