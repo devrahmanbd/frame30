@@ -189,9 +189,9 @@ export function songoskritiPreviewSource(
             s("rich_text", {
               heading: "Details",
               heading_bn: "বিবরণ",
-              body: "Demo product page. Prices and stock are sample data — ordering is disabled in preview.",
+              body: "Sample product page — prices and stock are sample data, and ordering is disabled in the preview.",
               body_bn:
-                "ডেমো পণ্যের পাতা। দাম ও স্টক নমুনা তথ্য — প্রিভিউতে অর্ডার বন্ধ আছে।",
+                "নমুনা পণ্যের পাতা — দাম ও স্টক নমুনা তথ্য, আর প্রিভিউতে অর্ডার বন্ধ আছে।",
             }),
             rail(
               s,
@@ -287,6 +287,13 @@ export function songoskritiPreviewSource(
             }),
           ];
         case "cart":
+          // The platform owns the cart: it holds the lines, merges the
+          // quantities and quotes the totals (`src/components/builder/cart.tsx:203`,
+          // `:440`). The theme owns the composition only — the page heading
+          // and the two-column layout (the items on the left, the money on
+          // the right). No demo rail: the cart is a commerce surface, and a
+          // "you may also like" rail is the generic demo shape the
+          // distinctness gate rejects (Task 8's `R1`/`R5`).
           return [
             s("heading", { text: "Your bag", text_bn: "আপনার ব্যাগ" }),
             {
@@ -298,47 +305,51 @@ export function songoskritiPreviewSource(
               children: [
                 {
                   ...s("container", {}),
-                  children: [s("cart_lines", {})],
+                  // `cart_lines` is a heading-capable widget (`heading: true`,
+                  // `builder-ast.ts:2851`) and so is `cart_summary` (`:1607`):
+                  // two claimants in one body is a lint error
+                  // (`builder-ast.ts:8516-8523`). The lines block therefore
+                  // carries a deliberately blank heading — the platform's
+                  // documented remedy (`builder-ast.ts:8506-8513`) — so the
+                  // order summary is the body's single claimant.
+                  children: [s("cart_lines", { heading: "" })],
                 },
                 {
                   ...s("container", {}),
-                  children: [s("cart_summary", {})],
+                  children: [s("cart_summary", { heading: "Order summary" })],
                 },
               ],
             },
-            rail(
-              s,
-              "You may also like",
-              "আপনার পছন্দ হতে পারে",
-              "new-in",
-              "In stock · Dispatched in 24h",
-              "স্টকে আছে · ২৪ ঘণ্টায় ডিসপ্যাচ",
-              4,
-            ),
           ];
         case "checkout":
+          // The platform owns checkout: it quotes the cart, offers the rails
+          // the store can take money through and places the order
+          // (`store.$slug.checkout.tsx:42-105`, `:428+`). The theme owns the
+          // composition only — the progress trail, the payment block and the
+          // order summary, all of them platform-owned widgets reading the
+          // server's quote (`src/components/builder/cart.tsx:506`, `:563`,
+          // `:441`). No authored field, no authored price, no authored
+          // "place order" action: in production the route renders its own
+          // form (`ast={null}`, `store.$slug.checkout.tsx:418-421`).
           return [
             s("heading", { text: "Checkout", text_bn: "চেকআউট" }),
+            s("checkout_steps", {
+              heading: "Checkout progress",
+              activeStep: 2,
+            }),
             {
-              ...s("columns", {
-                columns: 2,
-                asymmetrical: true,
-                gap: 64,
-              }),
+              ...s("columns", { columns: 2, asymmetrical: true, gap: 64 }),
               children: [
                 {
                   ...s("container", {}),
                   children: [
-                    s("rich_text", {
-                      heading: "Contact & Shipping",
-                      heading_bn: "যোগাযোগ ও শিপিং",
-                      body: "Provide your delivery address and contact details.",
-                      body_bn:
-                        "আপনার ডেলিভারি ঠিকানা এবং যোগাযোগের তথ্য প্রদান করুন।",
-                    }),
+                    // Blank heading: the payment block must not claim the
+                    // page <h1> (the order summary is the one claimant) —
+                    // the widget falls back to its built-in "Payment
+                    // method" legend, so nothing disappears.
+                    s("payment_methods", { heading: "" }),
                     s("payment_icons", {
-                      heading: "Payment Method",
-                      heading_bn: "পেমেন্ট পদ্ধতি",
+                      heading: "We accept",
                       marks:
                         "bKash, Nagad, Rocket, Visa, Mastercard, Cash on delivery",
                     }),
@@ -346,7 +357,7 @@ export function songoskritiPreviewSource(
                 },
                 {
                   ...s("container", {}),
-                  children: [s("cart_summary", {})],
+                  children: [s("cart_summary", { heading: "Order summary" })],
                 },
               ],
             },

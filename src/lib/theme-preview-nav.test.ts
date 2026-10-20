@@ -123,7 +123,7 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
     collection: "category_header",
     account: "heading",
     page: "breadcrumb",
-    blog: "heading",
+    blog: "blog_terms",
     cart: "heading",
     checkout: "heading",
     search: "heading",

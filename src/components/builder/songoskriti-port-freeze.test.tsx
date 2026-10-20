@@ -104,9 +104,9 @@ const TEMPLATE_MAIN: Record<string, string[]> = {
   ],
   account: ["heading", "profile_card", "orders_list"],
   page: ["breadcrumb", "page_content"],
-  blog: ["heading", "image", "rich_text"],
-  cart: ["heading", "columns", "product_rail"],
-  checkout: ["heading", "columns"],
+  blog: ["blog_terms", "blog_archive", "blog_pager"],
+  cart: ["heading", "columns"],
+  checkout: ["heading", "checkout_steps", "columns"],
   search: ["heading", "rich_text", "product_rail"],
 };
 
