@@ -1,6 +1,6 @@
 # Creating a Framique theme (author guide)
 
-Last verified: 2026-10-20 @ 5dbc473f3395
+Last verified: 2026-10-20 @ 58bbe33e9c8e
 
 This is the end-to-end guide for shipping a complete storefront theme —
 the single authoring reference for tokens, skins, homepage builders,
