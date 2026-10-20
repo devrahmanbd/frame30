@@ -591,3 +591,128 @@ git commit -m "docs(songoskriti): record the phase-1 post-merge verification"
 ```
 
 **The deploy is a separate, explicit step and was not performed.** No `git push`, no `ops/deploy-from-git.sh`, no `ops/backup/time-machine-snapshot.sh` was run. The deployed preview (`https://framique.qubickle.com/theme-preview/songoskriti?template=page`) still serves the **old** build and still shows "Size guide" (measured in A.2); after the deploy it must show the demo body instead, exactly as step 5.5 asserts on the local server. Post-deploy storefront verification remains blocked for the reason in A.6.1.
+
+> **Superseded (post-deploy).** The paragraph above records the state of the tree _at the time of the verification run_, before any deploy. The deploy happened afterwards: the live bundle marker is `c9ec4a45`, and the live preview now serves the demo body instead of "Size guide" — §D.2 carries the measured numbers. Post-deploy storefront verification remains blocked for the reason in A.6.1.
+
+---
+
+# D. Closure — the close-out commits, the final live verification, and the one open owner action
+
+**Recorded:** 2026-10-20 · **Branch:** `frame30` · **HEAD at this recording:** `5afb03fe` · **Live build at this recording:** `c9ec4a45` (the deployed bundle marker, `.output/DEPLOYED_SHA`)
+
+## D.1 — The six closing commits
+
+| SHA        | Subject                                                                                   | What it closed                                                                                                                                                                                                                                                                                            | Files                                                                                                         |
+| ---------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `7c7e1b05` | fix(songoskriti): key the builder lint by template so route-owned h1 templates are silent | the false "No primary heading on this template." warning in the merchant's builder (Corrections §5; D4's consequence (a)) — a route-owned-h1 template (product, collection, account, page, blog, search) is silent, and a template that owns its `<h1>` and has none still warns with the identical issue | `src/hooks/use-builder-editor.ts`; `src/lib/themes.server.ts`                                                 |
+| `fe727b79` | fix(songoskriti): localise the preview's "Last updated" label                             | the preview's hardcoded English "Last updated" label — the frame now uses the same `t` the production route uses                                                                                                                                                                                          | `src/components/store/ThemePreviewFrame.tsx`                                                                  |
+| `b16ccb41` | docs(songoskriti): redact the committed anon JWT from the e2e evidence                    | the 2 TRACKED `secrets:scan` findings — the committed anon JWT is redacted in place; **the scanner was NOT weakened** (`scripts/secret-scan.mjs` is unchanged)                                                                                                                                            | `docs/superpowers/songoskriti-evidence/port/e2e/foreign-gap-probe.json`                                       |
+| `e7f69baa` | fix(songoskriti): restore the CMS page's sibling-page nav on a themed page                | the lost "More information" sibling-page nav **and** the empty 15rem gutter (D4's consequences (b) and (c)) — the nav renders inside the `page_content` slot value, the themed path gets a single-column container, and the "does the theme render the body" predicate moves into the shared NEW module   | `src/components/store/PageView.tsx`; `src/components/store/ThemeChrome.tsx`; NEW `src/lib/theme-body-slot.ts` |
+| `9402a975` | docs(songoskriti): disclose the redacted anon key's residual in git history               | the disclosure gap in the redaction note — it now states that the value remains in the git history (`044624af`) and names the rotate-if-shared action                                                                                                                                                     | `docs/superpowers/songoskriti-evidence/port/e2e/foreign-gap-probe.json`                                       |
+| `5afb03fe` | fix(songoskriti): space the themed CMS page's nav away from the article                   | the themed nav sitting flush against the merchant's article — the slot value is wrapped in the theme's own `space-y-8`                                                                                                                                                                                    | `src/components/store/PageView.tsx`                                                                           |
+
+Both boundary-limited consequences D4 named are therefore **closed**: the sibling-page nav and the 15rem gutter by `e7f69baa` (spaced by `5afb03fe`), the false lint warning by `7c7e1b05`. `b16ccb41` and `9402a975` are the records half of the same wave. The plan's D4 entry carries the same statement, with the boundary's cost and how it was paid.
+
+## D.2 — The final live verification of `?template=page`
+
+Measured over HTTP against the deployed preview route, one request per locale:
+
+```
+$ for lang in en bn; do
+    curl -s -o "live-page-$lang.html" -w "$lang %{http_code}\n" \
+      "https://framique.qubickle.com/theme-preview/songoskriti?template=page&lang=$lang"
+  done
+en 200
+bn 200
+```
+
+| Measure                                                  | `en`      | `bn`      |
+| -------------------------------------------------------- | --------- | --------- |
+| HTTP status                                              | 200       | 200       |
+| `<h1>`                                                   | exactly 1 | exactly 1 |
+| `<article>`                                              | 1         | 1         |
+| the `page_content` node (`data-fq-node="page_content…"`) | present   | present   |
+| "Demo page body."                                        | 1         | 1         |
+| "Size guide"                                             | 0         | 0         |
+| "Demo article"                                           | 0         | 0         |
+| "How to measure"                                         | 0         | 0         |
+| the theme logo (`<img … logo …>`)                        | present   | present   |
+
+The other eight preview templates are unchanged and still answer `200`: index, product, collection, account, blog, cart, checkout, search.
+
+**Which build these numbers describe.** The live bundle marker is `c9ec4a45` — the deploy recorded in the branch's handover — so the measurements above are of that build. **The six commits in D.1 are on the branch and are NOT in that build.** The visible consequence: the live `bn` tab still carries the preview's English "Last updated" label (`Last updated` 1, `সর্বশেষ হালনাগাদ` 0), which is exactly what `fe727b79` fixes and what that commit's own test pins. The other five close-out commits are invisible in the preview (`e7f69baa` and `5afb03fe` change the storefront path, not the preview; `7c7e1b05` changes the builder's lint) or are records (`b16ccb41`, `9402a975`).
+
+## D.3 — The storefront path is still unverified
+
+**Still unverified, for the same reason as A.6.1: the live database holds no Songoskriti store.** The `store_themes` table holds three rows — Atelier, classic, Supershop (audit §2.1) — and none of them is Songoskriti, so `/store/<slug>/pages/<pageSlug>` and the CMS-designated homepage cannot be exercised in production. The storefront acceptance criterion therefore stays at component level (B.5 — `src/components/store/songoskriti-page-content.test.tsx`).
+
+**Blast radius:** the branch's production blast radius is the theme-preview route only. No live merchant storefront renders the theme's `page` template, because no live merchant wears the theme. The route-side changes D.1 carries (`e7f69baa`, `5afb03fe`) therefore have **no live storefront to regress** — they are proven by the component-level suite and by the storefront test, not by a production page.
+
+## D.4 — The CI `secrets:scan` status
+
+**CI's `secrets:scan` job is green on a clean checkout of this branch.** The two TRACKED findings that made it red (`docs/superpowers/songoskriti-evidence/port/e2e/foreign-gap-probe.json:50-51`, §6.12) were closed by `b16ccb41`, which redacted the value in place; the scanner was not relaxed — `scripts/secret-scan.mjs` is unchanged by every commit in D.1.
+
+Measured on a clean export of `5afb03fe` (tracked tree only, no untracked build output):
+
+```
+$ git archive HEAD | tar -x -C /tmp/opencode/clean
+$ cd /tmp/opencode/clean && node /opt/frame28/scripts/secret-scan.mjs
+secret scan passed — no credential-shaped strings in the tree.
+exit=0
+```
+
+In this working tree the scanner still exits 1, with exactly the **8** findings in the **untracked** `.output-snapshots/` build output — the same 8 as before the close-out, and none of them in a tracked file:
+
+```
+$ node scripts/secret-scan.mjs
+secret scan FAILED — 8 finding(s):
+
+  .output-snapshots/snap_20261020T040348Z_40673d3/server/_ssr/client-DcYeaJ49.mjs:41  [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
+  .output-snapshots/snap_20261020T040348Z_40673d3/server/_ssr/client-DcYeaJ49.mjs:58  [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
+  .output-snapshots/snap_20261020T040348Z_40673d3/server/_ssr/router-DXSMj1q8.mjs:4281 [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
+  .output-snapshots/snap_20261020T040348Z_40673d3/server/_ssr/router-DXSMj1q8.mjs:4300 [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
+  .output-snapshots/snap_20261020T132319Z_c9ec4a4/server/_ssr/client-DcYeaJ49.mjs:41  [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
+  .output-snapshots/snap_20261020T132319Z_c9ec4a4/server/_ssr/client-DcYeaJ49.mjs:58  [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
+  .output-snapshots/snap_20261020T132319Z_c9ec4a4/server/_ssr/router-Ba23NCC7.mjs:4281 [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
+  .output-snapshots/snap_20261020T132319Z_c9ec4a4/server/_ssr/router-Ba23NCC7.mjs:4300 [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
+exit=1
+```
+
+**Residual, disclosed:** the original value is still in the git history — it was committed in `044624af`, and redacting the tree does not erase it from the objects. `9402a975` states that in the evidence file's own `history` field, together with the action: rotate that loopback dev anon key if the project is shared with anyone who has clone access to the history.
+
+## D.5 — The one open owner action: the parity re-freeze
+
+**Status: OPEN — one owner action, deliberately not run by this close-out.**
+
+**What is stale.** `docs/superpowers/songoskriti-evidence/port/reference/` and `.e2e/songoskriti-port-parity.spec.ts-snapshots/` each hold **6** `page-*` stills — `page-{375,768,1440}-{en,bn}.png` and the matching `page-{375,768,1440}-{en,bn}-chromium-linux.png` machine baselines — that predate the page-template change, and `reference-manifest.json` holds **60** capture entries, so a re-freeze of `reference/` rewrites all 60 of them (the escalation record's item (d) states the same numbers).
+
+**The exact command**, run from the repo root (`/opt/frame28`):
+
+```bash
+E2E_BASE_URL=http://localhost:3020 E2E_NO_WEBSERVER=1 \
+  E2E_MERCHANT_EMAIL="$E2E_MERCHANT_EMAIL" E2E_MERCHANT_PASSWORD="$E2E_MERCHANT_PASSWORD" \
+  npx playwright test -c .e2e/playwright.config.ts songoskriti-port-parity --update-snapshots
+```
+
+This is the parity report's own run command (`docs/superpowers/songoskriti-evidence/port/parity-report.md:8-13`) plus `--update-snapshots`. Two things must hold: `PORT_CAPTURE_OUT` must **not** be `after` — the spec writes the human stills to `after/` when it is set and to `reference/` when it is not (`.e2e/songoskriti-port-parity.spec.ts:26-30`), and a re-freeze wants `reference/`; and `--update-snapshots` is what rewrites the machine baselines in `.e2e/songoskriti-port-parity.spec.ts-snapshots/`. `npx playwright` resolves the repo's own binary (`node_modules/.bin/playwright`).
+
+**Preconditions.**
+
+1. **A local dev server on loopback.** `E2E_BASE_URL=http://localhost:3020` with `E2E_NO_WEBSERVER=1` (the server is started by the owner and serves the branch). The harness only accepts loopback: the preview route's host gate takes genuine loopback hosts only (`isThemePreviewHostAllowed`, `src/lib/storefront-host.server.ts:507-516`) and the spec aborts every non-local request (`blockExternalRequests`).
+2. **The theme activated on a DISPOSABLE store.** The spec's trailing "activation helper smoke" installs and activates the theme through the real server functions (`.e2e/helpers-songoskriti.ts:196-205`) against whichever database the app is configured with. The repo's `.env` points at a **hosted** instance (`SUPABASE_URL=https://framebase.qubickle.com`), so the run must be made against the throwaway loopback stack instead (`docs/15-e2e/loopback-auth-setup.md` §§1–3, mode B), with `E2E_MERCHANT_EMAIL` / `E2E_MERCHANT_PASSWORD` for a merchant of that stack. The activation is idempotent, but it writes `store_themes` rows — a store in a shared instance would be mutated, which is why this is the owner's call and not the close-out's.
+3. **The Playwright browsers present** — `node_modules/.bin/playwright install chromium` if `~/.cache/ms-playwright` carries no chromium build. The suite runs chromium only (`.e2e/playwright.config.ts:62-67`).
+
+**The trigger:** _before the next owner-run parity pass._ The suite is owner-run today — it is in neither `e2e:critical` nor `e2e:security` (`package.json:17` and `:56`) — so a stale baseline does not break CI; this is a parity-record problem, not a gate problem.
+
+**What to review in the resulting diff:** only the **6** `page-*` entries should differ materially — they are the only surface whose body changed. The other **54** captures are expected to be unchanged, modulo the per-response CSP nonce (and the manifest's `generatedAt` and `freezeSha` fields, which the spec rewrites on every run). Anything else that moved is a finding, not noise.
+
+**Why it was deliberately NOT auto-run.** The parity harness activates the theme on a store in the database the repo's `.env` configures — a possibly-shared instance — and it only accepts loopback requests. A run from this close-out would therefore either mutate a store that is not the close-out's to mutate, or fail for want of a loopback stack and a disposable merchant. It is the owner's action, with the command, the preconditions and the review list above.
+
+## D.6 — Two review findings accepted and deferred, not owner actions
+
+The closing review of the four close-out items (the lint warning, the preview's label, the committed credential, the lost nav) returned **SPEC ✅ / quality Approved** with **4 minor findings**. Two of them are closed by the wave above (`9402a975` — the redaction note's undisclosed history residual; `5afb03fe` — the themed nav flush against the merchant's article). The other two are **accepted and deferred** — consciously not fixed here, and not owner actions:
+
+1. **The duplicate-`page_content` case.** A merchant template that declares **two** `page_content` widgets renders the route's sibling-page nav twice, because the slot value is rendered once per widget. This is a pre-existing class of bug — the merchant's own body already duplicates today — and its real fix is a lint rule in `src/lib/builder-ast.ts`, not a change to the route.
+2. **The `useLang()` fallback's `t` identity churn.** The fallback context value returned by `useLang()` when no provider is mounted (`src/lib/i18n.tsx:161-174`) is a fresh object with a fresh `t` on every render, so the preview frame's page-content memo (`src/components/store/ThemePreviewFrame.tsx:587-610`) recomputes on every render when the fallback is in play. It affects tests only.
+
+Both are recorded with the review's verdict in the branch's SDD ledger (`.superpowers/sdd/2026-10-20-theme-editable-templates/progress.md`, which is git-ignored and therefore not part of this branch's commit).
