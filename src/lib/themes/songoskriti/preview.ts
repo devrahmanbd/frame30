@@ -205,15 +205,15 @@ export function songoskritiPreviewSource(
           ];
         }
         case "page":
+          // The route owns the body: `page_content` is the shared slot the
+          // CMS page route and the CMS-designated homepage flow their real
+          // content through (`PageView.tsx:166,175`; `StoreHomepage.tsx:120`).
+          // `page` is a route-h1 template (`ROUTE_H1_TEMPLATES`), so the route
+          // owns the <h1> too — this template elects no primary section, and
+          // declares no demo copy of its own.
           return [
-            s("heading", { text: "Size guide", text_bn: "সাইজ গাইড" }),
-            s("rich_text", {
-              heading: "How to measure",
-              heading_bn: "কীভাবে মাপবেন",
-              body: "Demo article. Chest, waist and length guidance for panjabis, kurtas and saree blouses.",
-              body_bn:
-                "ডেমো নিবন্ধ। পাঞ্জাবি, কুর্তা ও শাড়ির ব্লাউজের জন্য মাপের নির্দেশনা।",
-            }),
+            s("breadcrumb", { homeLabel: "Home" }),
+            s("page_content", {}),
           ];
         case "blog":
           return [
