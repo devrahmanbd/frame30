@@ -757,3 +757,119 @@ AssertionError: expected '<div role="dialog" aria-modal="true" …' to contain '
 **The replacement is strictly stronger, not weaker.** The assertion's _subject_ — "the preview's page tab renders a real body" — is untouched; the expectation now names the theme's own page title instead of a generic sentence of the shared fixture, so the pin can no longer be satisfied by the studio's placeholder. No assertion is deleted, skipped or weakened; the case count is unchanged (7 tests in the file, before and after).
 
 **Scope.** One file, one `it` block, one assertion. Nothing else in `src/components/store/songoskriti-preview-page.test.tsx` changes — the h1 case, the retired-copy case, the payload-shape case and the three localisation cases are untouched.
+
+---
+
+## (j) Batch-B review findings — five Important findings, their contracts, and two OPEN items _(appended 2026-10-21)_
+
+**This section is appended, not a rewrite: sections (a)–(i) stand as written.**
+
+A task review of Batch B (Task 3 + Task 7) raised **five Important findings** against the preview host and the theme's search composition, plus three smaller records. Every change this section authorises is written here **before** the code is edited, per §9: the record is the binding artifact, and the implementer implements the record's contract, not the review's prose.
+
+**The five findings, one line each.**
+
+| #   | finding                                                                                                                                                   | the change                                                                                 | where it lands                                                 |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| 1   | `empty_state` is granted unconditionally, so the preview's search tab shows "Nothing matches those filters" **underneath** a grid of 13 demo products     | the grant becomes **conditional**, mirroring the storefront's own contract                 | `src/components/store/ThemePreviewFrame.tsx`                   |
+| 2   | the preview passes no `productSlot` for the search template, so the platform's query box and category/kind chips are absent from the preview's search tab | the preview hands the search template a **demo `productSlot`** with the storefront's shape | `src/components/store/ThemePreviewFrame.tsx`                   |
+| 3   | the payment assertion is satisfied by the theme's `payment_icons` marks, not by the platform's payment rails                                              | the assertion is **retargeted**; the platform defect is recorded as an **OPEN item**       | the preview suite + this record + the evidence record          |
+| 4   | the Phase-1 preview-page suite pins the shared fixture's literal and is **red**                                                                           | Decision **D4** is widened to **six** files; §(i)'s recorded diff is applied               | `src/components/store/songoskriti-preview-page.test.tsx`       |
+| 5   | the theme's `facet_sidebar` pins `showCategories`/`showKinds` off, so the demo facet labels cannot appear                                                 | the theme authors the two switches; the theme's own prop-set pin moves with it             | `src/lib/themes/songoskriti/preview.ts` + the theme's own test |
+
+### (j.1) The `empty_state` grant becomes conditional — the storefront's contract, mirrored
+
+**The defect.** The preview granted `empty_state` unconditionally (`src/components/store/ThemePreviewFrame.tsx:636`), and the platform's `EmptyState` widget renders its panel **unconditionally** (`src/components/builder/collection.tsx:707-753` — there is no emptiness guard inside the widget). So the preview's search tab rendered the theme's "Nothing matches those filters / Try a shorter word… / Clear all filters" panel **underneath** a grid of 13 demo products.
+
+**The contract, recorded before the edit.** The grant is **conditional**, and the condition is **the storefront's own condition**: the platform's `empty_state` widget renders its panel whenever it is granted, so **the grant is what decides whether the theme's empty copy appears** — and the storefront grants it **only when the platform's own empty state would have shown** (`src/routes/store.$slug.search.tsx:424-444`: the route's `emptyState` piece is guarded by `result && result.items.length === 0 && !query.isPending`, and the §(b.4) hunk mirrors that guard in the `contextSlots` map). **The preview mirrors it against its own demo result set**: the `empty_state` grant is present **iff the demo result set is empty**.
+
+**Why a conditional grant and not a deletion.** The preview is not a search engine — its demo result set is the demo catalogue's rows and is never empty, so in practice the preview's grant is **absent** and the empty panel never renders under the results. The grant stays **conditional** (not deleted) so the preview carries the _storefront's_ contract rather than a special case of it: a demo query with no rows shows the theme's empty copy, exactly as the storefront does for a query with no hits.
+
+**The shape (the implementer writes the code; the contract is the rule).** The `searchSlots` map keeps `result_toolbar`, `filter_chips`, `pagination`, `category_header` and `facet_sidebar` as unconditional `null` grants, and the `empty_state` entry becomes a **spread of a one-key object that is present only when the demo result set is empty**. `null` is the platform's "granted" token and an **absent** entry is "not granted" — the gate is `slot = contextSlots?.[section.type]; if (slot === undefined) …` (`src/components/builder/SectionRenderer.tsx:825-833`).
+
+**The proof.** The preview suite asserts the theme's empty copy is **absent** from the search tab ("Nothing matches those filters" and "Clear all filters" do not appear) while the results, the count and the pager are present.
+
+### (j.2) The preview hands the search template a demo `productSlot` — the storefront's shape
+
+**The defect.** The preview passed **no** `productSlot`, so the theme's `product_grid` fell back to its own row grid (`src/components/builder/songoskriti.tsx:906-…`: `const host = template === "search" ? productSlot : undefined;` … `{host ?? (rows ? …)}`). The platform's **query box** and **category/kind chips** — which §(b.4) requires to stay reachable on a themed page, because the route's `fallback` is not rendered at all once the theme publishes a body (`src/components/store/ThemeChrome.tsx:400-421`) — never reached the preview. The preview therefore did not demonstrate the contract the storefront relies on.
+
+**The contract, recorded before the edit.** On the `search` template the preview hands the theme **one** `productSlot` with **the storefront's shape** (`src/routes/store.$slug.search.tsx:559` → the §(b.4) `resultsBlock`):
+
+1. **the query box** — a labelled `<input type="search">` inside a `<form>`, pre-filled with the demo query's term, plus a submit control. Search **execution**, not presentation: the platform owns it and no theme can author one (there is no main-zone search-form widget in the catalogue).
+2. **the platform's category/kind chips** — one chip per demo category row and per demo kind row, each a **real link** built from the demo query (`facetHref`, `src/lib/facet-url.ts:150`), so the preview shows that the filters are links.
+3. **the results grid** — the demo rows the preview already resolves for the grid node, rendered with the platform's own card (`ProductCard`, `src/components/builder/primitives/ProductCard.tsx:274`).
+
+**The six Phase-2.4 widgets keep their grants.** `result_toolbar`, `filter_chips`, `pagination`, `category_header` and `facet_sidebar` stay granted exactly as they are; the `productSlot` carries only what the **storefront's** results block carries. The storefront's own slots are unchanged by this — the storefront's `productSlot` is the route's `resultsBlock` (`src/routes/store.$slug.search.tsx:559`), and this contract is the preview's mirror of it.
+
+**Mutation safety is unchanged.** The slot's `<form>` lives inside the preview canvas, so the canvas's capture-phase `onSubmitCapture` intercepts the submit and toasts "Disabled in preview" (`src/lib/theme-preview-nav.ts:189-199`); the chip links are preview hrefs the canvas's click handler resolves to the preview's own search tab (`src/lib/theme-preview-nav.ts:71-83`, `:144-181`); the results grid renders the **platform's** card with **no store slug in context**, so it stays a plain anchor with no wishlist or quick-view hooks (`src/lib/store-slug-context.ts`, `src/components/builder/primitives/ProductCard.tsx:299`).
+
+**The proof.** The preview suite asserts the **search input is present** in the search tab's markup (the `type="search"` control and its id), alongside the results, the count and the pager.
+
+### (j.3) The payment assertion is retargeted; the platform's payment rails are recorded as an OPEN item
+
+**The defect in the assertion.** `expect(html).toContain("Cash on delivery")` was satisfied by the theme's **`payment_icons` marks** — the theme's `payment_icons` section carries `marks: "bKash, Nagad, Rocket, Visa, Mastercard, Cash on delivery"` (`src/lib/themes/songoskriti/preview.ts:351-355`) and the theme's own presentation renders each mark as a badge (`SongoskritiPaymentIcons`, `src/components/builder/songoskriti.tsx:1287-1310`; the text chip for a mark with no artwork, `src/components/store/PaymentMarks.tsx:487-507`). The assertion said nothing about the platform's **payment rails**.
+
+**The platform defect — OPEN, out of scope, recorded and not fixed.** The platform's `payment_methods` widget renders **no payment-method radios**: `PaymentMethods` reads `const grouped = groupMethods(cart.methods)` and then indexes it **by group name** (`const keys = (grouped[group] ?? []) as PaymentMethodKey[]`, `src/components/builder/cart.tsx:560`, `:584`), but `groupMethods()` returns an **array** of `{ layer, methods }` objects (`src/lib/payment-rails.ts:358-363`). `grouped[group]` is therefore **always `undefined`**, every group renders `null`, and the fieldset renders its legend and **no rails** (`src/components/builder/cart.tsx:576-617`). **The same defect is on the live checkout**, because the live checkout renders the same widget. The fix lives in `src/components/builder/cart.tsx`, which port spec §7 **prohibits** ("everything else under `src/`"); it is **out of scope for this plan** and is **recorded, not fixed**. It is an OPEN item in this record and in the evidence record's open list.
+
+**The contract, recorded before the edit.** The preview suite's checkout case asserts **what actually renders**:
+
+- the theme's own payment marks — the "We accept" heading, a brand badge (`aria-label="bKash"`) and the "Cash on delivery" text chip; and
+- the platform's `payment_methods` widget's own legend ("Payment method"), which proves the platform widget is granted and rendered.
+
+It does **not** assert payment radios, because the platform renders none (the OPEN defect above), and it does **not** assert their absence either — that would pin a defect into a test. The mock's hard-coded line and money stay asserted absent.
+
+### (j.4) Decision **D4** is widened to **six** files (owner's ruling, 2026-10-20)
+
+**The ruling.** The owner ruled on **2026-10-20**: widen Decision **D4** to **six** files and move the fourth stale pin. The standing instruction was _"as per the expert opinion, whatever goes"_: the expert's bar requires the theme's page in the preview, and the pin is a file this work created, so **it moves with the change**. §(i) already carries the exact diff; it is applied here **verbatim**.
+
+**The file.** `src/components/store/songoskriti-preview-page.test.tsx` — the Phase-1 preview-page suite. Its case at `:126-131` pins the **shared** studio fixture's literal "Demo page body." (`src/lib/preview-page-data.ts:40`); the preview now renders the **theme's own** labelled sample page (`SONGOSKRITI_PREVIEW_PAGE`, `src/lib/themes/songoskriti/preview-page.ts`), so the pin names a body the host no longer renders.
+
+**The diff applied — §(i)'s hunk, verbatim.**
+
+```diff
+@@ -126,8 +126,11 @@
+   it("renders a non-empty body for ?template=page", () => {
+     const html = renderPage();
+     expect(html).toContain("<article");
+     expect(html).toContain("</article>");
+-    expect(html).toContain("Demo page body.");
++    // The Songoskriti blueprint renders the theme's OWN labelled sample
++    // page (`SONGOSKRITI_PREVIEW_PAGE`), not the shared studio fixture.
++    expect(html).toContain("Sample page — Songoskriti sizing and care");
+   });
+```
+
+**The replacement is strictly stronger.** The subject — "the preview's page tab renders a real body" — is untouched; the expectation now names the theme's own page title instead of a generic sentence of the shared fixture, so the pin can no longer be satisfied by the studio's placeholder. No assertion is deleted, skipped or weakened; the case count is unchanged (7 tests in the file, before and after).
+
+### (j.5) The theme's `facet_sidebar` authors the category and kind groups — a composition change
+
+**The defect.** The theme's `facet_sidebar` carried only `heading`, `limit` and `collapsed` (`src/lib/themes/songoskriti/preview.ts:269-273`). The platform's facet panel renders the category group only when `bool("showCategories")` and the kind group only when `bool("showKinds")` (`src/components/builder/collection.tsx:157`, `:177`), and `bool()` is `props[key] === true` (`src/components/builder/widgets.tsx:176-178`) — an **absent** prop is false. So the granted sidebar rendered **only its heading and "Clear all"**, and the demo facet labels could not appear. The substitute assertion in the preview suite (the toolbar's "Filter" button) proved the demo rows reached the **toolbar**, not the sidebar.
+
+**The fix — the theme's own composition (the real fix).** The theme's `facet_sidebar` authors `showCategories: true` and `showKinds: true`. Both are **catalogue fields** (`src/lib/builder-ast.ts:2742-2743`), so a merchant sees them in the builder as switches, and they join the theme's existing three.
+
+**The pin that moves with it.** The theme's own suite pins the **exact prop-key set** of every section of the search body (`src/lib/themes/songoskriti/search-template.test.ts:204-208`): `facet_sidebar` → `["collapsed","heading","limit"]`. It becomes `["collapsed","heading","limit","showCategories","showKinds"]`. The pin is **not weakened** — it is the same assertion over a **larger** set, so a prop added or dropped still fails; and because the file is under `src/lib/themes/songoskriti/**` (§7's Editable clause — the same reading the owner adopted for `skins.test.ts` in §(g)), it is **not** a new D4 file.
+
+**The storefront is unaffected.** `facet_sidebar` is **not** granted on the storefront (Decision **D7** — no storefront route mounts a `WidgetDataProvider`, so its rows would be empty); an ungranted context widget renders `null` (`src/components/builder/SectionRenderer.tsx:814-833`). The change is visible in the preview (the only host that grants it) and in the builder canvas.
+
+**The proof.** The preview suite asserts the demo facet labels — **"Jewellery"** (a demo category) and **"physical"** (a demo kind) — appear in the search tab's markup, and the brief's literal facet-label assertion is restored.
+
+### (j.6) Three smaller records: the `blogSlots` grant, the count assertion, and the dead `CheckoutMock`
+
+**The `blogSlots` grant is load-bearing and appears in neither the scope line nor the brief.** The blog pack's three sections (`blog_terms` / `blog_archive` / `blog_pager`) are **context widgets** (`templates:` allowlists, `src/lib/builder-ast.ts`), so they render only where the host grants permission (`src/components/builder/SectionRenderer.tsx:814-833`). The preview grants them on the `blog` template (`src/components/store/ThemePreviewFrame.tsx:645-652`): **without that grant the blog body renders an empty `<main>`** — the body is three context widgets and nothing else. The grant is therefore **required for the blog surface to render at all**, and it is recorded here because neither §(b.1)'s scope line nor the plan's Task 7.4 item 5 names it.
+
+**The count assertion is tightened.** The preview suite asserted `expect(html).toContain(String(SONGOSKRITI_PREVIEW_SEARCH_TOTAL))` — which **any** "38" anywhere in the markup satisfies. It now asserts the **rendered count**: `expect(html).toContain("38 products")` — the count and the noun the theme's toolbar actually prints (`countLabel: "products"`, `src/lib/themes/songoskriti/preview.ts:263-268`; `SongoskritiResultToolbar`, `src/components/builder/songoskriti.tsx:2394-2406`). The number is still **derived** from the fixture (`SONGOSKRITI_PREVIEW_SEARCH_TOTAL`), never typed twice.
+
+**`src/components/store/CheckoutMock.tsx` is now DEAD CODE.** Task 7 replaced the preview's checkout branch with the **authored** `ast.main`, so the mock is no longer imported or rendered anywhere (`src/components/store/ThemePreviewFrame.tsx` carries no `CheckoutMock` import; a repo-wide grep finds the symbol only in its own definition). It is **not deleted**: the file is under `src/components/store/**`, which port spec §7 prohibits ("everything else under `src/`"). It is recorded in the evidence record's **stale-artifact list** as dead code, for a later, separately-approved removal.
+
+### (j.7) The boundary of this round — six D4 files, two theme-owned files, one new-suite file
+
+Decision **D4** now covers **six** existing files (the four of §(e), the theme-owned `skins.test.ts` of §(g), and `src/components/store/songoskriti-preview-page.test.tsx` of §(i)/(j.4)). This round edits:
+
+| file                                                             | change                                                                                                                                 | authority                                                                   |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `src/components/store/ThemePreviewFrame.tsx`                     | the conditional `empty_state` grant; the demo `productSlot`                                                                            | §(j.1), §(j.2) — D4 (the preview host)                                      |
+| `src/lib/themes/songoskriti/preview.ts`                          | the theme's `facet_sidebar` authors `showCategories` / `showKinds`                                                                     | §(j.5) — §7 Editable (`src/lib/themes/songoskriti/**`)                      |
+| `src/lib/themes/songoskriti/search-template.test.ts`             | the prop-set pin moves with the composition                                                                                            | §(j.5) — §7 Editable (the theme's own test)                                 |
+| `src/components/store/songoskriti-preview-page.test.tsx`         | §(i)'s diff, applied                                                                                                                   | §(j.4) — D4 (the sixth file)                                                |
+| `src/components/store/songoskriti-preview-compositions.test.tsx` | the retargeted payment assertion; the facet-label assertions; the search-input assertion; the tightened count; the empty-state absence | §(j.1)–§(j.3), §(j.6) — a NEW file this plan created (not an existing test) |
+
+**Not touched, by rule:** `src/components/builder/cart.tsx` (the payment-rails defect — §7-prohibited, recorded as an OPEN item), the production storefront routes (including `src/routes/store.$slug.search.tsx`), `src/components/store/BlogArchiveTheme.tsx`, `src/components/store/PageView.tsx`, `src/components/store/CheckoutMock.tsx`, and the three churn files plus `.output-snapshots/`.
