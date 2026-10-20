@@ -1,6 +1,6 @@
 # Songoskriti — template genericity & the asset-inventory gap: consolidated report
 
-**Date:** 2026-10-20 · **Repo:** `/opt/frame28` · **Branch:** `frame30` · **Deployed:** `2327fc3e` (`origin/frame30` and `origin/main`)
+**Date:** 2026-10-20 · **Repo:** `/opt/frame28` · **Branch:** `frame30` · **Deployed:** `fda55ede` (`origin/frame30` and `origin/main`)
 **Purpose:** one self-contained document for an expert review — the problem as found, every implementation question that was asked and the answer it received, what has since shipped and been verified, and the questions that remain open.
 
 ---
@@ -50,8 +50,8 @@ These are the questions I put to you while implementing, with the options offere
 | Q4  | How should the gate be built?                                                               | A: shared manifest + CLI + generator `--check` + vitest + release wiring · B: vitest-only · C: browser/network gate | **A — shared manifest + CLI**                                                                                            | One manifest + one frozen expectation + one gate that both the CLI and CI run                                                                |
 | Q5  | The port spec §7 forbids editing core files; the rename needs two existing test files moved | two test files only · **also fix the preview's page tab**                                                           | **Also fix the preview's page tab** (a three-file escalation: the two pins + `ThemePreviewFrame.tsx`)                    | The preview keeps showing real content instead of going empty                                                                                |
 | Q6  | How to proceed with Phase 1?                                                                | execute now with subagents · commit the documents first · hold                                                      | **Execute Phase 1 now with subagents**                                                                                   | 7 implementation commits + a review after each                                                                                               |
-| Q7  | Integration of the asset-gate branch                                                        | push and deploy · push only · keep local                                                                            | **Push and deploy**                                                                                                      | `40673d3a` live; the live asset verification                                                                                                 |
-| Q8  | Integration of Phase 1                                                                      | push and deploy · push only · hold                                                                                  | **Push and deploy**                                                                                                      | `c9ec4a45` live, then `2327fc3e` after the closure pass                                                                                      |
+| Q7  | Integration of the asset-gate branch                                                        | push and deploy · push only · keep local                                                                            | **Push and deploy**                                                                                                      | `b31c87ea` live; the live asset verification                                                                                                 |
+| Q8  | Integration of Phase 1                                                                      | push and deploy · push only · hold                                                                                  | **Push and deploy**                                                                                                      | `520c0335` live, then `fda55ede` after the closure pass                                                                                      |
 | Q9  | "Close all the opened task"                                                                 | —                                                                                                                   | **Close every open item**                                                                                                | The closing wave: the lint key, the nav restore, the label localisation, the JWT redaction, the record corrections, and the remaining minors |
 
 **Escalations granted** (each is an explicit exception to port spec §7, recorded in `docs/superpowers/songoskriti-evidence/port/phase1-page-content-escalation.md`):
@@ -64,7 +64,7 @@ These are the questions I put to you while implementing, with the options offere
 
 ## 3. What has shipped, and the evidence
 
-### 3.1 The asset acceptance gate (live on `40673d3a`)
+### 3.1 The asset acceptance gate (live on `b31c87ea`)
 
 - **One manifest** (`scripts/songoskriti-assets-manifest.mjs`, 21 entries) + **one frozen expectation** (`scripts/songoskriti-assets-expected.json`, 21 sha256 digests) + the tree. The gate compares all three, so deleting a file _and_ its manifest entry can no longer go green.
 - **The gate** (`scripts/songoskriti-assets-check.mjs`): one pure `checkSongoskritiAssets(world) → {findings, notes}`. Rules: missing, orphan, byte-vs-name and name-vs-manifest format mismatch, undersized, oversized, over-dense, total size, duplicate (in-dir **and** a theme raster copied elsewhere under `public/`), unreferenced, invalid SVG, expectation drift, dangling reference, wrong URL form, cross-theme reference, video mismatch, and a retired path in the newest migration (advisory). Exit 0/1/2; notes never fail it.
@@ -72,11 +72,11 @@ These are the questions I put to you while implementing, with the options offere
 - **Live proof**: the 9 renamed URLs → **200**, the 9 retired `.png` URLs → **404**, the 7 untouched assets → 200; all 21 referenced assets resolve across index/collection/product.
 - The gate heads `gates:release` (`bun run assets:songoskriti`); the vitest suite runs it in CI.
 
-### 3.2 Phase 1 — the generic `page` template (live on `2327fc3e`)
+### 3.2 Phase 1 — the generic `page` template (live on `fda55ede`)
 
 - `src/lib/themes/songoskriti/preview.ts:207-218` — the theme's `page` template now declares `s("breadcrumb") + s("page_content")` instead of `heading "Size guide"` + `rich_text "Demo article"`. The CMS page now renders the merchant's **real content through the theme layout**.
 - The theme preview gained an honestly-labelled demo page source (`src/lib/preview-page-data.ts` — a data-only fixture typed as a `Pick` of the production `StorePage` row, so a production shape change breaks the build) plus one memo in `ThemePreviewFrame.tsx`.
-- **The two regressions this introduced were then closed**: the "More information" sibling-page nav is restored on the themed path and the empty 15rem gutter is gone (`e7f69baa`, `5afb03fe`), and the false "No primary heading on this template" lint warning is fixed by keying the lint by template (`7c7e1b05`) — the rule is unchanged for templates that genuinely own their h1.
+- **The two regressions this introduced were then closed**: the "More information" sibling-page nav is restored on the themed path and the empty 15rem gutter is gone (`15ba404a`, `029b1b5e`), and the false "No primary heading on this template" lint warning is fixed by keying the lint by template (`74b7f2b5`) — the rule is unchanged for templates that genuinely own their h1.
 - **Live proof** (`?template=page`, `en` and `bn`): HTTP 200, exactly **one `<h1>`**, one `<article>`, the `page_content` node present, "Demo page body." present, **zero** occurrences of "Size guide" / "Demo article" / "How to measure", the label localised ("Last updated" / "সর্বশেষ হালনাগাদ"). All eight other preview templates still render 200 unchanged.
 - **CI's `secrets:scan` was red at HEAD** (a committed anon JWT in the e2e evidence) — redacted in place; the scanner was **not** weakened, and the note now discloses that the value remains in git history (`044624af`) with a rotate-if-shared action.
 
@@ -205,6 +205,7 @@ Each is a judgement I took to keep momentum, with what it costs if it was wrong.
 11. **Tasks 1-3 were dispatched as one batch** (one coherent change, one review surface); Task 4 was separate.
 12. **The 35 dangling `/plan.md` references were not repointed** — they name a different, long-gone master roadmap and were already broken before this work.
 13. **The parity re-freeze was not auto-run** — it would mutate a store in a possibly-shared database.
+14. **The branch history was rewritten once, on 2026-10-20, to correct a false co-author trailer.** Two commits carried `Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>` although **no Anthropic model was involved** — the work came from OpenCode subagents running `opencode/minimax-m3.1-flash-free` (the paid models were unavailable on this account), and one subagent mis-stamped its own identity into its commit message. GitHub counts co-author trailers as contributions, which is why an `@claude` account appeared in the contributors list. The rewrite re-issued the two commit messages with the accurate trailer and re-issued every descendant SHA; **the trees are byte-identical** (verified with `git diff`), all subjects and author metadata are preserved, and the SHA references in this report and the evidence documents were updated to match. Cost if wrong: the GitHub contributor list changes shape — it should now show only you and OpenCode.
 
 ---
 

@@ -1,7 +1,7 @@
 # Review — `docs/superpowers/plans/2026-10-20-theme-editable-templates-brief.md` "Theme-Editable CMS Templates — Frame30"
 
 **Reviewed artefact:** `/opt/frame28/docs/superpowers/plans/2026-10-20-theme-editable-templates-brief.md` (353 lines; it was an untracked file at the repo root when the review ran)
-**Repository:** `/opt/frame28`, branch `frame30`; `origin/frame30` == `origin/main` == `7127183406e3e80fea2b13039720b1000125ed2c`
+**Repository:** `/opt/frame28`, branch `frame30`; `origin/frame30` == `origin/main` == `1819139406e3e80fea2b13039720b1000125ed2c`
 **Review date:** 2026-10-20 · **Mode:** read-only. No file in the repository was edited except this one.
 **Tooling note:** `bun` is not on `PATH` in this environment; every command below uses `node` / `node_modules/.bin/…` or plain `git` / `grep`.
 
@@ -17,7 +17,7 @@ Three specific, load-bearing things the brief gets wrong about the *current* sys
 
 1. **§11 ("Fix the generic Page template") is aimed at the wrong layer and states a false defect.** The live CMS page route already renders the merchant's real page — title, excerpt, body, media, studio-composed nodes — through `PageView` → `StudioNodes` → `ThemeChrome`'s `page_content` context slot. The literal string "Size guide" exists in exactly one place: `src/lib/themes/songoskriti/preview.ts:209`, the theme's own **seed/preview** source. It is demo copy, not production copy. §11 as written would send an engineer to fix a bug that is not there, while the real defect (the whole family of non-index Songoskriti templates shipping the shared default) goes untouched.
 2. **§9 ("Allow the theme to design the checkout shell") is contradicted by the route.** `src/routes/store.$slug.checkout.tsx:419-421` passes `ast={null}` with the comment *"the checkout form is hand-built (server-quoted totals, live rails), so the theme contributes the tokens only."* The theme cannot design the checkout shell because the checkout route deliberately does not read the theme's AST.
-3. **The brief does not know that the port is finished and diagnosed.** `report.md` at HEAD (`71271834`, committed 2026-10-20) already answers the question the brief is built around — why the non-homepage Songoskriti templates read as generic — names the exact gap ("no gate asks *is this template actually a Songoskriti design, or the shared default with the theme's logo on top?*"), and proposes five options including the **distinctness gate** the brief never mentions. The brief re-derives, at length, a conclusion that is already committed to the repository.
+3. **The brief does not know that the port is finished and diagnosed.** `report.md` at HEAD (`18191394`, committed 2026-10-20) already answers the question the brief is built around — why the non-homepage Songoskriti templates read as generic — names the exact gap ("no gate asks *is this template actually a Songoskriti design, or the shared default with the theme's logo on top?*"), and proposes five options including the **distinctness gate** the brief never mentions. The brief re-derives, at length, a conclusion that is already committed to the repository.
 
 **What the brief is good for:** the constraint set (§12 templates-vs-presentations, §16 tenant isolation, §15 a11y/SEO/perf) and the §1 posture ("Do not assume preview behavior and storefront behavior are identical") are correct and should survive verbatim into any re-cut. What it is bad for: it is not a task list, it has no sequencing, no per-task acceptance, no file-level targets, no ownership, and it is unaware of a frozen parity baseline and an active core-file prohibition that will block most of the work it proposes.
 
@@ -270,7 +270,7 @@ The three levels (contract/unit, integration, browser E2E) are the right shape. 
 
 ### §18 — Update the documentation
 
-**PARTIALLY HOLDS.** The canonical internal docs exist and are current: `docs/themes/creation.md` (author guide, "Last verified: 2026-10-20 @ 58bbe33e9c8e"), `docs/themes/songoskriti-port-map.md`, `docs/themes/packages.md`, `docs/themes/presentation-primitives.md`, `docs/04-builder/sections-templates.md`, `docs/04-builder/theme-runtime.md`, `docs/03-storefront/*`. A doc gate exists and is wired into `gates:release` (`bun run doc:gate`, `scripts/doc-gate.mjs`).
+**PARTIALLY HOLDS.** The canonical internal docs exist and are current: `docs/themes/creation.md` (author guide, "Last verified: 2026-10-20 @ c1ca9fbe9c8e"), `docs/themes/songoskriti-port-map.md`, `docs/themes/packages.md`, `docs/themes/presentation-primitives.md`, `docs/04-builder/sections-templates.md`, `docs/04-builder/theme-runtime.md`, `docs/03-storefront/*`. A doc gate exists and is wired into `gates:release` (`bun run doc:gate`, `scripts/doc-gate.mjs`).
 
 **The gap §18 does not name is a live contradiction in the canonical docs**, not a missing doc: `docs/themes/creation.md:36` says the `blog` template must be `blog_terms` + `blog_archive` + `blog_pager` + newsletter, and the shipped Songoskriti `blog` template is `heading` + `image` + `rich_text` (`src/lib/themes/songoskriti/preview.ts:218-234`). The guide is wrong about the shipped theme, and nothing catches it. The brief's own rule — *"only mark a guide verified after comparing it with the actual implementation and tests"* — is right; it just needs to be pointed at this specific line.
 
@@ -491,7 +491,7 @@ Run from `/opt/frame28`. Read-only; nothing below writes to the repository. `bun
 
 ```bash
 cd /opt/frame28
-git rev-parse origin/main origin/frame30      # both 7127183406e3e80fea2b13039720b1000125ed2c
+git rev-parse origin/main origin/frame30      # both 1819139406e3e80fea2b13039720b1000125ed2c
 git log --oneline -5
 git status --short                             # .artifacts/..., ops/routing/*.conf, .output-snapshots/, the brief (docs/superpowers/plans/2026-10-20-theme-editable-templates-brief.md)
 git log -S "No designated homepage" --oneline -- src/routes/store.\$slug.index.tsx   # b08f6819

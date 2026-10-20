@@ -1,6 +1,6 @@
 # Phase 1 — page-template content slot: verification evidence
 
-**Branch:** `frame30` · **Base commit:** `71271834` · **HEAD at verification time:** `13fc65ab`
+**Branch:** `frame30` · **Base commit:** `18191394` · **HEAD at verification time:** `4b42730b`
 **Plan:** `docs/superpowers/plans/2026-10-20-theme-editable-templates.md` (Tasks 5 + 6)
 **Recorded:** 2026-10-20
 
@@ -10,16 +10,16 @@ This document is the Phase-1 verification record for the change "the theme's `pa
 
 | Role | SHA | Subject |
 | ---- | --- | ------- |
-| Task 1 — escalation record | `78421884cc516d1cdb61024016c69c6ea954bf3a` | `docs(songoskriti): record the page-template escalation (frozen pins + preview frame)` |
-| **Task 2 — the theme change** | `673e03522ec6c7022117749f6efc21299a99eb23` | `fix(songoskriti): give the page template the route's content slot` |
-| Task 3 — the pin move | `293d798fd80e91ea72a8ed99edf79f1a13905372` | `test(songoskriti): move the page composition pins to the content-slot body` |
-| Task 2 — record correction | `cf7088b64fad5c525a5946d6869135c76c8fc745` | `docs(songoskriti): correct the escalation record to the committed preview-nav diff` |
-| **Task 4 — the preview source** | `13fc65ab84c7ac296ac7bdbde7f61a3eefc8ab7f` | `fix(songoskriti): give the theme preview a demo page body` |
+| Task 1 — escalation record | `489d6fb4cc516d1cdb61024016c69c6ea954bf3a` | `docs(songoskriti): record the page-template escalation (frozen pins + preview frame)` |
+| **Task 2 — the theme change** | `513e6c622ec6c7022117749f6efc21299a99eb23` | `fix(songoskriti): give the page template the route's content slot` |
+| Task 3 — the pin move | `15dd961fd80e91ea72a8ed99edf79f1a13905372` | `test(songoskriti): move the page composition pins to the content-slot body` |
+| Task 2 — record correction | `c551f5a64fad5c525a5946d6869135c76c8fc745` | `docs(songoskriti): correct the escalation record to the committed preview-nav diff` |
+| **Task 4 — the preview source** | `4b42730b84c7ac296ac7bdbde7f61a3eefc8ab7f` | `fix(songoskriti): give the theme preview a demo page body` |
 
-The change set, `71271834..13fc65ab`:
+The change set, `18191394..4b42730b`:
 
 ```
-$ git diff --stat 71271834..HEAD
+$ git diff --stat 18191394..HEAD
  .../port/phase1-page-content-escalation.md         | 311 +++++++++++++++++++++++++
  .../builder/songoskriti-port-freeze.test.tsx       |   2 +-
  src/components/store/ThemePreviewFrame.tsx         |  34 +++
@@ -35,6 +35,8 @@ $ git diff --stat 71271834..HEAD
 ---
 
 # A. Task 5 — the running app
+
+> **Note on the branch history (2026-10-20).** The commits quoted in this document were re-issued in a one-off history rewrite that corrected a false `Co-Authored-By: Claude Opus 4.8` trailer on two commits (no Anthropic model was involved — the work came from OpenCode subagents on `opencode/minimax-m3.1-flash-free`, and one subagent mis-stamped its identity into its commit message). The rewrite changed commit SHAs only: **the trees are byte-identical**, every subject and author/date is preserved, and the SHA references below were updated to the re-issued values.
 
 ## A.1 — Step 5.1: the dev server
 
@@ -139,7 +141,7 @@ The live body matches the brief's quoted expectation (`page_content-…` node id
 
 ## A.7 — The eight other preview templates are byte-identical to before
 
-**PASS.** All nine templates were fetched over HTTP from the live dev server, at `13fc65ab` and at the base commit `71271834` (the two changed source files — `src/lib/themes/songoskriti/preview.ts` and `src/components/store/ThemePreviewFrame.tsx` — were temporarily written back to their base-commit content with `git show 71271834:<path> > <path>`, the server was allowed to recompile, the nine templates were re-fetched, and the files were restored with `git checkout HEAD -- <path>`).
+**PASS.** All nine templates were fetched over HTTP from the live dev server, at `4b42730b` and at the base commit `18191394` (the two changed source files — `src/lib/themes/songoskriti/preview.ts` and `src/components/store/ThemePreviewFrame.tsx` — were temporarily written back to their base-commit content with `git show 18191394:<path> > <path>`, the server was allowed to recompile, the nine templates were re-fetched, and the files were restored with `git checkout HEAD -- <path>`).
 
 Each response was normalised for the three pieces of per-request nondeterminism (the CSP `nonce` attribute, the `csp-nonce` meta `content`, and the `u:<timestamp>` in the serialised router state) and then hashed. The normalisation was proved sound first: two consecutive fetches of the same template at the same commit produced identical normalised hashes.
 
@@ -147,7 +149,7 @@ Each response was normalised for the three pieces of per-request nondeterminism 
 $ python3 norm.py tpl-base/*.html tpl-head/*.html     # sha256 of the normalised response
 ```
 
-| Template | base `71271834` sha256 | HEAD `13fc65ab` sha256 | Verdict |
+| Template | base `18191394` sha256 | HEAD `4b42730b` sha256 | Verdict |
 | -------- | ---------------------- | ---------------------- | ------- |
 | `index` | `49bc687750708d73bc68c896be48ee09d65ed17d996a599b05859de691111441` | `49bc687750708d73bc68c896be48ee09d65ed17d996a599b05859de691111441` | **IDENTICAL** |
 | `product` | `a934ceddfc9720c533a1b8dedada0ce2e55df5b169c0109dac4e738d23f632ad` | `a934ceddfc9720c533a1b8dedada0ce2e55df5b169c0109dac4e738d23f632ad` | **IDENTICAL** |
@@ -161,7 +163,7 @@ $ python3 norm.py tpl-base/*.html tpl-head/*.html     # sha256 of the normalised
 
 **Eight of nine byte-identical; only `page` changed.** The swap was proved to have taken effect: the base-commit `page` response renders `<h1 …>Size guide</h1>`, `How to measure` and `Demo article` (1 each) and no `<article>`, while the HEAD response renders the labelled demo body.
 
-The source-level statement agrees: `git diff 71271834..HEAD -- src/lib/themes/songoskriti/preview.ts` is a single hunk, wholly inside `case "page":` —
+The source-level statement agrees: `git diff 18191394..HEAD -- src/lib/themes/songoskriti/preview.ts` is a single hunk, wholly inside `case "page":` —
 
 ```diff
          case "page":
@@ -475,16 +477,16 @@ secret scan FAILED — 10 finding(s):
   .output-snapshots/snap_20261019T110422Z_26f3447/server/_ssr/client-DcYeaJ49.mjs:58  [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
   .output-snapshots/snap_20261019T110422Z_26f3447/server/_ssr/router-CmD4v4T6.mjs:4281 [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
   .output-snapshots/snap_20261019T110422Z_26f3447/server/_ssr/router-CmD4v4T6.mjs:4300 [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
-  .output-snapshots/snap_20261020T040348Z_40673d3/server/_ssr/client-DcYeaJ49.mjs:41  [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
-  .output-snapshots/snap_20261020T040348Z_40673d3/server/_ssr/client-DcYeaJ49.mjs:58  [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
-  .output-snapshots/snap_20261020T040348Z_40673d3/server/_ssr/router-DXSMj1q8.mjs:4281 [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
-  .output-snapshots/snap_20261020T040348Z_40673d3/server/_ssr/router-DXSMj1q8.mjs:4300 [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
+  .output-snapshots/snap_20261020T040348Z_b31c87e/server/_ssr/client-DcYeaJ49.mjs:41  [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
+  .output-snapshots/snap_20261020T040348Z_b31c87e/server/_ssr/client-DcYeaJ49.mjs:58  [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
+  .output-snapshots/snap_20261020T040348Z_b31c87e/server/_ssr/router-DXSMj1q8.mjs:4281 [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
+  .output-snapshots/snap_20261020T040348Z_b31c87e/server/_ssr/router-DXSMj1q8.mjs:4300 [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
   docs/superpowers/songoskriti-evidence/port/e2e/foreign-gap-probe.json:50  [jwt]  "WebSocket connection to 'ws://127.0.0.1:58000/realtime/v1/websocket?apikey=eyJ…"
   docs/superpowers/songoskriti-evidence/port/e2e/foreign-gap-probe.json:51  [jwt]  "WebSocket connection to 'ws://127.0.0.1:58000/realtime/v1/websocket?apikey=eyJ…"
 exit=1
 ```
 
-**Where the findings are:** 8 of the 10 are in the **untracked** `.output-snapshots/` build output (a local build artefact the plan never commits — they disappear on a pristine checkout). The remaining **2 are in a tracked file**: `docs/superpowers/songoskriti-evidence/port/e2e/foreign-gap-probe.json:50-51`, a committed anon JWT recorded as e2e evidence (committed in `044624af`). **Consequence: the secret scan is red on a clean checkout of `frame30` at `71271834`, and CI's `secrets:scan` job (`.circleci/config.yml:94`, `bun run secrets:scan`) is red at HEAD — before this plan's change.**
+**Where the findings are:** 8 of the 10 are in the **untracked** `.output-snapshots/` build output (a local build artefact the plan never commits — they disappear on a pristine checkout). The remaining **2 are in a tracked file**: `docs/superpowers/songoskriti-evidence/port/e2e/foreign-gap-probe.json:50-51`, a committed anon JWT recorded as e2e evidence (committed in `044624af`). **Consequence: the secret scan is red on a clean checkout of `frame30` at `18191394`, and CI's `secrets:scan` job (`.circleci/config.yml:94`, `bun run secrets:scan`) is red at HEAD — before this plan's change.**
 
 This plan's commits touch only `src/lib/themes/songoskriti/preview.ts`, the three new test files, the NEW fixture `src/lib/preview-page-data.ts`, the escalated preview frame `src/components/store/ThemePreviewFrame.tsx`, the two frozen pins and the two new `docs/**` records — none of which contains a JWT, and none of which can change the finding count. **Not fixed**: rewriting or removing a committed evidence file is an owner decision.
 
@@ -525,13 +527,13 @@ $ git diff --stat      # unstaged, tracked
 | ---- | ------------ | ------------- | ------------------------------------- | --------------------- |
 | 6.8 `contract-gate` | exit 2, `spawnSync bunx ENOENT` | `bun`/`bunx` are not on PATH; the manifest check the gate exists to enforce **passed** | the 13 contract suites, run with `node_modules/.bin/vitest` | **13 files / 258 tests passed, exit 0** |
 | 6.10 `schema-fingerprint --check` | exit 1, `rpc failed (400)` | the live Supabase RPC is not callable from this environment; the plan creates no migration and alters no migration | — (no local equivalent: the check needs the live schema) | n/a — CI's `e2e-levelb-production` runs it against the real environment |
-| 6.12 `secret-scan` | exit 1, 10 findings | 8 in the untracked `.output-snapshots/`, 2 in a tracked evidence file committed in `044624af` — pre-existing at `71271834` | — (the scan is already the signal; the finding list is unchanged by this plan) | n/a — CI's `secrets:scan` is red at HEAD, before this plan |
+| 6.12 `secret-scan` | exit 1, 10 findings | 8 in the untracked `.output-snapshots/`, 2 in a tracked evidence file committed in `044624af` — pre-existing at `18191394` | — (the scan is already the signal; the finding list is unchanged by this plan) | n/a — CI's `secrets:scan` is red at HEAD, before this plan |
 
 The only test-level red in the whole suite (6.6/6.7, `src/lib/site.server.test.ts`) is the documented local-only env flake, and step 6.6's second run proves it (`3 passed (3)` with the Supabase env emptied).
 
 ## Post-verification commits — **§6.13 above is a pre-commit snapshot**
 
-**The controller committed all five plan documents in `16f2743d`** — *"docs(songoskriti): phase-1 plan, the Phase-0 audit, the brief review and the verification evidence"*:
+**The controller committed all five plan documents in `4dcc267d`** — *"docs(songoskriti): phase-1 plan, the Phase-0 audit, the brief review and the verification evidence"*:
 
 | Document | Published path |
 | -------- | -------------- |
@@ -543,7 +545,7 @@ The only test-level red in the whole suite (6.6/6.7, `src/lib/site.server.test.t
 
 (The brief and its review were untracked files at the repo root when this verification ran; the controller published both under `docs/superpowers/plans/` — the paths above — so that the plan's "the four inputs are never staged" constraint holds in the tracked tree, and committed them with the plan, the audit and this document.)
 
-**§6.13's status list is a snapshot of the pre-commit tree.** It was taken before `16f2743d`, when the four input documents were untracked and the index was clean — which is exactly what the plan's Global Constraints required of them *at that time*. The controller's decision to publish them afterwards changes their tracked status; it does not make the observation recorded in §6.13 inaccurate.
+**§6.13's status list is a snapshot of the pre-commit tree.** It was taken before `4dcc267d`, when the four input documents were untracked and the index was clean — which is exactly what the plan's Global Constraints required of them *at that time*. The controller's decision to publish them afterwards changes their tracked status; it does not make the observation recorded in §6.13 inaccurate.
 
 ---
 
@@ -577,7 +579,7 @@ The only test-level red in the whole suite (6.6/6.7, `src/lib/site.server.test.t
 
 **Note on 5.8 and 6.15.** The brief asks for the evidence doc to be staged and committed in two commits. The instruction that governed this verification run was **"DO NOT PUSH, DO NOT DEPLOY, DO NOT COMMIT"** — the controller performs the push, the deploy and the commits. This document therefore exists in the working tree, **untracked and uncommitted**, and the controller should commit it as the two commits the brief names:
 
-> **Superseded (post-verification).** The controller has since committed this document together with the plan, the Phase-0 audit, the brief and the brief's review in `16f2743d` — see the "Post-verification commits" section above. The paragraph below records the state of the tree *at the time of the verification run*; the two commits it names were folded into the controller's single commit.
+> **Superseded (post-verification).** The controller has since committed this document together with the plan, the Phase-0 audit, the brief and the brief's review in `4dcc267d` — see the "Post-verification commits" section above. The paragraph below records the state of the tree *at the time of the verification run*; the two commits it names were folded into the controller's single commit.
 
 ```
 git add docs/superpowers/songoskriti-evidence/port/phase1-page-content-evidence.md
@@ -592,26 +594,26 @@ git commit -m "docs(songoskriti): record the phase-1 post-merge verification"
 
 **The deploy is a separate, explicit step and was not performed.** No `git push`, no `ops/deploy-from-git.sh`, no `ops/backup/time-machine-snapshot.sh` was run. The deployed preview (`https://framique.qubickle.com/theme-preview/songoskriti?template=page`) still serves the **old** build and still shows "Size guide" (measured in A.2); after the deploy it must show the demo body instead, exactly as step 5.5 asserts on the local server. Post-deploy storefront verification remains blocked for the reason in A.6.1.
 
-> **Superseded (post-deploy).** The paragraph above records the state of the tree _at the time of the verification run_, before any deploy. The deploy happened afterwards: the live bundle marker is `c9ec4a45`, and the live preview now serves the demo body instead of "Size guide" — §D.2 carries the measured numbers. Post-deploy storefront verification remains blocked for the reason in A.6.1.
+> **Superseded (post-deploy).** The paragraph above records the state of the tree _at the time of the verification run_, before any deploy. The deploy happened afterwards: the live bundle marker is `520c0335`, and the live preview now serves the demo body instead of "Size guide" — §D.2 carries the measured numbers. Post-deploy storefront verification remains blocked for the reason in A.6.1.
 
 ---
 
 # D. Closure — the close-out commits, the final live verification, and the one open owner action
 
-**Recorded:** 2026-10-20 · **Branch:** `frame30` · **HEAD at this recording:** `5afb03fe` · **Live build at this recording:** `c9ec4a45` (the deployed bundle marker, `.output/DEPLOYED_SHA`)
+**Recorded:** 2026-10-20 · **Branch:** `frame30` · **HEAD at this recording:** `029b1b5e` · **Live build at this recording:** `520c0335` (the deployed bundle marker, `.output/DEPLOYED_SHA`)
 
 ## D.1 — The six closing commits
 
 | SHA        | Subject                                                                                   | What it closed                                                                                                                                                                                                                                                                                            | Files                                                                                                         |
 | ---------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `7c7e1b05` | fix(songoskriti): key the builder lint by template so route-owned h1 templates are silent | the false "No primary heading on this template." warning in the merchant's builder (Corrections §5; D4's consequence (a)) — a route-owned-h1 template (product, collection, account, page, blog, search) is silent, and a template that owns its `<h1>` and has none still warns with the identical issue | `src/hooks/use-builder-editor.ts`; `src/lib/themes.server.ts`                                                 |
-| `fe727b79` | fix(songoskriti): localise the preview's "Last updated" label                             | the preview's hardcoded English "Last updated" label — the frame now uses the same `t` the production route uses                                                                                                                                                                                          | `src/components/store/ThemePreviewFrame.tsx`                                                                  |
-| `b16ccb41` | docs(songoskriti): redact the committed anon JWT from the e2e evidence                    | the 2 TRACKED `secrets:scan` findings — the committed anon JWT is redacted in place; **the scanner was NOT weakened** (`scripts/secret-scan.mjs` is unchanged)                                                                                                                                            | `docs/superpowers/songoskriti-evidence/port/e2e/foreign-gap-probe.json`                                       |
-| `e7f69baa` | fix(songoskriti): restore the CMS page's sibling-page nav on a themed page                | the lost "More information" sibling-page nav **and** the empty 15rem gutter (D4's consequences (b) and (c)) — the nav renders inside the `page_content` slot value, the themed path gets a single-column container, and the "does the theme render the body" predicate moves into the shared NEW module   | `src/components/store/PageView.tsx`; `src/components/store/ThemeChrome.tsx`; NEW `src/lib/theme-body-slot.ts` |
-| `9402a975` | docs(songoskriti): disclose the redacted anon key's residual in git history               | the disclosure gap in the redaction note — it now states that the value remains in the git history (`044624af`) and names the rotate-if-shared action                                                                                                                                                     | `docs/superpowers/songoskriti-evidence/port/e2e/foreign-gap-probe.json`                                       |
-| `5afb03fe` | fix(songoskriti): space the themed CMS page's nav away from the article                   | the themed nav sitting flush against the merchant's article — the slot value is wrapped in the theme's own `space-y-8`                                                                                                                                                                                    | `src/components/store/PageView.tsx`                                                                           |
+| `74b7f2b5` | fix(songoskriti): key the builder lint by template so route-owned h1 templates are silent | the false "No primary heading on this template." warning in the merchant's builder (Corrections §5; D4's consequence (a)) — a route-owned-h1 template (product, collection, account, page, blog, search) is silent, and a template that owns its `<h1>` and has none still warns with the identical issue | `src/hooks/use-builder-editor.ts`; `src/lib/themes.server.ts`                                                 |
+| `025b3c09` | fix(songoskriti): localise the preview's "Last updated" label                             | the preview's hardcoded English "Last updated" label — the frame now uses the same `t` the production route uses                                                                                                                                                                                          | `src/components/store/ThemePreviewFrame.tsx`                                                                  |
+| `a5ad1d81` | docs(songoskriti): redact the committed anon JWT from the e2e evidence                    | the 2 TRACKED `secrets:scan` findings — the committed anon JWT is redacted in place; **the scanner was NOT weakened** (`scripts/secret-scan.mjs` is unchanged)                                                                                                                                            | `docs/superpowers/songoskriti-evidence/port/e2e/foreign-gap-probe.json`                                       |
+| `15ba404a` | fix(songoskriti): restore the CMS page's sibling-page nav on a themed page                | the lost "More information" sibling-page nav **and** the empty 15rem gutter (D4's consequences (b) and (c)) — the nav renders inside the `page_content` slot value, the themed path gets a single-column container, and the "does the theme render the body" predicate moves into the shared NEW module   | `src/components/store/PageView.tsx`; `src/components/store/ThemeChrome.tsx`; NEW `src/lib/theme-body-slot.ts` |
+| `bd786125` | docs(songoskriti): disclose the redacted anon key's residual in git history               | the disclosure gap in the redaction note — it now states that the value remains in the git history (`044624af`) and names the rotate-if-shared action                                                                                                                                                     | `docs/superpowers/songoskriti-evidence/port/e2e/foreign-gap-probe.json`                                       |
+| `029b1b5e` | fix(songoskriti): space the themed CMS page's nav away from the article                   | the themed nav sitting flush against the merchant's article — the slot value is wrapped in the theme's own `space-y-8`                                                                                                                                                                                    | `src/components/store/PageView.tsx`                                                                           |
 
-Both boundary-limited consequences D4 named are therefore **closed**: the sibling-page nav and the 15rem gutter by `e7f69baa` (spaced by `5afb03fe`), the false lint warning by `7c7e1b05`. `b16ccb41` and `9402a975` are the records half of the same wave. The plan's D4 entry carries the same statement, with the boundary's cost and how it was paid.
+Both boundary-limited consequences D4 named are therefore **closed**: the sibling-page nav and the 15rem gutter by `15ba404a` (spaced by `029b1b5e`), the false lint warning by `74b7f2b5`. `a5ad1d81` and `bd786125` are the records half of the same wave. The plan's D4 entry carries the same statement, with the boundary's cost and how it was paid.
 
 ## D.2 — The final live verification of `?template=page`
 
@@ -640,19 +642,19 @@ bn 200
 
 The other eight preview templates are unchanged and still answer `200`: index, product, collection, account, blog, cart, checkout, search.
 
-**Which build these numbers describe.** The live bundle marker is `c9ec4a45` — the deploy recorded in the branch's handover — so the measurements above are of that build. **The six commits in D.1 are on the branch and are NOT in that build.** The visible consequence: the live `bn` tab still carries the preview's English "Last updated" label (`Last updated` 1, `সর্বশেষ হালনাগাদ` 0), which is exactly what `fe727b79` fixes and what that commit's own test pins. The other five close-out commits are invisible in the preview (`e7f69baa` and `5afb03fe` change the storefront path, not the preview; `7c7e1b05` changes the builder's lint) or are records (`b16ccb41`, `9402a975`).
+**Which build these numbers describe.** The live bundle marker is `520c0335` — the deploy recorded in the branch's handover — so the measurements above are of that build. **The six commits in D.1 are on the branch and are NOT in that build.** The visible consequence: the live `bn` tab still carries the preview's English "Last updated" label (`Last updated` 1, `সর্বশেষ হালনাগাদ` 0), which is exactly what `025b3c09` fixes and what that commit's own test pins. The other five close-out commits are invisible in the preview (`15ba404a` and `029b1b5e` change the storefront path, not the preview; `74b7f2b5` changes the builder's lint) or are records (`a5ad1d81`, `bd786125`).
 
 ## D.3 — The storefront path is still unverified
 
 **Still unverified, for the same reason as A.6.1: the live database holds no Songoskriti store.** The `store_themes` table holds three rows — Atelier, classic, Supershop (audit §2.1) — and none of them is Songoskriti, so `/store/<slug>/pages/<pageSlug>` and the CMS-designated homepage cannot be exercised in production. The storefront acceptance criterion therefore stays at component level (B.5 — `src/components/store/songoskriti-page-content.test.tsx`).
 
-**Blast radius:** the branch's production blast radius is the theme-preview route only. No live merchant storefront renders the theme's `page` template, because no live merchant wears the theme. The route-side changes D.1 carries (`e7f69baa`, `5afb03fe`) therefore have **no live storefront to regress** — they are proven by the component-level suite and by the storefront test, not by a production page.
+**Blast radius:** the branch's production blast radius is the theme-preview route only. No live merchant storefront renders the theme's `page` template, because no live merchant wears the theme. The route-side changes D.1 carries (`15ba404a`, `029b1b5e`) therefore have **no live storefront to regress** — they are proven by the component-level suite and by the storefront test, not by a production page.
 
 ## D.4 — The CI `secrets:scan` status
 
-**CI's `secrets:scan` job is green on a clean checkout of this branch.** The two TRACKED findings that made it red (`docs/superpowers/songoskriti-evidence/port/e2e/foreign-gap-probe.json:50-51`, §6.12) were closed by `b16ccb41`, which redacted the value in place; the scanner was not relaxed — `scripts/secret-scan.mjs` is unchanged by every commit in D.1.
+**CI's `secrets:scan` job is green on a clean checkout of this branch.** The two TRACKED findings that made it red (`docs/superpowers/songoskriti-evidence/port/e2e/foreign-gap-probe.json:50-51`, §6.12) were closed by `a5ad1d81`, which redacted the value in place; the scanner was not relaxed — `scripts/secret-scan.mjs` is unchanged by every commit in D.1.
 
-Measured on a clean export of `5afb03fe` (tracked tree only, no untracked build output):
+Measured on a clean export of `029b1b5e` (tracked tree only, no untracked build output):
 
 ```
 $ git archive HEAD | tar -x -C /tmp/opencode/clean
@@ -667,18 +669,18 @@ In this working tree the scanner still exits 1, with exactly the **8** findings 
 $ node scripts/secret-scan.mjs
 secret scan FAILED — 8 finding(s):
 
-  .output-snapshots/snap_20261020T040348Z_40673d3/server/_ssr/client-DcYeaJ49.mjs:41  [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
-  .output-snapshots/snap_20261020T040348Z_40673d3/server/_ssr/client-DcYeaJ49.mjs:58  [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
-  .output-snapshots/snap_20261020T040348Z_40673d3/server/_ssr/router-DXSMj1q8.mjs:4281 [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
-  .output-snapshots/snap_20261020T040348Z_40673d3/server/_ssr/router-DXSMj1q8.mjs:4300 [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
-  .output-snapshots/snap_20261020T132319Z_c9ec4a4/server/_ssr/client-DcYeaJ49.mjs:41  [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
-  .output-snapshots/snap_20261020T132319Z_c9ec4a4/server/_ssr/client-DcYeaJ49.mjs:58  [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
-  .output-snapshots/snap_20261020T132319Z_c9ec4a4/server/_ssr/router-Ba23NCC7.mjs:4281 [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
-  .output-snapshots/snap_20261020T132319Z_c9ec4a4/server/_ssr/router-Ba23NCC7.mjs:4300 [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
+  .output-snapshots/snap_20261020T040348Z_b31c87e/server/_ssr/client-DcYeaJ49.mjs:41  [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
+  .output-snapshots/snap_20261020T040348Z_b31c87e/server/_ssr/client-DcYeaJ49.mjs:58  [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
+  .output-snapshots/snap_20261020T040348Z_b31c87e/server/_ssr/router-DXSMj1q8.mjs:4281 [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
+  .output-snapshots/snap_20261020T040348Z_b31c87e/server/_ssr/router-DXSMj1q8.mjs:4300 [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
+  .output-snapshots/snap_20261020T132319Z_520c033/server/_ssr/client-DcYeaJ49.mjs:41  [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
+  .output-snapshots/snap_20261020T132319Z_520c033/server/_ssr/client-DcYeaJ49.mjs:58  [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
+  .output-snapshots/snap_20261020T132319Z_520c033/server/_ssr/router-Ba23NCC7.mjs:4281 [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
+  .output-snapshots/snap_20261020T132319Z_520c033/server/_ssr/router-Ba23NCC7.mjs:4300 [jwt]  "VITE_SUPABASE_PUBLISHABLE_KEY": "eyJ…"
 exit=1
 ```
 
-**Residual, disclosed:** the original value is still in the git history — it was committed in `044624af`, and redacting the tree does not erase it from the objects. `9402a975` states that in the evidence file's own `history` field, together with the action: rotate that loopback dev anon key if the project is shared with anyone who has clone access to the history.
+**Residual, disclosed:** the original value is still in the git history — it was committed in `044624af`, and redacting the tree does not erase it from the objects. `bd786125` states that in the evidence file's own `history` field, together with the action: rotate that loopback dev anon key if the project is shared with anyone who has clone access to the history.
 
 ## D.5 — The one open owner action: the parity re-freeze
 
@@ -710,7 +712,7 @@ This is the parity report's own run command (`docs/superpowers/songoskriti-evide
 
 ## D.6 — Two review findings accepted and deferred, not owner actions
 
-The closing review of the four close-out items (the lint warning, the preview's label, the committed credential, the lost nav) returned **SPEC ✅ / quality Approved** with **4 minor findings**. Two of them are closed by the wave above (`9402a975` — the redaction note's undisclosed history residual; `5afb03fe` — the themed nav flush against the merchant's article). The other two are **accepted and deferred** — consciously not fixed here, and not owner actions:
+The closing review of the four close-out items (the lint warning, the preview's label, the committed credential, the lost nav) returned **SPEC ✅ / quality Approved** with **4 minor findings**. Two of them are closed by the wave above (`bd786125` — the redaction note's undisclosed history residual; `029b1b5e` — the themed nav flush against the merchant's article). The other two are **accepted and deferred** — consciously not fixed here, and not owner actions:
 
 1. **The duplicate-`page_content` case.** A merchant template that declares **two** `page_content` widgets renders the route's sibling-page nav twice, because the slot value is rendered once per widget. This is a pre-existing class of bug — the merchant's own body already duplicates today — and its real fix is a lint rule in `src/lib/builder-ast.ts`, not a change to the route.
 2. **The `useLang()` fallback's `t` identity churn.** The fallback context value returned by `useLang()` when no provider is mounted (`src/lib/i18n.tsx:161-174`) is a fresh object with a fresh `t` on every render, so the preview frame's page-content memo (`src/components/store/ThemePreviewFrame.tsx:587-610`) recomputes on every render when the fallback is in play. It affects tests only.

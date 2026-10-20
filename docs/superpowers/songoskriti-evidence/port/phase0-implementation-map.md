@@ -1,6 +1,6 @@
 # Phase 0 — Implementation Map: Theme-Editable CMS Templates (Frame30)
 
-**Audit target:** `docs/superpowers/plans/2026-10-20-theme-editable-templates-brief.md` §1 (the implementation brief; it was an untracked root-level file when the audit ran), branch `frame30`, HEAD `71271834`.
+**Audit target:** `docs/superpowers/plans/2026-10-20-theme-editable-templates-brief.md` §1 (the implementation brief; it was an untracked root-level file when the audit ran), branch `frame30`, HEAD `18191394`.
 **Date of audit:** 2026-10-20.
 **Nature of this document:** read-only audit. No source file was edited, created, committed or deleted to produce it (the only file written is this one). Every substantive claim carries a `file:line` citation. Where something could not be verified, it is marked **UNVERIFIED** with the reason.
 
@@ -107,7 +107,7 @@ Verified by `grep -rn 'template="' src/routes/` (11 hits) plus `src/components/s
 
 ### 2.1 What I could verify live, and what I could not
 
-**Verified live (2026-10-20, host `framique.qubickle.com`, deployment `40673d3a`):**
+**Verified live (2026-10-20, host `framique.qubickle.com`, deployment `b31c87ea`):**
 
 | Check | Command | Result |
 |---|---|---|
@@ -454,7 +454,7 @@ $ VITE_SUPABASE_URL="" SUPABASE_URL="" SUPABASE_PUBLISHABLE_KEY="" \
 
 **Verdict:** a local-only env flake; unrelated to templates, themes or the proposed change. It does **not** need to be fixed, and it must not be "fixed" by weakening the assertion.
 
-### 7.3 Baseline health of the template-related suites (this tree, `71271834`)
+### 7.3 Baseline health of the template-related suites (this tree, `18191394`)
 
 ```
 $ node_modules/.bin/vitest run src/lib/definition-of-done.test.ts \
@@ -594,4 +594,4 @@ plus a product decision: *does Frame30 want merchants to design a distinct produ
 
 ---
 
-*End of Phase 0 implementation map. Produced read-only against `/opt/frame28` @ `frame30` / `71271834`. The only file written is this one.*
+*End of Phase 0 implementation map. Produced read-only against `/opt/frame28` @ `frame30` / `18191394`. The only file written is this one.*

@@ -1,6 +1,6 @@
 # Phase 1 — Page-template content-slot escalation (frozen pins + preview frame)
 
-**Branch:** `frame30` · **Base commit:** `71271834` · **Recorded:** 2026-10-20
+**Branch:** `frame30` · **Base commit:** `18191394` · **Recorded:** 2026-10-20
 **Plan:** `docs/superpowers/plans/2026-10-20-theme-editable-templates.md` (Task 1)
 **Governing spec:** `docs/superpowers/specs/2026-10-18-songoskriti-unified-port-design.md` §7 (Boundary — "no core files") and §9 (Testing & evidence)
 
@@ -91,7 +91,7 @@ The assertion at `:159` — `expect(main.map((x: Section) => x.type)).toEqual(TE
      // Spot-check demo bodies use proven renderers.
 ```
 
-The block above is the committed diff **verbatim** — `git diff 78421884^ 293d798f -- src/lib/theme-preview-nav.test.ts` — so it applies byte-exactly to the base file and reproduces `293d798f:src/lib/theme-preview-nav.test.ts` with no residue. (Note the `@@` header on the third hunk: the committed edit replaces only the five-line ternary, leaving `expect(…).toBe(` and `);` as context — it is not a re-wrap of the whole call.)
+The block above is the committed diff **verbatim** — `git diff 489d6fb4^ 15dd961f -- src/lib/theme-preview-nav.test.ts` — so it applies byte-exactly to the base file and reproduces `15dd961f:src/lib/theme-preview-nav.test.ts` with no residue. (Note the `@@` header on the third hunk: the committed edit replaces only the five-line ternary, leaving `expect(…).toBe(` and `);` as context — it is not a re-wrap of the whole call.)
 
 `TemplateKey` is **not** currently imported in that file — the import at `src/lib/theme-preview-nav.test.ts:5` is `import { flattenSections } from "./builder-ast";` — so it becomes `import { flattenSections, type TemplateKey } from "./builder-ast";` (one added type import, no assertion removed).
 
@@ -142,7 +142,7 @@ The `page` template is a **route-h1** template (`ROUTE_H1_TEMPLATES`, `src/lib/b
 
 **6 `page` reference stills and 6 machine baselines (`<template>-<width>-<locale>-chromium-linux.png`) under `docs/superpowers/songoskriti-evidence/port/reference/` and `.e2e/songoskriti-port-parity.spec.ts-snapshots/` become stale.**
 
-Measured on this tree at `71271834`:
+Measured on this tree at `18191394`:
 
 - `docs/superpowers/songoskriti-evidence/port/reference/` holds **59** files: 54 template stills (9 templates × 6 widths/locales) + 2 index-variation stills (`index-minimal-1440-en.png`, `index-festive-1440-en.png`) + 2 chrome mega-menu stills + 1 chrome mobile-drawer still. The 6 stale ones are `page-1440-bn.png`, `page-1440-en.png`, `page-375-bn.png`, `page-375-en.png`, `page-768-bn.png`, `page-768-en.png`.
 - `.e2e/songoskriti-port-parity.spec.ts-snapshots/` holds **59** files with the same shape. The 6 stale ones are `page-1440-bn-chromium-linux.png`, `page-1440-en-chromium-linux.png`, `page-375-bn-chromium-linux.png`, `page-375-en-chromium-linux.png`, `page-768-bn-chromium-linux.png`, `page-768-en-chromium-linux.png`.
@@ -284,7 +284,7 @@ The two existing test files are prohibited by port spec §7 (_"existing test fil
 
 ## Verification of the cited `file:line` references
 
-Every reference in this record was grepped out of the tree at `71271834` and resolves:
+Every reference in this record was grepped out of the tree at `18191394` and resolves:
 
 | citation                                               | resolves to                                                                       |
 | ------------------------------------------------------ | --------------------------------------------------------------------------------- |
