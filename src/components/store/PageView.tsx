@@ -166,11 +166,19 @@ export function PageView({ data }: { data: PagePayload }) {
   // sibling-page nav has to travel THROUGH the theme's content slot: below
   // the merchant's own body, as a sibling of their `<article>` — never inside
   // it, and the merchant's content AST is untouched.
+  //
+  // The themed slot renders the slot value with NO wrapper of its own (the
+  // context widget renders it bare when it declares no heading), so the two
+  // would sit flush against each other: the nav's `<aside>` starts right
+  // where the merchant's article ends. The theme's own `space-y-8` — the
+  // utility its `main` spaces its children with — separates them here, so
+  // the nav is visually detached from the article while remaining its
+  // sibling.
   const pageContent = themeOwnsBody ? (
-    <>
+    <div className="space-y-8">
       {content}
       {sidebar}
-    </>
+    </div>
   ) : (
     content
   );

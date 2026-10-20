@@ -180,6 +180,38 @@ function navMarkup(markup: string): string {
   return markup.slice(start, end);
 }
 
+/**
+ * The markup INSIDE the themed slot's spaced container — the wrapper that
+ * holds the merchant's article AND the nav.
+ *
+ * `ThemeChrome` spaces the theme's own `main` children with the same
+ * `space-y-8` class, so the container under test is the one whose content
+ * opens with the merchant's `<article>`: the outer, theme-level container
+ * holds the whole main, this one holds the slot value.
+ *
+ * The container's own close tag is found by counting `<div>`/`</div>`: the
+ * merchant's body carries its own nested `<div>`, so the first `</div>`
+ * after the opening tag is NOT the container's.
+ */
+function spacedContainerInner(markup: string): string {
+  const open = /<div class="space-y-8"><article>/.exec(markup);
+  expect(
+    open,
+    "the themed slot wraps the merchant's article and the nav in a spaced container",
+  ).not.toBeNull();
+  const start = open!.index + open![0].length;
+  let depth = 1;
+  const tag = /<div\b|<\/div>/g;
+  tag.lastIndex = start;
+  let match = tag.exec(markup);
+  while (match !== null) {
+    depth += match[0] === "<div" ? 1 : -1;
+    if (depth === 0) return markup.slice(start, match.index);
+    match = tag.exec(markup);
+  }
+  throw new Error("the spaced container is never closed");
+}
+
 describe("CMS page route — the sibling-page nav survives a themed body", () => {
   it("themed: renders the merchant's body AND the nav, with no reserved 15rem column", () => {
     const ast = songoskritiPageAst();
@@ -214,6 +246,44 @@ describe("CMS page route — the sibling-page nav survives a themed body", () =>
     // …and it is not mutated: the merchant's own h1 survives, exactly once.
     expect(markup.split("<h1").length - 1).toBe(1);
     expect(markup).toContain("About us</h1>");
+  });
+
+  it("themed: the nav sits INSIDE the spaced container; unthemed: it stays a grid sibling", () => {
+    // ── THEMED ────────────────────────────────────────────────────────────
+    // The context widget renders the slot value with no wrapper of its own,
+    // so without a container the nav's `<aside>` starts exactly where the
+    // merchant's article ends — flush against it. The slot value is wrapped
+    // in the theme's own vertical-rhythm utility (`space-y-8`, the class
+    // `ThemeChrome` spaces the theme's `main` children with) so the nav is
+    // visually separated from the article.
+    const themed = render(songoskritiPageAst());
+
+    // The wrapper carries the spacing class and opens the container.
+    expect(themed).toContain('<div class="space-y-8">');
+
+    // The nav is INSIDE that container…
+    const inner = spacedContainerInner(themed);
+    expect(inner).toContain("<aside");
+    expect(navMarkup(themed)).toBe(
+      inner.slice(inner.indexOf("<aside"), inner.indexOf("</aside>")),
+    );
+    // …as a sibling of the merchant's article, never inside it: the article
+    // closes first, then the nav opens.
+    expect(inner.indexOf("</article>")).toBeLessThan(inner.indexOf("<aside"));
+    // The merchant's content is untouched and not nested inside the nav.
+    expect(inner).toContain("MERCHANT-BODY-MARKER");
+    expect(navMarkup(themed)).not.toContain("MERCHANT-BODY-MARKER");
+
+    // ── UNTHEMED ──────────────────────────────────────────────────────────
+    // The fallback path is unchanged: the nav is a SIBLING `<aside>` in the
+    // two-column grid, and no spaced container is introduced there.
+    const unthemed = render(themeMainWithoutSlot());
+
+    expect(containerClass(unthemed)).toBe(
+      "mx-auto grid max-w-5xl gap-8 px-4 py-8 lg:grid-cols-[1fr_15rem]",
+    );
+    expect(unthemed).toMatch(/<\/div><aside/);
+    expect(unthemed).not.toContain('<div class="space-y-8"><article>');
   });
 
   it("the themed path is the one the shared predicate names", () => {
