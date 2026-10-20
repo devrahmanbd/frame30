@@ -718,3 +718,42 @@ AssertionError: search: expected 0 to be greater than 0
 **5. Three citations were wrong and are corrected in place.** Two had **drifted**: `src/components/builder/songoskriti.tsx:897` → `:906` (the `SongoskritiProductGrid` definition) and `src/lib/storefront.functions.ts:97-107` → `:98-108` (the hand-written `z.enum`) — both correct when the record was written (commit `631d28ad`), both moved when Task 2 landed. The third **named a symbol that does not exist**: §(f)'s row read "`export const AccountSlots` / `accountSlotCtx`" → `src/components/store/account-slots.tsx:54`, but that file exports no `AccountSlots` (no module in the tree does); the row now names the symbol the line actually holds, `export function accountSlotCtx`. The §(a)(iii) citation now names both the base-commit line and the current one, so the historical finding and the current tree are both readable. Every `file:line` this record quotes was re-read in the current tree on 2026-10-20; §(f)'s table carries the re-verification and the rows the new hunks added. Every **diff hunk** was re-checked against the file it names: each hunk's context lines appear, in order, in that file. The §(b.1) import hunk's context indentation was two spaces deeper than the source, and is corrected to match it (`src/components/store/ThemePreviewFrame.tsx:48-51`); the §(b.1) `cartSlots` hunk's old-side start is corrected to the line its context actually sits on (`:567`). The §(b.2) and §(b.3) hunks no longer match **by design** — they are diffs Task 6 has already applied to the tree.
 
 **6. The fifth file is approved (owner's ruling, 2026-10-20).** `src/lib/themes/songoskriti/skins.test.ts` — the third stale composition pin recorded in §(g) — **is** added to this escalation: Decision D4 is widened to **five** files, and the expert's composition stands (the merchandising rail does not return). The diff in §(g) is applied by Task 3. See §(g)'s ruling note for the §7 reading the owner adopted.
+
+---
+
+## (i) A fourth stale pin — `src/components/store/songoskriti-preview-page.test.tsx` _(appended by Task 7)_
+
+**This section is appended, not a rewrite: sections (a)–(h) stand as written.**
+
+**The finding.** §(b) named two files that pin the theme's template compositions and §(g) a third. **There is a fourth**, and it was found by measurement, not by reading: Task 7's neighbourhood run fails with
+
+```
+FAIL  src/components/store/songoskriti-preview-page.test.tsx > songoskriti preview — the page template's body > renders a non-empty body for ?template=page
+AssertionError: expected '<div role="dialog" aria-modal="true" …' to contain 'Demo page body.'
+ ❯ src/components/store/songoskriti-preview-page.test.tsx:130:18
+```
+
+**Why it fails.** Task 7's preview-host change makes the preview render the **theme's own** labelled sample page on the Songoskriti blueprint's `?template=page` tab — `SONGOSKRITI_PREVIEW_PAGE` (`src/lib/themes/songoskriti/preview-page.ts`) — instead of the shared studio fixture `PREVIEW_DEMO_PAGE` (`src/lib/preview-page-data.ts:36`). That is the change the plan's Task 7.4 item 6 requires (_"for the Songoskriti blueprint, render `SONGOSKRITI_PREVIEW_PAGE` instead of `PREVIEW_DEMO_PAGE` in the existing `pageSlots` memo"_), and it is what Task 7's new suite asserts (_"the markup contains 'Sample page'"_). The Phase-1 suite's case at `:126-131` asserts the **shared fixture's** literal — "Demo page body." (`src/lib/preview-page-data.ts:40`) — so the assertion pins a body the preview no longer renders. **It is stale for the same reason the three pins above are stale**: the body the test names is not the body the host renders.
+
+**The rest of the suite is unaffected and still passes.** The page tab still renders a non-empty `<article>` body, still exactly one `<h1>` (the route owns it), still none of the theme's retired demo copy, the production payload shape is unchanged (`PREVIEW_DEMO_PAGE` still exists, still with the same four keys), and the "Last updated" label is still localised in both locales.
+
+**The file was NOT edited by this plan.** It is an existing test file, and the owner's Decision **D4** relaxation is _five_ files (§(e), §(h) item 6); `src/components/store/songoskriti-preview-page.test.tsx` is not one of them. Applying the diff below needs the owner's approval to widen D4 to a sixth file, or a dispatch that carries that approval — exactly as §(g) needed for the fifth.
+
+**The exact old → new diff**, recorded here before any update, per §9:
+
+```diff
+@@ -126,8 +126,11 @@
+   it("renders a non-empty body for ?template=page", () => {
+     const html = renderPage();
+     expect(html).toContain("<article");
+     expect(html).toContain("</article>");
+-    expect(html).toContain("Demo page body.");
++    // The Songoskriti blueprint renders the theme's OWN labelled sample
++    // page (`SONGOSKRITI_PREVIEW_PAGE`), not the shared studio fixture.
++    expect(html).toContain("Sample page — Songoskriti sizing and care");
+   });
+```
+
+**The replacement is strictly stronger, not weaker.** The assertion's _subject_ — "the preview's page tab renders a real body" — is untouched; the expectation now names the theme's own page title instead of a generic sentence of the shared fixture, so the pin can no longer be satisfied by the studio's placeholder. No assertion is deleted, skipped or weakened; the case count is unchanged (7 tests in the file, before and after).
+
+**Scope.** One file, one `it` block, one assertion. Nothing else in `src/components/store/songoskriti-preview-page.test.tsx` changes — the h1 case, the retired-copy case, the payload-shape case and the three localisation cases are untouched.
