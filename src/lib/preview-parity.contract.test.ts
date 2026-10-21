@@ -183,7 +183,7 @@ describe("the preview and the storefront grant the SAME slots", () => {
   it("blog article — the pack plus the route-owned article body", () => {
     const preview = grantedSlots(PREVIEW, "const blogSlots =");
     const production = grantedSlots(
-      read("routes", "store.$slug.blog.$slug.tsx"),
+      read("routes", "store.$slug.blog.$articleSlug.tsx"),
       "contextSlots={{",
     );
     // The pack is granted on both sides …

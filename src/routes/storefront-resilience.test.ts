@@ -32,7 +32,7 @@ const STORE_ROUTES = [
   "src/routes/store.$slug.account.tsx",
   "src/routes/store.$slug.pages.$pageSlug.tsx",
   "src/routes/store.$slug.blog.index.tsx",
-  "src/routes/store.$slug.blog.$slug.tsx",
+  "src/routes/store.$slug.blog.$articleSlug.tsx",
   "src/routes/store.$slug.track.tsx",
 ];
 
@@ -81,7 +81,7 @@ describe("loader error mapping (infra → retry, null → 404)", () => {
       "src/routes/store.$slug.checkout.tsx",
       "src/routes/store.$slug.c.$collectionSlug.tsx",
       "src/routes/store.$slug.blog.index.tsx",
-      "src/routes/store.$slug.blog.$slug.tsx",
+      "src/routes/store.$slug.blog.$articleSlug.tsx",
       "src/routes/store.$slug.order.$orderId.tsx",
     ]) {
       expect(readFileSync(path, "utf8")).toContain("throw notFound()");

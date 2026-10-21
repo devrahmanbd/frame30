@@ -1,10 +1,20 @@
 /**
- * Path-shape tenant article (`/store/<slug>/blog/<slug>`).
+ * Path-shape tenant article (`/store/<slug>/blog/<article>`).
  *
  * Local-dev parity for the custom-host `/blog/<slug>` surface: thin over the
  * same pattern-aware `storeBlogArticleFn`, same store canonicals. On platform
  * hosts the server gate (`isBlockedPathStorefront` in `server.ts`) answers
  * before SSR, so this only ever serves on loopback dev.
+ *
+ * **Batch D (2026-10-21) — the two path parameters are now DISTINCT.** The
+ * route used to be `/store/$slug/blog/$slug`: TanStack Router matches both
+ * segments into the SAME `params.slug` key, so only ONE slug survived and the
+ * loader read the STORE slug as the ARTICLE slug. `storeBlogContext` then
+ * looked up a merchant by the article's slug, found none, and the route
+ * answered **404 for every article** (measured on the throwaway stack: the
+ * article row was visible to the same anon query the loader makes, and the
+ * route still 404'd). The file and the path parameter are renamed to
+ * `$articleSlug`; the URL shape is unchanged (`/store/<slug>/blog/<article>`).
  *
  * **Batch C — the theme's `blog_article` composition.** This route carries a
  * STORE SLUG, so it can resolve a theme at all (`getStoreChrome` needs one).
@@ -38,12 +48,12 @@ import { articleOutline } from "@/lib/blog-reader";
 import { paging } from "@/lib/blog-taxonomy";
 import { useLang } from "@/lib/i18n";
 
-export const Route = createFileRoute("/store/$slug/blog/$slug")({
+export const Route = createFileRoute("/store/$slug/blog/$articleSlug")({
   loader: async ({ params }) => {
     let store;
     try {
       store = await storeBlogArticleFn({
-        data: { slug: params.slug, articleSlug: params.slug },
+        data: { slug: params.slug, articleSlug: params.articleSlug },
       });
     } catch (err) {
       // Infrastructure blips (5xx/timeout) reach the shared errorComponent

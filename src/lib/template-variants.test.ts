@@ -40,7 +40,7 @@ const LISTING_ROUTE = readFileSync(
   "utf8",
 );
 const ARTICLE_ROUTE = readFileSync(
-  join(ROUTE_DIR, "store.$slug.blog.$slug.tsx"),
+  join(ROUTE_DIR, "store.$slug.blog.$articleSlug.tsx"),
   "utf8",
 );
 const TOPBAR_SRC = readFileSync(

@@ -606,9 +606,14 @@ function BuilderStudio() {
   // the BASE as the default selection and shows the variant beside it.
   const selectedBase = baseTemplateKey(template) ?? "index";
   const selectedVariant = isTemplateVariantKey(template) ? template : null;
-  const templateLabel = selectedVariant
-    ? TEMPLATE_VARIANT_LABEL[selectedVariant].en
-    : TEMPLATE_LABEL[selectedBase].en;
+  // The label PAIR of the selected identity: the variant's own label when a
+  // variant is selected, the base's otherwise. `TEMPLATE_LABEL` is a BASE-only
+  // map, so the selected identity — which may be a VARIANT key — must never be
+  // used to index it (that read is `undefined` and crashed the studio).
+  const templateLabelPair = selectedVariant
+    ? TEMPLATE_VARIANT_LABEL[selectedVariant]
+    : TEMPLATE_LABEL[selectedBase];
+  const templateLabel = templateLabelPair.en;
   const sections = ast[slot];
   const selectedId = selectedIds[0] ?? null;
   const selected = selectedId
@@ -2205,7 +2210,7 @@ function BuilderStudio() {
               {/* Breadcrumbs */}
               <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground pr-2 border-r border-border/60">
                 <span className="font-semibold text-foreground">
-                  {t(TEMPLATE_LABEL[template].en, TEMPLATE_LABEL[template].bn)}
+                  {t(templateLabelPair.en, templateLabelPair.bn)}
                 </span>
                 <span>›</span>
                 <span className="capitalize">{slot}</span>

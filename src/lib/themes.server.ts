@@ -1227,7 +1227,20 @@ export function registryPackage(key: string): {
   const preview = resolveThemePreview(key);
   if (preview) {
     return {
-      templates: preview.templates as ThemeTemplates,
+      // The package carries the theme's VARIANT bodies beside its base
+      // bodies. `preview.variants` is a SEPARATE map in the preview preset
+      // (the base map is the template-key space the preview host resolves
+      // against), and the install seed is the ONE place a merchant's map is
+      // filled with the theme's defaults — so the theme's authored variant
+      // defaults have to travel with the package. Without them a merchant
+      // who installs the theme gets no `blog_listing` / `blog_article` body:
+      // the editor's variant strip opens EMPTY and the storefront's
+      // listing and article both fall back to the base `blog` body, so the
+      // two surfaces are not distinguishable.
+      templates: {
+        ...preview.templates,
+        ...preview.variants,
+      } as unknown as ThemeTemplates,
       tokens: preview.tokens,
       version: "1.0.0",
     };
