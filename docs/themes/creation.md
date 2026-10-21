@@ -1,6 +1,16 @@
 # Creating a Framique theme (author guide)
 
-Last verified: 2026-10-20 @ 27a594bf83e9
+Last verified: 2026-10-22 @ 0a794b549315
+
+Verification scope (2026-10-22): the template-key list, the route semantics, the
+variant vocabulary, the route-owned render contexts and the package rules were
+read against the shipped code at `0a794b549315`; `node scripts/doc-gate.mjs`
+reports 0 findings, and the repository's own test suite passes apart from
+three pre-existing, environment-bound failures recorded in the phase-3 evidence
+record. Line pins are working-tree lines: the pins this pass wrote or
+corrected point at the declaration that owns the block, and older pins
+elsewhere in this document are best-effort pointers that may have drifted
+with the code.
 
 This is the end-to-end guide for shipping a complete storefront theme —
 the single authoring reference for tokens, skins, homepage builders,
@@ -21,42 +31,45 @@ the Songoskriti reference port, mapped row-by-row in
 
 ## 1. What a complete theme is (definition of done)
 
-A complete theme ships all 12 areas below. Treat this list as acceptance
+A complete theme ships all 13 areas below. Treat this list as acceptance
 criteria: a theme missing any area is incomplete and must not be submitted
 for catalogue review.
 
 | #   | Area                 | What "done" means                                                                                                                                                                                          | Where it lives                                                                                                                                             |
 | --- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Layout               | `header` / `main` / `footer` slot arrays on every template; responsive `bp` overrides per section                                                                                                          | `src/lib/builder-ast.ts:108`, `src/lib/builder-ast.ts:306-329`                                                                                             |
-| 2   | Design system        | Full `ThemeTokens` set incl. light + designed `dark` set, `globals`, font pairing                                                                                                                          | `src/lib/builder-ast.ts:6329-6351`, `src/lib/theme-globals.ts:32-48`                                                                                       |
+| 1   | Layout               | `header` / `main` / `footer` slot arrays on every template; responsive `bp` overrides per section                                                                                                          | `src/lib/builder-ast.ts:523`, `src/lib/builder-ast.ts:412`                                                                                                 |
+| 2   | Design system        | Full `ThemeTokens` set incl. light + designed `dark` set, `globals`, font pairing                                                                                                                          | `src/lib/builder-ast.ts:7144`, `src/lib/theme-globals.ts:32-48`                                                                                            |
 | 3   | Homepage             | `index` template with hero, merchandising, trust and footer composition                                                                                                                                    | `src/lib/themes/songoskriti/homepage.ts:23`, `src/lib/themes/somvabona/homepage.ts:22`                                                                     |
 | 4   | Product pages        | `product` template: media, price, variant/size, buy box, delivery, reviews/Q&A, related                                                                                                                    | `src/lib/themes/songoskriti/preview.ts` (`product` case), `src/lib/builder-ast.ts` PDP widgets                                                             |
 | 5   | Collection pages     | `collection` template: category header, facets, toolbar, grid, pagination, empty state                                                                                                                     | `src/lib/themes/songoskriti/preview.ts` (`collection` case), `src/lib/builder-ast.ts` listing widgets                                                      |
 | 6   | Posts / blog         | `blog` template: `blog_terms` + `blog_archive` + `blog_pager` + newsletter                                                                                                                                 | `src/lib/themes/songoskriti/preview.ts` (`blog` case), per-theme article CSS in `skins.css`                                                                |
-| 7   | Menus                | Header nav (`mega_menu`, `nav_menu`, `search_command`, `account_cart`) driven by taxonomy/menu data                                                                                                        | `src/lib/builder-ast.ts:2122-2277`, `src/lib/builder-ast.ts:4738-4774`, `src/lib/studio/catalog.ts:1396-1404`                                              |
+| 7   | Menus                | Header nav (`mega_menu`, `nav_menu`, `search_command`, `account_cart`) driven by taxonomy/menu data                                                                                                        | `src/lib/builder-ast.ts:2139-2283`, `src/lib/builder-ast.ts:4755`, `src/lib/studio/catalog.ts:1396-1404`                                                   |
 | 8   | Footer               | `footer_sitemap`, `payment_icons`, `social_strip`/`support_strip`, about `rich_text`                                                                                                                       | `src/lib/themes/songoskriti/footer.ts:160`, shared copy in `src/lib/footer-copy.ts`                                                                        |
 | 9   | Widgets with presets | Every widget the theme renders has catalogue defaults and bilingual props filled at build                                                                                                                  | `src/lib/theme-section.ts:44-68`, `src/lib/studio/catalog.ts:115-120`                                                                                      |
 | 10  | Forms                | Contact (`form`), newsletter, search, quiz/consult/trade-in submittable patterns (see §5)                                                                                                                  | `src/lib/studio/catalog.ts:1388-1395`, `src/lib/studio/catalog.ts:1405-1412`, `src/lib/contact.functions.ts:4-24`, `src/lib/newsletter.functions.ts:13-50` |
 | 11  | Sign in              | Storefront account entry: header `account_cart` link + `src/routes/store.$slug.account.tsx` + `src/routes/account.tsx`; there is **no** sign-in theme template — the theme's job is the link, not the form | `src/lib/studio/catalog.ts:1196-1203`, `src/routes/store.$slug.account.tsx`, `src/routes/account.tsx`                                                      |
 | 12  | Sign up              | Same surface as sign in (merchant console auth at `src/routes/auth.tsx`); theme must not invent its own credential form                                                                                    | `src/routes/auth.tsx`                                                                                                                                      |
+| 13  | Content archive      | `archive` template: the category header, the blog pack (`blog_terms` + `blog_archive` + `blog_pager`), the pager and the empty state — the three supported kinds are a category, a tag and an author       | `src/lib/themes/songoskriti/preview.ts` (`archive` case), `src/lib/template-variants.ts`, `src/lib/archive-context.ts`                                     |
 
 Notes on areas 11–12: the template keys are fixed at
-`src/lib/builder-ast.ts:46-59` (`index`, `product`, `collection`, `page`,
-`blog`, `cart`, `checkout`, `search`). There is no `signin`/`signup`
-template key. A theme satisfies 11–12 by wiring the header account entry
-and by not breaking the account/checkout routes — not by authoring auth
-markup.
+`src/lib/builder-ast.ts:46-61` — **ten** of them (`index`, `product`,
+`collection`, `account`, `page`, `blog`, `cart`, `checkout`, `search`,
+`archive`) — plus the closed **variant** vocabulary (§2.3). There is no
+`signin`/`signup` template key. A theme satisfies 11–12 by wiring the header
+account entry and by not breaking the account/checkout routes — not by
+authoring auth markup.
 
-Account template (areas 11–12 revision): the `account` template key now exists
-at `src/lib/builder-ast.ts:46-60` with `main`-slot content and a route-supplied
-`<h1>` (same treatment as `collection`); widget scope and preset bodies land separately.
+Account template (areas 11–12 revision): the `account` template key exists at
+`src/lib/builder-ast.ts:46-61` with `main`-slot content and a route-supplied
+`<h1>` (same treatment as `collection`); its widget scope and preset bodies
+land separately.
 
 ## 2. Anatomy
 
 ### 2.1 Tokens (light / dark, globals)
 
 The token shape is `ThemeTokens` parsed by `parseTokens`
-(`src/lib/builder-ast.ts:6396-6463`). Defaults live at
+(`src/lib/builder-ast.ts:7211`). Defaults live at
 `src/lib/builder-ast.ts:6329-6351`:
 
 ```ts
@@ -94,7 +107,7 @@ colors + two fonts; bindings are stored as `var(--fq-g-<id>)`
 (`src/lib/theme-globals.ts:50-63`).
 
 `ThemeTokens` carries 19 required keys plus 2 optional ones (`timezone`,
-`allowCustomerTimezone`) (`src/lib/builder-ast.ts:6274-6308`). The two
+`allowCustomerTimezone`) (`src/lib/builder-ast.ts:7089`). The two
 shipped themes lock the values below — copy one column verbatim as the
 starting point, then change brand/accent/surface/ink plus layout knobs:
 
@@ -127,35 +140,102 @@ token reference](../04-builder/README.md).
 
 ### 2.2 Templates per key
 
-`TEMPLATE_KEYS` (`src/lib/builder-ast.ts:46-59`):
+`TEMPLATE_KEYS` (`src/lib/builder-ast.ts:46-61`) — **ten** keys:
 
 ```ts
 export const TEMPLATE_KEYS = [
   "index",
   "product",
   "collection",
+  "account",
   "page",
   "blog",
   "cart",
   "checkout",
   "search",
+  "archive",
 ] as const;
 ```
 
-Each template is a `ThemeAst` (`src/lib/builder-ast.ts:281-286`):
+Each template is a `ThemeAst` (`src/lib/builder-ast.ts:512`):
 `{ header: Section[], main: Section[], footer: Section[] }`.
+
+**The route semantics.** A template key names a _surface_, and the storefront
+route that serves the surface owns the data on it. The theme authors the
+**frame**; the route owns the **content**.
+
+| key          | the surface                 | the route that serves it                                                 | the route owns                                              |
+| ------------ | --------------------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| `index`      | the storefront landing page | `/store/$slug`                                                           | the catalogue blocks                                        |
+| `product`    | the product detail (PDP)    | `/store/$slug/p/$productSlug`                                            | the product, its variants, its price                        |
+| `collection` | the product collection      | `/store/$slug/c/$collectionSlug`                                         | the product grid, the facets, the paging                    |
+| `search`     | the search results          | `/store/$slug/search`                                                    | the query, the result block, the limits                     |
+| `cart`       | the cart                    | `/store/$slug/cart`                                                      | the lines, the summary, the drawer, the trail, the rails    |
+| `checkout`   | the checkout                | `/store/$slug/checkout`                                                  | the form, the server quote, the stock hold, the order write |
+| `account`    | the shopper's account       | `/store/$slug/account`                                                   | the session, the overview, the tab state                    |
+| `page`       | a merchant's CMS page       | `/store/$slug/pages/$pageSlug`                                           | the page record and its body                                |
+| `blog`       | the blog                    | `/store/$slug/blog` (listing), `/store/$slug/blog/$articleSlug` (detail) | the articles, the article body                              |
+| `archive`    | the content archive         | `/blog/category/$slug`, `/blog/tag/$slug`, `/blog/author/$slug`          | the term, the records, the facets, the paging               |
+
+Two rules make the table hold:
+
+1. **A route may not silently substitute another template.** The template
+   resolution inspects the match it got and accepts only `"suffix"` or
+   `"base"` (`resolveVariantAst`, `src/lib/template-variants.ts:280-294`); a
+   route that finds no composition renders its **own** platform surface — never
+   the homepage.
+2. **A route that cannot name a store renders the platform's own surface.**
+   The three content-archive routes carry no store slug (a term carries a
+   `merchant_id`, not a slug, and the author archive is not merchant-scoped at
+   all), so they cannot resolve a theme and they keep the platform's grid.
+   The `archive` key's storefront render path is therefore the editor and the
+   theme preview host — both merchant-scoped by construction — until the
+   platform grows a merchant-scoped taxonomy route. This is a **deferral**,
+   not a shortcut: the key is real, it is authorable, it is lintable and it
+   is publishable.
+
+**The variant vocabulary.** Two of the ten keys own _variants_ — closed
+variants of a key, so one key can carry two genuinely different
+compositions. The table is `TEMPLATE_VARIANTS`
+(`src/lib/template-variants.ts:55-58`) and it is the **only** place a variant
+may be added:
+
+```ts
+export const TEMPLATE_VARIANTS = {
+  blog: ["listing", "article"],
+  archive: ["category", "tag", "author"],
+} as const;
+```
+
+| base      | variant            | the surface it distinguishes                                  |
+| --------- | ------------------ | ------------------------------------------------------------- |
+| `blog`    | `blog_listing`     | the blog index — the terms rail, the article grid, the pager  |
+| `blog`    | `blog_article`     | one article — the frame around the story, the related reading |
+| `archive` | `archive_category` | the articles of one category                                  |
+| `archive` | `archive_tag`      | the articles of one tag                                       |
+| `archive` | `archive_author`   | the articles of one author                                    |
+
+A variant key is persisted in the **same** `templates` map as its base (the
+column is `jsonb`, keyed by template key — no migration, no new table), and it
+resolves through the **same** machinery: the variant first, then the base
+(`resolveVariantAst`, `src/lib/template-variants.ts:280-294`). The vocabulary
+is **closed**: `blog_anything` is not a key the platform routes to, and the
+editor's switcher can only offer what the table lists
+(`templateVariantEntries`, `src/lib/template-variants.ts:214-226`).
 
 Reference compositions:
 
-- Shipped themes build all eight template keys in `preview.ts`
-  (`src/lib/themes/songoskriti/preview.ts:40-48`,
-  `src/lib/themes/somvabona/preview.ts:25-40`): `index`, `product`,
-  `collection`, `search`, `page`, `blog`, `cart`, `checkout`.
+- Shipped themes build their template keys in `preview.ts`
+  (`src/lib/themes/songoskriti/preview.ts:91-486`): `index`, `collection`,
+  `product`, `page`, `blog`, `archive`, `search`, `cart`, `checkout`,
+  `account` — plus the two blog variants
+  (`src/lib/themes/songoskriti/preview.ts:487-530`).
 - Search reuses the collection listing pattern from the theme's own
   `collection` case — do not duplicate the listing by hand.
-- Route-supplied `<h1>` templates (`product`, `collection`, `page`, `blog`,
-  `search`) must NOT contain an h1-claiming widget; every other template
-  must contain exactly one (`src/lib/builder-ast.ts:61-77`).
+- Route-supplied `<h1>` templates (`product`, `collection`, `account`,
+  `page`, `blog`, `search`, `archive`) must NOT contain an h1-claiming
+  widget; every other template must contain exactly one
+  (`ROUTE_H1_TEMPLATES`, `src/lib/builder-ast.ts:72-86`).
 
 ### 2.3 Sections (type + props)
 
@@ -176,13 +256,13 @@ export type Section = {
 ```
 
 - `PropValue = string | number | boolean | PropRow[]`
-  (`src/lib/builder-ast.ts:297-298`); repeatable rows cap at
+  (`src/lib/builder-ast.ts:404`); repeatable rows cap at
   `MAX_ARRAY_ROWS = 24` (`:300`); nesting caps at `MAX_TREE_DEPTH = 6`,
   `MAX_NODES_PER_TEMPLATE = 300` (`:303-304`).
 - Field kinds for the inspector: `text | textarea | number | select | url |
 boolean | embed | bitext | color | range | image | taxonomy | unit |
-group | html | array | menu` (`src/lib/builder-ast.ts:429-446`).
-- `CatalogEntry` (`src/lib/builder-ast.ts:485-502`) declares label, group,
+group | html | array | menu` (`src/lib/builder-ast.ts:611-628`).
+- `CatalogEntry` (`src/lib/builder-ast.ts:707`) declares label, group,
   slots, `heading` (h1-claim), `templates` scope, `container`, `defaults`,
   `fields`.
 
@@ -251,6 +331,84 @@ every user-facing string carries its `_bn` twin inline; rail sections read
 from `collection` sources with explicit `limit` values; never invent
 metrics, ratings, or addresses in demo copy.
 
+### 2.6 The route-owned render contexts
+
+A template is not free-form markup. Each surface's route **grants** a fixed
+set of **context slots**, and a theme's section renders only where the route
+granted the slot it needs. A widget placed in a slot the route did not grant
+is skipped by the renderer, so the composition and the route must agree — and
+a widget's own catalogue row declares which templates it may live on
+(`templates: [...]`, the allowlist in `src/lib/builder-ast.ts`).
+
+| surface          | the slots the route grants                                                                                                                                                           | what the theme may contribute                                                                      | what the platform keeps                                                                                 |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `search`         | `result_toolbar`, `filter_chips`, `pagination`, `category_header`, and `empty_state` **only** when the search really is empty; plus the platform's results block as the product slot | the toolbar, the chips, the pager, the band, the empty copy                                        | the query, the result block, the result limit, the tenant scope                                         |
+| `collection`     | the platform's grid as the product slot                                                                                                                                              | the category header, the toolbar, the chips, the pager, the empty state                            | the product grid, the facets, the paging                                                                |
+| `cart`           | `cart_lines`, `cart_summary`, `cart_drawer`, `checkout_steps`, `payment_methods`                                                                                                     | the arrangement and the labels around them                                                         | the lines, the totals, the rails                                                                        |
+| `checkout`       | the same five cart slots plus `page_content` — the route's own form                                                                                                                  | the frame: the trail, the section order, the summary's placement, the payment block's presentation | the `<form>`, the customer fields, the server quote, the stock hold, the order write, the payment rails |
+| `account`        | `orders_list`, `profile_card`, plus `page_content` — the route's dashboard                                                                                                           | the merchant's own profile section, and the frame around the dashboard                             | the session, the overview RPC, the tab state, every write                                               |
+| `blog` (listing) | the platform's listing block                                                                                                                                                         | the terms rail, the grid, the pager                                                                | the articles, the paging                                                                                |
+| `blog` (article) | `page_content` — the article body — plus `blog_terms`, `blog_archive`, `blog_pager`                                                                                                  | the frame around the story                                                                         | the article body, the related reading                                                                   |
+| `archive`        | `category_header`, `blog_terms`, `blog_archive`, `blog_pager`, `pagination`, `empty_state`                                                                                           | the archive's opening band, its facet rail, its grid, its pager, its empty state                   | the term, the records, the facets, the paging                                                           |
+
+**The archive contract.** The archive's kinds are **closed**: `category`,
+`tag`, `author` (`ARCHIVE_KINDS`, `src/lib/archive-context.ts:32`) — those
+are the only content-archive routes the platform serves. A product collection
+is not an archive (it keeps the `collection` template) and a product category
+is a search facet, not a route. The context is **derived, never fetched**:
+the route's own server-function output is mapped into a closed shape by
+`archiveContextFrom` (`src/lib/archive-context.ts:235`), carrying the kind,
+the state, the term's id/slug/name, the description, the trail, the records,
+the facets and the paging — and nothing else. An unresolved term is an
+**explicit not-found** state, never an empty-but-200 archive.
+
+**The blog variant contract.** Two surfaces, two compositions: `blog_listing`
+(the terms rail, the article grid, the pager) and `blog_article` (the frame
+around one story). The store-scoped routes resolve them through the same
+storefront seam with a `variant` suffix (`getStoreChrome`,
+`src/lib/storefront.functions.ts:120-190`). With no authored composition the
+resolution is null and the platform's own surface renders — never the
+homepage.
+
+**The checkout composition contract.** The theme may contribute the **frame**:
+the progress trail, the section order, the order-summary placement, the
+payment block's presentation. The route keeps the `<form>`, the customer
+fields, the validation, the server-quoted totals, the stock hold and the
+order write. The route also supplies its **own** payment picker and its
+**own** summary when the theme's body carries neither
+(`src/routes/store.$slug.checkout.tsx:243-260`) — a checkout with no rail
+chosen and no total shown is not a checkout. A theme's checkout body
+therefore contains **no** form and **no** input element.
+
+**The account context contract.** Five tabs, all `?tab=` values on the
+**same** route (`ACCOUNT_TABS`, `src/lib/account-tab.ts:8-14`): `orders`,
+`addresses`, `wishlist`, `profile`, `privacy`. There is no `/account/orders`
+route — a link to one 404s, so a nav that links outside the tab set is a
+defect. The permitted data is the `customer_overview` RPC's own fields: the
+profile, the orders, the addresses, the wishlist and the consents. The
+surface distinguishes **six** states — signed out, loading, failed, signed
+in with orders, signed in without orders, and the disclosed order detail
+(loaded, loading or failed); the route's own status mapping is
+`accountStatus` (`src/lib/account-status.ts:45`) and the dashboard adds the
+orders-present and order-detail branches on top
+(`src/components/store/AccountDashboard.tsx:221`).
+
+### 2.7 The Page template and the CMS page record
+
+Two different things answer to "page", and a theme author needs both:
+
+|               | the **Page template**                                                                                                              | the **CMS page record**                                                                                              |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| what it is    | one entry of the theme's `templates` map — the theme's composition for every merchant page                                         | one row of the merchant's content — the record a merchant wrote                                                      |
+| who edits it  | the theme editor, `/dashboard/builder`, in the template switcher (`src/components/builder/BuilderTopBar.tsx:11`)                   | the content editor, `/dashboard/content/editor?kind=page                                                             | post&id=<uuid>` (`src/routes/_authenticated/dashboard/content/editor.tsx:23-37`) — which has **no** template selector at all |
+| what it holds | sections, slots and props                                                                                                          | the page's title, body, SEO and publication state                                                                    |
+| how they meet | the storefront page route (`/store/$slug/pages/$pageSlug`) renders the merchant's record **inside** the theme's `page` composition | the route grants `breadcrumb` and `page_content` — the merchant's own body (`src/components/store/PageView.tsx:216`) |
+
+So: the theme decides the **frame** every merchant page sits in; the merchant
+decides the **content** inside it. When the theme's `page` body does not
+declare the `page_content` slot, the route's own fallback renders instead —
+the merchant's record is never lost, and the theme never has to reproduce it.
+
 ## 3. Building step-by-step
 
 ### Step 1 — Tokens
@@ -265,9 +423,18 @@ layout knobs. Copy an existing tokens file, e.g. Songoskriti
 
 Write one builder per template key returning `{ header, main, footer }`.
 Follow the slot discipline in §2.2 and keep the h1 rule
-(`src/lib/builder-ast.ts:67-77`). For search, reuse the collection listing
+(`src/lib/builder-ast.ts:72-86`). For search, reuse the collection listing
 pattern from the theme's own `collection` case (see §2.5 reference
 compositions) — do not duplicate the listing by hand.
+
+**Variants.** A base that owns variants gets one builder **per variant**, not
+one builder per surface: `blog` needs a `blog_listing` body and a
+`blog_article` body, and `archive` needs an `archive_category`, an
+`archive_tag` and an `archive_author` body (§2.2). Each variant is its own
+entry in the same `templates` map, keyed `<base>_<suffix>`; the suffix must
+be one the closed table lists, and nothing else is addressable. A route that
+asks for a variant the theme did not author falls back to the base body —
+never to the homepage.
 
 ### Step 3 — Sections
 
@@ -469,7 +636,7 @@ state machine behind it.
   with per-widget `defaults` (e.g. `form` `:1388-1395`, `nav_menu`
   `:1396-1404`, `newsletter` `:1405-1412`).
 - Prop conventions: **flat scalars** (`string | number | boolean`) plus
-  repeatable `PropRow[]` arrays (`src/lib/builder-ast.ts:390-393`).
+  repeatable `PropRow[]` arrays (`src/lib/builder-ast.ts:404`).
   Bilingual text uses `bitext` fields with `${key}_bn` twins filled via
   `withBn()` at construction (`src/lib/theme-section.ts:23-39`) — pass the
   theme dictionary (a `Record<string, string>`, empty is fine) to `sectionFactory()`
@@ -486,9 +653,9 @@ state machine behind it.
 
 The core lane owns the `skin` prop: every skinnable widget gains a **Skin**
 select field in the style panel via `SKIN_FIELD`
-(`src/lib/builder-ast.ts:649`), with the closed vocabulary in
-`WIDGET_SKINS` (`src/lib/builder-ast.ts:600`) and the core default in
-`DEFAULT_WIDGET_SKIN` (`src/lib/builder-ast.ts:618`). The first option is
+(`src/lib/builder-ast.ts:871`), with the closed vocabulary in
+`WIDGET_SKINS` (`src/lib/builder-ast.ts:822`) and the core default in
+`DEFAULT_WIDGET_SKIN` (`src/lib/builder-ast.ts:840`). The first option is
 the documented default. Unknown or empty values resolve to the widget
 default — never a crash, never empty.
 
@@ -509,7 +676,7 @@ Theme-side sets: `SONGOSKRITI_SKIN_SETS`
 defaults merge **under** authored props, so an explicit `skin` in the
 inspector always wins. Skin values are style keys, never copy, so they
 carry no `_bn` twins (bilingual props are declared per widget in
-`BITEXT_FIELDS`, `src/lib/builder-ast.ts:5545`).
+`BITEXT_FIELDS`, `src/lib/builder-ast.ts:5883`).
 
 ### `skins.css` — token-only rule
 
@@ -536,16 +703,16 @@ hex literals or raw colour utilities` in
 Submittable patterns (server validates, client never decides):
 
 - **Contact**: fixed `form` widget defaults
-  (`src/lib/builder-ast.ts:4712-4723`: heading/body/labels/button/
+  (`src/lib/builder-ast.ts:4724`: heading/body/labels/button/
   successText/consentText/showPhone) → `submitContactFn`
   (`src/lib/contact.functions.ts:4-24`) with
   `{ name, email, phone?, topic: "sales"|"support"|"migration", message,
 locale, honeypot?, renderedAt? }`.
-- **Newsletter**: `newsletter` widget (`src/lib/builder-ast.ts:1428-1446`,
+- **Newsletter**: `newsletter` widget (`src/lib/builder-ast.ts:1440`,
   `src/lib/studio/catalog.ts:1405-1412`) → `subscribeNewsletterFn` /
   `verifyNewsletterFn` / `unsubscribeNewsletterFn`
   (`src/lib/newsletter.functions.ts:13-50`).
-- **Search**: `search_command` widget (`src/lib/builder-ast.ts:2239-2264`)
+- **Search**: `search_command` widget (`src/lib/builder-ast.ts:2258`)
   rendering into the `search` template (reuse the theme's `collection`
   listing pattern — see §2.5).
 - **Other submittables**: `quiz`, `trade_in`, `back_in_stock`,
@@ -583,21 +750,25 @@ The full function inventory, service mapping, and SQL references live in
 Publishing checklist:
 
 1. `lintTemplate()` per key has zero `error`-level issues
-   (`src/lib/builder-ast.ts:5972`; enforced in
-   `src/lib/themes.server.ts:393-399`).
+   (`src/lib/builder-ast.ts:8397`; enforced in
+   `src/lib/themes.server.ts:921`, and again at `:1722` for a registry
+   update). A **variant** is linted **with its base key**, so a variant can
+   never reach a merchant's storefront unlinted.
 2. Translation gate: authored-string বাংলা coverage ≥
    `TRANSLATION_PUBLISH_FLOOR = 90` (`src/lib/builder-guardrails.ts:148`,
    `:166-179`).
-3. Font licence + budget gates pass (`src/lib/themes.server.ts:404-416`).
+3. Font licence + budget gates pass (`src/lib/themes.server.ts:930-943`).
 4. `composePublishGate()` is green
-   (`src/lib/publish-gates.ts:262-...`, called at
-   `src/lib/themes.server.ts:419-431`).
+   (`src/lib/publish-gates.ts`, called at
+   `src/lib/themes.server.ts:946`).
 5. Publish creates a `published` version and moves
    `store_themes.published_version_id` (`theme_publish`,
    `supabase/migrations/20260917210000_phase2e_theme_engine.sql:96-120`).
 6. Rollback path known: `builderRollbackFn({ versionId })` →
    `theme_rollback` RPC, custom code restored
-   (`src/lib/themes.server.ts:450-478`).
+   (`src/lib/themes.server.ts:1020-1059`).
+7. A package that declares the `archive` template declares an `api` range
+   whose lower bound is `>= 3.1.0` (§9.3).
 
 Common pitfalls:
 
@@ -613,7 +784,14 @@ Common pitfalls:
   is the guard working.
 - **Half-Bangla publish.** Below 90% coverage the publish is blocked with a
   `translation` failure — fill `${key}_bn` twins via the factory dictionary
-  instead of hand-editing SQL.
+  instead of hand-editing SQL. **Measured on the shipped Songoskriti theme
+  (2026-10-21): its copy is 76% বাংলা against the 90% floor**, so a merchant
+  publish of that theme is refused with `theme.publish_blocked codes=translation`.
+  The unblock is an owner action — translate the remaining ~32 strings, or
+  rule on the floor for a source-owned official theme (an official theme is
+  **installed from source**, not published by a merchant). The refusal is the
+  platform's rule working, not a defect: see the phase-3 evidence record for
+  the full measurement.
 - **NULL `installed_at`.** The column has no DB default; omitting it breaks
   the installed-list sort for the whole merchant
   (`src/lib/themes/appearance.server.ts:204-208`,
@@ -626,6 +804,10 @@ Common pitfalls:
 - **Empty registry.** `listRegistry` degrades to the code floor
   (`src/lib/themes.server.ts:553-601`), but demo imports need SQL rows —
   run the seed (§3 step 6) before testing imports.
+- **A reset is per template.** The studio's **Reset to default** affordance
+  restores **one** template (or one variant) to the theme's own default; it
+  never touches the rest of the map, and it is armed before it fires
+  (`src/routes/_authenticated/dashboard/builder.tsx:1574-1609`).
 
 ## 8. Theme effects (atmosphere + motion controls)
 
@@ -802,15 +984,17 @@ The full gate definitions live in [the theme package spec](./packages.md). In on
 3. **Clean lint** — zero error-level findings on every template the package
    defines.
 4. **One H1** — exactly one primary heading per page. Route-headed
-   templates (`product`, `collection`, `page`, `blog`, `search`, `account`)
-   get theirs from the route, so they carry no claimant; any other
+   templates (`product`, `collection`, `account`, `page`, `blog`, `search`,
+   `archive`) get theirs from the route, so they carry no claimant; any other
    template you ship carries exactly one.
 5. **Bilingual** — বাংলা coverage at or above 90% of authored strings,
    with real বাংলা inside every `_bn` twin — never English pasted into
    the Bengali field.
 6. **No executable content** — no `html` widgets, no script markup, no
    `javascript:` / `data:` / `vbscript:` URLs anywhere in props.
-7. **API range** — `api` sits inside `^3.0.0`.
+7. **API range** — `api` sits inside `^3.0.0`, and a package that declares
+   the `archive` template declares a range whose lower bound is `>= 3.1.0`
+   (§9.3).
 8. **Upload gates** — the upload lane refuses dangling asset refs and
    over-quota uploads, inventories external URLs into the install
    audit, and capability-widening updates need re-consent while
@@ -825,6 +1009,16 @@ twins, the reviewer reads them.
 - `api` stays inside `^3.0.0`. Anything else is rejected outright: a
   package that installs but renders broken is worse than one that never
   ships.
+- **The `archive` exception.** The `archive` template key landed in the
+  **3.1.0** line of the builder API, so a package that declares `archive` in
+  its `templates` must declare an `api` range whose **lower bound is
+  `>= 3.1.0`**. The two admitted range shapes are `^a.b.c` (which floors at
+  `a.b.c`) and `>=a.b.c <d.e.f` (which floors at `a.b.c`). A package that
+  declares `archive` while claiming a lower floor is rejected with the
+  stable reason code **`templates.archive_requires_api`**. A package that
+  does **not** declare `archive` is unaffected — it keeps `^3.0.0` and
+  installs exactly as before. The full table, with the reason codes, is in
+  [the package contract](../packages/contract.md) §2.1.
 - `version` is semver and moves forward on every resubmission, rejections
   included. Patch for fixes (`1.0.0` → `1.0.1`), minor/major for new
   templates and breaking prop changes.
@@ -847,7 +1041,9 @@ gate in §9.2 or a rule in §9.3:
 5. বাংলা coverage below 90%, or `_bn` twins with no বাংলা in them.
 6. Executable content: raw HTML widgets, script markup, blocked URL
    schemes.
-7. `api` outside `^3.0.0`.
+7. `api` outside `^3.0.0` — or, for a package that declares `archive`, an
+   `api` range whose lower bound is below `3.1.0`
+   (`templates.archive_requires_api`).
 8. Resubmission without a version bump, or a renamed `key`.
 
 ### 9.5 Worked example
@@ -888,6 +1084,47 @@ tokens, header, footer, main }`, where `main(template, s)` returns the
   tabs, and focus links use the `?focus=` contract (never `?slug=`).
   Engine behavior, blocked paths, and demo-focus resolution are runtime
   theory — see [the builder preview reference](../04-builder/README.md).
+
+### 10.1 The preview fixtures
+
+The preview host renders **every authored composition** — every template key
+the theme authors, and every **variant** of a base that owns variants — over
+the theme's own **labelled demo data**. The fixtures are synthetic and
+labelled; they are never the merchant's live data, and a preview render is
+never cached, never counted as analytics and never published.
+
+- The demo rows come from the theme's own demo catalogue
+  (`src/lib/demo-catalog.ts`) mapped into widget rows
+  (`src/lib/preview-demo-data.ts`) — the preview has no merchant data, so
+  every data widget is fed demo rows rather than a live query.
+- A template the theme does **not** author gets the engine's generic demo
+  body (`genericDemoMain`, `src/lib/theme-preview-nav.ts:469`); a template
+  the theme **does** author gets the theme's own body, verbatim.
+- A **variant** is previewed like a base: the host resolves it through
+  `resolveVariantAst` (`src/lib/template-variants.ts:280`), so
+  `?template=blog_article` shows the article frame and
+  `?template=blog` shows the listing.
+- The preview and the storefront **agree** by construction: the same AST, the
+  same linter and the same context slots (`lintTemplate`,
+  `resolveVariantAst`) serve both. That is the preview-parity contract the
+  test lanes assert.
+
+### 10.2 The preview's action policies
+
+The preview is a **reading** surface, not an acting one. Its action
+policies are deliberate and closed:
+
+| in the preview                 | policy                                                                                                                                           |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| navigating to another template | mapped onto the preview's own template tabs — never a real storefront navigation                                                                 |
+| a link that leaves the store   | blocked                                                                                                                                          |
+| account and sign-in paths      | blocked (`isPreviewBlockedHref`, `src/lib/theme-preview-nav.ts:54`) — a preview never signs anyone in                                            |
+| a `?focus=` link               | resolves to a **demo** row (`resolveDemoFocus`), so the clicked product or collection changes with the link instead of repeating one static demo |
+| a form submit                  | no live write — the preview's forms are inert                                                                                                    |
+
+The rule behind all of them: **the preview must not be able to write, sign
+in, or reach the merchant's data.** A preview that acted would be a
+production surface wearing a preview badge.
 
 ## 11. Test files to update
 
@@ -1203,3 +1440,93 @@ and mapped row-by-row in
 
 Per-row lanes, per-graph neutrality verdicts, and live/dormant proof
 pointers: [the Songoskriti port map](./songoskriti-port-map.md).
+
+## 16. The official source-owned theme lifecycle
+
+An official theme is **source-owned**: its code lives in this repository, it
+resolves through the built-in registry (`src/lib/themes/builtin-themes.ts`),
+and it is **installed from source** — no package is built, uploaded,
+installed or published for it. The lane's whole difference from a
+third-party package is the distribution step; the runtime contract (tenant
+authorization, the ledger, the audit, the lifecycle guarantees) is shared.
+
+| step          | the official lane                                                                                                                                                                          | the third-party lane                                                 |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
+| the artifact  | the source definition in `src/lib/themes/<key>/`                                                                                                                                           | an exported `theme.json`                                             |
+| the install   | `installCatalogTheme` → tenant rows from the registered definition (`src/lib/themes/appearance.server.ts:393`)                                                                             | `installPackage` (theme lane)                                        |
+| the API range | the running builder's own line — no declaration needed                                                                                                                                     | a declared `api` range (≥ 3.1.0 when the package declares `archive`) |
+| the seed      | the registry preset, merged **per key** into the merchant's map — a key the merchant already edited is **never** overwritten (`installRegistryTheme`, `src/lib/themes.server.ts:1425`)     | the package's own templates                                          |
+| publish       | the merchant's edits are published from the studio (`publishVersion`, `src/lib/themes.server.ts:897`)                                                                                      | the same publish path, gated by the package's declared range         |
+| versioning    | the registry's own version line; a theme update merges and diffs the **whole** template map, variants included (`mergeTemplates`, `src/lib/themes.server.ts:1604`)                         | the same merge and diff                                              |
+| rollback      | `rollbackVersion` mints a **new** version carrying the target's content and moves the published pointer (`src/lib/themes.server.ts:1020`) — history is append-only, never a pointer rewind | the same                                                             |
+
+Three rules that hold for both lanes, because the lanes share the engine:
+
+1. **No migration, no DDL.** The `templates` map is `jsonb`, keyed by
+   template key. A new key is a new object in an existing map — a layout
+   written before the key existed resolves to the empty AST, not a crash.
+2. **A theme update carries the variants.** The merge and the diff walk the
+   **whole** map, not only the base keys, so a merchant's variant survives an
+   update.
+3. **Every variant is linted with its base key.** A variant AST never
+   reaches a merchant's storefront unlinted.
+
+## 17. What the platform keeps: Account, Cart, Checkout and extensions
+
+The theme controls **presentation**. It never controls access, price or
+authority. The four surfaces where that matters most:
+
+**Account.** The theme's `account` body is a **frame** around the route's
+dashboard. The session, the overview (the `customer_overview` RPC, scoped to
+`auth.uid()`), the tab state and every write — the profile save, the address
+save and delete, the wishlist toggle, the consent switch — stay with the
+platform. A theme may place the merchant's own `profile_card`; it may not
+read a field the RPC does not return, and it may not link outside the
+`?tab=` set (§2.6).
+
+**Cart.** The lines, the quantities, the totals, the drawer, the progress
+trail and the payment rails are platform widgets that read the **live cart**
+through the cart context. The theme arranges them and labels them; it does
+not price them.
+
+**Checkout.** The theme gets a **frame, not a form**. The route keeps the
+`<form>`, the customer fields, the server-quoted totals (`quoteCart`), the
+stock hold (`reserveCheckout` / `releaseCheckout`), the validated customer
+schema and the order write (`placeOrder`); only the signed return marks an
+order paid. The theme's checkout body contributes **no** input element and
+**no** form, and the checkout zone forbids the overlay zones — a popup can
+never cover a payment step (`TEMPLATE_ZONES.checkout`,
+`src/lib/builder-ast.ts:164`).
+
+**Extensions.** A Level B bundle's code runs only inside the `ThemeRuntime`
+frame — a null origin, `default-src 'none'`, no host DOM, no cookies, no
+same-origin storage — and it talks to the platform only through the
+authorised bridge. A theme's JavaScript never runs on the host. The
+platform-controlled actions stay platform-controlled: search execution,
+tenant scoping, result limits, cart and checkout prices, discounts, stock,
+totals, order state, payment rails, account scoping, publication status and
+permissions.
+
+## 18. The verification commands and their real status
+
+These are the commands that verify this guide's claims, with the status they
+actually returned on **2026-10-22** at `0a794b549315`. The environment has
+no `bun` on `PATH`, so each of the `bun run …` forms below is invoked as its
+`node_modules/.bin/…` or `node scripts/…` equivalent; the CI pipeline runs
+the `bun` form.
+
+| what it proves               | the command                                       | status                                                                                                                                                                                                                                                                                                                                                     |
+| ---------------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| the documentation gate       | `node scripts/doc-gate.mjs`                       | **green** — 0 findings, exit 0                                                                                                                                                                                                                                                                                                                             |
+| the unit and contract suites | `node_modules/.bin/vitest run`                    | **red on three pre-existing, environment-bound failures** — 619 files: 616 passed, 1 skipped, 2 failed; 8 769 tests: 8 763 passed, 3 skipped, 3 failed. The three failures are `src/lib/analytics-live-shape.test.ts` (2) and `src/lib/site.server.test.ts` (1); they need a warehouse/`.env` shape CI does not have, and they fail at the base commit too |
+| the type checker             | `node_modules/.bin/tsgo --noEmit`                 | **green** — no output, exit 0                                                                                                                                                                                                                                                                                                                              |
+| the linter                   | `node_modules/.bin/eslint src scripts`            | **green** — exit 0: 0 errors and 319 pre-existing warnings, none of them added here (a repo-wide `eslint .` stalls on the untracked `.output-snapshots/` tree, so lint the paths)                                                                                                                                                                          |
+| the theme's asset gate       | `node scripts/songoskriti-assets-check.mjs`       | **green** — 0 findings, 11 advisory notes                                                                                                                                                                                                                                                                                                                  |
+| the asset generator          | `node scripts/gen-songoskriti-assets.mjs --check` | **green** — 21 planned assets match the expectation                                                                                                                                                                                                                                                                                                        |
+| the contract gate            | `node scripts/contract-gate.mjs`                  | **expected red**, exit 2 — it hardcodes `spawnSync("bunx", …)` and `bun` is not on `PATH` here                                                                                                                                                                                                                                                             |
+| the schema fingerprint       | `node scripts/schema-fingerprint.mjs --check`     | **expected red**, exit 1 — it needs a live Supabase RPC                                                                                                                                                                                                                                                                                                    |
+
+The two reds in the last two rows are **pre-existing and environmental**, not
+failures of this guide: neither is fixed, neither is hidden, and neither is
+counted as a pass. The remote CI run is a separate matter and is stated
+exactly, in the phase-3 CI record.

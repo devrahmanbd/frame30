@@ -1,6 +1,15 @@
 # Package contract (canonical)
 
-Last verified: 2026-10-07 @ 8ec9abda
+Last verified: 2026-10-22 @ 0a794b549315
+
+Verification scope (2026-10-22): the manifest gate, the template-key list, the
+API range and the `archive` floor were read against the shipped code at
+`0a794b549315`; `node scripts/doc-gate.mjs` reports 0 findings, and the
+repository's own test suite passes apart from three pre-existing,
+environment-bound failures recorded in the phase-3 evidence record. Line pins
+are working-tree lines: the pins this pass wrote or corrected point at the
+declaration that owns the block, and older pins elsewhere in these documents
+are best-effort pointers that may have drifted with the code.
 
 This document is the **one canonical package contract** for themes and
 plugins. Format, manifest, lifecycle, sandbox, versioning, rollback,
@@ -46,10 +55,10 @@ Official themes are not ZIP packages. <!-- doc-gate-ok: deliberate negative refe
 One canonical lifecycle spans three distribution cases. The lane decides
 the manifest, the gate, and the install path — never mix them:
 
-| Lane | What ships | Gate | Install / activation | Full spec |
-| ---- | ---------- | ---- | -------------------- | --------- |
-| Official source themes | registered source definitions; no archive transport | none (source is trusted) | `installCatalogTheme` — tenant rows from the registered definition | [the theme authoring guide](../themes/creation.md) |
-| Declarative ZIP themes | `.zip` with `theme.json` + tokens/templates; no executable code | `validateThemeManifest` | `installPackage` (theme lane) → publish → activate | [the theme package spec](../themes/packages.md) |
+| Lane                                 | What ships                                                                   | Gate                     | Install / activation                                                         | Full spec                                                                         |
+| ------------------------------------ | ---------------------------------------------------------------------------- | ------------------------ | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Official source themes               | registered source definitions; no archive transport                          | none (source is trusted) | `installCatalogTheme` — tenant rows from the registered definition           | [the theme authoring guide](../themes/creation.md)                                |
+| Declarative ZIP themes               | `.zip` with `theme.json` + tokens/templates; no executable code              | `validateThemeManifest`  | `installPackage` (theme lane) → publish → activate                           | [the theme package spec](../themes/packages.md)                                   |
 | Reviewed executable themes (Level B) | executable bundle with `dev.theme.json`; code runs only in the runtime frame | `validateDevThemeBundle` | `installReviewedThemeBundle` → `activateDevThemeInstall` (fingerprint-bound) | [the Level B lane](../themes/level-b.md); authority: [contract.md](./contract.md) |
 
 ## 1. Format (ZIP layout)
@@ -141,11 +150,11 @@ only — never the default path.
 
 ### 2.1 Theme manifest
 
-Gate: `validateThemeManifest` (`src/lib/theme-package.ts:280`).
+Gate: `validateThemeManifest` (`src/lib/theme-package.ts:312`).
 Malformed input fails closed with `manifest.invalid`
-(`src/lib/theme-package.ts:283`, `src/lib/theme-package.ts:551`).
+(`src/lib/theme-package.ts:314-316,612-614`).
 Spec alias `validateThemePackage` is the same function
-(`src/lib/theme-package.ts:560`).
+(`src/lib/theme-package.ts:611`).
 
 Key rules (full gate list in
 [`docs/themes/packages.md`](../themes/packages.md); pins below are the
@@ -153,38 +162,70 @@ enforcement sites):
 
 | Rule                                                                                                                                                                                                                                                               | Pin                                |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------- |
-| Slug `key` matches `THEME_KEY_RE` (`src/lib/theme-package.ts:54`)                                                                                                                                                                                                  | `src/lib/theme-package.ts:290-293` |
-| Bilingual `name` / `nameBn` required; over-length (`MAX_NAME_LEN`, `src/lib/theme-package.ts:224`) and executable text (`EXECUTABLE_RE`, `src/lib/theme-package.ts:193`) rejected                                                                                  | `src/lib/theme-package.ts:296-308` |
-| Strict semver via `parseSemver` (`src/lib/marketplace-scopes.ts:155`)                                                                                                                                                                                              | `src/lib/theme-package.ts:311-313` |
-| `api` caret / `>=a <b` range covering the running builder via `satisfiesApiRange` (`src/lib/plugin-manifest.ts:311`; range `THEME_API_RANGE = ^3.0.0`, `src/lib/theme-package.ts:51`)                                                                              | `src/lib/theme-package.ts:316-320` |
-| `templates` non-empty duplicate-free subset of `TEMPLATE_KEYS`                                                                                                                                                                                                     | `src/lib/theme-package.ts:357-376` |
-| `supportedWidgets` entries exist in `WIDGET_TYPES` (`src/lib/widget-registry.ts:951`)                                                                                                                                                                              | `src/lib/theme-package.ts:378-400` |
-| `pluginDependencies` are `plugin:{id}` / `plugin:{id}/{widget}` refs plus exact / caret / pair ranges                                                                                                                                                              | `src/lib/theme-package.ts:402-433` |
-| `presentationSurfaces` non-empty duplicate-free subset of `PRESENTATION_SURFACES` (`src/lib/theme-package.ts:68`)                                                                                                                                                  | `src/lib/theme-package.ts:435-458` |
-| `locales` non-empty duplicate-free subset of `THEME_LOCALES` (`src/lib/theme-package.ts:78`)                                                                                                                                                                       | `src/lib/theme-package.ts:460-479` |
-| `assetManifest` portable relative path + lowercase sha256 (`SHA256_RE`, `src/lib/theme-package.ts:221`); traversal rejected by `assetPathIssue` (`src/lib/theme-package.ts:261`); executables rejected by `EXECUTABLE_ASSET_EXTS` (`src/lib/theme-package.ts:202`) | `src/lib/theme-package.ts:481-508` |
-| `capabilities` closed read-only allowlist `THEME_CAPABILITIES` (`src/lib/theme-package.ts:104`, subset of `SCOPES`, `src/lib/marketplace-scopes.ts:24`); `render_storefront` mandatory                                                                             | `src/lib/theme-package.ts:510-526` |
+| Slug `key` matches `THEME_KEY_RE` (`src/lib/theme-package.ts:59`)                                                                                                                                                                                                  | `src/lib/theme-package.ts:323-328` |
+| Bilingual `name` / `nameBn` required; over-length (`MAX_NAME_LEN`, `src/lib/theme-package.ts:258`) and executable text (`EXECUTABLE_RE`, `src/lib/theme-package.ts:227`) rejected                                                                                  | `src/lib/theme-package.ts:330-338` |
+| Strict semver via `parseSemver` (`src/lib/marketplace-scopes.ts:158`)                                                                                                                                                                                              | `src/lib/theme-package.ts:340-343` |
+| `api` caret / `>=a <b` range covering the running builder via `satisfiesApiRange` (`src/lib/plugin-manifest.ts:463`; range `THEME_API_RANGE = ^3.0.0`, `src/lib/theme-package.ts:56`)                                                                              | `src/lib/theme-package.ts:345-350` |
+| `templates` non-empty duplicate-free subset of `TEMPLATE_KEYS`                                                                                                                                                                                                     | `src/lib/theme-package.ts:385-404` |
+| `supportedWidgets` entries exist in `WIDGET_TYPES` (`src/lib/widget-registry.ts:1001`)                                                                                                                                                                             | `src/lib/theme-package.ts:420-445` |
+| `pluginDependencies` are `plugin:{id}` / `plugin:{id}/{widget}` refs plus exact / caret / pair ranges                                                                                                                                                              | `src/lib/theme-package.ts:447-475` |
+| `presentationSurfaces` non-empty duplicate-free subset of `PRESENTATION_SURFACES` (`src/lib/theme-package.ts:73`)                                                                                                                                                  | `src/lib/theme-package.ts:477-501` |
+| `locales` non-empty duplicate-free subset of `THEME_LOCALES` (`src/lib/theme-package.ts:83`)                                                                                                                                                                       | `src/lib/theme-package.ts:503-519` |
+| `assetManifest` portable relative path + lowercase sha256 (`SHA256_RE`, `src/lib/theme-package.ts:255`); traversal rejected by `assetPathIssue` (`src/lib/theme-package.ts:292`); executables rejected by `EXECUTABLE_ASSET_EXTS` (`src/lib/theme-package.ts:236`) | `src/lib/theme-package.ts:521-548` |
+| `capabilities` closed read-only allowlist `THEME_CAPABILITIES` (`src/lib/theme-package.ts:109`, subset of `SCOPES`, `src/lib/marketplace-scopes.ts:26`); `render_storefront` mandatory                                                                             | `src/lib/theme-package.ts:550-566` |
 
 The pipeline adapter maps `key` to slug and `plugin:` refs to bare
 slugs the dependency checker resolves against the ledger
-(`pkg1ThemeValidator`, `src/lib/package-install.server.ts:159`).
+(`pkg1ThemeValidator`, `src/lib/package-install.server.ts:240`).
 
 Template keys are `TEMPLATE_KEYS`
-(`src/lib/builder-ast.ts:47-60`): `index`, `product`, `collection`,
-`account`, `page`, `blog`, `cart`, `checkout`, `search`. Route-headed
-templates (`product`, `collection`, `account`, `page`, `blog`,
-`search`) get their `<h1>` from the route and must not contain a
+(`src/lib/builder-ast.ts:46-61`): `index`, `product`, `collection`,
+`account`, `page`, `blog`, `cart`, `checkout`, `search`, `archive`.
+Route-headed templates (`product`, `collection`, `account`, `page`, `blog`,
+`search`, `archive`) get their `<h1>` from the route and must not contain a
 claimant; every other shipped template must contain exactly one
-(`ROUTE_H1_TEMPLATES`, `src/lib/builder-ast.ts:62-75`).
+(`ROUTE_H1_TEMPLATES`, `src/lib/builder-ast.ts:72-86`).
+
+#### The `archive` key and the API floor
+
+The `archive` template key landed in the **3.1.0** line of the builder API
+(the running builder version is `BUILDER_API_VERSION = "3.1.0"`,
+`src/lib/plugin-manifest.ts:32`). The key is **additive**, so the declared
+range does **not** move: `THEME_API_RANGE` stays `^3.0.0`
+(`src/lib/theme-package.ts:56`) and the live gate remains `satisfiesApiRange`
+(`src/lib/plugin-manifest.ts:463`) against the running `3.1.0`.
+
+- A package that does **not** declare `archive` is **unaffected**:
+  `satisfiesApiRange("^3.0.0")` is true against `3.1.0` (same major, running
+  version above the floor), so every existing third-party package keeps
+  installing exactly as before.
+- A package that **does** declare `archive` must declare an `api` range whose
+  **lower bound is `>= 3.1.0`**. The two admitted range shapes are
+  `^a.b.c` (floors at `a.b.c`) and `>=a.b.c <d.e.f` (floors at `a.b.c`) — the
+  two shapes `apiRangeFloor` (`src/lib/theme-package.ts:211-218`) reads. A
+  package that declares `archive` while claiming a lower floor is **rejected**
+  with the stable reason code **`templates.archive_requires_api`**
+  (`src/lib/theme-package.ts:405-418`).
+
+| Declared `templates` | Declared `api`   | Verdict                                     |
+| -------------------- | ---------------- | ------------------------------------------- |
+| no `archive`         | `^3.0.0`         | accepted — unchanged                        |
+| no `archive`         | `^4.0.0`         | rejected — `api_incompatible` (unchanged)   |
+| `archive`            | `^3.0.0`         | rejected — `templates.archive_requires_api` |
+| `archive`            | `^3.1.0`         | accepted                                    |
+| `archive`            | `>=3.1.0 <4.0.0` | accepted                                    |
+
+The full gate list, the manifest field table and the rest of the theme
+package's rules live in [the theme package spec](../themes/packages.md).
 
 ### 2.2 Plugin manifest
 
-Gate: `parseManifest` (`src/lib/plugin-manifest.ts:393`) — the single
+Gate: `parseManifest` (`src/lib/plugin-manifest.ts:1177`) — the single
 gate the review pipeline, the install flow, and the host share.
 Pipeline adapter: `pkg1PluginValidator`
-(`src/lib/plugin-package.ts:245`). Export gate: `gateExportManifest`
+(`src/lib/plugin-package.ts:256`). Export gate: `gateExportManifest`
 re-runs `parseManifest` plus the bundle gate `validateBundle`
-(`src/lib/plugin-package.ts:165`).
+(`src/lib/plugin-package.ts:176`).
 
 Field rules (see [`docs/developers/plugins.md`](../developers/plugins.md)
 for the walkthrough):
@@ -431,16 +472,18 @@ runtime limits: [the Level B lane](../themes/level-b.md).
   `key` is never renamed after first publish.
 - Compatibility: declare `api: "^3.0.0"` (or `>=3.0.0 <4.0.0`);
   anything else is rejected
-  (`src/lib/plugin-manifest.ts:311-330`). Incompatible installs
+  (`src/lib/plugin-manifest.ts:311-330`). A theme package that declares the
+  `archive` template must additionally declare a floor of `>= 3.1.0` — see
+  [§2.1](#the-archive-key-and-the-api-floor). Incompatible installs
   resolve as `incompatible` with a labeled placeholder
   (`src/lib/plugin-manifest.ts:670-678`).
 - Live payload ceilings are `AST_LIMITS`
-  (`src/lib/builder-ast.ts:7419`): serialized templates + tokens ≤
+  (`src/lib/builder-ast.ts:7965`): serialized templates + tokens ≤
   512_000 chars, ≤ 60 sections per slot (`MAX_SECTIONS_PER_SLOT`,
-  `src/lib/builder-ast.ts:7416`), ≤ 300 nodes per template
-  (`MAX_NODES_PER_TEMPLATE`, `src/lib/builder-ast.ts:405`), depth ≤ 6
-  (`MAX_TREE_DEPTH`, `src/lib/builder-ast.ts:404`), enforced by
-  `assertPayloadWithinLimits` (`src/lib/builder-ast.ts:7450`).
+  `src/lib/builder-ast.ts:7962`), ≤ 300 nodes per template
+  (`MAX_NODES_PER_TEMPLATE`, `src/lib/builder-ast.ts:410`), depth ≤ 6
+  (`MAX_TREE_DEPTH`, `src/lib/builder-ast.ts:409`), enforced by
+  `assertPayloadWithinLimits` (`src/lib/builder-ast.ts:7996`).
 
 ## 6. Publish, preview, activate
 
@@ -451,14 +494,14 @@ theme.
 - Publish payload: explicit input wins; otherwise the newest
   `theme_versions` row supplies the payload. No usable input and no
   usable artifact throws `builder.artifact_missing`
-  (`resolvePublishPayload`, `src/lib/themes.server.ts:444-464`).
+  (`resolvePublishPayload`, `src/lib/themes.server.ts:687-722`).
 - Publish path: lint errors per template
-  (`src/lib/themes.server.ts:611-615`), translation gate (≥90%
+  (`src/lib/themes.server.ts:921`), translation gate (≥90%
   বাংলা via `TRANSLATION_PUBLISH_FLOOR`,
   `src/lib/builder-guardrails.ts:148`, wired at
-  `src/lib/themes.server.ts:616-619`), font/contrast gates, then
+  `src/lib/themes.server.ts:924-926`), font/contrast gates, then
   `theme_publish` RPC moves `store_themes.published_version_id`
-  (`publishVersion`, `src/lib/themes.server.ts:590`).
+  (`publishVersion`, `src/lib/themes.server.ts:897`, RPC at `:1003`).
 - Preview reads an owned version without touching the live pointer
   (`previewPackage`, `src/lib/package-install.server.ts:1157`).
 - Preview resolution with merchant context (array, even empty) comes
@@ -517,7 +560,7 @@ target's content — never a pointer rewind.
   `theme_versions` row with `rollback_of`, moves the published
   pointer, upserts the draft, audits `package.rolled_back`. Builder
   lane equivalent: `rollbackVersion`
-  (`src/lib/themes.server.ts:702`) via the `theme_rollback` RPC plus
+  (`src/lib/themes.server.ts:1020`) via the `theme_rollback` RPC plus
   `restoreCustomCode` and `purgeStorefront("rollback")`.
 - Plugins: `rollbackPluginPackage`
   (`src/lib/package-install.server.ts:1016`) mints a new ledger row
@@ -662,7 +705,7 @@ not implement from them.
 | Publish falls back to the source package when no artifact exists                                    | **Removed by K2.** Fails closed with `builder.artifact_missing` (`src/lib/themes.server.ts:444-464`).                                                                                                                                                                                                        |
 | Plugin lifecycle `installing → active ⇄ suspended → uninstalling → purged` as ledger states         | **Prose-only label set.** Ledger states are `installed` / `trial` / `paused` / `removed` (plus `rolled_back` on the marketplace lane); enable/disable flips `installed` ⇄ `paused` (`src/lib/package-install.server.ts:941-970`). Suspend/resume and kill-switch reasons live in the lifecycle layer (§3.5). |
 | `VISIBLE_THEME_KEYS` curates the offer / `officialThemeKeys()` returns the catalogue                | **Stale.** `VISIBLE_THEME_KEYS` is an empty set (`src/lib/themes/appearance.ts:360`); the curated Official/Community split is `sectionCatalogue` over provenance (`src/lib/themes/appearance.ts:126`).                                                                                                       |
-| Exactly eight template keys (no `account`)                                                          | **Stale.** `TEMPLATE_KEYS` has nine entries including `account` (`src/lib/builder-ast.ts:47-60`).                                                                                                                                                                                                            |
+| Exactly eight template keys (no `account`)                                                          | **Stale.** `TEMPLATE_KEYS` has **ten** entries — the nine older keys plus `archive` (`src/lib/builder-ast.ts:46-61`).                                                                                                                                                                                        |
 
 ## 12. Worked references (compile against source)
 

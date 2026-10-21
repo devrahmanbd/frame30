@@ -1,6 +1,16 @@
 # Build a third-party theme
 
-Last verified: 2026-10-18 @ 34ea2540efdc
+Last verified: 2026-10-22 @ 0a794b549315
+
+Verification scope (2026-10-22): the template list, the customisable
+surfaces, the placement rules, the presentation rules, the preview contract
+and the platform-controlled actions were read against the shipped code at
+`0a794b549315`; `node scripts/doc-gate.mjs` reports 0 findings, and the
+repository's own test suite passes apart from three pre-existing,
+environment-bound failures recorded in the phase-3 evidence record. Line pins
+are working-tree lines: the pins this pass wrote or corrected point at the
+declaration that owns the block, and older pins elsewhere in these documents
+are best-effort pointers that may have drifted with the code.
 
 This guide covers the full path from a blank folder to an accepted theme
 submission.
@@ -41,15 +51,15 @@ data-only ZIPs, Level B bundles — is canonical in
 [the package contract](../packages/contract.md), and this table is the
 chooser:
 
-| | Data-only theme (ZIP) | Level B executable theme |
-| --- | --- | --- |
-| You ship | `theme.json` + tokens/templates/styles; no executable code | `dev.theme.json` + a JS/CSS bundle, assembled with `node scripts/build-dev-theme.mjs` |
-| Gate | `validateThemeManifest` (`src/lib/theme-package.ts:279`) | `validateDevThemeBundle` (`src/lib/dev-theme-bundle.ts:599`) |
-| Compatibility | `api` inside `^3.0.0` | `runtime` pinned exactly to `DEV_THEME_RUNTIME_VERSION` (`src/lib/dev-theme-manifest.ts:22`) |
-| Review | install-pipeline gates, then publish from the Themes screen | fingerprint-bound review store, `createDevThemeReleaseStore` (`src/lib/dev-theme-review.ts:276`): submit → review → publish |
-| Install / activation | install → merchant approval → activation | install never activates; activation is per version and fingerprint (`installReviewedThemeBundle`, `src/lib/dev-theme-bundle-install.ts:543`; `activateDevThemeInstall`, `src/lib/dev-theme-activate.ts:377`) |
-| Runtime | AST + tokens in the page DOM | `ThemeRuntime` iframe only (`src/components/theme-runtime/ThemeRuntime.tsx:187`): `sandbox="allow-scripts"` (`src/components/theme-runtime/ThemeRuntime.tsx:59`), null origin, `default-src 'none'` (`src/components/theme-runtime/ThemeRuntime.tsx:105`) |
-| Start here | This guide | [The Level B lane](../themes/level-b.md) |
+|                      | Data-only theme (ZIP)                                                                 | Level B executable theme                                                                                                                                                                                                                                  |
+| -------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| You ship             | `theme.json` + tokens/templates/styles; no executable code                            | `dev.theme.json` + a JS/CSS bundle, assembled with `node scripts/build-dev-theme.mjs`                                                                                                                                                                     |
+| Gate                 | `validateThemeManifest` (`src/lib/theme-package.ts:312`)                              | `validateDevThemeBundle` (`src/lib/dev-theme-bundle.ts:599`)                                                                                                                                                                                              |
+| Compatibility        | `api` inside `^3.0.0` — and `>= 3.1.0` if the package declares the `archive` template | `runtime` pinned exactly to `DEV_THEME_RUNTIME_VERSION` (`src/lib/dev-theme-manifest.ts:22`)                                                                                                                                                              |
+| Review               | install-pipeline gates, then publish from the Themes screen                           | fingerprint-bound review store, `createDevThemeReleaseStore` (`src/lib/dev-theme-review.ts:276`): submit → review → publish                                                                                                                               |
+| Install / activation | install → merchant approval → activation                                              | install never activates; activation is per version and fingerprint (`installReviewedThemeBundle`, `src/lib/dev-theme-bundle-install.ts:543`; `activateDevThemeInstall`, `src/lib/dev-theme-activate.ts:377`)                                              |
+| Runtime              | AST + tokens in the page DOM                                                          | `ThemeRuntime` iframe only (`src/components/theme-runtime/ThemeRuntime.tsx:187`): `sandbox="allow-scripts"` (`src/components/theme-runtime/ThemeRuntime.tsx:59`), null origin, `default-src 'none'` (`src/components/theme-runtime/ThemeRuntime.tsx:105`) |
+| Start here           | This guide                                                                            | [The Level B lane](../themes/level-b.md)                                                                                                                                                                                                                  |
 
 Lane separation is enforced in both directions: executable bytes in a ZIP
 fail `assetManifest[].path.executable`, and a `theme.json` inside a
@@ -72,7 +82,7 @@ Songoskriti is source-owned official, not a downloadable template to upload as a
 The studio follows one platform rule: **theme = dress, widget = body**
 (`src/lib/widget-presentation.ts:25`). Widgets are global; a theme never owns
 one. Registering a presentation (`registerThemePresentation`,
-`src/lib/theme-presentations.ts:97`) only claims how the owning theme *dresses*
+`src/lib/theme-presentations.ts:97`) only claims how the owning theme _dresses_
 a widget — including theme-claimed widgets such as Songoskriti's
 `theme:songoskriti/ornament` — and never gates the widget away from any other
 theme.
@@ -91,12 +101,130 @@ What to rely on as a theme author:
   fails closed to the placeholder when no body is registered — the
   "Widget preview unavailable" notice is retired for registered components.
 - Presentations stay first-wins and warn-only on duplicates
-  (`src/lib/theme-presentations.ts:92`), so a foreign claim can never crash
+  (`src/lib/theme-presentations.ts:103`), so a foreign claim can never crash
   a render or leak another theme's brand.
 
 The dress rules themselves — tokens, skins, claims — are the rest of this
 guide; the full reference lives in
 [the theme authoring reference](../themes/creation.md).
+
+## What a third-party theme can customise, and what it cannot
+
+### The ten template keys a theme may ship
+
+A theme may ship **any subset** of the ten supported keys — it ships the
+templates it defines, and a key it does not ship falls back to the platform's
+own surface. The keys are `TEMPLATE_KEYS`
+(`src/lib/builder-ast.ts:46-61`):
+
+| key          | the surface                                                  | customisable?                                                       |
+| ------------ | ------------------------------------------------------------ | ------------------------------------------------------------------- |
+| `index`      | the landing page                                             | yes                                                                 |
+| `product`    | the product detail                                           | yes — the frame around the route's product, variants and price      |
+| `collection` | the product collection                                       | yes — the band, the toolbar, the pager; **not** the grid            |
+| `search`     | the search results                                           | yes — the toolbar, the chips, the pager; **not** the results block  |
+| `cart`       | the cart                                                     | yes — the arrangement and labels around the platform's cart widgets |
+| `checkout`   | the checkout                                                 | yes — the frame only; **never** a form, an input or a price         |
+| `account`    | the shopper's account                                        | yes — the frame around the route's dashboard                        |
+| `page`       | a merchant's CMS page                                        | yes — the frame the merchant's own record sits in                   |
+| `blog`       | the blog listing **and** the article detail, as two variants | yes — `blog_listing` and `blog_article`                             |
+| `archive`    | the content archive — a category, a tag, an author           | yes — `archive_category`, `archive_tag`, `archive_author`           |
+
+Two keys carry **closed variants** — one key, two genuinely different
+compositions. The vocabulary is the only place a variant may be added
+(`TEMPLATE_VARIANTS`, `src/lib/template-variants.ts:55-58`): `blog` owns
+`listing` and `article`; `archive` owns `category`, `tag` and `author`. A
+variant key is `<base>_<suffix>` in the **same** `templates` map — no
+migration, no new table — and it resolves through the same machinery: the
+variant first, then the base (`resolveVariantAst`,
+`src/lib/template-variants.ts:280`). A suffix outside the table is not a key
+the platform routes to, so it can never be authored.
+
+**A third-party package that declares `archive` must declare an `api` range
+whose lower bound is `>= 3.1.0`** — that is the API line the key landed in.
+A package that declares no `archive` is unaffected and keeps `^3.0.0`. The
+rule, the two admitted range shapes and the reason code
+(`templates.archive_requires_api`) are in
+[the package contract](../packages/contract.md) §2.1.
+
+### Which widgets can be placed where
+
+Every catalogue entry declares the templates it may live on (its
+`templates:` allowlist) and the slots it may occupy. The allowlist is the
+contract: a widget in a template it is not allowlisted for is a
+**publish-blocking** "needs data this template does not provide" error, not
+a rendering surprise. Seven of the allowlist rows carry `archive` —
+`breadcrumb`, `category_header`, `pagination`, `empty_state`, `blog_archive`,
+`blog_terms` and `blog_pager` — because those are the widgets an archive
+page may legitimately carry. `product_grid` is **not** one of them: the grid
+reads the host's product slot, and an archive has none.
+
+Two widgets are **context widgets** — they read data the route owns rather
+than props the merchant sets: the account's `profile_card` and
+`orders_list`, and the checkout's `cart_lines`, `cart_summary`,
+`checkout_steps` and `payment_methods`. A context widget renders only where
+the route granted its slot.
+
+### How to declare presentations and properties
+
+**Presentations** dress a shared widget for one theme. Register them with
+`registerThemePresentation` (`src/lib/theme-presentations.ts:97`) from the
+theme's own module; the engine resolves the registered presentation first
+and falls back to the shared renderer when nothing is registered
+(`src/components/builder/SectionRenderer.tsx:800`). First registration wins,
+duplicates warn and are ignored, and a foreign claim can never crash a
+render or leak another theme's brand.
+
+**Properties** come from the catalogue. A widget's inspector controls are
+**schema-generated** from its `fields` — the client and the server call the
+same validator, so what the merchant sees is what the publish gate checks.
+The closed kind vocabulary is `PROP_KINDS`
+(`src/lib/widget-props.ts`); an unknown kind fails closed rather than
+falling back to a free-text input. A theme never invents a prop: copy the
+key from the catalogue entry, because `parseSection` rebuilds props from
+catalogue fields only and **drops** an undeclared key on the round trip.
+
+**Theme-owned widgets** are the third option, for a capability that is
+genuinely unique: one `WidgetDef` with a namespaced id
+(`theme:<key>/<slug>`), a closed `propsSchema` and `defaults`, registered
+with `registerWidget` (`src/lib/unified-widget-registry.ts:929`). They are
+universal — the def stays insertable under every active theme — and under a
+foreign theme the resolution walks owner → universal body → recoverable
+fallback. The full contract is in
+[the widget contract](../04-builder/app-blocks.md).
+
+### How to preview
+
+Wire a `PreviewThemeSource` (`src/lib/theme-preview-nav.ts:403`): `{ key,
+themeName, author, tokens, header, footer, main }`, where `main(template, s)`
+returns the authored demo body for a template key or a **variant** key, and
+`null` for templates the theme does not author. Register the source in
+`src/lib/preview-sources.ts:1-42` — that map is the only place that names
+themes for preview; the engine never imports a theme module directly.
+
+The preview host renders **every authored composition** over the theme's own
+labelled demo data, and it agrees with the storefront by construction: the
+same AST, the same linter and the same context slots serve both. The
+preview's action policies are closed — navigation maps onto the preview's
+own template tabs, account and sign-in paths are blocked, and `?focus=`
+links resolve to demo rows. A preview never writes, never signs anyone in
+and never reaches the merchant's live data.
+
+### Which actions stay platform-controlled
+
+Always, on every surface:
+
+- **Search** — the query execution, the tenant scope and the result limit.
+- **Cart and checkout** — the prices, the discounts, the stock, the totals,
+  the order state and the payment rails. The theme's checkout body
+  contributes no form and no input element.
+- **Account** — the session, the shopper's own overview, the tab state and
+  every write.
+- **Publication** — the publication status and the permissions.
+- **Extensions** — the sandbox, the capabilities and the bridge
+  authorisation.
+
+A theme may present all of them and may not authorise any of them.
 
 ## Copy the starter theme first
 
@@ -115,11 +243,11 @@ preview.
 ## Set brand tokens through ThemeTokens
 
 Tokens are the only styling channel. The shape is `ThemeTokens` in
-`src/lib/builder-ast.ts:7072` (19 required keys plus optional
+`src/lib/builder-ast.ts:7089` (19 required keys plus optional
 `timezone` / `allowCustomerTimezone`), parsed by `parseTokens` in
-`src/lib/builder-ast.ts:7194` and emitted as CSS variables by
-`tokensToCss` in `src/lib/builder-ast.ts:7317`. Start from
-`DEFAULT_TOKENS` in `src/lib/builder-ast.ts:7127`, then lock the two
+`src/lib/builder-ast.ts:7211` and emitted as CSS variables by
+`tokensToCss` in `src/lib/builder-ast.ts:7353`. Start from
+`DEFAULT_TOKENS` in `src/lib/builder-ast.ts:7144`, then lock the two
 shipped themes' columns as reference:
 
 | Token             | Songoskriti (`src/lib/themes/songoskriti/tokens.ts:9`) | Somvabona (`src/lib/themes/somvabona/tokens.ts:14`) |
@@ -145,7 +273,7 @@ shipped themes' columns as reference:
 | `globals`         | `DEFAULT_GLOBALS`                                      | `DEFAULT_GLOBALS`                                   |
 
 Both themes keep `fontPairing: editorial-serif` from `FONT_PAIRINGS` in
-`src/lib/builder-ast.ts:7109`, and both seed `globals` from
+`src/lib/builder-ast.ts:7126`, and both seed `globals` from
 `DEFAULT_GLOBALS` in `src/lib/theme-globals.ts:32`. Globals are the
 merchant-editable palette; bindings are stored as `var(--fq-g-<id>)`
 references built by `globalRef` in `src/lib/theme-globals.ts:58` and
@@ -158,12 +286,12 @@ display (symbol, Latin digits).
 
 The core lane owns the `skin` prop: every skinnable widget gains a
 **Skin** select field in the style panel via `SKIN_FIELD` in
-`src/lib/builder-ast.ts:860`, with the closed vocabulary in
-`WIDGET_SKINS` in `src/lib/builder-ast.ts:811` and the core default in
-`DEFAULT_WIDGET_SKIN` in `src/lib/builder-ast.ts:829`. The first option
+`src/lib/builder-ast.ts:871`, with the closed vocabulary in
+`WIDGET_SKINS` in `src/lib/builder-ast.ts:822` and the core default in
+`DEFAULT_WIDGET_SKIN` in `src/lib/builder-ast.ts:840`. The first option
 is the documented default. Unknown or empty values resolve to the
 widget default through `resolveSkin` in
-`src/lib/builder-ast.ts:850` — never a crash, never empty. Skin values
+`src/lib/builder-ast.ts:861` — never a crash, never empty. Skin values
 are style keys, never copy, so they carry no `_bn` twins.
 
 | Widget          | Core vocab (first = core default) | Songoskriti default | Somvabona default |
@@ -185,7 +313,7 @@ Theme-side sets live in `SONGOSKRITI_SKIN_SETS` in
 `src/lib/themes/somvabona/skins.ts:119`: defaults merge **under**
 authored props, so an explicit `skin` in the inspector always wins. The
 shared helper behind both is `withThemeWidgetDefaults` in
-`src/lib/builder-ast.ts:946`, which only merges catalogue-known keys so
+`src/lib/builder-ast.ts:957`, which only merges catalogue-known keys so
 a theme can never smuggle unknown props onto a node.
 
 ## Claim widget presentations through the registry
@@ -218,7 +346,7 @@ presentation through the registry instead of forking the renderer:
   (`src/lib/definition-of-done.test.ts:147`). The one exemption is the
   studio token panel, which takes the installed theme key only to offer
   that theme's variation list
-  (`src/routes/_authenticated/dashboard/builder.tsx:134`; the map reaches `TokenEditor` as `variations[]` at `src/routes/_authenticated/dashboard/builder.tsx:2479`) — editor chrome, never
+  (`src/routes/_authenticated/dashboard/builder.tsx:137`; the map reaches `TokenEditor` as `variations[]` at `src/routes/_authenticated/dashboard/builder.tsx:2645`) — editor chrome, never
   a storefront fork.
 
 ## Compose the homepage hero-first
@@ -231,32 +359,32 @@ ships a 21-section homepage opening on `hero_carousel`; Somvabona
 builds `buildHomepageMain` in
 `src/lib/themes/somvabona/homepage.ts:22` and ships a 12-section
 homepage on 11 distinct types. The section shape is `Section` in
-`src/lib/builder-ast.ts:401`, built through the `SectionBuilder`
-callback in `src/lib/builder-ast.ts:507`; always construct through the
+`src/lib/builder-ast.ts:412`, built through the `SectionBuilder`
+callback in `src/lib/builder-ast.ts:518`; always construct through the
 shared factory `sectionFactory` in `src/lib/theme-section.ts:61` so ids
 stay unique and বাংলা props fill from a dictionary.
 
 Three rules govern every template:
 
 - The first section owns the H1 claim. `hero_carousel` is a
-  heading-claiming widget (`src/lib/builder-ast.ts:4968`); route-headed
+  heading-claiming widget (`src/lib/builder-ast.ts:4981`); route-headed
   templates (`product`, `collection`, `account`, `page`, `blog`,
-  `search` in `src/lib/builder-ast.ts:68`) get theirs from the route
-  and must not contain one. `lintTemplate` in
-  `src/lib/builder-ast.ts:8361` enforces both directions.
+  `search`, `archive` in `src/lib/builder-ast.ts:72`) get theirs from the
+  route and must not contain one. `lintTemplate` in
+  `src/lib/builder-ast.ts:8397` enforces both directions.
 - Every widget must sit in a legal slot. Templates are `{ header,
-main, footer }` (`ThemeAst` in `src/lib/builder-ast.ts:512`) over the
+main, footer }` (`ThemeAst` in `src/lib/builder-ast.ts:523`) over the
   keys in `TEMPLATE_KEYS` in `src/lib/builder-ast.ts:46`; each
   catalogue entry declares its slots (for example `banner` allows
   header and main, `footer_sitemap` allows footer only). An illegal
   slot parses to a placeholder, never a crash.
 - Props are flat scalars plus repeatable `PropRow[]` arrays (`PropValue`
-  in `src/lib/builder-ast.ts:393`), capped at `MAX_ARRAY_ROWS = 24` in
-  `src/lib/builder-ast.ts:395` with trees capped at `MAX_TREE_DEPTH`
-  and `MAX_NODES_PER_TEMPLATE` in `src/lib/builder-ast.ts:398-399`. Never
+  in `src/lib/builder-ast.ts:404`), capped at `MAX_ARRAY_ROWS = 24` in
+  `src/lib/builder-ast.ts:406` with trees capped at `MAX_TREE_DEPTH`
+  and `MAX_NODES_PER_TEMPLATE` in `src/lib/builder-ast.ts:409-410`. Never
   invent a prop — copy the key from the catalogue entry (`CatalogEntry`
-  in `src/lib/builder-ast.ts:696`, lookup via `catalogEntry` in
-  `src/lib/builder-ast.ts:7048`).
+  in `src/lib/builder-ast.ts:707`, lookup via `catalogEntry` in
+  `src/lib/builder-ast.ts:7065`).
 
 ## Keep skins.css token-only
 
@@ -287,9 +415,9 @@ resolve every type the theme emits through `catalogEntry` — an
 unresolvable type is uneditable in the studio and fails review.
 
 Persisted props are rebuilt from catalog fields only: `parseSection`
-in `src/lib/builder-ast.ts:7634` rebuilds props field-by-field in
-`src/lib/builder-ast.ts:7709`, drops unknown keys, and rides the বাংলা
-sibling along in `src/lib/builder-ast.ts:7720`. A new `skin` value or
+in `src/lib/builder-ast.ts:7670` rebuilds props field-by-field in
+`src/lib/builder-ast.ts:7745`, drops unknown keys, and rides the বাংলা
+sibling along in `src/lib/builder-ast.ts:7756`. A new `skin` value or
 custom prop needs its catalogue field first, or the round trip drops
 it. Verify with a JSON serialize-and-parse pass that skins and twins
 survive, as the starter suite does.
@@ -298,7 +426,7 @@ survive, as the starter suite does.
 
 Theme previews render through a theme-agnostic engine: the theme only
 implements the `PreviewThemeSource` port in
-`src/lib/theme-preview-nav.ts:309`, and the registry wires it in.
+`src/lib/theme-preview-nav.ts:403`, and the registry wires it in.
 Implement `songoskritiPreviewSource()` in
 `src/lib/themes/songoskriti/preview.ts:70` (Somvabona mirrors it in
 `src/lib/themes/somvabona/preview.ts:29`): `{ key, themeName, author,
@@ -313,21 +441,21 @@ and static sources exist for tests and build tooling
 engine never imports a theme module directly.
 
 Unauthored templates get an engine-synthesized generic demo body via
-`assemblePreviewTemplates` in `src/lib/theme-preview-nav.ts:380`
-(`genericDemoMain` in `src/lib/theme-preview-nav.ts:357`), resolved per
-key by `resolveThemePreview` in `src/lib/theme-preview-nav.ts:414`.
+`assemblePreviewTemplates` in `src/lib/theme-preview-nav.ts:496`
+(`genericDemoMain` in `src/lib/theme-preview-nav.ts:473`), resolved per
+key by `resolveThemePreview` in `src/lib/theme-preview-nav.ts:572`.
 In-preview navigation maps demo links onto the preview's own template
-tabs (`previewTargetForHref` in `src/lib/theme-preview-nav.ts:52`),
+tabs (`previewTargetForHref` in `src/lib/theme-preview-nav.ts:59`),
 account and sign-in paths stay blocked (`isPreviewBlockedHref` in
-`src/lib/theme-preview-nav.ts:47`), and focus links use the `?focus=`
+`src/lib/theme-preview-nav.ts:54`), and focus links use the `?focus=`
 contract, never `?slug=`.
 
 ## Write bilingual copy from the start
 
 Only the props listed in `BITEXT_FIELDS` in
-`src/lib/builder-ast.ts:5866` gain a `${key}_bn` sibling
+`src/lib/builder-ast.ts:5883` gain a `${key}_bn` sibling
 (`product_rail` twins `heading` and `promise` in
-`src/lib/builder-ast.ts:5971`; row-level copy such as slides and
+`src/lib/builder-ast.ts:5988`; row-level copy such as slides and
 testimonials is read directly by renderers). Fill twins at construction
 with `withBn` in `src/lib/theme-section.ts:24` via the theme
 dictionary passed to `sectionFactory`. Publishing is gated on বাংলা
@@ -344,17 +472,19 @@ the full gate list lives in [the theme package spec](../themes/packages.md)
 and the worked example in
 [example-studio.theme.json](../themes/example-studio.theme.json).
 Publishing checks run server-side: clean `lintTemplate` per key in
-`src/lib/themes.server.ts:850`, the translation gate in
-`src/lib/themes.server.ts:856`, font licence and budget gates, then
-`composePublishGate` from `src/lib/publish-gates.ts:774`, called at
-`src/lib/themes.server.ts:877`. Publish moves
+`src/lib/themes.server.ts:921`, the translation gate in
+`src/lib/themes.server.ts:924-926`, font licence and budget gates, then
+`composePublishGate` from `src/lib/publish-gates.ts`, called at
+`src/lib/themes.server.ts:946`. Publish moves
 `store_themes.published_version_id` via `theme_publish` in
-`src/lib/themes.server.ts:935`; rollback restores through
-`theme_rollback` in `src/lib/themes.server.ts:975`. The update checklist:
+`src/lib/themes.server.ts:1003`; rollback restores through
+`theme_rollback` in `src/lib/themes.server.ts:1043`. The update checklist:
 
 1. Bump `version` with semver on every resubmission, rejections
    included. Never rename `key` after first publish.
-2. Keep `api` inside `^3.0.0`.
+2. Keep `api` inside `^3.0.0` — and, if the package declares the
+   `archive` template, declare a range whose lower bound is `>= 3.1.0`
+   (the reason code is `templates.archive_requires_api`).
 3. Re-run the theme suites (wiring, skins, preview, twin parity)
    before exporting — a red gate now is a rejection later.
 4. Confirm the persist round trip still keeps skins and `_bn` twins.
@@ -363,7 +493,7 @@ Publishing checks run server-side: clean `lintTemplate` per key in
 6. Expect re-consent on widening updates: a version that adds
    external hosts or custom HTML over the installed line fails with
    `package.consent_required` unless the update covers every addition
-   (`src/lib/package-install.server.ts:1025-1028`).
+   (`src/lib/package-install.server.ts:1027`).
 7. Expect an approval gate on flagged content: activation of a
    scan-flagged version is refused with `theme.approval_required`
    until the merchant records `approveThemeVersion`

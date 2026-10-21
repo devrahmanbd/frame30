@@ -1,6 +1,15 @@
 # Theme Packages (third-party developer spec)
 
-Last verified: 2026-10-18 @ 05917b962914
+Last verified: 2026-10-22 @ 0a794b549315
+
+Verification scope (2026-10-22): the manifest gate, the template-key list, the
+API range and the `archive` floor were read against the shipped code at
+`0a794b549315`; `node scripts/doc-gate.mjs` reports 0 findings, and the
+repository's own test suite passes apart from three pre-existing,
+environment-bound failures recorded in the phase-3 evidence record. Line pins
+are working-tree lines: the pins this pass wrote or corrected point at the
+declaration that owns the block, and older pins elsewhere in these documents
+are best-effort pointers that may have drifted with the code.
 
 > **NOTE — validator built; spec field names mapped below.** The validator
 > module now exists (`src/lib/theme-package.ts`): the canonical gate is
@@ -8,7 +17,7 @@ Last verified: 2026-10-18 @ 05917b962914
 > true alias of it (one implementation). Package installs flow through
 > `parseTokens`/`parseTemplates`
 > (`src/lib/builder-ast.ts`) at
-> `marketplace-install.server.ts:601-606` (inside `materializeListingTheme`).
+> `src/lib/marketplace-install.server.ts:876-881` (inside `materializeListingTheme`).
 > The validator itself checks the manifest shape only — it never calls
 > `parseTemplates` / `parseTokens` / `lintTemplate`, never measures payload
 > bytes, and never counts sections. Everything below is the
@@ -32,88 +41,129 @@ enforced field is the declared template-key subset (`templates`).
 
 Theme distribution has three lanes — pick one before building:
 
-| Lane | You ship | Gate | Install / activation | Full spec |
-| ---- | -------- | ---- | -------------------- | --------- |
-| Official source themes | nothing — Framique builds them in-repo | none (trusted source) | catalogue install (`installCatalogTheme`) | [creation.md](./creation.md) |
-| Declarative ZIP theme (this page) | `theme.json` + tokens/templates; no executable code | `validateThemeManifest` | `installPackage` theme lane → publish → activate | this page; [contract.md](../packages/contract.md) |
-| Reviewed executable theme (Level B) | `dev.theme.json` + JS/CSS bundle; code runs only in the runtime frame | `validateDevThemeBundle` | review store → per-version activation | [level-b.md](./level-b.md); authority: [contract.md](../packages/contract.md) |
+| Lane                                | You ship                                                              | Gate                     | Install / activation                             | Full spec                                                                     |
+| ----------------------------------- | --------------------------------------------------------------------- | ------------------------ | ------------------------------------------------ | ----------------------------------------------------------------------------- |
+| Official source themes              | nothing — Framique builds them in-repo                                | none (trusted source)    | catalogue install (`installCatalogTheme`)        | [creation.md](./creation.md)                                                  |
+| Declarative ZIP theme (this page)   | `theme.json` + tokens/templates; no executable code                   | `validateThemeManifest`  | `installPackage` theme lane → publish → activate | this page; [contract.md](../packages/contract.md)                             |
+| Reviewed executable theme (Level B) | `dev.theme.json` + JS/CSS bundle; code runs only in the runtime frame | `validateDevThemeBundle` | review store → per-version activation            | [level-b.md](./level-b.md); authority: [contract.md](../packages/contract.md) |
 
 Official themes are not ZIP packages. <!-- doc-gate-ok: deliberate negative reference -->
 
 ## Manifest fields
 
-| Field       | Rules                                                                                                      |
-| ----------- | ---------------------------------------------------------------------------------------------------------- |
-| `key`       | 1–60 chars, slug (`[a-z0-9-]`). Never renamed after publish.                                               |
-| `nameEn`    | English display name (required).                                                                           |
-| `nameBn`    | Bengali display name (required).                                                                           |
-| `summaryEn` | English one-line summary (required).                                                                       |
-| `summaryBn` | Bengali one-line summary (required).                                                                       |
-| `category`  | Storefront category, e.g. `fashion` (required).                                                            |
-| `version`   | Semver (`1.0.0`). Bump on every resubmission.                                                              |
-| `api`       | Builder API range. Must fall inside `^3.0.0` (major 3); anything else is rejected to avoid version skew.   |
-| `sortOrder` | Marketplace ordering weight (default `50`).                                                                |
-| `tokens`    | Token bag accepted by `parseTokens`.                                                                       |
-| `templates` | Template map accepted by `parseTemplates`. Unknown route keys are dropped — packages cannot invent routes. |
+| Field       | Rules                                                                                                                                                                                                                                                                                               |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `key`       | 1–60 chars, slug (`[a-z0-9-]`). Never renamed after publish.                                                                                                                                                                                                                                        |
+| `nameEn`    | English display name (required).                                                                                                                                                                                                                                                                    |
+| `nameBn`    | Bengali display name (required).                                                                                                                                                                                                                                                                    |
+| `summaryEn` | English one-line summary (required).                                                                                                                                                                                                                                                                |
+| `summaryBn` | Bengali one-line summary (required).                                                                                                                                                                                                                                                                |
+| `category`  | Storefront category, e.g. `fashion` (required).                                                                                                                                                                                                                                                     |
+| `version`   | Semver (`1.0.0`). Bump on every resubmission.                                                                                                                                                                                                                                                       |
+| `api`       | Builder API range. Must fall inside `^3.0.0` (major 3); anything else is rejected to avoid version skew. **A package that declares `archive` in `templates` must declare a range whose lower bound is `>= 3.1.0`** — see [The `archive` key and the API floor](#the-archive-key-and-the-api-floor). |
+| `sortOrder` | Marketplace ordering weight (default `50`).                                                                                                                                                                                                                                                         |
+| `tokens`    | Token bag accepted by `parseTokens`.                                                                                                                                                                                                                                                                |
+| `templates` | Template map accepted by `parseTemplates`. Unknown route keys are dropped — packages cannot invent routes. The declared subset is checked against the **ten** supported template keys (`src/lib/builder-ast.ts:46-61`).                                                                             |
 
-## Gates — enforced by `validateThemeManifest` (`src/lib/theme-package.ts:280`)
+## Gates — enforced by `validateThemeManifest` (`src/lib/theme-package.ts:312`)
 
 The validator checks the manifest shape only (fail-closed: malformed input
-returns `manifest.invalid` at `src/lib/theme-package.ts:282-284,550-552`).
+returns `manifest.invalid` at `src/lib/theme-package.ts:314-316,612-614`).
 Each check below pins the code that performs it. Payload and template-content
 checks live in later pipeline stages — see the next section — and the
 spec-only budgets live under Aspirational.
 
-1. **Slug:** `key` matches `THEME_KEY_RE` (`src/lib/theme-package.ts:54`),
-   checked at `:290-293`.
+1. **Slug:** `key` matches `THEME_KEY_RE` (`src/lib/theme-package.ts:59`),
+   checked at `:323-328`.
 2. **Bilingual names:** `name` / `nameBn` are both required
-   (`src/lib/theme-package.ts:296-308`); over-length and executable text are
-   rejected (`MAX_NAME_LEN` at `:224`, `EXECUTABLE_RE` at `:193-194`).
+   (`src/lib/theme-package.ts:330-338`); over-length and executable text are
+   rejected (`MAX_NAME_LEN` at `:258`, `EXECUTABLE_RE` at `:227`).
 3. **Version:** strict semver via `parseSemver`
-   (`src/lib/marketplace-scopes.ts:155`), checked at
-   `src/lib/theme-package.ts:311-313`.
+   (`src/lib/marketplace-scopes.ts:158`), checked at
+   `src/lib/theme-package.ts:340-343`.
 4. **API compatibility:** `api` must be a caret / `>=a <b` range covering the
    running builder via `satisfiesApiRange`
-   (`src/lib/plugin-manifest.ts:311`; range `THEME_API_RANGE = ^3.0.0` at
-   `src/lib/theme-package.ts:51`), checked at
-   `src/lib/theme-package.ts:316-320`.
+   (`src/lib/plugin-manifest.ts:463`; range `THEME_API_RANGE = ^3.0.0` at
+   `src/lib/theme-package.ts:56`), checked at
+   `src/lib/theme-package.ts:345-350`.
 5. **Templates subset:** `templates` is a non-empty, duplicate-free subset of
-   `TEMPLATE_KEYS` (`src/lib/builder-ast.ts:46-59`), checked at
-   `src/lib/theme-package.ts:357-376`. Unknown keys are rejected — packages
-   cannot invent routes.
+   `TEMPLATE_KEYS` (`src/lib/builder-ast.ts:46-61`), checked at
+   `src/lib/theme-package.ts:385-404`. Unknown keys are rejected — packages
+   cannot invent routes. **A package that declares `archive` is additionally
+   held to the API floor** — see the next section.
 6. **Catalog widgets:** every `supportedWidgets` entry must exist in
-   `WIDGET_TYPES` (`src/lib/widget-registry.ts:951`, `SectionType` in
-   `src/lib/builder-ast.ts:212`), checked at
-   `src/lib/theme-package.ts:378-400`. Unknown widget types are rejected.
+   `WIDGET_TYPES` (`src/lib/widget-registry.ts:1001`, `SectionType` in
+   `src/lib/builder-ast.ts:217`), checked at
+   `src/lib/theme-package.ts:420-445`. Unknown widget types are rejected.
 7. **Plugin refs:** `pluginDependencies` must be `plugin:{id}` /
-   `plugin:{id}/{widget}` refs (`src/lib/theme-package.ts:178,180-181`,
+   `plugin:{id}/{widget}` refs (`src/lib/theme-package.ts:184-187`,
    shapes from `pluginWidgetKey` / `parsePluginWidgetKey` at
-   `src/lib/plugin-manifest.ts:295-306`) plus an exact / caret / pair version
-   range, checked at `src/lib/theme-package.ts:402-433`.
+   `src/lib/plugin-manifest.ts:425-437`) plus an exact / caret / pair version
+   range, checked at `src/lib/theme-package.ts:447-475`.
 8. **Surfaces:** `presentationSurfaces` is a non-empty, duplicate-free subset
    of the closed `PRESENTATION_SURFACES`
-   (`src/lib/theme-package.ts:68-74`), checked at `:435-458`.
+   (`src/lib/theme-package.ts:73`), checked at `:477-501`.
 9. **Locales:** `locales` is a non-empty, duplicate-free subset of the closed
-   `THEME_LOCALES` (`src/lib/theme-package.ts:78`), checked at `:460-479`.
+   `THEME_LOCALES` (`src/lib/theme-package.ts:83`), checked at `:503-519`.
 10. **Assets:** `assetManifest` entries need a portable relative path plus a
-    lowercase sha256 (`SHA256_RE` at `src/lib/theme-package.ts:221`),
-    checked at `:481-508`. Traversal / absolute paths are rejected by
-    `assetPathIssue` (`:261-277`), and executable extensions by
-    `EXECUTABLE_ASSET_EXTS` (`:202-219`).
+    lowercase sha256 (`SHA256_RE` at `src/lib/theme-package.ts:255`),
+    checked at `:521-548`. Traversal / absolute paths are rejected by
+    `assetPathIssue` (`:292`), and executable extensions by
+    `EXECUTABLE_ASSET_EXTS` (`:236`).
 11. **Capabilities:** closed read-only allowlist `THEME_CAPABILITIES`
-    (`src/lib/theme-package.ts:104-110`, subset of `SCOPES` at
-    `src/lib/marketplace-scopes.ts:24`); unknown scopes are rejected,
+    (`src/lib/theme-package.ts:109`, subset of `SCOPES` at
+    `src/lib/marketplace-scopes.ts:26`); unknown scopes are rejected,
     non-allowlisted scopes are `capabilities.forbidden:*`, and
     `render_storefront` is mandatory — all at
-    `src/lib/theme-package.ts:510-526`.
+    `src/lib/theme-package.ts:550-566`.
 12. **No executable text:** manifest free-text (`name`, `nameBn`, `author`,
     `description`, `descriptionBn`) is scanned with `EXECUTABLE_RE`
-    (`src/lib/theme-package.ts:193-194`), enforced at
-    `:301,308,329,340,347,351`. A present-but-untranslated `description`
-    only warns (`description.bn_missing` at `:354-355`) — it does not fail.
+    (`src/lib/theme-package.ts:227`), enforced at
+    `:331,337,360,369,376,380`. A present-but-untranslated `description`
+    only warns (`description.bn_missing` at `:383`) — it does not fail.
 
 Spec alias: `validateThemePackage` is the same function
-(`src/lib/theme-package.ts:560`).
+(`src/lib/theme-package.ts:611`).
+
+## The `archive` key and the API floor
+
+The `archive` template key (the content archive — a category, a tag or an
+author's articles) landed in the **3.1.0** line of the builder API: the
+running builder version is `BUILDER_API_VERSION = "3.1.0"`
+(`src/lib/plugin-manifest.ts:32`). The archive key is therefore **additive**,
+and the API range itself does **not** move:
+
+- `THEME_API_RANGE` stays `^3.0.0` (`src/lib/theme-package.ts:56`). It is
+  documentation only — no code reads the constant; the live gate is
+  `satisfiesApiRange` (`src/lib/plugin-manifest.ts:463`) against the running
+  `3.1.0`.
+- A package that **does not** declare `archive` in `templates` is
+  **unaffected**: `satisfiesApiRange("^3.0.0")` is true against `3.1.0`
+  (same major, the running version is above the range's floor), so every
+  existing third-party package keeps installing exactly as it does today.
+- A package that **does** declare `archive` must declare an `api` range whose
+  **lower bound is `>= 3.1.0`**. The two admitted range shapes are `^a.b.c`
+  (which floors at `a.b.c`) and `>=a.b.c <d.e.f` (which floors at `a.b.c`) —
+  the two shapes `apiRangeFloor` (`src/lib/theme-package.ts:211-218`) reads. A
+  package that declares `archive` while claiming a lower floor is
+  **rejected** with the stable reason code
+  **`templates.archive_requires_api`**
+  (`src/lib/theme-package.ts:405-418`).
+
+In one glance:
+
+| Declared `templates` | Declared `api`   | Verdict                                              |
+| -------------------- | ---------------- | ---------------------------------------------------- |
+| no `archive`         | `^3.0.0`         | accepted — unchanged from today                      |
+| no `archive`         | `^4.0.0`         | rejected — `api_incompatible` (unchanged from today) |
+| `archive`            | `^3.0.0`         | rejected — `templates.archive_requires_api`          |
+| `archive`            | `^3.1.0`         | accepted                                             |
+| `archive`            | `>=3.1.0 <4.0.0` | accepted                                             |
+
+The rule is checked inside `validateThemeManifest`, so it applies to the
+manifest-validation lane of the ZIP theme package. The install lane's own API
+check (`checkApiCompatibility`, `src/lib/registry-version.ts:30`) is unchanged
+and still decides whether the running builder covers the declared range.
 
 ## Template / payload gates — enforced elsewhere, NOT by the validator
 
@@ -124,69 +174,69 @@ These run in the install / publish pipeline, never inside
 
 - **AST parse:** `parseTemplates` / `parseTokens`
   (`src/lib/builder-ast.ts`) run in the marketplace materialization at
-  `src/lib/marketplace-install.server.ts:601-606` (inside
-  `materializeListingTheme`, `:589-609`); parse failure throws
-  `market_materialize_failed` (`:607-609`). Registry reads parse the same
-  way at `src/lib/themes.server.ts:655-656`. Listing-manifest structure on
+  `src/lib/marketplace-install.server.ts:876-881` (inside
+  `materializeListingTheme`, `:864`); parse failure throws
+  `market_materialize_failed` (`:883`). Registry reads parse the same
+  way at `src/lib/themes.server.ts:267-275`. Listing-manifest structure on
   the ledger path is gated separately by `validateBundle`
-  (`src/lib/marketplace-scopes.ts:208`) at
-  `src/lib/marketplace-install.server.ts:239-242`.
-- **Lint errors:** `lintTemplate` (`src/lib/builder-ast.ts:7853`) errors
-  block publish at `src/lib/themes.server.ts:430-434` and block registry
-  updates at `:948-953`.
+  (`src/lib/marketplace-scopes.ts:219`) at
+  `src/lib/marketplace-install.server.ts:465-466`.
+- **Lint errors:** `lintTemplate` (`src/lib/builder-ast.ts:8397`) errors
+  block publish at `src/lib/themes.server.ts:921` (and the per-template
+  loop at `:859-865`) and block registry updates at `:1722`.
 - **Single-H1:** the duplicate-claimant error is
-  `src/lib/builder-ast.ts:7989-7998` (route-aware zero-claimant hint at
-  `:7904-7910`; route-supplied templates at `:68-75`). Enforced at the same
+  `src/lib/builder-ast.ts:8543-8551` (route-aware zero-claimant hint at
+  `:8446-8449`; route-supplied templates at `:72-86`). Enforced at the same
   publish / update call sites above, not by the validator.
 - **bn coverage:** the ≥90% বাংলা floor is `TRANSLATION_PUBLISH_FLOOR = 90`
   (`src/lib/builder-guardrails.ts:148`) via `translationGate` (`:166-179`),
-  wired into publish at `src/lib/themes.server.ts:437-439` and composed in
-  `composePublishGate` at `:455-456`.
+  wired into publish at `src/lib/themes.server.ts:924-926` and composed in
+  `composePublishGate` at `:946`.
 - **Executable URLs in props:** blocked by the parse-time sanitiser —
   `javascript:` / `data:` / `vbscript:` and protocol-relative URLs rejected
-  (`src/lib/builder-ast.ts:6960-6971`), `SAFE_HREF` at `:6994`,
-  `safeEmbedUrl` at `:7005-7018`, text stripping at `:6983-6992`. The
+  (`src/lib/builder-ast.ts:7461-7472`), `SAFE_HREF` at `:7473`,
+  `safeEmbedUrl` at `:7484-7499`, text stripping at `:7462-7471`. The
   validator's executable ban covers manifest free-text and asset extensions
   only (see gate 10 / 12 above).
 - **Payload ceilings:** the live caps are `AST_LIMITS`
-  (`src/lib/builder-ast.ts:7419-7428`): serialized templates + tokens
-  ≤ 512_000 chars (`maxPayloadChars` at `:7422`), ≤ 60 sections per slot
-  (`MAX_SECTIONS_PER_SLOT` at `:7416`), ≤ 300 nodes per template
-  (`MAX_NODES_PER_TEMPLATE` at `:405`), depth ≤ 6 (`MAX_TREE_DEPTH` at
-  `:404`) — enforced by `assertPayloadWithinLimits` at `:7450-7461` and by
-  truncation / slicing in `parseAst` (`:7466,7472`).
+  (`src/lib/builder-ast.ts:7965-7975`): serialized templates + tokens
+  ≤ 512_000 chars (`maxPayloadChars` at `:7968`), ≤ 60 sections per slot
+  (`MAX_SECTIONS_PER_SLOT` at `:7962`), ≤ 300 nodes per template
+  (`MAX_NODES_PER_TEMPLATE` at `:410`), depth ≤ 6 (`MAX_TREE_DEPTH` at
+  `:409`) — enforced by `assertPayloadWithinLimits` at `:7996-8007` and by
+  truncation / slicing in `parseAst` (`:8009`, `:8020`).
 
 ## Archive / quota / scan gates — enforced elsewhere, NOT by the validator
 
 These run in `parseZip` / the install and upload lanes, never inside
 `validateThemeManifest`:
 
-- **Strict entries** (`parseZip`, `src/lib/package-zip.ts:206-264`):
-  `__MACOSX` segments are `zip.unsafe_path` (`:138`), symlinks are
-  `zip.symlink` (`:238`), device nodes / fifos / sockets are
-  `zip.special_file` (`:250`), exact-duplicate file entries are
+- **Strict entries** (`parseZip`, `src/lib/package-zip.ts:157`):
+  `__MACOSX` segments are `zip.unsafe_path` (`:109-140`), symlinks are
+  `zip.symlink` (`:235`), device nodes / fifos / sockets are
+  `zip.special_file` (`:247`), exact-duplicate file entries are
   `zip.duplicate_entry` (`:258-264`). Dotfiles (`.DS_Store`, `._*`
   resource forks) are omitted at extract (`:353`).
 - **Storage quota:** persisted usage plus incoming bytes must fit
   `MERCHANT_ASSET_QUOTA_BYTES` (1 GiB,
-  `src/lib/package-store.server.ts:50`), summed by `merchantAssetBytes`
-  (`:53`) and checked before any write (`assertStorageQuota`,
-  `src/lib/package-install.server.ts:100-114`, failing with
+  `src/lib/package-store.server.ts:53`), summed by `merchantAssetBytes`
+  (`:115`) and checked before any write (`assertStorageQuota`,
+  `src/lib/package-install.server.ts:109-124`, failing with
   `package.over_quota`; upload lane refuses with `theme.upload_quota`,
-  `src/lib/themes/appearance.server.ts:840-843`). Dangling asset refs
-  fail the upload lane closed (`:824-828`).
+  `src/lib/themes/appearance.server.ts:870`). Dangling asset refs
+  fail the upload lane closed (`:824`).
 - **External-URL inventory:** `inventoryExternalUrls`
-  (`src/lib/package-review.ts:50`) feeds consent screens and install
+  (`src/lib/package-review.ts:128`) feeds consent screens and install
   audits (`src/lib/themes/appearance.server.ts:571,1010`).
 - **Update re-consent:** a version that adds external hosts or custom
   HTML fails with `package.consent_required` unless `consentScopes`
   covers every addition (`diffCapabilities`,
-  `src/lib/package-review.ts:168`; `coversWidening`, `:90`; enforced
-  at `src/lib/package-install.server.ts:730-738`).
+  `src/lib/package-review.ts:240`; `coversWidening`, `:156`; enforced
+  at `src/lib/package-install.server.ts:1027`).
 - **Flagged-activation approval:** a scan-flagged version
-  (`scanPackage`, `src/lib/package-scan.ts:62`) activates only with a
+  (`scanPackage`, `src/lib/package-scan.ts:133`) activates only with a
   recorded `theme.approved` audit (`approveThemeVersion`,
-  `src/lib/themes/appearance.server.ts:1133`; gate at `:1243`),
+  `src/lib/themes/appearance.server.ts:1166`; gate at `:1282`),
   else `theme.approval_required`.
 
 ## Aspirational — NOT enforced anywhere (do not cite as validator errors)
@@ -202,7 +252,7 @@ those checks run only at the publish / update stages pinned above.
 Build in the builder → Export package → submit via the Themes screen.
 Review checks the `validateThemeManifest` errors above plus, separately, the
 publish pipeline gates (lint, translation, font, contrast — see
-`src/lib/themes.server.ts:430-456` and [the SDK registry
+`src/lib/themes.server.ts:921-960` and [the SDK registry
 pipeline](./sdk.md)). Staff approve or reject with a note. Validator
 rejections carry the `validateThemeManifest` reason codes; publish rejections
 carry the pipeline codes (`builder.publish_blocked`,

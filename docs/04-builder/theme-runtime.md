@@ -380,6 +380,63 @@ Additions to the canonical suites (AGENTS.md loop inventory unchanged); `store_l
 6. **SDK code hooks** — `plan.md` §3.4 "no-code default, code allowed via SDK"; the manifest `code` field is
    reserved and deferred to the SDK spec (S7).
 
+## 9. The route-owned render contexts (HEAD)
+
+> **This section is current, not history.** §§1–8 above are the pre-build
+> plan; this section states the contract the shipped runtime actually
+> implements. The canonical narrative lives in
+> [the builder runtime guide](./README.md) and
+> [the theme authoring guide](../themes/creation.md) §2.6.
+
+A template is not free-form markup. Each surface's route **grants** a fixed
+set of **context slots**; a theme's section renders only where the route
+granted the slot it needs. A widget placed in a slot the route did not grant
+is skipped by the renderer, so the composition and the route must agree.
+
+The per-template contract, as shipped:
+
+| template         | the route that serves it                                        | the slots the route grants                                                                                                                                         | the route keeps                                                                                     |
+| ---------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| `index`          | `/store/$slug`                                                  | the catalogue blocks                                                                                                                                               | the catalogue, the tenant scope                                                                     |
+| `product`        | `/store/$slug/p/$productSlug`                                   | the product, its variants, its price                                                                                                                               | the price, the stock, the buy path                                                                  |
+| `collection`     | `/store/$slug/c/$collectionSlug`                                | the product grid as the product slot                                                                                                                               | the grid, the facets, the paging                                                                    |
+| `search`         | `/store/$slug/search`                                           | `result_toolbar`, `filter_chips`, `pagination`, `category_header`, `empty_state` (only when the search is really empty), and the results block as the product slot | the query, the results, the result limit                                                            |
+| `cart`           | `/store/$slug/cart`                                             | `cart_lines`, `cart_summary`, `cart_drawer`, `checkout_steps`, `payment_methods`                                                                                   | the lines, the totals, the rails                                                                    |
+| `checkout`       | `/store/$slug/checkout`                                         | the same five cart slots plus `page_content` — the route's own form                                                                                                | the form, the customer fields, the server quote, the stock hold, the order write, the payment rails |
+| `account`        | `/store/$slug/account`                                          | `orders_list`, `profile_card`, plus `page_content` — the route's dashboard                                                                                         | the session, the overview RPC, the tab state, every write                                           |
+| `page`           | `/store/$slug/pages/$pageSlug`                                  | `breadcrumb`, `page_content` — the merchant's own body                                                                                                             | the page record, its body, its SEO                                                                  |
+| `blog` (listing) | `/store/$slug/blog`                                             | the platform's listing block                                                                                                                                       | the articles, the paging                                                                            |
+| `blog` (article) | `/store/$slug/blog/$articleSlug`                                | `page_content` — the article body — plus `blog_terms`, `blog_archive`, `blog_pager`                                                                                | the article body, the related reading                                                               |
+| `archive`        | `/blog/category/$slug`, `/blog/tag/$slug`, `/blog/author/$slug` | `category_header`, `blog_terms`, `blog_archive`, `blog_pager`, `pagination`, `empty_state`                                                                         | the term, the records, the facets, the paging                                                       |
+
+**The rules the table implies.**
+
+1. **The route owns the data; the theme owns the frame.** A theme never
+   queries any of it. The archive's context is _derived_ from the route's
+   own server-function output by a pure mapping
+   (`src/lib/archive-context.ts`), never re-queried.
+2. **A route that cannot name a store renders the platform's own surface.**
+   The three content-archive routes carry no store slug, so they resolve no
+   theme and keep the platform's grid. The `archive` key's storefront render
+   path in this programme is the editor and the theme preview host, both
+   merchant-scoped by construction.
+3. **No template is ever silently replaced by another template's
+   composition.** Every resolution inspects the match it got and accepts
+   only `"suffix"` or `"base"`
+   (`resolveVariantAst`, `src/lib/template-variants.ts:280-294`); a route
+   that finds no composition renders its own platform surface — never the
+   homepage.
+4. **A context widget is a grant, not a prop.** `cart_lines`,
+   `cart_summary`, `checkout_steps`, `payment_methods`, `orders_list` and
+   `profile_card` read live platform state; the theme cannot supply their
+   data and cannot refuse to render them.
+5. **The privileged surfaces keep their form.** The checkout zone forbids
+   the overlay zones, so no popup can cover a payment step
+   (`TEMPLATE_ZONES.checkout`, `src/lib/builder-ast.ts:164`); and the
+   route supplies its own payment picker and its own summary when the
+   theme's body carries neither
+   (`src/routes/store.$slug.checkout.tsx:243-260`).
+
 ---
 
 ## Design guidelines — fallback template & preview shell
