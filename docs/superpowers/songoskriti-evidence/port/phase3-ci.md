@@ -1,6 +1,6 @@
 # Phase 3 — the remote CI: the exact limitation, stated rather than claimed
 
-**Branch:** `frame30` · **Recorded:** 2026-10-22 · **Tip at the time of writing:** `0a794b549315`
+**Branch:** `frame30` · **Recorded:** 2026-10-22 · **Tip at the time of writing:** the tip of this batch (see §5 for the push)
 **Plan:** `docs/superpowers/plans/2026-10-21-frame30-core-cms-upgrade.md` — **Task 10**
 **The pipeline:** `.circleci/config.yml` — the `gates` workflow at `:354-384`, and the nightly whole-tree SAST sweep at `:387-397`
 **The phase-3 evidence record (the local results in full):** `docs/superpowers/songoskriti-evidence/port/phase3-evidence.md`
@@ -110,13 +110,12 @@ forward to the tip of this branch. Nothing was force-pushed and no other
 branch was touched.
 
 **One deviation, recorded here rather than hidden:** the plan describes this
-as _the_ push, and it became **two**. The first push carried `a7b210cd`
-(this statement and the evidence record); a follow-up push carried
-`50303322`, a two-figure correction to the evidence record's measured
-totals — and this section's own SHA, which a record cannot carry without
-amending itself. The remote tip after the follow-up is the tip of this
-branch. The substantive rule held: **fast-forward only, one branch, no
-force-push.**
+as _the_ push; it became a **sequence of fast-forward pushes** carrying this
+batch's documentation commits — the first carried the bulk, and the later
+ones carried corrections to two measured figures in the evidence record and
+to this paragraph. **Nothing was force-pushed, only `frame30` was touched,
+and the remote tip after the last of them is the tip of this branch.** The
+substantive rule held: fast-forward only, one branch, no force-push.
 
 **What the push does:** it moves `origin/frame30` to this branch's tip, and
 it **triggers** the pipeline above — the repository is connected to
