@@ -2136,3 +2136,36 @@ This paragraph is **appended**, not a rewrite of §(i.2). It states the file set
 **Correction 1 — the lint `required` rules were NOT added.** §(i.2)'s `builder-ast.ts` hunk proposed two new `lintTemplate` `required` rules (`account` and `checkout` must carry a `page_content` section). They were **dropped**: the rules are WARNINGS, and the platform's own default account AST (`src/lib/default-account-ast.ts`) carries the old composition, so the rules would have turned an existing green suite (`src/lib/account-template.test.ts:48`) red for no behavioural gain — the route falls back to the dashboard safely when a merchant's body carries no body slot, and the theme's own composition is enforced by the distinctness gate's expectation row. **No file outside the list above was edited to accommodate them.**
 
 **Correction 2 — the account body is `profile_card` + `page_content`, not `profile_card` + `orders_list` + `page_content`.** The dashboard's orders tab renders the shopper's orders as **structured rows** (the brief's requirement: the four fields `mapOrdersToRows` produces, laid out as rows). The `orders_list` widget renders the same orders as a plain list; carrying both would show the shopper's orders twice on one page. The widget remains available to a merchant who places it deliberately — the route still grants the slot.
+
+### (i.8) Task 4 — the one more §7-prohibited file this batch touches
+
+| file | what the escalation covers | why it had to move |
+| --- | --- | --- |
+| `src/lib/themes/songoskriti/checkout-composition.test.ts` | the pinned `checkout` composition and the pinned **production-route** behaviour (`ast={null}` and "the theme contributes the tokens only") | §7 lists "existing test files … under `src/`" as prohibited; the plan's G1 list does not name this one. The pin states the **superseded D2** ("the production route renders its own hand-built form and discards the theme's AST"). Decision **D2'** supersedes D2, so the pin is re-pointed at the CURRENT ruling — and it is **stronger**: it now asserts that the route still calls the four server functions and still reads the customer fields from its own `FormData`, where the old pin asserted only that the route threw the AST away. |
+
+**The re-pinned assertion (old → new), quoted in full:**
+
+```diff
+-  it("leaves the production checkout route untouched", () => {
+-    // The theme changed; the route did not. In production the checkout form
+-    // is hand-built (server-quoted totals, live rails), so the theme
+-    // contributes the tokens only (`ast={null}`).
++  it("keeps the platform's authority in the production checkout route", () => {
++    // Decision D2' — the theme's checkout body is the SHELL; the route keeps
++    // the form, the customer fields, the server quote, the validation and the
++    // order write. The route's authority is asserted, not assumed.
+     const route = readFileSync("src/routes/store.$slug.checkout.tsx", "utf8");
+-    expect(route).toContain("ast={null}");
+-    expect(route).toContain("the theme contributes the tokens only");
++    expect(route).toContain("ast={ast}");
++    expect(route).toContain('contentSlot="page_content"');
++    expect(route).toContain("quoteCart(");
++    expect(route).toContain("reserveCheckout(");
++    expect(route).toContain("releaseCheckout(");
++    expect(route).toContain("placeOrder(");
++    expect(route).toContain('form.get("name")');
++    expect(route).toContain('form.get("phone")');
+   });
+```
+
+The composition pins in the same file change with the composition (the route-owned body slot joins the body), and the allowed-widget set gains `page_content` — the platform's own route-owned body slot, which renders **whatever the host grants** and can never author a field, a price or a "place order" action.

@@ -722,6 +722,10 @@ export function ThemePreviewFrame({
           cart_drawer: null,
           checkout_steps: null,
           payment_methods: null,
+          // The route-owned body slot (Batch B): the checkout FORM lives
+          // there in production. The preview has no route and no shopper, so
+          // the slot is granted and renders nothing.
+          page_content: null,
         }
       : undefined;
 

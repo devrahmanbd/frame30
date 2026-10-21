@@ -27,6 +27,7 @@ import {
 } from "@/lib/payment-keys";
 import { fmtMinor } from "@/lib/money";
 import { useCart } from "@/lib/cart";
+import { useCartContext } from "@/components/builder/CartContext";
 import { useLang } from "@/lib/i18n";
 import { trackEvent } from "@/lib/traffic-client";
 import {
@@ -116,13 +117,73 @@ export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
 });
 
+/**
+ * The custom-host checkout shell.
+ *
+ * Decision **D2'** applies here too: the theme's `checkout` composition is
+ * the shell, and the route keeps the form, the customer fields, the server
+ * quote and the order write. The twin's own `ast` used to keep the header
+ * and the footer and drop the body (`{ header, main: [], footer }`); it now
+ * carries the WHOLE composition, with the same fallback.
+ */
 function CheckoutPage() {
-  const { t, lang } = useLang();
   const { slug, merchant, ast, tokens, siteKit, installedPlugins, themeKey } =
     Route.useLoaderData();
+
+  return (
+    <PluginLayer plugins={installedPlugins}>
+      <ThemeChrome
+        template="checkout"
+        storeSlug={slug}
+        themeKey={themeKey ?? null}
+        merchantId={merchant.id}
+        ast={ast}
+        tokens={tokens}
+        siteKit={siteKit}
+        ownsPrimary
+        contentSlot="page_content"
+        contextSlots={{
+          cart_lines: null,
+          cart_summary: null,
+          cart_drawer: null,
+          checkout_steps: null,
+          payment_methods: null,
+          page_content: <CheckoutBody slug={slug} variant="shell" />,
+        }}
+        chrome={
+          <StoreHeader
+            slug={slug}
+            name={merchant.name}
+            themeKey={themeKey ?? null}
+          />
+        }
+        containerClassName=""
+        fallback={<CheckoutBody slug={slug} variant="fallback" />}
+      />
+    </PluginLayer>
+  );
+}
+
+/**
+ * The custom-host checkout body — the platform's own form, in two shapes:
+ * the complete hand-built checkout (the `fallback`, unchanged) and the form
+ * alone (the route's body inside the theme's shell).
+ *
+ * **The payment method is the SHARED cart's**, so the platform's
+ * `payment_methods` widget and the order agree on the rail.
+ */
+function CheckoutBody({
+  slug,
+  variant,
+}: {
+  slug: string;
+  variant: "shell" | "fallback";
+}) {
+  const { t, lang } = useLang();
+  const cart = useCartContext();
   const navigate = useNavigate();
   const { lines, setQuantity, clear, hydrated } = useCart(slug);
-  const [method, setMethod] = useState<Method>("cod");
+  const method = cart.method;
   const [chargeFailed, setChargeFailed] = useState(false);
   const [quote, setQuote] = useState<Awaited<
     ReturnType<typeof quoteCart>
@@ -130,9 +191,6 @@ function CheckoutPage() {
   const [quoteError, setQuoteError] = useState<string | null>(null);
   const [holdExpiresAt, setHoldExpiresAt] = useState<string | null>(null);
   const checkoutToken = useMemo(() => mintCheckoutToken(slug), [slug]);
-  // One order key per checkout session: persisted in sessionStorage so a
-  // remount or refresh resubmits the SAME key (server replays) instead of
-  // minting a duplicate order. Rotated on successful placement below.
   const [idempotencyKey] = useState(() => getCheckoutSessionKey(slug));
 
   useEffect(() => {
@@ -263,281 +321,259 @@ function CheckoutPage() {
   );
   const methodGroups = useMemo(() => groupMethods(offered), [offered]);
   useEffect(() => {
-    if (offered.length > 0 && !offered.includes(method)) setMethod(offered[0]!);
-  }, [offered, method]);
+    if (offered.length > 0 && !offered.includes(method)) {
+      cart.setMethod(offered[0]!);
+    }
+  }, [offered, method, cart]);
+
+  const fields = (
+    <>
+      <h2 className="text-sm font-semibold">
+        {t("Delivery information", "ডেলিভারি তথ্য")}
+      </h2>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field name="name" label={t("Full name", "নাম / Full name")} required />
+        <Field
+          name="phone"
+          label={t("Phone", "মোবাইল / Phone")}
+          required
+          inputMode="tel"
+        />
+        <Field
+          name="email"
+          label={t("Email (optional)", "ইমেইল (ঐচ্ছিক)")}
+          type="email"
+        />
+        <Field name="city" label={t("City", "শহর / City")} required />
+        <Field name="postcode" label={t("Postcode", "পোস্টকোড / Postcode")} />
+      </div>
+      <Field name="address" label={t("Address", "ঠিকানা / Address")} required />
+      <Field name="note" label={t("Note", "নোট / Note")} />
+      <div
+        aria-hidden="true"
+        className="absolute left-[-9999px] h-0 w-0 overflow-hidden"
+      >
+        <label htmlFor="company_website">Company website</label>
+        <input
+          id="company_website"
+          name="company_website"
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </div>
+    </>
+  );
+
+  const paymentPicker = (
+    <fieldset className="mt-2">
+      <legend className="text-sm font-semibold">
+        {t("Payment method", "পেমেন্ট মেথড")}
+      </legend>
+      {methodGroups.length === 0 ? (
+        <p className="mt-2 text-sm text-muted-foreground">
+          {t(
+            "This store has not enabled any payment method yet.",
+            "এই দোকান এখনও কোনো পেমেন্ট মেথড চালু করেনি।",
+          )}
+        </p>
+      ) : (
+        methodGroups.map((group) => (
+          <div key={group.layer} className="mt-3">
+            <p className="text-xs font-medium text-muted-foreground">
+              {t(GROUP_LABELS[group.layer].en, GROUP_LABELS[group.layer].bn)}
+            </p>
+            <div className="mt-2 grid gap-2 sm:grid-cols-3">
+              {group.methods.map((m) => (
+                <label
+                  key={m}
+                  className={`flex min-h-12 cursor-pointer items-center gap-2 rounded-fq-md border px-3 text-sm ${
+                    method === m
+                      ? "border-primary bg-info-soft"
+                      : "border-border bg-card"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="method"
+                    value={m}
+                    checked={method === m}
+                    onChange={() => cart.setMethod(m)}
+                  />
+                  <span>{methodLabel(m, lang === "bn" ? "bn" : "en")}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        ))
+      )}
+      {PAYMENT_METHOD_CATALOG[method].layer === "aggregator" && (
+        <p className="mt-3 text-xs text-muted-foreground">
+          {t(
+            `You will finish this payment on the ${PAYMENT_METHOD_CATALOG[method].label} page, where you can pay by card, internet banking or any mobile wallet.`,
+            `${PAYMENT_METHOD_CATALOG[method].labelBn} পেজে গিয়ে পেমেন্ট সম্পন্ন করবেন — কার্ড, ইন্টারনেট ব্যাংকিং বা যেকোনো মোবাইল ওয়ালেট দিয়ে।`,
+          )}
+        </p>
+      )}
+    </fieldset>
+  );
+
+  const messages = (
+    <>
+      {quoteError && (
+        <p
+          role="alert"
+          className="mt-3 rounded-fq-md bg-danger-soft p-3 text-sm text-danger-foreground"
+        >
+          {quoteError}
+        </p>
+      )}
+      {mutation.isError && (
+        <p
+          role="alert"
+          className="mt-3 rounded-fq-md bg-danger-soft p-3 text-sm text-danger-foreground"
+        >
+          {(mutation.error as Error).message === "order_blocked_risk"
+            ? t(
+                "We could not complete this order. Please contact the store to continue.",
+                "এই অর্ডারটি সম্পন্ন করা যায়নি। এগোতে দোকানের সাথে যোগাযোগ করুন।",
+              )
+            : (mutation.error as Error).message}
+        </p>
+      )}
+      {chargeFailed && (
+        <p
+          role="alert"
+          className="mt-3 rounded-fq-md bg-warning-soft p-3 text-sm text-warning-foreground"
+        >
+          {t(
+            "Order placed, but the payment rail could not be reached. Pay again from the order page.",
+            "অর্ডার হয়েছে, তবে পেমেন্ট গেটওয়েতে পৌঁছানো যায়নি। অর্ডার পেজ থেকে আবার পেমেন্ট করুন।",
+          )}
+        </p>
+      )}
+    </>
+  );
+
+  const form = (
+    <form
+      className="mt-8 grid gap-4"
+      onSubmit={(e) => {
+        e.preventDefault();
+        mutation.mutate(new FormData(e.currentTarget));
+      }}
+    >
+      {fields}
+      {variant === "fallback" ? paymentPicker : null}
+      {messages}
+      <button
+        type="submit"
+        disabled={!totals || mutation.isPending}
+        className="min-h-12 rounded-fq-md bg-primary px-6 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+      >
+        {mutation.isPending
+          ? t("Processing…", "প্রসেসিং…")
+          : t("Confirm order", "অর্ডার নিশ্চিত করুন")}
+      </button>
+    </form>
+  );
+
+  if (variant === "shell") {
+    return (
+      <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">{form}</div>
+    );
+  }
 
   return (
-    <PluginLayer plugins={installedPlugins}>
-      <ThemeChrome
-        template="checkout"
-        storeSlug={slug}
-        themeKey={themeKey ?? null}
-        merchantId={merchant.id}
-        ast={ast ? { header: ast.header, main: [], footer: ast.footer } : null}
-        tokens={tokens}
-        siteKit={siteKit}
-        ownsPrimary
-        chrome={
-          <StoreHeader
-            slug={slug}
-            name={merchant.name}
-            themeKey={themeKey ?? null}
+    <div className="mx-auto grid max-w-5xl gap-8 px-4 py-8 lg:grid-cols-[1.2fr_1fr]">
+      <section>
+        <h1 className="font-bangla-display text-2xl font-bold">
+          {t("Checkout", "চেকআউট")}
+        </h1>
+        <h2 className="mt-6 text-sm font-semibold">
+          {t("Your cart", "আপনার কার্ট")}
+        </h2>
+        {!hydrated ? null : lines.length === 0 ? (
+          <p className="mt-2 text-muted-foreground">Your cart is empty.</p>
+        ) : (
+          <ul className="mt-2 divide-y divide-border rounded-fq-lg border border-border bg-card">
+            {(totals?.lines ?? []).map((l) => (
+              <li key={l.variantId} className="flex items-center gap-3 p-3">
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">
+                    {l.productTitle}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {l.variantName}
+                  </p>
+                </div>
+                <label className="sr-only" htmlFor={`qty-${l.variantId}`}>
+                  Quantity for {l.productTitle}
+                </label>
+                <input
+                  id={`qty-${l.variantId}`}
+                  type="number"
+                  min={0}
+                  max={l.stock}
+                  value={l.quantity}
+                  onChange={(e) =>
+                    setQuantity(l.variantId, Number(e.target.value))
+                  }
+                  className="h-11 w-16 rounded-fq-md border border-border bg-background px-2 text-sm"
+                />
+                <span className="money w-24 text-right text-sm font-semibold">
+                  {fmtMinor(l.lineTotalMinor, totals?.currency)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+        {form}
+      </section>
+      <aside className="h-fit rounded-fq-lg border border-border bg-card p-4 lg:sticky lg:top-24">
+        <h2 className="text-sm font-semibold">{t("Summary", "সারসংক্ষেপ")}</h2>
+        <dl className="mt-3 space-y-2 text-sm">
+          <Row
+            label="Subtotal"
+            value={fmtMinor(totals?.subtotalMinor ?? 0, totals?.currency)}
           />
-        }
-        containerClassName=""
-        fallback={
-          <div className="mx-auto grid max-w-5xl gap-8 px-4 py-8 lg:grid-cols-[1.2fr_1fr]">
-            <section>
-              <h1 className="font-bangla-display text-2xl font-bold">
-                {t("Checkout", "চেকআউট")}
-              </h1>
-              <h2 className="mt-6 text-sm font-semibold">
-                {t("Your cart", "আপনার কার্ট")}
-              </h2>
-              {!hydrated ? null : lines.length === 0 ? (
-                <p className="mt-2 text-muted-foreground">
-                  Your cart is empty.
-                </p>
-              ) : (
-                <ul className="mt-2 divide-y divide-border rounded-fq-lg border border-border bg-card">
-                  {(totals?.lines ?? []).map((l) => (
-                    <li
-                      key={l.variantId}
-                      className="flex items-center gap-3 p-3"
-                    >
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium">
-                          {l.productTitle}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {l.variantName}
-                        </p>
-                      </div>
-                      <label className="sr-only" htmlFor={`qty-${l.variantId}`}>
-                        Quantity for {l.productTitle}
-                      </label>
-                      <input
-                        id={`qty-${l.variantId}`}
-                        type="number"
-                        min={0}
-                        max={l.stock}
-                        value={l.quantity}
-                        onChange={(e) =>
-                          setQuantity(l.variantId, Number(e.target.value))
-                        }
-                        className="h-11 w-16 rounded-fq-md border border-border bg-background px-2 text-sm"
-                      />
-                      <span className="money w-24 text-right text-sm font-semibold">
-                        {fmtMinor(l.lineTotalMinor, totals?.currency)}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-              {quoteError && (
-                <p
-                  role="alert"
-                  className="mt-3 rounded-fq-md bg-danger-soft p-3 text-sm text-danger-foreground"
-                >
-                  {quoteError}
-                </p>
-              )}
-              <form
-                className="mt-8 grid gap-4"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  mutation.mutate(new FormData(e.currentTarget));
-                }}
-              >
-                <h2 className="text-sm font-semibold">
-                  {t("Delivery information", "ডেলিভারি তথ্য")}
-                </h2>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <Field
-                    name="name"
-                    label={t("Full name", "নাম / Full name")}
-                    required
-                  />
-                  <Field
-                    name="phone"
-                    label={t("Phone", "মোবাইল / Phone")}
-                    required
-                    inputMode="tel"
-                  />
-                  <Field
-                    name="email"
-                    label={t("Email (optional)", "ইমেইল / Email (optional)")}
-                    type="email"
-                  />
-                  <Field name="city" label={t("City", "শহর / City")} required />
-                  <Field
-                    name="postcode"
-                    label={t("Postcode", "পোস্টকোড / Postcode")}
-                  />
-                </div>
-                <Field
-                  name="address"
-                  label={t("Address", "ঠিকানা / Address")}
-                  required
-                />
-                <Field name="note" label={t("Note", "নোট / Note")} />
-                <div
-                  aria-hidden="true"
-                  className="absolute left-[-9999px] h-0 w-0 overflow-hidden"
-                >
-                  <label htmlFor="company_website">Company website</label>
-                  <input
-                    id="company_website"
-                    name="company_website"
-                    tabIndex={-1}
-                    autoComplete="off"
-                  />
-                </div>
-                <fieldset className="mt-2">
-                  <legend className="text-sm font-semibold">
-                    {t("Payment method", "পেমেন্ট মেথড")}
-                  </legend>
-                  {methodGroups.length === 0 ? (
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      {t(
-                        "This store has not enabled any payment method yet.",
-                        "এই দোকান এখনও কোনো পেমেন্ট মেথড চালু করেনি।",
-                      )}
-                    </p>
-                  ) : (
-                    methodGroups.map((group) => (
-                      <div key={group.layer} className="mt-3">
-                        <p className="text-xs font-medium text-muted-foreground">
-                          {t(
-                            GROUP_LABELS[group.layer].en,
-                            GROUP_LABELS[group.layer].bn,
-                          )}
-                        </p>
-                        <div className="mt-2 grid gap-2 sm:grid-cols-3">
-                          {group.methods.map((m) => (
-                            <label
-                              key={m}
-                              className={`flex min-h-12 cursor-pointer items-center gap-2 rounded-fq-md border px-3 text-sm ${
-                                method === m
-                                  ? "border-primary bg-info-soft"
-                                  : "border-border bg-card"
-                              }`}
-                            >
-                              <input
-                                type="radio"
-                                name="method"
-                                value={m}
-                                checked={method === m}
-                                onChange={() => setMethod(m)}
-                              />
-                              <span>
-                                {methodLabel(m, lang === "bn" ? "bn" : "en")}
-                              </span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-                    ))
-                  )}
-                  {PAYMENT_METHOD_CATALOG[method].layer === "aggregator" && (
-                    <p className="mt-3 text-xs text-muted-foreground">
-                      {t(
-                        `You will finish this payment on the ${PAYMENT_METHOD_CATALOG[method].label} page, where you can pay by card, internet banking or any mobile wallet.`,
-                        `${PAYMENT_METHOD_CATALOG[method].labelBn} পেজে গিয়ে পেমেন্ট সম্পন্ন করবেন — কার্ড, ইন্টারনেট ব্যাংকিং বা যেকোনো মোবাইল ওয়ালেট দিয়ে।`,
-                      )}
-                    </p>
-                  )}
-                </fieldset>
-                {mutation.isError && (
-                  <p
-                    role="alert"
-                    className="rounded-fq-md bg-danger-soft p-3 text-sm text-danger-foreground"
-                  >
-                    {(mutation.error as Error).message === "order_blocked_risk"
-                      ? t(
-                          "We could not complete this order. Please contact the store to continue.",
-                          "এই অর্ডারটি সম্পন্ন করা যায়নি। এগোতে দোকানের সাথে যোগাযোগ করুন।",
-                        )
-                      : (mutation.error as Error).message}
-                  </p>
-                )}
-                {chargeFailed && (
-                  <p
-                    role="alert"
-                    className="rounded-fq-md bg-warning-soft p-3 text-sm text-warning-foreground"
-                  >
-                    {t(
-                      "Order placed, but the payment rail could not be reached. Pay again from the order page.",
-                      "অর্ডার হয়েছে, তবে পেমেন্ট গেটওয়েতে পৌঁছানো যায়নি। অর্ডার পেজ থেকে আবার পেমেন্ট করুন।",
-                    )}
-                  </p>
-                )}
-                <button
-                  type="submit"
-                  disabled={!totals || mutation.isPending}
-                  className="min-h-12 rounded-fq-md bg-primary px-6 text-sm font-semibold text-primary-foreground disabled:opacity-50"
-                >
-                  {mutation.isPending
-                    ? t("Processing…", "প্রসেসিং…")
-                    : t("Confirm order", "অর্ডার নিশ্চিত করুন")}
-                </button>
-              </form>
-            </section>
-            <aside className="h-fit rounded-fq-lg border border-border bg-card p-4 lg:sticky lg:top-24">
-              <h2 className="text-sm font-semibold">
-                {t("Summary", "সারসংক্ষেপ")}
-              </h2>
-              <dl className="mt-3 space-y-2 text-sm">
-                <Row
-                  label="Subtotal"
-                  value={fmtMinor(totals?.subtotalMinor ?? 0, totals?.currency)}
-                />
-                <Row
-                  label="Delivery"
-                  value={fmtMinor(totals?.shippingMinor ?? 0, totals?.currency)}
-                />
-                {(totals?.codSurchargeMinor ?? 0) > 0 && (
-                  <Row
-                    label="COD surcharge"
-                    value={fmtMinor(
-                      totals!.codSurchargeMinor,
-                      totals?.currency,
-                    )}
-                  />
-                )}
-                <Row
-                  label={`VAT (${((totals?.vatRateBasisPoints ?? 0) / 100).toFixed(1)}%)${
-                    totals?.vatMode === "inclusive"
-                      ? " · included in prices"
-                      : ""
-                  }`}
-                  value={fmtMinor(totals?.vatMinor ?? 0, totals?.currency)}
-                />
-                <Row
-                  label="Total (incl. VAT)"
-                  value={fmtMinor(totals?.totalMinor ?? 0, totals?.currency)}
-                  strong
-                  className="border-t border-border pt-2"
-                />
-              </dl>
-              {holdExpiresAt && (
-                <p className="mt-3 rounded-fq-md bg-warning-soft p-2 text-xs text-warning-foreground">
-                  {t("Items reserved until", "আইটেম রিজার্ভ আছে")}{" "}
-                  {new Date(holdExpiresAt).toLocaleTimeString("en-BD", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
-              )}
-              <p className="mt-3 text-xs text-muted-foreground">
-                Totals are calculated on the server from live prices and the
-                legal VAT table.
-              </p>
-            </aside>
-          </div>
-        }
-      />
-    </PluginLayer>
+          <Row
+            label="Delivery"
+            value={fmtMinor(totals?.shippingMinor ?? 0, totals?.currency)}
+          />
+          {(totals?.codSurchargeMinor ?? 0) > 0 && (
+            <Row
+              label="COD surcharge"
+              value={fmtMinor(totals!.codSurchargeMinor, totals?.currency)}
+            />
+          )}
+          <Row
+            label={`VAT (${((totals?.vatRateBasisPoints ?? 0) / 100).toFixed(1)}%)${
+              totals?.vatMode === "inclusive" ? " · included in prices" : ""
+            }`}
+            value={fmtMinor(totals?.vatMinor ?? 0, totals?.currency)}
+          />
+          <Row
+            label="Total (incl. VAT)"
+            value={fmtMinor(totals?.totalMinor ?? 0, totals?.currency)}
+            strong
+            className="border-t border-border pt-2"
+          />
+        </dl>
+        {holdExpiresAt && (
+          <p className="mt-3 rounded-fq-md bg-warning-soft p-2 text-xs text-warning-foreground">
+            {t("Items reserved until", "আইটেম রিজার্ভ আছে")}{" "}
+            {new Date(holdExpiresAt).toLocaleTimeString("en-BD", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </p>
+        )}
+        <p className="mt-3 text-xs text-muted-foreground">
+          Totals are calculated on the server from live prices and the legal VAT
+          table.
+        </p>
+      </aside>
+    </div>
   );
 }
 
