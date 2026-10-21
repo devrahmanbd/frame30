@@ -4106,3 +4106,79 @@ source-text assertion) are rewritten to assert MORE. Every commit stages **expli
 paths** only. The three churn files (`.artifacts/e2e/playwright-report/index.html`,
 `ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`) and `.output-snapshots/`
 are never staged and never committed.
+
+### (l.6) The round's measured evidence
+
+**The covering suites** (this round's own, plus the neighbours whose pins it moves):
+
+```
+$ node_modules/.bin/vitest run src/lib/themes-reset.contract.test.ts \
+    src/lib/publish-migration.contract.test.ts src/lib/preview-parity.contract.test.ts \
+    src/lib/template-variants.test.ts \
+    src/lib/themes/songoskriti/unsupported-template-state.test.tsx \
+    src/lib/template-persistence-isolation.test.ts src/lib/theme-preview-nav.test.ts \
+    src/components/store/BlogArchiveTheme.test.tsx src/lib/phase3-content.test.ts \
+    src/lib/phase9-guardrails.test.ts
+
+  Test Files  10 passed (10)
+       Tests  146 passed (146)
+```
+
+**The whole-tree sweep** (the round's final state):
+
+```
+$ node_modules/.bin/vitest run
+  Test Files  2 failed | 615 passed | 1 skipped (618)
+       Tests  3 failed | 8754 passed | 3 skipped (8760)
+
+  FAIL src/lib/analytics-live-shape.test.ts > builds a funnel from flat daily rows without touching events
+  FAIL src/lib/analytics-live-shape.test.ts > serves traffic from flat geo+daily rows with empty splits
+  FAIL src/lib/site.server.test.ts > throws a guarded missing-env error, never a placeholder client
+```
+
+Those three are the **pre-existing** failures (2 in `analytics-live-shape.test.ts`, 1 in
+`site.server.test.ts` — the latter needs the local `.env` CI lacks). They fail at the
+base commit too and are not this round's.
+
+**The baseline, measured in the SAME environment** (the base commit `2f4eb2f5`, run in a
+throwaway worktree with the same `.env`):
+
+```
+  Test Files  2 failed | 610 passed | 1 skipped (613)
+       Tests  3 failed | 8695 passed | 3 skipped (8701)
+```
+
+**The arithmetic, reconciled.** The batch's earlier report claimed "+4 test files, +47
+tests" — it did not reconcile, and the baseline it compared against was mis-stated as
+"8691 passed". The measured numbers are:
+
+| state | files | tests (total) |
+| --- | --- | --- |
+| base `2f4eb2f5` | 613 | 8701 |
+| Batch C `4fd6b9c4` | 617 | 8744 |
+| this round `9705a67e` | 618 | 8760 |
+
+Batch C's own delta is **+4 test files and +43 tests** — which reconciles exactly with
+the diff's own count (44 `it(` blocks added, 1 removed). This round adds **+1 test file
+and +16 tests**. The batch's total over its base is **+5 test files and +59 tests**.
+
+**The typecheck and the lint:**
+
+```
+$ node_modules/.bin/tsgo --noEmit
+(no output — exit 0)
+
+$ node_modules/.bin/eslint <this round's paths>
+✖ 3 problems (0 errors, 3 warnings)
+```
+
+The three warnings are **pre-existing**: `ThemePreviewFrame.tsx`'s
+`react-hooks/exhaustive-deps` (`:400` and `:569` — the same two the batch's own report
+recorded, shifted by this round's additions) and `BuilderTopBar.tsx`'s
+`react-refresh/only-export-components` (`:11`). This round added none.
+
+**The round's commit.** ONE commit — the record's §(l.2) describes the diff of every
+file the round touches, so the record and the code land together:
+`9705a67e` (`fix(builder): the reset restores a variant, the publish gate enforces the
+closed vocabulary, and the preview renders a variant`). It stages **explicit paths**
+only. The three churn files and `.output-snapshots/` are **unstaged** at that commit.
