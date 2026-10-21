@@ -1605,7 +1605,13 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "context",
     slots: ["main"],
     heading: false,
-    templates: ["page", "blog"],
+    // The route-owned BODY slot. The authored page flows its body through it
+    // (`ThemeChrome`'s `contentSlot`); the account dashboard and the
+    // production checkout form flow theirs through the same slot, so the
+    // theme composes AROUND the route's data instead of replacing it. The
+    // widget stays the platform's generic body slot — it renders whatever
+    // the host grants, and the host grants the route's own node.
+    templates: ["page", "blog", "account", "checkout"],
     defaults: {},
     fields: [],
   },

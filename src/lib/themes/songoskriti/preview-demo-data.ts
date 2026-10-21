@@ -22,6 +22,7 @@ import type {
 import type { BlogFeed } from "@/components/builder/blog";
 import type { BlogCardData } from "@/components/store/BlogList";
 import type { CartLine } from "@/lib/cart";
+import type { AccountOverview } from "@/lib/accounts.server";
 import type { PaymentMethodKey } from "@/lib/payment-rails";
 import type { WidgetRow } from "@/lib/widget-data";
 import {
@@ -209,33 +210,107 @@ export function songoskritiPreviewCart(): CartContextValue {
  * the product it names.
  */
 export function songoskritiPreviewOrders(): WidgetRow[] {
-  return mapOrdersToRows([
-    {
-      id: "songoskriti-demo-order-2451",
-      order_number: "ORD-2451",
-      status: "delivered",
-      total_minor_int: demoLine("dhakai-jamdani-heritage-saree").lineTotalMinor,
-      currency_code: "BDT",
-      created_at: "2026-09-12T09:30:00.000Z",
+  return mapOrdersToRows(DEMO_ORDERS);
+}
+
+/**
+ * The preview's demo orders — the RAW rows, the shape the `customer_overview`
+ * RPC returns. The order list (`songoskritiPreviewOrders`) and the demo
+ * account overview (`songoskritiPreviewAccountOverview`) read the SAME rows,
+ * so the preview's order history and its dashboard can never disagree.
+ */
+const DEMO_ORDERS: AccountOverview["orders"] = [
+  {
+    id: "songoskriti-demo-order-2451",
+    order_number: "ORD-2451",
+    status: "delivered",
+    total_minor_int: demoLine("dhakai-jamdani-heritage-saree").lineTotalMinor,
+    currency_code: "BDT",
+    created_at: "2026-09-12T09:30:00.000Z",
+  },
+  {
+    id: "songoskriti-demo-order-2468",
+    order_number: "ORD-2468",
+    status: "shipped",
+    total_minor_int: demoLine("comilla-khadi-casual-kurta").lineTotalMinor,
+    currency_code: "BDT",
+    created_at: "2026-09-29T13:05:00.000Z",
+  },
+  {
+    id: "songoskriti-demo-order-2477",
+    order_number: "ORD-2477",
+    status: "packed",
+    total_minor_int: demoLine("dhamrai-brass-heritage-necklace").lineTotalMinor,
+    currency_code: "BDT",
+    created_at: "2026-10-06T08:15:00.000Z",
+  },
+];
+
+/**
+ * The preview's demo ACCOUNT — the shape the `customer_overview` RPC returns
+ * for the signed-in shopper.
+ *
+ * **Synthetic and visibly labelled**, exactly like the order history above:
+ * the name carries the demo marker, the email uses the reserved `.example`
+ * domain (RFC 2606) and the phone is the platform's own placeholder. A real
+ * shopper's data can never reach this surface — the preview has no session
+ * and no shopper.
+ */
+export function songoskritiPreviewAccountOverview(): AccountOverview {
+  const saree = demoLine("dhakai-jamdani-heritage-saree");
+  const kurta = demoLine("comilla-khadi-casual-kurta");
+  return {
+    profile: {
+      id: "songoskriti-demo-profile",
+      name: "Rumana Haque (demo shopper)",
+      email: "rumana@example.com",
+      phone: "01700000000",
     },
-    {
-      id: "songoskriti-demo-order-2468",
-      order_number: "ORD-2468",
-      status: "shipped",
-      total_minor_int: demoLine("comilla-khadi-casual-kurta").lineTotalMinor,
-      currency_code: "BDT",
-      created_at: "2026-09-29T13:05:00.000Z",
-    },
-    {
-      id: "songoskriti-demo-order-2477",
-      order_number: "ORD-2477",
-      status: "packed",
-      total_minor_int: demoLine("dhamrai-brass-heritage-necklace")
-        .lineTotalMinor,
-      currency_code: "BDT",
-      created_at: "2026-10-06T08:15:00.000Z",
-    },
-  ]);
+    addresses: [
+      {
+        id: "songoskriti-demo-address-1",
+        address_type: "shipping",
+        label: "Home (demo)",
+        full_name: "Rumana Haque (demo shopper)",
+        phone: "01700000000",
+        line1: "12 Demo Road",
+        line2: null,
+        city: "Dhaka",
+        district: "Dhaka",
+        postcode: "1207",
+        is_default: true,
+      },
+    ],
+    wishlist: [
+      {
+        id: "songoskriti-demo-wish-1",
+        variant_id: saree.variantId,
+        stock_alert: false,
+        variant_name: saree.variantName,
+        price_amount_minor_int: saree.unitPriceMinor,
+        stock_quantity: saree.stock,
+        product_title: saree.productTitle,
+        product_slug: "dhakai-jamdani-heritage-saree",
+      },
+      {
+        id: "songoskriti-demo-wish-2",
+        variant_id: kurta.variantId,
+        stock_alert: false,
+        variant_name: kurta.variantName,
+        price_amount_minor_int: kurta.unitPriceMinor,
+        stock_quantity: kurta.stock,
+        product_title: kurta.productTitle,
+        product_slug: "comilla-khadi-casual-kurta",
+      },
+    ],
+    consents: [
+      { channel: "email", purpose: "marketing", granted: true },
+      { channel: "email", purpose: "cart_recovery", granted: true },
+      { channel: "sms", purpose: "marketing", granted: false },
+    ],
+    orders: DEMO_ORDERS,
+    reviews: [],
+  };
 }
 
 /**

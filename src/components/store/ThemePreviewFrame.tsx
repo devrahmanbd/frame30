@@ -62,6 +62,7 @@ import { facetHref, toggleFacet } from "@/lib/facet-url";
 // behaviour byte-for-byte. The data is SYNTHETIC and labelled as such.
 import {
   SONGOSKRITI_PREVIEW_SEARCH_TOTAL,
+  songoskritiPreviewAccountOverview,
   songoskritiPreviewCart,
   songoskritiPreviewFacets,
   songoskritiPreviewFeed,
@@ -70,6 +71,8 @@ import {
 } from "@/lib/themes/songoskriti/preview-demo-data";
 import { SONGOSKRITI_PREVIEW_PAGE } from "@/lib/themes/songoskriti/preview-page";
 import { OrdersList, ProfileCard } from "@/components/builder/account";
+import { AccountDashboard } from "@/components/store/AccountDashboard";
+import type { AccountTab } from "@/lib/account-tab";
 import { accountSlotCtx } from "./account-slots";
 import { useLang } from "@/lib/i18n";
 import { compileResponsiveCss } from "@/lib/responsive-css";
@@ -678,6 +681,31 @@ export function ThemePreviewFrame({
     };
   }, [template, ast, previewData, lang, blueprintKey]);
 
+  // The account template's route-owned BODY slot (Batch B). The storefront's
+  // account route renders the designed dashboard there; the preview renders
+  // the SAME dashboard over the theme's SYNTHETIC demo shopper — visibly
+  // labelled ("Rumana Haque (demo shopper)", an RFC 2606 `.example` email),
+  // never a real shopper's data. The preview has no session and no shopper,
+  // so nothing real can reach this surface.
+  const [previewAccountTab, setPreviewAccountTab] =
+    useState<AccountTab>("orders");
+  const accountBodySlot = useMemo(() => {
+    if (template !== "account") return undefined;
+    if (!isSongoskriti) return { page_content: null };
+    return {
+      page_content: (
+        <AccountDashboard
+          slug={blueprintKey}
+          overview={songoskritiPreviewAccountOverview()}
+          status="ready"
+          tab={previewAccountTab}
+          onTabChange={setPreviewAccountTab}
+          currency="BDT"
+        />
+      ),
+    };
+  }, [template, isSongoskriti, blueprintKey, previewAccountTab]);
+
   // The five cart slots keep their `null` values: `null` is the platform's
   // "granted" token, and the widgets read the cart CONTEXT themselves —
   // exactly what the live cart route does ("the keys simply tell the
@@ -976,7 +1004,12 @@ export function ThemePreviewFrame({
                     editing={false}
                     storeSlug={blueprintKey}
                     themeKey={blueprintKey}
-                    contextSlots={accountSlots || productSlots || undefined}
+                    contextSlots={
+                      accountSlots ||
+                      accountBodySlot ||
+                      productSlots ||
+                      undefined
+                    }
                   />
                 ))}
 
@@ -1008,6 +1041,7 @@ export function ThemePreviewFrame({
                           themeKey={blueprintKey}
                           contextSlots={{
                             ...accountSlots,
+                            ...accountBodySlot,
                             ...productSlots,
                             ...cartSlots,
                             ...searchSlots,
@@ -1051,6 +1085,7 @@ export function ThemePreviewFrame({
                           themeKey={blueprintKey}
                           contextSlots={{
                             ...accountSlots,
+                            ...accountBodySlot,
                             ...productSlots,
                             ...cartSlots,
                             ...searchSlots,
@@ -1080,6 +1115,7 @@ export function ThemePreviewFrame({
                             themeKey={blueprintKey}
                             contextSlots={{
                               ...accountSlots,
+                              ...accountBodySlot,
                               ...productSlots,
                               ...cartSlots,
                               ...searchSlots,
@@ -1111,6 +1147,7 @@ export function ThemePreviewFrame({
                               themeKey={blueprintKey}
                               contextSlots={{
                                 ...accountSlots,
+                                ...accountBodySlot,
                                 ...productSlots,
                                 ...cartSlots,
                                 ...searchSlots,

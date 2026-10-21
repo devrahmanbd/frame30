@@ -154,9 +154,16 @@ export const SONOSKRITI_TEMPLATE_EXPECTATIONS: Record<
     forbiddenTypes: [],
   },
   account: {
-    requiredTypes: ["heading", "profile_card", "orders_list"],
-    requiredSlots: ["profile_card", "orders_list"],
-    forbiddenTypes: [],
+    // Batch B — the account dashboard. The theme's account body is a FRAME
+    // around the route's dashboard: the merchant's own profile card plus the
+    // route-owned body slot the dashboard flows through. `heading` is
+    // forbidden because `account` is a route-h1 template (the route owns the
+    // page's <h1>), and `orders_list` is not required because the dashboard's
+    // orders tab renders the shopper's orders as structured rows — the
+    // widget's plain list beside them would show the same orders twice.
+    requiredTypes: ["profile_card", "page_content"],
+    requiredSlots: ["profile_card", "page_content"],
+    forbiddenTypes: ["heading", "rich_text"],
   },
   page: {
     requiredTypes: ["breadcrumb", "page_content"],
@@ -174,8 +181,17 @@ export const SONOSKRITI_TEMPLATE_EXPECTATIONS: Record<
     forbiddenTypes: ["product_rail"],
   },
   checkout: {
-    requiredTypes: ["heading", "checkout_steps", "columns"],
-    requiredSlots: ["payment_methods", "cart_summary", "checkout_steps"],
+    // Batch B (Decision D2') — the theme's checkout composition is the
+    // PRODUCTION shell: the progress trail, the payment block and the order
+    // summary, all platform-owned widgets reading the server's quote, and the
+    // route-owned body slot the checkout FORM flows through.
+    requiredTypes: ["heading", "checkout_steps", "columns", "page_content"],
+    requiredSlots: [
+      "payment_methods",
+      "cart_summary",
+      "checkout_steps",
+      "page_content",
+    ],
     forbiddenTypes: ["rich_text"],
   },
   search: {
@@ -251,9 +267,9 @@ export const SONOSKRITI_APPROVED_EXCEPTIONS: Partial<
   },
   checkout: {
     reason:
-      "the platform owns checkout: the production route renders its own hand-built form and discards the theme's AST (`src/routes/store.$slug.checkout.tsx:415-421`, Decision **D2**). The template's contribution is the composition of platform-owned commerce widgets; no theme-owned checkout presentation exists, so the gate requires the slots and the platform-only widget set, and does not require a theme-owned section type.",
+      "the platform owns checkout: the production route keeps its own form, its server-quoted totals, its validation and its payment rails, and the theme's AST is the SHELL around them (Decision **D2'** — it supersedes **D2**, which left the production route discarding the theme's AST entirely). The template's contribution is the composition of platform-owned commerce widgets plus the route-owned body slot the checkout form flows through; no theme-owned checkout presentation exists, so the gate requires the slots and the platform-only widget set, and does not require a theme-owned section type.",
     basis:
-      "Decision **D2** — the production checkout route renders its own hand-built form and discards the theme's AST (`src/routes/store.$slug.checkout.tsx:415-421`).",
+      "Decision **D2'** supersedes Decision **D2** — the production checkout route composes the theme's checkout body around its own form (`src/routes/store.$slug.checkout.tsx`).",
   },
   blog: {
     reason:

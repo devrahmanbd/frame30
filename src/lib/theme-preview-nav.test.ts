@@ -121,7 +121,7 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
     index: "hero_carousel",
     product: "heading",
     collection: "category_header",
-    account: "heading",
+    account: "profile_card",
     page: "breadcrumb",
     blog: "blog_terms",
     cart: "heading",
@@ -169,9 +169,8 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
       flattenSections(preset.templates.product.main).map((s) => s.type),
     ).toContain("product_media");
     expect(preset.templates.account.main.map((s) => s.type)).toEqual([
-      "heading",
       "profile_card",
-      "orders_list",
+      "page_content",
     ]);
     // Section ids stay unique across templates sharing one counter.
     const ids = (

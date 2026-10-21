@@ -1824,3 +1824,315 @@ Three sweep files enumerate the template keys by hand and therefore omit the arc
 ### (h.7) The rules that hold throughout this round
 
 No new npm dependency and no lockfile change. No test is weakened, deleted or skipped — every suite that changes here changes to a **stronger** expectation: the archive gains a frozen ordered composition, the contract suite gains three cases, and a new suite pins the seed merge. Every commit stages **explicit paths** only. The three churn files and `.output-snapshots/` are never staged and never committed.
+
+---
+
+## (i) Batch B — the account dashboard and the production checkout shell
+
+**Base commit of this batch:** `c27521e7` (`fix(templates): freeze the archive's ordered composition; the seed merge keeps the merchant's variants`) — the tip of `frame30`.
+**Plan:** `docs/superpowers/plans/2026-10-21-frame30-core-cms-upgrade.md` (Tasks 3 and 4).
+**Owner's rulings in force:** Decision Gate **G1** (§7 relaxed for the plan's named list), **G2** (the additive API rule), **G3** (the parity re-freeze runs on the repo's throwaway stack, never on the configured database).
+
+This section is **appended**, not rewritten: everything above is the record as it stood when the archive-key batch was committed. It is the port spec §9 escalation for the two production-surface repairs this batch makes, and it is written **before** any escalated file is edited.
+
+### (i.1) The finding
+
+> The account route's own comment claiming the published `account` template is *"rejected by the storefront validator"* is **false** in this tree: `account` has been in `TEMPLATE_KEYS` since Phase 6 (`src/lib/builder-ast.ts:50`) and `getStoreChrome`'s hand-written `z.enum` already lists it (`src/lib/storefront.functions.ts:107`). The route's `dashboard` fragment is the route's `fallback` (`src/routes/store.$slug.account.tsx:511`), so it renders **only** when the theme publishes no `account` body — and Songoskriti publishes one (`heading` + `profile_card` + `orders_list`, `src/lib/themes/songoskriti/preview.ts:435-440`). The result is the defect the brief calls the highest-priority visual repair: **a signed-in shopper on a themed store sees a heading, a profile card and an order list — with no navigation, no overview and none of the account panels (addresses, wishlist, profile, privacy) at all.**
+>
+> The production checkout route has the mirror-image defect: it renders its own hand-built form and **discards** the theme's AST (`src/routes/store.$slug.checkout.tsx:421` — `ast={null}`), so the merchant's authored checkout composition never reaches a shopper.
+
+**What the account repair does.** The route's body becomes a **designed dashboard** (`src/components/store/AccountDashboard.tsx`, a NEW file — §7-allowed) that owns the header, an intentional five-tab navigation, an overview strip built only from permitted data, the composed profile and the structured order rows. The theme's `account` AST is composed **around** it through `ThemeChrome`'s existing route-owned body slot (`contentSlot` / `themeRendersBody`, `src/lib/theme-body-slot.ts`), so the theme keeps the frame and the route keeps the data.
+
+**The composition slot.** The platform already ships exactly one "the host hands the template its body" widget: `page_content` (`src/lib/builder-ast.ts:1603-1611` — `heading: false`, `slots: ["main"]`, rendered by the platform's `ContextSlot` widget, `src/components/builder/widgets.tsx:335-343`). Its catalogue allowlist is `["page","blog"]`; this batch widens it to `["page","blog","account","checkout"]` so the account and checkout templates may carry the **route-owned body** the same way the authored page does. **No new widget type is added**, so no renderer is needed in `src/components/builder/widgets.tsx` (which is §7-prohibited and is NOT on the plan's G1 list).
+
+**Why no new account widget types.** The plan's Task 3 "Produces" line names "the new overview/nav slots". A new `SectionType` needs a renderer in `src/components/builder/widgets.tsx` (`WIDGET_COMPONENTS` is a compile-total `Record<SectionType, WidgetComponent>`), and that file is §7-prohibited and outside the plan's G1 list. The overview and the navigation are therefore **route-owned data** (the tab state lives in the route's own `?tab=` search parameter; the counts come from the shopper's own `customer_overview` payload) and they live **inside** the route-owned body slot. This is recorded as a deviation in the batch report.
+
+### (i.2) The exact old → new diff
+
+Every §7-prohibited file this batch edits, with its exact unified-diff hunks. The NEW files (the dashboard, its suite, the contract suite and the checkout contract suite) are not edits and carry no diff; they are listed at the end of this section for completeness.
+
+```diff
+diff --git a/src/lib/builder-ast.ts b/src/lib/builder-ast.ts
+index 7a2c1de..0a4d9f1 100644
+--- a/src/lib/builder-ast.ts
++++ b/src/lib/builder-ast.ts
+@@ -1603,9 +1603,13 @@ const BASE_CATALOG: CatalogEntry[] = [
+     type: "page_content",
+     label: "Page content",
+     group: "context",
+     slots: ["main"],
+     heading: false,
+-    templates: ["page", "blog"],
++    // The route-owned BODY slot. The authored page flows its body through it
++    // (`ThemeChrome`'s `contentSlot`); the account dashboard and the production
++    // checkout form flow theirs through the same slot, so the theme composes
++    // AROUND the route's data instead of replacing it. The widget stays the
++    // platform's generic body slot — it renders whatever the host grants.
++    templates: ["page", "blog", "account", "checkout"],
+     defaults: {},
+     fields: [],
+   },
+@@ -8477,6 +8481,13 @@ export function lintTemplate(
+       cart: [
+         { type: "cart_summary", message: "Cart template has no order summary." },
+       ],
++    // Batch B: the account dashboard and the production checkout form are the
++    // ROUTE's body on those two templates, so the theme must carry the
++    // route-owned body slot — otherwise the theme's frame renders and the
++    // shopper's account / checkout never does.
++    account: [
++      { type: "page_content", message: "Account template has no account body." },
++    ],
++    checkout: [
++      { type: "page_content", message: "Checkout template has no checkout body." },
++    ],
+     // Phase 3 (Decision D1'): the archive is a listing page, so it must
+     // carry the listing widget — the same shape as the `page` rule (the
+     // route-owned body slot) and the `cart` rule (the order summary).
+diff --git a/src/routes/store.$slug.account.tsx b/src/routes/store.$slug.account.tsx
+index 4b6d0aa..c1e77b4 100644
+--- a/src/routes/store.$slug.account.tsx
++++ b/src/routes/store.$slug.account.tsx
+@@ -46,10 +46,12 @@ export const Route = createFileRoute("/store/$slug/account")({
+     tab: isAccountTab(s.tab) ? s.tab : undefined,
+   }),
+   loader: async ({ params }) => {
+-    // The published `account` template, when the merchant has one. Rejected
+-    // by the storefront validator until the template-key track extends it —
+-    // caught to null so the page renders the built-in dashboard regardless.
++    // The published `account` template, when the merchant has one. `account`
++    // IS a known template key (`TEMPLATE_KEYS`, `src/lib/builder-ast.ts:50`)
++    // and `getStoreChrome`'s validator accepts it
++    // (`src/lib/storefront.functions.ts:107`) — the OLD comment here claimed
++    // the opposite, which was false from Phase 6 onward. The `.catch` below
++    // now only swallows a GENUINE loader failure, so the page renders the
++    // built-in dashboard when the merchant has no published body.
+     const chrome = await getStoreChrome({
+       data: { slug: params.slug, template: "account" },
+     }).catch(() => null);
+@@ -225,268 +227,9 @@ function AccountPage() {
+     return <ShopperOrderLookup slug={slug} />;
+   }
+ 
+-  // Route's default body: used when the theme publishes no `account` main
+-  // sections, so the page is never blank. (The `defaultAccountAst` fallback
+-  // takes the `ast` slot once the widget registry knows its section types.)
+-  const dashboard = (
+-    <>
+-      … (the whole inline `dashboard` fragment — heading, tab strip and the
+-          five panels — moves into `src/components/store/AccountDashboard.tsx`)
+-    </>
+-  );
+-
+   return (
+     <PluginLayer plugins={chrome?.installedPlugins ?? []}>
+       <ThemeChrome
+         template="account"
+         ast={chrome?.ast ?? null}
+         tokens={chrome?.tokens ?? null}
+         storeSlug={slug}
+         themeKey={chrome?.themeKey ?? null}
+         merchantId={chrome?.merchant.id ?? null}
+         siteKit={chrome?.siteKit ?? null}
+         ownsPrimary
+         contextSlots={accountSlots}
++        contentSlot="page_content"
+         chrome={
+           <StoreHeader
+             slug={slug}
+             name={chrome?.merchant.name ?? store?.name ?? slug}
+             themeKey={chrome?.themeKey ?? null}
+           />
+         }
+         containerClassName="mx-auto max-w-[var(--fq-container,1280px)] px-4 py-12 sm:px-6 lg:px-8"
+-        fallback={dashboard}
++        fallback={
++          <AccountDashboard … />
++        }
+       />
+     </PluginLayer>
+   );
+ }
+diff --git a/src/routes/store.$slug.checkout.tsx b/src/routes/store.$slug.checkout.tsx
+index 9f2ab77..5c9d1e4 100644
+--- a/src/routes/store.$slug.checkout.tsx
++++ b/src/routes/store.$slug.checkout.tsx
+@@ -415,10 +415,14 @@ function CheckoutPage() {
+       <ThemeChrome
+         template="checkout"
+         storeSlug={slug}
+         themeKey={themeKey ?? null}
+         merchantId={merchant.id}
+-        // The checkout form is hand-built (server-quoted totals, live rails), so
+-        // the theme contributes the tokens only. We drop the normal header and footer.
+-        ast={null}
++        // Decision D2': the theme's checkout composition is the SHELL. The
++        // route keeps the form, the customer fields, the server quote and the
++        // order write; the theme contributes the layout around them. The
++        // header and footer stay off (a checkout page is distraction-free).
++        ast={checkoutAst}
+         tokens={tokens}
+         siteKit={siteKit}
+         ownsPrimary
++        contentSlot="page_content"
++        contextSlots={{
++          cart_lines: null,
++          cart_summary: null,
++          checkout_steps: null,
++          payment_methods: null,
++          page_content: checkoutBody,
++        }}
+         chrome={
+           <MinimalCheckoutHeader
+             slug={slug}
+diff --git a/src/routes/checkout.tsx b/src/routes/checkout.tsx
+index 3ba01c9..8d0e6f5 100644
+--- a/src/routes/checkout.tsx
++++ b/src/routes/checkout.tsx
+@@ -273,9 +273,14 @@ function CheckoutPage() {
+       <ThemeChrome
+         template="checkout"
+         storeSlug={slug}
+         themeKey={themeKey ?? null}
+         merchantId={merchant.id}
+-        ast={ast ? { header: ast.header, main: [], footer: ast.footer } : null}
++        // The custom-host twin composes the SAME shell as the storefront
++        // route (Decision D2'): the theme's checkout body around the route's
++        // own form, with the same fallback.
++        ast={ast}
+         tokens={tokens}
+         siteKit={siteKit}
+         ownsPrimary
++        contentSlot="page_content"
++        contextSlots={{
++          cart_lines: null,
++          cart_summary: null,
++          checkout_steps: null,
++          payment_methods: null,
++          page_content: checkoutBody,
++        }}
+         chrome={
+           <StoreHeader
+             slug={slug}
+diff --git a/src/components/store/ThemePreviewFrame.tsx b/src/components/store/ThemePreviewFrame.tsx
+index 7e2b9d1..0c5a4f7 100644
+--- a/src/components/store/ThemePreviewFrame.tsx
++++ b/src/components/store/ThemePreviewFrame.tsx
+@@ -655,6 +655,14 @@ export function ThemePreviewFrame({
+   const accountSlots = useMemo(() => {
+     if (template !== "account") return undefined;
+     …
+   }, [template, ast, previewData, lang, blueprintKey]);
++
++  // The account template's route-owned BODY slot (Batch B): the dashboard the
++  // storefront route renders, shown here over the theme's SYNTHETIC demo
++  // profile and orders — visibly labelled, never a real shopper's data.
++  const accountBodySlot = useMemo(() => {
++    if (template !== "account") return undefined;
++    return { page_content: <AccountDashboard … /> };
++  }, [template, lang]);
+diff --git a/src/components/builder/songoskriti-port-freeze.test.tsx b/src/components/builder/songoskriti-port-freeze.test.tsx
+index 610600e3..2f7b1c9 100644
+--- a/src/components/builder/songoskriti-port-freeze.test.tsx
++++ b/src/components/builder/songoskriti-port-freeze.test.tsx
+@@ -103,7 +103,7 @@ const TEMPLATE_MAIN: Record<string, string[]> = {
+     "result_toolbar",
+     "product_grid",
+     "product_rail",
+   ],
+-  account: ["heading", "profile_card", "orders_list"],
++  account: ["profile_card", "page_content"],
+   page: ["breadcrumb", "page_content"],
+   blog: ["blog_terms", "blog_archive", "blog_pager"],
+   cart: ["heading", "columns"],
+-  checkout: ["heading", "checkout_steps", "columns"],
++  checkout: ["heading", "checkout_steps", "columns", "page_content"],
+diff --git a/src/lib/theme-preview-nav.test.ts b/src/lib/theme-preview-nav.test.ts
+index dd515bc5..9a4c2e8 100644
+--- a/src/lib/theme-preview-nav.test.ts
++++ b/src/lib/theme-preview-nav.test.ts
+@@ -170,9 +170,9 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
+       "product_media",
+     );
+     expect(preset.templates.account.main.map((s) => s.type)).toEqual([
+-      "heading",
+       "profile_card",
+-      "orders_list",
++      "page_content",
+     ]);
+diff --git a/src/lib/themes/songoskriti/preview.test.ts b/src/lib/themes/songoskriti/preview.test.ts
+index 6d0b0a1..c1f7e93 100644
+--- a/src/lib/themes/songoskriti/preview.test.ts
++++ b/src/lib/themes/songoskriti/preview.test.ts
+@@ -79,9 +79,9 @@ describe("songoskriti preview source", () => {
+       "product_media",
+     );
+     expect(types("account")).toEqual([
+-      "heading",
+       "profile_card",
+-      "orders_list",
++      "page_content",
+     ]);
+   });
+ });
+```
+
+**The NEW files this batch creates** (§7-allowed — a new file needs no relaxation):
+
+| file | what it is |
+| --- | --- |
+| `src/components/store/AccountDashboard.tsx` | the designed account dashboard — header, five-tab navigation, overview strip, composed profile, structured order rows and the five account panels |
+| `src/components/store/AccountDashboard.test.tsx` | its suite: the six states, the navigation contract, the overview's permitted data and the six-breakpoint class contract |
+| `src/components/store/account-dashboard.contract.test.ts` | the contract suite: no invented routes, no invented data, no invented metrics |
+| `src/lib/checkout-shell.contract.test.ts` | the checkout authority contract: the four server functions stay, the theme AST stays presentation-only, the zones stay closed, the customer fields stay the route's own |
+
+### (i.3) Two files this batch touches that the plan's G1 list does NOT name
+
+| file | what the escalation covers | why it had to move |
+| --- | --- | --- |
+| `src/lib/themes/songoskriti/preview.test.ts` | the pinned `account` composition (`types("account")`) | the composition changes, so the pin must change. §7 lists "existing test files … under `src/`" as prohibited; the plan's G1 list names `template-distinctness.test.ts` and `archive-contract.test.ts` from this directory but **not** this one. The edit replaces a stale literal with the NEW composition — a stronger expectation, never a weaker one. |
+| `src/lib/themes/songoskriti/template-distinctness.ts` | the `account` and `checkout` expectation rows | §7-allowed (`src/lib/themes/songoskriti/**`), but the rows MUST change with the compositions: the account body's required slot is now the route-owned body, and the checkout body gains it too. |
+
+### (i.4) Backward compatibility
+
+> The `templates` column is `jsonb`; no migration and no DDL. A theme published BEFORE this batch authored the account template as `heading` + `profile_card` + `orders_list`. That body still parses, still lints and still renders — the `heading` widget is not an `<h1>` claimant on a route-h1 template (`src/lib/builder-ast.ts:8500-8504`), and `profile_card` / `orders_list` keep their catalogue allowlists. Such a body simply does **not** declare the route-owned body slot, so `themeRendersBody(ast, "page_content")` is false and the route's `fallback` — the dashboard — renders. The shopper sees the dashboard, which is the repair, not a regression. A merchant who re-publishes the account template with the platform's editor gets the new composition.
+
+### (i.5) The platform's authority (unchanged by this batch)
+
+| concern | where it stays |
+| --- | --- |
+| the account's identity | the `customer_overview` RPC, scoped to `auth.uid()` (`src/lib/accounts.server.ts:95-105`) — no query parameter, widget or theme code selects a shopper |
+| the checkout's totals | the server quote (`quoteCart` → `priceCart`), rendered by the route's `fallback` and by the platform's `cart_summary` widget |
+| the checkout's rails | `quote.settings.methods` → `groupMethods` — the route renders only what the server offered |
+| the checkout's customer fields | the route's own `FormData` (`src/routes/store.$slug.checkout.tsx:332-339`) |
+| the checkout's order write | `placeOrder` with the route's idempotency key, honeypot and beacon |
+| the payment state | the shared cart context (`useLiveCart`), which the platform's `payment_methods` widget drives |
+
+### (i.6) The rules that hold throughout this batch
+
+No new npm dependency and no lockfile change. No test is weakened, deleted or skipped — every existing suite that changes here changes to a **stronger** expectation, quoted in the diffs above. Every commit stages **explicit paths** only. The three churn files and `.output-snapshots/` are never staged and never committed.
+
+### (i.7) The batch's FINAL file set — and the corrections to §(i.2)
+
+This paragraph is **appended**, not a rewrite of §(i.2). It states the file set the batch actually committed and the two places where the diffs quoted above were written before the code settled.
+
+**The files this batch commits** (Task 3):
+
+| file | what the escalation covers |
+| --- | --- |
+| `src/components/store/AccountDashboard.tsx` | **NEW** (§7-allowed) — the designed dashboard |
+| `src/components/store/AccountDashboard.test.tsx` | **NEW** — its suite |
+| `src/components/store/account-dashboard.contract.test.ts` | **NEW** — the contract suite |
+| `src/routes/store.$slug.account.tsx` | the route's body becomes the dashboard; the stale loader comment is corrected; the theme's account body is composed around it through `contentSlot` |
+| `src/lib/themes/songoskriti/preview.ts` | the `account` composition is now `profile_card` + `page_content` (no heading-bearing section on a route-h1 template) |
+| `src/lib/themes/songoskriti/preview-demo-data.ts` | the preview's **demo account** — the labelled synthetic shopper the preview's dashboard renders |
+| `src/lib/themes/songoskriti/template-distinctness.ts` | the `account` expectation row (and the `checkout` row, Task 4) |
+| `src/lib/builder-ast.ts` | `page_content`'s catalogue allowlist widens to the `account` and `checkout` templates |
+| `src/components/store/ThemePreviewFrame.tsx` | the preview grants the account template's route-owned body slot over the demo account |
+| `src/lib/themes/songoskriti/preview.test.ts` | the pinned `account` composition (§7-prohibited; **not** on the plan's G1 list — see §(i.3)) |
+| `src/lib/theme-preview-nav.test.ts` | the pinned `account` composition and its opener |
+| `src/components/builder/songoskriti-port-freeze.test.tsx` | the frozen `account` and `checkout` compositions |
+
+**Correction 1 — the lint `required` rules were NOT added.** §(i.2)'s `builder-ast.ts` hunk proposed two new `lintTemplate` `required` rules (`account` and `checkout` must carry a `page_content` section). They were **dropped**: the rules are WARNINGS, and the platform's own default account AST (`src/lib/default-account-ast.ts`) carries the old composition, so the rules would have turned an existing green suite (`src/lib/account-template.test.ts:48`) red for no behavioural gain — the route falls back to the dashboard safely when a merchant's body carries no body slot, and the theme's own composition is enforced by the distinctness gate's expectation row. **No file outside the list above was edited to accommodate them.**
+
+**Correction 2 — the account body is `profile_card` + `page_content`, not `profile_card` + `orders_list` + `page_content`.** The dashboard's orders tab renders the shopper's orders as **structured rows** (the brief's requirement: the four fields `mapOrdersToRows` produces, laid out as rows). The `orders_list` widget renders the same orders as a plain list; carrying both would show the shopper's orders twice on one page. The widget remains available to a merchant who places it deliberately — the route still grants the slot.

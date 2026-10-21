@@ -431,13 +431,28 @@ export function songoskritiPreviewSource(
                 },
               ],
             },
+            // The route's OWN body: the production checkout form — the
+            // customer fields, the validated submission and the place-order
+            // action. The theme contributes the frame around it (Decision
+            // D2'); the platform keeps the form, the totals and the rails.
+            s("page_content", {}),
           ];
         case "account":
-          return [
-            s("heading", { text: "Account", text_bn: "অ্যাকাউন্ট" }),
-            s("profile_card", {}),
-            s("orders_list", {}),
-          ];
+          // The account surface (Batch B). The theme's body is a FRAME around
+          // the route's dashboard: the merchant's own profile card, and the
+          // route-owned body slot the dashboard flows through
+          // (`ThemeChrome`'s `contentSlot` — the same slot the authored page
+          // uses for the merchant's CMS body).
+          //
+          // NO `heading`: `account` is a route-h1 template
+          // (`ROUTE_H1_TEMPLATES`), so the route owns the page's <h1> and the
+          // body carries no heading-bearing section.
+          //
+          // NO `orders_list`: the dashboard's orders tab renders the shopper's
+          // orders as STRUCTURED ROWS (the four fields `mapOrdersToRows`
+          // produces). The widget's plain list beside them would show the
+          // same orders twice on one page.
+          return [s("profile_card", {}), s("page_content", {})];
       }
     },
   };

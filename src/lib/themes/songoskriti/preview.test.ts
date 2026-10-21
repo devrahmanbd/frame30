@@ -77,10 +77,6 @@ describe("songoskritiPreviewSource", () => {
     expect(
       flattenSections(source.main("product", s)!).map((x) => x.type),
     ).toContain("product_media");
-    expect(types("account")).toEqual([
-      "heading",
-      "profile_card",
-      "orders_list",
-    ]);
+    expect(types("account")).toEqual(["profile_card", "page_content"]);
   });
 });
