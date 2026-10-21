@@ -97,6 +97,20 @@ git push origin frame30
 git log --oneline -1
 ```
 
+**It was executed**, and it succeeded:
+
+```
+$ git push origin frame30
+To https://github.com/devrahmanbd/frame30.git
+   182c37b5..a7b210cd  frame30 -> frame30
+$ git rev-parse origin/frame30
+a7b210cd09f3b561047b1202bda0bcb35cd31387
+```
+
+It was a **fast-forward** — `origin/frame30` was at `182c37b5` and moved to
+`a7b210cd`, the tip of this branch. Nothing was force-pushed and no other
+branch was touched.
+
 **What the push does:** it moves `origin/frame30` to this branch's tip, and
 it **triggers** the pipeline above — the repository is connected to
 CircleCI, so a push to `frame30` starts the `gates` workflow (and, on the

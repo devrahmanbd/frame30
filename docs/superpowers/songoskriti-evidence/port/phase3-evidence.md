@@ -21,7 +21,9 @@ absorbed** — §4.1 and §4.2.
 
 ## 1. What shipped
 
-Seventeen commits on `frame30`, from `182c37b5` to `0a794b549315`:
+**Seventeen commits** on `frame30`, from `182c37b5` to the tip of this
+batch — **fifteen** that carry the code, and the **two** documentation
+commits of Task 9 and Task 10 (this record and the CI statement):
 
 | #     | commit                                                           | what it landed                                                                                                                                                                                                                                 |
 | ----- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -43,10 +45,10 @@ Seventeen commits on `frame30`, from `182c37b5` to `0a794b549315`:
 | 16–17 | the two documentation commits of this batch (Task 9 and Task 10) | the docs that match the shipped contracts, and the CI statement                                                                                                                                                                                |
 
 **The measured size of the change:** `git diff --shortstat 182c37b5..HEAD` →
-**73 files changed, 16 652 insertions(+), 1 723 deletions(-)** — of which the
+**80 files changed, 17 959 insertions(+), 1 955 deletions(-)** — of which the
 4 851-line escalation record is the single largest file. By area: `src/lib` 35
-files, `src/routes` 14, `src/components` 14, `.e2e` 6, `src/hooks` 1,
-`src/routeTree.gen.ts` 1 (generated), `docs` 2 (before this record).
+files, `src/routes` 14, `src/components` 14, `docs` 9, `.e2e` 6, `src/hooks` 1,
+`src/routeTree.gen.ts` 1 (generated).
 
 **No new npm dependency, no lockfile change, no migration, no DDL, no new
 environment variable.** The `templates` column is `jsonb`, so a new template
@@ -112,7 +114,9 @@ The three failures are **pre-existing and environment-bound**, and they are
 Both fail at the base commit `2f4eb2f5` in the same environment — the
 escalation record carries the side-by-side baseline
 (`phase3-archive-key-escalation.md:4139-4148`). The programme's own delta
-across the batches was **+6 test files and +65 tests, with 0 new failures**.
+across the batches, measured from that baseline (**613** files / **8 701**
+tests) to this tip (**619** files / **8 769** tests), is **+6 test files and
++68 tests, with 0 new failures**.
 
 **The new suites that carry the programme's contracts:**
 
