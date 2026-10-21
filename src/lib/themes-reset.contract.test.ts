@@ -250,6 +250,12 @@ describe("a VARIANT reset restores the theme's AUTHORED variant body", () => {
     expect(out.template).toBe("blog_listing");
     expect(out.versionId).toBe("version-new");
     expect(Object.keys(out.templates)).toContain("blog_listing");
+    // The map that rides back is the STORED shape — the same parse the
+    // commit RPC received — so the editor's document and the stored
+    // document are the same bytes.
+    expect(JSON.stringify(out.templates)).toBe(
+      JSON.stringify(committedTemplates(db)),
+    );
   });
 
   it("leaves the base `blog` body and the other variant untouched", async () => {

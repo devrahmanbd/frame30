@@ -1827,8 +1827,17 @@ export async function resetTemplateToDefault(
     });
     // The FULL merged map rides back with the result: the client replaces
     // its document with the map the SERVER wrote, so the editor's state and
-    // the stored state can never disagree about what was reset.
-    return { versionId, template: key, ast, templates };
+    // the stored state can never disagree about what was reset. The map is
+    // the PARSED one — the exact shape the storage layer holds (the commit
+    // RPC parses the same map the same way), so the editor's document and
+    // the stored document are byte-identical.
+    const stored = parseTemplates(templates);
+    return {
+      versionId,
+      template: key,
+      ast: stored[key] ?? EMPTY_AST,
+      templates: stored,
+    };
   });
 }
 
