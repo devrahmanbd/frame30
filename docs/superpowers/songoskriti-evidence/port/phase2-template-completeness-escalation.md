@@ -810,6 +810,8 @@ A task review of Batch B (Task 3 + Task 7) raised **five Important findings** ag
 
 **The platform defect — OPEN, out of scope, recorded and not fixed.** The platform's `payment_methods` widget renders **no payment-method radios**: `PaymentMethods` reads `const grouped = groupMethods(cart.methods)` and then indexes it **by group name** (`const keys = (grouped[group] ?? []) as PaymentMethodKey[]`, `src/components/builder/cart.tsx:560`, `:584`), but `groupMethods()` returns an **array** of `{ layer, methods }` objects (`src/lib/payment-rails.ts:358-363`). `grouped[group]` is therefore **always `undefined`**, every group renders `null`, and the fieldset renders its legend and **no rails** (`src/components/builder/cart.tsx:576-617`). **The same defect is on the live checkout**, because the live checkout renders the same widget. The fix lives in `src/components/builder/cart.tsx`, which port spec §7 **prohibits** ("everything else under `src/`"); it is **out of scope for this plan** and is **recorded, not fixed**. It is an OPEN item in this record and in the evidence record's open list.
 
+**Amended 2026-10-21 (record-accuracy pass) — the sentence *"The same defect is on the live checkout, because the live checkout renders the same widget"* above is CORRECTED in §(o.1): it is not what the tree does.** The production checkout route renders its **own** hand-built payment fieldset and does **not** render the `payment_methods` widget at all; the defect was in the **widget**, which the theme preview's checkout tab and the storefront's **cart** route both grant. The defect is also **FIXED** since this section was written (`9eb581d0`, covered by `src/components/builder/cart-payment-methods.test.tsx`) — see **§(o)** in full and the evidence record's **§(K.1)**. The sentence is left above as it stood, per this record's append-only rule.
+
 **The contract, recorded before the edit.** The preview suite's checkout case asserts **what actually renders**:
 
 - the theme's own payment marks — the "We accept" heading, a brand badge (`aria-label="bKash"`) and the "Cash on delivery" text chip; and
@@ -2644,11 +2646,17 @@ behaviourally identical and the shipped form is the one recorded here, so the
 record and the tree agree. (The real diff:
 `git diff 2f46c634 9eb581d0 -- src/components/builder/cart.tsx`.)
 
+**Correction (2026-10-21, record-accuracy pass) — hunk 1's header was off by
+one and is now the shipped one.** The shipped diff reads
+`@@ -17,6 +17,7 @@`, not `@@ -16,6 +16,7 @@`
+(`git show 9eb581d0 -- src/components/builder/cart.tsx`). Hunks 2 and 3 are
+exact: `@@ -557,7 +558,18 @@` and `@@ -581,7 +593,7 @@`.
+
 **Hunk 1 — the import gains the group's LAYER type** (the lookup is by
 layer, so the layer type is the map's key type):
 
 ```diff
-@@ -16,6 +16,7 @@
+@@ -17,6 +17,7 @@
  import {
    METHOD_GROUP_ORDER,
    groupMethods,
