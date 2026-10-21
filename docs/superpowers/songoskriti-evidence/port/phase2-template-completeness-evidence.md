@@ -61,6 +61,33 @@ the storefront through the route's `productSlot` instead, and the platform's own
 category/kind chips stay inside the results block. Carried here so the plan's §E is
 read together with it.
 
+### (G.3) The `product` body's preview-only sentence ships to merchants — **OPEN (not fixed in the final-review round)**
+
+**What is broken.** The `product` template's body carries one labelled line
+(`src/lib/themes/songoskriti/preview.ts:192`): _"Sample product page — prices and stock
+are sample data, **and ordering is disabled in the preview**."_ The clause after the
+comma is true **only inside the preview**, and the same body is the **seeded** template
+a merchant installs — `registryPackage` returns the preview's assembled templates
+(`src/lib/themes.server.ts:1163-1169`), so on a merchant's live product page the copy
+claims that ordering is disabled in the preview. **Nothing catches it:** the gate's
+`R4-no-demo-copy` rule is scoped to the **`page`** template (the one body whose copy
+could impersonate the merchant's CMS record), and the sentence carries none of the
+retired demo markers the rule looks for.
+
+**Why it is NOT fixed here.** The sentence's home is the **seeded** body
+(`src/lib/themes/songoskriti/preview.ts`) and the fix's other half — rendering the
+clause **in** the preview only — lives in the preview host
+(`src/components/store/ThemePreviewFrame.tsx`, §7-prohibited). **Neither file is in the
+final-review fix round's owner-approved set** (the escalation record's **§(m.3)**), and
+the escalation record's **§(m.7)** records the residual. A round that may edit both
+files should move the preview-only clause out of the shipped body: the merchant-facing
+body keeps a merchant-safe label (_"Sample product page — prices and stock are sample
+data."_) and the preview host adds the preview-only note.
+
+**What it costs.** The `product` captures are **already** stale (§(D)), and the
+re-freeze is an owner action — so this change must land in the same re-freeze, not
+before it.
+
 ---
 
 ## (H) Stale artifacts — what this work made obsolete
@@ -98,6 +125,10 @@ unaffected.
 `empty_state` grant, the demo `productSlot` and the theme's `facet_sidebar` groups all
 change the search tab's markup). They were already stale; they are stale for one more
 reason, and the count does not change — still 24 of the 60.
+
+**Correction (2026-10-21):** the "24 of the 60" above is the plan's **estimate**; the
+**measured** stale set is **42 of the 60** — see **§(D)**, which names the seven
+changed templates and the two that did not change.
 
 ---
 
@@ -197,7 +228,7 @@ composition pins + the skins pin), `f0adee47` (the Phase-1 preview-page pin).
 | **"demo data is realistic and explicitly labelled"**                                      | ✅   | `src/lib/themes/songoskriti/cart-account-demo.test.ts` — **seven** cases: the cart's money is _derived from its lines_, the lines cite real Songoskriti demo products, the snapshot is _not_ the studio's, the data is synthetic and inert, the profile is _visibly_ demo ("Rumana Haque (demo shopper)", RFC 2606 `.example` addresses) and the order history reads like one. The preview's visible markers are the shopper's title and the orders themselves — **not** a bare "Demo" badge, which Phase 1 removed because it leaks into a merchant's live page. The **product** body keeps exactly one labelled line, relabelled in this plan: _"Sample product page — prices and stock are sample data, and ordering is disabled in the preview."_ (was _"Demo product page. Prices and stock are sample data…"_).                                                                                                                                                                                                                                                       |
 | **"Page previews a useful sample but the live Page route renders the actual CMS record"** | ✅   | The preview renders the theme's own labelled sample page (`SONGOSKRITI_PREVIEW_PAGE`, `src/lib/themes/songoskriti/preview-page.ts`); the **live** Page route is **byte-identical** — `src/components/store/PageView.tsx` is not in this plan's diff (§C), and the gate's `R4-no-demo-copy` rule is scoped to the **`page`** template for exactly this reason: it is the one body whose copy could impersonate the merchant's record.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | **"Checkout preview renders the authored template"**                                      | ✅   | `songoskriti preview — the checkout composition > renders the AUTHORED checkout body, not the generic mock` asserts the theme's payment marks (`aria-label="bKash"`, "Cash on delivery"), the platform widget's own legend ("Payment method"), the synthetic order's derived money, and **`expect(html).not.toContain("Muslin Floral Festive Saree")`** — the mock's hard-coded line never reaches the preview. `src/components/store/CheckoutMock.tsx` is now **dead code** (§H.1).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| **"Archive has an explicit contract and route mapping"**                                  | ✅   | The contract is written down verbatim in the escalation record's **§(l.1)** and pinned by `src/lib/themes/songoskriti/archive-contract.test.ts`: the archive-like surface is the blog listing and its **category / tag / author** taxonomies plus the storefront's blog index, served by `BlogArchiveTheme` and backed by the existing blog pack (`blog_terms` / `blog_archive` / `blog_pager`) — it wears the **`blog`** template; **no `archive` key is added** (`TEMPLATE_KEYS`, `TEMPLATE_ZONES`, the 41 catalogue allowlists, the hand-written `z.enum` and the editor/SEO/weight maps are all untouched); and an unsupported template produces the **explicit unsupported state** ("This template is not supported by this theme", naming the key, linking back to the home tab) instead of a homepage redirect.                                                                                                                                                                                                                                                      |
+| **"Archive has an explicit contract and route mapping"**                                  | ✅   | The contract is written down verbatim in the escalation record's **§(l.1)** and pinned by `src/lib/themes/songoskriti/archive-contract.test.ts`: the archive-like surface is the blog listing and its **category / tag / author** taxonomies plus the storefront's blog index, served by `BlogArchiveTheme` and backed by the existing blog pack (`blog_terms` / `blog_archive` / `blog_pager`) — it wears the **`blog`** template; **no `archive` key is added** (`TEMPLATE_KEYS`, `TEMPLATE_ZONES`, the 41 catalogue allowlists, the hand-written `z.enum` and the editor/SEO/weight maps are all untouched); and an unsupported template produces the **explicit unsupported state** ("This template is not supported by this theme", naming the key, linking back to the home tab) instead of a homepage redirect. **Amended 2026-10-21 (§(I)) — the ✅ was FALSE until the final-review fix:** the unsupported branch was **dead code** (`validateThemePreviewSearch` dropped every unknown `?template=` value — `src/lib/theme-preview-nav.ts:264-268` — and the host computes its state from a **missing** key, `src/components/store/ThemePreviewFrame.tsx:575-578`). The route's search validation now **carries** the requested key (bounded to a key-shaped token, ≤64 chars) and the route hands it to the host, so `?template=archive` renders the panel; `src/lib/themes/songoskriti/unsupported-template-state.test.tsx` (9 cases) proves the route's own `validateSearch` carries the key, the panel renders **with the key named**, and the **homepage body does not render** in its place.                                                                                                                                                                                                                                                      |
 | **"each claimed template passes a theme-distinctness test"**                              | ✅   | `src/lib/themes/songoskriti/template-distinctness.ts` — **seven** rules (`R1-not-generic`, `R2-theme-composition`, `R3-functional-slots`, `R4-no-demo-copy`, `R5-no-forbidden-types`, `R6-distinct-across-templates`, `R7-one-primary-heading`). The gate's subject is **composition, functional slots and structure — never lint cleanliness**, and the module's header says why: the platform's own lint is a different concern. **Measured** on the nine shipped bodies at HEAD, `lintTemplate` reports **zero errors** on all nine (`index` 23 findings, `search` 14, `checkout` 3, `blog` 2, `cart` 2, `product` / `collection` / `account` / `page` 1 each — every one of them the platform's _bilingual-content_ finding, "no বাংলা translation", which this plan does not silence), and the one double-`<h1>` **error** the cart body carried is **fixed** in the body that carried it and then held structurally under `R7`. The gate has **failed before**: it rejects the four legacy bodies and the engine's generic body, and every rule has a firing fixture. |
 
 **The suite that backs all six rows** — one run, 34 files, **423 tests, zero
@@ -217,6 +248,13 @@ node_modules/.bin/vitest run src/lib/themes/songoskriti \
  Test Files  34 passed (34)
       Tests  423 passed (423)
 ```
+
+**Updated 2026-10-21 (§(I)) — the run is now one file and nine cases bigger:** the
+same command reports **35 files / 432 tests** (the final-review fix round adds
+`src/lib/themes/songoskriti/unsupported-template-state.test.tsx`, 9 cases — see
+§(I.4) for the measured output). The 34-file / 423-test run above is the one that
+backed the six rows as they stood when Task 11 wrote them; **no case was removed,
+skipped or weakened**.
 
 Per file, as measured:
 
@@ -303,6 +341,15 @@ base commit. Consequently, none of the following changed:
 | the **price calculation**                                                                                                                                                                     | every money figure still comes from the server quote (`quoteCart`), never from a theme prop                                                                                  |
 | the **order state**                                                                                                                                                                           | `src/routes/store.$slug.checkout.tsx` keeps `ast={null}`, its server-authoritative totals, its validation, its payment providers and its order state                         |
 | the **merchant's CMS page record**                                                                                                                                                            | `src/components/store/PageView.tsx:73-110`, `:166`, `:175` — the live Page route still renders the merchant's real record through `page_content`                             |
+| the **themed search page's pager, result count, sort control and active-filter chips** — **State B (Decision D6) narrowed what a themed search page can show**: those four moved out of the results block and into **per-widget granted slots**, so they now reach the theme only where the theme **authors** the matching section. A themed search body that publishes a `product_grid` but no `pagination` section **loses the pager** (page 2+ becomes unreachable), and one with no `result_toolbar` / `filter_chips` loses the count, the sort control and the active chips | `src/routes/store.$slug.search.tsx:575-583` — the `resultsBlock` the theme's `product_grid` receives as `productSlot` carries the query box, the platform's category/kind chips, the status notice and the results grid, and **not** the count, the sort, the active chips or the pager; `:632-645` — the `contextSlots` grants them (`result_toolbar`, `filter_chips`, `pagination`, `category_header` and — only when the platform's own empty state would have shown — `empty_state`). The Songoskriti body authors every one of them (`src/lib/themes/songoskriti/preview.ts:242-297`), so the theme's own search page keeps its pager, count and sort — but the guarantee is now **the theme's sections**, not the platform's default |
+
+**The matching note in the route was NOT written (said here, not silently
+skipped).** The final-review fix round's owner-approved file set is the two
+files the escalation record's **§(m.3)** names — `src/lib/theme-preview-nav.ts`
+and `src/routes/theme-preview.$key.tsx` — and `src/routes/store.$slug.search.tsx`
+is **not** one of them. The narrowing is therefore recorded **in this row only**;
+a round that may edit the search route should carry the same sentence into the
+comment above its `contextSlots` map (`src/routes/store.$slug.search.tsx:626-631`).
 
 **The one route the plan does change** is named separately, with its own commit:
 
@@ -325,6 +372,14 @@ added**, so `TEMPLATE_KEYS`, `TEMPLATE_ZONES`, the 41 catalogue `templates:`
 allowlists, the hand-written `z.enum` and the editor/SEO/weight maps are all as they
 were. **No migration** was created or altered, **no dependency** was added, and
 **no deploy** ran inside this plan.
+
+**Updated 2026-10-21 (§(I)) — the list above is now narrower by two files.**
+The final-review fix round edited `src/lib/theme-preview-nav.ts` and
+`src/routes/theme-preview.$key.tsx` (the two files the escalation record's
+**§(m.3)** escalates: the preview's search validation and the preview route).
+**Every other file named above is still untouched**, and the "no `archive` key",
+"no migration", "no dependency" and "no deploy" statements above still hold — the
+fix added **no template key**.
 
 ---
 
@@ -457,6 +512,10 @@ node_modules/.bin/vitest run src/lib/themes/songoskriti \
 # → Test Files  34 passed (34) / Tests  423 passed (423)
 ```
 
+**Updated 2026-10-21 (§(I)):** the same command now reports **35 passed (35) /
+432 passed (432)** — one file and nine cases more (the unsupported-template-state
+suite).
+
 **2 — the archive contract (Task 10)**
 
 ```bash
@@ -527,3 +586,141 @@ node_modules/.bin/vitest run src/lib/site.server.test.ts
 
 **8 — the owner action (the parity re-freeze) — see §D.** It is **not** run by this
 plan: it activates the theme on a store in the database the repo's `.env` points at.
+
+---
+
+## (I) The final-review fix round — what changed, and what is now true _(appended 2026-10-21)_
+
+**Appended, not a rewrite: sections (A)–(H) stand as written, except for the two
+targeted amendments named below.** The final review of this branch returned "changes
+required" — one **MUST FIX** (a false ✅ in an owner-facing record) and three
+**SHOULD FIX** items. This section records what this round did about each of them,
+what it measured, and the two places where the existing text had to be corrected.
+
+**The commits.**
+
+| sha        | subject                                                                                | files                                                                                                                             |
+| ---------- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `0fa9f6fa` | docs(songoskriti): record the unsupported-template escalation for the final review fix | the escalation record's **§(m)** — written **before** the code was touched |
+| `537cbd38` | fix(songoskriti): make the preview's unsupported-template state reachable               | `src/lib/theme-preview-nav.ts`, `src/routes/theme-preview.$key.tsx`, `src/lib/themes/songoskriti/unsupported-template-state.test.tsx` (**NEW**) |
+| (this one) | docs(songoskriti): make the evidence match the tree after the final-review fix         | this file                                                                                                                          |
+
+### (I.1) The MUST FIX — the archive row's ✅ was false, and is now true
+
+**What was false.** The §(B) row claimed an unsupported template produces the
+**explicit unsupported state**; in the shipped tree it did not. Two measured causes:
+`validateThemePreviewSearch` dropped every `?template=` value that is not one of the
+nine template keys (`src/lib/theme-preview-nav.ts:264-268`), and the host computes
+its unsupported state from a **missing** key
+(`src/components/store/ThemePreviewFrame.tsx:575-578`) while the engine assembles a
+body for all nine known keys — so the branch was **dead code** and `?template=archive`
+still landed on the homepage.
+
+**What changed** (the escalation record's **§(m)** carries the exact hunks, written
+before the edit):
+
+1. `src/lib/theme-preview-nav.ts` — the route's search validation now **carries** the
+   requested key (`unsupportedTemplate`) instead of dropping it. The carried value is
+   bounded and **key-shaped** (≤64 characters, `[A-Za-z0-9][A-Za-z0-9_-]*`): the host
+   **prints** the key inside the panel, so markup and unbounded strings are never
+   echoed back. `template` keeps its old meaning (a key the platform knows), so the
+   existing pin in `src/lib/theme-preview-nav.test.ts:610-612` still holds unchanged.
+2. `src/routes/theme-preview.$key.tsx` — the route hands the **requested** key to the
+   host, so the host's own partial lookup turns it into the panel.
+3. `src/lib/theme-preview-nav.ts` — `previewSearchForSwitch` clears the request, so an
+   answered request never lingers in the URL.
+
+**Is the state genuinely reachable now? YES — and here is the proof.** The new suite
+`src/lib/themes/songoskriti/unsupported-template-state.test.tsx` (9 cases) walks the
+**URL path**, not a hand-made map:
+
+| #   | case                                                                                                     | what it pins                                                                                        |
+| --- | -------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| 1   | the route's search validation carries an unknown key instead of dropping it                             | `validateThemePreviewSearch({template:"archive"}).unsupportedTemplate === "archive"`                  |
+| 2   | bounds the requested key: only a key-shaped token is carried                                           | markup, a 65-character string and `""` are **not** carried; a 64-character key is                    |
+| 3   | an unknown `?template=` reaches the host and renders the explicit unsupported state                     | the panel's heading, the **named key**, `href="/"` and "Back to the home tab"                        |
+| 4   | the homepage composition does **NOT** render in place of the unsupported state                          | the homepage's own copy is in the `index` render and **not** in the unsupported render              |
+| 5   | the unsupported state carries none of the retired demo strings                                         | none of "Demo page", "Demo search", "Meet the makers", "Sample product", "Demo"                     |
+| 6   | a template the theme authors still renders its own body                                                 | the `search` template renders its own composition and **no** panel                                    |
+| 7   | the assembled templates carry the nine keys and not the requested one                                  | the map has **9** keys and no `archive` key — the missing key is what the panel comes from          |
+| 8   | the request ends with the visit — a switch clears it from the URL                                       | `previewSearchForSwitch` clears `unsupportedTemplate`                                                 |
+| 9   | the route hands the requested key to the preview host                                                    | the **route's own** `Route.options.validateSearch({template:"archive"})` carries the key, and the route's source hands it to the host |
+
+**The suite fails without the fix** — measured: with the engine's carry reverted, **6
+of the 9 cases fail** (`Tests 6 failed | 3 passed (9)`), including the route-module
+case. The engine's generic demo body ("Demo page. The live theme authors this
+template…", `src/lib/theme-preview-nav.ts:367`) is a **different** surface — it is the
+body of a **known** key a theme did not author — and it is **not** what an unknown key
+renders (case 5).
+
+**The two targeted amendments to the sections above** (both are corrections of a
+statement that had become false, not rewrites of the sections):
+
+- **§(B)** — the archive row's evidence cell now states what is true and says, in the
+  cell, that the ✅ was false until this fix (§(I.1)).
+- **§(C)** — the "Also untouched, by rule" list named `src/lib/theme-preview-nav.ts`;
+  a dated note under it records that this round edited that file and
+  `src/routes/theme-preview.$key.tsx`, and that every other file in the list is still
+  untouched.
+
+### (I.2) The three SHOULD FIX items
+
+1. **The narrowing State B introduced is now stated** — a **new §(C) row** names it: the
+   themed search page's pager, result count, sort control and active-filter chips reach
+   the theme **only** through the granted sections (`result_toolbar`, `filter_chips`,
+   `pagination`), never through the `productSlot`; a body that publishes a
+   `product_grid` but no `pagination` section loses the pager, and page 2+ becomes
+   unreachable. **The matching note in the route's own comment was NOT written** —
+   `src/routes/store.$slug.search.tsx` is outside this round's owner-approved file
+   set (the escalation record's §(m.3)); §(C) says so in place of the edit.
+2. **§(H.2)'s "still 24 of the 60"** — a **one-line correction** now points at §(D),
+   where the measured number is **42 of the 60**.
+3. **The preview-only sentence in the shipped `product` body**
+   (`src/lib/themes/songoskriti/preview.ts:192`) — **recorded, not fixed**, as the new
+   **§(G.3) OPEN item**: the fix needs the seeded body **and** the preview host, and
+   neither file is in this round's owner-approved set. The escalation record's §(m.7)
+   carries the same residual.
+
+### (I.3) The scope — the governing statement
+
+The escalation record's **§(e)** still reads "This record escalates exactly four
+existing files". It is **not** rewritten (that record is append-only); the **governing
+statement** is the escalation record's **§(j.7)** ("six D4 files, two theme-owned
+files, one new-suite file") plus its **§(m.3)** (this round's two files and one new
+test file). The escalation record's **§(m.6)** carries the same note on its own side.
+
+### (I.4) The measurements — run from the repo root
+
+```
+node_modules/.bin/vitest run src/lib/themes/songoskriti/unsupported-template-state.test.tsx
+# → Test Files  1 passed (1) / Tests  9 passed (9)
+
+node_modules/.bin/vitest run src/lib/themes/songoskriti \
+  src/components/builder/songoskriti-port-freeze.test.tsx \
+  src/lib/theme-preview-nav.test.ts src/lib/definition-of-done.test.ts \
+  src/components/store/ThemePreviewFrame.test.tsx \
+  src/components/store/songoskriti-preview-compositions.test.tsx \
+  src/components/store/songoskriti-preview-page.test.tsx \
+  src/components/store/BlogArchiveTheme.test.tsx \
+  src/components/store/ThemeChrome.route-content.test.tsx \
+  src/components/store/PageView.twin-wiring.test.tsx
+# → Test Files  35 passed (35) / Tests  432 passed (432)
+#   (34 files / 423 tests before this round; +1 file, +9 tests — the new suite)
+
+node_modules/.bin/vitest run src/lib/theme-preview-nav.test.ts src/lib/theme-variation-preview.test.ts
+# → Test Files  2 passed (2) / Tests  50 passed (50)
+
+node_modules/.bin/prettier --check src/lib/theme-preview-nav.ts \
+  src/routes/theme-preview.$key.tsx \
+  src/lib/themes/songoskriti/unsupported-template-state.test.tsx
+# → All matched files use Prettier code style!
+
+node_modules/.bin/eslint <the same three paths>
+# → no output (0 errors, 0 warnings)
+
+node_modules/.bin/tsgo --noEmit
+# → no output, exit 0
+```
+
+**The three known-red gates and the known local flake are unchanged** — they are the
+pre-existing conditions §(F) lists, and this round neither ran nor changed them.
