@@ -200,9 +200,13 @@ const PAIR_RANGE_RE = /^>=\s*(\d+\.\d+\.\d+)\s+<\s*(\d+\.\d+\.\d+)$/;
 
 /**
  * The floor a declared range admits — the API line the package was built
- * against. `^3.0.0` floors at `3.0.0`, `>=3.0.0 <4.0.0` floors at `3.0.0`
- * and an exact pin `3.1.0` floors at `3.1.0`. Null for a range shape this
- * module does not understand (the range validators report that separately).
+ * against. `^3.0.0` floors at `3.0.0` and `>=3.0.0 <4.0.0` floors at
+ * `3.0.0`. Null for a range shape this module does not understand (the range
+ * validators report that separately).
+ *
+ * Only the two shapes the manifest gate ADMITS are read: the gate rejects a
+ * bare version as `api_range_invalid` (`:344-345`), so an exact pin can
+ * never reach this helper as an admitted range.
  */
 function apiRangeFloor(range: string): string | null {
   const trimmed = range.trim();
@@ -210,7 +214,6 @@ function apiRangeFloor(range: string): string | null {
   if (caret) return caret[1]!;
   const pair = PAIR_RANGE_RE.exec(trimmed);
   if (pair) return pair[1]!;
-  if (/^\d+\.\d+\.\d+$/.test(trimmed)) return trimmed;
   return null;
 }
 

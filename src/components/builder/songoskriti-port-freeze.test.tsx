@@ -116,6 +116,18 @@ const TEMPLATE_MAIN: Record<string, string[]> = {
     "pagination",
     "empty_state",
   ],
+  // Phase 3 (Decision D1') — the content archive. Its ORDERED composition is
+  // frozen like the other nine: a reordering of these six sections, or a
+  // seventh one added, is a change this suite must catch. The order is the
+  // theme's own shipped body (`src/lib/themes/songoskriti/preview.ts:242-303`).
+  archive: [
+    "category_header",
+    "blog_terms",
+    "blog_archive",
+    "blog_pager",
+    "pagination",
+    "empty_state",
+  ],
 };
 
 describe("Task 3 — freeze: homepage composition", () => {
@@ -159,6 +171,7 @@ describe("Task 3 — freeze: per-template zone/type composition", () => {
     "cart",
     "checkout",
     "search",
+    "archive",
   ]) {
     it(`${key} template main zone is frozen`, () => {
       const source = songoskritiPreviewSource();

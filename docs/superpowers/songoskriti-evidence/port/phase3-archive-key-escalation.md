@@ -1548,3 +1548,279 @@ Neither edit weakens a test: each replaces a stale literal with a statement abou
 > The content-archive routes MAY be served by the `archive` template; the merchant-scoped storefront wiring is deferred to the route that carries a slug (`/store/<slug>/blog/category/<slug>`), which does not exist today. In this programme the archive key's storefront render path is the **editor** (`/dashboard/builder`) and the **theme preview host** (`/theme-preview/<theme>?template=archive`), both of which are merchant-scoped by construction. That deferral is a stated limitation, not an oversight, and it is recorded as such in the evidence record (Task 9).
 >
 > The preview's unsupported state stays EXPLICIT: a key the platform still does not know is carried through the route's search validation and rendered as the named "not supported by this theme" panel — never a silent homepage redirect.
+
+---
+
+## (h) Fix round — the review's findings (appended, 2026-10-21)
+
+**Base commit of this round:** `8051b21e` (the tip of `frame30` at the time of the review).
+
+This section is **appended**, not rewritten: everything above is the record as it stood when the batch was committed. The round below fixes the findings a task review raised against the `archive` template-key batch, and it names the files it touches, each with its exact diff. **Every file below is already a member of the plan's Decision Gate G1 list** (the plan's own G1 table has been corrected to name every §7-prohibited file this batch touches — see the last paragraph of this section), except the one NEW file, which §7 allows.
+
+### (h.1) The finding
+
+> The archive composition is **not frozen**: `src/components/builder/songoskriti-port-freeze.test.tsx:74-119` and `:152-162` still enumerate the nine old keys, so a reordering of Songoskriti's six archive sections — or a seventh section added — would pass unnoticed. The distinctness gate covers the archive (R2/R3/R5 are `TEMPLATE_KEYS`-driven), but the **ordered** composition was pinned for the other nine templates and not for the archive.
+>
+> Plus five smaller findings: the seed merge drops the merchant's variant keys; the merge reads the active theme's draft whichever theme key is being installed; `apiRangeFloor`'s exact-pin branch is unreachable; the `>=a <b` range form is untested; the plan's on-disk G1 table does not name the two files the batch had to escalate; three sweep files that omit `archive` belong to nobody; and the published contract omits the new rule.
+
+### (h.2) The exact old → new diff
+
+```diff
+diff --git a/src/components/builder/songoskriti-port-freeze.test.tsx b/src/components/builder/songoskriti-port-freeze.test.tsx
+index 807947c7..610600e3 100644
+--- a/src/components/builder/songoskriti-port-freeze.test.tsx
++++ b/src/components/builder/songoskriti-port-freeze.test.tsx
+@@ -116,6 +116,18 @@ const TEMPLATE_MAIN: Record<string, string[]> = {
+     "pagination",
+     "empty_state",
+   ],
++  // Phase 3 (Decision D1') — the content archive. Its ORDERED composition is
++  // frozen like the other nine: a reordering of these six sections, or a
++  // seventh one added, is a change this suite must catch. The order is the
++  // theme's own shipped body (`src/lib/themes/songoskriti/preview.ts:242-303`).
++  archive: [
++    "category_header",
++    "blog_terms",
++    "blog_archive",
++    "blog_pager",
++    "pagination",
++    "empty_state",
++  ],
+ };
+ 
+ describe("Task 3 — freeze: homepage composition", () => {
+@@ -159,6 +171,7 @@ describe("Task 3 — freeze: per-template zone/type composition", () => {
+     "cart",
+     "checkout",
+     "search",
++    "archive",
+   ]) {
+     it(`${key} template main zone is frozen`, () => {
+       const source = songoskritiPreviewSource();
+diff --git a/src/lib/template-key-contract.test.ts b/src/lib/template-key-contract.test.ts
+index 1d84b7ba..ed96e653 100644
+--- a/src/lib/template-key-contract.test.ts
++++ b/src/lib/template-key-contract.test.ts
+@@ -290,6 +290,37 @@ describe("the archive template key — the theme-package contract", () => {
+     if (!verdict.ok) return;
+     expect(verdict.manifest.api).toBe("^3.0.0");
+   });
++
++  it("reads the `>=a <b` range form: an archive package whose floor is below 3.1.0 is refused", () => {
++    // The pair form floors at its LOWER bound. `>=3.0.0 <4.0.0` covers the
++    // running 3.1.0, so the compatibility gate admits it — the ARCHIVE rule
++    // is what refuses it, because the key landed in 3.1.0.
++    const verdict = validateThemeManifest(manifest({ api: ">=3.0.0 <4.0.0" }));
++    expect(verdict.ok).toBe(false);
++    if (verdict.ok) return;
++    expect(verdict.errors).toContain("templates.archive_requires_api");
++  });
++
++  it("admits an archive-declaring package whose `>=a <b` floor reaches 3.1.0", () => {
++    const verdict = validateThemeManifest(manifest({ api: ">=3.1.0 <4.0.0" }));
++    expect(verdict.ok).toBe(true);
++    if (!verdict.ok) {
++      expect(verdict.errors).toEqual([]);
++      return;
++    }
++    expect(verdict.manifest.api).toBe(">=3.1.0 <4.0.0");
++    expect(verdict.manifest.templates).toEqual(["index", "archive"]);
++  });
++
++  it("refuses a bare version — the range gate rejects it before any archive floor is read", () => {
++    // An exact pin is NOT an admitted range shape: the gate rejects it as
++    // `api_range_invalid`, so no manifest is ever admitted through it and
++    // the archive floor never reads one.
++    const verdict = validateThemeManifest(manifest({ api: "3.1.0" }));
++    expect(verdict.ok).toBe(false);
++    if (verdict.ok) return;
++    expect(verdict.errors).toContain("api_range_invalid");
++  });
+ });
+ 
+ describe("the archive template key — backward compatibility", () => {
+diff --git a/src/lib/theme-package.ts b/src/lib/theme-package.ts
+index 630c7703..7cd49421 100644
+--- a/src/lib/theme-package.ts
++++ b/src/lib/theme-package.ts
+@@ -200,9 +200,13 @@ const PAIR_RANGE_RE = /^>=\s*(\d+\.\d+\.\d+)\s+<\s*(\d+\.\d+\.\d+)$/;
+ 
+ /**
+  * The floor a declared range admits — the API line the package was built
+- * against. `^3.0.0` floors at `3.0.0`, `>=3.0.0 <4.0.0` floors at `3.0.0`
+- * and an exact pin `3.1.0` floors at `3.1.0`. Null for a range shape this
+- * module does not understand (the range validators report that separately).
++ * against. `^3.0.0` floors at `3.0.0` and `>=3.0.0 <4.0.0` floors at
++ * `3.0.0`. Null for a range shape this module does not understand (the range
++ * validators report that separately).
++ *
++ * Only the two shapes the manifest gate ADMITS are read: the gate rejects a
++ * bare version as `api_range_invalid` (`:344-345`), so an exact pin can
++ * never reach this helper as an admitted range.
+  */
+ function apiRangeFloor(range: string): string | null {
+   const trimmed = range.trim();
+@@ -210,7 +214,6 @@ function apiRangeFloor(range: string): string | null {
+   if (caret) return caret[1]!;
+   const pair = PAIR_RANGE_RE.exec(trimmed);
+   if (pair) return pair[1]!;
+-  if (/^\d+\.\d+\.\d+$/.test(trimmed)) return trimmed;
+   return null;
+ }
+ 
+diff --git a/src/lib/themes.server.ts b/src/lib/themes.server.ts
+index 998ba3ef..78f1a1e0 100644
+--- a/src/lib/themes.server.ts
++++ b/src/lib/themes.server.ts
+@@ -1274,6 +1274,34 @@ export async function loadRegistryPackage(
+   };
+ }
+ 
++/**
++ * The source key of a theme — the registry key it was installed from.
++ *
++ * Two shapes, because the two install paths record it differently: a
++ * marketplace install names it on the theme row (`source_listing_slug`) and
++ * the official install names it on the version the RPC wrote
++ * (`source_registry_key` — the `_key` the RPC was called with). A merchant's
++ * own hand-made theme has neither: null means "no upstream", never "any key".
++ */
++async function themeSourceKeys(
++  db: Client,
++  themeId: string,
++): Promise<Set<string>> {
++  const keys = new Set<string>();
++  const version = await db
++    .from("theme_versions")
++    .select("source_registry_key")
++    .eq("theme_id", themeId)
++    .order("version", { ascending: false })
++    .limit(1)
++    .maybeSingle();
++  const registryKey = version.data?.source_registry_key;
++  if (typeof registryKey === "string" && registryKey.trim()) {
++    keys.add(registryKey.trim());
++  }
++  return keys;
++}
++
+ /**
+  * The merchant's CURRENT template map — the one the install's RPC is about
+  * to replace.
+@@ -1283,15 +1311,24 @@ export async function loadRegistryPackage(
+  * that rule exactly: the merge is applied to the map the RPC replaces, not
+  * to some other theme's. A failed read never breaks an install — the seed
+  * then behaves exactly as it did before the merge existed.
++ *
++ * **The gate.** The map is returned ONLY when the ACTIVE theme's source key
++ * IS the key being installed. The RPC replaces the draft's map VERBATIM, so
++ * merging a DIFFERENT theme's bodies into this install would publish one
++ * theme's sections under another theme's name. Installing a theme the
++ * merchant does not already run therefore seeds the package's own map — the
++ * behaviour before the merge existed — and two themes' bodies are never
++ * mixed into one version.
+  */
+ async function readMerchantTemplateMap(
+   db: Client,
+   merchantId: string,
++  key: string,
+ ): Promise<Record<string, unknown> | null> {
+   try {
+     const theme = await db
+       .from("store_themes")
+-      .select("id")
++      .select("id, source_listing_slug")
+       .eq("merchant_id", merchantId)
+       .order("is_active", { ascending: false })
+       .order("created_at", { ascending: true })
+@@ -1299,6 +1336,12 @@ async function readMerchantTemplateMap(
+       .maybeSingle();
+     const themeId = theme.data?.id;
+     if (!themeId) return null;
++    const sources = await themeSourceKeys(db, themeId);
++    const listing = theme.data?.source_listing_slug;
++    if (typeof listing === "string" && listing.trim()) {
++      sources.add(listing.trim());
++    }
++    if (!sources.has(key)) return null;
+     const draft = await db
+       .from("theme_drafts")
+       .select("templates")
+@@ -1318,19 +1361,23 @@ async function readMerchantTemplateMap(
+  * not carry is filled from the package's default, which is how a NEW
+  * template key (the archive) reaches a merchant whose map predates it.
+  * Variant keys ride the same map and are carried through untouched.
++ *
++ * The MERGED map is returned ALWAYS — never the package's map alone. The
++ * package's map carries only the base keys, so returning it would DROP
++ * every key the merchant's map carries that the package does not (their
++ * variant keys — `blog_article`, `archive_category`), which contradicts the
++ * rule above.
+  */
+ function mergeSeedTemplates(
+   current: Record<string, unknown>,
+   preset: ThemeTemplates,
+ ): Record<string, unknown> {
+   const merged: Record<string, unknown> = { ...current };
+-  let changed = false;
+   for (const [key, ast] of Object.entries(preset)) {
+     if (Object.prototype.hasOwnProperty.call(merged, key)) continue;
+     merged[key] = ast;
+-    changed = true;
+   }
+-  return changed ? merged : (preset as unknown as Record<string, unknown>);
++  return merged;
+ }
+ 
+ /**
+@@ -1373,7 +1420,7 @@ export async function installRegistryTheme(
+     // receives. That is how the new `archive` default reaches a merchant
+     // whose map predates the key, without a single merchant-authored
+     // template being overwritten.
+-    const current = await readMerchantTemplateMap(db, merchantId);
++    const current = await readMerchantTemplateMap(db, merchantId, key);
+     const templates = current
+       ? mergeSeedTemplates(current, pkg.templates)
+       : (pkg.templates as unknown as Record<string, unknown>);
+```
+
+**The one NEW file this round creates** (§7-allowed — a new file needs no relaxation):
+
+| file | what it is |
+| --- | --- |
+| `src/lib/theme-seed-merge.test.ts` | the seed merge's contract suite: the merchant's variant keys survive the install, and two themes' bodies are never mixed into one version |
+
+### (h.3) Why each change is right
+
+**The archive's ordered composition is frozen (`songoskriti-port-freeze.test.tsx`).** The six types and their order are the theme's own shipped body, read from `src/lib/themes/songoskriti/preview.ts:242-303` — `category_header` → `blog_terms` → `blog_archive` → `blog_pager` → `pagination` → `empty_state`. The suite's loop already asserts the header/footer zones and the main-zone type list for the other nine templates; `"archive"` joins that loop, so the archive is frozen exactly like the rest. **The pin is stronger than the gap it closes**: before this change a reordering of the archive's six sections passed unnoticed; now it fails this suite.
+
+**The merge returns the MERGED map (`themes.server.ts`).** The old `return changed ? merged : preset` was a contradiction of the function's own docstring: the package's map carries only the base keys, so returning it dropped every key the merchant's map carried that the package does not — their **variant** keys (`blog_article`, `archive_category`). The merged map is now returned unconditionally, so a variant key the merchant authored survives the install.
+
+**The merge is gated on the target key (`themes.server.ts`).** The read mirrors the RPC's write rule (the ACTIVE theme, else the oldest), but the ACTIVE theme is not necessarily the theme being installed. The gate reads the active theme's **source key** — `store_themes.source_listing_slug` (a marketplace install) or the latest `theme_versions.source_registry_key` (the official install — the `_key` the RPC was called with) — and applies the merge **only** when that source key IS the key being installed. Two themes' bodies are therefore never mixed into one version; installing a theme the merchant does not already run seeds the package's own map, which is exactly the behaviour before the merge existed.
+
+**`apiRangeFloor`'s exact-pin branch is dropped (`theme-package.ts`).** The manifest gate rejects a bare version as `api_range_invalid` (`:344-345`) **before** the archive floor is read, so no manifest can be admitted through an exact pin and the branch could never be the reason a manifest passed. The §(d) statement above is corrected by this paragraph: **the lower bound is read from the two shapes the gate admits** — `^a.b.c` and `>=a.b.c <d.e.f`. A manifest that declares `archive` while claiming a floor below `3.1.0` is refused with `templates.archive_requires_api` in **both** admitted shapes; a manifest that claims a bare version is refused with `api_range_invalid` whatever it declares. Nothing that was refused before is admitted now, and nothing that was admitted is refused now.
+
+**The `>=a <b` range form is covered (`template-key-contract.test.ts`).** The pair form floors at its LOWER bound, so `>=3.0.0 <4.0.0` covers the running `3.1.0` and passes the compatibility gate — the ARCHIVE rule is what refuses it. The three new cases pin: the pair form with a floor below `3.1.0` is refused with `templates.archive_requires_api`; the pair form with a floor that reaches `3.1.0` is admitted; and a bare version is refused by the range gate itself with `api_range_invalid`.
+
+### (h.4) The plan's G1 table, corrected on disk
+
+The plan's Decision Gate G1 table listed **38** files, but the batch had to escalate **40**: the plan's A5.8 audit missed `src/lib/builder-phase2a.test.ts` and `src/lib/phase5-seo.test.ts` (neither names the key — both pin a COUNT or a LIST the union's growth changes), and the escalation record's §(f) rows 20 and 21 say so in as many words. **The plan's on-disk G1 table has been corrected to name both files and to state the count honestly (40).** The rows 20/21 "beyond the G1 list" note above is kept as the history it is; this paragraph is the correction.
+
+### (h.5) The sweep files that omit `archive` — ASSIGNED, not edited
+
+Three sweep files enumerate the template keys by hand and therefore omit the archive. **They are not edited in this round** — they belong to the tasks that own them, and the plan now names them:
+
+| file | what it enumerates | assigned to |
+| --- | --- | --- |
+| `src/lib/theme-preview-nav.test.ts:134-144` and `:375-385` | the two hard-coded nine-key arrays behind "authors demo content for every template" | **Task 5** (the blog-variants task) — the arrays become `TEMPLATE_KEYS`-driven loops, which cover the archive too |
+| `.e2e/real-frames.spec.ts:63-73` | the `TEMPLATES` list of the real-frames sweep | **Task 7** (the test-lanes task) |
+| `.e2e/songoskriti-port-parity.spec.ts:36-46` | the `TEMPLATES` list of the parity harness | **Task 7** (the test-lanes task) |
+| `.e2e/theme-preview-security.spec.ts:567-575` | the preview template sweep | **Task 7** (the test-lanes task) — **no task claimed this file before; it is claimed now** |
+
+### (h.6) The published contract — ASSIGNED, not edited
+
+`docs/packages/contract.md:154-166` states only the range rule, so a third-party author cannot learn that declaring `archive` requires an API floor ≥ `3.1.0`. The contract is **not** edited in this round; the rule is **assigned to Task 9** (the docs task), which owns `docs/packages/contract.md`.
+
+### (h.7) The rules that hold throughout this round
+
+No new npm dependency and no lockfile change. No test is weakened, deleted or skipped — every suite that changes here changes to a **stronger** expectation: the archive gains a frozen ordered composition, the contract suite gains three cases, and a new suite pins the seed merge. Every commit stages **explicit paths** only. The three churn files and `.output-snapshots/` are never staged and never committed.

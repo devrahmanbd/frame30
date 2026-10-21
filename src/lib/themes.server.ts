@@ -1275,6 +1275,34 @@ export async function loadRegistryPackage(
 }
 
 /**
+ * The source key of a theme — the registry key it was installed from.
+ *
+ * Two shapes, because the two install paths record it differently: a
+ * marketplace install names it on the theme row (`source_listing_slug`) and
+ * the official install names it on the version the RPC wrote
+ * (`source_registry_key` — the `_key` the RPC was called with). A merchant's
+ * own hand-made theme has neither: null means "no upstream", never "any key".
+ */
+async function themeSourceKeys(
+  db: Client,
+  themeId: string,
+): Promise<Set<string>> {
+  const keys = new Set<string>();
+  const version = await db
+    .from("theme_versions")
+    .select("source_registry_key")
+    .eq("theme_id", themeId)
+    .order("version", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const registryKey = version.data?.source_registry_key;
+  if (typeof registryKey === "string" && registryKey.trim()) {
+    keys.add(registryKey.trim());
+  }
+  return keys;
+}
+
+/**
  * The merchant's CURRENT template map — the one the install's RPC is about
  * to replace.
  *
@@ -1283,15 +1311,24 @@ export async function loadRegistryPackage(
  * that rule exactly: the merge is applied to the map the RPC replaces, not
  * to some other theme's. A failed read never breaks an install — the seed
  * then behaves exactly as it did before the merge existed.
+ *
+ * **The gate.** The map is returned ONLY when the ACTIVE theme's source key
+ * IS the key being installed. The RPC replaces the draft's map VERBATIM, so
+ * merging a DIFFERENT theme's bodies into this install would publish one
+ * theme's sections under another theme's name. Installing a theme the
+ * merchant does not already run therefore seeds the package's own map — the
+ * behaviour before the merge existed — and two themes' bodies are never
+ * mixed into one version.
  */
 async function readMerchantTemplateMap(
   db: Client,
   merchantId: string,
+  key: string,
 ): Promise<Record<string, unknown> | null> {
   try {
     const theme = await db
       .from("store_themes")
-      .select("id")
+      .select("id, source_listing_slug")
       .eq("merchant_id", merchantId)
       .order("is_active", { ascending: false })
       .order("created_at", { ascending: true })
@@ -1299,6 +1336,12 @@ async function readMerchantTemplateMap(
       .maybeSingle();
     const themeId = theme.data?.id;
     if (!themeId) return null;
+    const sources = await themeSourceKeys(db, themeId);
+    const listing = theme.data?.source_listing_slug;
+    if (typeof listing === "string" && listing.trim()) {
+      sources.add(listing.trim());
+    }
+    if (!sources.has(key)) return null;
     const draft = await db
       .from("theme_drafts")
       .select("templates")
@@ -1318,19 +1361,23 @@ async function readMerchantTemplateMap(
  * not carry is filled from the package's default, which is how a NEW
  * template key (the archive) reaches a merchant whose map predates it.
  * Variant keys ride the same map and are carried through untouched.
+ *
+ * The MERGED map is returned ALWAYS — never the package's map alone. The
+ * package's map carries only the base keys, so returning it would DROP
+ * every key the merchant's map carries that the package does not (their
+ * variant keys — `blog_article`, `archive_category`), which contradicts the
+ * rule above.
  */
 function mergeSeedTemplates(
   current: Record<string, unknown>,
   preset: ThemeTemplates,
 ): Record<string, unknown> {
   const merged: Record<string, unknown> = { ...current };
-  let changed = false;
   for (const [key, ast] of Object.entries(preset)) {
     if (Object.prototype.hasOwnProperty.call(merged, key)) continue;
     merged[key] = ast;
-    changed = true;
   }
-  return changed ? merged : (preset as unknown as Record<string, unknown>);
+  return merged;
 }
 
 /**
@@ -1373,7 +1420,7 @@ export async function installRegistryTheme(
     // receives. That is how the new `archive` default reaches a merchant
     // whose map predates the key, without a single merchant-authored
     // template being overwritten.
-    const current = await readMerchantTemplateMap(db, merchantId);
+    const current = await readMerchantTemplateMap(db, merchantId, key);
     const templates = current
       ? mergeSeedTemplates(current, pkg.templates)
       : (pkg.templates as unknown as Record<string, unknown>);

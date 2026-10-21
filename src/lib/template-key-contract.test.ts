@@ -290,6 +290,37 @@ describe("the archive template key — the theme-package contract", () => {
     if (!verdict.ok) return;
     expect(verdict.manifest.api).toBe("^3.0.0");
   });
+
+  it("reads the `>=a <b` range form: an archive package whose floor is below 3.1.0 is refused", () => {
+    // The pair form floors at its LOWER bound. `>=3.0.0 <4.0.0` covers the
+    // running 3.1.0, so the compatibility gate admits it — the ARCHIVE rule
+    // is what refuses it, because the key landed in 3.1.0.
+    const verdict = validateThemeManifest(manifest({ api: ">=3.0.0 <4.0.0" }));
+    expect(verdict.ok).toBe(false);
+    if (verdict.ok) return;
+    expect(verdict.errors).toContain("templates.archive_requires_api");
+  });
+
+  it("admits an archive-declaring package whose `>=a <b` floor reaches 3.1.0", () => {
+    const verdict = validateThemeManifest(manifest({ api: ">=3.1.0 <4.0.0" }));
+    expect(verdict.ok).toBe(true);
+    if (!verdict.ok) {
+      expect(verdict.errors).toEqual([]);
+      return;
+    }
+    expect(verdict.manifest.api).toBe(">=3.1.0 <4.0.0");
+    expect(verdict.manifest.templates).toEqual(["index", "archive"]);
+  });
+
+  it("refuses a bare version — the range gate rejects it before any archive floor is read", () => {
+    // An exact pin is NOT an admitted range shape: the gate rejects it as
+    // `api_range_invalid`, so no manifest is ever admitted through it and
+    // the archive floor never reads one.
+    const verdict = validateThemeManifest(manifest({ api: "3.1.0" }));
+    expect(verdict.ok).toBe(false);
+    if (verdict.ok) return;
+    expect(verdict.errors).toContain("api_range_invalid");
+  });
 });
 
 describe("the archive template key — backward compatibility", () => {
