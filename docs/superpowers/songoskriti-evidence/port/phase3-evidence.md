@@ -285,9 +285,9 @@ record states the measurement rather than the prediction:
   it changed too (the theme's page frame now wraps the merchant's record).
 - **The `account` baseline is out of tolerance**, and so is `page`. Against
   the harness's own threshold (`maxDiffPixelRatio: 0.02`) the measured diff
-  ratios are **0.03** for `account` and **0.06** for `page** — both beyond
-  tolerance, i.e. the frozen images no longer match what the surfaces
-  render.
+  ratios — from the Task 7 parity comparison, Batch D — are **0.03** for
+  `account` and **0.06** for `page`. Both are beyond tolerance, i.e. the
+  frozen images no longer match what the surfaces render.
 
 **The re-freeze is an owner action, on the throwaway stack, never against
 the configured database** (Decision Gate **G3**). The exact command and the
@@ -309,12 +309,14 @@ E2E_BASE_URL=http://localhost:3020 E2E_NO_WEBSERVER=1 \
 **Preconditions, all of them required:** the loopback stack is up and the
 migrations are applied; the app runs against `VITE_SUPABASE_URL=http://127.0.0.1:58000`;
 the merchant is **disposable**; the run uses `--update-snapshots` **once**,
-deliberately, and no other run in this programme ever did. The human captures
-in `docs/superpowers/songoskriti-evidence/port/reference/` and the machine
-baselines in `.e2e/songoskriti-port-parity.spec.ts-snapshots/` are
-**untouched** by every commit in this programme — the only writes this
-programme made to the still tree were into the **scratch** directory of
-§2.3.
+deliberately. The human captures in
+`docs/superpowers/songoskriti-evidence/port/reference/`, the manifest
+`docs/superpowers/songoskriti-evidence/port/reference-manifest.json` and
+the machine baselines in `.e2e/songoskriti-port-parity.spec.ts-snapshots/`
+are **untouched** by every commit in this programme — measured:
+`git diff --name-only 182c37b5..HEAD` over those three paths returns **zero
+changed files** for each. The only stills this programme wrote were into
+the **scratch** directory of §2.3.
 
 ---
 
