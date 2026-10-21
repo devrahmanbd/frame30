@@ -23,6 +23,7 @@ import type { BlogFeed } from "@/components/builder/blog";
 import type { BlogCardData } from "@/components/store/BlogList";
 import type { CartLine } from "@/lib/cart";
 import type { AccountOverview } from "@/lib/accounts.server";
+import type { AccountOrderDetail } from "@/components/store/AccountDashboard";
 import type { PaymentMethodKey } from "@/lib/payment-rails";
 import type { WidgetRow } from "@/lib/widget-data";
 import {
@@ -312,6 +313,59 @@ export function songoskritiPreviewAccountOverview(): AccountOverview {
     reviews: [],
   };
 }
+
+/**
+ * The preview's demo order DETAIL — the shape the session-scoped
+ * `customer_order_detail` RPC returns for the shopper's own order.
+ *
+ * Derived from the SAME demo catalogue the order history reads, so the
+ * disclosed order can never disagree with the row that opened it: same
+ * product, same variant, same price, same order number, same status.
+ * Synthetic, and derived — no number is typed twice.
+ */
+export function songoskritiPreviewOrderDetail(
+  orderId: string,
+): AccountOrderDetail | null {
+  const slug = DEMO_ORDER_SLUGS[orderId];
+  if (!slug) return null;
+  const order = DEMO_ORDERS.find((row) => row.id === orderId);
+  if (!order) return null;
+  const line = demoLine(slug);
+  const total = line.lineTotalMinor;
+  return {
+    order: {
+      id: order.id,
+      order_number: order.order_number,
+      status: order.status,
+      payment_method: "cod",
+      currency_code: order.currency_code,
+      subtotal_minor_int: total,
+      shipping_minor_int: 0,
+      discount_minor_int: 0,
+      cod_surcharge_minor_int: 0,
+      vat_minor_int: 0,
+      total_minor_int: total,
+      city: "Dhaka",
+      created_at: order.created_at,
+    },
+    items: [
+      {
+        title: line.productTitle,
+        variant_name: line.variantName,
+        quantity: line.quantity,
+        unit_minor: line.unitPriceMinor,
+        line_minor: line.lineTotalMinor,
+      },
+    ],
+  };
+}
+
+/** The demo product each demo order names — one source of truth with the rows. */
+const DEMO_ORDER_SLUGS: Record<string, string> = {
+  "songoskriti-demo-order-2451": "dhakai-jamdani-heritage-saree",
+  "songoskriti-demo-order-2468": "comilla-khadi-casual-kurta",
+  "songoskriti-demo-order-2477": "dhamrai-brass-heritage-necklace",
+};
 
 /**
  * The preview's shopper profile. The title carries the **visible demo

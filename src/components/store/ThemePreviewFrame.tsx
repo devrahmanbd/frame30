@@ -66,12 +66,16 @@ import {
   songoskritiPreviewCart,
   songoskritiPreviewFacets,
   songoskritiPreviewFeed,
+  songoskritiPreviewOrderDetail,
   songoskritiPreviewOrders,
   songoskritiPreviewProfile,
 } from "@/lib/themes/songoskriti/preview-demo-data";
 import { SONGOSKRITI_PREVIEW_PAGE } from "@/lib/themes/songoskriti/preview-page";
 import { OrdersList, ProfileCard } from "@/components/builder/account";
-import { AccountDashboard } from "@/components/store/AccountDashboard";
+import {
+  AccountDashboard,
+  type AccountOrderDetail,
+} from "@/components/store/AccountDashboard";
 import type { AccountTab } from "@/lib/account-tab";
 import { accountSlotCtx } from "./account-slots";
 import { useLang } from "@/lib/i18n";
@@ -689,6 +693,17 @@ export function ThemePreviewFrame({
   // so nothing real can reach this surface.
   const [previewAccountTab, setPreviewAccountTab] =
     useState<AccountTab>("orders");
+  // The preview's demo order DETAIL — the same disclosure the storefront's
+  // dashboard offers, resolved from the theme's SYNTHETIC demo catalogue.
+  // There is no shopper and no session here, so nothing real can reach it.
+  const [previewOrderDetail, setPreviewOrderDetail] = useState<{
+    orderId: string;
+    detail: AccountOrderDetail;
+  } | null>(null);
+  const loadPreviewOrder = (orderId: string) => {
+    const detail = songoskritiPreviewOrderDetail(orderId);
+    setPreviewOrderDetail(detail ? { orderId, detail } : null);
+  };
   const accountBodySlot = useMemo(() => {
     if (template !== "account") return undefined;
     if (!isSongoskriti) return { page_content: null };
@@ -701,10 +716,18 @@ export function ThemePreviewFrame({
           tab={previewAccountTab}
           onTabChange={setPreviewAccountTab}
           currency="BDT"
+          onLoadOrder={loadPreviewOrder}
+          orderDetail={previewOrderDetail}
         />
       ),
     };
-  }, [template, isSongoskriti, blueprintKey, previewAccountTab]);
+  }, [
+    template,
+    isSongoskriti,
+    blueprintKey,
+    previewAccountTab,
+    previewOrderDetail,
+  ]);
 
   // The five cart slots keep their `null` values: `null` is the platform's
   // "granted" token, and the widgets read the cart CONTEXT themselves —

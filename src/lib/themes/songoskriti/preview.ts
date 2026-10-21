@@ -400,7 +400,8 @@ export function songoskritiPreviewSource(
           // server's quote (`src/components/builder/cart.tsx:506`, `:563`,
           // `:441`). No authored field, no authored price, no authored
           // "place order" action: in production the route renders its own
-          // form (`ast={null}`, `store.$slug.checkout.tsx:418-421`).
+          // form through the route-owned body slot
+          // (`contentSlot="page_content"`, `store.$slug.checkout.tsx`).
           return [
             s("heading", { text: "Checkout", text_bn: "চেকআউট" }),
             s("checkout_steps", {

@@ -217,6 +217,61 @@ describe("the account dashboard — the link contract", () => {
   });
 });
 
+describe("the account dashboard — the order detail contract", () => {
+  it("never links to the token-gated order route", () => {
+    // The order route requires the order's own access token
+    // (`loadOrder` returns nothing without it — `src/lib/orders.server.ts`)
+    // and the `customer_overview` payload carries no token, so a link to it
+    // dead-ends on a 404. The row DISCLOSES the order instead.
+    expect(DASHBOARD_SRC).not.toContain('to="/store/$slug/order/$orderId"');
+    const html = render({ tab: "orders", onLoadOrder: () => undefined });
+    expect(html).not.toContain('data-link-to="/store/$slug/order/$orderId"');
+  });
+
+  it("resolves the order inline, under the shopper's own session", () => {
+    // The route uses the tree's own session-scoped server function — the
+    // one the batch defined and never used.
+    expect(ROUTE_SRC).toContain("accountOrderFn");
+    expect(ROUTE_SRC).toContain("onLoadOrder=");
+    expect(ROUTE_SRC).toContain(
+      'queryKey: ["store-order-detail", slug, openOrderId]',
+    );
+    // …and the dashboard renders a disclosure, not a link.
+    expect(DASHBOARD_SRC).toContain("aria-expanded={open}");
+    expect(DASHBOARD_SRC).toContain("onLoadOrder");
+  });
+
+  it("asks a signed-out shopper for the order's access code", () => {
+    // The order route is token-gated, so the signed-out lookup carries the
+    // code it was given — the lookup can no longer dead-end on a 404.
+    expect(DASHBOARD_SRC).toContain("order-lookup-code");
+    expect(DASHBOARD_SRC).toContain("search: { t: code.trim() }");
+  });
+});
+
+describe("the account route — the six-state wiring", () => {
+  it("wires the states through the one pure mapping", () => {
+    expect(ROUTE_SRC).toContain("accountStatus({");
+    expect(ROUTE_SRC).toContain("sessionPending: session.isPending");
+    expect(ROUTE_SRC).toContain("queryPending: account.isPending");
+    expect(ROUTE_SRC).toContain("queryError: account.isError");
+  });
+
+  it("gates the widgets' skeleton on the session, not on the disabled query", () => {
+    // A disabled React Query v5 query is `status: "pending"`, so a
+    // signed-out shopper would see a skeleton forever.
+    expect(ROUTE_SRC).toContain("accountSlotsPending({");
+    expect(ROUTE_SRC).not.toContain("const pending = account.isPending");
+  });
+
+  it("asks the theme's own predicate whether the theme places the profile card", () => {
+    // The theme's body only renders when it declares the route-owned body
+    // slot; a merchant whose body predates that slot places NOTHING, so
+    // the dashboard must carry the profile.
+    expect(ROUTE_SRC).toContain("themePlacesAccountProfile(chrome?.ast)");
+  });
+});
+
 describe("the account dashboard — the six states", () => {
   const states = {
     authenticated: render({ tab: "profile" }),

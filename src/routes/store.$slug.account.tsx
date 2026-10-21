@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
@@ -9,6 +9,7 @@ import { StoreHeader } from "@/components/store/StoreHeader";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/lib/i18n";
 import { flattenAst, type Section } from "@/lib/builder-ast";
+import { themePlacesAccountProfile } from "@/lib/theme-shell-slots";
 import { OrdersList, ProfileCard } from "@/components/builder/account";
 import {
   accountSlotCtx,
@@ -21,12 +22,14 @@ import {
 } from "@/components/store/AccountDashboard";
 import {
   accountDeleteAddressFn,
+  accountOrderFn,
   accountOverviewFn,
   accountSaveAddressFn,
   accountSetConsentFn,
   accountToggleWishlistFn,
   accountUpsertSelfFn,
 } from "@/lib/accounts.functions";
+import { accountSlotsPending, accountStatus } from "@/lib/account-status";
 import { getStoreChrome } from "@/lib/storefront.functions";
 import { StorefrontError } from "@/components/store/StorefrontError";
 import {
@@ -113,6 +116,21 @@ function AccountPage() {
     staleTime: 15_000,
   });
 
+  // The session-scoped order detail. The order route is TOKEN-GATED
+  // (`loadOrder` returns nothing unless the request carries the order's own
+  // access token) and the account payload carries no token — so the order
+  // rows can never LINK to it. `accountOrderFn` is the tree's own
+  // session-scoped server function for a shopper's OWN order, resolved by
+  // the `customer_order_detail` RPC under `auth.uid()`, so the shopper sees
+  // their order inline with no token and no dead link.
+  const orderFn = useServerFn(accountOrderFn);
+  const [openOrderId, setOpenOrderId] = useState<string | null>(null);
+  const orderDetail = useQuery({
+    queryKey: ["store-order-detail", slug, openOrderId],
+    queryFn: () => orderFn({ data: { slug, orderId: openOrderId! } }),
+    enabled: Boolean(openOrderId) && signedIn,
+  });
+
   const invalidate = () =>
     void qc.invalidateQueries({ queryKey: ["store-account", slug] });
   const useAccountMutation = <T,>(
@@ -167,12 +185,19 @@ function AccountPage() {
   // Theme account template: feed merchant `orders_list` / `profile_card`
   // sections live session rows. The widgets fall back to their sign-in
   // prompt when signed out (rows undefined, not pending).
-  // (Above the signed-out early return so hooks run unconditionally in the
-  // same order on every render; rendered output is unchanged.)
+  //
+  // The `pending` flag is the SESSION-GATED one: the overview query is
+  // disabled for a signed-out shopper, and in React Query v5 a disabled
+  // query is `status: "pending"` — so the raw `account.isPending` would
+  // show a signed-out visitor a skeleton forever instead of the widgets'
+  // sign-in prompt.
+  const pending = accountSlotsPending({
+    signedIn,
+    queryPending: account.isPending,
+  });
   const accountSlots = useMemo(() => {
     const sections = chrome?.ast ? flattenAst(chrome.ast) : [];
     const out: Partial<Record<string, ReactNode>> = {};
-    const pending = account.isPending;
     const o = sections.find((s) => s.type === "orders_list");
     if (o) {
       out.orders_list = (
@@ -203,15 +228,21 @@ function AccountPage() {
       );
     }
     return out;
-  }, [chrome, overview, account.isPending, lang, slug]);
+  }, [chrome, overview, pending, lang, slug]);
 
   // The composed profile card. The THEME places it when its account body
   // carries a `profile_card` section (the slot above); when it does not, the
   // dashboard carries it instead — so the shopper's details are shown ONCE.
-  const themePlacesProfile = Boolean(
-    chrome?.ast &&
-    flattenAst(chrome.ast).some((section) => section.type === "profile_card"),
-  );
+  //
+  // "The theme places it" means the theme's body RENDERS: `ThemeChrome`
+  // drops the theme's ENTIRE body when it declares no `page_content`
+  // section, so a merchant whose published account body predates the
+  // route-owned body slot (the old `heading` + `profile_card` +
+  // `orders_list` composition) renders NO theme body at all — and then the
+  // dashboard must carry the profile. The route therefore asks the SAME
+  // question `ThemeChrome` asks (`themePlacesAccountProfile`), so the two
+  // can never disagree about who places the profile card.
+  const themePlacesProfile = themePlacesAccountProfile(chrome?.ast);
   const profileSlot = useMemo(() => {
     if (themePlacesProfile) return undefined;
     const row = overview?.profile
@@ -230,24 +261,22 @@ function AccountPage() {
       <ProfileCard
         {...accountSlotCtx(section, {
           rows: [row],
-          pending: account.isPending,
+          pending,
           locale: lang,
           storeSlug: slug,
         })}
       />
     );
-  }, [themePlacesProfile, overview, account.isPending, lang, slug]);
+  }, [themePlacesProfile, overview, pending, lang, slug]);
 
-  // The six states the account surface distinguishes.
-  const status: AccountDashboardStatus = session.isPending
-    ? "loading"
-    : !signedIn
-      ? "unauthenticated"
-      : account.isPending
-        ? "loading"
-        : account.isError
-          ? "error"
-          : "ready";
+  // The six states the account surface distinguishes — ONE pure mapping
+  // (`src/lib/account-status.ts`), unit-tested in every combination.
+  const status: AccountDashboardStatus = accountStatus({
+    sessionPending: session.isPending,
+    signedIn,
+    queryPending: account.isPending,
+    queryError: account.isError,
+  });
 
   const dashboard = (
     <AccountDashboard
@@ -257,6 +286,17 @@ function AccountPage() {
       tab={tab}
       profileSlot={profileSlot}
       currency={currency}
+      // The order rows disclose the order inline, resolved under the
+      // shopper's own session. There is no link to the token-gated order
+      // route, so there is no link that can 404.
+      onLoadOrder={(orderId) => setOpenOrderId(orderId)}
+      orderDetail={
+        orderDetail.data && openOrderId
+          ? { orderId: openOrderId, detail: orderDetail.data }
+          : null
+      }
+      orderDetailPending={orderDetail.isFetching}
+      orderDetailError={orderDetail.isError}
       onSaveAddress={(values) => saveAddress.mutate({ slug, ...values })}
       onDeleteAddress={(addressId) => delAddress.mutate({ slug, addressId })}
       onSaveProfile={(values) =>

@@ -27,7 +27,7 @@
  * frames.
  */
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   Heart,
   MapPin,
@@ -39,6 +39,7 @@ import {
 import { useLang } from "@/lib/i18n";
 import { fmtMinor } from "@/lib/money";
 import type { AccountTab } from "@/lib/account-tab";
+import type { AccountStatus } from "@/lib/account-status";
 import type {
   AccountOverview,
   ConsentChannel,
@@ -46,9 +47,48 @@ import type {
 } from "@/lib/accounts.server";
 import { mapOrdersToRows } from "./account-slots";
 
-/** The route's own state — the six states the account surface distinguishes. */
-export type AccountDashboardStatus =
-  "unauthenticated" | "loading" | "error" | "ready";
+/**
+ * The route's own state — the six states the account surface distinguishes.
+ *
+ * The DECISION lives in the pure mapping (`src/lib/account-status.ts`); this
+ * is the name the dashboard's prop carries.
+ */
+export type AccountDashboardStatus = AccountStatus;
+
+/**
+ * ONE of the shopper's own orders, in full — the session-scoped detail the
+ * `customer_order_detail` RPC returns (`ownOrderDetail`,
+ * `src/lib/accounts.server.ts:430-464`).
+ *
+ * It is declared here rather than imported because the server module is
+ * §7-prohibited for this batch: the shape is the RPC's, and the route's
+ * `useServerFn(accountOrderFn)` return is checked against it by the
+ * compiler, so the two cannot drift.
+ */
+export type AccountOrderDetail = {
+  order: {
+    id: string;
+    order_number: string;
+    status: string;
+    payment_method: string;
+    currency_code: string;
+    subtotal_minor_int: number;
+    shipping_minor_int: number;
+    discount_minor_int: number;
+    cod_surcharge_minor_int: number;
+    vat_minor_int: number;
+    total_minor_int: number;
+    city: string;
+    created_at: string;
+  };
+  items: {
+    title: string;
+    variant_name: string;
+    quantity: number;
+    unit_minor: number;
+    line_minor: number;
+  }[];
+};
 
 export type AccountAddressValues = {
   label: string;
@@ -87,6 +127,21 @@ export type AccountDashboardProps = {
   profileSlot?: ReactNode;
   /** The store's currency — the fallback when a row carries none. */
   currency: string;
+  /**
+   * Loads ONE of the shopper's own orders — the session-scoped detail.
+   *
+   * The order route is token-gated, so the row can never LINK to it; the
+   * dashboard discloses the order INSTEAD, and the route resolves it under
+   * the shopper's own session (`accountOrderFn`). Absent where there is no
+   * session (the theme preview), so no affordance is drawn there.
+   */
+  onLoadOrder?: (orderId: string) => void;
+  /** The loaded detail, with the id it belongs to. */
+  orderDetail?: { orderId: string; detail: AccountOrderDetail } | null;
+  /** The detail is in flight. */
+  orderDetailPending?: boolean;
+  /** The detail could not be loaded. */
+  orderDetailError?: boolean;
   onSaveAddress?: (values: AccountAddressValues) => void;
   onDeleteAddress?: (addressId: string) => void;
   onSaveProfile?: (values: {
@@ -171,6 +226,10 @@ export function AccountDashboard({
   onTabChange,
   profileSlot,
   currency,
+  onLoadOrder,
+  orderDetail,
+  orderDetailPending,
+  orderDetailError,
   onSaveAddress,
   onDeleteAddress,
   onSaveProfile,
@@ -179,6 +238,72 @@ export function AccountDashboard({
   busy,
 }: AccountDashboardProps) {
   const { t, lang } = useLang();
+  const navigate = useNavigate();
+
+  // ── The ARIA tabs pattern ───────────────────────────────────────────────
+  // The five destinations are five states of ONE route, and the selection is
+  // the URL's `?tab=` — so the SELECTION is URL-driven, and the keyboard
+  // model is the tabs pattern's:
+  //
+  //   - roving `tabindex`: only the focused tab is in the tab sequence, so
+  //     the tablist is ONE tab stop, not five;
+  //   - the arrow keys (and Home/End) move that focus between the tabs;
+  //   - activation (Enter on a link, Space, or a click) changes the
+  //     selection, and the focus then moves to the PANEL, so the shopper
+  //     lands on the content that changed.
+  //
+  // The hooks live ABOVE the state branches below, so the hook order never
+  // changes with the surface's state.
+  const [focusedTab, setFocusedTab] = useState<AccountTab>(tab);
+  const tabRefs = useRef<Partial<Record<AccountTab, HTMLAnchorElement | null>>>(
+    {},
+  );
+  const panelRef = useRef<HTMLElement | null>(null);
+  // Set when the shopper activates a tab from inside the dashboard, so the
+  // panel can take the focus once the new content is in.
+  const activatedRef = useRef(false);
+
+  useEffect(() => {
+    setFocusedTab(tab);
+    const activated = activatedRef.current;
+    activatedRef.current = false;
+    if (!activated) return;
+    panelRef.current?.focus();
+  }, [tab]);
+
+  const onTabKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+    const index = ACCOUNT_TAB_ITEMS.findIndex(
+      (item) => item.tab === focusedTab,
+    );
+    if (index < 0) return;
+    let next = -1;
+    if (event.key === "ArrowRight")
+      next = (index + 1) % ACCOUNT_TAB_ITEMS.length;
+    else if (event.key === "ArrowLeft")
+      next = (index - 1 + ACCOUNT_TAB_ITEMS.length) % ACCOUNT_TAB_ITEMS.length;
+    else if (event.key === "Home") next = 0;
+    else if (event.key === "End") next = ACCOUNT_TAB_ITEMS.length - 1;
+    if (next < 0) return;
+    event.preventDefault();
+    const target = ACCOUNT_TAB_ITEMS[next]!;
+    setFocusedTab(target.tab);
+    tabRefs.current[target.tab]?.focus();
+  };
+
+  // Activating a tab: the preview drives its own state, the storefront
+  // navigates to the tab's own URL.
+  const activateTab = (next: AccountTab) => {
+    activatedRef.current = true;
+    if (onTabChange) {
+      onTabChange(next);
+      return;
+    }
+    void navigate({
+      to: "/store/$slug/account",
+      params: { slug },
+      search: { tab: next },
+    });
+  };
 
   if (status === "unauthenticated") {
     return <OrderLookup slug={slug} />;
@@ -257,38 +382,56 @@ export function AccountDashboard({
       </header>
 
       <nav
-        role="tablist"
         aria-label={t("Account sections", "অ্যাকাউন্ট বিভাগ")}
         className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0 lg:gap-3"
       >
-        {ACCOUNT_TAB_ITEMS.map((item) => {
-          const selected = item.tab === tab;
-          return (
-            <Link
-              key={item.tab}
-              id={tabId(item.tab)}
-              to="/store/$slug/account"
-              params={{ slug }}
-              search={{ tab: item.tab }}
-              role="tab"
-              aria-selected={selected}
-              aria-controls={panelId}
-              onClick={(event) => {
-                if (!onTabChange) return;
-                event.preventDefault();
-                onTabChange(item.tab);
-              }}
-              className={`flex min-h-11 shrink-0 items-center gap-2 border-b-2 px-3 py-2 text-[13px] font-bold fq-caps tracking-widest transition-colors ${
-                selected
-                  ? "border-foreground text-foreground"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <TabIcon icon={item.icon} />
-              <span>{t(item.en, item.bn)}</span>
-            </Link>
-          );
-        })}
+        <div
+          role="tablist"
+          onKeyDown={onTabKeyDown}
+          className="flex gap-2 sm:flex-wrap lg:gap-3"
+        >
+          {ACCOUNT_TAB_ITEMS.map((item) => {
+            const selected = item.tab === tab;
+            return (
+              <Link
+                key={item.tab}
+                id={tabId(item.tab)}
+                ref={(element: HTMLAnchorElement | null) => {
+                  tabRefs.current[item.tab] = element;
+                }}
+                to="/store/$slug/account"
+                params={{ slug }}
+                search={{ tab: item.tab }}
+                role="tab"
+                aria-selected={selected}
+                aria-controls={panelId}
+                // The ROVING tabindex: one tab stop for the whole tablist.
+                tabIndex={focusedTab === item.tab ? 0 : -1}
+                onFocus={() => setFocusedTab(item.tab)}
+                onKeyDown={(event) => {
+                  // Space activates a tab (Enter is the link's own).
+                  if (event.key !== " " && event.key !== "Spacebar") return;
+                  event.preventDefault();
+                  activateTab(item.tab);
+                }}
+                onClick={(event) => {
+                  if (item.tab !== tab) activatedRef.current = true;
+                  if (!onTabChange) return;
+                  event.preventDefault();
+                  onTabChange(item.tab);
+                }}
+                className={`flex min-h-11 shrink-0 items-center gap-2 border-b-2 px-3 py-2 text-[13px] font-bold fq-caps tracking-widest transition-colors ${
+                  selected
+                    ? "border-foreground text-foreground"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <TabIcon icon={item.icon} />
+                <span>{t(item.en, item.bn)}</span>
+              </Link>
+            );
+          })}
+        </div>
       </nav>
 
       <section
@@ -296,6 +439,7 @@ export function AccountDashboard({
         id={panelId}
         aria-labelledby={tabId(tab)}
         tabIndex={0}
+        ref={panelRef}
         className="space-y-10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground"
       >
         <section aria-label={t("At a glance", "এক নজরে")} className="space-y-4">
@@ -339,7 +483,14 @@ export function AccountDashboard({
               slug={slug}
             />
           ) : (
-            <OrderRows slug={slug} orders={orders} lang={lang} />
+            <OrderRows
+              orders={orders}
+              lang={lang}
+              onLoadOrder={onLoadOrder}
+              orderDetail={orderDetail}
+              orderDetailPending={orderDetailPending}
+              orderDetailError={orderDetailError}
+            />
           ))}
 
         {tab === "addresses" && (
@@ -521,6 +672,10 @@ export function AccountDashboard({
                     <input
                       type="checkbox"
                       checked={granted}
+                      // The consent mutation is in flight: the switch is
+                      // disabled, exactly as the address and profile
+                      // editors are, so a second write cannot race the first.
+                      disabled={busy?.consent ?? false}
                       onChange={(event) =>
                         onSetConsent({
                           channel: consent.channel,
@@ -576,51 +731,254 @@ function Fact({
  * The order history, laid out as ROWS: the order number, the date, the status
  * and the total — the four fields the platform's own row mapping produces
  * (`mapOrdersToRows`), arranged rather than listed.
+ *
+ * **The row discloses; it never links.** The order route is token-gated
+ * (`loadOrder` returns nothing unless the request carries the order's access
+ * token), and the account payload carries no token — so a link to it would
+ * dead-end on a 404. The row instead opens the order INLINE, resolved under
+ * the shopper's own session (`onLoadOrder` → the route's `accountOrderFn`),
+ * so the shopper sees their own order without a token and without a dead
+ * link.
  */
 function OrderRows({
-  slug,
   orders,
   lang,
+  onLoadOrder,
+  orderDetail,
+  orderDetailPending,
+  orderDetailError,
 }: {
-  slug: string;
   orders: AccountOverview["orders"];
   lang: string;
+  onLoadOrder?: (orderId: string) => void;
+  orderDetail?: { orderId: string; detail: AccountOrderDetail } | null;
+  orderDetailPending?: boolean;
+  orderDetailError?: boolean;
 }) {
+  const { t } = useLang();
   const rows = mapOrdersToRows(orders);
+  const [openId, setOpenId] = useState<string | null>(null);
+
+  const toggle = (orderId: string) => {
+    const next = openId === orderId ? null : orderId;
+    setOpenId(next);
+    if (next) onLoadOrder?.(next);
+  };
+
   return (
     <ul className="divide-y divide-border/60">
-      {rows.map((row) => (
-        <li key={row.id}>
-          <Link
-            to="/store/$slug/order/$orderId"
-            params={{ slug, orderId: row.id }}
-            className="grid gap-2 py-6 transition-colors hover:bg-muted/30 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-center sm:gap-6 -mx-4 px-4 sm:mx-0 sm:px-0"
-          >
-            <span className="min-w-0">
-              <span className="money block text-[14px] font-bold text-foreground">
-                {row.title}
+      {rows.map((row) => {
+        const open = openId === row.id;
+        const detail =
+          orderDetail?.orderId === row.id ? orderDetail.detail : null;
+        return (
+          <li key={row.id}>
+            <div className="grid gap-2 py-6 transition-colors hover:bg-muted/30 sm:grid-cols-[minmax(0,1fr)_auto_auto_auto] sm:items-center sm:gap-6 -mx-4 px-4 sm:mx-0 sm:px-0">
+              <span className="min-w-0">
+                <span className="money block text-[14px] font-bold text-foreground">
+                  {row.title}
+                </span>
+                <time
+                  dateTime={row.date}
+                  className="money text-[12px] font-medium tracking-wide text-muted-foreground mt-1 block"
+                >
+                  {formatDay(row.date, lang)}
+                </time>
               </span>
-              <time
-                dateTime={row.date}
-                className="money text-[12px] font-medium tracking-wide text-muted-foreground mt-1 block"
+              {row.subtitle ? (
+                <span className="justify-self-start text-[11px] font-bold uppercase tracking-widest text-muted-foreground bg-muted/50 px-3 py-1 rounded-full">
+                  {row.subtitle}
+                </span>
+              ) : null}
+              {typeof row.priceMinor === "number" ? (
+                <span className="money text-[14px] font-semibold text-foreground tracking-wide">
+                  {fmtMinor(row.priceMinor, row.currency)}
+                </span>
+              ) : null}
+              {onLoadOrder ? (
+                <button
+                  type="button"
+                  aria-expanded={open}
+                  aria-controls={`account-order-detail-${row.id}`}
+                  onClick={() => toggle(row.id)}
+                  className="justify-self-start text-[11px] font-bold fq-caps tracking-widest text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {open
+                    ? t("Hide order", "অর্ডার লুকান")
+                    : t("View order", "অর্ডার দেখুন")}
+                </button>
+              ) : null}
+            </div>
+            {open ? (
+              <div
+                id={`account-order-detail-${row.id}`}
+                className="pb-6 -mx-4 px-4 sm:mx-0 sm:px-0"
               >
-                {formatDay(row.date, lang)}
-              </time>
-            </span>
-            {row.subtitle ? (
-              <span className="justify-self-start text-[11px] font-bold uppercase tracking-widest text-muted-foreground bg-muted/50 px-3 py-1 rounded-full">
-                {row.subtitle}
-              </span>
+                {orderDetailPending ? (
+                  <p
+                    role="status"
+                    className="text-[13px] text-muted-foreground"
+                  >
+                    {t("Loading your order…", "আপনার অর্ডার লোড হচ্ছে…")}
+                  </p>
+                ) : orderDetailError ? (
+                  <p
+                    role="alert"
+                    className="text-[13px] font-medium text-danger-foreground"
+                  >
+                    {t(
+                      "We could not load that order. Please try again.",
+                      "অর্ডারটি লোড করা যায়নি। আবার চেষ্টা করুন।",
+                    )}
+                  </p>
+                ) : detail ? (
+                  <OrderDetail detail={detail} lang={lang} />
+                ) : null}
+              </div>
             ) : null}
-            {typeof row.priceMinor === "number" ? (
-              <span className="money text-[14px] font-semibold text-foreground tracking-wide">
-                {fmtMinor(row.priceMinor, row.currency)}
-              </span>
-            ) : null}
-          </Link>
-        </li>
-      ))}
+          </li>
+        );
+      })}
     </ul>
+  );
+}
+
+/**
+ * The disclosed order — the shopper's OWN order, in full.
+ *
+ * Every figure here comes from the session-scoped `customer_order_detail`
+ * payload: the order's own numbers, its line items and its server-priced
+ * totals. Nothing is computed on the client and nothing is invented.
+ */
+export function OrderDetail({
+  detail,
+  lang,
+}: {
+  detail: AccountOrderDetail;
+  lang: string;
+}) {
+  const { t } = useLang();
+  const order = detail.order;
+  const money = (minor: number) => fmtMinor(minor, order.currency_code);
+  return (
+    <div className="border border-border/60 p-5 bg-transparent">
+      <p className="text-[11px] font-bold fq-caps tracking-widest text-muted-foreground">
+        {t("Order details", "অর্ডারের বিস্তারিত")}
+      </p>
+      <dl className="mt-4 grid gap-4 sm:grid-cols-2">
+        <Detail
+          label={t("Order number", "অর্ডার নম্বর")}
+          value={order.order_number}
+        />
+        <Detail label={t("Status", "অবস্থা")} value={order.status} />
+        <Detail
+          label={t("Placed", "অর্ডারের সময়")}
+          value={formatDay(order.created_at, lang)}
+        />
+        <Detail label={t("Payment", "পেমেন্ট")} value={order.payment_method} />
+        <Detail label={t("City", "শহর")} value={order.city} />
+        <Detail
+          label={t("Total", "সর্বমোট")}
+          value={money(order.total_minor_int)}
+        />
+      </dl>
+      {detail.items.length > 0 ? (
+        <ul className="mt-5 divide-y divide-border/60 border-t border-border/60">
+          {detail.items.map((item, index) => (
+            <li
+              key={`${item.title}-${index}`}
+              className="flex items-start justify-between gap-4 py-3"
+            >
+              <span className="min-w-0">
+                <span className="block text-[13.5px] font-medium text-foreground">
+                  {item.title}
+                </span>
+                <span className="block text-[12px] text-muted-foreground">
+                  {item.variant_name} · ×{item.quantity}
+                </span>
+              </span>
+              <span className="money text-[13.5px] font-semibold text-foreground">
+                {money(item.line_minor)}
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      <dl className="mt-5 space-y-2 border-t border-border/60 pt-4">
+        <Total
+          label={t("Subtotal", "সাবটোটাল")}
+          value={money(order.subtotal_minor_int)}
+        />
+        {order.discount_minor_int > 0 ? (
+          <Total
+            label={t("Discount", "ছাড়")}
+            value={money(order.discount_minor_int)}
+          />
+        ) : null}
+        <Total
+          label={t("Delivery", "ডেলিভারি")}
+          value={money(order.shipping_minor_int)}
+        />
+        {order.cod_surcharge_minor_int > 0 ? (
+          <Total
+            label={t("COD surcharge", "ক্যাশ অন ডেলিভারি সারচার্জ")}
+            value={money(order.cod_surcharge_minor_int)}
+          />
+        ) : null}
+        {order.vat_minor_int > 0 ? (
+          <Total label={t("VAT", "ভ্যাট")} value={money(order.vat_minor_int)} />
+        ) : null}
+        <Total
+          label={t("Total", "সর্বমোট")}
+          value={money(order.total_minor_int)}
+          strong
+        />
+      </dl>
+    </div>
+  );
+}
+
+/** One labelled fact in the disclosed order. */
+function Detail({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <dt className="text-[11px] font-bold fq-caps tracking-widest text-muted-foreground">
+        {label}
+      </dt>
+      <dd className="money mt-1 text-[13.5px] font-medium text-foreground">
+        {value}
+      </dd>
+    </div>
+  );
+}
+
+/** One line of the disclosed order's totals — the server's own numbers. */
+function Total({
+  label,
+  value,
+  strong,
+}: {
+  label: string;
+  value: string;
+  strong?: boolean;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <dt
+        className={
+          strong
+            ? "font-bold text-[13px] fq-caps tracking-widest text-foreground"
+            : "text-[13px] font-medium tracking-wide text-muted-foreground"
+        }
+      >
+        {label}
+      </dt>
+      <dd
+        className={`money ${strong ? "text-[14px] font-bold text-foreground tracking-wide" : "text-[13.5px] font-semibold text-foreground tracking-wide"}`}
+      >
+        {value}
+      </dd>
+    </div>
   );
 }
 
@@ -834,18 +1192,27 @@ function ProfileForm({
  * the same thing the account route rendered before the dashboard existed —
  * the same honest thing, not a themed sign-in page the platform cannot
  * authenticate against.
+ *
+ * **The access code is not optional.** The order route is token-gated
+ * (`loadOrder` returns nothing unless the request carries the order's own
+ * access token), so a lookup that carried only the order id would dead-end
+ * on a 404. The code is the order's own secret, and the shopper has it: it
+ * is in the confirmation link they were sent. The form asks for both, and
+ * navigates with the code — so the lookup ends on the order, never on a 404.
  */
 function OrderLookup({ slug }: { slug: string }) {
   const { t } = useLang();
   const navigate = useNavigate();
   const [orderId, setOrderId] = useState("");
+  const [code, setCode] = useState("");
 
   const handleLookup = (event: React.FormEvent) => {
     event.preventDefault();
-    if (!orderId.trim()) return;
+    if (!orderId.trim() || !code.trim()) return;
     void navigate({
       to: "/store/$slug/order/$orderId",
       params: { slug, orderId: orderId.trim() },
+      search: { t: code.trim() },
     });
   };
 
@@ -856,8 +1223,8 @@ function OrderLookup({ slug }: { slug: string }) {
       </h1>
       <p className="mt-4 text-[13.5px] text-muted-foreground leading-relaxed">
         {t(
-          "Enter your Order ID from your confirmation message or receipt to check its status.",
-          "আপনার অর্ডার আইডি দিয়ে অর্ডারের বর্তমান অবস্থা এবং বিস্তারিত তথ্য দেখুন।",
+          "Enter your Order ID and the access code from your confirmation link to check its status.",
+          "অর্ডারের অবস্থা দেখতে আপনার অর্ডার আইডি এবং কনফার্মেশন লিংকের অ্যাক্সেস কোড দিন।",
         )}
       </p>
       <form
@@ -873,7 +1240,27 @@ function OrderLookup({ slug }: { slug: string }) {
             type="text"
             value={orderId}
             onChange={(event) => setOrderId(event.target.value)}
-            placeholder={t("e.g. ord_01j7...", "যেমন: ord_01j7...")}
+            placeholder={t(
+              "From your confirmation link",
+              "কনফার্মেশন লিংক থেকে",
+            )}
+            required
+            className="min-h-12 w-full border-b border-border/60 bg-transparent px-0 text-[13.5px] focus:outline-none focus:border-foreground transition-colors placeholder:text-muted-foreground/30"
+          />
+        </label>
+        <label htmlFor="order-lookup-code" className="block">
+          <span className="mb-2 block text-[11px] font-bold fq-caps tracking-widest text-muted-foreground">
+            {t("Access code", "অ্যাক্সেস কোড")}
+          </span>
+          <input
+            id="order-lookup-code"
+            type="text"
+            value={code}
+            onChange={(event) => setCode(event.target.value)}
+            placeholder={t(
+              "The code in your confirmation link",
+              "কনফার্মেশন লিংকের কোড",
+            )}
             required
             className="min-h-12 w-full border-b border-border/60 bg-transparent px-0 text-[13.5px] focus:outline-none focus:border-foreground transition-colors placeholder:text-muted-foreground/30"
           />

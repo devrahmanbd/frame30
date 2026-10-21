@@ -26,6 +26,7 @@ import {
   getCheckoutSessionKey,
 } from "@/lib/payment-keys";
 import { fmtMinor } from "@/lib/money";
+import { checkoutShellControls } from "@/lib/theme-shell-slots";
 import { useCart } from "@/lib/cart";
 import { useCartContext } from "@/components/builder/CartContext";
 import { useLang } from "@/lib/i18n";
@@ -130,6 +131,16 @@ function CheckoutPage() {
   const { slug, merchant, ast, tokens, siteKit, installedPlugins, themeKey } =
     Route.useLoaderData();
 
+  // The two controls a checkout cannot be without: the PAYMENT PICKER and
+  // the ORDER SUMMARY. The theme's body may carry them — `payment_methods`
+  // and `cart_summary` are platform widgets that read the live cart — or it
+  // may not. A body that carries NEITHER would leave the shopper placing an
+  // order with no rail chosen and no total shown, so the route supplies its
+  // OWN picker and its OWN summary when the theme's body carries none. The
+  // same rule the storefront route follows (`src/routes/store.$slug.checkout.tsx`).
+  const shellControls = checkoutShellControls(ast, "shell");
+  const fallbackControls = checkoutShellControls(ast, "fallback");
+
   return (
     <PluginLayer plugins={installedPlugins}>
       <ThemeChrome
@@ -148,7 +159,14 @@ function CheckoutPage() {
           cart_drawer: null,
           checkout_steps: null,
           payment_methods: null,
-          page_content: <CheckoutBody slug={slug} variant="shell" />,
+          page_content: (
+            <CheckoutBody
+              slug={slug}
+              variant="shell"
+              showPaymentPicker={shellControls.showPaymentPicker}
+              showSummary={shellControls.showSummary}
+            />
+          ),
         }}
         chrome={
           <StoreHeader
@@ -158,7 +176,14 @@ function CheckoutPage() {
           />
         }
         containerClassName=""
-        fallback={<CheckoutBody slug={slug} variant="fallback" />}
+        fallback={
+          <CheckoutBody
+            slug={slug}
+            variant="fallback"
+            showPaymentPicker={fallbackControls.showPaymentPicker}
+            showSummary={fallbackControls.showSummary}
+          />
+        }
       />
     </PluginLayer>
   );
@@ -175,9 +200,13 @@ function CheckoutPage() {
 function CheckoutBody({
   slug,
   variant,
+  showPaymentPicker,
+  showSummary,
 }: {
   slug: string;
   variant: "shell" | "fallback";
+  showPaymentPicker: boolean;
+  showSummary: boolean;
 }) {
   const { t, lang } = useLang();
   const cart = useCartContext();
@@ -454,6 +483,57 @@ function CheckoutBody({
     </>
   );
 
+  // The order summary — the SERVER's quote (the lines, the delivery, the
+  // VAT, the COD surcharge and the total). The theme's own `cart_summary`
+  // widget reads the same live quote, so the two can never disagree; the
+  // route's panel is what a theme body without that widget falls back to.
+  const summaryPanel = (
+    <>
+      <h2 className="text-sm font-semibold">{t("Summary", "সারসংক্ষেপ")}</h2>
+      <dl className="mt-3 space-y-2 text-sm">
+        <Row
+          label="Subtotal"
+          value={fmtMinor(totals?.subtotalMinor ?? 0, totals?.currency)}
+        />
+        <Row
+          label="Delivery"
+          value={fmtMinor(totals?.shippingMinor ?? 0, totals?.currency)}
+        />
+        {(totals?.codSurchargeMinor ?? 0) > 0 && (
+          <Row
+            label="COD surcharge"
+            value={fmtMinor(totals!.codSurchargeMinor, totals?.currency)}
+          />
+        )}
+        <Row
+          label={`VAT (${((totals?.vatRateBasisPoints ?? 0) / 100).toFixed(1)}%)${
+            totals?.vatMode === "inclusive" ? " · included in prices" : ""
+          }`}
+          value={fmtMinor(totals?.vatMinor ?? 0, totals?.currency)}
+        />
+        <Row
+          label="Total (incl. VAT)"
+          value={fmtMinor(totals?.totalMinor ?? 0, totals?.currency)}
+          strong
+          className="border-t border-border pt-2"
+        />
+      </dl>
+      {holdExpiresAt && (
+        <p className="mt-3 rounded-fq-md bg-warning-soft p-2 text-xs text-warning-foreground">
+          {t("Items reserved until", "আইটেম রিজার্ভ আছে")}{" "}
+          {new Date(holdExpiresAt).toLocaleTimeString("en-BD", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+        </p>
+      )}
+      <p className="mt-3 text-xs text-muted-foreground">
+        Totals are calculated on the server from live prices and the legal VAT
+        table.
+      </p>
+    </>
+  );
+
   const form = (
     <form
       className="mt-8 grid gap-4"
@@ -463,7 +543,7 @@ function CheckoutBody({
       }}
     >
       {fields}
-      {variant === "fallback" ? paymentPicker : null}
+      {showPaymentPicker ? paymentPicker : null}
       {messages}
       <button
         type="submit"
@@ -478,8 +558,25 @@ function CheckoutBody({
   );
 
   if (variant === "shell") {
+    // The theme's frame supplies the trail, the payment picker and the order
+    // summary; the route's own body is the form. When the theme's body
+    // carries no payment picker and no order summary, the route supplies
+    // BOTH — a shopper must always see the rail they are paying with and
+    // the total they are paying.
+    if (!showSummary) {
+      return (
+        <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+          {form}
+        </div>
+      );
+    }
     return (
-      <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">{form}</div>
+      <div className="mx-auto grid max-w-5xl gap-8 px-4 py-8 lg:grid-cols-[1.2fr_1fr]">
+        <section>{form}</section>
+        <aside className="h-fit rounded-fq-lg border border-border bg-card p-4 lg:sticky lg:top-24">
+          {summaryPanel}
+        </aside>
+      </div>
     );
   }
 
@@ -530,48 +627,7 @@ function CheckoutBody({
         {form}
       </section>
       <aside className="h-fit rounded-fq-lg border border-border bg-card p-4 lg:sticky lg:top-24">
-        <h2 className="text-sm font-semibold">{t("Summary", "সারসংক্ষেপ")}</h2>
-        <dl className="mt-3 space-y-2 text-sm">
-          <Row
-            label="Subtotal"
-            value={fmtMinor(totals?.subtotalMinor ?? 0, totals?.currency)}
-          />
-          <Row
-            label="Delivery"
-            value={fmtMinor(totals?.shippingMinor ?? 0, totals?.currency)}
-          />
-          {(totals?.codSurchargeMinor ?? 0) > 0 && (
-            <Row
-              label="COD surcharge"
-              value={fmtMinor(totals!.codSurchargeMinor, totals?.currency)}
-            />
-          )}
-          <Row
-            label={`VAT (${((totals?.vatRateBasisPoints ?? 0) / 100).toFixed(1)}%)${
-              totals?.vatMode === "inclusive" ? " · included in prices" : ""
-            }`}
-            value={fmtMinor(totals?.vatMinor ?? 0, totals?.currency)}
-          />
-          <Row
-            label="Total (incl. VAT)"
-            value={fmtMinor(totals?.totalMinor ?? 0, totals?.currency)}
-            strong
-            className="border-t border-border pt-2"
-          />
-        </dl>
-        {holdExpiresAt && (
-          <p className="mt-3 rounded-fq-md bg-warning-soft p-2 text-xs text-warning-foreground">
-            {t("Items reserved until", "আইটেম রিজার্ভ আছে")}{" "}
-            {new Date(holdExpiresAt).toLocaleTimeString("en-BD", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </p>
-        )}
-        <p className="mt-3 text-xs text-muted-foreground">
-          Totals are calculated on the server from live prices and the legal VAT
-          table.
-        </p>
+        {summaryPanel}
       </aside>
     </div>
   );

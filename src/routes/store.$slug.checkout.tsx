@@ -30,6 +30,7 @@ import {
   getCheckoutSessionKey,
 } from "@/lib/payment-keys";
 import { fmtMinor } from "@/lib/money";
+import { checkoutShellControls } from "@/lib/theme-shell-slots";
 import { useCart } from "@/lib/cart";
 import { useCartContext } from "@/components/builder/CartContext";
 import { useLang } from "@/lib/i18n";
@@ -238,6 +239,22 @@ function CheckoutPage() {
     Route.useLoaderData();
   const { slug } = Route.useParams();
 
+  // The two controls a checkout cannot be without: the PAYMENT PICKER and
+  // the ORDER SUMMARY. The theme's body may carry them — `payment_methods`
+  // and `cart_summary` are platform widgets that read the live cart — or it
+  // may not. A body that carries NEITHER would leave the shopper placing an
+  // order with no rail chosen (the order would silently go out on the
+  // shared cart's initial "cod") and no total shown, so the route supplies
+  // its OWN picker and its OWN summary when the theme's body carries none.
+  // The account route's pattern, applied to the checkout.
+  //
+  // The helper sees the sections wherever they sit — the songoskriti
+  // composition nests them in columns and containers — knows that an
+  // `invalid` section is skipped by the renderer, and knows that a body
+  // without the route-owned body slot is dropped whole.
+  const shellControls = checkoutShellControls(ast, "shell");
+  const fallbackControls = checkoutShellControls(ast, "fallback");
+
   return (
     <PluginLayer plugins={installedPlugins}>
       <ThemeChrome
@@ -264,7 +281,14 @@ function CheckoutPage() {
           cart_drawer: null,
           checkout_steps: null,
           payment_methods: null,
-          page_content: <CheckoutBody slug={slug} variant="shell" />,
+          page_content: (
+            <CheckoutBody
+              slug={slug}
+              variant="shell"
+              showPaymentPicker={shellControls.showPaymentPicker}
+              showSummary={shellControls.showSummary}
+            />
+          ),
         }}
         chrome={
           <MinimalCheckoutHeader
@@ -274,7 +298,14 @@ function CheckoutPage() {
           />
         }
         containerClassName="bg-muted/10 min-h-screen pb-24"
-        fallback={<CheckoutBody slug={slug} variant="fallback" />}
+        fallback={
+          <CheckoutBody
+            slug={slug}
+            variant="fallback"
+            showPaymentPicker={fallbackControls.showPaymentPicker}
+            showSummary={fallbackControls.showSummary}
+          />
+        }
       />
     </PluginLayer>
   );
@@ -298,9 +329,13 @@ function CheckoutPage() {
 function CheckoutBody({
   slug,
   variant,
+  showPaymentPicker,
+  showSummary,
 }: {
   slug: string;
   variant: "shell" | "fallback";
+  showPaymentPicker: boolean;
+  showSummary: boolean;
 }) {
   const { t, lang } = useLang();
   const cart = useCartContext();
@@ -715,6 +750,106 @@ function CheckoutBody({
     </div>
   );
 
+  // The order summary — the SERVER's quote (the lines, the delivery, the
+  // VAT, the COD surcharge and the total). The theme's own `cart_summary`
+  // widget reads the same live quote, so the two can never disagree; the
+  // route's panel is what a theme body without that widget falls back to.
+  const summaryPanel = (
+    <div className="bg-background border border-border/40 rounded-fq-lg p-6 lg:p-8 shadow-sm lg:sticky lg:top-24">
+      <h2 className="text-[16px] font-semibold tracking-tight text-foreground mb-6">
+        {t("Order Summary", "সারসংক্ষেপ")}
+      </h2>
+
+      {!hydrated ? null : lines.length === 0 ? (
+        <p className="mt-4 text-[13.5px] text-muted-foreground">
+          Your cart is empty.
+        </p>
+      ) : (
+        <ul className="mb-6 divide-y divide-border/40 border-b border-border/40 pb-6">
+          {(totals?.lines ?? []).map((l) => (
+            <li
+              key={l.variantId}
+              className="flex items-start gap-4 py-4 first:pt-0"
+            >
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[13.5px] font-medium leading-relaxed text-foreground">
+                  {l.productTitle}
+                </p>
+                <p className="text-[12px] font-medium tracking-wide text-muted-foreground mt-1">
+                  {l.variantName}
+                </p>
+                <div className="mt-2 flex items-center gap-2">
+                  <label className="sr-only" htmlFor={`qty-${l.variantId}`}>
+                    Quantity
+                  </label>
+                  <input
+                    id={`qty-${l.variantId}`}
+                    type="number"
+                    min={0}
+                    max={l.stock}
+                    value={l.quantity}
+                    onChange={(e) =>
+                      setQuantity(l.variantId, Number(e.target.value))
+                    }
+                    className="h-8 w-14 rounded border border-border/60 bg-transparent text-center text-[13px] font-medium focus:border-foreground focus:outline-none transition-colors"
+                  />
+                  <span className="text-[12px] text-muted-foreground">×</span>
+                  <span className="money text-[13px] font-medium text-foreground">
+                    {fmtMinor(
+                      Math.round(l.lineTotalMinor / l.quantity),
+                      totals?.currency,
+                    )}
+                  </span>
+                </div>
+              </div>
+              <span className="money text-right text-[14px] font-semibold tracking-wide text-foreground mt-1">
+                {fmtMinor(l.lineTotalMinor, totals?.currency)}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <dl className="space-y-3.5 text-sm">
+        <Row
+          label="Subtotal"
+          value={fmtMinor(totals?.subtotalMinor ?? 0, totals?.currency)}
+        />
+        <Row
+          label="Delivery"
+          value={fmtMinor(totals?.shippingMinor ?? 0, totals?.currency)}
+        />
+        {(totals?.codSurchargeMinor ?? 0) > 0 && (
+          <Row
+            label="COD surcharge"
+            value={fmtMinor(totals!.codSurchargeMinor, totals?.currency)}
+          />
+        )}
+        <Row
+          label={`VAT (${((totals?.vatRateBasisPoints ?? 0) / 100).toFixed(1)}%)${
+            totals?.vatMode === "inclusive" ? " · included in prices" : ""
+          }`}
+          value={fmtMinor(totals?.vatMinor ?? 0, totals?.currency)}
+        />
+        <Row
+          label="Total"
+          value={fmtMinor(totals?.totalMinor ?? 0, totals?.currency)}
+          strong
+          className="border-t border-border/40 pt-4 mt-2"
+        />
+      </dl>
+      {holdExpiresAt && (
+        <p className="mt-6 rounded bg-warning-soft p-3 text-[12.5px] font-medium text-warning-foreground text-center">
+          {t("Items reserved until", "আইটেম রিজার্ভ আছে")}{" "}
+          {new Date(holdExpiresAt).toLocaleTimeString("en-BD", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+        </p>
+      )}
+    </div>
+  );
+
   const form = (
     <form
       className="grid gap-10"
@@ -724,7 +859,7 @@ function CheckoutBody({
       }}
     >
       {contactAndAddress}
-      {variant === "fallback" ? paymentPicker : null}
+      {showPaymentPicker ? paymentPicker : null}
       {messages}
       {placeOrderButton}
     </form>
@@ -732,11 +867,26 @@ function CheckoutBody({
 
   if (variant === "shell") {
     // The theme's frame supplies the trail, the payment picker and the order
-    // summary; the route's own body is the form.
+    // summary; the route's own body is the form. When the theme's body
+    // carries no payment picker and no order summary, the route supplies
+    // BOTH — a shopper must always see the rail they are paying with and
+    // the total they are paying.
+    if (!showSummary) {
+      return (
+        <div className="mx-auto max-w-[var(--fq-container,1280px)] px-4 py-8 sm:px-6 lg:px-8">
+          {pendingBanner}
+          {form}
+        </div>
+      );
+    }
     return (
-      <div className="mx-auto max-w-[var(--fq-container,1280px)] px-4 py-8 sm:px-6 lg:px-8">
-        {pendingBanner}
-        {form}
+      <div className="mx-auto grid max-w-[var(--fq-container,1280px)] gap-12 px-4 py-8 lg:grid-cols-[1.5fr_1fr] lg:gap-16 sm:px-6 lg:px-8">
+        <section className="order-2 lg:order-1 pt-4">
+          {pendingBanner}
+          {form}
+        </section>
+
+        <aside className="order-1 lg:order-2">{summaryPanel}</aside>
       </div>
     );
   }
@@ -762,103 +912,7 @@ function CheckoutBody({
         {form}
       </section>
 
-      <aside className="order-1 lg:order-2">
-        <div className="bg-background border border-border/40 rounded-fq-lg p-6 lg:p-8 shadow-sm lg:sticky lg:top-24">
-          <h2 className="text-[16px] font-semibold tracking-tight text-foreground mb-6">
-            {t("Order Summary", "সারসংক্ষেপ")}
-          </h2>
-
-          {!hydrated ? null : lines.length === 0 ? (
-            <p className="mt-4 text-[13.5px] text-muted-foreground">
-              Your cart is empty.
-            </p>
-          ) : (
-            <ul className="mb-6 divide-y divide-border/40 border-b border-border/40 pb-6">
-              {(totals?.lines ?? []).map((l) => (
-                <li
-                  key={l.variantId}
-                  className="flex items-start gap-4 py-4 first:pt-0"
-                >
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-[13.5px] font-medium leading-relaxed text-foreground">
-                      {l.productTitle}
-                    </p>
-                    <p className="text-[12px] font-medium tracking-wide text-muted-foreground mt-1">
-                      {l.variantName}
-                    </p>
-                    <div className="mt-2 flex items-center gap-2">
-                      <label className="sr-only" htmlFor={`qty-${l.variantId}`}>
-                        Quantity
-                      </label>
-                      <input
-                        id={`qty-${l.variantId}`}
-                        type="number"
-                        min={0}
-                        max={l.stock}
-                        value={l.quantity}
-                        onChange={(e) =>
-                          setQuantity(l.variantId, Number(e.target.value))
-                        }
-                        className="h-8 w-14 rounded border border-border/60 bg-transparent text-center text-[13px] font-medium focus:border-foreground focus:outline-none transition-colors"
-                      />
-                      <span className="text-[12px] text-muted-foreground">
-                        ×
-                      </span>
-                      <span className="money text-[13px] font-medium text-foreground">
-                        {fmtMinor(
-                          Math.round(l.lineTotalMinor / l.quantity),
-                          totals?.currency,
-                        )}
-                      </span>
-                    </div>
-                  </div>
-                  <span className="money text-right text-[14px] font-semibold tracking-wide text-foreground mt-1">
-                    {fmtMinor(l.lineTotalMinor, totals?.currency)}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-
-          <dl className="space-y-3.5 text-sm">
-            <Row
-              label="Subtotal"
-              value={fmtMinor(totals?.subtotalMinor ?? 0, totals?.currency)}
-            />
-            <Row
-              label="Delivery"
-              value={fmtMinor(totals?.shippingMinor ?? 0, totals?.currency)}
-            />
-            {(totals?.codSurchargeMinor ?? 0) > 0 && (
-              <Row
-                label="COD surcharge"
-                value={fmtMinor(totals!.codSurchargeMinor, totals?.currency)}
-              />
-            )}
-            <Row
-              label={`VAT (${((totals?.vatRateBasisPoints ?? 0) / 100).toFixed(1)}%)${
-                totals?.vatMode === "inclusive" ? " · included in prices" : ""
-              }`}
-              value={fmtMinor(totals?.vatMinor ?? 0, totals?.currency)}
-            />
-            <Row
-              label="Total"
-              value={fmtMinor(totals?.totalMinor ?? 0, totals?.currency)}
-              strong
-              className="border-t border-border/40 pt-4 mt-2"
-            />
-          </dl>
-          {holdExpiresAt && (
-            <p className="mt-6 rounded bg-warning-soft p-3 text-[12.5px] font-medium text-warning-foreground text-center">
-              {t("Items reserved until", "আইটেম রিজার্ভ আছে")}{" "}
-              {new Date(holdExpiresAt).toLocaleTimeString("en-BD", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </p>
-          )}
-        </div>
-      </aside>
+      <aside className="order-1 lg:order-2">{summaryPanel}</aside>
     </div>
   );
 }

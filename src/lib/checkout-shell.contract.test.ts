@@ -209,3 +209,45 @@ describe("the checkout shell — the theme contributes presentation only", () =>
     }
   });
 });
+
+describe("the checkout shell — the platform's controls are never missing", () => {
+  it.each(ROUTES)(
+    "$name supplies its OWN payment picker when the theme's body carries none",
+    ({ src }) => {
+      // The route READS the theme's body and decides, through the tested
+      // helper, whether the theme brings a payment block. A body that
+      // carries no `payment_methods` section would leave the shopper
+      // placing an order with no rail chosen — the order would silently go
+      // out on the shared cart's initial "cod" — so the route renders its
+      // own picker.
+      expect(src).toContain('checkoutShellControls(ast, "shell")');
+      expect(src).toContain("showPaymentPicker");
+      expect(src).toContain("showPaymentPicker ? paymentPicker : null");
+      // The picker is the ROUTE's own: the server's rails, written to the
+      // shared cart — never a theme-authored control.
+      expect(src).toContain("quote?.settings.methods");
+      expect(src).toContain("cart.setMethod");
+    },
+  );
+
+  it.each(ROUTES)(
+    "$name supplies its OWN order summary when the theme's body carries none",
+    ({ src }) => {
+      // The same rule for the totals: a body that carries no `cart_summary`
+      // section would leave "Place Order" enabled with no total shown.
+      expect(src).toContain('checkoutShellControls(ast, "shell")');
+      expect(src).toContain("showSummary");
+      expect(src).toContain("summaryPanel");
+      // The summary is the server's quote — never a theme-authored total.
+      expect(src).toContain("quote?.totals");
+    },
+  );
+
+  it("the fallback keeps BOTH controls whatever the theme published", () => {
+    // The hand-built checkout is today's checkout, unchanged: it always
+    // carries the picker and the summary.
+    for (const { src } of ROUTES) {
+      expect(src).toContain('checkoutShellControls(ast, "fallback")');
+    }
+  });
+});

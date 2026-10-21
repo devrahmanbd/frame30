@@ -2169,3 +2169,561 @@ This paragraph is **appended**, not a rewrite of §(i.2). It states the file set
 ```
 
 The composition pins in the same file change with the composition (the route-owned body slot joins the body), and the allowed-widget set gains `page_content` — the platform's own route-owned body slot, which renders **whatever the host grants** and can never author a field, a price or a "place order" action.
+
+---
+
+## (j) Fix round — the review's ten findings (appended, 2026-10-21)
+
+**Base commit of this round:** `fdd654ff` (`feat(storefront): the theme composes the production checkout shell; the platform keeps the form, the totals and the rails`) — the tip of `frame30`.
+**Trigger:** the task review of Task 3 (the account dashboard) and Task 4 (the production checkout shell) — **four Important** findings and **six Minor** findings.
+**Appended, never rewritten.** Everything above is the record as it stood when the batch was committed.
+
+This round edits §7-prohibited files again, so the same discipline applies: the finding, the file set and the covering test are written **before** the edit (§(j.1)–§(j.4) below), and the **final** unified diffs plus the measured evidence are appended **after** it (§(j.5), §(j.6)). §(j.2) is the amendment §(i.2) never got: the FINAL diff of every §7-prohibited file the batch committed.
+
+### (j.1) The ten findings, and what each one changes
+
+| # | finding | the change | the files |
+| --- | --- | --- | --- |
+| 1 | the theme's composed profile card is silently lost for a merchant whose published account body predates the change | the route's "the theme places the profile" decision now asks the SAME question `ThemeChrome` asks — **does the theme's body RENDER?** — before it hands the profile to the dashboard | `src/routes/store.$slug.account.tsx` |
+| 2 | a signed-out shopper on a themed store gets a permanent loading skeleton | the account slots' `pending` flag is gated on the session (in React Query v5 a **DISABLED** query is `status: "pending"`, so `isPending === true`) | `src/routes/store.$slug.account.tsx` · `src/lib/account-status.ts` (new) |
+| 3 | the checkout shell has no payment picker and no totals when the theme's body omits them | the route inspects the theme's own body and supplies its **own** picker / summary when the body carries none — the account route's pattern, applied to the checkout | `src/routes/store.$slug.checkout.tsx` |
+| 4 | the order rows' "view" action dead-ends on a 404 | the row becomes an inline **disclosure** fed by the session-scoped `accountOrderFn`; the signed-out lookup asks for the order's **access code** (the order route is token-gated, so the code is the credential) | `src/components/store/AccountDashboard.tsx` · `src/routes/store.$slug.account.tsx` |
+| 5 | the record understates the committed blast radius | **§(j.2)** — the final diff of every §7-prohibited file | this record |
+| 6 | the six-state wiring in the route is untested | the mapping moves into a **pure** helper and is unit-tested in all six combinations | `src/lib/account-status.ts` (new) · `src/lib/account-status.test.ts` (new) · `src/routes/store.$slug.account.tsx` |
+| 7 | the responsive suite's per-width loop is theatre | the loop is dropped: the bucket mapping is asserted once for all six widths, the class contract once — and the comment names the lane where the **pixels** are proved | `src/components/store/AccountDashboard.test.tsx` |
+| 8 | a stale comment contradicts the code | the comment is re-pointed at the CURRENT contract (D2′) | `src/lib/themes/songoskriti/preview.ts` |
+| 9 | `busy.consent` is accepted and never read | the consent switches are disabled while the consent mutation is in flight | `src/components/store/AccountDashboard.tsx` |
+| 10 | the `role="tab"` nav is not the ARIA tabs pattern | the pattern is implemented **properly**: roving `tabindex`, arrow-key navigation, focus moved to the panel on activation | `src/components/store/AccountDashboard.tsx` |
+
+**Files this round touches, and why each is in scope.** Every file below is either on the plan's G1 list (`src/routes/store.$slug.account.tsx`, `src/routes/store.$slug.checkout.tsx`), §7-allowed (`src/lib/themes/songoskriti/**`), a NEW file (§7 allows a new file), or a file the batch already created and therefore already owns (`src/components/store/AccountDashboard.tsx` and its two suites). **No file outside that set is edited** — in particular `src/lib/accounts.server.ts` and `src/lib/accounts.functions.ts` are **read, never written**: `accountOrderFn` and `ownOrderDetail` already exist and already carry the session-scoped order detail this round uses.
+
+| file | kind | why |
+| --- | --- | --- |
+| `src/lib/account-status.ts` | **NEW** | the pure six-state mapping (finding 6) and the pure pending rule (finding 2) — no React, no DOM, no DB |
+| `src/lib/account-status.test.ts` | **NEW** | the six combinations + the pending rule, unit-tested |
+| `src/routes/store.$slug.account.tsx` | §7-prohibited (G1) | findings 1, 2, 4, 6 |
+| `src/routes/store.$slug.checkout.tsx` | §7-prohibited (G1) | finding 3 |
+| `src/components/store/AccountDashboard.tsx` | **NEW** in the batch | findings 4, 9, 10 |
+| `src/components/store/AccountDashboard.test.tsx` | **NEW** in the batch | findings 4, 7, 9, 10 |
+| `src/components/store/account-dashboard.contract.test.ts` | **NEW** in the batch | finding 4 (the contract suite must assert the truth) |
+| `src/lib/checkout-shell.contract.test.ts` | **NEW** in the batch | finding 3 |
+| `src/lib/themes/songoskriti/preview.ts` | §7-allowed | finding 8 |
+| `src/lib/themes/songoskriti/preview-demo-data.ts` | §7-allowed | the preview's demo order DETAIL, so the preview shows the same disclosure the storefront shows |
+| `src/components/store/ThemePreviewFrame.tsx` | §7-prohibited (G1) | the preview grants the demo order loader (finding 4) |
+| `docs/superpowers/songoskriti-evidence/port/phase3-archive-key-escalation.md` | `docs/**` | this record |
+
+### (j.2) The FINAL diff of every §7-prohibited file — the amendment §(i.2) never got
+
+§(i.2) quoted a **first draft** of the batch: `ast={checkoutAst}` and `page_content: checkoutBody` for the checkout routes, before the code settled on the extracted `CheckoutBody` component and the shared-cart payment state. It also never re-quoted the final diff for the two checkout routes, `ThemePreviewFrame.tsx`, `preview.ts` or `template-distinctness.ts`. **This subsection is that amendment.** The batch's final state is `fdd654ff`; every diff below is `git diff c27521e7..fdd654ff -- <file>`.
+
+**The §7-prohibited files the batch committed** (port spec §7: `src/lib/builder-ast.ts`, `src/components/builder/widgets.tsx`, all `src/routes/**`, the existing test files under `src/`, and everything else under `src/`):
+
+| file | the exact command that prints the FINAL diff | the final diffstat |
+| --- | --- | --- |
+| `src/lib/builder-ast.ts` | `git diff c27521e7..fdd654ff -- src/lib/builder-ast.ts` | `8 +-` (1 hunk) |
+| `src/routes/store.$slug.account.tsx` | `git diff c27521e7..fdd654ff -- 'src/routes/store.$slug.account.tsx'` | `662 +++------------` (the inline dashboard moves out) |
+| `src/routes/store.$slug.checkout.tsx` | `git diff c27521e7..fdd654ff -- 'src/routes/store.$slug.checkout.tsx'` | `842 +++++++++++----------` (the `CheckoutBody` extraction) |
+| `src/routes/checkout.tsx` | `git diff c27521e7..fdd654ff -- src/routes/checkout.tsx` | `582 +++++++-------` (the custom-host twin) |
+| `src/components/store/ThemePreviewFrame.tsx` | `git diff c27521e7..fdd654ff -- src/components/store/ThemePreviewFrame.tsx` | `43 +-` |
+| `src/components/builder/songoskriti-port-freeze.test.tsx` | `git diff c27521e7..fdd654ff -- src/components/builder/songoskriti-port-freeze.test.tsx` | `13 +-` |
+| `src/lib/theme-preview-nav.test.ts` | `git diff c27521e7..fdd654ff -- src/lib/theme-preview-nav.test.ts` | `5 +-` |
+| `src/lib/themes/songoskriti/preview.test.ts` | `git diff c27521e7..fdd654ff -- src/lib/themes/songoskriti/preview.test.ts` | `6 +-` |
+| `src/lib/themes/songoskriti/checkout-composition.test.ts` | `git diff c27521e7..fdd654ff -- src/lib/themes/songoskriti/checkout-composition.test.ts` | `49 +-` |
+
+**And the two §7-ALLOWED files the batch changed whose final diff was also never re-quoted** (they are named here because the review names them, not because §7 needs them):
+
+| file | the exact command | the final diffstat |
+| --- | --- | --- |
+| `src/lib/themes/songoskriti/preview.ts` | `git diff c27521e7..fdd654ff -- src/lib/themes/songoskriti/preview.ts` | `25 +-` |
+| `src/lib/themes/songoskriti/template-distinctness.ts` | `git diff c27521e7..fdd654ff -- src/lib/themes/songoskriti/template-distinctness.ts` | `30 +-` |
+
+**The small diffs, quoted in full** (the three pins and the catalogue row — the ones a reader can check by eye):
+
+```diff
+diff --git a/src/lib/builder-ast.ts b/src/lib/builder-ast.ts
+index e4ec4f41..a152d9bb 100644
+--- a/src/lib/builder-ast.ts
++++ b/src/lib/builder-ast.ts
+@@ -1605,7 +1605,13 @@ const BASE_CATALOG: CatalogEntry[] = [
+     group: "context",
+     slots: ["main"],
+     heading: false,
+-    templates: ["page", "blog"],
++    // The route-owned BODY slot. The authored page flows its body through it
++    // (`ThemeChrome`'s `contentSlot`); the account dashboard and the
++    // production checkout form flow theirs through the same slot, so the
++    // theme composes AROUND the route's data instead of replacing it. The
++    // widget stays the platform's generic body slot — it renders whatever
++    // the host grants, and the host grants the route's own node.
++    templates: ["page", "blog", "account", "checkout"],
+     defaults: {},
+     fields: [],
+   },
+diff --git a/src/lib/theme-preview-nav.test.ts b/src/lib/theme-preview-nav.test.ts
+index dd515bc5..ebd82786 100644
+--- a/src/lib/theme-preview-nav.test.ts
++++ b/src/lib/theme-preview-nav.test.ts
+@@ -121,7 +121,7 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
+     index: "hero_carousel",
+     product: "heading",
+     collection: "category_header",
+-    account: "heading",
++    account: "profile_card",
+     page: "breadcrumb",
+     blog: "blog_terms",
+     cart: "heading",
+@@ -169,9 +169,8 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
+       flattenSections(preset.templates.product.main).map((s) => s.type),
+     ).toContain("product_media");
+     expect(preset.templates.account.main.map((s) => s.type)).toEqual([
+-      "heading",
+       "profile_card",
+-      "orders_list",
++      "page_content",
+     ]);
+     // Section ids stay unique across templates sharing one counter.
+     const ids = (
+diff --git a/src/lib/themes/songoskriti/preview.test.ts b/src/lib/themes/songoskriti/preview.test.ts
+index 2687c367..27867c0c 100644
+--- a/src/lib/themes/songoskriti/preview.test.ts
++++ b/src/lib/themes/songoskriti/preview.test.ts
+@@ -77,10 +77,6 @@ describe("songoskriti preview source", () => {
+     expect(
+       flattenSections(source.main("product", s)!).map((x) => x.type),
+     ).toContain("product_media");
+-    expect(types("account")).toEqual([
+-      "heading",
+-      "profile_card",
+-      "orders_list",
+-    ]);
++    expect(types("account")).toEqual(["profile_card", "page_content"]);
+   });
+ });
+diff --git a/src/components/builder/songoskriti-port-freeze.test.tsx b/src/components/builder/songoskriti-port-freeze.test.tsx
+index 610600e3..163082c1 100644
+--- a/src/components/builder/songoskriti-port-freeze.test.tsx
++++ b/src/components/builder/songoskriti-port-freeze.test.tsx
+@@ -102,11 +102,20 @@ const TEMPLATE_MAIN: Record<string, string[]> = {
+     "product_grid",
+     "product_rail",
+   ],
+-  account: ["heading", "profile_card", "orders_list"],
++  // Batch B — the account dashboard (Task 3). The theme's account body is a
++  // FRAME around the route's dashboard: the merchant's own profile card and
++  // the route-owned body slot the dashboard flows through. NO `heading` (the
++  // account template is a route-h1 template — the route owns the page's
++  // <h1>) and NO `orders_list` (the dashboard's orders tab renders the
++  // orders as structured rows; the widget's plain list beside them would
++  // show the same orders twice).
++  account: ["profile_card", "page_content"],
+   page: ["breadcrumb", "page_content"],
+   blog: ["blog_terms", "blog_archive", "blog_pager"],
+   cart: ["heading", "columns"],
+-  checkout: ["heading", "checkout_steps", "columns"],
++  // Batch B — the production checkout shell (Task 4). The theme's checkout
++  // body gains the route-owned body slot the checkout FORM flows through.
++  checkout: ["heading", "checkout_steps", "columns", "page_content"],
+   search: [
+     "result_toolbar",
+     "product_grid",
+```
+
+**The corrections this amendment makes to §(i.2), stated plainly:**
+
+1. **The checkout-route hunks in §(i.2) were a first draft.** The committed change does **not** pass `ast={checkoutAst}`; it passes the loader's own `ast={ast}` and the route's body is a **separate `CheckoutBody` component** rendered twice — once as the `page_content` context slot (`variant="shell"`) and once as `ThemeChrome`'s `fallback` (`variant="fallback"`). The reason is mechanical: only a component **inside** `LiveCartScope` can read the shared cart context, and the theme's `payment_methods` widget writes the payment state there.
+2. **The payment-state move is not "one line".** The route's private `useState("cod")` is gone; the route reads `cart.method` from the shared cart context and writes `cart.setMethod`, and the route's own picker is the fallback for a theme body that carries no `payment_methods` section. §(i.5)'s "the payment state — the shared cart context" row is the truth, and the diff that proves it is the one the command above prints.
+3. **The lint `required` rules for `account` / `checkout` were never added** (already stated in §(i.7), Correction 1 — repeated here so the amendment stands alone).
+4. **The account composition is `profile_card` + `page_content`** (already stated in §(i.7), Correction 2 — repeated here for the same reason).
+
+### (j.3) This round's exact old → new diff
+
+The hunks below are what this round applies. They are written before the edit; §(j.5) prints the **final** diff of the same files, measured after the edit.
+
+**New file — `src/lib/account-status.ts`** (the pure six-state mapping; finding 6, and the pending rule; finding 2):
+
+```ts
+/**
+ * The account surface's SIX states — a pure mapping, so the wiring can be
+ * tested without a router, a session or a network.
+ *
+ * The precedence is the one the route has always used, written down:
+ * the session resolves first (a pending session is a loading page), then
+ * the SIGN (a signed-out shopper is never "loading" — the overview query
+ * is disabled for them, and a disabled React Query v5 query is
+ * `status: "pending"`, so a naive `isPending` would show a skeleton
+ * forever), then the query (pending → loading, error → error), and
+ * otherwise the surface is ready.
+ */
+export type AccountStatus = "unauthenticated" | "loading" | "error" | "ready";
+
+export type AccountStatusInput = {
+  /** The session query has not answered yet. */
+  sessionPending: boolean;
+  /** The session resolved AND carries a shopper. */
+  signedIn: boolean;
+  /** The overview query has not answered yet. */
+  queryPending: boolean;
+  /** The overview query failed. */
+  queryError: boolean;
+};
+
+export function accountStatus(input: AccountStatusInput): AccountStatus {
+  if (input.sessionPending) return "loading";
+  if (!input.signedIn) return "unauthenticated";
+  if (input.queryPending) return "loading";
+  if (input.queryError) return "error";
+  return "ready";
+}
+
+/**
+ * The context widgets' `pending` flag.
+ *
+ * `ProfileCard` and `OrdersList` render a skeleton while `pending` is true
+ * and a SIGN-IN PROMPT when their rows are undefined. A signed-out shopper
+ * must reach the prompt, never the skeleton: the overview query is
+ * DISABLED for them, and a disabled query is `pending` in React Query v5.
+ */
+export function accountSlotsPending(input: {
+  signedIn: boolean;
+  queryPending: boolean;
+}): boolean {
+  return input.signedIn && input.queryPending;
+}
+```
+
+**New file — `src/lib/account-status.test.ts`**: the six combinations (session pending → loading; signed out → unauthenticated; signed out AND a pending query → unauthenticated — the disabled-query case; query pending → loading; query error → error; all clear → ready) and the pending rule (signed out → never pending; signed in + pending → pending).
+
+**`src/routes/store.$slug.account.tsx`** — findings 1, 2, 4, 6:
+
+```diff
+-  const accountSlots = useMemo(() => {
++  // A DISABLED query (a signed-out shopper) is `pending` in React Query v5,
++  // so the widgets' skeleton flag is gated on the session: a signed-out
++  // shopper must reach the widgets' SIGN-IN PROMPT, never a skeleton.
++  const pending = accountSlotsPending({
++    signedIn,
++    queryPending: account.isPending,
++  });
++  const accountSlots = useMemo(() => {
+     const sections = chrome?.ast ? flattenAst(chrome.ast) : [];
+     const out: Partial<Record<string, ReactNode>> = {};
+-    const pending = account.isPending;
+     const o = sections.find((s) => s.type === "orders_list");
+```
+
+```diff
+-  const themePlacesProfile = Boolean(
+-    chrome?.ast &&
+-    flattenAst(chrome.ast).some((section) => section.type === "profile_card"),
+-  );
++  // The theme places the profile card ONLY when its body actually RENDERS
++  // (`themeRendersBody` — the same predicate `ThemeChrome` asks). A
++  // merchant whose published account body predates the route-owned body
++  // slot carries no `page_content` section, so the theme's ENTIRE body is
++  // dropped and the route's fallback (the dashboard) renders — the theme
++  // places nothing, so the dashboard must carry the profile.
++  const themePlacesProfile = Boolean(
++    chrome?.ast &&
++      themeRendersBody(chrome.ast, "page_content") &&
++      flattenAst(chrome.ast).some((section) => section.type === "profile_card"),
++  );
+```
+
+```diff
+-          pending: account.isPending,
++          pending,
+```
+
+```diff
+-  const status: AccountDashboardStatus = session.isPending
+-    ? "loading"
+-    : !signedIn
+-      ? "unauthenticated"
+-      : account.isPending
+-        ? "loading"
+-        : account.isError
+-          ? "error"
+-          : "ready";
++  // The six states, in ONE pure mapping (`src/lib/account-status.ts`) so
++  // the precedence is unit-tested rather than only observable.
++  const status: AccountDashboardStatus = accountStatus({
++    sessionPending: session.isPending,
++    signedIn,
++    queryPending: account.isPending,
++    queryError: account.isError,
++  });
+```
+
+and the session-scoped order detail (finding 4):
+
+```diff
++  // The session-scoped order detail. `accountOrderFn` is the tree's own
++  // server function for a shopper's OWN order (`src/lib/accounts.functions.ts`),
++  // scoped to `auth.uid()` by the `customer_order_detail` RPC — so the
++  // shopper sees their order WITHOUT the access token the order page's
++  // route demands, and the row never links to a 404.
++  const orderFn = useServerFn(accountOrderFn);
++  const [openOrderId, setOpenOrderId] = useState<string | null>(null);
++  const orderDetail = useQuery({
++    queryKey: ["store-order-detail", slug, openOrderId],
++    queryFn: () => orderFn({ data: { slug, orderId: openOrderId! } }),
++    enabled: Boolean(openOrderId) && signedIn,
++  });
+```
+
+**`src/components/store/AccountDashboard.tsx`** — findings 4, 9, 10: the order rows become a disclosure fed by `onLoadOrder` / `orderDetail` / `orderDetailPending`; the consent switches read `busy?.consent`; the nav implements the ARIA tabs pattern (roving `tabindex`, arrow keys, focus moved to the panel on activation); the signed-out lookup asks for the order's access code and navigates with it.
+
+**`src/routes/store.$slug.checkout.tsx`** — finding 3: the route reads the theme's own body and supplies its **own** payment picker and order summary when the body carries neither `payment_methods` nor `cart_summary`:
+
+```diff
++  // The theme's body may or may not carry the two controls a checkout
++  // cannot be without: the PAYMENT PICKER and the ORDER SUMMARY. A body
++  // that carries neither would leave the shopper placing an order with no
++  // rail chosen and no total shown — so the route supplies its own when
++  // the theme's body carries none. (The account route's pattern, applied
++  // to the checkout.)
++  const themeSections = ast ? flattenAst(ast) : [];
++  const themeHasPaymentPicker = themeSections.some(
++    (section) => section.type === "payment_methods" && !section.invalid,
++  );
++  const themeHasSummary = themeSections.some(
++    (section) => section.type === "cart_summary" && !section.invalid,
++  );
+```
+
+### (j.4) The rules that hold throughout this round
+
+No new npm dependency and no lockfile change. No test is weakened, deleted or skipped — every pin that changes changes to a **stronger** expectation, quoted in §(j.5). Every commit stages **explicit paths** only; the three churn files (`.artifacts/e2e/playwright-report/index.html`, `ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`) and `.output-snapshots/` are never staged. The platform keeps every authority: the account's identity and its order detail come from the session-scoped RPCs, the checkout's totals from the server quote, the rails from the server's answer, and the customer fields from the route's own `FormData`.
+
+### (j.5) The round's FINAL diffs and the corrections to §(j.1)–§(j.3)
+
+**Correction to §(j.1)'s file table — TWO more NEW files.** The first draft of this section listed the round's file set before findings 1 and 3 had a **behavioural** seam. A text assertion ("the route mentions `themeRendersBody`") is not a test: it cannot fail when the decision is wrong. So the two decisions that had to be *decisions* — "who places the profile card?" and "which controls does the checkout render?" — moved into two pure modules with their own suites:
+
+| file | kind | what it is |
+| --- | --- | --- |
+| `src/lib/theme-shell-slots.ts` | **NEW** | the pure decisions: `themeBodyRenders` · `themePlacesAccountProfile` · `themeCarriesPaymentPicker` · `themeCarriesOrderSummary` · `checkoutShellControls` |
+| `src/lib/theme-shell-slots.test.ts` | **NEW** | their suite — the legacy account body, the nested payment block, the `invalid` section, the dropped body, the four checkout combinations |
+
+`src/lib/accounts.server.ts` and `src/lib/accounts.functions.ts` are **read, never written**: `accountOrderFn` and `ownOrderDetail` already existed and already carry the session-scoped order detail this round uses. `src/lib/theme-body-slot.ts` is **read, never written**: `themeRendersBody` is the shared predicate and the new module asks it the SAME question `ThemeChrome` asks.
+
+**The round's final diffstat** (against `fdd654ff`):
+
+```
+$ git diff --stat fdd654ff -- src docs
+ docs/superpowers/songoskriti-evidence/port/phase3-archive-key-escalation.md | 325 +++++++++++++
+ src/components/store/AccountDashboard.test.tsx                      | 206 ++++++--
+ src/components/store/AccountDashboard.tsx                          | 523 ++++++++++++++++++---
+ src/components/store/ThemePreviewFrame.tsx                         |  27 +-
+ src/components/store/account-dashboard.contract.test.ts            |  55 +++
+ src/lib/checkout-shell.contract.test.ts                            |  42 ++
+ src/lib/themes/songoskriti/preview-demo-data.ts                    |  54 +++
+ src/lib/themes/songoskriti/preview.ts                             |   3 +-
+ src/routes/checkout.tsx                                            | 148 ++++--
+ src/routes/store.$slug.account.tsx                                 |  82 +++-
+ src/routes/store.$slug.checkout.tsx                                | 262 +++++++----
+ 11 files changed, 1458 insertions(+), 269 deletions(-)
+```
+
+plus the four NEW files (`src/lib/account-status.ts`, `src/lib/account-status.test.ts`, `src/lib/theme-shell-slots.ts`, `src/lib/theme-shell-slots.test.ts`).
+
+**The §7-prohibited files this round edits, and the exact command that prints each final diff:**
+
+| file | the exact command | the final diffstat |
+| --- | --- | --- |
+| `src/routes/store.$slug.account.tsx` | `git diff fdd654ff -- 'src/routes/store.$slug.account.tsx'` | `82 +++-` |
+| `src/routes/store.$slug.checkout.tsx` | `git diff fdd654ff -- 'src/routes/store.$slug.checkout.tsx'` | `262 +++++++----` |
+| `src/routes/checkout.tsx` | `git diff fdd654ff -- src/routes/checkout.tsx` | `148 ++++--` |
+| `src/components/store/ThemePreviewFrame.tsx` | `git diff fdd654ff -- src/components/store/ThemePreviewFrame.tsx` | `27 +-` |
+
+**The two §7-ALLOWED files this round edits:** `src/lib/themes/songoskriti/preview.ts` (`3 +-` — the stale comment, finding 8) and `src/lib/themes/songoskriti/preview-demo-data.ts` (`54 +++` — the preview's demo order DETAIL).
+
+**The decisive hunks, quoted in full** (the three that carry the findings):
+
+```diff
+--- a/src/routes/store.$slug.account.tsx
++++ b/src/routes/store.$slug.account.tsx
+-  const themePlacesProfile = Boolean(
+-    chrome?.ast &&
+-    flattenAst(chrome.ast).some((section) => section.type === "profile_card"),
+-  );
++  // "The theme places it" means the theme's body RENDERS: `ThemeChrome`
++  // drops the theme's ENTIRE body when it declares no `page_content`
++  // section … The route therefore asks the SAME question `ThemeChrome`
++  // asks (`themePlacesAccountProfile`), so the two can never disagree
++  // about who places the profile card.
++  const themePlacesProfile = themePlacesAccountProfile(chrome?.ast);
+@@
+-    const pending = account.isPending;
++  const pending = accountSlotsPending({
++    signedIn,
++    queryPending: account.isPending,
++  });
+@@
+-  const status: AccountDashboardStatus = session.isPending
+-    ? "loading"
+-    : !signedIn
+-      ? "unauthenticated"
+-      : account.isPending
+-        ? "loading"
+-        : account.isError
+-          ? "error"
+-          : "ready";
++  const status: AccountDashboardStatus = accountStatus({
++    sessionPending: session.isPending,
++    signedIn,
++    queryPending: account.isPending,
++    queryError: account.isError,
++  });
+@@
++  // The session-scoped order detail. The order route is TOKEN-GATED …
++  const orderFn = useServerFn(accountOrderFn);
++  const [openOrderId, setOpenOrderId] = useState<string | null>(null);
++  const orderDetail = useQuery({
++    queryKey: ["store-order-detail", slug, openOrderId],
++    queryFn: () => orderFn({ data: { slug, orderId: openOrderId! } }),
++    enabled: Boolean(openOrderId) && signedIn,
++  });
+```
+
+```diff
+--- a/src/routes/store.$slug.checkout.tsx
++++ b/src/routes/store.$slug.checkout.tsx
++  const shellControls = checkoutShellControls(ast, "shell");
++  const fallbackControls = checkoutShellControls(ast, "fallback");
+@@
+-      {variant === "fallback" ? paymentPicker : null}
++      {showPaymentPicker ? paymentPicker : null}
+@@
+-  if (variant === "shell") {
+-    return (
+-      <div className="mx-auto max-w-[var(--fq-container,1280px)] px-4 py-8 sm:px-6 lg:px-8">
+-        {pendingBanner}
+-        {form}
+-      </div>
+-    );
+-  }
++  if (variant === "shell") {
++    // … When the theme's body carries no payment picker and no order
++    // summary, the route supplies BOTH …
++    if (!showSummary) {
++      return (
++        <div className="mx-auto max-w-[var(--fq-container,1280px)] px-4 py-8 sm:px-6 lg:px-8">
++          {pendingBanner}
++          {form}
++        </div>
++      );
++    }
++    return (
++      <div className="mx-auto grid max-w-[var(--fq-container,1280px)] gap-12 px-4 py-8 lg:grid-cols-[1.5fr_1fr] lg:gap-16 sm:px-6 lg:px-8">
++        <section className="order-2 lg:order-1 pt-4">
++          {pendingBanner}
++          {form}
++        </section>
++
++        <aside className="order-1 lg:order-2">{summaryPanel}</aside>
++      </div>
++    );
++  }
+```
+
+```diff
+--- a/src/components/store/AccountDashboard.tsx
++++ b/src/components/store/AccountDashboard.tsx
+-          <Link
+-            to="/store/$slug/order/$orderId"
+-            params={{ slug, orderId: row.id }}
+-            className="grid gap-2 py-6 …"
+-          >
++          <div className="grid gap-2 py-6 …">
++            …
++            {onLoadOrder ? (
++              <button
++                type="button"
++                aria-expanded={open}
++                aria-controls={`account-order-detail-${row.id}`}
++                onClick={() => toggle(row.id)}
++              >
++                {open ? t("Hide order", …) : t("View order", …)}
++              </button>
++            ) : null}
++          </div>
+```
+
+**The pins that changed, and what each changed INTO** (no pin was weakened):
+
+| pin | before | after |
+| --- | --- | --- |
+| `AccountDashboard.test.tsx` — the tabs' links | `expect(tabs).toContain("/store/$slug/order/$orderId")` | `expect(tabs).not.toContain("/store/$slug/order/$orderId")` — the **absence** of the dead link, plus the disclosure control's `aria-controls` / `aria-expanded` |
+| `AccountDashboard.test.tsx` — the order rows | `expect(html).toContain('data-link-to="/store/$slug/order/$orderId"')` | the row is a **disclosure**: one `aria-controls` per row, `aria-expanded="false"`, and the detail panel rendered from the session-scoped payload |
+| `AccountDashboard.test.tsx` — the responsive loop | `it.each(WIDTHS)` re-rendering the SAME markup six times | ONE class-contract assertion + the bucket mapping for all six widths in one list; the comment names the Task 7 Playwright lane where the pixels are proved |
+| `AccountDashboard.test.tsx` — the order rows' grid class | `sm:grid-cols-[minmax(0,1fr)_auto_auto]` | `sm:grid-cols-[minmax(0,1fr)_auto_auto_auto]` — the row now carries the disclosure control |
+| `account-dashboard.contract.test.ts` — the link contract | every `to=`/`href=` is a real path | the same, **plus** the truth: the dashboard never links to the token-gated order route, the route resolves it through `accountOrderFn`, and the signed-out lookup carries the access code |
+| `checkout-shell.contract.test.ts` — the controls | (no such pin) | both production routes decide the controls through `checkoutShellControls` and render the ROUTE's own picker and summary when the theme's body carries none |
+
+### (j.6) The measured evidence
+
+**The covering suites** (the round's own plus the batch's neighbours):
+
+```
+$ node_modules/.bin/vitest run src/lib/account-status.test.ts src/lib/theme-shell-slots.test.ts \
+    src/components/store/AccountDashboard.test.tsx src/components/store/account-dashboard.contract.test.ts \
+    src/lib/checkout-shell.contract.test.ts src/lib/themes/songoskriti/checkout-composition.test.ts \
+    src/lib/themes/songoskriti/preview.test.ts src/lib/themes/songoskriti/template-distinctness.test.ts \
+    src/components/store/ThemePreviewFrame.test.tsx src/components/builder/songoskriti-port-freeze.test.tsx \
+    src/lib/theme-preview-nav.test.ts src/lib/account-template.test.ts src/components/builder/account-widgets.test.tsx \
+    src/components/store/account-slots.test.ts src/lib/account-tab.test.ts
+
+ ✓ src/lib/theme-preview-nav.test.ts (43 tests) 82ms
+ ✓ src/components/store/account-slots.test.ts (5 tests) 125ms
+ ✓ src/lib/themes/songoskriti/template-distinctness.test.ts (9 tests) 192ms
+ ✓ src/components/builder/account-widgets.test.tsx (8 tests) 147ms
+ ✓ src/components/builder/songoskriti-port-freeze.test.tsx (22 tests) 154ms
+ ✓ src/components/store/AccountDashboard.test.tsx (28 tests) 402ms
+ ✓ src/lib/account-tab.test.ts (4 tests) 42ms
+ ✓ src/lib/account-template.test.ts (4 tests) 24ms
+ ✓ src/lib/account-status.test.ts (9 tests) 50ms
+ ✓ src/lib/theme-shell-slots.test.ts (14 tests) 82ms
+ ✓ src/components/store/ThemePreviewFrame.test.tsx (53 tests) 237ms
+ ✓ src/lib/themes/songoskriti/checkout-composition.test.ts (7 tests) 67ms
+ ✓ src/lib/checkout-shell.contract.test.ts (21 tests) 69ms
+ ✓ src/components/store/account-dashboard.contract.test.ts (16 tests) 38ms
+ ✓ src/lib/themes/songoskriti/preview.test.ts (3 tests) 15ms
+
+ Test Files  15 passed (15)
+      Tests  246 passed (246)
+```
+
+**The typecheck and the lint:**
+
+```
+$ node_modules/.bin/tsgo --noEmit
+(no output — exit 0)
+
+$ node_modules/.bin/eslint src
+✖ 319 problems (0 errors, 319 warnings)
+  0 errors and 8 warnings potentially fixable with the `--fix` option.
+```
+
+The 319 warnings are the tree's pre-existing ones (the `react-refresh/only-export-components` warnings on the route modules' exported helpers, the `react-hooks/exhaustive-deps` warnings, and the rest). **This round added none**: `src/components/store/ThemePreviewFrame.tsx` still carries exactly its two pre-existing `exhaustive-deps` warnings, and the two new lib modules are warning-free.
+
+**The whole-tree sweep** (the round's final state):
+
+```
+$ node_modules/.bin/vitest run
+ Test Files  2 failed | 610 passed | 1 skipped (613)
+      Tests  3 failed | 8691 passed | 3 skipped (8697)
+
+  FAIL src/lib/analytics-live-shape.test.ts > builds a funnel from flat daily rows without touching events
+  FAIL src/lib/analytics-live-shape.test.ts > serves traffic from flat geo+daily rows with empty splits
+  FAIL src/lib/site.server.test.ts > throws a guarded missing-env error, never a placeholder client
+```
+
+Those three are the **pre-existing** failures (2 in `analytics-live-shape.test.ts`, 1 in `site.server.test.ts` — the latter needs the local `.env` CI lacks). They fail at the base commit too and are not this round's. The round's own delta: **+2 test files, +35 tests, 0 failures.**
+
+**What this round could NOT verify, stated plainly.** The browser lane (Task 7's Playwright measurement) is not run here: the loopback stack is not up, so the pixels of the six widths, the disclosure's open state and the checkout's rendered picker are proven by the CLASS contract and the pure decisions, not by a screenshot. The three states' `aria` behaviour (the arrow keys moving the focus, the focus landing on the panel) is proven by the rendered STRUCTURE (the roving `tabindex`, the panel's `tabindex="0"`, the handlers in the source) and not by a live keypress — the repo has no DOM environment (no jsdom, no testing-library), so every suite is static markup.
+
+### (j.7) The round's commit, and one honest correction to §(j.5)
+
+**The commit.** The whole round is ONE commit — *"fix(storefront): the account dashboard and the checkout shell lose no control — the profile card, the payment picker, the totals and the order view"* (`git log --oneline -1` at the tip of `frame30`). It stages **explicit paths** only: the four NEW files, the two account/checkout routes, the custom-host twin, the dashboard and its two suites, the checkout contract suite, the theme's preview composition and its demo data, the preview host, and this record. The three churn files (`.artifacts/e2e/playwright-report/index.html`, `ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`) and `.output-snapshots/` are **unstaged** at that commit. (The record names the commit by its SUBJECT, not by its SHA: a record that carries its own commit's SHA cannot survive being amended, and this one was amended once, to add this section.)
+
+**The correction.** §(j.5)'s diffstat was measured **before** §(j.5) and §(j.6) were appended to this record, so its own line for this file (`325 +++++++++++++`) is the size of the record *up to §(j.4)*. The record's final size is larger by this section. Every other line of that diffstat is exact and unchanged.

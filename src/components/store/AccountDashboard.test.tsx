@@ -60,7 +60,8 @@ vi.mock("@tanstack/react-router", async (importOriginal) => {
   };
 });
 
-import { AccountDashboard } from "./AccountDashboard";
+import { AccountDashboard, OrderDetail } from "./AccountDashboard";
+import type { AccountOrderDetail } from "./AccountDashboard";
 
 const SOURCE = readFileSync(
   "src/components/store/AccountDashboard.tsx",
@@ -124,6 +125,37 @@ const OVERVIEW: AccountOverview = {
     },
   ],
   reviews: [],
+};
+
+/**
+ * The session-scoped order detail — the shape the `customer_order_detail`
+ * RPC returns for the shopper's own order.
+ */
+const DETAIL: AccountOrderDetail = {
+  order: {
+    id: "o1",
+    order_number: "ORD-2451",
+    status: "delivered",
+    payment_method: "cod",
+    currency_code: "BDT",
+    subtotal_minor_int: 129900,
+    shipping_minor_int: 0,
+    discount_minor_int: 0,
+    cod_surcharge_minor_int: 0,
+    vat_minor_int: 0,
+    total_minor_int: 129900,
+    city: "Dhaka",
+    created_at: "2026-09-12T09:30:00.000Z",
+  },
+  items: [
+    {
+      title: "Dhakai Jamdani Heritage Saree",
+      variant_name: "Default",
+      quantity: 1,
+      unit_minor: 129900,
+      line_minor: 129900,
+    },
+  ],
 };
 
 function render(props: Partial<Parameters<typeof AccountDashboard>[0]> = {}) {
@@ -193,13 +225,16 @@ describe("the account dashboard — the navigation", () => {
     // every other link is a route that exists.
     const allowed = new Set([
       "/store/$slug/account",
-      "/store/$slug/order/$orderId",
       "/store/$slug/p/$productSlug",
       "/store/$slug",
     ]);
     for (const link of tabs) expect(allowed.has(link)).toBe(true);
     expect(tabs).toContain("/store/$slug/account");
-    expect(tabs).toContain("/store/$slug/order/$orderId");
+    // The order route is NOT linked: it is token-gated (`loadOrder` returns
+    // nothing without the order's own access token) and the account payload
+    // carries no token, so a link to it would dead-end on a 404. The row
+    // DISCLOSES the order instead.
+    expect(tabs).not.toContain("/store/$slug/order/$orderId");
     const searches = [...html.matchAll(/data-link-search="([^"]+)"/g)].map(
       (match) => match[1],
     );
@@ -215,6 +250,40 @@ describe("the account dashboard — the navigation", () => {
     const html = render({ tab: "addresses" });
     expect(html).toContain('role="tabpanel"');
     expect(html).toContain('aria-labelledby="account-tab-addresses"');
+  });
+});
+
+describe("the account dashboard — the ARIA tabs pattern", () => {
+  it("keeps ONE tab in the tab sequence (the roving tabindex)", () => {
+    const html = render();
+    // The tablist is ONE tab stop: the selected tab is focusable, every
+    // other tab is reachable with the arrow keys, not with Tab.
+    const tags = html.match(/<a [^>]*role="tab"[^>]*>/g) ?? [];
+    expect(tags).toHaveLength(ACCOUNT_TABS.length);
+    const focusable = tags.filter((tag) => tag.includes('tabindex="0"'));
+    expect(focusable).toHaveLength(1);
+    expect(focusable[0]).toContain('id="account-tab-orders"');
+    const roving = tags.filter((tag) => tag.includes('tabindex="-1"'));
+    expect(roving).toHaveLength(ACCOUNT_TABS.length - 1);
+  });
+
+  it("moves the focus between the tabs with the arrow keys", () => {
+    // The tablist handles ArrowLeft / ArrowRight, and Home / End.
+    expect(SOURCE).toContain('event.key === "ArrowRight"');
+    expect(SOURCE).toContain('event.key === "ArrowLeft"');
+    expect(SOURCE).toContain('event.key === "Home"');
+    expect(SOURCE).toContain('event.key === "End"');
+    // …and the focus actually moves (the tab refs are focused).
+    expect(SOURCE).toContain("tabRefs.current[target.tab]?.focus()");
+  });
+
+  it("moves the focus to the panel when a tab is activated", () => {
+    const html = render();
+    // The panel is focusable…
+    expect(html).toContain('role="tabpanel"');
+    expect(html).toContain('id="account-panel"');
+    // …and the activation hands it the focus.
+    expect(SOURCE).toContain("panelRef.current?.focus()");
   });
 });
 
@@ -259,14 +328,49 @@ describe("the account dashboard — the orders", () => {
     // The server's own money — never client arithmetic.
     expect(html).toContain("1,299");
     expect(html).toContain("549");
-    // Each order links to the real order route.
-    expect(html).toContain('data-link-to="/store/$slug/order/$orderId"');
+  });
+
+  it("discloses the order inline instead of linking to the token-gated order route", () => {
+    const html = render({ tab: "orders", onLoadOrder: () => undefined });
+    // No link to the order route: it needs the order's access token, which
+    // the account payload does not carry, so a link would 404.
+    expect(html).not.toContain('data-link-to="/store/$slug/order/$orderId"');
+    // One disclosure control per row, pointing at its own region.
+    const controls = html.match(/aria-controls="account-order-detail-[^"]+"/g);
+    expect(controls).toHaveLength(OVERVIEW.orders.length);
+    expect(html).toContain('aria-controls="account-order-detail-o1"');
+    expect(html).toContain('aria-expanded="false"');
+    expect(html).toContain("View order");
+  });
+
+  it("draws no disclosure control where there is no session to resolve one", () => {
+    // The theme preview has no shopper, so no affordance is drawn there.
+    const html = render({ tab: "orders" });
+    expect(html).not.toContain("View order");
   });
 
   it("shows the empty state when the shopper has no orders", () => {
     const html = render({ overview: { ...OVERVIEW, orders: [] } });
     expect(html).toContain("No orders yet.");
     expect(html).toContain('data-link-to="/store/$slug"');
+  });
+
+  it("renders the disclosed order from the session-scoped payload", () => {
+    const html = renderToStaticMarkup(
+      createElement(OrderDetail, { detail: DETAIL, lang: "en" }),
+    );
+    // The order's own fields…
+    expect(html).toContain("ORD-2451");
+    expect(html).toContain("delivered");
+    expect(html).toContain("cod");
+    // …its line items…
+    expect(html).toContain("Dhakai Jamdani Heritage Saree");
+    expect(html).toContain("Default");
+    // …and its server-priced totals. Nothing is computed on the client.
+    expect(html).toContain("1,299");
+    expect(html).toContain("Subtotal");
+    expect(html).toContain("Delivery");
+    expect(html).toContain("Total");
   });
 });
 
@@ -296,36 +400,84 @@ describe("the account dashboard — the six states", () => {
     // The lookup form posts the shopper to the real order route.
     expect(states.unauthenticated).toContain("order-lookup-input");
   });
+
+  it("asks a signed-out shopper for the order's access code, so the lookup can never 404", () => {
+    // The order route is token-gated: `loadOrder` returns nothing unless the
+    // request carries the order's own access token. A lookup that carried
+    // only the order id would dead-end on a 404 — so the code is asked for,
+    // and the navigation carries it.
+    expect(states.unauthenticated).toContain("order-lookup-code");
+    expect(SOURCE).toContain("search: { t: code.trim() }");
+  });
+
+  it("shows the signed-out state, never a skeleton", () => {
+    // The overview query is DISABLED for a signed-out shopper, and a
+    // disabled React Query v5 query is `status: "pending"` — so the
+    // widgets' skeleton flag is gated on the session
+    // (`accountSlotsPending`). The signed-out shopper reaches the lookup.
+    expect(states.unauthenticated).not.toContain("animate-pulse");
+    expect(states.unauthenticated).toContain("Track Your Order");
+  });
+});
+
+describe("the account dashboard — the privacy switches", () => {
+  it("disables the consent switches while the consent mutation is in flight", () => {
+    const html = render({
+      tab: "privacy",
+      onSetConsent: () => undefined,
+      busy: { consent: true },
+    });
+    const inputs = html.match(/<input[^>]*type="checkbox"[^>]*>/g) ?? [];
+    expect(inputs).toHaveLength(4);
+    for (const input of inputs) expect(input).toContain("disabled");
+  });
+
+  it("leaves the consent switches live when nothing is in flight", () => {
+    const html = render({
+      tab: "privacy",
+      onSetConsent: () => undefined,
+      busy: { consent: false },
+    });
+    const inputs = html.match(/<input[^>]*type="checkbox"[^>]*>/g) ?? [];
+    expect(inputs).toHaveLength(4);
+    for (const input of inputs) expect(input).not.toContain("disabled");
+  });
 });
 
 describe("the account dashboard — the layout contract", () => {
   const WIDTHS = [1440, 1280, 768, 430, 390, 375];
 
   it("maps every required width onto the platform's own buckets", () => {
-    expect(bucketForWidth(1440)).toBe("desktop");
-    expect(bucketForWidth(1280)).toBe("desktop");
-    expect(bucketForWidth(768)).toBe("tablet");
-    expect(bucketForWidth(430)).toBe("mobile");
-    expect(bucketForWidth(390)).toBe("mobile");
-    expect(bucketForWidth(375)).toBe("mobile");
+    // Every required width, and the bucket the platform's own helper gives
+    // it — asserted once each, in one list, rather than in a loop over the
+    // same markup six times.
+    expect(WIDTHS.map((width) => bucketForWidth(width))).toEqual([
+      "desktop",
+      "desktop",
+      "tablet",
+      "mobile",
+      "mobile",
+      "mobile",
+    ]);
   });
 
-  it.each(WIDTHS)(
-    "lays out at %dpx through the platform's breakpoints",
-    (width) => {
-      const html = render();
-      // The overview strip: one column on mobile, two from `sm`, four from
-      // `xl` — the platform's own breakpoints (`src/lib/responsive.ts`).
-      expect(html).toContain("grid gap-4 sm:grid-cols-2 xl:grid-cols-4");
-      // The navigation: a scrolling strip on mobile, a wrapping row from `sm`.
-      expect(html).toContain("overflow-x-auto");
-      expect(html).toContain("sm:flex-wrap");
-      // The order rows: stacked on mobile, a row from `sm`.
-      expect(html).toContain("sm:grid-cols-[minmax(0,1fr)_auto_auto]");
-      // The width's bucket decides which of those rules is the live one.
-      expect(["desktop", "tablet", "mobile"]).toContain(bucketForWidth(width));
-    },
-  );
+  it("lays out through the platform's own breakpoints", () => {
+    // The dashboard is ONE markup at every width: the width decides which
+    // of the platform's breakpoint rules is the live one. So the class
+    // contract is asserted ONCE, and the bucket mapping above carries every
+    // width. The PIXELS are measured in the Task 7 Playwright lane
+    // (`.e2e/songoskriti-storefront-surfaces.spec.ts`), which is where the
+    // real frames are rendered.
+    const html = render();
+    // The overview strip: one column on mobile, two from `sm`, four from
+    // `xl` — the platform's own breakpoints (`src/lib/responsive.ts`).
+    expect(html).toContain("grid gap-4 sm:grid-cols-2 xl:grid-cols-4");
+    // The navigation: a scrolling strip on mobile, a wrapping row from `sm`.
+    expect(html).toContain("overflow-x-auto");
+    expect(html).toContain("sm:flex-wrap");
+    // The order rows: stacked on mobile, a row from `sm`.
+    expect(html).toContain("sm:grid-cols-[minmax(0,1fr)_auto_auto_auto]");
+  });
 
   it("uses no hand-rolled breakpoint variant", () => {
     // `max-[430px]:` / `min-[375px]:` style variants would drift from the
