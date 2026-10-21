@@ -16,7 +16,15 @@ must not overwrite Task 11's sections.
 
 ## (G) OPEN items — defects found, recorded, and NOT fixed
 
-### (G.1) The platform's `payment_methods` widget renders no payment-method radios — **OPEN**
+### (G.1) The platform's `payment_methods` widget renders no payment-method radios — **OPEN → FIXED (2026-10-21, see §(K.1))**
+
+**Status (2026-10-21, closing wave):** **FIXED** — commit `9eb581d0`, covered by
+the new suite `src/components/builder/cart-payment-methods.test.tsx` (8 cases).
+**The body below is the finding exactly as it stood when it was recorded**; §(K.1)
+carries the fix, the proof and **a correction to the "where it shows" paragraph
+below** (the production *checkout* route does **not** render this widget — the
+defect was in the widget, which the preview's checkout tab and the storefront's
+**cart** route both grant).
 
 **What is broken.** The platform's `payment_methods` widget renders its fieldset and its
 legend ("Payment method") and **no payment-method radios at all**. The widget reads
@@ -466,6 +474,13 @@ differ materially. Anything else that moved is a finding, not noise.
 | **D2**   | the **production checkout stays tokens-only**; the theme may not author a production checkout body                                                                            | `src/routes/store.$slug.checkout.tsx:415-421` (`ast={null}`) — the route renders its own hand-built form and discards the theme's AST. Task 6 asserts the file still says so (`leaves the production checkout route untouched`). The gate records it as a documented exception.                         |
 | **D7**   | the storefront's **widget-data delivery is not fixed**; the search results reach the storefront through the route's `productSlot`, and `facet_sidebar` stays **preview-only** | no storefront route mounts a `WidgetDataProvider`; its rows come from the widget-data pipeline (`source: "facets"`, `src/lib/widget-registry.ts:483-503`). The storefront grants **five** of the six search widgets and never `facet_sidebar`. Recorded in the gate's `search` exception and in §(G.2). |
 
+**Amended 2026-10-21 (§(K.3)) — D2, D5 and D7 are now CLOSED as decisions, not
+open questions.** The deferrals above **stand unchanged** (the production checkout
+stays platform-owned, the storefront reader blog stays themeless, the storefront
+mounts no widget data) — what changed is that each is now a **settled decision with
+a named follow-up path**, recorded in §(K.3) and in the plan's Decision Gate. D3
+(also closed) is not in this table: it was never a deferral.
+
 **Ruled — and implemented here (NOT deferred):**
 
 | Decision | The ruling                                                                                                                                                                                                | How this plan implements it                                                                                             |
@@ -482,6 +497,18 @@ payment-method radios** (it indexes `groupMethods()`'s array by group name —
 on the live checkout); the storefront's widget-data delivery (§G.2);
 `src/components/store/CheckoutMock.tsx` is now **dead code** (§H.1) and is **not**
 deleted, because `src/components/store/**` is §7-prohibited.
+
+**Amended 2026-10-21 (§(K.1)) — the first of those is now FIXED.** The
+`payment_methods` defect is closed (commit `9eb581d0`, covered by
+`src/components/builder/cart-payment-methods.test.tsx`); the widget now renders a
+radio per method of its group. The paragraph above also carried the claim that
+"the same defect is on the live checkout" — **that is not what the tree does**: the
+production checkout route renders its **own** hand-built payment fieldset (and does
+so correctly); the defect was in the **widget**, which the preview's checkout tab
+and the storefront's **cart** route both grant. §(K.1) carries the correction.
+The items still open are §(G.2) (the storefront's widget-data delivery, now
+Decision **D7**) and §(G.3) (the preview-only sentence in the shipped `product`
+body).
 
 **Still unverified in production.** The **storefront path** of this work has **not**
 been exercised against a live store: the live database has **no Songoskriti store**
@@ -788,6 +815,11 @@ platform knows), so the existing pin
 
 ### (J.3) The OPEN item this round measured but did NOT fix
 
+**Status (2026-10-21, closing wave):** **KNOWN AND PINNED** — no longer an open
+item. Three cases in `src/lib/themes/songoskriti/unsupported-template-state.test.tsx`
+now pin the **current** behaviour, so a future change to it **flips a test** rather
+than silently changing what the server serves. See §(K.2).
+
 The **same** canonicalisation drops `?max=` — a search key the route's own
 comment promises to keep (`src/routes/theme-preview.$key.tsx:161-163`).
 Measured live: `GET /theme-preview/songoskriti?template=search&max=99900` →
@@ -850,3 +882,308 @@ node_modules/.bin/prettier --check src/lib/theme-preview-nav.ts \
 **The HTTP measurements** (a loopback dev server, `node_modules/.bin/vite dev
 --port 3111`, and the live host through `nsenter -t 1 -n`) are in the
 escalation record's **§(n.1)**, **§(n.3)** and **§(n.6)**.
+
+---
+
+## (K) The closing wave — the payment rails FIXED, the `?max=` quirk PINNED, and four decisions CLOSED _(appended 2026-10-21)_
+
+**Appended, not a rewrite: sections (A)–(J) stand as written**, except for the
+**four dated status amendments** named in §(K.0) below. The escalation record's
+**§(o)** carries the same round's escalations, the exact hunks and the
+corrections.
+
+### (K.0) The four dated amendments to the sections above
+
+| section                          | what changed                                                                                                                     |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **§(G.1)**                       | its status marker moved from **OPEN** to **FIXED (2026-10-21, see §(K.1))**, with a dated pointer and a dated **correction** to its "where it shows" paragraph |
+| **§(J.3)**                       | its status marker moved from an open item to **KNOWN AND PINNED (2026-10-21, see §(K.2))**                                    |
+| **§(E)**'s deferred-items table  | a dated note: **D2, D5 and D7 are now closed as decisions** — the deferrals stand, the questions are settled (§(K.3))            |
+| **§(E)**'s "Also open" paragraph | a dated note: the payment defect is **fixed**, and the "the same defect is on the live checkout" claim is **corrected** (§(K.1)) |
+
+No section above was rewritten, and no assertion was removed.
+
+### (K.1) The payment-method radios — **FIXED**
+
+**The commits.**
+
+| sha        | subject                                                                              | files                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| `337ef1f6` | docs(songoskriti): escalate the platform's payment-rails defect before the fix        | the escalation record's **§(o)** — written and committed **before** the code was touched                |
+| `9eb581d0` | fix(platform): render a payment-method radio per method of the group                  | `src/components/builder/cart.tsx`, `src/components/builder/cart-payment-methods.test.tsx` (**NEW**), `src/lib/themes/songoskriti/unsupported-template-state.test.tsx`, `src/components/store/songoskriti-preview-compositions.test.tsx` |
+
+**What changed.** `src/components/builder/cart.tsx:558-573` — the widget's grouping
+became a lookup **by the group's LAYER**, from the same `groupMethods()` data the
+component already had:
+
+```diff
+-  const grouped = groupMethods(cart.methods);
++  const byLayer = new Map<MethodLayer, PaymentMethodKey[]>(
++    groupMethods(cart.methods).map(
++      (group) => [group.layer, group.methods] as const,
++    ),
++  );
+```
+
+and `src/components/builder/cart.tsx:596`:
+
+```diff
+-        const keys = (grouped[group] ?? []) as PaymentMethodKey[];
++        const keys = byLayer.get(group) ?? [];
+```
+
+**Nothing else in the file changed** — the fieldset, the legend, the group headings,
+the radio markup, the radio group name, the `checked`/`onChange` binding, the empty
+state and the note are byte-identical.
+
+**The correction to §(G.1)'s "where it shows".** §(G.1) said the defect was on
+"the live checkout … the live checkout renders the same widget". **It does not.**
+Measured on the tree:
+
+| host                                                         | renders the `payment_methods` widget?                                                                                                                                             | the defect?                                                             |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| the theme preview's **checkout** tab                         | **yes** — granted (`src/components/store/ThemePreviewFrame.tsx:686-696`) and authored by the theme (`src/lib/themes/songoskriti/preview.ts:359`)                                   | **yes**                                                                 |
+| the storefront's **cart** route (and its custom-host twin)    | **yes** — granted (`src/routes/store.$slug.cart.tsx:102-108`, `src/routes/cart.tsx:102-108`)                                                                                        | **yes**                                                                 |
+| the storefront's **checkout** route (and its custom-host twin) | **no** — the route renders its **own** hand-built fieldset (`ast={null}`, `src/routes/store.$slug.checkout.tsx:415-421`), built from `groupMethods(offered)` and iterated **correctly** (`:570-604`) | **no** — that route's radios render one per method |
+
+So the defect was **not** a preview-only artefact — it was in the platform's
+**widget**, and the storefront's **cart** page grants it — but the production
+**checkout** page was never affected.
+
+**The security posture is unchanged, and it is asserted.** The rails still come
+from the cart context (the **server's** quote), never from a theme prop; the totals
+are still the server's; the widget still imports **no** theme module; the theme
+still contributes **nothing** to the payment decision. The fix changes only **which
+of the platform's own rails the platform draws** — `src/components/builder/cart-payment-methods.test.tsx`
+case 8 ("keeps the platform in charge of the payment decision") asserts exactly
+that.
+
+**The proof — the new suite.** `src/components/builder/cart-payment-methods.test.tsx`
+(**NEW**, 8 cases) renders the widget through `SectionRenderer` — the same path the
+storefront's cart route and the preview use — over a cart context whose rails the
+test chooses:
+
+1. one radio per method the server offered (`["cod","bkash","nagad"]` → three
+   radios, values `cod`, `bkash`, `nagad`);
+2. the platform's own group headings and catalogue labels;
+3. a radio per method of **each** group (one rail in each of the five groups → five
+   radios, five headings, the platform's `METHOD_GROUP_ORDER`);
+4. **a group with no methods renders NO radios** — and no heading (`["cod"]` → one
+   radio; neither "Mobile wallets" nor bKash nor Nagad);
+5. never offers a rail the server did not offer;
+6. the empty state — no rails → the platform's empty copy, no fieldset, no radios;
+7. the same radios on the storefront's **cart** host (`template="cart"`);
+8. the platform stays in charge of the payment decision.
+
+**Measured, before and after the fix** (the same file, the same command):
+
+```
+# BEFORE (the tree at 2f46c634, the new suite against the unfixed widget):
+node_modules/.bin/vitest run src/components/builder/cart-payment-methods.test.tsx
+# → Test Files  1 failed (1)
+#   Tests  7 failed | 1 passed (8)
+#   AssertionError: expected [] to deeply equal [ 'cod', 'bkash', 'nagad' ]
+
+# AFTER (the tree at 9eb581d0):
+node_modules/.bin/vitest run src/components/builder/cart-payment-methods.test.tsx
+# → Test Files  1 passed (1)
+#   Tests  8 passed (8)
+```
+
+**The preview now presents the platform-owned payment components** — the expert's
+P0 item 4. `src/components/store/songoskriti-preview-compositions.test.tsx`'s
+checkout case (which this programme created, per the escalation record's §(j.7))
+now **asserts the radios**: the preview's authored checkout body renders exactly
+`cart.methods.length` radio inputs, each carrying the platform's own radio-group
+name and the synthetic cart's own method keys. That case's header comment — which
+said the defect was "deliberately not asserted" — now says what is asserted and
+why.
+
+### (K.2) The `?max=` quirk — **KNOWN AND PINNED**
+
+§(J.3) left the quirk **open** and **unpinned**. It is now **pinned** and no
+longer open.
+
+**The measured current behaviour** (the suite's own `canonicalPreviewHref` helper,
+which reproduces the router's canonicalisation with the **real** router and the
+route's own `validateSearch`):
+
+| request                                                | the canonical URL the router serves           | the key         |
+| ------------------------------------------------------ | -------------------------------------------- | --------------- |
+| `/theme-preview/songoskriti?template=search&max=99900` | `/theme-preview/songoskriti?template=search`   | **dropped**    |
+| `/theme-preview/songoskriti?template=search&q=jamdani`  | `/theme-preview/songoskriti?template=search&q=jamdani` | kept        |
+
+**The cause**, unchanged: the router's default `parseSearch`
+(`@tanstack/router-core/dist/esm/searchParams.js`, `parseSearchWith`) parses
+`max=99900` as the **number** `99900` (`toValue`, `qss.js`), and
+`validateThemePreviewSearch` accepts `max` only when it is a **string**
+(`src/lib/theme-preview-nav.ts:354-357`) — so the second validation (the
+canonicalisation's) drops it. The route's own comment
+(`src/routes/theme-preview.$key.tsx:161-163`) promises the key survives; it does
+not.
+
+**The pin** — three cases appended to
+`src/lib/themes/songoskriti/unsupported-template-state.test.tsx` (the suite this
+programme created — §(m.3) — which §(n.4) grew from 9 to 15 cases, and which now
+has **18**):
+
+1. the validator accepts `max` as a **string** and drops it as a **number** — the
+   quirk's mechanism, pinned at the unit;
+2. the **canonical URL drops `?max=`** — the quirk's effect, pinned at the URL,
+   with the exact canonical href asserted;
+3. **`?q=` survives** the same canonicalisation — so the pin says which keys are
+   affected and which are not.
+
+**A future fix flips these three cases** (they assert the drop), so the change
+would be visible as a red test rather than as a silent behaviour change.
+
+### (K.3) The four open decisions — **CLOSED as decisions**
+
+Each is now a decision with a reason, a follow-up path and a named home. The
+plan's Decision Gate carries the same rulings (amended in place, dated).
+
+#### D2 — the production checkout: **production checkout stays platform-owned**
+
+- **The decision.** The production checkout route stays **platform-owned**: the
+  theme contributes **tokens** only, and the platform's own form, the
+  server-authoritative totals, the validation, the payment selection and the order
+  state remain the platform's. The theme's `checkout` composition is an
+  **authoring and preview** surface — it is the body the merchant authors and the
+  body the preview shows, and it is **not** a production checkout shell.
+- **The reason.** The route deliberately renders its own hand-built form and
+  discards the theme's AST (`src/routes/store.$slug.checkout.tsx:415-421`,
+  `ast={null}`) **because the form is server-quoted**: the totals come from
+  `quoteCart`, the rails come from the server's availability, the validation and
+  the order write are server-side. A theme composing the checkout shell would put
+  theme code between the shopper and the server's authoritative money, payment and
+  order state — which is exactly the boundary this programme exists to protect.
+- **The follow-up path.** Letting a theme compose the checkout shell needs its own
+  **escalation** (a new record, a new owner approval, and the §7 widening it would
+  need) and a decision about which parts of the form may be theme-owned at all.
+  It is **explicitly out of this programme's scope** — the evidence record's
+  §(A) row for the expert's P0 item 4 is about the **preview**.
+- **Where the follow-up lives.** The plan's Decision Gate (**D2**), this section,
+  and the distinctness gate's `checkout` exception, whose `basis` names **D2**
+  (`src/lib/themes/songoskriti/template-distinctness.ts:219-224`) — so the gate's
+  basis stays honest about what the checkout template is.
+
+#### D3 — the scope of the programme: **Songoskriti only**
+
+- **The decision.** This programme is **Songoskriti only**, as the expert asked
+  ("Songoskriti must be the proof"). The distinctness gate's **machinery** — the
+  seven rules `R1`–`R7` — is theme-agnostic; its **data** is Songoskriti-specific
+  (`SONGOSKRITI_TEMPLATE_EXPECTATIONS` and `SONGOSKRITI_APPROVED_EXCEPTIONS`,
+  `src/lib/themes/songoskriti/template-distinctness.ts:132`, `:210`).
+- **The reason.** Somvabona authors **three** surfaces — `index` (through
+  `buildHomepageMain`), `collection` and `product`
+  (`src/lib/themes/somvabona/preview.ts:52-90`) — and its `default:` branch
+  returns `null`, so the other six templates fall through to the engine's
+  **generic** body (`src/lib/theme-preview-nav.ts:357-372`). A gate with no
+  Somvabona expectation table would either fail every Somvabona body or have to
+  be weakened to mean nothing; the expert's bar was a Songoskriti proof, and a
+  Songoskriti proof is what this programme delivers.
+- **The follow-up path.** Extending the gate to Somvabona **adds its own
+  expectation table** (and its own approved exceptions) — **new data, not new
+  machinery**: the rules, the fixtures and the evaluation are already
+  theme-agnostic.
+- **Where the follow-up lives.** The plan's Decision Gate (**D3**), this section,
+  and the table it would extend —
+  `src/lib/themes/songoskriti/template-distinctness.ts:132` (a Somvabona table
+  beside it, and a Somvabona gate module beside that).
+
+#### D5 — the storefront reader blog: **"themeless by design" stands**
+
+- **The decision.** The storefront's reader blog stays **themeless by design**.
+  `src/components/store/BlogArchiveTheme.tsx` keeps its deliberate "theme purge
+  Task 3" behaviour, pinned by `src/components/store/BlogArchiveTheme.test.tsx`.
+  The theme's `blog` template is the theme's **editorial composition in the
+  preview** and the **authoring surface**; it is not the storefront's reader.
+- **The reason.** The purge was a deliberate product decision, not an accident:
+  the file's own header says the render "stays generic for every key by design".
+  Reversing it is a **product** change with **SEO and canonical implications** —
+  the storefront's blog routes (`blog.index`, `blog.category`, `blog.tag`,
+  `blog.author`, `store.$slug.blog.index`) own their canonical policy, and a
+  themed reader would change what those routes publish about themselves. That is a
+  different programme, not a detail of this one.
+- **The follow-up path.** A **separate product change** (an SEO/canonical review
+  plus the `BlogArchiveTheme` reversal), with its own escalation and its own
+  evidence. It is **not** a follow-up task inside this plan.
+- **Where the follow-up lives.** The plan's Decision Gate (**D5**), this section,
+  and the distinctness gate's `blog` exception, whose `basis` names **D5**
+  (`src/lib/themes/songoskriti/template-distinctness.ts:225-230`).
+
+#### D7 — the storefront's widget-data delivery: **the storefront keeps not mounting widget data**
+
+- **The decision.** The storefront keeps **not** mounting a `WidgetDataProvider`
+  in this programme. The platform's **per-widget data delivery** on storefront
+  hosts is a **platform-level feature with its own scope** — the expert put the
+  widget architecture out of scope ("Do not redo the plugin registry or widget
+  architecture"), and nothing in this programme depends on it: the storefront's
+  live search results reach the theme through the route's `productSlot`, not
+  through the widget-data pipeline.
+- **The reason.** The consequence is already stated everywhere it matters:
+  `facet_sidebar` is **preview-only** (its rows come from the widget-data
+  pipeline, `source: "facets"`, `src/lib/widget-registry.ts:483-503`) and the
+  distinctness gate records `search` as a **documented exception** whose basis is
+  this decision.
+- **The follow-up path.** A **platform-level widget-data delivery epic** — the
+  per-widget data pipeline mounted by storefront hosts. **The gate's `search`
+  exception must keep naming D7**, so the gate's basis stays honest while the
+  decision stands; when the epic lands, that exception is revisited (the gate's
+  `search` exception, `src/lib/themes/songoskriti/template-distinctness.ts:231-236`).
+- **Where the follow-up lives.** The plan's Decision Gate (**D7**), this section,
+  §(G.2) above, and the gate's `search` exception.
+
+### (K.4) The measurements — run from the repo root
+
+```
+node_modules/.bin/vitest run src/components/builder/cart-payment-methods.test.tsx
+# → Test Files  1 passed (1) / Tests  8 passed (8)      (7 failed | 1 passed before the fix)
+
+node_modules/.bin/vitest run src/lib/themes/songoskriti/unsupported-template-state.test.tsx
+# → Test Files  1 passed (1) / Tests  18 passed (18)     (15 before this round — the ?max= pin adds 3)
+
+node_modules/.bin/vitest run src/components/store/songoskriti-preview-compositions.test.tsx
+# → Test Files  1 passed (1) / Tests  8 passed (8)       (8 before — the checkout case is now STRONGER)
+
+# the acceptance suite of §(I.4)/(J.4), plus this round's two suites:
+node_modules/.bin/vitest run src/lib/themes/songoskriti \
+  src/components/builder/songoskriti-port-freeze.test.tsx \
+  src/lib/theme-preview-nav.test.ts src/lib/definition-of-done.test.ts \
+  src/components/store/ThemePreviewFrame.test.tsx \
+  src/components/store/songoskriti-preview-compositions.test.tsx \
+  src/components/store/songoskriti-preview-page.test.tsx \
+  src/components/store/BlogArchiveTheme.test.tsx \
+  src/components/store/ThemeChrome.route-content.test.tsx \
+  src/components/store/PageView.twin-wiring.test.tsx \
+  src/components/builder/cart.test.tsx \
+  src/components/builder/cart-payment-methods.test.tsx
+# → Test Files  37 passed (37) / Tests  474 passed (474)
+#   (the §(J.4) command alone: 35 files / 438 tests; +cart.test.tsx (25 cases)
+#    and the new payment suite (8 cases))
+
+node_modules/.bin/vitest run          # the whole suite
+# → Test Files  2 failed | 601 passed | 1 skipped (604)
+#   Tests  3 failed | 8560 passed | 3 skipped (8566)
+#   The 3 failures are PRE-EXISTING and unrelated (src/lib/analytics-live-shape.test.ts
+#   — 2, src/lib/site.server.test.ts — 1) — measured identically on a clean tree.
+#   (the §(J.4) baseline: 603 files / 8555 tests; +1 file and +11 tests)
+
+node_modules/.bin/tsgo --noEmit
+# → no output, exit 0
+
+node_modules/.bin/prettier --check src/components/builder/cart.tsx \
+  src/components/builder/cart-payment-methods.test.tsx \
+  src/lib/themes/songoskriti/unsupported-template-state.test.tsx \
+  src/components/store/songoskriti-preview-compositions.test.tsx
+# → All matched files use Prettier code style!
+
+node_modules/.bin/eslint <the same four paths>
+# → 13 problems (0 errors, 13 warnings) — all 13 are the PRE-EXISTING
+#   react-refresh/only-export-components warnings on src/components/builder/cart.tsx's
+#   own component declarations (13 before this round too); the three other files
+#   are silent.
+```
+
+**The three known-red gates and the known local flake are unchanged** — they are the
+pre-existing conditions §(F) lists, and this round neither ran nor changed them.

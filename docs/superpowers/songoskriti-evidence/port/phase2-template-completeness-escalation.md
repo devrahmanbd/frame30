@@ -2636,11 +2636,19 @@ the three churn files plus `.output-snapshots/`.
 
 ### (o.4) The exact hunks — `src/components/builder/cart.tsx`
 
+**Correction (2026-10-21, closing wave).** The hunks below are recorded **as they
+shipped**: the `byLayer` construction is written in Prettier's own wrapping, and
+the hunk headers carry the real line numbers (`-557 → +558`, `-581 → +593`). An
+earlier copy of this section wrote the same expression on one line; the code is
+behaviourally identical and the shipped form is the one recorded here, so the
+record and the tree agree. (The real diff:
+`git diff 2f46c634 9eb581d0 -- src/components/builder/cart.tsx`.)
+
 **Hunk 1 — the import gains the group's LAYER type** (the lookup is by
 layer, so the layer type is the map's key type):
 
 ```diff
-@@ -16,8 +16,9 @@
+@@ -16,6 +16,7 @@
  import {
    METHOD_GROUP_ORDER,
    groupMethods,
@@ -2655,7 +2663,7 @@ array `groupMethods()` returns is turned into a map; the data is the
 component's own, unchanged):
 
 ```diff
-@@ -557,7 +558,16 @@
+@@ -557,7 +558,18 @@
  const PaymentMethods: WidgetComponent = (ctx) => {
    const { str, Heading, locale } = ctx;
    const cart = useCartContext();
@@ -2668,10 +2676,9 @@ component's own, unchanged):
 +   * to render its legend and no radios at all.)
 +   */
 +  const byLayer = new Map<MethodLayer, PaymentMethodKey[]>(
-+    groupMethods(cart.methods).map((group) => [
-+      group.layer,
-+      group.methods,
-+    ] as const),
++    groupMethods(cart.methods).map(
++      (group) => [group.layer, group.methods] as const,
++    ),
 +  );
    const lang = locale === "bn" ? "bn" : "en";
 ```
@@ -2679,7 +2686,7 @@ component's own, unchanged):
 **Hunk 3 — the group reads its own methods out of the map:**
 
 ```diff
-@@ -583,7 +593,7 @@
+@@ -581,7 +593,7 @@
        {METHOD_GROUP_ORDER.map((group) => {
 -        const keys = (grouped[group] ?? []) as PaymentMethodKey[];
 +        const keys = byLayer.get(group) ?? [];
