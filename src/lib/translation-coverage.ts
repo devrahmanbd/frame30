@@ -11,9 +11,12 @@ import {
   TEMPLATE_KEYS,
   type Section,
   type TemplateKey,
+  type TemplateMap,
+  type ThemeAst,
   type ThemeTemplates,
 } from "./builder-ast";
 import { biTextState, readBiText, type BiTextState } from "./bitext";
+import { TEMPLATE_VARIANT_KEYS, baseTemplateKey } from "./template-variants";
 
 export type CoverageRef = {
   template: TemplateKey;
@@ -90,18 +93,50 @@ export function translationCoverage(templates: ThemeTemplates): CoverageReport {
   const byTemplate: Partial<Record<TemplateKey, CoverageStats>> = {};
   const totals = blank();
 
-  for (const key of TEMPLATE_KEYS) {
-    const ast = templates[key];
-    if (!ast) continue;
+  // The base templates AND the VARIANTS both count. A variant's বাংলা
+  // coverage is the theme's coverage: the publish gate's 90 % floor must
+  // see it, or a variant full of untranslated strings slips through a gate
+  // that the base templates cannot slip through.
+  //
+  // A variant is counted against its BASE key — exactly as `lintTemplateMap`
+  // lints it (a context widget inside a variant belongs to the base's
+  // data). The stats ACCUMULATE into the base's row, so the studio's meter
+  // and the publish gate read the same numbers.
+  const bag = templates as TemplateMap;
+  const add = (key: TemplateKey, ast: ThemeAst): void => {
     const stats = coverageOfTemplate(key, ast);
-    if (stats.total === 0) continue;
+    if (stats.total === 0) return;
     const { refs, ...rest } = stats;
-    byTemplate[key] = rest;
+    const seen = byTemplate[key];
+    const merged = seen
+      ? {
+          total: seen.total + rest.total,
+          ok: seen.ok + rest.ok,
+          fallback: seen.fallback + rest.fallback,
+          empty: seen.empty + rest.empty,
+          percent: 0,
+        }
+      : rest;
+    merged.percent = percentOf(merged);
+    byTemplate[key] = merged;
     totals.total += stats.total;
     totals.ok += stats.ok;
     totals.fallback += stats.fallback;
     totals.empty += stats.empty;
     totals.refs.push(...refs);
+  };
+
+  for (const key of TEMPLATE_KEYS) {
+    const ast = bag[key];
+    if (!ast) continue;
+    add(key, ast);
+  }
+  for (const variant of TEMPLATE_VARIANT_KEYS) {
+    const ast = bag[variant];
+    if (!ast) continue;
+    const base = baseTemplateKey(variant);
+    if (!base) continue;
+    add(base, ast);
   }
 
   totals.percent = percentOf(totals);

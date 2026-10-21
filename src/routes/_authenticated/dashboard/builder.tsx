@@ -446,6 +446,13 @@ function BuilderStudio() {
   // The BASE stays the default selection; a variant is opt-in, and only the
   // closed vocabulary is reachable.
   const [template, setTemplate] = useState<EditorTemplateKey>("index");
+  // The reset is DESTRUCTIVE: it replaces ONE template with the theme's
+  // own default. It is ARMED first (a second click confirms) and it stays
+  // DISABLED until the merchant has explicitly chosen a template — the
+  // initial selection is the homepage, so a first click would otherwise
+  // blank the homepage composition.
+  const [resetArmed, setResetArmed] = useState(false);
+  const [templateChosen, setTemplateChosen] = useState(false);
   const [slot, setSlot] = useState<Slot>("main");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [previewWidth, setPreviewWidth] = useState<number>(1440);
@@ -1278,12 +1285,17 @@ function BuilderStudio() {
     },
     onSuccess: async (result) => {
       if (doc) {
+        // The server wrote ITS OWN merged map (the merchant's map with
+        // exactly ONE key replaced) and returned it. The editor follows
+        // THAT map — and the document is NOT marked saved: the server
+        // never saw the client's unsaved edits, so marking them saved
+        // would strand them (neither persisted nor shown as unsaved).
         editor.replaceDoc({
           ...doc,
-          templates: { ...doc.templates, [result.template]: result.ast },
+          templates: result.templates,
         });
       }
-      editor.markSaved();
+      setResetArmed(false);
       toast.success(
         t(
           "Template reset to the theme default",
@@ -1449,13 +1461,19 @@ function BuilderStudio() {
           issueCount={issues.filter((i) => i.level === "error").length}
           contentOnly={contentOnly}
           template={selectedBase}
-          onTemplateChange={setTemplate}
+          onTemplateChange={(key) => {
+            setTemplate(key);
+            setTemplateChosen(true);
+            setResetArmed(false);
+          }}
           templateVariant={selectedVariant}
-          onTemplateVariantChange={(variant) =>
+          onTemplateVariantChange={(variant) => {
             setTemplate(
               (current) => variant ?? baseTemplateKey(current) ?? "index",
-            )
-          }
+            );
+            setTemplateChosen(true);
+            setResetArmed(false);
+          }}
           zoom={zoom}
           onZoomChange={setZoom}
           coveragePercent={coverage?.percent}
@@ -1495,7 +1513,11 @@ function BuilderStudio() {
               key={key}
               type="button"
               aria-current={template === key ? "page" : undefined}
-              onClick={() => setTemplate(key)}
+              onClick={() => {
+                setTemplate(key);
+                setTemplateChosen(true);
+                setResetArmed(false);
+              }}
               className={`rounded-fq-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer shrink-0 ${
                 template === key
                   ? "bg-primary text-primary-foreground font-semibold shadow-xs"
@@ -1523,7 +1545,11 @@ function BuilderStudio() {
                   type="button"
                   data-template-variant={variant}
                   aria-current={template === variant ? "page" : undefined}
-                  onClick={() => setTemplate(variant)}
+                  onClick={() => {
+                    setTemplate(variant);
+                    setTemplateChosen(true);
+                    setResetArmed(false);
+                  }}
                   className={`rounded-fq-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer shrink-0 ${
                     template === variant
                       ? "bg-primary text-primary-foreground font-semibold shadow-xs"
@@ -1540,20 +1566,42 @@ function BuilderStudio() {
           ) : null}
           {/* The RESET affordance (Batch C): restore THIS template to the
               theme's own default. It writes a new version; it never
-              overwrites the whole map. */}
+              overwrites the whole map.
+
+              It is DESTRUCTIVE, so it is ARMED first: the first click asks
+              for the confirmation, the second one performs the reset. And it
+              stays disabled until a template is EXPLICITLY chosen — the
+              initial selection is the homepage, and a stray first click
+              would blank the homepage composition. */}
           <button
             type="button"
-            onClick={() => resetTemplate.mutate()}
-            disabled={resetTemplate.isPending || !themeId || !doc}
-            title={t(
-              "Reset this template to the theme's default",
-              "এই টেমপ্লেটটি থিমের ডিফল্টে ফিরিয়ে দিন",
-            )}
+            data-reset-armed={resetArmed ? "true" : "false"}
+            onClick={() => {
+              if (!resetArmed) {
+                setResetArmed(true);
+                return;
+              }
+              setResetArmed(false);
+              resetTemplate.mutate();
+            }}
+            disabled={
+              resetTemplate.isPending || !themeId || !doc || !templateChosen
+            }
+            title={
+              templateChosen
+                ? t(
+                    "Reset this template to the theme's default",
+                    "এই টেমপ্লেটটি থিমের ডিফল্টে ফিরিয়ে দিন",
+                  )
+                : t("Choose a template first", "আগে একটি টেমপ্লেট বেছে নিন")
+            }
             className="ml-auto shrink-0 rounded-fq-md border border-border/70 px-2.5 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-50 cursor-pointer"
           >
             {resetTemplate.isPending
               ? t("Resetting…", "ফেরানো হচ্ছে…")
-              : t("Reset to default", "ডিফল্টে ফেরান")}
+              : resetArmed
+                ? t("Confirm reset", "রিসেট নিশ্চিত করুন")
+                : t("Reset to default", "ডিফল্টে ফেরান")}
           </button>
         </nav>
 

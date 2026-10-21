@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { PAYMENT_METHOD_KEYS } from "./payment-rails";
+import { TEMPLATE_VARIANTS } from "./template-variants";
 
 const cartSchema = z.array(
   z.object({
@@ -11,6 +12,19 @@ const cartSchema = z.array(
 );
 
 const methodSchema = z.enum(PAYMENT_METHOD_KEYS);
+
+/**
+ * The closed variant suffixes the storefront seam accepts — DERIVED from the
+ * vocabulary table, never written out by hand.
+ *
+ * A hand-written copy of the list is how the three archive variants became
+ * unrequestable: the validator accepted `"listing" | "article"` while the
+ * table listed five, and the day the archive route lands it would have 500'd
+ * at the validator. Deriving the list makes that drift impossible.
+ */
+export const STORE_VARIANT_SUFFIXES = Object.values(
+  TEMPLATE_VARIANTS,
+).flat() as [string, ...string[]];
 
 export const getStorefront = createServerFn({ method: "GET" })
   .inputValidator((d: unknown) =>
@@ -123,8 +137,14 @@ export const getStoreChrome = createServerFn({ method: "GET" })
         /**
          * The closed variant suffix of `template` this surface renders.
          * Optional: absent = the base template, exactly as before.
+         *
+         * DERIVED from the closed table, so the validator can never drift
+         * from the vocabulary again: the five legal suffixes come from
+         * `TEMPLATE_VARIANTS` itself. A hand-written copy of the list is
+         * how the three archive variants became unrequestable through the
+         * only storefront seam.
          */
-        variant: z.enum(["listing", "article"]).optional(),
+        variant: z.enum(STORE_VARIANT_SUFFIXES).optional(),
       })
       .parse(d),
   )

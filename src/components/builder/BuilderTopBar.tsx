@@ -536,8 +536,21 @@ export function BuilderTopBar({
                                   }`}
                                 >
                                   <span className="min-w-0 flex-1">
-                                    <span className="text-xs font-medium leading-none">
-                                      {t(variantMeta.en, variantMeta.bn)}
+                                    <span className="flex items-center justify-between gap-2">
+                                      <span className="text-xs font-medium leading-none">
+                                        {t(variantMeta.en, variantMeta.bn)}
+                                      </span>
+                                      {/* The selected VARIANT carries the
+                                          SAME "Active" treatment as the
+                                          selected base — otherwise the badge
+                                          VANISHES the moment a variant is
+                                          chosen, and the merchant cannot see
+                                          which surface they are editing. */}
+                                      {variantSelected && (
+                                        <span className="text-[10px] font-bold uppercase tracking-wider opacity-90">
+                                          {t("Active", "সক্রিয়")}
+                                        </span>
+                                      )}
                                     </span>
                                     <span
                                       className={`mt-0.5 block truncate text-[10px] ${variantSelected ? "text-primary-foreground/80" : "text-muted-foreground"}`}

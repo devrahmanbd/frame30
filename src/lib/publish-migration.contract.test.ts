@@ -163,6 +163,11 @@ describe("the publish gate is template-key-complete", () => {
     // variant linted as if it were a template of its own would call BOTH of
     // them a publish-blocking mismatch; linted with its base key they are
     // legal, and the publish goes through.
+    //
+    // The fixture's copy is FULLY TRANSLATED: the 90 % বাংলা floor counts a
+    // variant's strings too (a variant's coverage is the theme's coverage),
+    // so a half-translated pack would block the publish for a second,
+    // unrelated reason and the case would stop proving what it claims.
     const db = publishDb();
     const out = await publishVersion(db.asClient(), MERCHANT, {
       themeId: THEME,
@@ -179,7 +184,12 @@ describe("the publish gate is template-key-complete", () => {
             {
               id: "p2",
               type: "blog_archive",
-              props: { heading: "More" },
+              props: {
+                heading: "More",
+                heading_bn: "আরও",
+                emptyText: "No articles yet.",
+                emptyText_bn: "এখনো কোনো লেখা নেই।",
+              },
             },
           ],
           footer: [],
@@ -202,6 +212,96 @@ describe("the publish gate is template-key-complete", () => {
     }).catch((err: Error) => err);
     // The message names the VARIANT — the merchant can see which key broke.
     expect((error as Error).message).toContain("blog_article:");
+  });
+
+  it("refuses a variant-shaped key OUTSIDE the closed vocabulary", async () => {
+    // The parser keeps `blog_bogus` (its base is a known base), so without a
+    // vocabulary gate it would publish — and persist as a template nothing
+    // routes to. The refusal carries a STABLE reason code.
+    const db = publishDb();
+    const error = await publishVersion(db.asClient(), MERCHANT, {
+      themeId: THEME,
+      templates: { index: clean("h1"), blog_bogus: clean("b1") },
+      tokens: DEFAULT_TOKENS,
+    }).catch((err: Error) => err);
+    expect((error as Error).message).toContain("builder.unknown_variant");
+    expect((error as Error).message).toContain("blog_bogus");
+    // Nothing was written: no version, no publish.
+    expect(db.rpcCalls("theme_commit")).toHaveLength(0);
+    expect(db.rpcCalls("theme_publish")).toHaveLength(0);
+  });
+
+  it("accepts the CLOSED variants — `blog_listing` and `blog_article` publish", async () => {
+    const db = publishDb();
+    const out = await publishVersion(db.asClient(), MERCHANT, {
+      themeId: THEME,
+      templates: {
+        index: clean("h1"),
+        blog_listing: clean("l1"),
+        blog_article: clean("a1"),
+      },
+      tokens: DEFAULT_TOKENS,
+    });
+    expect(out.versionId).toBe("version-new");
+  });
+
+  it("counts a VARIANT's বাংলা coverage — an untranslated variant blocks the publish", async () => {
+    // The control: the same theme WITHOUT the variant publishes, because its
+    // own copy is fully translated.
+    const translated = {
+      index: {
+        header: [],
+        main: [
+          {
+            id: "h1",
+            type: "editorial_hero",
+            props: {
+              eyebrow: "New",
+              eyebrow_bn: "নতুন",
+              heading: "Winter drop",
+              heading_bn: "শীতের কালেকশন",
+              body: "The season's best.",
+              body_bn: "এই মৌসুমের সেরা।",
+              ctaLabel: "Shop the collection",
+              ctaLabel_bn: "কালেকশন দেখুন",
+            },
+          },
+        ],
+        footer: [],
+      },
+    };
+    const control = publishDb();
+    const ok = await publishVersion(control.asClient(), MERCHANT, {
+      themeId: THEME,
+      templates: translated,
+      tokens: DEFAULT_TOKENS,
+    });
+    expect(ok.versionId).toBe("version-new");
+
+    // The same theme PLUS a variant whose copy is half untranslated: the
+    // variant's strings are the theme's strings, so the 90 % floor sees
+    // them — and the publish is refused.
+    const db = publishDb();
+    const error = await publishVersion(db.asClient(), MERCHANT, {
+      themeId: THEME,
+      templates: {
+        ...translated,
+        blog_listing: {
+          header: [],
+          main: [
+            {
+              id: "l1",
+              type: "editorial_hero",
+              props: { heading: "Untranslated listing" },
+            },
+          ],
+          footer: [],
+        },
+      },
+      tokens: DEFAULT_TOKENS,
+    }).catch((err: Error) => err);
+    expect((error as Error).message).toContain("translation coverage");
+    expect(db.rpcCalls("theme_publish")).toHaveLength(0);
   });
 
   it("every TEMPLATE_KEYS member is linted — a broken page template blocks", async () => {
@@ -269,6 +369,21 @@ describe("the seed fills only the missing keys", () => {
         main: [{ id: "mine-1", type: "heading", props: { text: "Mine" } }],
         footer: [],
       },
+      // The VARIANT the merchant authored. It rides the same map, and the
+      // seed must carry it UNCHANGED — the old assertion
+      // (`sent.blog_article` is undefined) could not fail, because the
+      // fixture held no variant and the package ships none.
+      blog_article: {
+        header: [],
+        main: [
+          {
+            id: "mine-variant-1",
+            type: "heading",
+            props: { text: "Mine too" },
+          },
+        ],
+        footer: [],
+      },
     });
     await installRegistryTheme(db.asClient(), MERCHANT, "songoskriti", true);
     const call = db.rpcCalls("theme_install_preset")[0];
@@ -281,8 +396,11 @@ describe("the seed fills only the missing keys", () => {
     ).toEqual(["mine-1"]);
     // The key they did not author is filled from the package.
     expect(sent.archive).toBeDefined();
-    // The VARIANT keys they authored ride the same map untouched.
-    expect(sent.blog_article).toBeUndefined();
+    // The VARIANT key they authored rides the same map UNCHANGED.
+    expect(sent.blog_article).toBeDefined();
+    expect(
+      (sent.blog_article as { main: { id: string }[] }).main.map((s) => s.id),
+    ).toEqual(["mine-variant-1"]);
   });
 });
 

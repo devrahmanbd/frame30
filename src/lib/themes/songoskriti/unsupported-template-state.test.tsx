@@ -64,6 +64,7 @@ import {
   createRouter,
 } from "@tanstack/react-router";
 import type { TemplateKey } from "@/lib/builder-ast";
+import type { TemplateVariantKey } from "@/lib/template-variants";
 import { LanguageProvider } from "@/lib/i18n";
 
 // The frame syncs the URL on every switch via useNavigate, and the store
@@ -172,7 +173,10 @@ function render(requested: string): string {
         blueprintKey={preset.key}
         tokens={preset.tokens}
         templates={preset.templates}
-        initialTemplate={requested as TemplateKey}
+        // The theme's authored VARIANT bodies — the host resolves a closed
+        // variant key through them (the variant first, then its base).
+        variants={preset.variants}
+        initialTemplate={requested as TemplateKey | TemplateVariantKey}
         onClose={() => {}}
       />
     </LanguageProvider>,
@@ -298,9 +302,93 @@ describe("the preview's unsupported template state is reachable", () => {
     // … and the route reads the request out of its own validated search …
     expect(ROUTE_SRC).toContain("unsupportedTemplate");
     // … and hands it to the host as the template it was asked for.
-    expect(ROUTE_SRC).toContain(
-      "(initialTemplate ?? unsupportedTemplate) as TemplateKey | undefined",
+    expect(ROUTE_SRC).toContain("(initialTemplate ?? unsupportedTemplate) as");
+    // … and it hands the theme's VARIANT bodies to the host beside the
+    // base map, so the host can resolve a closed variant key.
+    expect(ROUTE_SRC).toContain("variants={preset.variants}");
+  });
+});
+
+/* ------------------------------------------------------------------------- *
+ * The CLOSED VARIANT vocabulary — a variant is a KNOWN template.
+ *
+ * `?template=blog_listing` is not an unsupported request: the platform
+ * ROUTES to it (the storefront's blog listing resolves `blog_listing`
+ * through `getStoreChrome`), so the preview must render the theme's own
+ * variant body. Before the fix the route cast the requested key to
+ * `TemplateKey`, the key landed in `unsupportedTemplate`, and the merchant
+ * previewing the variant saw the "not supported by this theme" panel
+ * instead of the composition their storefront will serve.
+ * ------------------------------------------------------------------------- */
+
+describe("the preview renders a CLOSED variant from the URL", () => {
+  it("the route's search validation carries a closed variant as a KNOWN template", () => {
+    const search = validateThemePreviewSearch({ template: "blog_listing" });
+    // The known-key slot keeps its meaning — a key the platform routes to.
+    expect(search.template).toBe("blog_listing");
+    expect(search.unsupportedTemplate).toBeUndefined();
+  });
+
+  it("?template=blog_listing renders the VARIANT's body, not the base's", () => {
+    const html = renderRequested({ template: "blog_listing" });
+    const variant = preset.variants["blog_listing"]!;
+    const base = preset.templates.blog;
+    // The VARIANT's own sections rendered …
+    for (const section of [
+      ...variant.header,
+      ...variant.main,
+      ...variant.footer,
+    ]) {
+      expect(html, `${section.id} must render`).toContain(
+        `data-fq-node="${section.id}"`,
+      );
+    }
+    // … and the BASE template's sections did NOT: the preview served the
+    // variant's composition, not the base pack.
+    for (const section of [...base.header, ...base.main, ...base.footer]) {
+      expect(html, `${section.id} must not render`).not.toContain(
+        `data-fq-node="${section.id}"`,
+      );
+    }
+    // … and the unsupported panel is NOT what rendered.
+    expect(html).not.toContain("This template is not supported by this theme");
+  });
+
+  it("?template=blog_article renders the ARTICLE variant's own composition", () => {
+    const html = renderRequested({ template: "blog_article" });
+    const variant = preset.variants["blog_article"]!;
+    // The article variant's body is the route-owned body slot, the pack's
+    // related content and the newsletter — the base `blog` body carries
+    // none of them.
+    expect(variant.main.map((section) => section.type)).toEqual([
+      "page_content",
+      "blog_archive",
+      "newsletter",
+    ]);
+    for (const section of [...variant.main, ...variant.footer]) {
+      expect(html, `${section.id} must render`).toContain(
+        `data-fq-node="${section.id}"`,
+      );
+    }
+    expect(html).not.toContain("This template is not supported by this theme");
+  });
+
+  it("a variant-shaped key OUTSIDE the closed table still shows the unsupported panel", () => {
+    const html = renderRequested({ template: "blog_bogus" });
+    // `blog_bogus` is not in the closed table, so it is the unsupported
+    // request — the panel, never the homepage.
+    expect(html).toContain("This template is not supported by this theme");
+    expect(html).toContain("blog_bogus");
+    expect(html).not.toContain(HOME_MARKER);
+  });
+
+  it("the canonical URL keeps the variant — it is not rewritten to the bare path", async () => {
+    const canonical = await canonicalPreviewHref(
+      "/theme-preview/songoskriti?template=blog_listing",
     );
+    expect(canonical).toBe("/theme-preview/songoskriti?template=blog_listing");
+    // … and it is a fixed point: asking for it validates to itself.
+    expect(await canonicalPreviewHref(canonical)).toBe(canonical);
   });
 });
 
@@ -424,9 +512,7 @@ describe("the unsupported request survives the route's canonicalisation", () => 
     expect(validated.unsupportedTemplate).toBe("blog_anything");
     expect(validated.template).toBeUndefined();
     // … the route hands it to the host (its own wiring, read from source) …
-    expect(ROUTE_SRC).toContain(
-      "(initialTemplate ?? unsupportedTemplate) as TemplateKey | undefined",
-    );
+    expect(ROUTE_SRC).toContain("(initialTemplate ?? unsupportedTemplate) as");
     const requested = (validated.template ??
       validated.unsupportedTemplate) as string;
     expect(requested).toBe("blog_anything");

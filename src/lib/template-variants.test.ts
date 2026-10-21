@@ -101,6 +101,28 @@ describe("the variant vocabulary is CLOSED", () => {
     expect(variantKeyFor("collection", "listing")).toBeNull();
   });
 
+  it("the STOREFRONT seam accepts every suffix of the table — and nothing else", async () => {
+    // The storefront's only seam used to carry a HAND-WRITTEN copy of the
+    // suffix list ("listing" | "article"), so the three archive variants
+    // could not be requested at all — the day their route lands it would
+    // 500 at the validator. The list is DERIVED now, and this case proves
+    // the derivation.
+    const { STORE_VARIANT_SUFFIXES } =
+      await import("@/lib/storefront.functions");
+    expect([...STORE_VARIANT_SUFFIXES]).toEqual(
+      Object.values(TEMPLATE_VARIANTS).flat(),
+    );
+    // Every legal suffix is accepted …
+    for (const suffix of Object.values(TEMPLATE_VARIANTS).flat()) {
+      expect(
+        variantKeyFor("blog", suffix) ?? variantKeyFor("archive", suffix),
+      ).not.toBeNull();
+    }
+    // … and an unknown one is not.
+    expect(STORE_VARIANT_SUFFIXES).not.toContain("bogus");
+    expect(STORE_VARIANT_SUFFIXES).toHaveLength(5);
+  });
+
   it("resolves the base a key belongs to — the inverse of the shape predicate", () => {
     expect(baseTemplateKey("blog")).toBe("blog");
     expect(baseTemplateKey("blog_listing")).toBe("blog");

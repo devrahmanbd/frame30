@@ -284,7 +284,7 @@ const PREVIEW_TEMPLATE_KEY_RE = /^[A-Za-z0-9][A-Za-z0-9_-]*$/;
  * keeps `?template=search&max=99900` instead of dropping it.
  */
 export function validateThemePreviewSearch(search: Record<string, unknown>): {
-  template: TemplateKey | undefined;
+  template: TemplateKey | TemplateVariantKey | undefined;
   /**
    * The REQUESTED template key when it is NOT one of the template keys.
    *
@@ -295,9 +295,12 @@ export function validateThemePreviewSearch(search: Record<string, unknown>): {
    * (`src/components/store/ThemePreviewFrame.tsx:575-578`). `template` above
    * keeps its meaning — a key the platform knows — and this field carries
    * the request the platform does not know. `archive` is a KNOWN key now
-   * (the content archive is a first-class template, Decision D1'), so it
-   * travels in `template`; the keys that reach this field are the ones the
-   * platform still does not know. It is OPTIONAL in the type (like
+   * (the content archive is a first-class template, Decision D1'), and so is
+   * every key of the CLOSED variant vocabulary (`blog_listing`,
+   * `blog_article`, `archive_category`, …) — the platform routes to those,
+   * so they travel in `template` and the host resolves them through the
+   * variant rule. The keys that reach this field are the ones the platform
+   * still does not know. It is OPTIONAL in the type (like
    * `variation` and `mock_order`) so the routes that navigate INTO the
    * preview with a known template keep their own search shape.
    *
@@ -342,7 +345,14 @@ export function validateThemePreviewSearch(search: Record<string, unknown>): {
         : "";
   const template = (TEMPLATE_KEYS as readonly string[]).includes(rawTemplate)
     ? (rawTemplate as TemplateKey)
-    : undefined;
+    : // A CLOSED VARIANT key (`blog_listing`, `blog_article`, …) is a
+      // KNOWN template: the platform routes to it, so it travels in the
+      // known slot and the preview host resolves it through the variant
+      // rule (the variant first, then its base). A key OUTSIDE the closed
+      // table is still the unsupported request.
+      isTemplateVariantKey(rawTemplate)
+      ? rawTemplate
+      : undefined;
   return {
     template,
     unsupportedTemplate:

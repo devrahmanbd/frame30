@@ -54,7 +54,11 @@ import { translationGate } from "./builder-guardrails";
 import { translationCoverage } from "./translation-coverage";
 import { demoCatalogFor } from "./demo-catalog";
 import { resolveThemePreview } from "./theme-preview-nav";
-import { isKnownTemplateKey } from "./template-variants";
+import {
+  isKnownTemplateKey,
+  isTemplateVariantKey,
+  variantSuffixesFor,
+} from "./template-variants";
 import { builtinThemeKeys, isOfficialThemeKey } from "./themes/builtin-themes";
 import {
   bindDevThemeRuntime,
@@ -867,6 +871,24 @@ function lintTemplateMap(templates: TemplateMap): string[] {
     if (isTemplateKey(key)) continue;
     const base = variantBaseKey(key);
     if (!base || !ast) continue;
+    // The CLOSED vocabulary decides what a VARIANT may be. A key shaped
+    // like a variant (`<known base>_<suffix>`) whose suffix is NOT in the
+    // closed table is a typo or a leftover — and it is a template nothing
+    // routes to, so it is REFUSED here, with the stable reason code
+    // `builder.unknown_variant`.
+    //
+    // The ONE exemption is the legacy theme-package per-page shape
+    // (`page_<slug>`): it is a legal persisted key of a third-party
+    // package, so it keeps round-tripping AND keeps being linted with its
+    // base key, exactly as before.
+    if (!isTemplateVariantKey(key)) {
+      if (base !== "page") {
+        out.push(
+          `${key}: builder.unknown_variant — "${key}" is not one of the known variants of "${base}" (${variantSuffixesFor(base).join(", ") || "none"}).`,
+        );
+      }
+      continue;
+    }
     report(key, base, ast);
   }
   return out;
@@ -1759,8 +1781,16 @@ export async function resetTemplateToDefault(
     }
     const workspace = await loadWorkspace(db, merchantId);
     const sourceKey = workspace.theme.sourceKey;
-    const pkg = sourceKey ? registryPackage(sourceKey) : null;
-    const bag = (pkg?.templates ?? {}) as Record<string, ThemeAst | undefined>;
+    // The theme's own default for ONE key. The preset carries the base
+    // templates AND the VARIANT bodies in TWO maps (`preview.templates` /
+    // `preview.variants`), and the reset must read BOTH: a bag with the
+    // base map alone has no `blog_listing`, so the reset would write the
+    // EMPTY AST and erase the theme's authored variant composition.
+    const preset = sourceKey ? resolveThemePreview(sourceKey) : null;
+    const bag = {
+      ...((preset?.templates ?? {}) as Record<string, ThemeAst | undefined>),
+      ...((preset?.variants ?? {}) as Record<string, ThemeAst | undefined>),
+    };
     const ast = bag[key] ?? EMPTY_AST;
     // Exactly ONE key is replaced. Every other template — and every other
     // variant — rides the map untouched.
@@ -1795,7 +1825,10 @@ export async function resetTemplateToDefault(
       template: key,
       version_id: versionId,
     });
-    return { versionId, template: key, ast };
+    // The FULL merged map rides back with the result: the client replaces
+    // its document with the map the SERVER wrote, so the editor's state and
+    // the stored state can never disagree about what was reset.
+    return { versionId, template: key, ast, templates };
   });
 }
 

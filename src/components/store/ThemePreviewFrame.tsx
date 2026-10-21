@@ -100,7 +100,13 @@ import {
   handlePreviewCanvasSubmit,
   previewSearchForSwitch,
   resolveDemoFocus,
+  resolvePreviewVariantAst,
 } from "@/lib/theme-preview-nav";
+import {
+  baseTemplateKey,
+  isTemplateVariantKey,
+  type TemplateVariantKey,
+} from "@/lib/template-variants";
 import { useSectionChannel } from "@/components/builder/useSectionChannel";
 
 /* Click routing (block checks, href parsing, click/submit interception) lives in
@@ -177,8 +183,19 @@ export type ThemePreviewFrameProps = {
   tokens: ThemeTokens;
   /** All authored templates keyed by template key. */
   templates: Record<TemplateKey, ThemeAst>;
+  /**
+   * The theme's authored VARIANT bodies (`blog_listing`, `blog_article`).
+   *
+   * A SEPARATE map, exactly as the preset carries it: the base map stays
+   * the ten-key template space the host resolves against, and a key the
+   * platform does not know must stay ABSENT from it (the host turns an
+   * absent key into its explicit "not supported by this theme" panel).
+   * ABSENT = the theme ships no variant body, and every variant falls back
+   * to its base template.
+   */
+  variants?: Record<string, ThemeAst>;
   /** Deep-linkable starting tab (?template=product). Defaults to homepage. */
-  initialTemplate?: TemplateKey;
+  initialTemplate?: TemplateKey | TemplateVariantKey;
   /** Deep-linkable demo focus (?focus=bestsellers): renders that demo
       collection/product on first paint. In-canvas clicks replace it. */
   initialFocus?: string | null;
@@ -511,6 +528,7 @@ export function ThemePreviewFrame({
   blueprintKey,
   tokens,
   templates,
+  variants,
   initialTemplate,
   initialFocus,
   initialMockOrder,
@@ -518,7 +536,9 @@ export function ThemePreviewFrame({
 }: ThemePreviewFrameProps) {
   const startTemplate = initialTemplate ?? "index";
   const navigate = useNavigate();
-  const [template, setTemplate] = useState<TemplateKey>(startTemplate);
+  const [template, setTemplate] = useState<TemplateKey | TemplateVariantKey>(
+    startTemplate,
+  );
   // Clicked product/collection slug: renders that demo collection instead
   // of one static page for every /c/* link. Cleared on any switch that
   // carries no slug. Deep-linkable via ?focus= for merchant-less URLs.
@@ -580,7 +600,28 @@ export function ThemePreviewFrame({
   // theme does not author the requested template the canvas renders the
   // named "not supported by this theme" panel instead of the homepage body.
   const templatesByKey: Partial<Record<TemplateKey, ThemeAst>> = templates;
-  const authored = templatesByKey[template];
+  // The VARIANT bodies ride BESIDE the base map. A closed variant key
+  // resolves through the SAME rule the storefront uses — the variant first,
+  // then its base, and NOTHING else (`resolvePreviewVariantAst` is the
+  // preview seam of `resolveVariantAst`) — so the preview shows the
+  // composition the storefront will render, not a different one.
+  const variantBag = useMemo(
+    () => ({ ...templates, ...(variants ?? {}) }),
+    [templates, variants],
+  );
+  const isVariant = isTemplateVariantKey(template);
+  // The BASE key drives every catalogue allowlist check and every grant,
+  // exactly as it does for the editor and the publish gate: no widget's
+  // catalogue row names a variant key.
+  const baseTemplate: TemplateKey = isVariant
+    ? (baseTemplateKey(template) ?? "index")
+    : (template as TemplateKey);
+  const variantResolved = isVariant
+    ? resolvePreviewVariantAst(variantBag, template)
+    : null;
+  const authored: ThemeAst | undefined = isVariant
+    ? variantResolved?.ast
+    : templatesByKey[template as TemplateKey];
   const unsupported = authored === undefined;
   const ast = authored ?? templatesByKey.index ?? EMPTY_AST;
   // Phase 2 (Task 7): the theme-owned demo data — the synthetic cart, the
@@ -590,13 +631,13 @@ export function ThemePreviewFrame({
   // own `SAMPLE` blog rows, the shared `PREVIEW_DEMO_PAGE`).
   const isSongoskriti = blueprintKey === "songoskriti";
   const demoFocus =
-    focus && focus.template === template
+    focus && focus.template === baseTemplate
       ? resolveDemoFocus(blueprintKey, focus.template, focus.slug)
       : null;
   const focusedMain =
     demoFocus &&
-    (template === "collection" || template === "product") &&
-    demoFocus.template === template
+    (baseTemplate === "collection" || baseTemplate === "product") &&
+    demoFocus.template === baseTemplate
       ? applyDemoFocus(ast.main, demoFocus)
       : ast.main;
   // The preview has no route to supply the h1, so the elected primary
@@ -654,13 +695,13 @@ export function ThemePreviewFrame({
   // Account center is context-gated: feed the merchant sections demo rows
   // so the account tab renders instead of parking on skeletons.
   const productSlots = useMockProductSlots(
-    template,
+    baseTemplate,
     demoFocus,
     themeName,
     blueprintKey,
   );
   const accountSlots = useMemo(() => {
-    if (template !== "account") return undefined;
+    if (baseTemplate !== "account") return undefined;
     const sections = [...ast.header, ...ast.main, ...ast.footer];
     const build = (type: "orders_list" | "profile_card") => {
       const section = sections.find((s) => s.type === type);
@@ -683,7 +724,7 @@ export function ThemePreviewFrame({
       orders_list: build("orders_list"),
       profile_card: build("profile_card"),
     };
-  }, [template, ast, previewData, lang, blueprintKey]);
+  }, [baseTemplate, ast, previewData, lang, blueprintKey]);
 
   // The account template's route-owned BODY slot (Batch B). The storefront's
   // account route renders the designed dashboard there; the preview renders
@@ -705,7 +746,7 @@ export function ThemePreviewFrame({
     setPreviewOrderDetail(detail ? { orderId, detail } : null);
   };
   const accountBodySlot = useMemo(() => {
-    if (template !== "account") return undefined;
+    if (baseTemplate !== "account") return undefined;
     if (!isSongoskriti) return { page_content: null };
     return {
       page_content: (
@@ -722,7 +763,7 @@ export function ThemePreviewFrame({
       ),
     };
   }, [
-    template,
+    baseTemplate,
     isSongoskriti,
     blueprintKey,
     previewAccountTab,
@@ -744,7 +785,7 @@ export function ThemePreviewFrame({
   // slot the checkout form flows through. The preview mirrors the storefront
   // exactly — the preview-parity contract.
   const cartSlots =
-    template === "cart"
+    baseTemplate === "cart"
       ? {
           cart_lines: null,
           cart_summary: null,
@@ -754,7 +795,7 @@ export function ThemePreviewFrame({
         }
       : undefined;
   const checkoutSlots =
-    template === "checkout"
+    baseTemplate === "checkout"
       ? {
           cart_lines: null,
           cart_summary: null,
@@ -773,11 +814,11 @@ export function ThemePreviewFrame({
   // demo RESULT SET — the thing the `empty_state` grant and the demo
   // `productSlot` below both read.
   const searchDemoRows = useMemo<WidgetRow[]>(() => {
-    if (template !== "search" || !isSongoskriti) return [];
+    if (baseTemplate !== "search" || !isSongoskriti) return [];
     const grid = focusedMain.find((section) => section.type === "product_grid");
     const key = grid ? previewData.bundle.byNode[grid.id] : undefined;
     return (key ? previewData.map[key] : undefined) ?? [];
-  }, [template, isSongoskriti, focusedMain, previewData]);
+  }, [baseTemplate, isSongoskriti, focusedMain, previewData]);
 
   // The six Phase-2.4 search widgets are CONTEXT widgets: they render only
   // where the host grants permission (`SectionRenderer.tsx:814-833`). The
@@ -797,7 +838,7 @@ export function ThemePreviewFrame({
   // demo catalogue is never empty, so the theme's "Nothing matches those
   // filters" panel never renders UNDERNEATH a grid of results.
   const searchSlots =
-    template === "search"
+    baseTemplate === "search"
       ? {
           result_toolbar: null,
           filter_chips: null,
@@ -826,7 +867,7 @@ export function ThemePreviewFrame({
   // grid renders the platform's card with NO store slug in context, so it
   // stays a plain anchor with no wishlist or quick-view hooks.
   const searchProductSlot = useMemo(() => {
-    if (template !== "search" || !isSongoskriti) return undefined;
+    if (baseTemplate !== "search" || !isSongoskriti) return undefined;
     const facets = groupFacetRows(songoskritiPreviewFacets());
     const params = normalizeSearchParams({ q: SONGOSKRITI_PREVIEW_QUERY_TERM });
     const chip = (key: "category" | "kind", row: WidgetRow) => (
@@ -905,14 +946,14 @@ export function ThemePreviewFrame({
         </ul>
       </div>
     );
-  }, [template, isSongoskriti, searchDemoRows, lang, t]);
+  }, [baseTemplate, isSongoskriti, searchDemoRows, lang, t]);
 
   // The blog pack is a context widget set too (`blog_terms` /
   // `blog_archive` / `blog_pager` carry a `templates:` allowlist), so the
   // preview grants them on the `blog` template: the pack then reads the
   // demo feed the host mounts below instead of rendering nothing.
   const blogSlots =
-    template === "blog"
+    baseTemplate === "blog"
       ? {
           blog_terms: null,
           blog_archive: null,
@@ -929,7 +970,7 @@ export function ThemePreviewFrame({
   // the body does not use would be a permission the theme never asked for,
   // and a slot the body DOES use that is not granted renders nothing.
   const archiveSlots =
-    template === "archive"
+    baseTemplate === "archive"
       ? {
           category_header: null,
           blog_terms: null,
@@ -949,7 +990,8 @@ export function ThemePreviewFrame({
   // production route uses (`src/components/store/PageView.tsx:104`), so the
   // preview follows its own locale instead of hardcoding English.
   const pageSlots = useMemo(() => {
-    if (template !== "page") return undefined;
+    if (baseTemplate !== "page" && template !== "blog_article")
+      return undefined;
     // The Songoskriti blueprint shows the theme's own labelled sample page;
     // every other blueprint keeps the shared demo page.
     const page = isSongoskriti ? SONGOSKRITI_PREVIEW_PAGE : PREVIEW_DEMO_PAGE;
@@ -980,7 +1022,7 @@ export function ThemePreviewFrame({
         </article>
       ),
     };
-  }, [template, t, isSongoskriti]);
+  }, [baseTemplate, template, t, isSongoskriti]);
 
   // The theme's own demo providers — the Songoskriti blueprint only. The
   // `CartProvider` wrap goes around the WHOLE preview canvas — BOTH
@@ -1050,7 +1092,7 @@ export function ThemePreviewFrame({
                   <SectionRenderer
                     key={section.id}
                     section={section}
-                    template={template}
+                    template={baseTemplate}
                     editing={false}
                     storeSlug={blueprintKey}
                     themeKey={blueprintKey}
@@ -1065,7 +1107,7 @@ export function ThemePreviewFrame({
 
               {/* Wordmark row, as on a live storefront — the blueprint's
                 navigation sections render beneath it. */}
-              {template === "checkout" ? (
+              {baseTemplate === "checkout" ? (
                 <>
                   {/* The AUTHORED checkout template, rendered through the same
                     SectionRenderer the storefront uses — not `CheckoutMock`.
@@ -1085,7 +1127,7 @@ export function ThemePreviewFrame({
                         <SectionRenderer
                           key={section.id}
                           section={section}
-                          template={template}
+                          template={baseTemplate}
                           editing={false}
                           storeSlug={blueprintKey}
                           themeKey={blueprintKey}
@@ -1130,7 +1172,7 @@ export function ThemePreviewFrame({
                         <SectionRenderer
                           key={section.id}
                           section={section}
-                          template={template}
+                          template={baseTemplate}
                           editing={false}
                           storeSlug={blueprintKey}
                           themeKey={blueprintKey}
@@ -1161,7 +1203,7 @@ export function ThemePreviewFrame({
                           <SectionRenderer
                             key={section.id}
                             section={section}
-                            template={template}
+                            template={baseTemplate}
                             editing={false}
                             storeSlug={blueprintKey}
                             themeKey={blueprintKey}
@@ -1195,7 +1237,7 @@ export function ThemePreviewFrame({
                             <SectionRenderer
                               key={section.id}
                               section={section}
-                              template={template}
+                              template={baseTemplate}
                               editing={false}
                               themeKey={blueprintKey}
                               contextSlots={{

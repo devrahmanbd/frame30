@@ -231,3 +231,51 @@ describe("the preview and the storefront grant the SAME slots", () => {
     expect(used).toEqual(six);
   });
 });
+
+/* ------------------------------------------------------------------------- *
+ * The VARIANT parity — the same body through BOTH seams.
+ *
+ * The slot maps above cover the BASE templates. A VARIANT is a different
+ * surface, and the two hosts resolve it through two different entry
+ * points: the preview's `resolvePreviewVariantAst`
+ * (`src/lib/theme-preview-nav.ts`) and the storefront's `resolveVariantAst`
+ * (`src/lib/template-variants.ts`). The review found the preview's seam
+ * EXPORTED and never called — so nothing proved the two agree.
+ *
+ * This case resolves one variant through BOTH seams over the SAME map and
+ * asserts the same winning key and the same AST — and that the winning
+ * key is the VARIANT, not the base.
+ * ------------------------------------------------------------------------- */
+
+describe("a variant resolves to the SAME body through both seams", () => {
+  it("the preview seam and the storefront seam agree on the key and the AST", async () => {
+    const { resolvePreviewVariantAst } =
+      await import("@/lib/theme-preview-nav");
+    const { resolveVariantAst } = await import("@/lib/template-variants");
+    const { resolveThemePreview } = await import("@/lib/theme-preview-nav");
+    const preset = resolveThemePreview("songoskriti")!;
+    // The map the storefront reads: the base templates plus the authored
+    // variant bodies, in ONE map (the parser persists them side by side).
+    const bag = { ...preset.templates, ...preset.variants };
+
+    for (const [variant, suffix] of [
+      ["blog_listing", "listing"],
+      ["blog_article", "article"],
+    ] as const) {
+      const preview = resolvePreviewVariantAst(bag, variant);
+      const storefront = resolveVariantAst(bag, "blog", suffix);
+      expect(preview, `${variant} must resolve in the preview`).not.toBeNull();
+      expect(
+        storefront,
+        `${variant} must resolve in the storefront`,
+      ).not.toBeNull();
+      // The SAME winning key …
+      expect(preview!.key).toBe(storefront!.key);
+      // … and the SAME AST.
+      expect(preview!.ast).toEqual(storefront!.ast);
+      // The winner is the VARIANT — the variant's own body, not the base's.
+      expect(preview!.key).toBe(variant);
+      expect(preview!.ast).not.toEqual(preset.templates.blog);
+    }
+  });
+});

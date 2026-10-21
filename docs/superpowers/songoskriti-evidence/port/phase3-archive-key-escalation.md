@@ -3112,3 +3112,997 @@ $ node_modules/.bin/eslint <this batch's paths>
 The two warnings are `ThemePreviewFrame.tsx`'s pre-existing `react-hooks/exhaustive-deps` warnings (`:383` and `:549`) — this batch added none.
 
 **The round's commits.** Batch C is TWO commits: *"feat(templates): validated blog and archive variants, authorable in the editor"* (Task 5) and *"feat(builder): per-template isolation, a reset affordance, and preview-parity with the storefront"* (Task 6). Both stage **explicit paths** only. The three churn files and `.output-snapshots/` are **unstaged** at both commits.
+
+---
+
+## (k.9) Batch C's §7-prohibited files this record did not carry (appended, 2026-10-21)
+
+**Why this section exists.** §(k.2) listed the files Batch C *planned* to edit. Four
+§7-prohibited files the Batch C commits (`8e76fe81`, `4fd6b9c4`) actually edited were
+**not** in that list, and two of them are on the plan's Decision Gate **G1** list (the
+eleven "existing test files" and the twelve "routes"). The record's §(f) boundary
+statement says it "escalates exactly the files enumerated in the plan's Decision Gate G1,
+each with its exact diff; **no file outside that list is edited**" — so the omission is a
+defect in the RECORD, not a licence: the files were on G1, and their diffs are recorded
+here, now, with the hunks the commits actually applied. **Nothing above this section is
+rewritten** — this record is append-only.
+
+**The four files, and the hunks the commits applied.**
+
+1. `src/components/store/BlogArchiveTheme.test.tsx` (G1 — "existing test files"). The old
+   pin's TITLE said "generic by design"; Batch C kept the assertion and re-pinned it
+   against the measured basis (the platform reader surfaces are STORE-LESS, not
+   themeless), and added the two OPPOSITE cases.
+
+```diff
+--- a/src/components/store/BlogArchiveTheme.test.tsx
++++ b/src/components/store/BlogArchiveTheme.test.tsx
+@@ -79,10 +79,16 @@ describe("BlogArchiveTheme", () => {
+     expect(html).not.toContain("No articles published yet.");
+   });
+ 
+-  it("forwards themeKey to ThemeChrome with zero behavioral change (generic by design)", () => {
++  it("forwards themeKey to ThemeChrome; with NO composition every key renders identically", () => {
+     // Fix round: the prop was accepted but dropped. It is now forwarded;
+     // with a null AST the blog has no themed sections, so every key —
+     // including songoskriti — renders byte-identical generic markup.
++    //
++    // Batch C: the OLD title of this pin said "generic by design", which
++    // was the wrong BASIS — the platform reader surfaces are store-less,
++    // not themeless. The assertion is unchanged and still true; the two
++    // cases below pin the OPPOSITE behaviour, which is the new truth: with
++    // a composition resolved, the theme's body wraps the same articles.
+     const render = (themeKey?: string | null) =>
+       renderToStaticMarkup(
+         <BlogArchiveTheme
+@@ -99,4 +105,78 @@ describe("BlogArchiveTheme", () => {
+     expect(foreign).toBe(unkeyed);
+     expect(themed).toContain("How a jamdani saree is woven");
+   });
++
++  // Batch C — the pin is REVERSED, and it is STRONGER than the one it
++  // replaces. The old pin said "the blog is themeless by design"; the
++  // measured basis is that the platform reader surfaces are STORE-LESS,
++  // not themeless: a merchant-scoped caller carries a store slug, resolves
++  // the theme's `blog` composition, and wears it around the SAME articles.
++  it("renders the platform's grid byte-identically when NO composition is resolved", () => {
++    // No AST at all — the platform's own surface. The grid is the page.
++    const grid = renderToStaticMarkup(
++      <BlogArchiveTheme
++        feed={feed}
++        header={<h1>Blog</h1>}
++        empty={<p>No articles published yet.</p>}
++      />,
++    );
++    // An explicit null AST is the SAME render — the default is the grid.
++    const explicitNull = renderToStaticMarkup(
++      <BlogArchiveTheme
++        feed={feed}
++        header={<h1>Blog</h1>}
++        empty={<p>No articles published yet.</p>}
++        ast={null}
++        tokens={null}
++      />,
++    );
++    expect(explicitNull).toBe(grid);
++    // The grid carries the article row and the pager.
++    expect(grid).toContain("How a jamdani saree is woven");
++    expect(grid).toContain("/blog/how-jamdani-is-woven");
++  });
++
++  it("wears the theme's composition around the SAME articles when one is resolved", () => {
++    const themed = renderToStaticMarkup(
++      <BlogArchiveTheme
++        feed={feed}
++        header={<h1>Blog</h1>}
++        empty={<p>No articles published yet.</p>}
++        ast={{
++          header: [],
++          main: [
++            {
++              id: "opening-1",
++              type: "heading",
++              props: { text: "Browse the journal" },
++            },
++            {
++              // The pack's listing widget: it reads the SAME feed the
++              // platform's grid reads, through the SAME provider.
++              id: "archive-1",
++              type: "blog_archive",
++              props: {
++                heading: "From the journal",
++                layout: "magazine",
++                columns: 3,
++                limit: 9,
++                showCover: true,
++                showExcerpt: true,
++                showMeta: true,
++              },
++            },
++          ],
++          footer: [],
++        }}
++        tokens={null}
++        themeKey="songoskriti"
++      />,
++    );
++    // The theme's composition rendered …
++    expect(themed).toContain("Browse the journal");
++    // … around the SAME article the platform's grid renders. The feed is
++    // still the platform's: the theme never re-authors the data.
++    expect(themed).toContain("How a jamdani saree is woven");
++    expect(themed).toContain("/blog/how-jamdani-is-woven");
++  });
+ });
+```
+
+2. `src/lib/theme-preview-nav.test.ts` (G1 — "existing test files"). The `FIRST_SECTION`
+   map became `TEMPLATE_KEYS`-driven, and the closed vocabulary's own opener map was
+   added.
+
+```diff
+--- a/src/lib/theme-preview-nav.test.ts
++++ b/src/lib/theme-preview-nav.test.ts
+@@ -117,6 +125,10 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
+   // Every template's opener is pinned explicitly: six of the nine used to
+   // fall through a default branch to the literal "heading", so a template
+   // that changed its opener was only caught for index and collection.
++  //
++  // Batch C: the map is now DRIVEN by `TEMPLATE_KEYS` (so a new template
++  // cannot slip past this pin) and it is joined by the VARIANT openers —
++  // the closed vocabulary's own map.
+   const FIRST_SECTION: Record<TemplateKey, string> = {
+@@ -129,19 +141,23 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
+     search: "category_header",
+     archive: "category_header",
+   };
++  /**
++   * The VARIANT openers (Batch C). The closed vocabulary has five keys; a
++   * theme authors the ones it ships, and each opens with its own section.
++   */
++  const VARIANT_FIRST_SECTION: Record<TemplateVariantKey, string> = {
++    blog_listing: "blog_terms",
++    blog_article: "page_content",
++    archive_category: "category_header",
++    archive_tag: "category_header",
++    archive_author: "category_header",
++  };
+   it("authors demo content for every template (no empty sub-pages)", () => {
+     const preset = resolveThemePreview("songoskriti")!;
+-    for (const key of [
+-      "index",
+-      "product",
+-      "collection",
+-      "account",
+-      "page",
+-      "blog",
+-      "cart",
+-      "checkout",
+-      "search",
+-    ] as const) {
++    // `TEMPLATE_KEYS`-driven: the sweep covers EVERY template the platform
++    // knows — including `archive`, the tenth key, which the old literal
++    // list of nine did not.
++    for (const key of TEMPLATE_KEYS) {
+@@ -179,6 +195,45 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
+     expect(new Set(ids).size).toBe(ids.length);
+   });
++
++  // Batch C — the VARIANT bodies. The closed vocabulary gives the blog two
++  // surfaces (the listing and the article detail); the theme authors them
++  // beside the base templates, in their own map.
++  it("authors demo content for every variant it ships", () => {
++    const preset = resolveThemePreview("songoskriti")!;
++    expect(Object.keys(preset.variants).sort()).toEqual([
++      "blog_article",
++      "blog_listing",
++    ]);
++    for (const variant of TEMPLATE_VARIANT_KEYS) {
++      const ast = preset.variants[variant];
++      if (!ast) continue;
++      expect(ast.main.length, `${variant} main`).toBeGreaterThan(0);
++      expect(ast.main[0]!.type, `${variant} first section`).toBe(
++        VARIANT_FIRST_SECTION[variant],
++      );
++      expect(ast.header.length, `${variant} header`).toBeGreaterThanOrEqual(0);
++      expect(ast.footer.length, `${variant} footer`).toBeGreaterThan(0);
++    }
++    expect(preset.variants["blog_listing"]!.main.map((s) => s.type)).toEqual([
++      "blog_terms",
++      "blog_archive",
++      "blog_pager",
++    ]);
++    expect(
++      preset.variants["blog_article"]!.main.map((s) => s.type),
++    ).not.toEqual(preset.variants["blog_listing"]!.main.map((s) => s.type));
++  });
+```
+
+3. `src/routes/blog.index.tsx` (G1 — "routes"). The custom-host branch resolves the
+   `blog_listing` composition; the global branch keeps the platform's grid.
+
+```diff
+--- a/src/routes/blog.index.tsx
++++ b/src/routes/blog.index.tsx
+@@ -24,7 +24,10 @@ import { archiveHead, blogIndexPath, listingJsonLd } from "@/lib/blog-taxonomy";
+ import { useLang } from "@/lib/i18n";
+ import { BlogArchiveTheme } from "@/components/store/BlogArchiveTheme";
+ import { blogSearchFn } from "@/lib/blog-reader.functions";
+-import { resolveStorefrontHostFn } from "@/lib/storefront.functions";
++import {
++  resolveStorefrontHostFn,
++  getStoreChrome,
++} from "@/lib/storefront.functions";
+@@ -53,7 +56,14 @@ export const Route = createFileRoute("/blog/")({
+         data: { slug: host.merchantSlug, page: deps.page },
+       });
+       if (!store) throw new Response("Not Found", { status: 404 });
+-      return { kind: "store" as const, ...store };
++      // Batch C — the theme's `blog_listing` composition. This branch DOES
++      // carry a store subject (the custom host's merchant slug), so by the
++      // store-subject rule it resolves a theme. The GLOBAL branch below has
++      // no store subject at all, so it keeps the platform's grid.
++      const chrome = await getStoreChrome({
++        data: { slug: host.merchantSlug, template: "blog", variant: "listing" },
++      }).catch(() => null);
++      return { kind: "store" as const, ...store, chrome };
+@@ -259,6 +269,9 @@ function StoreBlogIndexPage({
+         basePath: (page) =>
+           page > 1 ? `${basePath}?page=${page}` : basePath,
+       }}
++      ast={data.chrome?.ast ?? null}
++      tokens={data.chrome?.tokens ?? null}
++      themeKey={data.chrome?.themeKey ?? null}
+```
+
+4. `src/routes/blog.$slug.tsx` (G1 — "routes"). The custom-host branch resolves the
+   `blog_article` composition and mounts the related-articles feed.
+
+```diff
+--- a/src/routes/blog.$slug.tsx
++++ b/src/routes/blog.$slug.tsx
+@@ -9,11 +9,19 @@ import {
+-import { resolveStorefrontHostFn } from "@/lib/storefront.functions";
+-import { storeBlogArticleFn } from "@/lib/store-blog.functions";
++import {
++  resolveStorefrontHostFn,
++  getStoreChrome,
++} from "@/lib/storefront.functions";
++import {
++  storeBlogArticleFn,
++  storeBlogIndexFn,
++} from "@/lib/store-blog.functions";
++import { BlogFeedProvider, type BlogFeed } from "@/components/builder/blog";
++import { ThemeChrome } from "@/components/store/ThemeChrome";
+@@ -40,7 +48,19 @@ export const Route = createFileRoute("/blog/$slug")({
+         data: { slug: host.merchantSlug, articleSlug: params.slug },
+       });
+       if (!store) throw notFound();
+-      return { kind: "store" as const, ...store };
++      // Batch C — the theme's `blog_article` composition. This branch DOES
++      // carry a store subject (the custom host's merchant slug), so by the
++      // store-subject rule it resolves a theme. The GLOBAL branch below has
++      // no store subject at all, so it keeps the platform's own surface.
++      const chrome = await getStoreChrome({
++        data: { slug: host.merchantSlug, template: "blog", variant: "article" },
++      }).catch(() => null);
++      // The store's OTHER articles — the feed the theme's related-content
++      // rail reads. Best-effort: a failure degrades to an empty feed.
++      const related = await storeBlogIndexFn({
++        data: { slug: host.merchantSlug, page: 1 },
++      }).catch(() => null);
++      return { kind: "store" as const, ...store, chrome, related };
+@@ -215,6 +235,27 @@ function ReadingProgressBar() {
++/**
++ * The store's articles, minus the one being read — the feed the theme's
++ * related-content rail reads. Without it the widget would render the
++ * engine's synthetic sample rows on a live page.
++ */
++function relatedFeed(
++  related: Awaited<ReturnType<typeof storeBlogIndexFn>> | null,
++  currentSlug: string,
++  basePath: string,
++): BlogFeed {
++  return {
++    articles: (related?.listing.articles ?? []).filter(
++      (a) => a.slug !== currentSlug,
++    ),
++    facets: related?.listing.facets ?? [],
++    paging: related?.listing.paging ?? paging(() => basePath, 1, 0),
++    basePath: (page: number) =>
++      page > 1 ? `${basePath}?page=${page}` : basePath,
++  };
++}
+@@ -238,7 +279,10 @@ function StoreArticlePage({
+   const { article } = data;
+   const merchantName = article.merchant?.name ?? data.merchantSlug;
+   const outline = articleOutline(article.body ?? "");
+-  return (
++  // The route's own body — the article. It flows through the theme's
++  // route-owned body slot when the theme publishes a `blog_article`
++  // composition, and it IS the fallback when the theme publishes none.
++  const body = (
+@@ -295,6 +339,28 @@ function StoreArticlePage({
+   );
++  return (
++    <BlogFeedProvider value={relatedFeed(data.related, article.slug, "/blog")}>
++      <ThemeChrome
++        template="blog"
++        ast={data.chrome?.ast ?? null}
++        tokens={data.chrome?.tokens ?? null}
++        themeKey={data.chrome?.themeKey ?? null}
++        contentSlot="page_content"
++        contextSlots={{
++          // The route-owned body slot: the article.
++          page_content: body,
++          // The blog pack: the terms rail, the listing and the pager.
++          blog_terms: null,
++          blog_archive: null,
++          blog_pager: null,
++        }}
++        ownsPrimary
++        containerClassName="mx-auto max-w-6xl py-8"
++        fallback={body}
++      />
++    </BlogFeedProvider>
++  );
+ }
+```
+
+**The two signature widenings** (`src/lib/themes.server.ts` — G1 — "engine / platform
+libs"). `mergeTemplates` and `diffTemplates` took a `ThemeTemplates`, which cannot carry
+a variant key; the merge genuinely carries the variants, so the type was widened to the
+`TemplateMap` the parser actually returns. `sectionsOf` follows.
+
+```diff
+--- a/src/lib/themes.server.ts
++++ b/src/lib/themes.server.ts
+@@ -1508,7 +1509,7 @@ function digestSection(section: {
+-function sectionsOf(templates: ThemeTemplates, key: string) {
++function sectionsOf(templates: TemplateMap, key: string) {
+@@ -1541,8 +1542,8 @@ function templateMapKeys(
+ export function diffTemplates(
+-  mine: ThemeTemplates,
+-  upstream: ThemeTemplates,
++  mine: TemplateMap,
++  upstream: TemplateMap,
+ ): TemplateDiff[] {
+@@ -1566,8 +1567,8 @@ function templateMapKeys(
+ export function mergeTemplates(
+-  mine: ThemeTemplates,
+-  upstream: ThemeTemplates,
++  mine: TemplateMap,
++  upstream: TemplateMap,
+   mode: UpdateMode,
+ ): TemplateMap {
+```
+
+**The `use-builder-editor` lint-map hunk** (`src/hooks/use-builder-editor.ts` — G1 —
+"hooks / components"). The editor's lint map lints every VARIANT **with its base key**,
+exactly as the publish gate does.
+
+```diff
+--- a/src/hooks/use-builder-editor.ts
++++ b/src/hooks/use-builder-editor.ts
+@@ -629,8 +671,15 @@ export function useBuilderEditor(
+   const issues = useMemo(() => {
+-    if (!doc) return {} as Record<TemplateKey, ReturnType<typeof lintTemplate>>;
+-    const out = {} as Record<TemplateKey, ReturnType<typeof lintTemplate>>;
++    if (!doc)
++      return {} as Record<
++        TemplateKey | TemplateVariantKey,
++        ReturnType<typeof lintTemplate>
++      >;
++    const out = {} as Record<
++      TemplateKey | TemplateVariantKey,
++      ReturnType<typeof lintTemplate>
++    >;
+@@ -638,6 +687,19 @@ export function useBuilderEditor(
+     for (const key of TEMPLATE_KEYS)
+       out[key] = lintTemplate(doc.templates[key] ?? EMPTY_AST, key);
++    // Every VARIANT is linted with its BASE key (`blog_listing` as `blog`),
++    // so a context widget inside a variant is checked against the template
++    // that owns the data. Linting a variant as if it were a template would
++    // make every context widget inside it a publish-blocking "needs data
++    // this template does not provide" error — the same rule the publish
++    // gate applies (`lintTemplateMap`, `src/lib/themes.server.ts`).
++    for (const variant of TEMPLATE_VARIANT_KEYS) {
++      const ast = doc.templates[variant];
++      if (!ast) continue;
++      const base = baseTemplateKey(variant);
++      if (!base) continue;
++      out[variant] = lintTemplate(ast, base);
++    }
+     return out;
+   }, [doc]);
+```
+
+**The rest of Batch C's §7-prohibited edits** (`src/lib/themes.server.ts`,
+`src/hooks/use-builder-editor.ts`, `src/components/builder/BuilderTopBar.tsx`,
+`src/components/store/ThemePreviewFrame.tsx`,
+`src/routes/_authenticated/dashboard/builder.tsx`, `src/lib/storefront.functions.ts`)
+WERE carried by §(k.2) as planned diffs. This section closes the RECORD's gap; it
+changes no code.
+
+---
+
+## (l) Fix round — the review's thirteen findings (appended, 2026-10-21)
+
+**Base commit of this round:** `4fd6b9c4` (`feat(builder): per-template isolation, a reset
+affordance, and preview-parity with the storefront`) — the tip of `frame30`.
+**Plan:** `docs/superpowers/plans/2026-10-21-frame30-core-cms-upgrade.md` (Tasks 5 and 6 —
+the review round of those two tasks).
+**Owner's rulings in force:** Decision Gate **G1** (§7 relaxed for the plan's named list),
+**G2** (the additive API rule), **G3** (the parity re-freeze runs on the repo's throwaway
+stack, never on the configured database).
+
+This section is **appended**, not rewritten: everything above is the record as it stood
+when Batch C was committed. It is written **before** any file this round edits is
+touched.
+
+### (l.1) The thirteen findings
+
+**Critical 1 — resetting a VARIANT destroys the theme's default variant body.**
+`src/lib/themes.server.ts:1762-1764`: `registryPackage(key)` returns only
+`preview.templates` and drops `preview.variants`, so the preset bag has no `blog_listing`
+and the reset writes `EMPTY_AST` — clicking "Reset to default" on *Blog listing* erases
+Songoskriti's authored `blog_listing` composition and silently downgrades the storefront
+listing to the base `blog` pack. **Fixed** by resolving the preset's variants alongside
+the base map (§(l.2), `src/lib/themes.server.ts`).
+
+**Critical 2 — the reset path has no test at all.** `grep -rn "resetTemplateToDefault"
+src/` found only the definition and its server-fn wrapper, so an unverified destructive
+affordance shipped. **Fixed** by a new contract suite (§(l.3),
+`src/lib/themes-reset.contract.test.ts`).
+
+**Important 3 — publish does not enforce the closed vocabulary.** `parseTemplates` keeps
+any `<known base>_<suffix>` key and `lintTemplateMap` lints it with its base, so
+`blog_bogus` can be published and persists as a template nothing routes to. **Fixed** in
+`lintTemplateMap` with the stable reason code `builder.unknown_variant`, exempting ONLY
+the legacy `page_<slug>` package shape (§(l.2)).
+
+**Important 4 — the parity proof does not cover the variants, and
+`resolvePreviewVariantAst` is dead code.** `src/lib/preview-parity.contract.test.ts`
+compared slot maps for the BASE templates only, and `resolvePreviewVariantAst`
+(`src/lib/theme-preview-nav.ts:613`) was exported and never called. **Fixed** by a case
+that resolves one variant through BOTH seams and asserts the same winning key and the
+same AST (§(l.3)), and by the preview host calling the seam (§(l.2)).
+
+**Important 5 — the preview host cannot render a variant from the URL, so preview ≠
+production for a variant.** `src/routes/theme-preview.$key.tsx:255` cast the requested
+key to `TemplateKey`, so `?template=blog_listing` landed in `unsupportedTemplate` and
+rendered the "not supported by this theme" panel. **Fixed** by passing `preset.variants`
+into `ThemePreviewFrame`, treating a closed variant key as a known template, and
+resolving it through `resolvePreviewVariantAst`; the explicit unsupported panel stays for
+everything outside the closed table (§(l.2)).
+
+**Important 6 — a variant's Bangla coverage escapes the platform's 90 % gate.**
+`src/lib/translation-coverage.ts:89-105` iterated `TEMPLATE_KEYS` only, so a variant full
+of untranslated strings was not counted (and the total it did count was inflated by the
+omission). **Fixed** by iterating the closed variant keys with their base key, exactly
+as `lintTemplateMap` does (§(l.2)), plus a publish-contract case (§(l.3)).
+
+**Important 7 — the hand-written variant enum is a subset of the closed table.**
+`src/lib/storefront.functions.ts:127` accepted only `"listing" | "article"` of the five
+legal suffixes, so the three archive variants could not be requested through the only
+storefront seam. **Fixed** by deriving the enum from the table (§(l.2)).
+
+**Minor 8 — the escalation record omits four §7-prohibited files the batch edited** (plus
+the `mergeTemplates` / `diffTemplates` signature widening and the `use-builder-editor`
+lint-map hunk). **Fixed** by §(k.9) above.
+
+**Minor 9 — `markSaved()` after the reset can strand unsaved client edits.**
+`src/routes/_authenticated/dashboard/builder.tsx:1280-1286`: the server wrote ITS map,
+but the client patched only the reset key and then marked the whole doc saved, so
+unsaved edits in other templates were neither persisted nor shown as unsaved. **Fixed**
+by returning the full merged map from the reset and replacing the doc with it — no
+`markSaved` of a doc the server never saw (§(l.2)).
+
+**Minor 10 — a vacuous seed assertion.** `src/lib/publish-migration.contract.test.ts:285`
+asserted `expect(sent.blog_article).toBeUndefined()` while the fixture's merchant map
+held only `index` and the package carried no variants, so it could not fail. **Fixed** by
+putting `blog_article` in the fixture's merchant map and asserting it is present in
+`_preset.templates` unchanged (§(l.3)).
+
+**Minor 11 — the "Active" badge disappears when a variant is selected.**
+`src/components/builder/BuilderTopBar.tsx:463`: `isSelected = template === key &&
+!templateVariant`, and the variant entry showed no badge. **Fixed** by giving the
+selected variant entry the same "Active" treatment (§(l.2)).
+
+**Minor 12 — the reset button is destructive, unconfirmed, and defaults to the HOME
+template.** `builder.tsx:1541-1555` rendered "Reset to default" beside the template
+strip with no confirmation, and the initial selection is `index`, so a first click blanks
+the homepage composition. **Fixed** by arming the button before it fires and by
+disabling it until a template is explicitly chosen (§(l.2)).
+
+**Minor 13 — the report's test-delta arithmetic does not reconcile** (it claimed "+4
+test files, +47 tests"; the diff accounts for +43). **Fixed** in
+`.superpowers/sdd/2026-10-21-frame30-core-cms-upgrade/task-5-6-report.md`.
+
+### (l.2) The exact old → new diff of every file this round edits
+
+Every §7-prohibited file this round edits, with its exact unified-diff hunks. The two
+NEW files are not edits and carry no diff; they are listed in §(l.3).
+
+```diff
+diff --git a/src/lib/themes.server.ts b/src/lib/themes.server.ts
+@@
+ import { resolveThemePreview } from "./theme-preview-nav";
+-import { isKnownTemplateKey } from "./template-variants";
++import {
++  isKnownTemplateKey,
++  isTemplateVariantKey,
++  variantSuffixesFor,
++} from "./template-variants";
+@@
+ function lintTemplateMap(templates: TemplateMap): string[] {
+   const out: string[] = [];
+   const report = (key: string, base: TemplateKey, ast: ThemeAst): void => {
+     for (const issue of lintTemplate(ast, base)) {
+       if (issue.level !== "error") continue;
+       out.push(`${key}: ${issue.message}`);
+     }
+   };
+   for (const key of TEMPLATE_KEYS) {
+     report(key, key, templateOf(templates, key));
+   }
+   for (const [key, ast] of Object.entries(templates)) {
+     if (isTemplateKey(key)) continue;
+     const base = variantBaseKey(key);
+     if (!base || !ast) continue;
++    // The CLOSED vocabulary decides what a VARIANT may be. A key shaped
++    // like a variant (`<known base>_<suffix>`) whose suffix is NOT in the
++    // closed table is a typo or a leftover — and it is a template nothing
++    // routes to, so it is REFUSED here, with the stable reason code
++    // `builder.unknown_variant`.
++    //
++    // The ONE exemption is the legacy theme-package per-page shape
++    // (`page_<slug>`): it is a legal persisted key of a third-party
++    // package, so it keeps round-tripping AND keeps being linted with its
++    // base key, exactly as before.
++    if (!isTemplateVariantKey(key)) {
++      if (base !== "page") {
++        out.push(
++          `${key}: builder.unknown_variant — "${key}" is not one of the known variants of "${base}" (${variantSuffixesFor(base).join(", ") || "none"}).`,
++        );
++      }
++      continue;
++    }
+     report(key, base, ast);
+   }
+   return out;
+ }
+@@
+     const workspace = await loadWorkspace(db, merchantId);
+     const sourceKey = workspace.theme.sourceKey;
+-    const pkg = sourceKey ? registryPackage(sourceKey) : null;
+-    const bag = (pkg?.templates ?? {}) as Record<string, ThemeAst | undefined>;
++    // The theme's own default for ONE key. The preset carries the base
++    // templates AND the VARIANT bodies in TWO maps (`preview.templates` /
++    // `preview.variants`), and the reset must read BOTH: a bag with the
++    // base map alone has no `blog_listing`, so the reset would write the
++    // EMPTY AST and erase the theme's authored variant composition.
++    const preset = sourceKey ? resolveThemePreview(sourceKey) : null;
++    const bag = {
++      ...((preset?.templates ?? {}) as Record<string, ThemeAst | undefined>),
++      ...((preset?.variants ?? {}) as Record<string, ThemeAst | undefined>),
++    };
+     const ast = bag[key] ?? EMPTY_AST;
+@@
+-    return { versionId, template: key, ast };
++    // The FULL merged map rides back with the result: the client replaces
++    // its document with the map the SERVER wrote, so the editor's state and
++    // the stored state can never disagree about what was reset.
++    return { versionId, template: key, ast, templates };
+   });
+ }
+```
+
+```diff
+diff --git a/src/lib/translation-coverage.ts b/src/lib/translation-coverage.ts
+@@
+ import {
+   biTextKeysOf,
+   catalogEntry,
+   TEMPLATE_KEYS,
++  type TemplateMap,
+   type Section,
+   type TemplateKey,
++  type ThemeAst,
+   type ThemeTemplates,
+ } from "./builder-ast";
+ import { biTextState, readBiText, type BiTextState } from "./bitext";
++import { TEMPLATE_VARIANT_KEYS, baseTemplateKey } from "./template-variants";
+@@
+ export function translationCoverage(templates: ThemeTemplates): CoverageReport {
+   const byTemplate: Partial<Record<TemplateKey, CoverageStats>> = {};
+   const totals = blank();
+-
+-  for (const key of TEMPLATE_KEYS) {
+-    const ast = templates[key];
+-    if (!ast) continue;
+-    const stats = coverageOfTemplate(key, ast);
+-    if (stats.total === 0) continue;
+-    const { refs, ...rest } = stats;
+-    byTemplate[key] = rest;
+-    totals.total += stats.total;
+-    totals.ok += stats.ok;
+-    totals.fallback += stats.fallback;
+-    totals.empty += stats.empty;
+-    totals.refs.push(...refs);
+-  }
++  // The base templates AND the VARIANTS both count. A variant's বাংলা
++  // coverage is the theme's coverage: the publish gate's 90 % floor must
++  // see it, or a variant full of untranslated strings slips through a gate
++  // that the base templates cannot slip through.
++  //
++  // A variant is counted against its BASE key — exactly as `lintTemplateMap`
++  // lints it (a context widget inside a variant belongs to the base's
++  // data). The stats ACCUMULATE into the base's row, so the studio's meter
++  // and the publish gate read the same numbers.
++  const bag = templates as TemplateMap;
++  const add = (key: TemplateKey, ast: ThemeAst): void => {
++    const stats = coverageOfTemplate(key, ast);
++    if (stats.total === 0) return;
++    const { refs, ...rest } = stats;
++    const seen = byTemplate[key];
++    const merged = seen
++      ? {
++          total: seen.total + rest.total,
++          ok: seen.ok + rest.ok,
++          fallback: seen.fallback + rest.fallback,
++          empty: seen.empty + rest.empty,
++          percent: 0,
++        }
++      : rest;
++    merged.percent = percentOf(merged);
++    byTemplate[key] = merged;
++    totals.total += stats.total;
++    totals.ok += stats.ok;
++    totals.fallback += stats.fallback;
++    totals.empty += stats.empty;
++    totals.refs.push(...refs);
++  };
++  for (const key of TEMPLATE_KEYS) {
++    const ast = bag[key];
++    if (!ast) continue;
++    add(key, ast);
++  }
++  for (const variant of TEMPLATE_VARIANT_KEYS) {
++    const ast = bag[variant];
++    if (!ast) continue;
++    const base = baseTemplateKey(variant);
++    if (!base) continue;
++    add(base, ast);
++  }
+```
+
+```diff
+diff --git a/src/lib/storefront.functions.ts b/src/lib/storefront.functions.ts
+@@
+ import { PAYMENT_METHOD_KEYS } from "./payment-rails";
++import { TEMPLATE_VARIANTS } from "./template-variants";
+@@
+ const methodSchema = z.enum(PAYMENT_METHOD_KEYS);
++
++/**
++ * The closed variant suffixes the storefront seam accepts — DERIVED from the
++ * vocabulary table, never written out by hand.
++ *
++ * A hand-written copy of the list is how the three archive variants became
++ * unrequestable: the validator accepted `"listing" | "article"` while the
++ * table listed five, and the day the archive route lands it would have 500'd
++ * at the validator. Deriving the list makes that drift impossible.
++ */
++export const STORE_VARIANT_SUFFIXES = Object.values(
++  TEMPLATE_VARIANTS,
++).flat() as [string, ...string[]];
+@@
+         /**
+          * The closed variant suffix of `template` this surface renders.
+          * Optional: absent = the base template, exactly as before.
++         *
++         * DERIVED from the closed table, so the validator can never drift
++         * from the vocabulary again: the five legal suffixes come from
++         * `TEMPLATE_VARIANTS` itself. A hand-written copy of the list is
++         * how the three archive variants became unrequestable through the
++         * only storefront seam.
+          */
+-        variant: z.enum(["listing", "article"]).optional(),
++        variant: z.enum(STORE_VARIANT_SUFFIXES).optional(),
+```
+
+```diff
+diff --git a/src/lib/theme-preview-nav.ts b/src/lib/theme-preview-nav.ts
+@@
+ export function validateThemePreviewSearch(search: Record<string, unknown>): {
+-  template: TemplateKey | undefined;
++  template: TemplateKey | TemplateVariantKey | undefined;
+@@
+-  const template = (TEMPLATE_KEYS as readonly string[]).includes(rawTemplate)
+-    ? (rawTemplate as TemplateKey)
+-    : undefined;
++  // A CLOSED VARIANT key (`blog_listing`, `blog_article`, …) is a KNOWN
++  // template: the platform routes to it, so it travels in the known slot
++  // and the preview host resolves it through the variant rule. A key
++  // OUTSIDE the closed table is still the unsupported request.
++  const template = (TEMPLATE_KEYS as readonly string[]).includes(rawTemplate)
++    ? (rawTemplate as TemplateKey)
++    : isTemplateVariantKey(rawTemplate)
++      ? rawTemplate
++      : undefined;
+```
+
+```diff
+diff --git a/src/routes/theme-preview.$key.tsx b/src/routes/theme-preview.$key.tsx
+@@
+ import type { TemplateKey } from "@/lib/builder-ast";
++import type { TemplateVariantKey } from "@/lib/template-variants";
+@@
+       tokens={preset.tokens}
+       templates={preset.templates}
++      // The theme's authored VARIANT bodies (`blog_listing`, `blog_article`).
++      // They ride BESIDE the base map: the host resolves a closed variant
++      // key through the variant rule (the variant first, then its base).
++      variants={preset.variants}
+@@
+-        (initialTemplate ?? unsupportedTemplate) as TemplateKey | undefined
++        (initialTemplate ?? unsupportedTemplate) as TemplateKey | TemplateVariantKey | undefined
+       }
+```
+
+```diff
+diff --git a/src/components/store/ThemePreviewFrame.tsx b/src/components/store/ThemePreviewFrame.tsx
+@@
+ import {
+   applyDemoFocus,
+   type DemoFocus,
+   handlePreviewCanvasClick,
+   handlePreviewCanvasSubmit,
+   previewSearchForSwitch,
+   resolveDemoFocus,
++  resolvePreviewVariantAst,
+ } from "@/lib/theme-preview-nav";
++import {
++  baseTemplateKey,
++  isTemplateVariantKey,
++  type TemplateVariantKey,
++} from "@/lib/template-variants";
+@@
+   /** All authored templates keyed by template key. */
+   templates: Record<TemplateKey, ThemeAst>;
++  /**
++   * The theme's authored VARIANT bodies (`blog_listing`, `blog_article`).
++   *
++   * A SEPARATE map, exactly as the preset carries it: the base map stays
++   * the ten-key template space the host resolves against, and a key the
++   * platform does not know must stay ABSENT from it (the host turns an
++   * absent key into its explicit "not supported by this theme" panel).
++   * ABSENT = the theme ships no variant body, and every variant falls back
++   * to its base template.
++   */
++  variants?: Record<string, ThemeAst>;
+   /** Deep-linkable starting tab (?template=product). Defaults to homepage. */
+-  initialTemplate?: TemplateKey;
++  initialTemplate?: TemplateKey | TemplateVariantKey;
+@@
+-  const [template, setTemplate] = useState<TemplateKey>(startTemplate);
++  const [template, setTemplate] = useState<TemplateKey | TemplateVariantKey>(
++    startTemplate,
++  );
+@@
+   const templatesByKey: Partial<Record<TemplateKey, ThemeAst>> = templates;
+-  const authored = templatesByKey[template];
++  // The VARIANT bodies ride BESIDE the base map. A closed variant key
++  // resolves through the SAME rule the storefront uses — the variant first,
++  // then its base, and nothing else — so the preview shows the composition
++  // the storefront will render, not a different one.
++  const variantBag = useMemo(
++    () => ({ ...templates, ...(variants ?? {}) }),
++    [templates, variants],
++  );
++  const isVariant = isTemplateVariantKey(template);
++  // The BASE key drives every catalogue allowlist check and every grant,
++  // exactly as it does for the editor and the publish gate: no widget's
++  // catalogue row names a variant key.
++  const baseTemplate: TemplateKey = isVariant
++    ? (baseTemplateKey(template) ?? "index")
++    : (template as TemplateKey);
++  const variantResolved = isVariant
++    ? resolvePreviewVariantAst(variantBag, template)
++    : null;
++  const authored: ThemeAst | undefined = isVariant
++    ? variantResolved?.ast
++    : templatesByKey[template as TemplateKey];
+   const unsupported = authored === undefined;
+   const ast = authored ?? templatesByKey.index ?? EMPTY_AST;
+@@
+-    focus && focus.template === template
++    focus && focus.template === baseTemplate
+@@
+-    (template === "collection" || template === "product") &&
+-    demoFocus.template === template
++    (baseTemplate === "collection" || baseTemplate === "product") &&
++    demoFocus.template === baseTemplate
+@@
+-    if (template !== "account") return undefined;
++    if (baseTemplate !== "account") return undefined;
+@@
+-    template === "cart"
++    baseTemplate === "cart"
+@@
+-    template === "checkout"
++    baseTemplate === "checkout"
+@@
+-    if (template !== "search" || !isSongoskriti) return [];
++    if (baseTemplate !== "search" || !isSongoskriti) return [];
+@@
+-    template === "search"
++    baseTemplate === "search"
+@@
+-    if (template !== "search" || !isSongoskriti) return undefined;
++    if (baseTemplate !== "search" || !isSongoskriti) return undefined;
+@@
+-    template === "blog"
++    baseTemplate === "blog"
+@@
+-    template === "archive"
++    baseTemplate === "archive"
+@@
+-    if (template !== "page") return undefined;
++    if (baseTemplate !== "page" && template !== "blog_article") return undefined;
+@@
+-                  {template === "checkout" ? (
++                  {baseTemplate === "checkout" ? (
+@@
+-                            template={template}
++                            template={baseTemplate}
+@@
+-                          template={template}
++                          template={baseTemplate}
+@@
+-                            template={template}
++                            template={baseTemplate}
+@@
+-                              template={template}
++                              template={baseTemplate}
+```
+
+```diff
+diff --git a/src/components/builder/BuilderTopBar.tsx b/src/components/builder/BuilderTopBar.tsx
+@@
+                                   <span className="min-w-0 flex-1">
+-                                    <span className="text-xs font-medium leading-none">
+-                                      {t(variantMeta.en, variantMeta.bn)}
+-                                    </span>
++                                    <span className="flex items-center justify-between gap-2">
++                                      <span className="text-xs font-medium leading-none">
++                                        {t(variantMeta.en, variantMeta.bn)}
++                                      </span>
++                                      {/* The selected VARIANT carries the
++                                          SAME "Active" treatment as the
++                                          selected base — otherwise the badge
++                                          VANISHES the moment a variant is
++                                          chosen, and the merchant cannot see
++                                          which surface they are editing. */}
++                                      {variantSelected && (
++                                        <span className="text-[10px] font-bold uppercase tracking-wider opacity-90">
++                                          {t("Active", "সক্রিয়")}
++                                        </span>
++                                      )}
++                                    </span>
+```
+
+```diff
+diff --git a/src/routes/_authenticated/dashboard/builder.tsx b/src/routes/_authenticated/dashboard/builder.tsx
+@@
+   const [template, setTemplate] = useState<EditorTemplateKey>("index");
++  // The reset is DESTRUCTIVE: it replaces ONE template with the theme's
++  // own default. It is ARMED first (a second click confirms) and it stays
++  // DISABLED until the merchant has explicitly chosen a template — the
++  // initial selection is the homepage, so a first click would otherwise
++  // blank the homepage composition.
++  const [resetArmed, setResetArmed] = useState(false);
++  const [templateChosen, setTemplateChosen] = useState(false);
+@@
+     onSuccess: async (result) => {
+       if (doc) {
++        // The server wrote ITS OWN merged map (the merchant's map with
++        // exactly ONE key replaced) and returned it. The editor follows
++        // THAT map — and it is NOT marked saved: the server never saw the
++        // client's unsaved edits, so marking them saved would strand them
++        // (neither persisted nor shown as unsaved).
+         editor.replaceDoc({
+           ...doc,
+-          templates: { ...doc.templates, [result.template]: result.ast },
++          templates: result.templates,
+         });
+       }
+-      editor.markSaved();
+@@
+           <button
+             type="button"
+-            onClick={() => resetTemplate.mutate()}
+-            disabled={resetTemplate.isPending || !themeId || !doc}
++            onClick={() => {
++              if (!resetArmed) {
++                setResetArmed(true);
++                return;
++              }
++              setResetArmed(false);
++              resetTemplate.mutate();
++            }}
++            disabled={
++              resetTemplate.isPending || !themeId || !doc || !templateChosen
++            }
+@@
+-            {resetTemplate.isPending
+-              ? t("Resetting…", "ফেরানো হচ্ছে…")
+-              : t("Reset to default", "ডিফল্টে ফেরান")}
++            {resetTemplate.isPending
++              ? t("Resetting…", "ফেরানো হচ্ছে…")
++              : resetArmed
++                ? t("Confirm reset", "রিসেট নিশ্চিত করুন")
++                : t("Reset to default", "ডিফল্টে ফেরান")}
+           </button>
+```
+
+```diff
+diff --git a/src/lib/themes/songoskriti/unsupported-template-state.test.tsx b/src/lib/themes/songoskriti/unsupported-template-state.test.tsx
+@@
+         templates={preset.templates}
+-        initialTemplate={requested as TemplateKey}
++        // The theme's authored VARIANT bodies — the host resolves a closed
++        // variant key through them (the variant first, then its base).
++        variants={preset.variants}
++        initialTemplate={requested as TemplateKey | TemplateVariantKey}
+@@
+-    expect(ROUTE_SRC).toContain(
+-      "(initialTemplate ?? unsupportedTemplate) as TemplateKey | undefined",
+-    );
++    expect(ROUTE_SRC).toContain(
++      "(initialTemplate ?? unsupportedTemplate) as",
++    );
++    // … and it hands the theme's VARIANT bodies to the host beside the
++    // base map, so the host can resolve a closed variant key.
++    expect(ROUTE_SRC).toContain("variants={preset.variants}");
+```
+
+### (l.3) The NEW files this round adds
+
+| file | what it is |
+| --- | --- |
+| `src/lib/themes-reset.contract.test.ts` | the reset contract: exactly ONE key is replaced and every other key (the other variants included) is byte-identical · a NEW version is written (`theme_commit` once, `theme_publish` never) · the draft revision advances · an unknown key is refused · **a variant reset restores the theme's AUTHORED variant body** |
+
+### (l.4) Backward compatibility
+
+No migration and no DDL. The `templates` column is `jsonb` and its shape does not change.
+
+- **The reset** still replaces exactly ONE key, still lints the merged map before writing,
+  still writes a new version and still advances the draft. What changes is WHICH default
+  it writes for a VARIANT: the theme's own authored variant body, instead of the EMPTY
+  AST. A theme with no source package still writes the EMPTY AST for that one key.
+- **The publish gate** now refuses a variant-shaped key outside the closed table with
+  the reason code `builder.unknown_variant`. The legacy `page_<slug>` package shape is
+  exempt and keeps being linted with its base key, exactly as before. A theme whose
+  map carries a `<base>_<suffix>` key outside the closed table (say `product_summer`,
+  the row-level suffix override's own shape) is now refused at the publish — stated
+  here, not absorbed silently.
+- **The preview host** renders a closed variant key through the variant rule (the
+  variant first, then its base). Every key outside the closed table keeps the explicit
+  "not supported by this theme" panel — the state is never a silent homepage.
+- **The translation gate** counts the variants' বাংলা coverage now. A theme whose
+  variant is half-translated is refused at the publish where it used to pass; that is
+  the point of the gate.
+- **The storefront seam** accepts every suffix of the closed table, so the three
+  archive variants become requestable the day their route lands.
+
+### (l.5) The rules that hold throughout this round
+
+No new npm dependency and no lockfile change. No test is weakened, deleted or skipped —
+every suite that changes here changes to a **stronger** expectation, and the two pins
+this round rewrites (the seed's `blog_article` assertion and the preview route's
+source-text assertion) are rewritten to assert MORE. Every commit stages **explicit
+paths** only. The three churn files (`.artifacts/e2e/playwright-report/index.html`,
+`ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`) and `.output-snapshots/`
+are never staged and never committed.
