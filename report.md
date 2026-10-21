@@ -112,9 +112,20 @@ These are the questions I put to you while implementing, with the options offere
 
 ## 5. The open questions — for the expert
 
+### 5.1 Resolved on 2026-10-20/21 (the expert's programme is now shipped)
+
+| #                     | Ruling                                                                                                                                                                                                                                                                                                                                                                                                                                          | Where it lives                                                                                     |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| **D1**                | **Option A** — "Archive" is the blog taxonomy surface (index / category / tag / author), served by the `blog` template + the platform's blog pack. **No `archive` template key** was added, so `TEMPLATE_KEYS`, the 41 per-widget allowlists, the hand-written `z.enum`, the package contract and `THEME_API_RANGE` are all untouched. An unknown `?template=` now renders an explicit **unsupported state** that names the key and links home. | `docs/superpowers/songoskriti-evidence/port/phase2-template-completeness-escalation.md` §(l), §(n) |
+| **D4**                | Port spec §7 **relaxed** for a narrow, owner-ruled list: the preview host, the two composition pins, the theme-owned `skins.test.ts` pin, the Phase-1 preview-page pin, the search route, `src/lib/theme-preview-nav.ts` and `src/routes/theme-preview.$key.tsx`. Every other §7 prohibition stands.                                                                                                                                            | the same record, §(g), §(h), §(j), §(m), §(n)                                                      |
+| **D6**                | **State B** — the storefront search route now exposes its pieces as per-widget context slots, with `CollectionQueryProvider` mounted and the platform's query box + category/kind chips still inside the results block the theme renders. The result set is **byte-identical** before and after.                                                                                                                                                | `src/routes/store.$slug.search.tsx` + the record's §(k)                                            |
+| **D2 / D3 / D5 / D7** | Still open and still non-blocking: production checkout stays tokens-only, the programme is Songoskriti-only, the storefront reader blog stays "themeless by design", and the storefront still mounts no `WidgetDataProvider` (so `facet_sidebar` is preview-only).                                                                                                                                                                              | the evidence record's §(E)/§(G)                                                                    |
+
+**The expert's six items, as shipped:** 1 real Search template ✅ · 2 representative Cart/Account previews ✅ · 3 Blog/Page preview composition ✅ · 4 authored Checkout template in preview ✅ · 5 Archive contract ✅ (Option A — a documented contract, not a new key) · 6 a template-distinctness acceptance gate ✅ (seven rules, a firing fixture each, and it rejects the engine's generic body on every template).
+
 Each carries the evidence that settles it. **D1–D3 and D5 are yours; D4 and D6 are now recorded but still need a ruling.**
 
-### D1 — Does `archive` need to be a template _key_ at all? _(the judgement call the audit flagged)_
+### D1 — Does `archive` need to be a template _key_ at all? _(RULED 2026-10-20: **Option A** — see §5.1)_
 
 **Question:** is "Archive" the **blog taxonomy** surface (index / category / tag / author — the only route-level taxonomy archives that exist) or a **product-side** listing archive (category / brand / search-kind, where "brand" has no route at all)?
 
@@ -130,7 +141,7 @@ The route deliberately discards the theme AST (`ast={null}`) while the theme sur
 
 Somvabona authors **none** of the six secondary surfaces — it falls through to the engine's generic demo body. "Defaults for every official theme" is therefore not 2× the Songoskriti work; it is 2× **plus** authoring six surfaces from scratch for a theme that has none.
 
-### D4 — Does port spec §7's "no core files" boundary still govern this Frame30 work?
+### D4 — Does port spec §7's "no core files" boundary still govern this Frame30 work? _(RULED 2026-10-20: relaxed for a narrow, named list — see §5.1)_
 
 Phases 2–5 all require `src/routes/**` and `src/components/store/**`. Phase 1 needed three escalated files (granted) and the closure wave added three more (granted). **The remaining phases cannot be done without a standing escalation.** Options: amend §7 for the template programme, or run each phase as its own escalation, or keep the boundary and accept that the storefront templates stay shared.
 
@@ -138,7 +149,7 @@ Phases 2–5 all require `src/routes/**` and `src/components/store/**`. Phase 1 
 
 `BlogArchiveTheme` passes `ast={null}` with a comment saying the generic render is intentional and is pinned by a test. Phase 2 would make the storefront blog wear the theme's `blog` template and the blog pack (the widgets already exist). **Is "themeless by design" a product decision to keep, or a placeholder to replace?**
 
-### D6 — The parity re-freeze (one open owner action)
+### D6 — The parity re-freeze (one open owner action) _(still open — 42 stale captures, 84 files; re-freezing mutates a store in the `.env` database, so it stays an owner action)_
 
 Six `page-*` stills in `docs/superpowers/songoskriti-evidence/port/reference/` and in `.e2e/songoskriti-port-parity.spec.ts-snapshots/` predate the change, and `reference-manifest.json` holds 60 captures. A re-freeze rewrites all 60. It was **deliberately not auto-run**: the harness activates Songoskriti on a store in the database configured by the repo's `.env` — a possibly-shared instance — and it only accepts loopback requests. The exact command, the preconditions (loopback dev server, a **disposable** store, Playwright browsers) and the trigger (before the next owner-run parity pass; the suite is in neither `e2e:critical` nor `e2e:security`, so CI is unaffected) are recorded in the evidence doc §D.5. **What to review in the diff:** only the 6 `page-*` entries should differ materially; the other 54 captures are expected to be unchanged modulo the per-response CSP nonce.
 
