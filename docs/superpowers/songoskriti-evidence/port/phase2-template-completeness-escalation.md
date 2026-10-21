@@ -2772,3 +2772,114 @@ with the **real** router and the route's own `validateSearch`):
 **A future fix flips these three cases** (they assert the drop), and the
 fix's own change is then visible as a red test rather than as a silent
 behaviour change.
+
+---
+
+## (p) The parity re-freeze — the owner action, **discharged on a throwaway stack** _(appended 2026-10-21 by the closing wave B)_
+
+This section closes the escalation that the evidence record's §(D) and §(H.2)
+raised and that `report.md` §D6 carried as *"one open owner action"*. It is
+appended, not edited: every section above stands as written.
+
+### (p.1) The finding — the brief's premise about the database was false
+
+The closing brief was given with the premise that the parity harness
+*"activates the Songoskriti theme on a store in the database configured by the
+repo's `.env.local`"*, that *".env.local points at a **hosted** Supabase
+project"*, and that production's database was *"a different instance: the
+self-hosted docker container `framique-supabase-db`"*. **Measured, that premise
+is wrong in both directions**, and the correction matters because the safety
+rule turns on it:
+
+- **`.env.local` is not a project at all.** It holds
+  `VITE_SUPABASE_URL=https://dummy.supabase.co` and
+  `VITE_SUPABASE_PUBLISHABLE_KEY=dummy` — a **placeholder**. The host has no A
+  record (`getent hosts` → nothing) and a read-only `@supabase/supabase-js`
+  probe of `merchants` / `store_themes` / `pages` against it fails with
+  `TypeError: fetch failed` on every table. The publishable key is the literal
+  5-character string `dummy`.
+- **`.env` is the production instance.** `SUPABASE_URL=https://framebase.qubickle.com`
+  resolves to `88.99.250.99` — this host's own public IP — and the host's
+  openresty routes it to `127.0.0.1:8007` → the `framique-supabase-kong`
+  container → the `framique-supabase-db` container: the same database
+  `ops/deploy-from-git.sh:208` queries for the live primary hostname.
+
+**So the two "sides" are not two projects: the harness's database is
+production.** The safety rule's own escape clause applies — *"you may mutate
+… a demonstrably separate dev/staging project with no production merchants in
+it"* — and the repo already ships exactly such a project, documented and
+throwaway.
+
+### (p.2) The read-only evidence, before anything was run
+
+Both sides were read **before** any mutation, with counts and ids only:
+
+| probe | docker `framique-supabase-db` (production) | hosted `.env.local` project |
+| --- | --- | --- |
+| reachability | reachable | **unreachable** (no DNS; `fetch failed`) |
+| `merchants` | 6 rows — `framique`, `jhon-mark`, `cloudman-store`, `flame-fashion-bd`, `akira`, `test` | no project to read |
+| `store_themes` | 3 rows, all on `ddac7eeb-…` (akira): `Supershop` (active), `Atelier`, `classic` — **no Songoskriti** | no project to read |
+| `storefront_pages` | 0 rows | — |
+| `merchant_domains` | 1 row: `flamelancer.com` → `b47532e5-…`, active, primary | — |
+| `pages` | 1 row: `home` / "Que Demo Studio — Home", company `66ce0421-…` | — |
+
+The two other Supabase stacks on this host (`staging-supabase-db`,
+`supabase-db`) were probed too and hold **no** `merchants` / `store_themes` /
+`storefront_pages` tables at all — they are other applications' schemas, not
+a dev copy of this one.
+
+**Conclusion recorded: the configured database is production; the `.env.local`
+"hosted project" holds nothing. A run against the configured database is
+barred.** (Note also that the browser-side login path — `import.meta.env`
+→ `.env.local` → `dummy.supabase.co` — could not have authenticated at all,
+so a run as configured would have failed before it could mutate anything.)
+
+### (p.3) The action — the repo's own throwaway stack, and the isolation it gives
+
+`docker-compose.e2e.yml` + `docs/15-e2e/loopback-auth-setup.md` §§1-3 is the
+sanctioned throwaway path, and the Phase-1 record named it as the
+precondition for exactly this action. It was brought up with **no host port
+publishing** (an override file outside the repo resets `ports`, because
+`127.0.0.1:55432` is held on this host by `backend-postgres-1` and the
+sandbox shell is in a different network namespace from the docker daemon), the
+fresh-db migration pipeline applied, and the disposable merchant created
+through the **real GoTrue admin API** and seeded with `migration/0002_seed.sql`.
+
+The isolation is not a promise, it is a measurement:
+
+- its own compose project (`e2e-supabase`), own bridge network, own volume;
+  it never joins the `framique` production network or volumes;
+- its database contains **2 merchants** (`frame19-demo`,
+  `songoskriti-heritage`) and **0 production merchants**, **1** `store_themes`
+  row (the Songoskriti row the harness's own activation test created),
+  **1** `storefront_pages` row (the page this wave authored for the
+  storefront check);
+- **the production database was re-read after the run and is unchanged** —
+  the same 3 `store_themes` rows, the same 6 merchants, the same single
+  domain, and **still no Songoskriti row**. No theme was activated on any
+  production merchant, so no customer-visible change was made.
+
+The capture then ran in freeze mode (`PORT_CAPTURE_OUT` unset → the human
+stills to the frozen `reference/`; `--update-snapshots` → the machine
+baselines rewritten) with the app on loopback:3020 and the Playwright
+browsers already present (`chromium-1194`, the revision
+`playwright-core@1.56.0` expects). The full detail — the command, the
+60-passed/1-skipped result and the measured 118-file diff — is in the evidence
+record's §(L.3).
+
+### (p.4) The residual, and the standing instruction for the next owner run
+
+1. **The frozen baseline is now a throwaway-store baseline.** The preview
+   route is synthetic and DB-free, so the pixels are the same against any
+   database; but a freeze that wants a *production-corroborated* store still
+   requires a disposable store on a development database, a loopback server
+   and the Playwright browsers. The command and the preconditions are in §(L.3).
+2. **The storefront criterion is closed at the storefront level, not at the
+   production level.** The live tenant still has no Songoskriti store and the
+   live host still 404s path storefronts, so production's blast radius for
+   this programme is unchanged.
+3. **The parity suite remains owner-run** — it is in neither `e2e:critical`
+   nor `e2e:security` — so nothing in CI was waiting on the stale baseline
+   and nothing in CI is waiting on this freeze.
+4. **If a future pass needs a production-freeze**, the same rule holds: a
+   disposable store on a development database, never a production merchant.

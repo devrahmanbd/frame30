@@ -1187,3 +1187,268 @@ node_modules/.bin/eslint <the same four paths>
 
 **The three known-red gates and the known local flake are unchanged** — they are the
 pre-existing conditions §(F) lists, and this round neither ran nor changed them.
+
+---
+
+## (L) The parity re-freeze — **DONE**, and the storefront path **VERIFIED** _(appended 2026-10-21 by the closing wave B)_
+
+This section closes the two items §(D) and §(H.2) left open: the **42 stale
+captures / 84 files**, and the storefront criterion that could not be exercised
+because no store wore Songoskriti. It is appended, not edited — every section
+above it stands as written, and §(D)'s and §(H.2)'s own words are **still true**
+about the state they described (the baselines *were* stale, and no Songoskriti
+store *did* exist in the live database). What follows is the state **after**
+this wave.
+
+### (L.1) The read-only determination — which database the harness would have mutated
+
+**The brief's premise was wrong, and the measurement is what matters.** The
+brief said the harness *"activates the Songoskriti theme on a store in the
+database configured by the repo's `.env.local`"* and that *".env.local points at
+a hosted Supabase project"*, so that production (the docker instance) would be
+somewhere else. Measured, read-only:
+
+| side | what the repo actually configures | what it resolves to |
+| --- | --- | --- |
+| `.env.local` | `VITE_SUPABASE_URL=https://dummy.supabase.co`, `VITE_SUPABASE_PUBLISHABLE_KEY=dummy` | **a placeholder that does not exist.** `getent hosts dummy.supabase.co` → no A record; a read-only `@supabase/supabase-js` probe of `merchants` / `store_themes` / `pages` against it returns `TypeError: fetch failed` for every table. The publishable key is the literal 5-character string `dummy`. |
+| `.env` | `SUPABASE_URL=https://framebase.qubickle.com` | **the production self-hosted instance.** DNS → `88.99.250.99`, which is *this host's own public IP* (`/etc/hosts`: `88.99.250.99 Ubuntu-noble-latest-amd64-base.zst`); the host's openresty (`/usr/local/openresty/nginx/conf/conf.d/framebase-framique.conf`) serves `server_name framebase.qubickle.com` → `proxy_pass http://framebase_supabase` → `upstream framebase_supabase { server 127.0.0.1:8007; }` → the `framique-supabase-kong` container → the `framique-supabase-db` container. |
+
+**The harness's database is therefore the production one**, through two
+independent paths:
+
+- **the mutating path** — `themeInstallFn` / `themeActivateFn`
+  (`.e2e/helpers-songoskriti.ts:143-193`) call the real server functions,
+  which use `supabaseAdmin` → `process.env["SUPABASE_URL"]` +
+  `process.env["SUPABASE_SERVICE_ROLE_KEY"]`
+  (`src/integrations/supabase/client.server.ts:40-41`) → **`.env`** → the
+  production instance. (`.env.local` holds no `SUPABASE_URL` and no
+  service-role key at all, so it cannot be that path.)
+- **the authenticating path** — the real `/auth` form
+  (`.e2e/helpers-songoskriti.ts:45-107`) drives the *browser* client
+  (`src/integrations/supabase/client.ts:40-44`) → `import.meta.env["VITE_SUPABASE_URL"]`
+  → **`.env.local`** → `dummy.supabase.co`, which resolves nowhere. So a run
+  with the repo's own files could not even have minted a session, let alone
+  reached production.
+
+**The production side, read-only, for the record** (`docker exec
+framique-supabase-db psql -U postgres -d postgres`):
+
+```
+MERCHANT|11111111-…|slug=framique|…        6 merchant rows:
+MERCHANT|86a81175-…|slug=jhon-mark          framique, jhon-mark, cloudman-store,
+MERCHANT|b1111111-…|slug=cloudman-store     flame-fashion-bd, akira, test
+MERCHANT|b47532e5-…|slug=flame-fashion-bd
+MERCHANT|ddac7eeb-…|slug=akira
+MERCHANT|efd4030b-…|slug=test
+THEME|0fdcbafc-…|m=ddac7eeb-…|Supershop|active=true
+THEME|9b90cfed-…|m=ddac7eeb-…|Atelier|active=false
+THEME|feac1471-…|m=ddac7eeb-…|classic|active=false
+PAGE|d4a50222-…|company=66ce0421-…|slug=home|title=Que Demo Studio — Home|status=published
+DOMAIN|flamelancer.com|m=b47532e5-…|status=active|primary=true
+```
+
+Three `store_themes` rows, **all on merchant `akira` (`ddac7eeb-…`), none of
+them Songoskriti** — exactly the count and the owner the earlier records
+report (§(D), `phase1-page-content-evidence.md` §A.6.1). One `pages` row, one
+`merchant_domains` row (the live custom host), and **no** `storefront_pages`
+row. This is production data with a live customer host attached.
+
+**The determination, stated plainly: there is no separate hosted project, and
+the database the harness would have mutated is the production instance.** On
+the brief's own terms that is the "same data" branch, and the capture must not
+be run against the configured database. The brief's escape hatch — *"you may
+mutate … a demonstrably separate dev/staging project with no production
+merchants in it"* — is what this wave used instead, and §(L.2) is that target.
+
+### (L.2) The safe target — the repo's own throwaway stack, empty by construction
+
+The repo already ships the sanctioned throwaway path, and the Phase-1 record
+named it: `docker-compose.e2e.yml` + `docs/15-e2e/loopback-auth-setup.md`
+§§1-3 ("mode B"). It is a **separate compose project** (`e2e-supabase`) with
+its **own bridge network and its own volume**, four vendored images, and
+published ports bound to `127.0.0.1` only. This wave brought it up with **no
+host port publishing at all** (an override file *outside* the repo,
+`/tmp/opencode/e2e-auth/override.yml`, resets `ports` — the repo file is
+untouched), because `127.0.0.1:55432` is already held on this host by
+`backend-postgres-1` and the sandbox shell is in a different network namespace
+from the docker daemon.
+
+The stack was built fresh: the sanctioned fresh-db pipeline
+(`migration/0001_baseline.sql` → `supabase/docker/init/01-roles-and-extensions.sql`
+→ `migration/0002…0026` → `supabase/migrations/*.sql`), the service-role
+passwords set to `POSTGRES_PASSWORD` (the image's own init leaves them empty —
+GoTrue and PostgREST cannot authenticate without this), the disposable
+merchant created through the **real GoTrue admin API** and seeded with
+`migration/0002_seed.sql` using its real uid.
+
+**What that database contains (read-only) — and what it does not:**
+
+```
+MERCHANT|11111111-1111-4111-8111-111111111111|slug=frame19-demo|status=active
+MERCHANT|b50a0000-0000-4000-8000-000000000001|slug=songoskriti-heritage|status=active
+MEMBER|11111111-…|owner|active            (2 members, 2 merchants, 0 production merchants)
+THEME|b410f858-…|m=11111111-…|name=Songoskriti|active=true   (1 row, after the harness ran)
+```
+
+**No production merchant, no production domain, no production theme, no
+production page** — every row is the disposable seed or a row the harness
+itself created during this wave. The production instance was re-read after
+the run and is **byte-for-byte unchanged**: still exactly three `store_themes`
+rows (Supershop active, Atelier, classic), still six merchants, still
+`flamelancer.com` as the only domain, and **still no Songoskriti row**. The
+production database was never written to, and no theme was activated on any
+production merchant.
+
+### (L.3) The re-freeze — the command, and what it produced
+
+The app was started on **loopback only** against the throwaway stack
+(`node_modules/.bin/vite --port 3020 --strictPort --host localhost`, with the
+shell environment overriding `.env.local` — the mechanism
+`docs/15-e2e/loopback-auth-setup.md` §3 records). The capture ran in **freeze
+mode**: `PORT_CAPTURE_OUT` **unset** (so the spec's human stills go to the
+frozen `reference/`, not to `after/`) **and** `--update-snapshots` (so the
+machine baselines are rewritten) — the mode the spec documents at
+`.e2e/songoskriti-port-parity.spec.ts:26-33`.
+
+```bash
+E2E_BASE_URL=http://localhost:3020 E2E_NO_WEBSERVER=1 \
+  E2E_MERCHANT_EMAIL=e2e-merchant@example.invalid E2E_MERCHANT_PASSWORD='<throwaway>' \
+  node_modules/.bin/playwright test -c .e2e/playwright.config.ts \
+  songoskriti-port-parity --update-snapshots
+```
+
+**Result: 60 passed, 1 skipped, 8.7 min.** The skip is the suite's own
+pre-existing calibration entry (`chrome-mobile-drawer-375-bn.png`, recorded
+`manual-review` in the manifest) — it is skipped by the spec's `SKIPPED` map,
+not by this wave. The run includes the **activation helper smoke** test, which
+really logged in through the real `/auth` form and really installed and
+activated Songoskriti on the disposable store (the `store_themes` row above is
+that test's product).
+
+**The diff — measured, not assumed.** Every one of the **118** baseline files
+(59 human stills in `reference/` + 59 machine baselines in
+`.e2e/songoskriti-port-parity.spec.ts-snapshots/`) was compared against
+`HEAD` pixel-by-pixel, using the spec's own thresholds
+(`maxDiffPixelRatio 0.02`, per-pixel `threshold 0.2`):
+
+| outcome | count | which |
+| --- | --- | --- |
+| **materially changed** (beyond the spec's own threshold) | **66** | 34 human stills + 32 machine baselines |
+| changed but **within** the threshold | 8 | all 8 human stills (the 6 `product` stills at 0.004 %-0.86 %, `account-1440-bn` at 0.86 %, `cart-768-bn` at 1.83 %) |
+| **byte-identical** | 44 | 17 human + 27 machine |
+
+**The 42 human stills that changed are exactly the 7 templates §(D) predicted**
+— `account`, `blog`, `cart`, `checkout`, `page`, `product`, `search`, 6 each
+(widths 1440/768/375 × locales en/bn) — and **nothing else changed**: the
+`index` stills (6), the `collection` stills (6), the two `index-*` variation
+stills, the two mega-menu stills and the one mobile-drawer still are
+**byte-identical** to the previous freeze. §(D)'s prediction is therefore
+confirmed by measurement, and **no surface that was not expected to change
+moved**.
+
+**Why 42 human stills but only 32 machine baselines.** The two sets are
+different captures of the same pages: the human still is `fullPage`, the
+machine baseline is the **viewport** (1440×900). Ten of the 42 differences sit
+**below the fold** (the 6 `product` relabels, `account-1440-bn`,
+`cart-375-bn`, `cart-768-bn`), so the viewport pixels did not move beyond the
+threshold and Playwright did not rewrite those machine baselines. That is the
+expected consequence of the spec's own capture geometry, not a discrepancy.
+
+**Why each surface changed — the new copy, fetched from the live preview:**
+
+| template | now renders (verified in the served HTML) |
+| --- | --- |
+| `product` | "Sample product page — prices and stock are sample data, and …" (the old "Demo product page." is gone) |
+| `page` | "Sample page — Songoskriti sizing and care" (the shared fixture "Demo page body." is gone) |
+| `account` | "Rumana Haque (demo shopper)", "ORD-2451" (the studio rows "Demo Shopper"/"ORD-1001" are gone) |
+| `blog` | "Browse the journal", "From the journal" (the old "Meet the makers" story is gone) |
+| `cart` | the two platform commerce widgets over the Songoskriti synthetic cart — "Dhakai Jamdani Heritage Saree", "Order summary" |
+| `checkout` | the authored checkout composition — "Checkout progress", "We accept" |
+| `search` | the platform's six search widgets over the demo facets — "Search the collection", "page=2" (the old "Demo search" copy is gone) |
+| `index`, `collection` | **unchanged** — byte-identical stills |
+
+A grep for every retired demo string ("Demo page body.", "Demo shopper",
+"ORD-2451" as studio data, "Meet the makers", "Demo search", "Demo product
+page") returns **nothing** on the re-frozen surfaces.
+
+### (L.4) The storefront path — verified against a real Songoskriti store
+
+**This is the first time the storefront has been exercised against a store
+that actually wears Songoskriti.** With the theme installed and active on the
+disposable merchant, a CMS page was created in that store (a
+`storefront_pages` row, the table the route reads —
+`src/lib/storefront-search.server.ts:284-293`) carrying the merchant's own
+copy and a unique marker (`FRAME19-CARE-2026`). The route was then requested
+on the loopback host:
+
+```
+GET http://127.0.0.1:3020/store/frame19-demo/pages/care-guide
+→ 200
+→ <h1> count: 1  — "Care guide — handloom care for the pieces we weave"
+→ the merchant's record rendered: "Every piece in this store is woven by hand
+   in Tangail, on looms our weavers keep for a lifetime." … "Policy reference:
+   FRAME19-CARE-2026."
+→ demo copy present: []   (no demo string at all)
+→ theme chrome: data-nav="songoskriti-desktop"
+```
+
+The server payload proves the theme, not just the copy: `themeKey:"songoskriti"`,
+`tokens` = the Songoskriti design tokens (`accent #8B4513`, Playfair Display /
+Inter), and `ast` = the Songoskriti `page` template (breadcrumb +
+`page_content` + `footer_sitemap` + `rich_text`) — the page content is placed
+in the theme's own `page_content` slot, not in a bare shell. The single
+`<h1>` is `PageView`'s own title heading (`src/components/store/PageView.tsx:78`),
+which is why the count is exactly one and not two.
+
+**Artefact:** `docs/superpowers/songoskriti-evidence/port/storefront-page-frame19-demo.png`
+— the rendered page, full page: the Songoskriti announcement bar and nav, the
+breadcrumb "Frame19 Demo Store / Care guide — handloom care for the pieces we
+weave" (the merchant's name, the merchant's page), the one `<h1>`, the
+merchant's prose, the "MORE INFORMATION" block listing that page, and the
+Songoskriti footer.
+
+**What this does and does not prove.** It proves the **rendering path**:
+a real store, a real CMS page row, the real Songoskriti theme, the real
+`ThemeChrome` layout, the real `page_content` slot. It does **not** prove
+anything about production: the live database still has no Songoskriti store
+(§(L.1)), and the live host still 404s path storefronts
+(`isBlockedPathStorefront`, `src/lib/storefront-host.server.ts:433-447`). The
+production blast radius of this programme is therefore **unchanged** — still
+the theme-preview route only — and the first merchant to activate Songoskriti
+in production is still the first customer-visible moment.
+
+### (L.5) The manifest, and what remains
+
+**The manifest is re-frozen and consistent:** `reference-manifest.json` holds
+**60** entries (59 `pass` + the one pre-existing `manual-review` entry for
+`chrome-mobile-drawer-375-bn.png`, which has no baseline file by design), all
+60 stamped with `freezeSha: a93ebfd29c4c` — **the tree the pixels were
+rendered from** — and `generatedAt: 2026-10-21T03:29:23.742Z`. The spec
+stamps the SHA it reads from `git rev-parse HEAD` at module load, so the
+freeze SHA necessarily names the *parent* of the commit that carries the
+baselines; that is the spec's design, not a drift.
+
+**The 84 stale files are no longer stale.** `reference/` and the snapshot
+directory now hold the current programme's pixels, and the two directories
+that §(D) named are the two directories that changed.
+
+**CI is unaffected, exactly as §(D) said:** the parity suite is in neither
+`e2e:critical` nor `e2e:security` (`package.json`), so nothing that gates
+CI was waiting on this. It was a **parity-record** problem, and it is now a
+**parity record** rather than a stale one.
+
+**What still remains, stated exactly:**
+
+1. **The baseline is now frozen against a throwaway store, not against
+   production.** The preview route is synthetic and DB-free, so the pixels are
+   the same either way — but a future owner pass that wants a *production-
+   corroborated* freeze still needs a disposable store on a development
+   database, the loopback server and the Playwright browsers. The exact
+   command and the preconditions are in §(L.3) and in
+   `docs/15-e2e/loopback-auth-setup.md` §§1-3.
+2. **The storefront criterion is closed at the storefront level only.** The
+   production storefront still cannot be exercised (no Songoskriti store in the
+   live database, and the live host 404s path storefronts). That is a product
+   fact about the live tenant, not a gap in the code path.
+3. **The one `manual-review` entry stands** — the Bangla mobile drawer at
+   375 px — unchanged, for the reason the spec already records.
