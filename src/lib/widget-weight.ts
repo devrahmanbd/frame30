@@ -208,6 +208,8 @@ export const TEMPLATE_JS_BUDGET: Record<TemplateKey, number> = {
   collection: widgetBudget(0.9),
   account: widgetBudget(0.7),
   search: widgetBudget(0.9),
+  // The content archive is a listing page, like the collection.
+  archive: widgetBudget(0.9),
   page: widgetBudget(0.7),
   blog: widgetBudget(0.7),
   cart: widgetBudget(0.8),

@@ -56,6 +56,10 @@ export const TEMPLATE_KEYS = [
   // merchant designs the listing shoppers land on instead of inheriting a
   // hand-written page.
   "search",
+  // Phase 3 (Decision D1'): the content archive — a category, a tag or an
+  // author's articles — is a first-class theme part too, so a merchant
+  // designs the archive shoppers land on instead of inheriting the blog body.
+  "archive",
 ] as const;
 export type TemplateKey = (typeof TEMPLATE_KEYS)[number];
 
@@ -72,6 +76,10 @@ export const ROUTE_H1_TEMPLATES = [
   "page",
   "blog",
   "search",
+  // Phase 3 (Decision D1'): the archive route owns the heading — the
+  // resolved term's name — so a theme's archive body must not claim the
+  // page's <h1>.
+  "archive",
 ] as const;
 const ROUTE_H1 = new Set<string>(ROUTE_H1_TEMPLATES);
 export function routeSuppliesH1(template?: TemplateKey | null): boolean {
@@ -186,6 +194,9 @@ export const TEMPLATE_ZONES: Record<TemplateKey, readonly Zone[]> = {
   cart: ["header", "main", "footer", "sidebar", "drawer", "popup"],
   checkout: ["header", "main", "footer", "thank_you"],
   search: ["header", "main", "footer", ...OVERLAY_ZONES, "not_found"],
+  // The content archive is a listing page like the collection, so it wears
+  // the same overlay chrome and can host the 404 body.
+  archive: ["header", "main", "footer", ...OVERLAY_ZONES, "not_found"],
 };
 
 /** Zones a base template may host. Unknown templates host nothing. */
@@ -1503,7 +1514,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "context",
     slots: ["header", "main"],
     heading: false,
-    templates: ["product", "collection", "page", "blog", "search"],
+    templates: ["product", "collection", "page", "blog", "search", "archive"],
     defaults: { homeLabel: "Home" },
     fields: [text("homeLabel", "Home label", 40)],
   },
@@ -2693,7 +2704,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "commerce",
     slots: ["main"],
     heading: true,
-    templates: ["collection", "page", "search"],
+    templates: ["collection", "page", "search", "archive"],
     defaults: {
       heading: "All products",
       body: "",
@@ -2795,7 +2806,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "commerce",
     slots: ["main"],
     heading: false,
-    templates: ["collection", "blog", "search"],
+    templates: ["collection", "blog", "search", "archive"],
     defaults: {
       mode: "numbered",
       moreLabel: "Load more",
@@ -2826,7 +2837,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "commerce",
     slots: ["main"],
     heading: false,
-    templates: ["collection", "page", "search"],
+    templates: ["collection", "page", "search", "archive"],
     defaults: {
       heading: "Nothing matches those filters",
       body: "Try removing a filter or searching for something else.",
@@ -4835,7 +4846,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     label: "Blog archive",
     group: "content",
     slots: ["main"],
-    templates: ["blog", "page"],
+    templates: ["blog", "page", "archive"],
     heading: false,
     defaults: {
       heading: "",
@@ -4887,7 +4898,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     label: "Blog topics",
     group: "content",
     slots: ["header", "main", "footer"],
-    templates: ["blog", "page"],
+    templates: ["blog", "page", "archive"],
     heading: false,
     defaults: { heading: "", style: "pills", showCounts: true },
     fields: [
@@ -4910,7 +4921,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     label: "Blog pagination",
     group: "content",
     slots: ["main", "footer"],
-    templates: ["blog", "page"],
+    templates: ["blog", "page", "archive"],
     heading: false,
     defaults: { align: "center" },
     fields: [
@@ -8453,6 +8464,15 @@ export function lintTemplate(
     ],
     cart: [
       { type: "cart_summary", message: "Cart template has no order summary." },
+    ],
+    // Phase 3 (Decision D1'): the archive is a listing page, so it must
+    // carry the listing widget — the same shape as the `page` rule (the
+    // route-owned body slot) and the `cart` rule (the order summary).
+    archive: [
+      {
+        type: "blog_archive",
+        message: "Archive template has no archive listing.",
+      },
     ],
   };
   for (const rule of required[template!] ?? []) {

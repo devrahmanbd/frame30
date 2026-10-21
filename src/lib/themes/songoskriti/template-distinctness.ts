@@ -198,6 +198,39 @@ export const SONOSKRITI_TEMPLATE_EXPECTATIONS: Record<
     ],
     forbiddenTypes: ["rich_text", "heading"],
   },
+  // Phase 3 (Decision D1') — the content archive. The row is NOT empty: a
+  // table that quietly drops a template is a gate that quietly stops
+  // guarding it, so the archive's own composition is declared here.
+  //
+  // Every `requiredSlots` entry is one of the SEVEN catalogue rows that
+  // carry `"archive"` in their allowlist, which is exactly what `R3`
+  // requires: a required slot must be present, must be a context widget and
+  // must be granted on the `archive` template. `heading` is forbidden
+  // because `archive` is a route-h1 template (a second <h1> is a lint
+  // error) and `rich_text` is forbidden for the same reason the `search`
+  // row forbids it (`R4` — no demo copy that could impersonate the
+  // merchant's content). `product_grid` is forbidden because the grid
+  // reads the host's `productSlot` only on the search template, so a grid
+  // on an archive would render skeletons.
+  archive: {
+    requiredTypes: [
+      "category_header",
+      "blog_terms",
+      "blog_archive",
+      "blog_pager",
+      "pagination",
+      "empty_state",
+    ],
+    requiredSlots: [
+      "category_header",
+      "blog_terms",
+      "blog_archive",
+      "blog_pager",
+      "pagination",
+      "empty_state",
+    ],
+    forbiddenTypes: ["product_grid", "heading", "rich_text"],
+  },
 };
 
 /* -------------------------------------------- the documented exceptions */
@@ -224,9 +257,9 @@ export const SONOSKRITI_APPROVED_EXCEPTIONS: Partial<
   },
   blog: {
     reason:
-      "the storefront blog is themeless by design (`src/components/store/BlogArchiveTheme.tsx:1-9`, pinned by `src/components/store/BlogArchiveTheme.test.tsx:82`, Decision **D5**). The template is a preview surface until D5 is ruled; the gate therefore requires the pack sections and does not require a storefront render path.",
+      "the platform reader surfaces are STORE-LESS, not themeless: `/blog`, `/blog/category/$slug`, `/blog/tag/$slug` and `/blog/author/$slug` carry no store slug, so none of them can resolve a theme — `getStoreChrome` needs one (`src/lib/storefront.functions.ts:94-111`), a term carries `merchant_id` and a slug that is unique per merchant rather than globally (`src/lib/blog-index.server.ts:304-328`), and the author archive is not merchant-scoped at all (`src/lib/blog-reader.server.ts:378-384`). They therefore keep the platform grid, while the CONTENT-ARCHIVE routes may be served by the `archive` template (Decision **D1'**). The gate requires the pack sections and does not require a storefront render path.",
     basis:
-      "Decision **D5** — the storefront reader blog is themeless by design (`src/components/store/BlogArchiveTheme.tsx:1-9`, pinned by `src/components/store/BlogArchiveTheme.test.tsx:82`).",
+      "Decision **D1'** supersedes Decision **D5**: the platform reader surfaces are store-less, not themeless (`src/lib/storefront.functions.ts:94-111`, `src/lib/blog-index.server.ts:304-328`, `src/lib/blog-reader.server.ts:378-384`); the content archive is the `archive` template.",
   },
   search: {
     reason:

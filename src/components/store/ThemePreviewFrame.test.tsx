@@ -66,6 +66,7 @@ function buildTemplates(): Record<TemplateKey, ThemeAst> {
     cart: empty(),
     checkout: empty(),
     search: empty(),
+    archive: empty(),
   };
 }
 
@@ -357,6 +358,7 @@ describe("preview skin sheets (lane B2-1)", () => {
       cart: empty(),
       checkout: empty(),
       search: empty(),
+      archive: empty(),
     };
   }
 

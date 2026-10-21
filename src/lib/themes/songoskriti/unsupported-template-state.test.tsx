@@ -2,17 +2,18 @@
  * The preview's EXPLICIT unsupported state is REACHABLE (final-review fix
  * round, 2026-10-21).
  *
- * The archive contract (Decision **D1, Option A**) says an unsupported
- * template is an explicit state — "This template is not supported by this
- * theme", naming the key, linking back to the home tab — and **never** a
- * silent redirect to the homepage (the escalation record's §(l.1)-(l.3)).
+ * The archive contract (Decision **D1'** — the archive key is REAL) says
+ * an unsupported template is an explicit state — "This template is not
+ * supported by this theme", naming the key, linking back to the home tab —
+ * and **never** a silent redirect to the homepage (the escalation record's
+ * §(l.1)-(l.3)).
  * The evidence record's §(B) row carried a ✅ for that, and in the shipped
  * tree the state was **unreachable**:
  *
  *   · the route's own search validation dropped every `?template=` value
- *     that is not one of the nine template keys
+ *     that is not one of the template keys
  *     (`validateThemePreviewSearch`, `src/lib/theme-preview-nav.ts`), so
- *     `?template=archive` never reached the preview host at all; and
+ *     `?template=blog_anything` never reached the preview host at all; and
  *   · the host computes its unsupported state from a **missing** key
  *     (`src/components/store/ThemePreviewFrame.tsx:575-578`, consumed at
  *     `:935-937`), so the branch could not fire while the route could only
@@ -35,14 +36,15 @@
  * rebuilds the URL with `_includeValidateSearch: true`, which validates the
  * ALREADY-VALIDATED search again and answers with a **307 to the canonical
  * URL** when it differs from the requested one. A validation that is not
- * **idempotent** therefore rewrites `?template=archive` to the **bare path**
- * — and the bare path renders the homepage composition. That was the live
- * defect (measured: 307 → `/theme-preview/songoskriti` → the homepage body,
- * the panel heading zero times). The second suite reproduces the router's
+ * **idempotent** therefore rewrites `?template=blog_anything` to the **bare
+ * path** — and the bare path renders the homepage composition. That was the
+ * live defect (measured: 307 → `/theme-preview/songoskriti` → the homepage
+ * body, the panel heading zero times). The second suite reproduces the
+ * router's
  * own canonicalisation headlessly (the same `createRouter` the app runs, the
  * route's own `validateSearch`) and asserts that the canonical URL carries
  * the request, that it is a fixed point (no redirect loop) and that the
- * panel renders for `?template=archive` **through the route**.
+ * panel renders for `?template=blog_anything` **through the route**.
  *
  * The route module IS imported — the preview route is a public, host-gated
  * route and its `validateSearch` is the exact function under test (the
@@ -190,11 +192,15 @@ function renderRequested(search: Record<string, unknown>): string {
 
 describe("the preview's unsupported template state is reachable", () => {
   it("the route's search validation carries an unknown key instead of dropping it", () => {
-    const search = validateThemePreviewSearch({ template: "archive" });
+    // `blog_anything` is key-shaped and STILL UNKNOWN to the platform, so
+    // it is the unsupported request. `archive` is a KNOWN key now (the
+    // content archive is a first-class template), so it travels in
+    // `template` and is never carried as an unsupported request.
+    const search = validateThemePreviewSearch({ template: "blog_anything" });
     // The known-key slot keeps its meaning — a key the platform knows.
     expect(search.template).toBeUndefined();
     // The REQUEST is carried, so it can reach the host.
-    expect(search.unsupportedTemplate).toBe("archive");
+    expect(search.unsupportedTemplate).toBe("blog_anything");
     // A key the platform knows is not an unsupported request.
     const known = validateThemePreviewSearch({ template: "search" });
     expect(known.template).toBe("search");
@@ -224,11 +230,11 @@ describe("the preview's unsupported template state is reachable", () => {
   });
 
   it("an unknown ?template= reaches the host and renders the explicit unsupported state", () => {
-    const html = renderRequested({ template: "archive" });
+    const html = renderRequested({ template: "blog_anything" });
     // The panel's own heading.
     expect(html).toContain("This template is not supported by this theme");
     // It NAMES the requested key.
-    expect(html).toContain("archive");
+    expect(html).toContain("blog_anything");
     // It LINKS BACK to the home tab.
     expect(html).toContain('href="/"');
     expect(html).toContain("Back to the home tab");
@@ -240,12 +246,12 @@ describe("the preview's unsupported template state is reachable", () => {
     // The homepage really renders its own copy …
     expect(home).toContain(HOME_MARKER);
     // … and the unsupported state does not.
-    const unsupported = renderRequested({ template: "archive" });
+    const unsupported = renderRequested({ template: "blog_anything" });
     expect(unsupported).not.toContain(HOME_MARKER);
   });
 
   it("the unsupported state carries none of the retired demo strings", () => {
-    const html = renderRequested({ template: "archive" });
+    const html = renderRequested({ template: "blog_anything" });
     for (const retired of RETIRED_DEMO_STRINGS) {
       expect(
         html,
@@ -260,19 +266,20 @@ describe("the preview's unsupported template state is reachable", () => {
     expect(html).not.toContain("This template is not supported by this theme");
   });
 
-  it("the assembled templates carry the nine keys and not the requested one", () => {
+  it("the assembled templates carry the ten keys and not the requested one", () => {
     // The engine synthesises a body for every key it KNOWS; an unknown key
     // is absent from the map, which is what the host turns into the panel.
-    expect(Object.keys(preset.templates)).toHaveLength(9);
+    // Ten keys now — `archive` joined the union with Decision D1'.
+    expect(Object.keys(preset.templates)).toHaveLength(10);
     expect(
-      (preset.templates as Record<string, unknown>)["archive"],
+      (preset.templates as Record<string, unknown>)["blog_anything"],
     ).toBeUndefined();
   });
 
   it("the request ends with the visit — a switch clears it from the URL", () => {
     const next = previewSearchForSwitch("index", null, null, {
       template: undefined,
-      unsupportedTemplate: "archive",
+      unsupportedTemplate: "blog_anything",
     });
     expect(next.template).toBe("index");
     expect(next.unsupportedTemplate).toBeUndefined();
@@ -285,8 +292,8 @@ describe("the preview's unsupported template state is reachable", () => {
     const validate = Route.options.validateSearch as (
       search: Record<string, unknown>,
     ) => Record<string, unknown>;
-    expect(validate({ template: "archive" }).unsupportedTemplate).toBe(
-      "archive",
+    expect(validate({ template: "blog_anything" }).unsupportedTemplate).toBe(
+      "blog_anything",
     );
     // … and the route reads the request out of its own validated search …
     expect(ROUTE_SRC).toContain("unsupportedTemplate");
@@ -305,8 +312,8 @@ describe("the preview's unsupported template state is reachable", () => {
  * validates the search more than once per request, and the SSR
  * canonicalisation answers with a **307 to the canonical URL** when the
  * canonical URL differs from the requested one. A non-idempotent validation
- * silently rewrote `?template=archive` to the bare path, and the bare path
- * renders the homepage composition — the live defect.
+ * silently rewrote `?template=blog_anything` to the bare path, and the
+ * bare path renders the homepage composition — the live defect.
  * ------------------------------------------------------------------------- */
 
 /**
@@ -354,44 +361,47 @@ function searchOf(href: string): Record<string, unknown> {
 
 describe("the unsupported request survives the route's canonicalisation", () => {
   it("the search validation is idempotent — the request survives a second pass", () => {
-    const first = validateThemePreviewSearch({ template: "archive" });
-    expect(first.unsupportedTemplate).toBe("archive");
+    const first = validateThemePreviewSearch({ template: "blog_anything" });
+    expect(first.unsupportedTemplate).toBe("blog_anything");
     // The SECOND pass is what the router's canonicalisation runs over the
     // already-validated search. A validation that drops the request here
     // is what rewrote the URL to the bare path.
     const second = validateThemePreviewSearch(
       first as unknown as Record<string, unknown>,
     );
-    expect(second.unsupportedTemplate).toBe("archive");
+    expect(second.unsupportedTemplate).toBe("blog_anything");
     expect(second.template).toBeUndefined();
     // … and it is a fixed point, so the canonical URL never drifts.
     const third = validateThemePreviewSearch(
       second as unknown as Record<string, unknown>,
     );
-    expect(third.unsupportedTemplate).toBe("archive");
+    expect(third.unsupportedTemplate).toBe("blog_anything");
   });
 
   it("the canonical URL carries the request — it is NOT the bare path", async () => {
     const canonical = await canonicalPreviewHref(
-      "/theme-preview/songoskriti?template=archive",
+      "/theme-preview/songoskriti?template=blog_anything",
     );
     // The bare path is the homepage composition — the defect.
     expect(canonical).not.toBe("/theme-preview/songoskriti");
     // The canonical URL carries the request, so the panel can be served.
-    expect(canonical).toContain("unsupportedTemplate=archive");
+    expect(canonical).toContain("unsupportedTemplate=blog_anything");
   });
 
   it("the canonical URL is a fixed point — the request is answered, not looped", async () => {
     const canonical = await canonicalPreviewHref(
-      "/theme-preview/songoskriti?template=archive",
+      "/theme-preview/songoskriti?template=blog_anything",
     );
     // Asking for the canonical URL must not redirect again.
     expect(await canonicalPreviewHref(canonical)).toBe(canonical);
   });
 
   it("a template the theme authors is not canonicalised at all", async () => {
-    // The nine known keys keep their URL exactly — no new redirect.
-    for (const key of ["search", "index", "product", "collection"]) {
+    // The known keys keep their URL exactly — no new redirect. `archive` is
+    // one of them now (Decision D1'): the content archive is a first-class
+    // template, so it travels in `template` and is never carried as an
+    // unsupported request.
+    for (const key of ["search", "index", "product", "collection", "archive"]) {
       expect(
         await canonicalPreviewHref(
           `/theme-preview/songoskriti?template=${key}`,
@@ -400,18 +410,18 @@ describe("the unsupported request survives the route's canonicalisation", () => 
     }
   });
 
-  it("?template=archive renders the unsupported panel THROUGH the route", async () => {
+  it("?template=blog_anything renders the unsupported panel THROUGH the route", async () => {
     const { Route } = await import("@/routes/theme-preview.$key");
     const validate = Route.options.validateSearch as (
       search: Record<string, unknown>,
     ) => Record<string, unknown>;
     // The URL the router serves for the natural request …
     const canonical = await canonicalPreviewHref(
-      "/theme-preview/songoskriti?template=archive",
+      "/theme-preview/songoskriti?template=blog_anything",
     );
     // … the route's OWN validation of that URL still carries the request …
     const validated = validate(searchOf(canonical));
-    expect(validated.unsupportedTemplate).toBe("archive");
+    expect(validated.unsupportedTemplate).toBe("blog_anything");
     expect(validated.template).toBeUndefined();
     // … the route hands it to the host (its own wiring, read from source) …
     expect(ROUTE_SRC).toContain(
@@ -419,12 +429,12 @@ describe("the unsupported request survives the route's canonicalisation", () => 
     );
     const requested = (validated.template ??
       validated.unsupportedTemplate) as string;
-    expect(requested).toBe("archive");
+    expect(requested).toBe("blog_anything");
     // … and the host renders the explicit unsupported state, NOT the
     // homepage composition.
     const html = render(requested);
     expect(html).toContain("This template is not supported by this theme");
-    expect(html).toContain("archive");
+    expect(html).toContain("blog_anything");
     expect(html).toContain('href="/"');
     expect(
       html,

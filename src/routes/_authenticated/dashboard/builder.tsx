@@ -212,6 +212,7 @@ const TEMPLATE_LABEL: Record<TemplateKey, { en: string; bn: string }> = {
   checkout: { en: "Checkout", bn: "চেকআউট" },
   blog: { en: "Blog", bn: "ব্লগ" },
   page: { en: "Page", bn: "পেজ" },
+  archive: { en: "Archive", bn: "আর্কাইভ" },
 };
 
 const SLOT_LABEL: Record<Slot, { en: string; bn: string }> = {

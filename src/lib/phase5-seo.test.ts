@@ -45,9 +45,14 @@ describe("Phase 5 — one declared <h1> claimant per template", () => {
       "page",
       "blog",
       "search",
+      "archive",
     ]);
     expect(routeSuppliesH1("index")).toBe(false);
     expect(routeSuppliesH1("product")).toBe(true);
+    // The content archive is a route-h1 template too: the archive route
+    // owns the heading (the resolved term's name), so a theme's archive
+    // body must not claim the page's <h1>.
+    expect(routeSuppliesH1("archive")).toBe(true);
   });
 
   it("does not ask a route-h1 template for a primary heading", () => {

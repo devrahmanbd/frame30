@@ -9,6 +9,7 @@ import { describe, expect, it } from "vitest";
 import {
   GLOBAL_REF_ENTRY,
   GLOBAL_REF_MISSING,
+  TEMPLATE_KEYS,
   TEMPLATE_ZONES,
   catalogEntry,
   globalRefTarget,
@@ -188,7 +189,10 @@ describe("parseTemplates variant compatibility", () => {
 describe("named zones allowlist", () => {
   it("allows the layout slots on every template", () => {
     const keys = Object.keys(TEMPLATE_ZONES) as TemplateKey[];
-    expect(keys).toHaveLength(9);
+    // The zone table is TOTAL against the union: a template the table
+    // drops would lose its zone allowlist without any error anywhere.
+    expect(keys).toHaveLength(TEMPLATE_KEYS.length);
+    expect(keys.sort()).toEqual([...TEMPLATE_KEYS].sort());
     for (const key of keys) {
       expect(zoneAllowed(key, "header")).toBe(true);
       expect(zoneAllowed(key, "main")).toBe(true);

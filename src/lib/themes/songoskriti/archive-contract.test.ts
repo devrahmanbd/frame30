@@ -1,15 +1,16 @@
 /**
- * Task 10 — the archive contract (Decision D1, Option A) and the preview's
- * explicit unsupported state.
+ * Task 10 — the archive contract (Decision D1' — the archive key is REAL) and
+ * the preview's explicit unsupported state.
  *
  * The expert's archive item asked for "a real first-class template key only
  * after defining which archive-like routes it represents … and unsupported
- * routes must not silently redirect to the homepage". **D1 ruled Option A**:
- * the archive surface is the **blog taxonomy surface** (index / category /
- * tag / author), it wears the **`blog`** template plus the existing blog
- * pack, and **no `archive` template key is added**. What is left is the
- * contract itself — written down — plus the preview's **explicit unsupported
- * state** in place of the silent homepage fallback.
+ * routes must not silently redirect to the homepage". **D1' ruled the
+ * opposite of D1 (Option A)**: the content archive IS a first-class template
+ * key, its supported kinds are the three content-archive routes the platform
+ * actually serves (category / tag / author), and the preview keeps its
+ * **explicit unsupported state** for a key the platform still does not know.
+ * What is left is the contract itself — written down — plus the preview's
+ * explicit unsupported state in place of the silent homepage fallback.
  *
  * This suite pins the contract with **five** cases, none of which depends on
  * a ruling (the ruling is already made and is a decision, not a fact):
@@ -21,7 +22,10 @@
  *    preview's fallback is an explicit, named unsupported state, and the
  *    storefront's own routes answer an unknown slug with their own 404;
  * 4. the unsupported state's copy is **not** demo copy — the panel must not
- *    inherit the demo-copy defect Phase 1 removed;
+ *    inherit the demo-copy defect Phase 1 removed — and it states the
+ *    CURRENT ruling (the archive is a template a theme may author; the
+ *    platform's reader surfaces keep the platform grid because they carry no
+ *    store slug);
  * 5. the contract is **written down** — so it cannot be deleted silently.
  *
  * The tree is read as TEXT (the same pattern as
@@ -46,10 +50,16 @@ const SEARCH_CONTRACT = readFileSync(
   join(REPO, "src/lib/storefront-search.ts"),
   "utf8",
 );
+/**
+ * The Phase-3 escalation record — the one that carries the CURRENT ruling.
+ * The Phase-2 record (`phase2-template-completeness-escalation.md`) is a
+ * HISTORICAL document: it records the superseded D1 (Option A) and it is
+ * never rewritten.
+ */
 const RECORD = readFileSync(
   join(
     REPO,
-    "docs/superpowers/songoskriti-evidence/port/phase2-template-completeness-escalation.md",
+    "docs/superpowers/songoskriti-evidence/port/phase3-archive-key-escalation.md",
   ),
   "utf8",
 );
@@ -108,7 +118,7 @@ function unsupportedStateCopy(): string {
   ].join("\n");
 }
 
-describe("the archive contract (Decision D1, Option A)", () => {
+describe("the archive contract (Decision D1' — the archive key is REAL)", () => {
   it("enumerates the archive-like routes the platform actually serves", () => {
     // The blog listing and its three taxonomy kinds, plus the storefront's
     // own blog index — the whole of the archive-like surface.
@@ -156,7 +166,7 @@ describe("the archive contract (Decision D1, Option A)", () => {
     }
   });
 
-  it("writes the unsupported state in copy that is not demo copy", () => {
+  it("writes the unsupported state in copy that is not demo copy and states the CURRENT ruling", () => {
     const copy = unsupportedStateCopy();
     // The panel says what it is: a statement about the theme's coverage.
     expect(copy).toContain("This template is not supported by this theme");
@@ -172,12 +182,29 @@ describe("the archive contract (Decision D1, Option A)", () => {
         `the unsupported state must not carry "${retired}"`,
       ).not.toContain(retired);
     }
+    // The D1 (Option A) wording is SUPERSEDED: the archive is a template a
+    // theme may author, and the platform's reader surfaces keep the
+    // platform grid because they carry no store slug. The old copy — the
+    // archive surfaces "wear the blog template" — would be false now.
+    expect(copy).toContain(
+      "The archive is a first-class template a theme may author",
+    );
+    expect(copy).toContain("keep the platform grid");
+    expect(copy).toContain("carry no store slug");
+    expect(copy).not.toContain("wear the blog template");
   });
 
   it("keeps the contract written down, so it cannot be deleted silently", () => {
-    expect(RECORD_TEXT).toContain("Archive contract (Decision D1, Option A)");
-    expect(RECORD_TEXT).toContain("No `archive` template key is added");
+    expect(RECORD_TEXT).toContain(
+      "Archive contract (Decision D1' — the archive key is REAL)",
+    );
+    expect(RECORD_TEXT).toContain("`archive` is a first-class template key");
+    expect(RECORD_TEXT).toContain(
+      "the three content-archive routes are its kinds",
+    );
+    expect(RECORD_TEXT).toContain(
+      "the platform reader surfaces keep the platform grid because they carry no store slug",
+    );
     expect(RECORD_TEXT).toContain("src/routes/store.$slug.blog.index.tsx");
-    expect(RECORD_TEXT).toContain("`?template=archive` therefore remains");
   });
 });

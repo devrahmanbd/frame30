@@ -94,6 +94,7 @@ function templates(): Record<TemplateKey, ThemeAst> {
     cart: empty(),
     checkout: empty(),
     search: empty(),
+    archive: empty(),
   };
 }
 

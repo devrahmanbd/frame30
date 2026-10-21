@@ -121,6 +121,7 @@ function themeTemplates(): Record<TemplateKey, ThemeAst> {
     cart: ast("cart"),
     checkout: ast("checkout"),
     search: ast("search"),
+    archive: ast("archive"),
   };
 }
 

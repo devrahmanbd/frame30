@@ -73,6 +73,15 @@ export const TEMPLATE_META: Record<
     },
     icon: "file-text",
   },
+  archive: {
+    en: "Archive",
+    bn: "আর্কাইভ",
+    desc: {
+      en: "Category, tag & author listings",
+      bn: "ক্যাটাগরি, ট্যাগ ও লেখকের তালিকা",
+    },
+    icon: "archive",
+  },
 };
 
 export type BuilderTopBarProps = {
@@ -217,6 +226,20 @@ function TemplateIcon({ icon }: { icon: string }) {
         >
           <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
           <circle cx="12" cy="7" r="4" />
+        </svg>
+      );
+    case "archive":
+      return (
+        <svg
+          className="size-3.5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <rect width="20" height="5" x="2" y="3" rx="1" />
+          <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
+          <path d="M10 12h4" />
         </svg>
       );
     default:

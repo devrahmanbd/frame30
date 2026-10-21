@@ -43,7 +43,11 @@ import { TEMPLATE_KEYS, type TemplateKey } from "./builder-ast";
 import type { SectionType } from "./builder-ast";
 import { WIDGET_TYPES } from "./widget-registry";
 import { BUILDER_API_VERSION, satisfiesApiRange } from "./plugin-manifest";
-import { normalizeScopes, parseSemver } from "./marketplace-scopes";
+import {
+  compareSemver,
+  normalizeScopes,
+  parseSemver,
+} from "./marketplace-scopes";
 import { scanThemeTrustContent } from "./package-review";
 
 export { BUILDER_API_VERSION };
@@ -142,6 +146,16 @@ export type ThemeManifest = {
   /**
    * Builder API range. Must cover the running builder (`^3.0.0` line) —
    * same caret / `>=a <b` semantics as plugins (`satisfiesApiRange`).
+   *
+   * Phase 3 (Decision D1') — the archive key is ADDITIVE, so the range
+   * value does not move: `THEME_API_RANGE` stays `^3.0.0` and the running
+   * API stays `3.1.0` (`BUILDER_API_VERSION`). The ONE exception is a
+   * package that DECLARES `archive`: it must declare a range whose lower
+   * bound is `>= 3.1.0`, because that is the API line the archive key
+   * landed in. A package that declares `archive` while claiming a lower
+   * bound is rejected with the stable reason code
+   * `templates.archive_requires_api`; every package that does NOT declare
+   * `archive` keeps working exactly as it does today.
    */
   api: string;
   /** Marketplace display author. */
@@ -183,6 +197,22 @@ const PLUGIN_WIDGET_REF_RE =
 
 const CARET_RANGE_RE = /^\^(\d+\.\d+\.\d+)$/;
 const PAIR_RANGE_RE = /^>=\s*(\d+\.\d+\.\d+)\s+<\s*(\d+\.\d+\.\d+)$/;
+
+/**
+ * The floor a declared range admits — the API line the package was built
+ * against. `^3.0.0` floors at `3.0.0`, `>=3.0.0 <4.0.0` floors at `3.0.0`
+ * and an exact pin `3.1.0` floors at `3.1.0`. Null for a range shape this
+ * module does not understand (the range validators report that separately).
+ */
+function apiRangeFloor(range: string): string | null {
+  const trimmed = range.trim();
+  const caret = CARET_RANGE_RE.exec(trimmed);
+  if (caret) return caret[1]!;
+  const pair = PAIR_RANGE_RE.exec(trimmed);
+  if (pair) return pair[1]!;
+  if (/^\d+\.\d+\.\d+$/.test(trimmed)) return trimmed;
+  return null;
+}
 
 /**
  * Executable-content ban for every free-text field in the format. Mirrors
@@ -368,6 +398,20 @@ export function validateThemeManifest(input: unknown): ThemeVerdict {
         templates.push(k as TemplateKey);
       }
       if (unknown.length) errors.push(`templates:${unknown.join(",")}`);
+    }
+    // Phase 3 (Decision D1') — the archive key is additive, so only a
+    // package that DECLARES `archive` is held to the API line the key
+    // landed in. `THEME_API_RANGE` stays `^3.0.0` and `BUILDER_API_VERSION`
+    // stays `3.1.0`; a package that declares `archive` must declare a
+    // range whose lower bound is `>= 3.1.0`, and one that claims a lower
+    // bound is rejected with the stable reason code
+    // `templates.archive_requires_api`. Every package that does not
+    // declare `archive` is unaffected.
+    if (templates.includes("archive")) {
+      const floor = apiRangeFloor(api);
+      if (floor !== null && compareSemver(floor, BUILDER_API_VERSION) < 0) {
+        errors.push("templates.archive_requires_api");
+      }
     }
 
     // --- supportedWidgets (every entry must exist in the catalog) ---

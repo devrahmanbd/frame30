@@ -15,9 +15,11 @@ import { incr, log, withSpan } from "./observability.server";
 import { rateLimit } from "./rate-limit.server";
 import {
   DEFAULT_TOKENS,
+  EMPTY_AST,
   TEMPLATE_KEYS,
   assertPayloadWithinLimits,
   isSkinnableType,
+  isTemplateKey,
   isVariantTemplateKey,
   takeSanitiserRejects,
   lintTemplate,
@@ -29,6 +31,8 @@ import {
   type Section,
   type SectionType,
   type TemplateKey,
+  type TemplateMap,
+  type ThemeAst,
   type ThemeTemplates,
   type ThemeTokens,
 } from "./builder-ast";
@@ -826,6 +830,47 @@ async function auditPublish(
 }
 
 /** Publish blocks on lint errors: a broken page never reaches shoppers. */
+/**
+ * The BASE key of a variant key (`archive_category` -> `archive`), or null
+ * when the key is not a variant at all.
+ */
+function variantBaseKey(key: string): TemplateKey | null {
+  if (!isVariantTemplateKey(key)) return null;
+  const sep = key.indexOf("_");
+  if (sep < 1) return null;
+  const base = key.slice(0, sep);
+  return isTemplateKey(base) ? base : null;
+}
+
+/**
+ * Lint every template a map carries. Each VARIANT is linted with its BASE
+ * key (`archive_category` as `archive`, `blog_article` as `blog`), so a
+ * context widget inside a variant is checked against the template that owns
+ * the data. Linting a variant as if it were a template would make every
+ * context widget inside it a publish-blocking "needs data this template
+ * does not provide" error, because no widget's catalogue allowlist names a
+ * variant key.
+ */
+function lintTemplateMap(templates: TemplateMap): string[] {
+  const out: string[] = [];
+  const report = (key: string, base: TemplateKey, ast: ThemeAst): void => {
+    for (const issue of lintTemplate(ast, base)) {
+      if (issue.level !== "error") continue;
+      out.push(`${key}: ${issue.message}`);
+    }
+  };
+  for (const key of TEMPLATE_KEYS) {
+    report(key, key, templateOf(templates, key));
+  }
+  for (const [key, ast] of Object.entries(templates)) {
+    if (isTemplateKey(key)) continue;
+    const base = variantBaseKey(key);
+    if (!base || !ast) continue;
+    report(key, base, ast);
+  }
+  return out;
+}
+
 export async function publishVersion(
   db: Client,
   merchantId: string,
@@ -850,11 +895,7 @@ export async function publishVersion(
     { templates: resolved.templates, tokens: resolved.tokens },
     "publish",
   );
-  const lint = TEMPLATE_KEYS.flatMap((key) =>
-    lintTemplate(templateOf(templates, key), key)
-      .filter((issue) => issue.level === "error")
-      .map((issue) => `${key}: ${issue.message}`),
-  );
+  const lint = lintTemplateMap(templates);
   // Phase 9: missing বাংলা only warns per string, but a theme that is more than
   // 10% untranslated cannot go live half-Bangla.
   const translation = translationGate(translationCoverage(templates)).map(
@@ -1234,6 +1275,65 @@ export async function loadRegistryPackage(
 }
 
 /**
+ * The merchant's CURRENT template map — the one the install's RPC is about
+ * to replace.
+ *
+ * The routine writes to the merchant's ACTIVE theme, else the OLDEST one
+ * (`order by is_active desc, created_at asc limit 1`), so this read mirrors
+ * that rule exactly: the merge is applied to the map the RPC replaces, not
+ * to some other theme's. A failed read never breaks an install — the seed
+ * then behaves exactly as it did before the merge existed.
+ */
+async function readMerchantTemplateMap(
+  db: Client,
+  merchantId: string,
+): Promise<Record<string, unknown> | null> {
+  try {
+    const theme = await db
+      .from("store_themes")
+      .select("id")
+      .eq("merchant_id", merchantId)
+      .order("is_active", { ascending: false })
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+    const themeId = theme.data?.id;
+    if (!themeId) return null;
+    const draft = await db
+      .from("theme_drafts")
+      .select("templates")
+      .eq("theme_id", themeId)
+      .maybeSingle();
+    const stored = draft.data?.templates;
+    if (!stored || typeof stored !== "object") return null;
+    return stored as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The per-key seed merge. A key the merchant's map already carries is NEVER
+ * overwritten — their authored template survives the install. A key it does
+ * not carry is filled from the package's default, which is how a NEW
+ * template key (the archive) reaches a merchant whose map predates it.
+ * Variant keys ride the same map and are carried through untouched.
+ */
+function mergeSeedTemplates(
+  current: Record<string, unknown>,
+  preset: ThemeTemplates,
+): Record<string, unknown> {
+  const merged: Record<string, unknown> = { ...current };
+  let changed = false;
+  for (const [key, ast] of Object.entries(preset)) {
+    if (Object.prototype.hasOwnProperty.call(merged, key)) continue;
+    merged[key] = ast;
+    changed = true;
+  }
+  return changed ? merged : (preset as unknown as Record<string, unknown>);
+}
+
+/**
  * Install an official theme as a draft version *and* fork it into the editable
  * draft. The package is validated and linted server-side before the RPC runs,
  * so a broken preset can never replace a merchant's last-good theme, and an
@@ -1265,12 +1365,24 @@ export async function installRegistryTheme(
       incr("framique_theme_install_total", { result: "rejected" });
       throw err;
     }
+    // The seed merge. The RPC `theme_install_preset` REPLACES the draft's
+    // map verbatim (`delete from public.theme_drafts …; insert …
+    // _preset->'templates'`), so "fill only the keys the merchant's map does
+    // not have" cannot live in SQL — no applied migration is edited. It is
+    // implemented HERE, in TypeScript, and the MERGED map is what the RPC
+    // receives. That is how the new `archive` default reaches a merchant
+    // whose map predates the key, without a single merchant-authored
+    // template being overwritten.
+    const current = await readMerchantTemplateMap(db, merchantId);
+    const templates = current
+      ? mergeSeedTemplates(current, pkg.templates)
+      : (pkg.templates as unknown as Record<string, unknown>);
     const versionId = await rpc<string>(db, "theme_install_preset", {
       _merchant_id: merchantId,
       _key: key,
       _preset: {
         tokens: pkg.tokens,
-        templates: pkg.templates,
+        templates,
       } as unknown as Json,
       _overwrite_draft: overwriteDraft,
     });
@@ -1314,7 +1426,12 @@ export async function previewPresetSwap(
 /* ------------------------------------------------------------ update / diff */
 
 export type TemplateDiff = {
-  template: TemplateKey;
+  /**
+   * The template the diff is about — a base key (`archive`) OR a variant
+   * key (`archive_category`). A theme update carries the variants too, so
+   * the diff must be able to name them.
+   */
+  template: string;
   added: string[];
   removed: string[];
   changed: string[];
@@ -1344,9 +1461,35 @@ function digestSection(section: {
   ]);
 }
 
-function sectionsOf(templates: ThemeTemplates, key: TemplateKey) {
-  const ast = templateOf(templates, key);
+function sectionsOf(templates: ThemeTemplates, key: string) {
+  const bag = templates as Record<string, ThemeAst | undefined>;
+  const ast = bag[key] ?? EMPTY_AST;
   return [...ast.header, ...ast.main, ...ast.footer];
+}
+
+/**
+ * Every key a template map carries — the base keys plus the VARIANT keys
+ * (`blog_article`, `archive_category`). A theme update must carry the
+ * variants: `parseTemplates` persists them in the same map, so a merge that
+ * looped over `TEMPLATE_KEYS` alone would silently drop every one of them
+ * across an update.
+ */
+function templateMapKeys(
+  ...maps: Array<Record<string, unknown> | undefined>
+): string[] {
+  const out: string[] = [];
+  const push = (key: string): void => {
+    if (!out.includes(key)) out.push(key);
+  };
+  for (const key of TEMPLATE_KEYS) push(key);
+  for (const map of maps) {
+    for (const key of Object.keys(map ?? {})) {
+      if (isTemplateKey(key)) continue;
+      if (!isVariantTemplateKey(key)) continue;
+      push(key);
+    }
+  }
+  return out;
 }
 
 /** Section-level diff between the merchant's current tree and the new package. */
@@ -1355,7 +1498,7 @@ export function diffTemplates(
   upstream: ThemeTemplates,
 ): TemplateDiff[] {
   const out: TemplateDiff[] = [];
-  for (const key of TEMPLATE_KEYS) {
+  for (const key of templateMapKeys(mine, upstream)) {
     const mineMap = new Map(sectionsOf(mine, key).map((s) => [s.id, s]));
     const upMap = new Map(sectionsOf(upstream, key).map((s) => [s.id, s]));
     const added = [...upMap.keys()].filter((id) => !mineMap.has(id));
@@ -1379,11 +1522,13 @@ export function mergeTemplates(
   mine: ThemeTemplates,
   upstream: ThemeTemplates,
   mode: UpdateMode,
-): ThemeTemplates {
-  const merged: ThemeTemplates = {};
-  for (const key of TEMPLATE_KEYS) {
-    const mineAst = templateOf(mine, key);
-    const upAst = templateOf(upstream, key);
+): TemplateMap {
+  const merged: Record<string, ThemeAst> = {};
+  for (const key of templateMapKeys(mine, upstream)) {
+    const mineBag = mine as Record<string, ThemeAst | undefined>;
+    const upBag = upstream as Record<string, ThemeAst | undefined>;
+    const mineAst = mineBag[key] ?? EMPTY_AST;
+    const upAst = upBag[key] ?? EMPTY_AST;
     const hasUp =
       upAst.header.length || upAst.main.length || upAst.footer.length;
     const hasMine =
@@ -1424,7 +1569,7 @@ export function mergeTemplates(
       };
     }
   }
-  return merged;
+  return merged as TemplateMap;
 }
 
 /** What an update would change, computed against the merchant's live draft. */
@@ -1491,12 +1636,7 @@ export async function applyThemeUpdate(
       pkg.templates,
       input.mode,
     );
-    const blocking = (Object.keys(templates) as TemplateKey[]).flatMap(
-      (templateKey) =>
-        lintTemplate(templates[templateKey]!, templateKey).filter(
-          (issue) => issue.level === "error",
-        ),
-    );
+    const blocking = lintTemplateMap(templates);
     if (blocking.length) {
       incr("framique_theme_update_total", { result: "rejected" });
       throw new BuilderError(

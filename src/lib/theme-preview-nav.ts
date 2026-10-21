@@ -279,15 +279,18 @@ const PREVIEW_TEMPLATE_KEY_RE = /^[A-Za-z0-9][A-Za-z0-9_-]*$/;
 export function validateThemePreviewSearch(search: Record<string, unknown>): {
   template: TemplateKey | undefined;
   /**
-   * The REQUESTED template key when it is NOT one of the nine template keys.
+   * The REQUESTED template key when it is NOT one of the template keys.
    *
-   * D1 (Option A): an unsupported template is an EXPLICIT state, never a
+   * Decision D1': an unsupported template is an EXPLICIT state, never a
    * silent homepage redirect. The key therefore has to REACH the preview
    * host, which resolves it against the theme's authored bodies and renders
    * the named "not supported by this theme" panel for a key it does not have
    * (`src/components/store/ThemePreviewFrame.tsx:575-578`). `template` above
    * keeps its meaning — a key the platform knows — and this field carries
-   * the request the platform does not know. It is OPTIONAL in the type (like
+   * the request the platform does not know. `archive` is a KNOWN key now
+   * (the content archive is a first-class template, Decision D1'), so it
+   * travels in `template`; the keys that reach this field are the ones the
+   * platform still does not know. It is OPTIONAL in the type (like
    * `variation` and `mock_order`) so the routes that navigate INTO the
    * preview with a known template keep their own search shape.
    *
@@ -317,8 +320,9 @@ export function validateThemePreviewSearch(search: Record<string, unknown>): {
   // pass used to read `template` only — and by then `template` was already
   // `undefined` for an unknown key — so the second pass DROPPED the carried
   // request, the canonical URL came out as the BARE path, and the router
-  // answered `?template=archive` with a 307 to the bare path, which renders
-  // the homepage composition instead of the explicit unsupported panel.
+  // answered `?template=blog_anything` with a 307 to the bare path, which
+  // renders the homepage composition instead of the explicit unsupported
+  // panel.
   //
   // Reading the carried key back makes the validation idempotent: the
   // canonical URL keeps the request, and the canonical URL is stable (a
@@ -420,6 +424,7 @@ const GENERIC_TITLES: Record<TemplateKey, [string, string]> = {
   cart: ["Your bag", "আপনার ব্যাগ"],
   checkout: ["Checkout", "চেকআউট"],
   search: ["Search results", "খোঁজার ফলাফল"],
+  archive: ["Archive", "আর্কাইভ"],
 };
 
 /**

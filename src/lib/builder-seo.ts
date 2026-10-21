@@ -322,6 +322,7 @@ const TEMPLATE_FALLBACK: Partial<Record<TemplateKey, string>> = {
   checkout: "Checkout",
   page: "Page",
   blog: "Journal",
+  archive: "Archive",
 };
 
 /**

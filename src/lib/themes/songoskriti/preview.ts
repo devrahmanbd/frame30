@@ -239,6 +239,67 @@ export function songoskritiPreviewSource(
             }),
             s("blog_pager", { align: "center" }),
           ];
+        case "archive":
+          // The content archive — a category, a tag or an author's articles
+          // (Decision D1'). The platform owns the listing: the resolved
+          // term's name and description are ROUTE context, so the theme
+          // authors the FRAME around them and never the merchant's copy.
+          //
+          // The body is exactly: the `category_header` (the archive's own
+          // opening band), the blog pack (`blog_terms` + `blog_archive` +
+          // `blog_pager` — the listing surface and its facet rail), the
+          // `pagination` (the pager) and the `empty_state` (what an empty
+          // archive shows).
+          //
+          // NO `product_grid`: the grid reads the host's `productSlot` ONLY
+          // on the search template, so a grid here would render eight
+          // product skeletons — an archive has no product slot. NO
+          // `heading` and NO `rich_text`: `archive` is a route-h1 template,
+          // so the route owns the page's <h1> and the body carries no demo
+          // copy.
+          return [
+            s("category_header", {
+              // The route owns the page's <h1> (the resolved term's name),
+              // so this widget claims none: a blank `heading` is the
+              // platform's documented remedy for a heading-capable widget
+              // that must not be the primary heading.
+              heading: "",
+              // The merchant-safe label. The RESOLVED term's name and
+              // description are route context — the widget never carries a
+              // merchant's own copy.
+              title: "Archive",
+              title_bn: "আর্কাইভ",
+              description: "",
+              description_bn: "",
+              showBreadcrumb: true,
+              homeLabel: "Home",
+            }),
+            s("blog_terms", {
+              heading: "Browse the archive",
+              heading_bn: "আর্কাইভ দেখুন",
+              style: "pills",
+              showCounts: true,
+            }),
+            s("blog_archive", {
+              heading: "Articles",
+              heading_bn: "প্রবন্ধ",
+              layout: "magazine",
+              columns: 3,
+              limit: 9,
+              showCover: true,
+              showExcerpt: true,
+              showMeta: true,
+            }),
+            s("blog_pager", { align: "center" }),
+            s("pagination", { mode: "numbered", pageLabel: "Page" }),
+            s("empty_state", {
+              heading: "Nothing in this archive yet",
+              body: "Published articles in this category, tag or author archive appear here.",
+              clearLabel: "",
+              showSuggestions: false,
+              limit: 4,
+            }),
+          ];
         case "search":
           // The platform owns the search: it executes the query, authorizes the
           // tenant and prices the results (`store.$slug.search.tsx:42-105`),

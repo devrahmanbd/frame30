@@ -123,7 +123,7 @@ const SONGOSKRITI_PREVIEW_SEARCH_PATH = "/store/songoskriti/search";
 const UNSUPPORTED_TEMPLATE_TITLE =
   "This template is not supported by this theme";
 const UNSUPPORTED_TEMPLATE_BODY =
-  "The theme does not author a body for this template, so there is nothing to preview. The archive surfaces are the blog listing and its category, tag and author archives, and they wear the blog template.";
+  "The theme does not author a body for this template, so there is nothing to preview. The archive is a first-class template a theme may author, and the platform's own reader surfaces — the blog listing and its category, tag and author archives — keep the platform grid, because they carry no store slug and so they cannot resolve a theme.";
 
 /**
  * The explicit unsupported state — a named panel, never a redirect.
@@ -565,13 +565,13 @@ export function ThemePreviewFrame({
     } as never);
   };
 
-  // D1 (Option A) — an unsupported template is an EXPLICIT state, never a
-  // silent redirect to the homepage. `?template=archive` is unsupported: the
-  // archive surface is the blog taxonomy surface (index / category / tag /
-  // author) and it wears the `blog` template, so no `archive` key exists
-  // (the escalation record's §(l.1)). When the theme does not author the
-  // requested template the canvas renders the named "not supported by this
-  // theme" panel instead of the homepage body.
+  // Decision D1' — an unsupported template is an EXPLICIT state, never a
+  // silent redirect to the homepage. `archive` IS a template key now (the
+  // content archive is a first-class theme part), so it is authored like any
+  // other; a key the platform still does not know — say
+  // `?template=blog_anything` — is the unsupported request, and when the
+  // theme does not author the requested template the canvas renders the
+  // named "not supported by this theme" panel instead of the homepage body.
   const templatesByKey: Partial<Record<TemplateKey, ThemeAst>> = templates;
   const authored = templatesByKey[template];
   const unsupported = authored === undefined;
@@ -849,6 +849,26 @@ export function ThemePreviewFrame({
         }
       : undefined;
 
+  // The archive template's functional slots (Decision D1'). The content
+  // archive is a LISTING page: the platform's own `category_header` grant,
+  // the blog pack (terms / listing / pager) and the paging + empty state.
+  //
+  // The grant set is EXACTLY the archive body's six slots — the same set
+  // the deferred merchant-scoped route must grant when it lands. A grant
+  // the body does not use would be a permission the theme never asked for,
+  // and a slot the body DOES use that is not granted renders nothing.
+  const archiveSlots =
+    template === "archive"
+      ? {
+          category_header: null,
+          blog_terms: null,
+          blog_archive: null,
+          blog_pager: null,
+          pagination: null,
+          empty_state: null,
+        }
+      : undefined;
+
   // The preview has no CMS page record: `page_content` is a CONTEXT widget
   // (`src/components/builder/widgets.tsx:1617`), so the host must hand it a
   // node. Without one the fixed page template renders chrome with an empty
@@ -993,6 +1013,7 @@ export function ThemePreviewFrame({
                             ...searchSlots,
                             ...blogSlots,
                             ...pageSlots,
+                            ...archiveSlots,
                           }}
                           productSlot={searchProductSlot}
                           primary={section.id === primaryId}
@@ -1035,6 +1056,7 @@ export function ThemePreviewFrame({
                             ...searchSlots,
                             ...blogSlots,
                             ...pageSlots,
+                            ...archiveSlots,
                           }}
                         />
                       ))}
@@ -1063,6 +1085,7 @@ export function ThemePreviewFrame({
                               ...searchSlots,
                               ...blogSlots,
                               ...pageSlots,
+                              ...archiveSlots,
                             }}
                             productSlot={searchProductSlot}
                             primary={section.id === primaryId}
@@ -1093,6 +1116,7 @@ export function ThemePreviewFrame({
                                 ...searchSlots,
                                 ...blogSlots,
                                 ...pageSlots,
+                                ...archiveSlots,
                               }}
                             />
                           ))}

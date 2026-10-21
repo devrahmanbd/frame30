@@ -105,6 +105,7 @@ export const getStoreChrome = createServerFn({ method: "GET" })
           "cart",
           "checkout",
           "account",
+          "archive",
         ]),
       })
       .parse(d),
