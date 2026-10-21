@@ -290,6 +290,13 @@ export function validateThemePreviewSearch(search: Record<string, unknown>): {
    * the request the platform does not know. It is OPTIONAL in the type (like
    * `variation` and `mock_order`) so the routes that navigate INTO the
    * preview with a known template keep their own search shape.
+   *
+   * The validation is IDEMPOTENT: the key is read back from this field when
+   * `template` is absent, so a second validation pass (TanStack Router
+   * validates the search more than once per request) carries the request
+   * forward instead of dropping it. See the comment at the `rawTemplate`
+   * binding below for the measured consequence of a non-idempotent
+   * validation.
    */
   unsupportedTemplate?: string | undefined;
   focus: string | undefined;
@@ -298,8 +305,30 @@ export function validateThemePreviewSearch(search: Record<string, unknown>): {
   variation?: string | undefined;
   mock_order?: "success" | "pending" | "failed";
 } {
+  // The requested key is read from `template` OR from the carried
+  // `unsupportedTemplate` — the validation MUST be IDEMPOTENT.
+  //
+  // Why: TanStack Router validates a route's search MORE THAN ONCE per
+  // request. `matchRoutesLightweight` folds `validateSearch` into the
+  // accumulated search, and the SSR canonicalisation
+  // (`@tanstack/router-core/dist/esm/load-server.js`, `loadServerRoute`)
+  // builds the canonical URL with `_includeValidateSearch: true`, which runs
+  // `validateSearch` over that already-validated search AGAIN. The second
+  // pass used to read `template` only — and by then `template` was already
+  // `undefined` for an unknown key — so the second pass DROPPED the carried
+  // request, the canonical URL came out as the BARE path, and the router
+  // answered `?template=archive` with a 307 to the bare path, which renders
+  // the homepage composition instead of the explicit unsupported panel.
+  //
+  // Reading the carried key back makes the validation idempotent: the
+  // canonical URL keeps the request, and the canonical URL is stable (a
+  // request for it validates to itself — no redirect loop).
   const rawTemplate =
-    typeof search.template === "string" ? search.template : "";
+    typeof search.template === "string"
+      ? search.template
+      : typeof search.unsupportedTemplate === "string"
+        ? search.unsupportedTemplate
+        : "";
   const template = (TEMPLATE_KEYS as readonly string[]).includes(rawTemplate)
     ? (rawTemplate as TemplateKey)
     : undefined;

@@ -228,7 +228,7 @@ composition pins + the skins pin), `f0adee47` (the Phase-1 preview-page pin).
 | **"demo data is realistic and explicitly labelled"**                                      | ✅   | `src/lib/themes/songoskriti/cart-account-demo.test.ts` — **seven** cases: the cart's money is _derived from its lines_, the lines cite real Songoskriti demo products, the snapshot is _not_ the studio's, the data is synthetic and inert, the profile is _visibly_ demo ("Rumana Haque (demo shopper)", RFC 2606 `.example` addresses) and the order history reads like one. The preview's visible markers are the shopper's title and the orders themselves — **not** a bare "Demo" badge, which Phase 1 removed because it leaks into a merchant's live page. The **product** body keeps exactly one labelled line, relabelled in this plan: _"Sample product page — prices and stock are sample data, and ordering is disabled in the preview."_ (was _"Demo product page. Prices and stock are sample data…"_).                                                                                                                                                                                                                                                       |
 | **"Page previews a useful sample but the live Page route renders the actual CMS record"** | ✅   | The preview renders the theme's own labelled sample page (`SONGOSKRITI_PREVIEW_PAGE`, `src/lib/themes/songoskriti/preview-page.ts`); the **live** Page route is **byte-identical** — `src/components/store/PageView.tsx` is not in this plan's diff (§C), and the gate's `R4-no-demo-copy` rule is scoped to the **`page`** template for exactly this reason: it is the one body whose copy could impersonate the merchant's record.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | **"Checkout preview renders the authored template"**                                      | ✅   | `songoskriti preview — the checkout composition > renders the AUTHORED checkout body, not the generic mock` asserts the theme's payment marks (`aria-label="bKash"`, "Cash on delivery"), the platform widget's own legend ("Payment method"), the synthetic order's derived money, and **`expect(html).not.toContain("Muslin Floral Festive Saree")`** — the mock's hard-coded line never reaches the preview. `src/components/store/CheckoutMock.tsx` is now **dead code** (§H.1).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| **"Archive has an explicit contract and route mapping"**                                  | ✅   | The contract is written down verbatim in the escalation record's **§(l.1)** and pinned by `src/lib/themes/songoskriti/archive-contract.test.ts`: the archive-like surface is the blog listing and its **category / tag / author** taxonomies plus the storefront's blog index, served by `BlogArchiveTheme` and backed by the existing blog pack (`blog_terms` / `blog_archive` / `blog_pager`) — it wears the **`blog`** template; **no `archive` key is added** (`TEMPLATE_KEYS`, `TEMPLATE_ZONES`, the 41 catalogue allowlists, the hand-written `z.enum` and the editor/SEO/weight maps are all untouched); and an unsupported template produces the **explicit unsupported state** ("This template is not supported by this theme", naming the key, linking back to the home tab) instead of a homepage redirect. **Amended 2026-10-21 (§(I)) — the ✅ was FALSE until the final-review fix:** the unsupported branch was **dead code** (`validateThemePreviewSearch` dropped every unknown `?template=` value — `src/lib/theme-preview-nav.ts:264-268` — and the host computes its state from a **missing** key, `src/components/store/ThemePreviewFrame.tsx:575-578`). The route's search validation now **carries** the requested key (bounded to a key-shaped token, ≤64 chars) and the route hands it to the host, so `?template=archive` renders the panel; `src/lib/themes/songoskriti/unsupported-template-state.test.tsx` (9 cases) proves the route's own `validateSearch` carries the key, the panel renders **with the key named**, and the **homepage body does not render** in its place.                                                                                                                                                                                                                                                      |
+| **"Archive has an explicit contract and route mapping"**                                  | ✅   | The contract is written down verbatim in the escalation record's **§(l.1)** and pinned by `src/lib/themes/songoskriti/archive-contract.test.ts`: the archive-like surface is the blog listing and its **category / tag / author** taxonomies plus the storefront's blog index, served by `BlogArchiveTheme` and backed by the existing blog pack (`blog_terms` / `blog_archive` / `blog_pager`) — it wears the **`blog`** template; **no `archive` key is added** (`TEMPLATE_KEYS`, `TEMPLATE_ZONES`, the 41 catalogue allowlists, the hand-written `z.enum` and the editor/SEO/weight maps are all untouched); and an unsupported template produces the **explicit unsupported state** ("This template is not supported by this theme", naming the key, linking back to the home tab) instead of a homepage redirect. **Amended 2026-10-21 (§(I)) — the ✅ was FALSE until the final-review fix:** the unsupported branch was **dead code** (`validateThemePreviewSearch` dropped every unknown `?template=` value — `src/lib/theme-preview-nav.ts:264-268` — and the host computes its state from a **missing** key, `src/components/store/ThemePreviewFrame.tsx:575-578`). The route's search validation now **carries** the requested key (bounded to a key-shaped token, ≤64 chars) and the route hands it to the host, so `?template=archive` renders the panel; `src/lib/themes/songoskriti/unsupported-template-state.test.tsx` (9 cases) proves the route's own `validateSearch` carries the key, the panel renders **with the key named**, and the **homepage body does not render** in its place. **Amended 2026-10-21 (§(J)) — the ✅ was still FALSE for the URL the server serves:** the carry was **not idempotent**, so TanStack Router's SSR canonicalisation (`@tanstack/router-core/dist/esm/load-server.js:546-557`) re-validated the search, **dropped the carried request** and answered `?template=archive` with a **307 to the bare path** — which renders the **homepage** (measured live: 204 824 bytes, the panel heading ×0, the homepage's `hero-festive` marker ×5). The validation now reads the carried key back, so the **canonical URL carries the request**: `?template=archive` → **307 → `?unsupportedTemplate=archive`** → **200** with the **panel** (the heading ×1, the key named, the homepage body ×0), and the nine authored keys are **not** redirected at all. The suite grew to **15 cases**; the six new ones reproduce the router's **own** canonicalisation and pin that the panel renders for `?template=archive` **through the route**. **The live build at `bd52c246` still serves the homepage for that URL** — the state is user-visible from this commit onwards, i.e. **after the branch is deployed** (§(J.2)).                                                                                                                                                                                                                                                      |
 | **"each claimed template passes a theme-distinctness test"**                              | ✅   | `src/lib/themes/songoskriti/template-distinctness.ts` — **seven** rules (`R1-not-generic`, `R2-theme-composition`, `R3-functional-slots`, `R4-no-demo-copy`, `R5-no-forbidden-types`, `R6-distinct-across-templates`, `R7-one-primary-heading`). The gate's subject is **composition, functional slots and structure — never lint cleanliness**, and the module's header says why: the platform's own lint is a different concern. **Measured** on the nine shipped bodies at HEAD, `lintTemplate` reports **zero errors** on all nine (`index` 23 findings, `search` 14, `checkout` 3, `blog` 2, `cart` 2, `product` / `collection` / `account` / `page` 1 each — every one of them the platform's _bilingual-content_ finding, "no বাংলা translation", which this plan does not silence), and the one double-`<h1>` **error** the cart body carried is **fixed** in the body that carried it and then held structurally under `R7`. The gate has **failed before**: it rejects the four legacy bodies and the engine's generic body, and every rule has a firing fixture. |
 
 **The suite that backs all six rows** — one run, 34 files, **423 tests, zero
@@ -724,3 +724,129 @@ node_modules/.bin/tsgo --noEmit
 
 **The three known-red gates and the known local flake are unchanged** — they are the
 pre-existing conditions §(F) lists, and this round neither ran nor changed them.
+
+---
+
+## (J) The URL the server SERVES — the closing round _(appended 2026-10-21)_
+
+**Appended, not a rewrite: sections (A)–(I) stand as written**, except the one
+amendment the task allows — the §(B) archive row's evidence cell, amended
+**in place** with a dated note because it overstated what the **live** build
+delivered. The escalation record's **§(n)** carries the same findings with
+the exact hunks and citations.
+
+### (J.1) What was still false, and what is true now
+
+§(I.1) fixed the **chain inside one process**: the route's own `validateSearch`
+carried the requested key and the route handed it to the host. **What it did
+not prove is the URL the server answers with** — and the live build answered
+`?template=archive` with a **307 to the bare path**, which renders the
+**homepage composition**:
+
+| what | live at `bd52c246` (measured 2026-10-21) | this tree (measured on a loopback dev server) |
+| ---- | ---------------------------------------- | --------------------------------------------- |
+| `GET /theme-preview/songoskriti?template=archive` | **307** → `location: /theme-preview/songoskriti` (the bare path, every query param dropped) | **307** → `location: /theme-preview/songoskriti?unsupportedTemplate=archive` |
+| the followed document | **200, 204 824 bytes** — the **homepage** body (the panel heading **×0**, the homepage's `hero-festive` marker **×5**) | **200, 7 683 bytes** — the **panel** (the heading **×1**, the key named, the homepage body **×0**) |
+| `GET /theme-preview/songoskriti?unsupportedTemplate=archive` | **307** → the bare path → the homepage | **200** — the panel |
+| `GET /theme-preview/songoskriti?template=index` / `?template=search` | **200** (no redirect) | **200** (no redirect) — the nine authored keys are untouched |
+
+**The cause was a NON-IDEMPOTENT search validation, not a missing feature.**
+TanStack Router validates a route's search **twice** per request and then
+serves the **canonical** URL, answering a **307** when it differs from the
+requested one (`@tanstack/router-core/dist/esm/load-server.js:546-557`, on
+`@tanstack/router-core@1.171.35`). The second pass read `search.template`
+only — already `undefined` for an unknown key — and so **dropped the request
+the first pass had carried**. The canonical URL was the bare path, and the
+bare path is the homepage. The full citation chain is in the escalation
+record's **§(n.2)**.
+
+**The fix** is one hunk in `src/lib/theme-preview-nav.ts` (an
+owner-approved file, already edited by the §(m) round): the requested key is
+read from `search.template` **or** from the carried `search.unsupportedTemplate`,
+so the validation is a fixed point. `template` keeps its meaning (a key the
+platform knows), so the existing pin
+`src/lib/theme-preview-nav.test.ts:610-612` still holds unchanged.
+
+### (J.2) The scope of the claim — and the deployment boundary
+
+- The **explicit unsupported state is what the preview renders** for an
+  unknown `?template=` — the panel, naming the key, linking back to the home
+  tab — and **not** the homepage composition. That is §(l.1)'s contract, and
+  it now holds for the **URL the server serves**.
+- The request settles on the **canonical** URL: `?template=archive` → **one
+  307** → `?unsupportedTemplate=archive` → **200** with the panel. The hop
+  stays because the route's search schema **must** carry the request under
+  `unsupportedTemplate` (§(m.4)'s design, pinned by the suite's case 9) and
+  the canonical search string is built from the validated search — so it can
+  equal `?template=archive` only if `template` itself held the unknown key,
+  which would break `src/lib/theme-preview-nav.test.ts:610-612`. The
+  escalation record's **§(n.5)** carries the full argument.
+- **The live build at `bd52c246` is still the old one.** The state is
+  user-visible **from this commit onwards** — i.e. **after the branch is
+  deployed**. Until then the live URL serves the homepage body, and this
+  record says so rather than claiming otherwise.
+
+### (J.3) The OPEN item this round measured but did NOT fix
+
+The **same** canonicalisation drops `?max=` — a search key the route's own
+comment promises to keep (`src/routes/theme-preview.$key.tsx:161-163`).
+Measured live: `GET /theme-preview/songoskriti?template=search&max=99900` →
+**307** → `?template=search` (**`max` dropped**). **Cause:** the router's
+default `parseSearch` parses `max=99900` as the **number** `99900`, and
+`validateThemePreviewSearch` accepts `max` only as a **string**
+(`src/lib/theme-preview-nav.ts:354-357`), so the second validation drops it.
+
+**It is pre-existing** (it fails identically with the validator reverted, so
+it is not part of the defect this round closed) and it is **not fixed here**:
+it is a different contract, it would change a documented search shape, and no
+pin covers it. **This round's suite deliberately does not pin it**, so a
+future fix flips a test rather than silently changing behaviour. A fix would
+need the validator to accept the number the router parses, or the route to
+read `max` from the raw query rather than from the validated search.
+
+### (J.4) The measurements — run from the repo root
+
+```
+node_modules/.bin/vitest run src/lib/themes/songoskriti/unsupported-template-state.test.tsx
+# → Test Files  1 passed (1) / Tests  15 passed (15)      (9 cases before this round)
+
+# the same suite with the validator reverted to the §(m) version:
+# → Tests  3 failed | 12 passed (15)   ← cases 10, 11, 14 (idempotency, canonical URL, route render)
+
+node_modules/.bin/vitest run src/lib/theme-preview-nav.test.ts src/lib/theme-variation-preview.test.ts \
+  src/lib/themes/songoskriti/
+# → Test Files  26 passed (26) / Tests  272 passed (272)
+
+# §(I.4)'s command, re-run for this round (35 files / 432 tests before it):
+node_modules/.bin/vitest run src/lib/themes/songoskriti \
+  src/components/builder/songoskriti-port-freeze.test.tsx \
+  src/lib/theme-preview-nav.test.ts src/lib/definition-of-done.test.ts \
+  src/components/store/ThemePreviewFrame.test.tsx \
+  src/components/store/songoskriti-preview-compositions.test.tsx \
+  src/components/store/songoskriti-preview-page.test.tsx \
+  src/components/store/BlogArchiveTheme.test.tsx \
+  src/components/store/ThemeChrome.route-content.test.tsx \
+  src/components/store/PageView.twin-wiring.test.tsx
+# → Test Files  35 passed (35) / Tests  438 passed (438)   (+6 cases — the canonicalisation)
+
+node_modules/.bin/vitest run          # the whole suite
+# → Test Files  2 failed | 600 passed | 1 skipped (603)
+#   Tests  3 failed | 8549 passed | 3 skipped (8555)
+#   The 3 failures are PRE-EXISTING and unrelated (src/lib/analytics-live-shape.test.ts,
+#   src/lib/site.server.test.ts) — measured identically on a clean tree.
+
+node_modules/.bin/tsgo --noEmit
+# → no output, exit 0
+
+node_modules/.bin/eslint src/lib/theme-preview-nav.ts \
+  src/lib/themes/songoskriti/unsupported-template-state.test.tsx
+# → no output (0 errors, 0 warnings)
+
+node_modules/.bin/prettier --check src/lib/theme-preview-nav.ts \
+  src/lib/themes/songoskriti/unsupported-template-state.test.tsx
+# → All matched files use Prettier code style!
+```
+
+**The HTTP measurements** (a loopback dev server, `node_modules/.bin/vite dev
+--port 3111`, and the live host through `nsenter -t 1 -n`) are in the
+escalation record's **§(n.1)**, **§(n.3)** and **§(n.6)**.

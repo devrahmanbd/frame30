@@ -25,6 +25,25 @@
  * scratch render never gave: that one exercised a hand-made `templates` map,
  * not the URL path.
  *
+ * **The second suite (appended 2026-10-21) pins the ROUTE's canonicalisation.**
+ * The first suite proved the request reaches the host *inside one process*;
+ * it did not prove the **URL the server actually serves** carries it.
+ * TanStack Router validates a route's search more than once per request —
+ * `matchRoutesLightweight` folds `validateSearch` into the accumulated
+ * search, and the SSR canonicalisation
+ * (`@tanstack/router-core/dist/esm/load-server.js` — `loadServerRoute`)
+ * rebuilds the URL with `_includeValidateSearch: true`, which validates the
+ * ALREADY-VALIDATED search again and answers with a **307 to the canonical
+ * URL** when it differs from the requested one. A validation that is not
+ * **idempotent** therefore rewrites `?template=archive` to the **bare path**
+ * — and the bare path renders the homepage composition. That was the live
+ * defect (measured: 307 → `/theme-preview/songoskriti` → the homepage body,
+ * the panel heading zero times). The second suite reproduces the router's
+ * own canonicalisation headlessly (the same `createRouter` the app runs, the
+ * route's own `validateSearch`) and asserts that the canonical URL carries
+ * the request, that it is a fixed point (no redirect loop) and that the
+ * panel renders for `?template=archive` **through the route**.
+ *
  * The route module IS imported — the preview route is a public, host-gated
  * route and its `validateSearch` is the exact function under test (the
  * precedent is `src/lib/media.serve.test.ts`). The route's **wiring** into
@@ -36,6 +55,12 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import {
+  createMemoryHistory,
+  createRootRoute,
+  createRoute,
+  createRouter,
+} from "@tanstack/react-router";
 import type { TemplateKey } from "@/lib/builder-ast";
 import { LanguageProvider } from "@/lib/i18n";
 
@@ -269,5 +294,151 @@ describe("the preview's unsupported template state is reachable", () => {
     expect(ROUTE_SRC).toContain(
       "(initialTemplate ?? unsupportedTemplate) as TemplateKey | undefined",
     );
+  });
+});
+
+/* ------------------------------------------------------------------------- *
+ * The ROUTE's canonicalisation — the URL the server actually serves.
+ *
+ * The suite above proves the request reaches the host INSIDE one process.
+ * It does not prove the URL THE SERVER SERVES carries it: TanStack Router
+ * validates the search more than once per request, and the SSR
+ * canonicalisation answers with a **307 to the canonical URL** when the
+ * canonical URL differs from the requested one. A non-idempotent validation
+ * silently rewrote `?template=archive` to the bare path, and the bare path
+ * renders the homepage composition — the live defect.
+ * ------------------------------------------------------------------------- */
+
+/**
+ * The canonical URL the router serves for a request — reproduced with the
+ * REAL router (the same `createRouter` the app runs) and the ROUTE's own
+ * `validateSearch`, so it is the same decision the server makes.
+ *
+ * `loadServerRoute` (`@tanstack/router-core/dist/esm/load-server.js`)
+ * builds it exactly like this: the current pathname, the current search
+ * (`search: true`), the params, the hash and the state, with
+ * `_includeValidateSearch: true` so the route's `validateSearch` runs over
+ * the already-validated search.
+ */
+async function canonicalPreviewHref(entry: string): Promise<string> {
+  const { Route } = await import("@/routes/theme-preview.$key");
+  const rootRoute = createRootRoute();
+  const previewRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/theme-preview/$key",
+    validateSearch: Route.options.validateSearch as never,
+  });
+  const router = createRouter({
+    // The synthetic tree mirrors the app's shape (root + the preview route);
+    // the route's OWN `validateSearch` is what the server runs.
+    routeTree: rootRoute.addChildren([previewRoute as never]),
+    history: createMemoryHistory({ initialEntries: [entry] }),
+  });
+  router.updateLatestLocation();
+  const canonical = router.buildLocation({
+    to: router.latestLocation.pathname,
+    search: true,
+    params: true,
+    hash: true,
+    state: true,
+    _includeValidateSearch: true,
+  } as never);
+  return canonical.publicHref;
+}
+
+/** The search of a canonical URL, as the router parses it back. */
+function searchOf(href: string): Record<string, unknown> {
+  const params = new URL(href, "http://preview.test").searchParams;
+  return Object.fromEntries(params.entries());
+}
+
+describe("the unsupported request survives the route's canonicalisation", () => {
+  it("the search validation is idempotent — the request survives a second pass", () => {
+    const first = validateThemePreviewSearch({ template: "archive" });
+    expect(first.unsupportedTemplate).toBe("archive");
+    // The SECOND pass is what the router's canonicalisation runs over the
+    // already-validated search. A validation that drops the request here
+    // is what rewrote the URL to the bare path.
+    const second = validateThemePreviewSearch(
+      first as unknown as Record<string, unknown>,
+    );
+    expect(second.unsupportedTemplate).toBe("archive");
+    expect(second.template).toBeUndefined();
+    // … and it is a fixed point, so the canonical URL never drifts.
+    const third = validateThemePreviewSearch(
+      second as unknown as Record<string, unknown>,
+    );
+    expect(third.unsupportedTemplate).toBe("archive");
+  });
+
+  it("the canonical URL carries the request — it is NOT the bare path", async () => {
+    const canonical = await canonicalPreviewHref(
+      "/theme-preview/songoskriti?template=archive",
+    );
+    // The bare path is the homepage composition — the defect.
+    expect(canonical).not.toBe("/theme-preview/songoskriti");
+    // The canonical URL carries the request, so the panel can be served.
+    expect(canonical).toContain("unsupportedTemplate=archive");
+  });
+
+  it("the canonical URL is a fixed point — the request is answered, not looped", async () => {
+    const canonical = await canonicalPreviewHref(
+      "/theme-preview/songoskriti?template=archive",
+    );
+    // Asking for the canonical URL must not redirect again.
+    expect(await canonicalPreviewHref(canonical)).toBe(canonical);
+  });
+
+  it("a template the theme authors is not canonicalised at all", async () => {
+    // The nine known keys keep their URL exactly — no new redirect.
+    for (const key of ["search", "index", "product", "collection"]) {
+      expect(
+        await canonicalPreviewHref(
+          `/theme-preview/songoskriti?template=${key}`,
+        ),
+      ).toBe(`/theme-preview/songoskriti?template=${key}`);
+    }
+  });
+
+  it("?template=archive renders the unsupported panel THROUGH the route", async () => {
+    const { Route } = await import("@/routes/theme-preview.$key");
+    const validate = Route.options.validateSearch as (
+      search: Record<string, unknown>,
+    ) => Record<string, unknown>;
+    // The URL the router serves for the natural request …
+    const canonical = await canonicalPreviewHref(
+      "/theme-preview/songoskriti?template=archive",
+    );
+    // … the route's OWN validation of that URL still carries the request …
+    const validated = validate(searchOf(canonical));
+    expect(validated.unsupportedTemplate).toBe("archive");
+    expect(validated.template).toBeUndefined();
+    // … the route hands it to the host (its own wiring, read from source) …
+    expect(ROUTE_SRC).toContain(
+      "(initialTemplate ?? unsupportedTemplate) as TemplateKey | undefined",
+    );
+    const requested = (validated.template ??
+      validated.unsupportedTemplate) as string;
+    expect(requested).toBe("archive");
+    // … and the host renders the explicit unsupported state, NOT the
+    // homepage composition.
+    const html = render(requested);
+    expect(html).toContain("This template is not supported by this theme");
+    expect(html).toContain("archive");
+    expect(html).toContain('href="/"');
+    expect(
+      html,
+      "the homepage body must not render in its place",
+    ).not.toContain(HOME_MARKER);
+  });
+
+  it("the homepage body is what the BARE path serves — the state that was live", () => {
+    // The defect, stated as a fact the fix must keep true: the bare path
+    // (the canonical URL the OLD validation produced) renders the homepage
+    // composition, NOT the panel. If this ever changes, the redirect the
+    // fix replaced was pointing somewhere else.
+    const home = render("index");
+    expect(home).toContain(HOME_MARKER);
+    expect(home).not.toContain("This template is not supported by this theme");
   });
 });

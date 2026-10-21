@@ -2293,3 +2293,246 @@ it. **It is NOT fixed in this round**: the fix needs both
 sentence **in** the preview), and **neither file is in this round's owner-approved
 set** (§(m.3)). It is recorded as an **OPEN** residual in the evidence record's
 §(G.3) with the exact line and what a fix would need.
+
+---
+
+## (n) The URL the server SERVES — the canonicalisation that swallowed the request _(appended 2026-10-21 by the closing round)_
+
+**Appended, not a rewrite: sections (a)–(m) stand as written.** §(m) fixed the
+**chain inside one process** — the route's search validation carries the
+requested key and the route hands it to the host. This section records the
+defect that survived that fix: the **URL the server actually served** did
+not carry the request, so the live build answered `?template=archive` with a
+**307 to the bare path**, and the bare path renders the **homepage
+composition**. The evidence record's §(B) archive row therefore still stood
+on a claim the live build did not deliver.
+
+### (n.1) The finding — the request reached the host, the URL did not
+
+§(m.5)'s nine cases all exercise the search **inside one process**: the
+route's own `validateSearch`, then the key handed to the host. **None of
+them is the URL the server answers with.** TanStack Router validates a
+route's search **more than once per request**, and the SSR canonicalisation
+answers with a **redirect to the canonical URL** whenever the canonical URL
+differs from the requested one. §(m)'s validation was **not idempotent**, so
+the second pass dropped the very key §(m) had added, the canonical URL came
+out as the **bare path**, and the router redirected there.
+
+**Measured on the live build at `bd52c246` (2026-10-21):**
+
+```
+GET https://framique.qubickle.com/theme-preview/songoskriti?template=archive
+→ HTTP/2 307
+  location: /theme-preview/songoskriti          ← the bare path, every query param dropped
+→ followed: 200, 204 824 bytes
+  "This template is not supported by this theme"  × 0
+  "hero-festive" (the homepage body's own marker) × 5
+```
+
+The same for `?unsupportedTemplate=archive` (307 → bare path → homepage).
+**Reproduced locally** on a loopback dev server (`node_modules/.bin/vite dev
+--port 3111`): identical 307, identical `location: /theme-preview/songoskriti`,
+identical homepage body (196 588 bytes locally, the panel heading zero times).
+**So the redirector is NOT the platform host edge** (`src/server.ts`,
+`src/lib/storefront-host.server.ts` — both §7-prohibited and both untouched
+here): the edge's `/theme-preview/*` rule (`src/lib/storefront-host.server.ts`,
+`isBlockedThemePreview`) answers a **bare 404** for a non-allowed host and
+never redirects, and the platform host `framique.qubickle.com` is allowed
+(`PLATFORM_EXACT`).
+
+### (n.2) The redirector — file:line and the rule
+
+**`node_modules/@tanstack/router-core/dist/esm/load-server.js:546-557`** (the
+`loadServerRoute` function), on `@tanstack/router-core@1.171.35` (the
+dependency of `@tanstack/react-router@1.170.42`):
+
+```js
+const canonical = router.buildLocation({
+    to: next.pathname,
+    search: true,
+    params: true,
+    hash: true,
+    state: true,
+    _includeValidateSearch: true
+});
+if (next.publicHref !== canonical.publicHref) {
+    const href = canonical.publicHref || "/";
+    throw redirect({ href });
+}
+```
+
+**The rule: the server serves the CANONICAL URL, and answers a 307 to it
+when the canonical URL differs from the requested one** (the default redirect
+status is **307** — `node_modules/@tanstack/router-core/dist/esm/redirect.js:20`).
+The canonical URL's search string is built from the route's **validated**
+search, and the route's `validateSearch` is applied **twice** to it:
+
+| # | where | what it does |
+| - | ----- | ------------ |
+| 1 | `node_modules/@tanstack/router-core/dist/esm/router.js:791` (`matchRoutesLightweight`) | folds `validateSearch` into the **accumulated** search — the **first** validation |
+| 2 | `node_modules/@tanstack/router-core/dist/esm/router.js:315` + `:915-929` (`getSearchMiddlewares` → the `validate` middleware, reached because `buildLocation` is called with `_includeValidateSearch: true`) | runs `validateSearch` over that **already-validated** search — the **second** validation |
+
+The second pass saw `template: undefined` (the first pass had already
+resolved the unknown key `"archive"` to "not a template key") and, because
+§(m)'s `validateThemePreviewSearch` read **only** `search.template`
+(`src/lib/theme-preview-nav.ts:301-302` before this round), it produced
+`unsupportedTemplate: undefined` as well. The canonical search string was
+therefore **empty** (`undefined` values are dropped by the encoder,
+`node_modules/@tanstack/router-core/dist/esm/qss.js:25-32`), the canonical URL
+was the **bare path**, and the bare path renders the homepage composition.
+
+**The defect is a NON-IDEMPOTENT search validation, not a missing feature.**
+The route, the host, the panel and the key all existed and worked; the
+**URL** did not.
+
+### (n.3) The fix — the exact hunk, and the file set
+
+**One file, and it is inside the owner-approved set**
+(`src/lib/theme-preview-nav.ts` — the search engine §(m) already edited, so
+**no new file is escalated and no §7-prohibited file is touched**):
+
+```diff
+-  const rawTemplate =
+-    typeof search.template === "string" ? search.template : "";
++  // The requested key is read from `template` OR from the carried
++  // `unsupportedTemplate` — the validation MUST be IDEMPOTENT.
++  // … (the full rationale is in the file)
++  const rawTemplate =
++    typeof search.template === "string"
++      ? search.template
++      : typeof search.unsupportedTemplate === "string"
++        ? search.unsupportedTemplate
++        : "";
+   const template = (TEMPLATE_KEYS as readonly string[]).includes(rawTemplate)
+     ? (rawTemplate as TemplateKey)
+     : undefined;
+```
+
+`template` keeps its meaning (**a key the platform knows** — the existing pin
+`src/lib/theme-preview-nav.test.ts:610-612` still holds unchanged), and the
+carried request is read **back** when `template` is absent. The validation is
+now a **fixed point**:
+
+| pass | input | output |
+| ---- | ----- | ------ |
+| 1 (the request) | `{template: "archive"}` | `{template: undefined, unsupportedTemplate: "archive"}` |
+| 2 (the canonicalisation) | the pass-1 output | `{template: undefined, unsupportedTemplate: "archive"}` — **unchanged** |
+
+**Measured after the fix** (the same loopback dev server, same URL):
+
+```
+GET /theme-preview/songoskriti?template=archive
+→ 307  location: /theme-preview/songoskriti?unsupportedTemplate=archive
+→ followed: 200, 7 683 bytes
+  "This template is not supported by this theme"  × 1
+  "The requested template key is"                 × 1   (the key "archive" is named)
+  "hero-festive"                                  × 0   (the homepage body is NOT rendered)
+
+GET /theme-preview/songoskriti?unsupportedTemplate=archive → 200, 7 683 bytes, the panel (×1)
+GET /theme-preview/songoskriti?template=index             → 200 (no redirect)
+GET /theme-preview/songoskriti?template=search            → 200 (no redirect)
+GET /theme-preview/songoskriti                           → 200 (no redirect)
+```
+
+**The nine authored keys are untouched**: their canonical URL is **themselves**
+(measured by the new suite's fourth case), so no known template gains a
+redirect.
+
+### (n.4) The proof — six cases that fail without the fix
+
+`src/lib/themes/songoskriti/unsupported-template-state.test.tsx` (the suite
+§(m.5) created) grows from **9** to **15** cases. The six new ones are the
+**route's canonicalisation**, reproduced with the **real router** — the same
+`createRouter` the app runs, a synthetic root + the preview route, and the
+**route module's own** `Route.options.validateSearch` — so the decision the
+test makes is the decision the server makes:
+
+| # | case | what it pins |
+| - | ---- | ------------ |
+| 10 | the search validation is **idempotent** — the request survives a second pass | `validateThemePreviewSearch(validateThemePreviewSearch({template:"archive"}))` still carries `"archive"` (and a third pass is identical) |
+| 11 | the **canonical URL carries the request** — it is not the bare path | the router's canonical URL for `?template=archive` is **not** `/theme-preview/songoskriti` and **does** contain `unsupportedTemplate=archive` |
+| 12 | the canonical URL is a **fixed point** — the request is answered, not looped | asking for the canonical URL returns the canonical URL (no redirect loop) |
+| 13 | a template the theme authors is **not canonicalised at all** | `?template=search|index|product|collection` → the canonical URL is **itself** |
+| 14 | **`?template=archive` renders the unsupported panel THROUGH the route** | the canonical URL → the route's own `validateSearch` → `template ?? unsupportedTemplate` → the host: the panel's heading, the **named key**, `href="/"`, and **no** homepage body |
+| 15 | the homepage body is what the **bare path** serves | the bare path renders the homepage composition and **not** the panel — the state that was live |
+
+**Measured:** the suite is **15/15 green** with the fix and **fails 3 of the
+15** with the validator reverted to §(m)'s version (cases **10**, **11** and
+**14** — the idempotency, the canonical URL and the route-level render). The
+other three new cases are facts that hold in both trees (the fixed point of
+the *known* keys, the bare path's homepage body) and are there to keep the
+truth pinned.
+
+### (n.5) The residual — one canonical hop remains, and why it stays
+
+The natural URL `?template=archive` is answered with **one 307** to the
+canonical URL `?unsupportedTemplate=archive`, which serves the panel. **The
+hop cannot be removed** without breaking the recorded contract and an
+existing pin:
+
+- the route's search schema **must** carry the request under
+  `unsupportedTemplate` (the split §(m.4) fixed, and the existing case-9 pin
+  `src/lib/themes/songoskriti/unsupported-template-state.test.tsx` asserts the
+  route's own `validateSearch` carries it), so the canonical search string
+  necessarily contains `unsupportedTemplate=archive`;
+- the canonical search string is built from the **validated** search, so it
+  can equal the requested `?template=archive` **only** if `template` itself
+  holds the unknown key — which would break the existing pin
+  `src/lib/theme-preview-nav.test.ts:610-612`
+  (`validateThemePreviewSearch({template: "nope"}).template` must be
+  `undefined`) and would contradict §(m.4)'s design.
+
+So the **explicit unsupported state is what the preview renders** (the panel,
+naming the key, linking back to the home tab) and **not** the homepage — which
+is §(l.1)'s contract — but the URL the request settles on is the canonical
+one. **The homepage composition is gone from this path**: the bare path is no
+longer the canonical answer for an unknown `?template=`.
+
+### (n.6) An OPEN finding measured on the way — `?max=` is dropped by the same canonicalisation
+
+The **same** canonicalisation drops a search key the route's own comment
+promises to keep. Measured on the **live** build and on the pre-fix local
+tree (and unchanged by this round — it fails identically with the validator
+reverted, so it is **pre-existing** and **not** part of this defect):
+
+```
+GET https://framique.qubickle.com/theme-preview/songoskriti?template=search&max=99900
+→ 307  location: /theme-preview/songoskriti?template=search      ← `max` dropped
+```
+
+**Cause:** the router's default `parseSearch`
+(`node_modules/@tanstack/router-core/dist/esm/searchParams.js:5`,
+`parseSearchWith(JSON.parse)` + `toValue` in `qss.js:41-46`) parses
+`max=99900` as the **number** `99900`, and `validateThemePreviewSearch`
+accepts `max` only when it is a **string**
+(`src/lib/theme-preview-nav.ts:354-357`), so the second validation drops it.
+The route's comment
+(`src/routes/theme-preview.$key.tsx:161-163`, "so refresh keeps
+`?template=search&max=99900` instead of dropping it") is therefore **not**
+true of the served URL.
+
+**It is NOT fixed in this round** — it is a **different contract** (the
+preserved search keys, not the unsupported state), it would change a
+documented search shape, and no pin covers it. It is recorded as an **OPEN**
+item in the evidence record's §(J.3) with the exact cause and what a fix
+would need (the validator must accept the number the router parses, or the
+route must read `max` from the raw query rather than from the validated
+search). **This round's suite deliberately does NOT pin it**, so a future fix
+flips a test rather than silently changing behaviour.
+
+### (n.7) The live truth, and what deployment changes
+
+This round's fix is **committed in the tree**; the **live build is still the
+old one** (`bd52c246`) until the branch is deployed. Measured at the time of
+writing:
+
+| build | `GET /theme-preview/songoskriti?template=archive` |
+| ----- | ------------------------------------------------- |
+| **live** (`bd52c246`, the old build) | **307 → `/theme-preview/songoskriti`** → 200, 204 824 bytes, the **homepage** body (the panel heading ×0) |
+| **this tree** (the fix, measured on a loopback dev server) | **307 → `/theme-preview/songoskriti?unsupportedTemplate=archive`** → 200, 7 683 bytes, the **panel** (the heading ×1, the key named, the homepage body ×0) |
+
+The evidence record's §(B) archive row and its §(J) section carry the same
+statement. **No ✅ stands on a claim the live build does not deliver**: the
+row says, in the cell, that the state is user-visible **from this commit
+onwards** and that the live build at `bd52c246` still serves the homepage
+for that URL.
