@@ -2012,3 +2012,284 @@ the frame rendered exactly as before; with an authored but **empty** body the fr
 still rendered the platform's own "No sections authored for this template." copy — the
 panel is shown only when the template is **unauthored**. The scratch run reported
 `Test Files 1 passed (1)` / `Tests 3 passed (3)`.
+
+---
+
+## (m) The final-review fix round — the unsupported state must be REACHABLE _(appended 2026-10-21 by the final fix round)_
+
+**Appended, not a rewrite: sections (a)–(l) stand as written.** §(l) recorded the
+archive contract and the panel; this section records the escalation for the fix that
+makes §(l.1)'s claim **true in the shipped tree** rather than true only on paper.
+
+### (m.1) The finding — §(l.1)'s claim was FALSE in the tree it shipped with
+
+§(l.1) says the preview must **say so explicitly** rather than redirect to the
+homepage, and §(l.2)/(l.3) built the panel. The **evidence** record's §(B) row
+("Archive has an explicit contract and route mapping") then carried a ✅ that claimed
+the unsupported state is what an unsupported template produces. **Two** things made that
+false, and both were measured on the tree at `a6d2c947`:
+
+1. **The route's search validation DROPPED the unknown key.**
+   `validateThemePreviewSearch` (`src/lib/theme-preview-nav.ts:256-300`) resolves
+   `?template=` only against `TEMPLATE_KEYS` (`:264-268`); anything else became
+   `undefined`. The route passes that value straight to the host as `initialTemplate`
+   (`src/routes/theme-preview.$key.tsx:162-163`, `:245`), and the host falls back to
+   `"index"` when it is absent (`src/components/store/ThemePreviewFrame.tsx:512`).
+   `?template=archive` therefore never reached the host at all — it landed on the
+   homepage, exactly what the contract forbids.
+2. **The host's unsupported branch could not fire.** The host computes its state
+   from a **missing** key — `const authored = templatesByKey[template]; const
+   unsupported = authored === undefined;` (`src/components/store/ThemePreviewFrame.tsx:575-578`),
+   consumed at `:935-937` — and the engine assembles a body for **every one** of the
+   nine `TEMPLATE_KEYS` (`assemblePreviewTemplates`, `src/lib/theme-preview-nav.ts:380-405`,
+   the generic synthesis at `:357-372`). So the only key the route could ever hand the
+   host was one the engine had already given a body: **the panel was dead code.**
+
+§(l.4)'s own note shows the gap was visible at the time — the panel's render was
+verified with a **scratch** `templates` map that was missing the key, "deleted after
+the run and **not** part of this commit". The **URL** path was never exercised.
+
+### (m.2) The standing instruction this fix acts under
+
+The owner's standing instruction on this programme is _"as per the expert opinion,
+whatever goes"_, and the expert's archive item (item 5) says: _"unsupported routes
+must not silently redirect to the homepage"_. The fix is therefore **to make the claim
+true**, not to soften the row to "partially met": an unknown `?template=` must reach
+the preview host and must render the **explicit unsupported state** — the panel that
+names the key and links back to the home tab — and **not** the homepage composition.
+
+### (m.3) The file set — the MINIMUM, measured before the edit
+
+Two files, both §7-prohibited, both escalated here:
+
+| file                                | why it must change                                                                                                                                                                                                                                                                                                                                              | what changes                                                                                                                                              |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/lib/theme-preview-nav.ts`      | it is where the unknown key is dropped (`validateThemePreviewSearch`, `:264-268`) and where the switch updater writes the URL (`previewSearchForSwitch`, `:235-249`)                                                                                                                                                                                  | the validation **carries** the requested key (bounded, key-shaped) instead of dropping it; the switch updater clears it again |
+| `src/routes/theme-preview.$key.tsx` | it is the route that owns the search validation (`:162-163`) and the one that hands the key to the host (`:245`)                                                                                                                                                                                                                                                 | the route hands the **requested** key to the host, so the host can answer it                                   |
+
+**Deliberately NOT changed, and why.** `src/components/store/ThemePreviewFrame.tsx`
+needs **no** edit: it already resolves the requested key against the theme's authored
+bodies and computes the unsupported state from a missing key (`:575-578`). The route
+passing the requested key is enough to make that branch live. `assemblePreviewTemplates`
+needs **no** edit either: it synthesises a body for the **nine known** keys, and an
+**unknown** key is by definition absent from the assembled map — which is exactly the
+"missing key" the host turns into the panel. `src/lib/builder-ast.ts`,
+`src/lib/storefront.functions.ts`, `src/lib/theme-package.ts`, `src/lib/widget-weight.ts`,
+`src/lib/builder-seo.ts`, `src/components/builder/BuilderTopBar.tsx` and every other
+route stay untouched: **no `archive` key is added**, so `TEMPLATE_KEYS`, `TEMPLATE_ZONES`,
+the 41 catalogue allowlists, the hand-written `z.enum` and the editor/SEO/weight maps are
+all as they were.
+
+**One new file** (not an edit): `src/lib/themes/songoskriti/unsupported-template-state.test.tsx`
+— §7's carve-out is "NEW test/fixture files", and it lives under §7's **Editable**
+`src/lib/themes/songoskriti/**` path. It is the proof that the state is reachable; see
+§(m.5).
+
+### (m.4) The exact hunks
+
+**Hunk 1 — `src/lib/theme-preview-nav.ts`, the bound on a requested key** (new
+constants, immediately above `validateThemePreviewSearch`):
+
+```ts
+/**
+ * The longest template key the preview accepts from the URL.
+ *
+ * A template key is a short token; anything longer is not a key a merchant
+ * could have typed, and the preview never echoes it back into the canvas.
+ */
+const PREVIEW_TEMPLATE_KEY_LIMIT = 64;
+
+/**
+ * A key-shaped template token: alphanumerics, dashes and underscores.
+ *
+ * The preview host PRINTS the requested key inside the unsupported panel
+ * (`src/components/store/ThemePreviewFrame.tsx:136-151`), so the value that
+ * reaches it is bounded and key-shaped — never markup, never an unbounded
+ * string.
+ */
+const PREVIEW_TEMPLATE_KEY_RE = /^[A-Za-z0-9][A-Za-z0-9_-]*$/;
+```
+
+**Hunk 2 — `src/lib/theme-preview-nav.ts`, the validation carries the request**
+(`validateThemePreviewSearch`, `:256-300`):
+
+```diff
+ export function validateThemePreviewSearch(search: Record<string, unknown>): {
+   template: TemplateKey | undefined;
++  /**
++   * The REQUESTED template key when it is NOT one of the nine template keys.
++   *
++   * D1 (Option A): an unsupported template is an EXPLICIT state, never a
++   * silent homepage redirect. The key therefore has to REACH the preview
++   * host, which resolves it against the theme's authored bodies and renders
++   * the named "not supported by this theme" panel for a key it does not have
++   * (`src/components/store/ThemePreviewFrame.tsx:575-578`). `template` above
++   * keeps its meaning — a key the platform knows — and this field carries
++   * the request the platform does not know. It is OPTIONAL in the type (like
++   * `variation` and `mock_order`) so the routes that navigate INTO the
++   * preview with a known template keep their own search shape.
++   */
++  unsupportedTemplate?: string | undefined;
+   focus: string | undefined;
+   q: string | undefined;
+   max: string | undefined;
+   variation?: string | undefined;
+   mock_order?: "success" | "pending" | "failed";
+ } {
+-  const template =
+-    typeof search.template === "string" &&
+-    (TEMPLATE_KEYS as readonly string[]).includes(search.template)
+-      ? (search.template as TemplateKey)
+-      : undefined;
++  const rawTemplate = typeof search.template === "string" ? search.template : "";
++  const template = (TEMPLATE_KEYS as readonly string[]).includes(rawTemplate)
++    ? (rawTemplate as TemplateKey)
++    : undefined;
+   return {
+     template,
++    unsupportedTemplate:
++      template === undefined &&
++      rawTemplate.length > 0 &&
++      rawTemplate.length <= PREVIEW_TEMPLATE_KEY_LIMIT &&
++      PREVIEW_TEMPLATE_KEY_RE.test(rawTemplate)
++        ? rawTemplate
++        : undefined,
+     focus:
+```
+
+**The two routes that navigate INTO the preview are untouched.** `src/routes/c.$collectionSlug.tsx`
+and `src/routes/p.$productSlug.tsx` build a search object for
+`/theme-preview/$key`; the field is **optional** in the type precisely so those two
+§7-prohibited files keep their own search shape and **no edit outside this
+round's two files is needed** (`node_modules/.bin/tsgo --noEmit` → no output).
+
+**Hunk 3 — `src/lib/theme-preview-nav.ts`, the switch updater ends the request**
+(`previewSearchForSwitch`, `:235-249`):
+
+```diff
+ /**
+  * Search updater for the preview frame's `navigate({ to: ".", search })`:
+  * writes the focused slug under the `?focus=` contract (never `?slug=` —
+  * merchant-less redirects use `focus`), writes the parsed query as
+  * separate keys (never the raw string as `q`), clears `q`/`max` when
+  * leaving the search template so a previous `/search?max=…` click does not
+- * leak into collection/product URLs.
++ * leak into collection/product URLs, and clears the UNSUPPORTED request
++ * (`unsupportedTemplate`) so an answered request never lingers in the URL.
+  */
+ export function previewSearchForSwitch(
+   template: TemplateKey,
+   focus: string | null,
+   query: string | null,
+   prev: Record<string, unknown>,
+ ): Record<string, unknown> {
+   return {
+     ...prev,
+     template,
+     ...(focus ? { focus } : { focus: undefined }),
+     ...(template === "search"
+       ? { q: undefined, max: undefined, ...parsePreviewSearchQuery(query) }
+       : { q: undefined, max: undefined }),
++    // Switching to a template ENDS the unsupported request: the visitor is
++    // on a template the theme authors, so the key they asked for is
++    // answered and must not linger in the URL.
++    unsupportedTemplate: undefined,
+   };
+ }
+```
+
+**Hunk 4 — `src/routes/theme-preview.$key.tsx`, the route hands the requested key
+to the host** (`:208-251`):
+
+```diff
++import type { TemplateKey } from "@/lib/builder-ast";
++
+ function ThemePreviewRoute() {
+   const { key } = Route.useParams() as RouteParams;
+   const {
+     template: initialTemplate,
++    unsupportedTemplate,
+     focus: initialFocus,
+     mock_order: initialMockOrder,
+     variation: variationKey,
+   } = Route.useSearch();
+@@
+       tokens={preset.tokens}
+       templates={preset.templates}
+-      initialTemplate={initialTemplate}
++      // D1 (Option A) — an UNSUPPORTED template key reaches the host so the
++      // canvas renders the explicit "not supported by this theme" state
++      // instead of the homepage body. The host's prop is typed `TemplateKey`
++      // and the key it receives here may be an unknown one; the host's own
++      // lookup is a PARTIAL map (`templatesByKey[template]` → `undefined` for
++      // a key the theme does not author) and it computes the unsupported
++      // state from exactly that, so the runtime behaviour is the host's.
++      initialTemplate={
++        (initialTemplate ?? unsupportedTemplate) as TemplateKey | undefined
++      }
+       initialFocus={initialFocus}
+```
+
+### (m.5) The proof — a test that exercises the URL path, not a scratch map
+
+`src/lib/themes/songoskriti/unsupported-template-state.test.tsx` (NEW) proves the
+chain the §(l.4) scratch run never did. Its **nine** cases:
+
+1. **the route's search validation carries the key** —
+   `validateThemePreviewSearch({ template: "archive" })` returns
+   `unsupportedTemplate: "archive"` (and `template: undefined`, the known-key slot is
+   unchanged), so the request is no longer dropped;
+2. **the requested key is bounded** — markup, a 65-character string and `""` are
+   **not** carried (the host PRINTS the key), a 64-character key is;
+3. **the key reaches the host and the panel renders** — the host is rendered with
+   the requested key and the markup carries the panel's heading
+   ("This template is not supported by this theme"), the **named key** (`archive`) and
+   the home link (`href="/"`, "Back to the home tab");
+4. **the homepage body does NOT render in its place** — the same host rendered with
+   the `index` template carries the homepage's own copy, and the unsupported render
+   does **not**;
+5. **the state carries no demo copy** — none of `"Demo page"`, `"Demo search"`,
+   `"Meet the makers"`, `"Sample product"`, `"Demo"` reaches the panel (the engine's
+   generic body at `src/lib/theme-preview-nav.ts:367` is a **different** surface: it
+   is the body of a **known** key a theme did not author, and it is not what an
+   **unknown** key renders);
+6. **the nine authored keys still render their own bodies** — the fix must not
+   change an authored template;
+7. **the assembled map carries the nine keys and not the requested one** — the
+   engine synthesises a body for every key it KNOWS, and the requested key is absent
+   from the map, which is what the host turns into the panel;
+8. **the request ends with the visit** — `previewSearchForSwitch` clears it, so the
+   URL carries no stale request after a switch;
+9. **the route's wiring** — the **route module's own** `Route.options.validateSearch`
+   is imported and asserted to carry the key, and the route's source is asserted to
+   hand it to the host (the route module's import is the precedent of
+   `src/lib/media.serve.test.ts`).
+
+**The suite fails without the fix** (measured): with the engine's carry reverted,
+**6 of the 9 cases fail** (`Tests 6 failed | 3 passed (9)`), including the
+route-module case.
+
+### (m.6) The §(e) scope note — the governing statement
+
+**§(e) still reads "This record escalates exactly four existing files"**; that was
+true when it was written and it was widened twice since — §(j.4) and §(j.7) (the
+owner's ruling of 2026-10-20) took Decision **D4** to **six** files, and §(k) added
+the search route's real hunk. **The governing statement for the file set is therefore
+§(j.7) — "six D4 files, two theme-owned files, one new-suite file" — plus §(m.3)
+above, which names this round's two prohibited files and one new test file.**
+**§(e) is not rewritten** (this record is append-only); this note is the correction.
+
+### (m.7) The residual this round did NOT fix
+
+The `product` body's line — _"Sample product page — prices and stock are sample
+data, and ordering is disabled in the preview."_ (`src/lib/themes/songoskriti/preview.ts:192`)
+— sits in the **seeded** template (the preview's bodies are what
+`registryPackage` installs for a merchant, `src/lib/themes.server.ts:1163-1169`), and
+the clause "ordering is disabled in the preview" is true **only** in the preview. The
+gate's `R4-no-demo-copy` rule is scoped to the `page` template, so nothing catches
+it. **It is NOT fixed in this round**: the fix needs both
+`src/lib/themes/songoskriti/preview.ts` (the seeded body) and
+`src/components/store/ThemePreviewFrame.tsx` (the preview host, to render the
+sentence **in** the preview), and **neither file is in this round's owner-approved
+set** (§(m.3)). It is recorded as an **OPEN** residual in the evidence record's
+§(G.3) with the exact line and what a fix would need.
