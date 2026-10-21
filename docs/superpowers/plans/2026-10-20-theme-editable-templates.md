@@ -38,7 +38,7 @@ The audit's Phase 1 is right about the defect and about the fix location. Five s
 
    Additionally, the plan's own theme test calls `lintTemplate(ast, "page")` **with** the key (Task 2, assertion 3), so the plan's contract is the correct one; the defect is confined to the two key-less call sites named above.
 
-Additionally, the audit's claim that the theme's page main is "generic" is now measurable rather than rhetorical: the current page main's section types (`["heading", "rich_text"]`) are **identical** to the engine's `genericDemoMain("page", …)` body (`src/lib/theme-preview-nav.ts:357-372`). The new test pins that inequality.
+Additionally, the audit's claim that the theme's page main is "generic" is now measurable rather than rhetorical: the current page main's section types (`["heading", "rich_text"]`) are **identical** to the engine's `genericDemoMain("page", …)` body (`src/lib/theme-preview-nav.ts:396-440`). The new test pins that inequality.
 
 ---
 
@@ -91,7 +91,7 @@ These five decisions are the human's, not the engineer's. Each is a **scope boun
 
 **D3 — Songoskriti only, or both official themes?**
 *Question:* Is the deliverable "Songoskriti is a working end-to-end CMS capability" (9 bodies) or "every official theme ships every template" (18 bodies)?
-*Evidence that settles it:* `OFFICIAL_THEME_KEYS = ["songoskriti", "somvabona"]` (`src/lib/themes/builtin-themes.ts:15`, *"this map is the ONLY place that names official themes for identity"*). Somvabona authors **no** non-homepage template — its `preview.ts` has no `case "search"` — so its six secondary surfaces fall through to the engine's generic demo body (`src/lib/theme-preview-nav.ts:357-372`, *"Demo page. The live theme authors this template — what you see here is the engine fallback."*).
+*Evidence that settles it:* `OFFICIAL_THEME_KEYS = ["songoskriti", "somvabona"]` (`src/lib/themes/builtin-themes.ts:15`, *"this map is the ONLY place that names official themes for identity"*). Somvabona authors **no** non-homepage template — its `preview.ts` has no `case "search"` — so its six secondary surfaces fall through to the engine's generic demo body (`src/lib/theme-preview-nav.ts:396-440`, *"Demo page. The live theme authors this template — what you see here is the engine fallback."*).
 *Unlocks:* Phase 2 (real Songoskriti bodies) and its size.
 
 **D4 — Does port spec §7 still govern this Frame30 work?**
@@ -101,7 +101,7 @@ These five decisions are the human's, not the engineer's. Each is a **scope boun
 
 **Status (2026-10-20, after the close-out commits) — both boundary-limited consequences are CLOSED.** The boundary cost recorded above was paid by narrow, owner-approved escalations of the same kind the Task-1 record names, not by a loosened rule: (a) the `lintTemplate` template-key defect is closed by `74b7f2b5`, which passes the template key at both call sites — `src/hooks/use-builder-editor.ts` and `src/lib/themes.server.ts` — so a route-owned-h1 template (product, collection, account, page, blog, search) is no longer told "No primary heading on this template." while a template that owns its `<h1>` and has none still warns with the identical issue; (b) and (c) the lost sibling-page nav and the empty 15rem gutter are closed by `15ba404a`, which renders the nav inside the `page_content` slot value and gives the themed path a single-column container (`src/components/store/PageView.tsx`), and which lifts the "does the theme render the body" predicate into the NEW `src/lib/theme-body-slot.ts` so `src/components/store/ThemeChrome.tsx` and `src/components/store/PageView.tsx` cannot drift apart; `029b1b5e` then spaced that nav away from the merchant's article (`src/components/store/PageView.tsx`). The reasoning above stands as the record of what the boundary cost; the commits are the payment.
 
-**D4's own question is still open** for Phases 2–5: the Phase-1 exception was a one-off, not a precedent, and the later phases still need core and route edits. The _before any merchant activates Songoskriti_ trigger that the close-out carried on the two introduced consequences is discharged for both of them, and now applies to the two items that remain — D4's ruling for the later phases, and the parity re-freeze, whose own tighter trigger is _before the next owner-run parity pass_ (recorded in `docs/superpowers/songoskriti-evidence/port/phase1-page-content-evidence.md`, §D). The sibling decisions — D1 (archive semantics), D2 (checkout themability), D3 (Songoskriti only or both official themes) and D5 (the blog's themeless-by-design) — stay open and unchanged: they are the owner's calls.
+**D4's own question is still open** for Phases 2–5: the Phase-1 exception was a one-off, not a precedent, and the later phases still need core and route edits. The _before any merchant activates Songoskriti_ trigger that the close-out carried on the two introduced consequences is discharged for both of them, and now applies to the two items that remain — D4's ruling for the later phases, and the parity re-freeze, whose own tighter trigger is _before the next owner-run parity pass_ (recorded in `docs/superpowers/songoskriti-evidence/port/phase1-page-content-evidence.md`, §D). The sibling decisions — D1 (archive semantics), D2 (checkout themability), D3 (Songoskriti only or both official themes), D5 (the blog's themeless-by-design) and D7 (the storefront's widget-data delivery) — **are no longer open**: every one of them has been **RULED**, and the **amendment at the end of this Decision Gate** carries each ruling with its reason and where the full record lives. (The sentence this amendment supersedes read: *"…stay open and unchanged: they are the owner's calls."*)
 
 > **AMENDED 2026-10-21 (closing wave B) — the parity re-freeze is DONE, and the storefront path is VERIFIED.**
 > The re-freeze named above as an owner action was carried out, on the repo's own **throwaway** stack (`docker-compose.e2e.yml` + `docs/15-e2e/loopback-auth-setup.md` §§1–3) so that no production merchant could be touched: the read-only determination behind that choice is in the evidence record's **§(L.1)** (the `.env.local` "hosted project" is a **placeholder** that resolves nowhere, and the database the harness's mutating path uses is `.env`'s `https://framebase.qubickle.com` → the **`framique-supabase-db` container — production**), the run and the measured 118-file diff are in **§(L.3)**, and the storefront check — the first time a real Songoskriti store served a real CMS page — is in **§(L.4)**. The 42 stale captures / 84 files are re-frozen; `index` and `collection` are byte-identical. The escalation record's **§(p)** carries the same, with the standing instruction for the next owner run: **a disposable store on a development database, never a production merchant.**
@@ -112,24 +112,141 @@ These five decisions are the human's, not the engineer's. Each is a **scope boun
 *Evidence that settles it:* `src/components/store/BlogArchiveTheme.tsx:1-9` — *"Themeless reader blog (theme purge Task 3). Renders the live articles with default chrome — no theme blog template, no preset tokens. … the render stays generic for every key by design — pinned in BlogArchiveTheme.test.tsx."* — and the test that pins it: `src/components/store/BlogArchiveTheme.test.tsx:82` — *"forwards themeKey to ThemeChrome with zero behavioral change (generic by design)"*. `grep -rn 'template="blog"' src/routes/` returns **nothing**: the `blog` template is authored, seeded, previewable, linted — and rendered by no route.
 *Unlocks:* Phase 2 (the storefront blog route wearing the theme's `blog` template and the existing `blog_archive` / `blog_terms` / `blog_pager` pack). If the answer is "themeless stays", the `blog` key is documentation, not a surface, and `docs/themes/creation.md:36` must be corrected to match.
 
+### AMENDED 2026-10-21 (closing wave A) — D2, D3, D5 and D7 are RULED; this Decision Gate no longer holds them open
+
+**The sentence this amendment supersedes** — the last line of the **D4** entry
+above — read: *"The sibling decisions — D1 (archive semantics), D2 (checkout
+themability), D3 (Songoskriti only or both official themes) and D5 (the blog's
+themeless-by-design) — stay open and unchanged: they are the owner's calls."*
+**That is no longer true.** The closing wave A ruled **D2**, **D3**, **D5** and
+**D7** on **2026-10-21**; **D1** was ruled earlier (Option A) and **D4** is
+ruled (the port's §7 is relaxed for this programme for exactly four named
+files). The four rulings are mirrored here with their reason; the phase-2
+plan's Decision Gate
+(`docs/superpowers/plans/2026-10-20-songoskriti-template-completeness.md`)
+carries the same four with their full follow-up paths, and the evidence
+record's **§(K.3)** carries each one in full.
+
+- **D2 — the production checkout: RULED — production checkout stays
+  platform-owned.** The theme contributes **tokens** only; the platform's own
+  form, the server-authoritative totals, the validation, the payment selection
+  and the order state remain the platform's. The theme's `checkout` composition
+  is an **authoring and preview** surface, not a production checkout shell.
+  **Reason:** the form is server-quoted (`quoteCart`, the server's rails, the
+  server-side validation and order write), so a theme composing the shell would
+  put theme code between the shopper and the server's authoritative money,
+  payment and order state. **Follow-up:** a theme-composed checkout shell needs
+  its **own escalation** and its own §7 widening — explicitly out of this
+  programme's scope. **Where the full record lives:** the phase-2 plan's **D2**
+  entry; the evidence record's **§(K.3)** D2.
+- **D3 — the programme's scope: RULED — Songoskriti only**, as the expert asked
+  (*"Songoskriti must be the proof"*). The distinctness gate's **machinery**
+  (the seven rules `R1`–`R7`) is theme-agnostic; its **data** is
+  Songoskriti-specific. **Reason:** Somvabona authors **three** surfaces —
+  `index` (through `buildHomepageMain`), `collection` and `product`
+  (`src/lib/themes/somvabona/preview.ts:52-90`) — and its `default:` branch
+  returns `null`, so the other six templates fall through to the engine's
+  **generic** body (`src/lib/theme-preview-nav.ts:396-440`); a gate with no
+  Somvabona expectation table would either fail every Somvabona body or have
+  to be weakened to mean nothing. **Follow-up:** extending the gate to Somvabona
+  **adds its own expectation table** — new data, not new machinery. **Where the
+  full record lives:** the phase-2 plan's **D3** entry; the evidence record's
+  **§(K.3)** D3.
+- **D5 — the storefront reader blog: RULED — "themeless by design" STANDS.**
+  `src/components/store/BlogArchiveTheme.tsx` keeps its deliberate "theme purge
+  Task 3" behaviour, pinned by `src/components/store/BlogArchiveTheme.test.tsx`.
+  The theme's `blog` template is the theme's **editorial composition in the
+  preview** and the **authoring surface**; it is not the storefront's reader.
+  **Reason:** the purge was a deliberate product decision, not an accident, and
+  reversing it is a **product** change with **SEO and canonical implications** —
+  the storefront's blog routes own their canonical policy. **Follow-up:** a
+  **separate product change** (an SEO/canonical review plus the
+  `BlogArchiveTheme` reversal), with its own escalation and its own evidence.
+  **Where the full record lives:** the phase-2 plan's **D5** entry; the evidence
+  record's **§(K.3)** D5.
+- **D7 — the storefront's widget-data delivery: RULED — the storefront keeps not
+  mounting widget data** in this programme. The platform's per-widget data
+  delivery on storefront hosts is a **platform-level feature with its own
+  scope**, and **nothing in this programme depends on it**: the storefront's
+  live search results reach the theme through the route's `productSlot`, not
+  through the widget-data pipeline. The consequence is already stated
+  everywhere it matters — `facet_sidebar` is **preview-only**, and the
+  distinctness gate records `search` as a **documented exception**.
+  **Follow-up:** a **platform-level widget-data delivery epic**; the gate's
+  `search` exception must keep naming D7 while the decision stands.
+  **Where the full record lives:** the phase-2 plan's **D7** entry; the evidence
+  record's **§(K.3)** D7 and **§(G.2)**.
+- **D1 — archive semantics: RULED (Option A) — no `archive` template key.** The
+  archive surface is the blog taxonomy archives, served by the `blog` template
+  and the platform's blog pack; the archive contract is documented, and an
+  unsupported template renders an explicit unsupported state instead of a silent
+  homepage redirect. **Where the full record lives:** the phase-2 plan's **D1**
+  entry; the escalation record's **§(l)**.
+- **D4 — the boundary: RULED — §7 is RELAXED for the phase-2 template-completeness
+  programme, by explicit owner approval, for exactly four narrow exceptions**
+  (the preview host, the two composition pins, the storefront search route, and
+  the archive surface — under D1 that last one is a *permission*, not a
+  change). **Every other §7 prohibition stands**, so a phase that needs a fifth
+  file still needs its own escalation. **Where the full record lives:** the
+  phase-2 plan's **D4** entry.
+
+**Nothing in the plan below changes.** These rulings decide the *later* phases;
+the roadmap below is amended to match.
+
+**Citation corrected 2026-10-21 (record-accuracy pass) — this plan's citations
+of the engine's generic body were wrong.** They read
+`src/lib/theme-preview-nav.ts:357-372` (the **search-param validator** —
+`search.max` and friends) for the generic body, and
+`src/lib/theme-preview-nav.ts:357` for the `genericDemoMain` symbol. The
+generic body is **`src/lib/theme-preview-nav.ts:396-440`** — `GENERIC_TITLES`
+at `:413` and the *"Demo page. The live theme authors this template — what you
+see here is the engine fallback."* body at `:440` — and the `genericDemoMain`
+function itself is at **`:430`** (verified by reading the file at `4206f9a2`).
+This plan's **D3** entry and the other `genericDemoMain` references in it are
+corrected accordingly.
+
 ---
 
 ## Phase Roadmap
 
 The audit's phase order (`docs/superpowers/songoskriti-evidence/port/phase0-implementation-map.md` §8), with the blocked-by decision and the files each phase would touch.
 
-**These phases are not yet planned; each phase gets its own plan after its decision is made.** Phase 1 is the only phase this document plans. **Phase 1 is SHIPPED** — the branch carries it end to end in `18191394..029b1b5e` (13 commits): the theme change, the two pin moves, the preview's demo page body, the publication of this plan with its evidence, and the six close-out commits that closed the two boundary-limited consequences D4 names. The later phases are untouched, and each still waits on its decision.
+**These phases are not yet planned; each phase gets its own plan after its decision is made.** Phase 1 is the only phase this document plans. **Phase 1 is SHIPPED** — the branch carries it end to end in `18191394..029b1b5e` (13 commits): the theme change, the two pin moves, the preview's demo page body, the publication of this plan with its evidence, and the six close-out commits that closed the two boundary-limited consequences D4 names. The later phases were untouched when this plan was written; **the amendment below records which of them have since been ruled on, and which have since shipped.**
 
 | Phase | What it delivers | Blocked by | Files it would touch |
 |---|---|---|---|
 | **1 — Page template** _(this plan — SHIPPED, `18191394..029b1b5e`)_ | Songoskriti's `page` template declares the `page_content` slot and ships no demo copy; the CMS page route and the CMS-designated homepage both render the merchant's real body inside the theme layout; the preview's `?template=page` tab renders a labelled demo body instead of an empty one. | — (none) | `src/lib/themes/songoskriti/preview.ts`; NEW test files; NEW `src/lib/preview-page-data.ts`; NEW `docs/**` evidence; three frozen files (escalation) |
-| **2 — Blog route wears the theme's `blog` template** | The storefront blog listing and article read the theme's `blog` template through the existing `blog_archive` / `blog_terms` / `blog_pager` pack, with the bespoke grid kept as the fallback. | D5 (themeless-by-design), D4 (boundary) | `src/components/store/BlogArchiveTheme.tsx`; `src/routes/store.$slug.blog.index.tsx`; `src/routes/blog.{index,category.$slug,tag.$slug,author.$slug}.tsx` — all prohibited |
-| **3 — Search listing → route-owned context slots** | The live result set is decomposed into per-widget slots (`facet_sidebar`, `filter_chips`, `result_toolbar`, `pagination`, `empty_state` already exist in the catalogue) so a theme can place them. | D4 | `src/routes/store.$slug.search.tsx` — prohibited; new widgets/catalogue entries would need `src/components/builder/widgets.tsx` + `src/lib/builder-ast.ts` — prohibited |
-| **4 — Cart, Account, Checkout real templates** | Real theme bodies for cart/account; a ruling on whether checkout may be authored. | D2 (checkout ruling), D3 (scope) | `src/routes/store.$slug.checkout.tsx` — prohibited; `src/lib/themes/songoskriti/preview.ts` — allowed |
-| **5 — `archive`** | Option A: the blog pack (delivered by Phase 2) satisfies the requirement, zero new keys. Option B: one atomic new key (union + `z.enum` + storage read + a route that reads it + a default body for both official themes). | D1 (archive semantics), D4 | Option B only: `src/lib/builder-ast.ts`; `src/lib/theme-package.ts`; `src/lib/theme-preview-nav.ts`; `src/lib/widget-weight.ts`; `src/components/builder/BuilderTopBar.tsx`; `src/routes/_authenticated/dashboard/builder.tsx`; `src/lib/storefront.functions.ts`; both themes' seeds — all prohibited |
-| **6 — Preview honesty** | The silent `templates[template] ?? templates.index` fallback becomes an explicit unsupported state (`src/components/store/ThemePreviewFrame.tsx:485`); preview data is labelled; the remaining demo providers are added — search results, cart lines/totals, checkout steps, blog articles, archive records, a **second** CMS page fixture and the route-context `breadcrumb` the Phase-1 fixture leaves out. | D4 | `src/components/store/ThemePreviewFrame.tsx`; `src/lib/preview-demo-data.ts` — prohibited; `src/lib/themes/songoskriti/preview.ts` — allowed |
-| **7 — Docs, third-party contract, CI lane** | The canonical docs' template list matches `TEMPLATE_KEYS`; the Songoskriti parity lane is wired into CI or an owner-run note is recorded. | D4 | `docs/themes/creation.md`; `docs/packages/contract.md`; `docs/04-builder/theme-runtime.md`; `docs/themes/packages.md`; `package.json`; `.circleci/config.yml` (wiring-only) — allowed |
-| **X — Distinctness gate** *(cross-cutting, from `docs/superpowers/plans/2026-10-20-theme-editable-templates-brief-review.md` §7 Phase 1)* | A gate that fails when a theme claims a template but ships the shared default, so "theme-owned but generic" cannot recur. It must fail against today's Songoskriti bodies first — a gate that has never failed proves nothing. | D3 (which themes it covers) | NEW test file + a rule module under `src/lib/themes/songoskriti/**` or `scripts/**` — allowed |
+| **2 — Blog route wears the theme's `blog` template** | The storefront blog listing and article read the theme's `blog` template through the existing `blog_archive` / `blog_terms` / `blog_pager` pack, with the bespoke grid kept as the fallback. | **RULED 2026-10-21 — D5 ("themeless by design" stands) and D4 (§7 relaxed for four named files).** The storefront half as written here is **not authorised** under D5; the preview-side blog composition shipped in the phase-2 plan | `src/components/store/BlogArchiveTheme.tsx`; `src/routes/store.$slug.blog.index.tsx`; `src/routes/blog.{index,category.$slug,tag.$slug,author.$slug}.tsx` — all prohibited |
+| **3 — Search listing → route-owned context slots** | The live result set is decomposed into per-widget slots (`facet_sidebar`, `filter_chips`, `result_toolbar`, `pagination`, `empty_state` already exist in the catalogue) so a theme can place them. | **RULED — D4 (§7 relaxed; the search route is one of the four named files) and D6 (State B). SHIPPED** in the phase-2 plan (Task 9, `a6b99445`) | `src/routes/store.$slug.search.tsx` — prohibited; new widgets/catalogue entries would need `src/components/builder/widgets.tsx` + `src/lib/builder-ast.ts` — prohibited |
+| **4 — Cart, Account, Checkout real templates** | Real theme bodies for cart/account; a ruling on whether checkout may be authored. | **RULED 2026-10-21 — D2 (production checkout stays platform-owned) and D3 (Songoskriti only).** The preview-side cart/account/checkout compositions shipped in the phase-2 plan; the production checkout surface is **not authorised** under D2 | `src/routes/store.$slug.checkout.tsx` — prohibited; `src/lib/themes/songoskriti/preview.ts` — allowed |
+| **5 — `archive`** | Option A: the blog pack (delivered by Phase 2) satisfies the requirement, zero new keys. Option B: one atomic new key (union + `z.enum` + storage read + a route that reads it + a default body for both official themes). | **RULED — D1 (Option A: no `archive` key) and D4 (§7 relaxed). SHIPPED** in the phase-2 plan as the documented archive contract (Task 10, `18771e88`) | Option B only: `src/lib/builder-ast.ts`; `src/lib/theme-package.ts`; `src/lib/theme-preview-nav.ts`; `src/lib/widget-weight.ts`; `src/components/builder/BuilderTopBar.tsx`; `src/routes/_authenticated/dashboard/builder.tsx`; `src/lib/storefront.functions.ts`; both themes' seeds — all prohibited |
+| **6 — Preview honesty** | The silent `templates[template] ?? templates.index` fallback becomes an explicit unsupported state (`src/components/store/ThemePreviewFrame.tsx:485`); preview data is labelled; the remaining demo providers are added — search results, cart lines/totals, checkout steps, blog articles, archive records, a **second** CMS page fixture and the route-context `breadcrumb` the Phase-1 fixture leaves out. | **RULED — D4 (§7 relaxed for four named files); this phase's own remaining files still need their own grant** | `src/components/store/ThemePreviewFrame.tsx`; `src/lib/preview-demo-data.ts` — prohibited; `src/lib/themes/songoskriti/preview.ts` — allowed |
+| **7 — Docs, third-party contract, CI lane** | The canonical docs' template list matches `TEMPLATE_KEYS`; the Songoskriti parity lane is wired into CI or an owner-run note is recorded. | **RULED — D4 (§7 relaxed for four named files); the CI lane is still not wired** (the parity suite is in neither `e2e:critical` nor `e2e:security`) | `docs/themes/creation.md`; `docs/packages/contract.md`; `docs/04-builder/theme-runtime.md`; `docs/themes/packages.md`; `package.json`; `.circleci/config.yml` (wiring-only) — allowed |
+| **X — Distinctness gate** *(cross-cutting, from `docs/superpowers/plans/2026-10-20-theme-editable-templates-brief-review.md` §7 Phase 1)* | A gate that fails when a theme claims a template but ships the shared default, so "theme-owned but generic" cannot recur. It must fail against today's Songoskriti bodies first — a gate that has never failed proves nothing. | **RULED 2026-10-21 — D3 (Songoskriti only). SHIPPED** in the phase-2 plan (Task 8, `cc9a8b37` / `b9b2f513`) | NEW test file + a rule module under `src/lib/themes/songoskriti/**` or `scripts/**` — allowed |
+
+**Amended 2026-10-21 (closing wave A) — the "Blocked by" column no longer names
+open decisions.** Every decision this roadmap waited on has since been ruled,
+so a row that still reads *"D5"*, *"D2"*, *"D3"*, *"D1"* or *"D4"* as a
+blocker was naming a decision that no longer blocks anything. The rulings are
+the **AMENDED** block at the end of the Decision Gate above; the phase-2 plan's
+Decision Gate
+(`docs/superpowers/plans/2026-10-20-songoskriti-template-completeness.md`)
+and the evidence record's **§(K.3)** carry the same rulings with their full
+reasons and follow-up paths. **One scope note:** D4's relaxation is the
+phase-2 programme's — the preview host, the two composition pins, the
+storefront search route, and the archive surface (a permission, not a change)
+— so any **other** file a later phase needs still needs its own grant. What
+the rulings mean for each row:
+
+| phase | the ruling's effect | shipped? |
+|---|---|---|
+| **2** | **D5 stands** — the storefront's reader blog stays themeless, so the storefront half of this row is **not authorised**; the theme's `blog` body is the preview's editorial composition and the authoring surface | the **preview half** shipped in the phase-2 plan (Task 5); the storefront half did not, and does not follow from D5 |
+| **3** | **D4 relaxed** for the search route specifically, and **D6 ruled State B** | **shipped** — the phase-2 plan's Task 9 (`a6b99445`) split the route's listing into per-widget slots |
+| **4** | **D2 rules** that the production checkout stays platform-owned, and **D3** scopes the programme to Songoskriti | the **preview-side** cart / account / checkout compositions shipped in the phase-2 plan (Tasks 4, 6, 7); a production checkout surface did **not** ship, and D2 does not authorise one |
+| **5** | **D1 ruled Option A** — no `archive` key; the archive contract is documented | **shipped** — the phase-2 plan's Task 10 (`18771e88`) |
+| **6** | **D4 relaxed** for the preview host; the phase's other files still need their own grant | the unsupported-state half shipped in the phase-2 plan (Task 10); the remaining demo providers did **not** |
+| **7** | **D4 relaxed** for the named files | **not shipped** — the parity lane is still in neither `e2e:critical` nor `e2e:security` |
+| **X** | **D3 rules** the gate's scope to Songoskriti | **shipped** — the phase-2 plan's Task 8 (`cc9a8b37`, `b9b2f513`) |
 
 ---
 
@@ -142,7 +259,7 @@ The audit's phase order (`docs/superpowers/songoskriti-evidence/port/phase0-impl
 - Read-only references: `src/components/builder/songoskriti-port-freeze.test.tsx`, `src/lib/theme-preview-nav.test.ts`, `src/lib/themes/songoskriti/preview.ts`, `src/components/store/ThemePreviewFrame.tsx`, `src/components/builder/widgets.tsx`, `src/components/store/PageView.tsx`, `docs/superpowers/specs/2026-10-18-songoskriti-unified-port-design.md`
 
 **Interfaces:**
-- Consumes: `songoskritiPreviewSource()` (`src/lib/themes/songoskriti/preview.ts:70`), `songoskritiPreviewSource().main(template, s)` (`:83`), `lintTemplate(ast, template?)` (`src/lib/builder-ast.ts:8380`), `routeSuppliesH1(template?)` (`:76-79`), `primarySectionId(ast)` (`:88-106`), `genericDemoMain(template, s)` (`src/lib/theme-preview-nav.ts:357`), `useMockProductSlots` (`src/components/store/ThemePreviewFrame.tsx:256`), `ContextSlot` (`src/components/builder/widgets.tsx:1617`), `StorePage` (`src/lib/storefront-search.server.ts:257`).
+- Consumes: `songoskritiPreviewSource()` (`src/lib/themes/songoskriti/preview.ts:70`), `songoskritiPreviewSource().main(template, s)` (`:83`), `lintTemplate(ast, template?)` (`src/lib/builder-ast.ts:8380`), `routeSuppliesH1(template?)` (`:76-79`), `primarySectionId(ast)` (`:88-106`), `genericDemoMain(template, s)` (`src/lib/theme-preview-nav.ts:430`), `useMockProductSlots` (`src/components/store/ThemePreviewFrame.tsx:256`), `ContextSlot` (`src/components/builder/widgets.tsx:1617`), `StorePage` (`src/lib/storefront-search.server.ts:257`).
 - Produces: `docs/superpowers/songoskriti-evidence/port/phase1-page-content-escalation.md` — a document, no code symbols.
 
 - [ ] **1.1** Confirm the two frozen pins and their current expectations, that no third file pins the page composition, and where the preview's `page_content` node would come from:
@@ -195,7 +312,7 @@ The audit's phase order (`docs/superpowers/songoskriti-evidence/port/phase0-impl
   grep -n 'export type StorePage' src/lib/storefront-search.server.ts
   grep -n 'if (!demoProduct) return undefined' src/components/store/ThemePreviewFrame.tsx
   ```
-  Expected output: one match per line, at `src/lib/builder-ast.ts:8380`, `:77`, `:88`; `src/lib/theme-preview-nav.ts:357`; `src/components/store/ThemeChrome.tsx:302`; `src/components/store/PageView.tsx:165`; `src/components/store/PageView.tsx:166`; `src/components/builder/widgets.tsx:1617`; `src/lib/storefront-search.server.ts:257`; `src/components/store/ThemePreviewFrame.tsx:309`.
+  Expected output: one match per line, at `src/lib/builder-ast.ts:8380`, `:77`, `:88`; `src/lib/theme-preview-nav.ts:430`; `src/components/store/ThemeChrome.tsx:302`; `src/components/store/PageView.tsx:165`; `src/components/store/PageView.tsx:166`; `src/components/builder/widgets.tsx:1617`; `src/lib/storefront-search.server.ts:257`; `src/components/store/ThemePreviewFrame.tsx:309`.
 
 - [ ] **1.6** Confirm the working tree is clean of anything this plan would sweep in, and that the three churn files are unstaged:
   ```
@@ -222,7 +339,7 @@ The audit's phase order (`docs/superpowers/songoskriti-evidence/port/phase0-impl
 - Modify: `src/lib/themes/songoskriti/preview.ts` (the `case "page":` branch, `:207-217`)
 
 **Interfaces:**
-- Consumes: `songoskritiPreviewSource()` (`src/lib/themes/songoskriti/preview.ts:70`), `songoskritiPreviewSource().main(template, s)` (`:83`), `SectionBuilder` (`src/lib/builder-ast.ts:507`), `ThemeAst` (`:512`), `Section` (`:206`-region), `lintTemplate(ast, template?)` (`:8380`), `primarySectionId(ast)` (`:88`), `routeSuppliesH1(template?)` (`:77`), `genericDemoMain(template, s)` (`src/lib/theme-preview-nav.ts:357`), `ThemeChrome` (`src/components/store/ThemeChrome.tsx`), `withSongoskritiDefaults` / `withSongoskritiVariation` (applied internally by `main`, `preview.ts:89`).
+- Consumes: `songoskritiPreviewSource()` (`src/lib/themes/songoskriti/preview.ts:70`), `songoskritiPreviewSource().main(template, s)` (`:83`), `SectionBuilder` (`src/lib/builder-ast.ts:507`), `ThemeAst` (`:512`), `Section` (`:206`-region), `lintTemplate(ast, template?)` (`:8380`), `primarySectionId(ast)` (`:88`), `routeSuppliesH1(template?)` (`:77`), `genericDemoMain(template, s)` (`src/lib/theme-preview-nav.ts:430`), `ThemeChrome` (`src/components/store/ThemeChrome.tsx`), `withSongoskritiDefaults` / `withSongoskritiVariation` (applied internally by `main`, `preview.ts:89`).
 - Produces: `songoskritiPreviewSource().main("page", s)` now returns `[Section]` whose types are exactly `["breadcrumb", "page_content"]`; the theme's page template carries no `heading`, `rich_text`, no demo string, and no heading-bearing section.
 
 - [ ] **2.1** Write the failing theme-level test to `src/lib/themes/songoskriti/page-content.test.ts`. It must import `describe/expect/it` from `vitest`, `lintTemplate`, `primarySectionId`, `routeSuppliesH1`, `type SectionBuilder` from `../../builder-ast`, `genericDemoMain` from `../../theme-preview-nav`, and `songoskritiPreviewSource` from `./preview`. It builds the page AST the way the engine does — a plain builder (`(type, props = {}) => ({ id: \`${type}-${n++}\`, type, props: { ...props } })`) passed to `songoskritiPreviewSource().main("page", s)`, because the theme's own `withSongoskritiDefaults`/`withSongoskritiVariation` wrap happens inside `main` (`preview.ts:89`) — and asserts, in seven `it` blocks:
