@@ -1452,3 +1452,33 @@ CI was waiting on this. It was a **parity-record** problem, and it is now a
    fact about the live tenant, not a gap in the code path.
 3. **The one `manual-review` entry stands** — the Bangla mobile drawer at
    375 px — unchanged, for the reason the spec already records.
+
+### (L.6) The freeze is reproducible — an independent re-run changed nothing
+
+A baseline is only worth keeping if a later run **passes against it**. The
+same command was therefore run a second time, **without** `--update-snapshots`
+— the ordinary owner-run form:
+
+```bash
+E2E_BASE_URL=http://localhost:3020 E2E_NO_WEBSERVER=1 \
+  E2E_MERCHANT_EMAIL=e2e-merchant@example.invalid E2E_MERCHANT_PASSWORD='<throwaway>' \
+  node_modules/.bin/playwright test -c .e2e/playwright.config.ts songoskriti-port-parity
+```
+
+**60 passed, 1 skipped, 8.0 min — and `0` baselines re-generated.** Every one
+of the **118** baseline files came back **byte-identical** to the committed
+freeze: `git status` after the run lists **no** modified file under
+`docs/superpowers/songoskriti-evidence/port/reference/` or under
+`.e2e/songoskriti-port-parity.spec.ts-snapshots/`. The only file the re-run
+touched is `reference-manifest.json`, and the only fields that moved in it are
+`generatedAt` and `freezeSha` — the 60 entries are otherwise identical
+(same outfiles, same URLs, same `pass` / `manual-review` statuses, same
+thresholds, same `catalogue`).
+
+So the freeze is **deterministic** on this environment: the same tree renders
+the same pixels, the committed baselines match a fresh render exactly, and the
+suite that produced them is green against them. `freezeSha` now names the
+commit that **carries** the baselines (`afde28712f8e`), which is the tree that
+renders these pixels — the source code is identical to the tree the freeze was
+first captured from (`a93ebfd2`; the intervening commit changed baselines and
+documents only, no `src/`), and the re-run proves the pixels are the same.
