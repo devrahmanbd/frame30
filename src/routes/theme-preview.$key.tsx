@@ -26,6 +26,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { ArrowLeft } from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
+import type { TemplateKey } from "@/lib/builder-ast";
 import type { Database, Json } from "@/integrations/supabase/types";
 import { themePreviewHostGateFn } from "@/lib/storefront.functions";
 import {
@@ -209,6 +210,7 @@ function ThemePreviewRoute() {
   const { key } = Route.useParams() as RouteParams;
   const {
     template: initialTemplate,
+    unsupportedTemplate,
     focus: initialFocus,
     mock_order: initialMockOrder,
     variation: variationKey,
@@ -242,7 +244,16 @@ function ThemePreviewRoute() {
       blueprintKey={preset.key}
       tokens={preset.tokens}
       templates={preset.templates}
-      initialTemplate={initialTemplate}
+      // D1 (Option A) — an UNSUPPORTED template key reaches the host so the
+      // canvas renders the explicit "not supported by this theme" state
+      // instead of the homepage body. The host's prop is typed `TemplateKey`
+      // and the key it receives here may be an unknown one; the host's own
+      // lookup is a PARTIAL map (`templatesByKey[template]` → `undefined` for
+      // a key the theme does not author) and it computes the unsupported
+      // state from exactly that, so the runtime behaviour is the host's.
+      initialTemplate={
+        (initialTemplate ?? unsupportedTemplate) as TemplateKey | undefined
+      }
       initialFocus={initialFocus}
       initialMockOrder={initialMockOrder}
       onClose={() => window.history.back()}

@@ -228,9 +228,10 @@ export function parsePreviewSearchQuery(raw: string | null): {
  * Search updater for the preview frame's `navigate({ to: ".", search })`:
  * writes the focused slug under the `?focus=` contract (never `?slug=` —
  * merchant-less redirects use `focus`), writes the parsed query as
- * separate keys (never the raw string as `q`), and clears `q`/`max` when
+ * separate keys (never the raw string as `q`), clears `q`/`max` when
  * leaving the search template so a previous `/search?max=…` click does not
- * leak into collection/product URLs.
+ * leak into collection/product URLs, and clears the UNSUPPORTED request
+ * (`unsupportedTemplate`) so an answered request never lingers in the URL.
  */
 export function previewSearchForSwitch(
   template: TemplateKey,
@@ -245,8 +246,30 @@ export function previewSearchForSwitch(
     ...(template === "search"
       ? { q: undefined, max: undefined, ...parsePreviewSearchQuery(query) }
       : { q: undefined, max: undefined }),
+    // Switching to a template ENDS the unsupported request: the visitor is
+    // on a template the theme authors, so the key they asked for is
+    // answered and must not linger in the URL.
+    unsupportedTemplate: undefined,
   };
 }
+
+/**
+ * The longest template key the preview accepts from the URL.
+ *
+ * A template key is a short token; anything longer is not a key a merchant
+ * could have typed, and the preview never echoes it back into the canvas.
+ */
+const PREVIEW_TEMPLATE_KEY_LIMIT = 64;
+
+/**
+ * A key-shaped template token: alphanumerics, dashes and underscores.
+ *
+ * The preview host PRINTS the requested key inside the unsupported panel
+ * (`src/components/store/ThemePreviewFrame.tsx:136-151`), so the value that
+ * reaches it is bounded and key-shaped — never markup, never an unbounded
+ * string.
+ */
+const PREVIEW_TEMPLATE_KEY_RE = /^[A-Za-z0-9][A-Za-z0-9_-]*$/;
 
 /**
  * Route `validateSearch` for `/theme-preview/$key`: template + focus plus
@@ -255,19 +278,40 @@ export function previewSearchForSwitch(
  */
 export function validateThemePreviewSearch(search: Record<string, unknown>): {
   template: TemplateKey | undefined;
+  /**
+   * The REQUESTED template key when it is NOT one of the nine template keys.
+   *
+   * D1 (Option A): an unsupported template is an EXPLICIT state, never a
+   * silent homepage redirect. The key therefore has to REACH the preview
+   * host, which resolves it against the theme's authored bodies and renders
+   * the named "not supported by this theme" panel for a key it does not have
+   * (`src/components/store/ThemePreviewFrame.tsx:575-578`). `template` above
+   * keeps its meaning — a key the platform knows — and this field carries
+   * the request the platform does not know. It is OPTIONAL in the type (like
+   * `variation` and `mock_order`) so the routes that navigate INTO the
+   * preview with a known template keep their own search shape.
+   */
+  unsupportedTemplate?: string | undefined;
   focus: string | undefined;
   q: string | undefined;
   max: string | undefined;
   variation?: string | undefined;
   mock_order?: "success" | "pending" | "failed";
 } {
-  const template =
-    typeof search.template === "string" &&
-    (TEMPLATE_KEYS as readonly string[]).includes(search.template)
-      ? (search.template as TemplateKey)
-      : undefined;
+  const rawTemplate =
+    typeof search.template === "string" ? search.template : "";
+  const template = (TEMPLATE_KEYS as readonly string[]).includes(rawTemplate)
+    ? (rawTemplate as TemplateKey)
+    : undefined;
   return {
     template,
+    unsupportedTemplate:
+      template === undefined &&
+      rawTemplate.length > 0 &&
+      rawTemplate.length <= PREVIEW_TEMPLATE_KEY_LIMIT &&
+      PREVIEW_TEMPLATE_KEY_RE.test(rawTemplate)
+        ? rawTemplate
+        : undefined,
     focus:
       typeof search.focus === "string" &&
       search.focus.length <= 64 &&
