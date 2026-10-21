@@ -18,6 +18,7 @@ import {
 import {
   TEMPLATE_VARIANT_KEYS,
   baseTemplateKey,
+  type EditorTemplateKey,
   type TemplateVariantKey,
 } from "@/lib/template-variants";
 import type { VisibilityRule } from "@/lib/visibility";
@@ -60,7 +61,7 @@ export type EditorDoc = { templates: TemplateMap; tokens: ThemeTokens };
  * closed vocabulary (`src/lib/template-variants.ts`) is what the editor, the
  * routes and the publish gate all agree on.
  */
-export type EditorTemplateKey = TemplateKey | TemplateVariantKey;
+export type { EditorTemplateKey } from "@/lib/template-variants";
 
 /* ---------------------------------------------------------------------------
  * Frame30 Loop B — client save path: `setPropAt` validation.

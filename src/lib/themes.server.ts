@@ -54,6 +54,7 @@ import { translationGate } from "./builder-guardrails";
 import { translationCoverage } from "./translation-coverage";
 import { demoCatalogFor } from "./demo-catalog";
 import { resolveThemePreview } from "./theme-preview-nav";
+import { isKnownTemplateKey } from "./template-variants";
 import { builtinThemeKeys, isOfficialThemeKey } from "./themes/builtin-themes";
 import {
   bindDevThemeRuntime,
@@ -1508,7 +1509,7 @@ function digestSection(section: {
   ]);
 }
 
-function sectionsOf(templates: ThemeTemplates, key: string) {
+function sectionsOf(templates: TemplateMap, key: string) {
   const bag = templates as Record<string, ThemeAst | undefined>;
   const ast = bag[key] ?? EMPTY_AST;
   return [...ast.header, ...ast.main, ...ast.footer];
@@ -1541,8 +1542,8 @@ function templateMapKeys(
 
 /** Section-level diff between the merchant's current tree and the new package. */
 export function diffTemplates(
-  mine: ThemeTemplates,
-  upstream: ThemeTemplates,
+  mine: TemplateMap,
+  upstream: TemplateMap,
 ): TemplateDiff[] {
   const out: TemplateDiff[] = [];
   for (const key of templateMapKeys(mine, upstream)) {
@@ -1566,8 +1567,8 @@ export function diffTemplates(
  * `keep_mine` keeps the merchant tree and only appends genuinely new sections.
  */
 export function mergeTemplates(
-  mine: ThemeTemplates,
-  upstream: ThemeTemplates,
+  mine: TemplateMap,
+  upstream: TemplateMap,
   mode: UpdateMode,
 ): TemplateMap {
   const merged: Record<string, ThemeAst> = {};
@@ -1714,6 +1715,87 @@ export async function applyThemeUpdate(
       version_id: result.version_id,
     });
     return { versionId: result.version_id, revision: result.revision };
+  });
+}
+
+/* ------------------------------------------------------- reset to default
+ *
+ * The brief's §3: *"Provide actions to preview, save, publish, reset to a
+ * safe default, and recover when a saved template references a missing
+ * widget."*
+ *
+ * The reset restores **ONE** template to the theme's own default and
+ * writes a NEW version. It is never a silent overwrite of the whole map:
+ *
+ *  - the merchant's map is READ, and exactly ONE key is replaced;
+ *  - the merged map is LINTED before anything is written, so a broken
+ *    default fails closed (`builder.reset_blocked`) and the merchant's
+ *    live theme is untouched;
+ *  - the new version is an immutable snapshot (the same `theme_commit` the
+ *    editor's Save writes), so the reset is itself rollback-able;
+ *  - the DRAFT is advanced with a higher revision, so the editor's next
+ *    autosave — which carries an older revision — cannot put the broken
+ *    body back.
+ *
+ * A theme with no source package has no authored default: the reset then
+ * writes the EMPTY AST for that one key, which is the safe default (a
+ * clean page, never a broken one).
+ */
+export async function resetTemplateToDefault(
+  db: Client,
+  merchantId: string,
+  input: { themeId: string; template: string },
+) {
+  await rateLimit("builder.update", merchantId);
+  return withSpan("builder.reset_template", async () => {
+    const key = input.template;
+    // Only a known template key, or a variant inside the CLOSED vocabulary,
+    // can be reset — an unknown key would silently create a new one.
+    if (!isKnownTemplateKey(key)) {
+      throw new BuilderError(
+        "builder.reset_unknown_template",
+        `Unknown template "${key}"`,
+      );
+    }
+    const workspace = await loadWorkspace(db, merchantId);
+    const sourceKey = workspace.theme.sourceKey;
+    const pkg = sourceKey ? registryPackage(sourceKey) : null;
+    const bag = (pkg?.templates ?? {}) as Record<string, ThemeAst | undefined>;
+    const ast = bag[key] ?? EMPTY_AST;
+    // Exactly ONE key is replaced. Every other template — and every other
+    // variant — rides the map untouched.
+    const templates: TemplateMap = { ...workspace.templates, [key]: ast };
+    const blocking = lintTemplateMap(templates);
+    if (blocking.length) {
+      incr("framique_builder_reset_total", { result: "rejected" });
+      throw new BuilderError(
+        "builder.reset_blocked",
+        blocking.slice(0, 3).join(" · "),
+      );
+    }
+    const { versionId } = await commitVersion(db, merchantId, {
+      themeId: input.themeId,
+      templates,
+      tokens: workspace.tokens,
+      note: `Reset ${key} to the theme default`,
+      label: `Reset ${key}`,
+    });
+    // The draft follows the reset, with a HIGHER revision than the one it
+    // carried — the autosave RPC is last-writer-wins on a monotonic
+    // revision, so an in-flight editor autosave cannot undo this.
+    await autosave(db, merchantId, {
+      themeId: input.themeId,
+      templates,
+      tokens: workspace.tokens,
+      revision: workspace.revision + 1,
+    }).catch(() => null);
+    incr("framique_builder_reset_total", { result: "ok" });
+    log("info", "theme.template_reset", {
+      merchant_id: merchantId,
+      template: key,
+      version_id: versionId,
+    });
+    return { versionId, template: key, ast };
   });
 }
 

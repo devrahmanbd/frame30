@@ -121,7 +121,19 @@ import {
   builderScheduleFn,
   builderWorkspaceFn,
 } from "@/lib/builder-workspace.functions";
+// The RESET action (Batch C). It is a NEW module — the builder-workspace
+// barrel is a §7-prohibited file outside this plan's escalation list, so
+// the route reaches the new module directly rather than through it.
+import { builderResetTemplateFn } from "@/lib/themes-reset.functions";
 import type { ThemeVariation } from "@/lib/theme-variations";
+import {
+  TEMPLATE_VARIANT_LABEL,
+  baseTemplateKey,
+  isTemplateVariantKey,
+  templateAstOf,
+  variantKeysFor,
+  type EditorTemplateKey,
+} from "@/lib/template-variants";
 import { SONGOSKRITI_VARIATIONS } from "@/lib/themes/songoskriti/variations";
 import { SOMVABONA_VARIATIONS } from "@/lib/themes/somvabona/variations";
 
@@ -302,6 +314,7 @@ function BuilderStudio() {
   const rollback = useServerFn(builderRollbackFn);
   const schedule = useServerFn(builderScheduleFn);
   const cancelSchedule = useServerFn(builderCancelScheduleFn);
+  const resetTemplateFn = useServerFn(builderResetTemplateFn);
 
   const loadPlugins = useServerFn(pluginListFn);
   const pluginsQuery = useQuery({
@@ -428,7 +441,11 @@ function BuilderStudio() {
     };
   }, [workspace.data]);
 
-  const [template, setTemplate] = useState<TemplateKey>("index");
+  // The selected template IDENTITY: a base key, or one of the CLOSED
+  // variant keys (`blog_listing`, `blog_article`, `archive_category`, …).
+  // The BASE stays the default selection; a variant is opt-in, and only the
+  // closed vocabulary is reachable.
+  const [template, setTemplate] = useState<EditorTemplateKey>("index");
   const [slot, setSlot] = useState<Slot>("main");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [previewWidth, setPreviewWidth] = useState<number>(1440);
@@ -577,7 +594,14 @@ function BuilderStudio() {
   });
 
   const doc = editor.doc;
-  const ast = doc ? templateOf(doc.templates, template) : EMPTY_AST;
+  const ast = doc ? templateAstOf(doc.templates, template) : EMPTY_AST;
+  // The base and the variant of the selected identity. The switcher keeps
+  // the BASE as the default selection and shows the variant beside it.
+  const selectedBase = baseTemplateKey(template) ?? "index";
+  const selectedVariant = isTemplateVariantKey(template) ? template : null;
+  const templateLabel = selectedVariant
+    ? TEMPLATE_VARIANT_LABEL[selectedVariant].en
+    : TEMPLATE_LABEL[selectedBase].en;
   const sections = ast[slot];
   const selectedId = selectedIds[0] ?? null;
   const selected = selectedId
@@ -683,7 +707,10 @@ function BuilderStudio() {
       const payload = kind === "style" ? [nodes[0]!] : cloneNodes(nodes);
       const result = store.write({
         kind,
-        from: { template, slot },
+        // The clipboard's `from.template` is INFORMATIONAL — it is shown in
+        // the paste affordance and never enforced (`src/lib/builder-clipboard.ts`).
+        // The BASE key is what it carries, so the type stays honest.
+        from: { template: selectedBase, slot },
         nodes: payload,
       });
       if (!result.ok) {
@@ -1239,6 +1266,35 @@ function BuilderStudio() {
     onError: (error) => toast.error(errorMessage(error)),
   });
 
+  // The RESET affordance (Batch C): restore THIS template — the selected
+  // base or the selected variant — to the theme's own default. The server
+  // replaces exactly ONE key, writes a NEW version and advances the draft;
+  // the editor's in-memory doc follows, so the next autosave carries the
+  // reset body and never the one the merchant just discarded.
+  const resetTemplate = useMutation({
+    mutationFn: async () => {
+      if (!themeId || !doc) throw new Error("Workspace not ready");
+      return resetTemplateFn({ data: { themeId, template } });
+    },
+    onSuccess: async (result) => {
+      if (doc) {
+        editor.replaceDoc({
+          ...doc,
+          templates: { ...doc.templates, [result.template]: result.ast },
+        });
+      }
+      editor.markSaved();
+      toast.success(
+        t(
+          "Template reset to the theme default",
+          "টেমপ্লেটটি থিমের ডিফল্টে ফেরানো হয়েছে",
+        ),
+      );
+      await refresh();
+    },
+    onError: (error) => toast.error(errorMessage(error)),
+  });
+
   const restore = useMutation({
     mutationFn: (versionId: string) => rollback({ data: { versionId } }),
     onSuccess: async () => {
@@ -1392,8 +1448,14 @@ function BuilderStudio() {
           onChecklistOpen={() => setLintDrawerOpen(true)}
           issueCount={issues.filter((i) => i.level === "error").length}
           contentOnly={contentOnly}
-          template={template}
+          template={selectedBase}
           onTemplateChange={setTemplate}
+          templateVariant={selectedVariant}
+          onTemplateVariantChange={(variant) =>
+            setTemplate(
+              (current) => variant ?? baseTemplateKey(current) ?? "index",
+            )
+          }
           zoom={zoom}
           onZoomChange={setZoom}
           coveragePercent={coverage?.percent}
@@ -1411,7 +1473,7 @@ function BuilderStudio() {
             setPublishOpen(false);
           }}
           issues={issues}
-          templateName={TEMPLATE_LABEL[template].en}
+          templateName={templateLabel}
           hasChanges={editor.dirty}
         />
 
@@ -1437,12 +1499,62 @@ function BuilderStudio() {
               className={`rounded-fq-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer shrink-0 ${
                 template === key
                   ? "bg-primary text-primary-foreground font-semibold shadow-xs"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  : selectedBase === key
+                    ? "bg-primary/15 text-primary font-semibold"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
               }`}
             >
               {t(TEMPLATE_LABEL[key].en, TEMPLATE_LABEL[key].bn)}
             </button>
           ))}
+          {/* The SECOND level (Batch C): the closed variant vocabulary of the
+              selected base. Only the table's own variants are offered, so a
+              merchant can never address a suffix the platform does not route
+              to. */}
+          {variantKeysFor(selectedBase).length ? (
+            <>
+              <span
+                aria-hidden
+                className="mx-1 h-4 w-px shrink-0 bg-border/80"
+              />
+              {variantKeysFor(selectedBase).map((variant) => (
+                <button
+                  key={variant}
+                  type="button"
+                  data-template-variant={variant}
+                  aria-current={template === variant ? "page" : undefined}
+                  onClick={() => setTemplate(variant)}
+                  className={`rounded-fq-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer shrink-0 ${
+                    template === variant
+                      ? "bg-primary text-primary-foreground font-semibold shadow-xs"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  }`}
+                >
+                  {t(
+                    TEMPLATE_VARIANT_LABEL[variant].en,
+                    TEMPLATE_VARIANT_LABEL[variant].bn,
+                  )}
+                </button>
+              ))}
+            </>
+          ) : null}
+          {/* The RESET affordance (Batch C): restore THIS template to the
+              theme's own default. It writes a new version; it never
+              overwrites the whole map. */}
+          <button
+            type="button"
+            onClick={() => resetTemplate.mutate()}
+            disabled={resetTemplate.isPending || !themeId || !doc}
+            title={t(
+              "Reset this template to the theme's default",
+              "এই টেমপ্লেটটি থিমের ডিফল্টে ফিরিয়ে দিন",
+            )}
+            className="ml-auto shrink-0 rounded-fq-md border border-border/70 px-2.5 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-50 cursor-pointer"
+          >
+            {resetTemplate.isPending
+              ? t("Resetting…", "ফেরানো হচ্ছে…")
+              : t("Reset to default", "ডিফল্টে ফেরান")}
+          </button>
         </nav>
 
         {/* Slide-out Lint / Quality Drawer */}
@@ -2297,7 +2409,7 @@ function BuilderStudio() {
                                 editing
                                 device={device}
                                 locale={frameLang}
-                                template={template}
+                                template={selectedBase}
                                 selectedIds={selectedIds}
                                 registry={builderRegistry}
                                 devThemeBinding={devThemeBinding}
@@ -2431,7 +2543,7 @@ function BuilderStudio() {
             {panel === "inspect" && (
               <SectionInspector
                 section={selected}
-                template={template}
+                template={selectedBase}
                 device={device}
                 contentOnly={contentOnly}
                 registry={builderRegistry}
@@ -2467,7 +2579,7 @@ function BuilderStudio() {
             {panel === "seo" && (
               <SeoDrawer
                 themeId={themeId}
-                template={template}
+                template={selectedBase}
                 ast={ast}
                 issues={issues}
                 storeName={workspace.data?.theme?.name ?? "Store"}

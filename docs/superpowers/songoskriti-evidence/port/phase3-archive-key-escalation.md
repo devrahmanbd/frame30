@@ -3033,3 +3033,82 @@ No new npm dependency and no lockfile change. No test is weakened, deleted or sk
 - `parseTemplates` already persists `blog_listing` and `blog_article` through a parse → JSON → parse round trip (measured: `isVariantTemplateKey("blog_listing")` is true because `blog` is a known base and `listing` matches `^[a-z0-9_]+$`).
 - The two platform blog routes have a **custom-host branch** that DOES carry a merchant slug (`resolveStorefrontHostFn()` → `host.merchantSlug`, `src/routes/blog.index.tsx:41-58` and `src/routes/blog.$slug.tsx:34-50`). The plan's step 5.5 sentence — "the two platform routes carry no slug and therefore keep the platform's grid" — was measured on the platform-host mode and does not describe the custom-host branch. This batch applies the plan's own governing rule (a route resolves a theme exactly when it carries a store slug): the custom-host branch resolves the variant, the global branch keeps the platform's grid. Recorded here, not silently.
 - `src/lib/theme-preview-nav.test.ts` enumerates the template keys in **three** places: the `FIRST_SECTION: Record<TemplateKey, string>` map (now ten entries) and two hard-coded nine-key arrays (`:134-144` Songoskriti, `:375-385` Somvabona). The two literals omit `archive` — the tenth template — so the sweep that says "authors demo content for every template" does not yet cover the archive's demo body.
+
+### (k.8) Batch C's final state — the new files, the measured evidence and the final diffs
+
+**The NEW files this batch added** (a new file is §7-allowed and carries no diff):
+
+| file | what it is |
+| --- | --- |
+| `src/lib/template-variants.ts` | the CLOSED variant vocabulary: the table, `variantKeysFor`, `baseTemplateKey`, `isKnownTemplateKey`, `resolveVariantAst`, the switcher's grouping and the editor's identity type |
+| `src/lib/template-variants.test.ts` | its contract suite: the table is closed, the routes resolve the variant, the base is the fallback, the platform's grid is the last resort, the map round-trips, and the listing and the article detail are distinguishable |
+| `src/lib/template-persistence-isolation.test.ts` | the per-template persistence isolation: one template's save touches no other, every pair holds, a theme switch leaks nothing, a variant never overwrites its base |
+| `src/lib/publish-migration.contract.test.ts` | the publish / seed / merge / rollback contract: the gate lints every base key, a variant is linted with its BASE key, the seed fills only the missing keys, the merge carries the new key and the variants, an incompatible stored template fails safe, a rollback restores the target version |
+| `src/lib/preview-parity.contract.test.ts` | the preview-parity proof: for the seven templates the set of context slots the preview grants equals the set the storefront grants, with the differences NAMED |
+| `src/lib/themes-reset.functions.ts` | the server function that exposes the reset to the editor (`themes.update`, never publishes) |
+
+**Two files this batch touched that neither brief names** (both are recorded in §(k.3) above, and both are §7-allowed NEW files, so neither is an escalation):
+
+- `src/lib/storefront.functions.ts` — the `getStoreChrome` validator and handler, so a merchant-scoped route can resolve a VARIANT at all. The file IS on the plan's G1 list (Task 1 already edited it) and the edit is the same kind: the hand-written duplicate of the key space must track the key space.
+- `src/lib/themes-reset.functions.ts` — a NEW file, because `src/lib/themes.functions.ts` is not named by the brief and the builder route's barrel (`src/lib/builder-workspace.functions.ts`) is a §7-prohibited file outside the plan's G1 list. The route therefore imports the new module directly.
+
+**The preview-parity differences — named, not closed:**
+
+| surface | the preview grants | the storefront grants | the difference | why |
+| --- | --- | --- | --- | --- |
+| search | `result_toolbar`, `filter_chips`, `pagination`, `category_header`, `facet_sidebar`, `empty_state` | the same minus `facet_sidebar` | **`facet_sidebar` is preview-only** | Decision D7 — its rows come from the widget-data pipeline (`source: "facets"`) and no storefront route mounts a `WidgetDataProvider` |
+| blog (listing) | `blog_terms`, `blog_archive`, `blog_pager` | the same | none | Batch C closed it: the shared blog host grants the pack |
+| blog (article detail) | `blog_terms`, `blog_archive`, `blog_pager` | the same plus `page_content` | **`page_content` on the detail** | the route-owned body slot the article's title, excerpt, cover and body flow through |
+| cart | the five cart slots | the same | none | Batch C closed it: the preview's cart and checkout grants are now SEPARATE (the cart no longer grants `page_content`) |
+| checkout | the five cart slots plus `page_content` | the same | none | — |
+| account | `orders_list`, `profile_card`, `page_content` | the same | none | — |
+| page | `breadcrumb`, `page_content` | the same | none | Batch C closed it: the preview now grants `breadcrumb` too |
+| archive | the six functional slots | **no live route** | — | the three platform taxonomy surfaces are store-less (Task 2 step 2.4); the preview's grant set IS the contract the deferred merchant-scoped route must meet |
+
+**The measured evidence.** The covering suites (this batch's own plus the neighbours):
+
+```
+$ node_modules/.bin/vitest run src/lib/template-variants.test.ts \
+    src/lib/template-persistence-isolation.test.ts \
+    src/lib/publish-migration.contract.test.ts \
+    src/lib/preview-parity.contract.test.ts \
+    src/lib/theme-preview-nav.test.ts src/components/store/BlogArchiveTheme.test.tsx \
+    src/lib/builder-lifecycle.contract.test.tsx src/lib/builder-chrome.contract.test.tsx \
+    src/lib/platform-acceptance.test.tsx src/lib/builder-publish-gate.test.ts \
+    src/hooks/use-builder-editor.route-h1.test.tsx src/lib/themes/workspace-route-h1-lint.test.ts
+
+  ✓ src/lib/template-variants.test.ts (15 tests)
+  ✓ src/lib/template-persistence-isolation.test.ts (5 tests)
+  ✓ src/lib/publish-migration.contract.test.ts (12 tests)
+  ✓ src/lib/preview-parity.contract.test.ts (8 tests)
+  …
+  Test Files  12 passed (12)
+```
+
+The whole-tree sweep (the batch's final state):
+
+```
+$ node_modules/.bin/vitest run
+  Test Files  2 failed | 614 passed | 1 skipped (617)
+       Tests  3 failed | 8738 passed | 3 skipped (8744)
+
+  FAIL src/lib/analytics-live-shape.test.ts > builds a funnel from flat daily rows without touching events
+  FAIL src/lib/analytics-live-shape.test.ts > serves traffic from flat geo+daily rows with empty splits
+  FAIL src/lib/site.server.test.ts > throws a guarded missing-env error, never a placeholder client
+```
+
+Those three are the **pre-existing** failures (2 in `analytics-live-shape.test.ts`, 1 in `site.server.test.ts` — the latter needs the local `.env` CI lacks). They fail at the base commit too and are not this batch's.
+
+**The typecheck and the lint:**
+
+```
+$ node_modules/.bin/tsgo --noEmit
+(no output — exit 0)
+
+$ node_modules/.bin/eslint <this batch's paths>
+✖ 2 problems (0 errors, 2 warnings)
+```
+
+The two warnings are `ThemePreviewFrame.tsx`'s pre-existing `react-hooks/exhaustive-deps` warnings (`:383` and `:549`) — this batch added none.
+
+**The round's commits.** Batch C is TWO commits: *"feat(templates): validated blog and archive variants, authorable in the editor"* (Task 5) and *"feat(builder): per-template isolation, a reset affordance, and preview-parity with the storefront"* (Task 6). Both stage **explicit paths** only. The three churn files and `.output-snapshots/` are **unstaged** at both commits.

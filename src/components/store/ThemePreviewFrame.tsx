@@ -737,8 +737,24 @@ export function ThemePreviewFrame({
   // context widgets (`checkout_steps` / `payment_methods` /
   // `cart_summary`), and an ungranted context widget renders `null` when
   // `editing={false}`.
+  //
+  // The CART and the CHECKOUT are granted SEPARATELY (Batch C): the
+  // storefront's cart route grants the five cart slots and nothing else,
+  // while the checkout route grants those five PLUS the route-owned body
+  // slot the checkout form flows through. The preview mirrors the storefront
+  // exactly — the preview-parity contract.
   const cartSlots =
-    template === "cart" || template === "checkout"
+    template === "cart"
+      ? {
+          cart_lines: null,
+          cart_summary: null,
+          cart_drawer: null,
+          checkout_steps: null,
+          payment_methods: null,
+        }
+      : undefined;
+  const checkoutSlots =
+    template === "checkout"
       ? {
           cart_lines: null,
           cart_summary: null,
@@ -938,6 +954,13 @@ export function ThemePreviewFrame({
     // every other blueprint keeps the shared demo page.
     const page = isSongoskriti ? SONGOSKRITI_PREVIEW_PAGE : PREVIEW_DEMO_PAGE;
     return {
+      // The `breadcrumb` widget is a CONTEXT widget: the storefront's page
+      // host grants it with the route's own crumb trail
+      // (`src/components/store/PageView.tsx` — `contextSlots={{ breadcrumb,
+      // page_content: pageContent }}`). The preview grants it too, so the
+      // theme's page body renders the same sections on both surfaces
+      // (Batch C — the preview-parity contract).
+      breadcrumb: null,
       page_content: (
         <article>
           <h1 className="font-bangla-display text-3xl font-bold">
@@ -1071,6 +1094,7 @@ export function ThemePreviewFrame({
                             ...accountBodySlot,
                             ...productSlots,
                             ...cartSlots,
+                            ...checkoutSlots,
                             ...searchSlots,
                             ...blogSlots,
                             ...pageSlots,
@@ -1115,6 +1139,7 @@ export function ThemePreviewFrame({
                             ...accountBodySlot,
                             ...productSlots,
                             ...cartSlots,
+                            ...checkoutSlots,
                             ...searchSlots,
                             ...blogSlots,
                             ...pageSlots,
@@ -1145,6 +1170,7 @@ export function ThemePreviewFrame({
                               ...accountBodySlot,
                               ...productSlots,
                               ...cartSlots,
+                              ...checkoutSlots,
                               ...searchSlots,
                               ...blogSlots,
                               ...pageSlots,
@@ -1177,6 +1203,7 @@ export function ThemePreviewFrame({
                                 ...accountBodySlot,
                                 ...productSlots,
                                 ...cartSlots,
+                                ...checkoutSlots,
                                 ...searchSlots,
                                 ...blogSlots,
                                 ...pageSlots,
