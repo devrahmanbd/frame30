@@ -89,6 +89,19 @@ export const getStorefront = createServerFn({ method: "GET" })
  * Published layout + tokens for a functional storefront page. Lets search,
  * cart and checkout wear the merchant's theme without re-reading the whole
  * catalogue the way the home loader does.
+ *
+ * **The VARIANT suffix (Batch C).** `template` names a base template key and
+ * `variant` names the CLOSED variant of it the surface renders (`listing` on
+ * the blog listing, `article` on the article detail). The variant is
+ * resolved against the published map through `resolveTemplate`'s own chain,
+ * and only a `"suffix"` or a `"base"` match is a composition: a `"page"`,
+ * `"index"` or `"empty"` match means the theme authored NOTHING for this
+ * surface, and the caller renders its own platform surface — never the
+ * homepage.
+ *
+ * The suffix is validated against the closed vocabulary
+ * (`src/lib/template-variants.ts`), so an unknown suffix is rejected at the
+ * boundary rather than silently resolving to some other template.
  */
 export const getStoreChrome = createServerFn({ method: "GET" })
   .inputValidator((d: unknown) =>
@@ -107,6 +120,11 @@ export const getStoreChrome = createServerFn({ method: "GET" })
           "account",
           "archive",
         ]),
+        /**
+         * The closed variant suffix of `template` this surface renders.
+         * Optional: absent = the base template, exactly as before.
+         */
+        variant: z.enum(["listing", "article"]).optional(),
       })
       .parse(d),
   )
@@ -115,7 +133,43 @@ export const getStoreChrome = createServerFn({ method: "GET" })
     const { requestOrigin } = await import("./site-origin.server");
     const chrome = await loadStoreChrome(data.slug, data.template);
     if (!chrome) return null;
-    return { ...chrome, origin: requestOrigin() };
+    if (!data.variant) return { ...chrome, origin: requestOrigin() };
+    // The VARIANT composition. The published map is read here (the same
+    // tenant-scoped, version-cached read the base chrome came from) and the
+    // variant is resolved through the closed vocabulary.
+    const { publishedTheme } = await import("./themes.server");
+    const { publicClient } = await import("./pricing.server");
+    const theme = await publishedTheme(publicClient(), chrome.merchant.id);
+    if (!theme) return { ...chrome, origin: requestOrigin() };
+    const { resolveVariantAst } = await import("./template-variants");
+    const resolved = resolveVariantAst(
+      theme.templates,
+      data.template,
+      data.variant,
+    );
+    // No authored composition: the caller renders its own platform surface.
+    if (!resolved) return { ...chrome, ast: null, origin: requestOrigin() };
+    // The chrome rule the base path already applies: a template that
+    // publishes no header/footer borrows the home template's, so a shopper
+    // never lands on a page without the store's navigation.
+    const home = theme.templates["index"] ?? {
+      header: [],
+      main: [],
+      footer: [],
+    };
+    return {
+      ...chrome,
+      ast: {
+        header: resolved.ast.header.length ? resolved.ast.header : home.header,
+        main: resolved.ast.main,
+        footer: resolved.ast.footer.length ? resolved.ast.footer : home.footer,
+      },
+      tokens: theme.tokens,
+      themeKey: theme.themeKey,
+      /** The key that won: the variant (`blog_listing`) or the base (`blog`). */
+      variantKey: resolved.key,
+      origin: requestOrigin(),
+    };
   });
 
 export const getStoreProduct = createServerFn({ method: "GET" })

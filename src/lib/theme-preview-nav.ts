@@ -24,6 +24,13 @@ import type {
   ThemeTokens,
 } from "./builder-ast";
 import { TEMPLATE_KEYS, resolveTemplate } from "./builder-ast";
+import {
+  TEMPLATE_VARIANT_KEYS,
+  baseTemplateKey,
+  isTemplateVariantKey,
+  resolveVariantAst,
+  type TemplateVariantKey,
+} from "./template-variants";
 import { demoCatalogFor } from "./demo-catalog";
 import { previewSourceFor } from "./preview-sources";
 import type { InstalledThemeRef } from "./preview-sources";
@@ -400,6 +407,18 @@ export type PreviewThemeSource = {
    * does not author — the engine synthesizes a generic demo body.
    */
   main: (template: TemplateKey, s: SectionBuilder) => Section[] | null;
+  /**
+   * Authored demo body per VARIANT (`blog_listing`, `blog_article`, …).
+   *
+   * OPTIONAL: a theme that ships no variant body keeps the exact behaviour
+   * it had before this port existed — the variant map is simply empty and
+   * every variant falls back to its base template. Return null for a
+   * variant the theme does not author.
+   */
+  variantMain?: (
+    variant: TemplateVariantKey,
+    s: SectionBuilder,
+  ) => Section[] | null;
 };
 
 export type ThemePreviewPreset = {
@@ -408,6 +427,15 @@ export type ThemePreviewPreset = {
   author: string;
   tokens: ThemeTokens;
   templates: Record<TemplateKey, ThemeAst>;
+  /**
+   * The theme's authored VARIANT bodies, keyed `blog_listing` / `blog_article`.
+   *
+   * A SEPARATE map, never folded into `templates`: the base map is the
+   * template-key space the preview host resolves against, and a key the
+   * platform does not know must stay ABSENT from it (the host turns an
+   * absent key into its explicit "not supported by this theme" panel).
+   */
+  variants: Record<string, ThemeAst>;
   /** Active theme variation (null = base theme, the default fallback). */
   variation: ThemeVariation | null;
   /** Every variation the theme ships (empty when it ships none). */
@@ -483,6 +511,48 @@ export function assemblePreviewTemplates(
 }
 
 /**
+ * Assemble the theme's VARIANT bodies — `blog_listing`, `blog_article`, …
+ *
+ * A SEPARATE map from the base templates (see `ThemePreviewPreset`): the
+ * base map is the template-key space the preview host resolves against, and
+ * a key the platform does not know must stay ABSENT from it.
+ *
+ * A variant carries the header and footer of its BASE template (scoped
+ * under the variant's own id, so two variants of one base never collide)
+ * and its own authored main. A theme that ships no variant body yields an
+ * empty map — the exact behaviour it had before the port existed.
+ */
+export function assemblePreviewVariants(
+  source: PreviewThemeSource,
+): Record<string, ThemeAst> {
+  const variants: Record<string, ThemeAst> = {};
+  if (!source.variantMain) return variants;
+  let n = 0;
+  const s: SectionBuilder = (type, props = {}) => {
+    const section: Section = {
+      id: `${type}-${n++}`,
+      type,
+      props: { ...props },
+    };
+    return section;
+  };
+  const reid = (sections: Section[], scope: string): Section[] =>
+    sections.map((section) => ({ ...section, id: `${section.id}-${scope}` }));
+  for (const variant of TEMPLATE_VARIANT_KEYS) {
+    const main = source.variantMain(variant, s);
+    if (!main) continue;
+    const base = baseTemplateKey(variant);
+    if (!base) continue;
+    variants[variant] = {
+      header: reid(source.header(base, s), variant),
+      main,
+      footer: reid(source.footer(base, s), variant),
+    };
+  }
+  return variants;
+}
+
+/**
  * Resolve a preview preset by key. K2: installed artifact authoritative — when
  * the caller passes the merchant `installed` set (array, even empty) the key
  * resolves ONLY from that set and uninstalled/unknown keys fail closed to
@@ -507,6 +577,7 @@ export function resolveThemePreview(
     author: source.author,
     tokens: applyVariationTokens(source.tokens, variation),
     templates: assemblePreviewTemplates(source),
+    variants: assemblePreviewVariants(source),
     variation,
     variations,
   };
@@ -529,6 +600,25 @@ export function resolvePreviewAst(
     suffix: opts.suffix,
     slug: target.slug,
   });
+}
+
+/**
+ * Resolve a VARIANT body in the preview — the same rule the storefront
+ * routes use: the variant first, then its BASE template, and NOTHING else.
+ *
+ * A `"page"`, `"index"` or `"empty"` match means the theme authored no
+ * composition for that surface; the caller renders its own platform surface
+ * instead (never the homepage).
+ */
+export function resolvePreviewVariantAst(
+  templates: ThemeTemplates,
+  variant: string,
+): { key: string; ast: ThemeAst; match: TemplateMatch } | null {
+  if (!isTemplateVariantKey(variant)) return null;
+  const base = baseTemplateKey(variant);
+  if (!base) return null;
+  const suffix = variant.slice(variant.indexOf("_") + 1);
+  return resolveVariantAst(templates, base, suffix);
 }
 
 /* --------------------------------------- demo focus (slug-aware preview) */

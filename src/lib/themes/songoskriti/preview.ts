@@ -456,5 +456,77 @@ export function songoskritiPreviewSource(
           return [s("profile_card", {}), s("page_content", {})];
       }
     },
+    /**
+     * The VARIANT bodies (Batch C).
+     *
+     * The `blog` key carries ONE AST today, so the listing and the article
+     * detail cannot be told apart — and the merchant cannot design them
+     * apart. The closed vocabulary (`src/lib/template-variants.ts`) gives
+     * them two keys: `blog_listing` and `blog_article`.
+     *
+     * - `blog_listing` KEEPS the pack — the same terms rail, archive grid
+     *   and pager the base `blog` body carries. The listing is the surface
+     *   the pack was built for.
+     * - `blog_article` is the theme's FRAME around the article. The
+     *   article's title, excerpt, cover and body are ROUTE context: they
+     *   flow through the route-owned body slot (`page_content`), exactly
+     *   like the authored page and the account dashboard. Around them the
+     *   theme contributes the pack's related content and the newsletter.
+     *
+     * The two are distinguishable by their section-type sets, so a merchant
+     * can tell them apart in the editor.
+     */
+    variantMain: (variant, s) => {
+      s = withSongoskritiVariation(withSongoskritiDefaults(s), variationKey);
+      switch (variant) {
+        case "blog_listing":
+          // The pack, unchanged: the terms rail, the article grid and the
+          // pager. The platform owns the feed (`BlogFeedProvider`).
+          return [
+            s("blog_terms", {
+              heading: "Browse the journal",
+              style: "pills",
+              showCounts: true,
+            }),
+            s("blog_archive", {
+              heading: "From the journal",
+              layout: "magazine",
+              columns: 3,
+              limit: 9,
+              showCover: true,
+              showExcerpt: true,
+              showMeta: true,
+            }),
+            s("blog_pager", { align: "center" }),
+          ];
+        case "blog_article":
+          // The frame around the story. `page_content` is the route-owned
+          // body slot: the article's title, excerpt, cover and body flow
+          // through it, so the theme never re-authors the merchant's story.
+          return [
+            s("page_content", {}),
+            // The pack's related content — the store's other articles. The
+            // route mounts the store's REAL feed; without one the widget
+            // would render the engine's synthetic sample rows.
+            s("blog_archive", {
+              heading: "More from the journal",
+              layout: "magazine",
+              columns: 3,
+              limit: 3,
+              showCover: true,
+              showExcerpt: true,
+              showMeta: true,
+            }),
+            // The newsletter — the theme's own engagement block.
+            s("newsletter", {
+              heading: "From the journal, weekly",
+              body: "One letter a week: new stories, care notes and what is coming.",
+              buttonLabel: "Subscribe",
+            }),
+          ];
+        default:
+          return null;
+      }
+    },
   };
 }

@@ -24,7 +24,10 @@ import { archiveHead, blogIndexPath, listingJsonLd } from "@/lib/blog-taxonomy";
 import { useLang } from "@/lib/i18n";
 import { BlogArchiveTheme } from "@/components/store/BlogArchiveTheme";
 import { blogSearchFn } from "@/lib/blog-reader.functions";
-import { resolveStorefrontHostFn } from "@/lib/storefront.functions";
+import {
+  resolveStorefrontHostFn,
+  getStoreChrome,
+} from "@/lib/storefront.functions";
 import { storeBlogIndexFn } from "@/lib/store-blog.functions";
 import { storeBlogBasePath, storeListingHead } from "@/lib/store-blog-head";
 import { Button } from "@/components/ui/button";
@@ -53,7 +56,14 @@ export const Route = createFileRoute("/blog/")({
         data: { slug: host.merchantSlug, page: deps.page },
       });
       if (!store) throw new Response("Not Found", { status: 404 });
-      return { kind: "store" as const, ...store };
+      // Batch C — the theme's `blog_listing` composition. This branch DOES
+      // carry a store subject (the custom host's merchant slug), so by the
+      // store-subject rule it resolves a theme. The GLOBAL branch below has
+      // no store subject at all, so it keeps the platform's grid.
+      const chrome = await getStoreChrome({
+        data: { slug: host.merchantSlug, template: "blog", variant: "listing" },
+      }).catch(() => null);
+      return { kind: "store" as const, ...store, chrome };
     }
     const data = deps.q
       ? await blogSearchFn({ data: { query: deps.q, page: deps.page } })
@@ -259,6 +269,9 @@ function StoreBlogIndexPage({
         basePath: (page: number) =>
           page > 1 ? `${basePath}?page=${page}` : basePath,
       }}
+      ast={data.chrome?.ast ?? null}
+      tokens={data.chrome?.tokens ?? null}
+      themeKey={data.chrome?.themeKey ?? null}
       header={
         <header className="mb-8 border-b border-border pb-6">
           <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">

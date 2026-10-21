@@ -2,6 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import { useLang } from "@/lib/i18n";
 import { DEVICE_PRESETS, type DeviceBucket } from "@/lib/responsive";
 import { TEMPLATE_KEYS, type TemplateKey } from "@/lib/builder-ast";
+import {
+  TEMPLATE_VARIANT_LABEL,
+  templateVariantEntries,
+  type TemplateVariantKey,
+} from "@/lib/template-variants";
 
 export const TEMPLATE_META: Record<
   TemplateKey,
@@ -109,6 +114,14 @@ export type BuilderTopBarProps = {
   // Studio enhancements:
   template?: TemplateKey;
   onTemplateChange?: (t: TemplateKey) => void;
+  /**
+   * The selected VARIANT (Batch C). The BASE key stays the default
+   * selection; a variant is opt-in, and only the CLOSED vocabulary is
+   * offered — a merchant can never save a suffix the platform does not
+   * route to.
+   */
+  templateVariant?: TemplateVariantKey | null;
+  onTemplateVariantChange?: (v: TemplateVariantKey | null) => void;
   zoom?: number;
   onZoomChange?: (z: number) => void;
   coveragePercent?: number;
@@ -326,6 +339,8 @@ export function BuilderTopBar({
   contentOnly,
   template = "index",
   onTemplateChange,
+  templateVariant = null,
+  onTemplateVariantChange,
   zoom = 1,
   onZoomChange,
   coveragePercent,
@@ -355,6 +370,14 @@ export function BuilderTopBar({
   }, [templateOpen]);
 
   const activeMeta = TEMPLATE_META[template] ?? TEMPLATE_META.index;
+  // The SECOND level of the switcher (Batch C): the closed variant
+  // vocabulary, grouped by the base that owns it.
+  const variantEntries = templateVariantEntries();
+  // The selected VARIANT's own label, when one is selected. The BASE stays
+  // the default selection — a variant is opt-in.
+  const activeVariantMeta = templateVariant
+    ? TEMPLATE_VARIANT_LABEL[templateVariant]
+    : null;
   const effectiveErrorCount = errorCount ?? issueCount;
 
   return (
@@ -410,7 +433,9 @@ export function BuilderTopBar({
             >
               <TemplateIcon icon={activeMeta.icon} />
               <span className="font-medium">
-                {t(activeMeta.en, activeMeta.bn)}
+                {activeVariantMeta
+                  ? t(activeVariantMeta.en, activeVariantMeta.bn)
+                  : t(activeMeta.en, activeMeta.bn)}
               </span>
               <svg
                 className={`size-3 text-muted-foreground transition-transform ${templateOpen ? "rotate-180" : ""}`}
@@ -435,46 +460,100 @@ export function BuilderTopBar({
                 <div className="space-y-0.5">
                   {TEMPLATE_KEYS.map((key) => {
                     const meta = TEMPLATE_META[key];
-                    const isSelected = template === key;
+                    const isSelected = template === key && !templateVariant;
+                    // The SECOND level (Batch C): the closed variant
+                    // vocabulary, one entry per variant the base owns. Only
+                    // the CLOSED table is offered, so a merchant can never
+                    // save a suffix the platform does not route to.
+                    const variants =
+                      variantEntries.find((entry) => entry.base === key)
+                        ?.variants ?? [];
                     return (
-                      <button
-                        key={key}
-                        type="button"
-                        role="option"
-                        aria-selected={isSelected}
-                        onClick={() => {
-                          onTemplateChange(key);
-                          setTemplateOpen(false);
-                        }}
-                        className={`flex w-full items-start gap-2.5 rounded-fq-md px-2.5 py-2 text-left transition-colors cursor-pointer ${
-                          isSelected
-                            ? "bg-primary text-primary-foreground"
-                            : "hover:bg-muted text-foreground"
-                        }`}
-                      >
-                        <div
-                          className={`mt-0.5 shrink-0 ${isSelected ? "text-primary-foreground" : "text-muted-foreground"}`}
+                      <div key={key} className="space-y-0.5">
+                        <button
+                          type="button"
+                          role="option"
+                          aria-selected={isSelected}
+                          onClick={() => {
+                            onTemplateChange(key);
+                            // The base is the DEFAULT selection: choosing the
+                            // base clears any variant.
+                            onTemplateVariantChange?.(null);
+                            setTemplateOpen(false);
+                          }}
+                          className={`flex w-full items-start gap-2.5 rounded-fq-md px-2.5 py-2 text-left transition-colors cursor-pointer ${
+                            isSelected
+                              ? "bg-primary text-primary-foreground"
+                              : "hover:bg-muted text-foreground"
+                          }`}
                         >
-                          <TemplateIcon icon={meta.icon} />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs font-medium leading-none">
-                              {t(meta.en, meta.bn)}
-                            </span>
-                            {isSelected && (
-                              <span className="text-[10px] font-bold uppercase tracking-wider opacity-90">
-                                {t("Active", "সক্রিয়")}
-                              </span>
-                            )}
-                          </div>
-                          <p
-                            className={`mt-1 truncate text-[10px] ${isSelected ? "text-primary-foreground/80" : "text-muted-foreground"}`}
+                          <div
+                            className={`mt-0.5 shrink-0 ${isSelected ? "text-primary-foreground" : "text-muted-foreground"}`}
                           >
-                            {t(meta.desc.en, meta.desc.bn)}
-                          </p>
-                        </div>
-                      </button>
+                            <TemplateIcon icon={meta.icon} />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-medium leading-none">
+                                {t(meta.en, meta.bn)}
+                              </span>
+                              {isSelected && (
+                                <span className="text-[10px] font-bold uppercase tracking-wider opacity-90">
+                                  {t("Active", "সক্রিয়")}
+                                </span>
+                              )}
+                            </div>
+                            <p
+                              className={`mt-1 truncate text-[10px] ${isSelected ? "text-primary-foreground/80" : "text-muted-foreground"}`}
+                            >
+                              {t(meta.desc.en, meta.desc.bn)}
+                            </p>
+                          </div>
+                        </button>
+                        {variants.length ? (
+                          <div className="pl-6">
+                            {variants.map((variant) => {
+                              const variantMeta =
+                                TEMPLATE_VARIANT_LABEL[variant];
+                              const variantSelected =
+                                templateVariant === variant;
+                              return (
+                                <button
+                                  key={variant}
+                                  type="button"
+                                  role="option"
+                                  aria-selected={variantSelected}
+                                  data-template-variant={variant}
+                                  onClick={() => {
+                                    onTemplateChange(key);
+                                    onTemplateVariantChange?.(variant);
+                                    setTemplateOpen(false);
+                                  }}
+                                  className={`flex w-full items-start gap-2 rounded-fq-md px-2.5 py-1.5 text-left transition-colors cursor-pointer ${
+                                    variantSelected
+                                      ? "bg-primary text-primary-foreground"
+                                      : "hover:bg-muted text-foreground"
+                                  }`}
+                                >
+                                  <span className="min-w-0 flex-1">
+                                    <span className="text-xs font-medium leading-none">
+                                      {t(variantMeta.en, variantMeta.bn)}
+                                    </span>
+                                    <span
+                                      className={`mt-0.5 block truncate text-[10px] ${variantSelected ? "text-primary-foreground/80" : "text-muted-foreground"}`}
+                                    >
+                                      {t(
+                                        variantMeta.desc.en,
+                                        variantMeta.desc.bn,
+                                      )}
+                                    </span>
+                                  </span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        ) : null}
+                      </div>
                     );
                   })}
                 </div>

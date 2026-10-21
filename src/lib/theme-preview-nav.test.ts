@@ -2,7 +2,15 @@
  * In-preview navigation — TDD: demo links stay inside the preview frame.
  */
 import { describe, expect, it } from "vitest";
-import { flattenSections, type TemplateKey } from "./builder-ast";
+import {
+  TEMPLATE_KEYS,
+  flattenSections,
+  type TemplateKey,
+} from "./builder-ast";
+import {
+  TEMPLATE_VARIANT_KEYS,
+  type TemplateVariantKey,
+} from "./template-variants";
 import { registerStaticPreviewSource } from "./preview-sources";
 import { songoskritiPreviewSource } from "./themes/songoskriti/preview";
 import { somvabonaPreviewSource } from "./themes/somvabona/preview";
@@ -117,6 +125,10 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
   // Every template's opener is pinned explicitly: six of the nine used to
   // fall through a default branch to the literal "heading", so a template
   // that changed its opener was only caught for index and collection.
+  //
+  // Batch C: the map is now DRIVEN by `TEMPLATE_KEYS` (so a new template
+  // cannot slip past this pin) and it is joined by the VARIANT openers —
+  // the closed vocabulary's own map.
   const FIRST_SECTION: Record<TemplateKey, string> = {
     index: "hero_carousel",
     product: "heading",
@@ -129,19 +141,23 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
     search: "category_header",
     archive: "category_header",
   };
+  /**
+   * The VARIANT openers (Batch C). The closed vocabulary has five keys; a
+   * theme authors the ones it ships, and each opens with its own section.
+   */
+  const VARIANT_FIRST_SECTION: Record<TemplateVariantKey, string> = {
+    blog_listing: "blog_terms",
+    blog_article: "page_content",
+    archive_category: "category_header",
+    archive_tag: "category_header",
+    archive_author: "category_header",
+  };
   it("authors demo content for every template (no empty sub-pages)", () => {
     const preset = resolveThemePreview("songoskriti")!;
-    for (const key of [
-      "index",
-      "product",
-      "collection",
-      "account",
-      "page",
-      "blog",
-      "cart",
-      "checkout",
-      "search",
-    ] as const) {
+    // `TEMPLATE_KEYS`-driven: the sweep covers EVERY template the platform
+    // knows — including `archive`, the tenth key, which the old literal
+    // list of nine did not.
+    for (const key of TEMPLATE_KEYS) {
       const ast = preset.templates[key];
       expect(ast.header.length, `${key} header`).toBeGreaterThanOrEqual(0);
       expect(ast.main.length, `${key} main`).toBeGreaterThan(0);
@@ -177,6 +193,45 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
       Object.values(preset.templates) as (typeof preset.templates.index)[]
     ).flatMap((t) => [...t.header, ...t.main, ...t.footer].map((s) => s.id));
     expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  // Batch C — the VARIANT bodies. The closed vocabulary gives the blog two
+  // surfaces (the listing and the article detail); the theme authors them
+  // beside the base templates, in their own map.
+  it("authors demo content for every variant it ships", () => {
+    const preset = resolveThemePreview("songoskriti")!;
+    // Songoskriti ships the two blog variants. The three archive kinds are
+    // in the vocabulary, but the archive's ONE body serves all three kinds
+    // (the route supplies the kind), so no variant body is authored for
+    // them.
+    expect(Object.keys(preset.variants).sort()).toEqual([
+      "blog_article",
+      "blog_listing",
+    ]);
+    for (const variant of TEMPLATE_VARIANT_KEYS) {
+      const ast = preset.variants[variant];
+      if (!ast) continue;
+      expect(ast.main.length, `${variant} main`).toBeGreaterThan(0);
+      expect(ast.main[0]!.type, `${variant} first section`).toBe(
+        VARIANT_FIRST_SECTION[variant],
+      );
+      // A variant wears its BASE template's chrome — Songoskriti authors an
+      // empty header (the storefront's own masthead is the chrome) and a
+      // full footer.
+      expect(ast.header.length, `${variant} header`).toBeGreaterThanOrEqual(0);
+      expect(ast.footer.length, `${variant} footer`).toBeGreaterThan(0);
+    }
+    // The listing keeps the pack; the article detail is its own composition
+    // — the two are distinguishable, which is the whole point of the
+    // variant split.
+    expect(preset.variants["blog_listing"]!.main.map((s) => s.type)).toEqual([
+      "blog_terms",
+      "blog_archive",
+      "blog_pager",
+    ]);
+    expect(
+      preset.variants["blog_article"]!.main.map((s) => s.type),
+    ).not.toEqual(preset.variants["blog_listing"]!.main.map((s) => s.type));
   });
 
   it("synthesizes generic demo bodies for templates a theme omits", async () => {
@@ -371,17 +426,10 @@ describe("resolveThemePreview (somvabona)", () => {
 
   it("authors demo content for every somvabona template", () => {
     const preset = resolveThemePreview("somvabona")!;
-    for (const key of [
-      "index",
-      "product",
-      "collection",
-      "account",
-      "page",
-      "blog",
-      "cart",
-      "checkout",
-      "search",
-    ] as const) {
+    // `TEMPLATE_KEYS`-driven: the sweep covers EVERY template the platform
+    // knows — including `archive`, the tenth key, which the old literal
+    // list of nine did not.
+    for (const key of TEMPLATE_KEYS) {
       const ast = preset.templates[key];
       expect(ast.header.length, `${key} header`).toBeGreaterThan(0);
       expect(ast.main.length, `${key} main`).toBeGreaterThan(0);

@@ -2727,3 +2727,309 @@ Those three are the **pre-existing** failures (2 in `analytics-live-shape.test.t
 **The commit.** The whole round is ONE commit — *"fix(storefront): the account dashboard and the checkout shell lose no control — the profile card, the payment picker, the totals and the order view"* (`git log --oneline -1` at the tip of `frame30`). It stages **explicit paths** only: the four NEW files, the two account/checkout routes, the custom-host twin, the dashboard and its two suites, the checkout contract suite, the theme's preview composition and its demo data, the preview host, and this record. The three churn files (`.artifacts/e2e/playwright-report/index.html`, `ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`) and `.output-snapshots/` are **unstaged** at that commit. (The record names the commit by its SUBJECT, not by its SHA: a record that carries its own commit's SHA cannot survive being amended, and this one was amended once, to add this section.)
 
 **The correction.** §(j.5)'s diffstat was measured **before** §(j.5) and §(j.6) were appended to this record, so its own line for this file (`325 +++++++++++++`) is the size of the record *up to §(j.4)*. The record's final size is larger by this section. Every other line of that diffstat is exact and unchanged.
+
+---
+
+## (k) Batch C — the blog variants, the editor's variant surface, the persistence isolation and the publishing integration
+
+**Base commit of this batch:** `2f4eb2f5` (`fix(storefront): the account dashboard and the checkout shell lose no control — the profile card, the payment picker, the totals and the order view`) — the tip of `frame30`.
+**Plan:** `docs/superpowers/plans/2026-10-21-frame30-core-cms-upgrade.md` (Tasks 5 and 6).
+**Owner's rulings in force:** Decision Gate **G1** (§7 relaxed for the plan's named list), **G2** (the additive API rule), **G3** (the parity re-freeze runs on the repo's throwaway stack, never on the configured database).
+
+This section is **appended**, not rewritten: everything above is the record as it stood when the account/checkout batch was committed. It is the port spec §9 escalation for the two tasks this batch runs, and it is written **before** any escalated file is edited.
+
+### (k.1) The finding
+
+> The platform already persists **variant** template keys (`parseTemplates`, `src/lib/builder-ast.ts:8117-8136` — every `<known base>_<suffix>` key rides the same `jsonb` map) and already **resolves** them (`resolveTemplate`, `:8254-8274` — `suffix → slug → base → page → index`). Three things are missing, and the plan names all three:
+>
+> 1. **A closed vocabulary.** `isVariantTemplateKey` (`:8170-8182`) accepts `blog_anything` — any `<base>_<lowercase suffix>` — so there is no way to tell a *legal* variant from a typo. A merchant's typo would persist a template nothing routes to, silently.
+> 2. **An authoring surface.** The editor's switcher lists `TEMPLATE_KEYS` only (`src/components/builder/BuilderTopBar.tsx:413`) and `EditorDoc.templates` is typed `ThemeTemplates` (`src/hooks/use-builder-editor.ts:39` — `Partial<Record<TemplateKey, ThemeAst>>`), so a variant is **unauthorable**: the merchant cannot reach it and the editor cannot type it.
+> 3. **Route resolution.** No route resolves a variant. The storefront's blog routes render the themeless `BlogArchiveTheme` (`ast={null}`), and the plan's ruling **D5′** splits the reader surfaces in two: the three platform taxonomy routes carry **no store subject** (no slug — a term carries `merchant_id` and a slug that is unique per merchant rather than globally, `src/lib/blog-index.server.ts:304-328`; the author archive is not merchant-scoped at all, `src/lib/blog-reader.server.ts:378-384`), while the **merchant-scoped** routes are where a theme can be resolved (`getStoreChrome` needs a slug, `src/lib/storefront.functions.ts:94-111`).
+>
+> The consequence that matters: the blog **listing** and the blog **article detail** are ONE `blog` key today, so a merchant cannot design them apart — and the review's fourth failure mode ("the blog listing and the article detail become ambiguous again") is exactly that.
+
+### (k.2) The exact old → new diff
+
+Every §7-prohibited file this batch edits, with its planned unified-diff hunks. The NEW files are not edits and carry no diff; they are listed at the end of this section.
+
+```diff
+diff --git a/src/lib/theme-preview-nav.ts b/src/lib/theme-preview-nav.ts
+@@
+ export type PreviewThemeSource = {
+   …
++  /**
++   * Authored demo body per VARIANT (`blog_listing`, `blog_article`, …).
++   * Return null for a variant the theme does not author — the variant then
++   * falls back to its base template. The port is OPTIONAL: a theme that
++   * ships no variant body keeps the exact behaviour it had before.
++   */
++  variantMain?: (
++    variant: TemplateVariantKey,
++    s: SectionBuilder,
++  ) => Section[] | null;
+ };
+@@
+ export type ThemePreviewPreset = {
+   …
+   templates: Record<TemplateKey, ThemeAst>;
++  /**
++   * The theme's authored VARIANT bodies, keyed `blog_listing` / `blog_article`.
++   * A SEPARATE map, never folded into `templates`: the base map is the
++   * template-key space the preview host resolves against, and an existing
++   * pin counts it (`unsupported-template-state.test.tsx` — ten keys).
++   */
++  variants: Record<string, ThemeAst>;
+ };
+@@
+ export function assemblePreviewTemplates(
+   source: PreviewThemeSource,
+-): Record<TemplateKey, ThemeAst> {
++): { templates: Record<TemplateKey, ThemeAst>; variants: Record<string, ThemeAst> } {
+   …
++  const variants: Record<string, ThemeAst> = {};
++  if (source.variantMain) {
++    for (const variant of TEMPLATE_VARIANT_KEYS) {
++      const main = source.variantMain(variant, s);
++      if (!main) continue;
++      variants[variant] = {
++        header: reid(source.header(baseOf(variant), s), variant),
++        main,
++        footer: reid(source.footer(baseOf(variant), s), variant),
++      };
++    }
++  }
++  return { templates, variants };
+ }
+```
+
+```diff
+diff --git a/src/hooks/use-builder-editor.ts b/src/hooks/use-builder-editor.ts
+@@
+-export type EditorDoc = { templates: ThemeTemplates; tokens: ThemeTokens };
++/**
++ * The editor's document. `templates` is a `TemplateMap`, not a
++ * `ThemeTemplates`: the map carries the VARIANT keys (`blog_listing`,
++ * `blog_article`) beside the base keys, and a variant is a first-class
++ * editable template from Batch C on.
++ */
++export type EditorDoc = { templates: TemplateMap; tokens: ThemeTokens };
++
++/**
++ * The editor's template IDENTITY: a base key, or one of the CLOSED
++ * variant keys (`blog_listing`, `blog_article`, `archive_category`, …).
++ * Nothing else is addressable — an unvalidated suffix is not a template.
++ */
++export type EditorTemplateKey = TemplateKey | TemplateVariantKey;
+```
+
+```diff
+diff --git a/src/components/builder/BuilderTopBar.tsx b/src/components/builder/BuilderTopBar.tsx
+@@
+ export type BuilderTopBarProps = {
+   …
+   template?: TemplateKey;
+   onTemplateChange?: (t: TemplateKey) => void;
++  /**
++   * The selected VARIANT (Batch C). The base key stays the default
++   * selection; a variant is opt-in, and only the CLOSED vocabulary is
++   * offered — a merchant can never save a suffix the platform does not
++   * route to.
++   */
++  templateVariant?: TemplateVariantKey | null;
++  onTemplateVariantChange?: (v: TemplateVariantKey | null) => void;
+ };
+@@
+-                  {TEMPLATE_KEYS.map((key) => {
++                  {TEMPLATE_KEYS.map((key) => {
+                     const meta = TEMPLATE_META[key];
+                     …
+                   })}
++                  {/* The SECOND level: the closed variant vocabulary, one
++                      group per base that has variants. */}
+```
+
+```diff
+diff --git a/src/components/store/BlogArchiveTheme.tsx b/src/components/store/BlogArchiveTheme.tsx
+@@
+ export function BlogArchiveTheme({
+   feed,
+   header,
+   empty,
+   themeKey,
++  ast,
++  tokens,
+ }: {
+   feed: BlogFeed;
+   header: ReactNode;
+   empty: ReactNode;
+   themeKey?: string | null;
++  /**
++   * The theme's `blog` composition (Batch C). ABSENT = the platform's own
++   * grid, byte-identical to the render this component has always produced.
++   * PRESENT = the theme's composition wraps the SAME articles.
++   */
++  ast?: ThemeAst | null;
++  tokens?: ThemeTokens | null;
+ }) {
+   return (
+     <BlogFeedProvider value={feed}>
+       <ThemeChrome
+         template="blog"
+-        ast={null}
+-        tokens={null}
++        ast={ast ?? null}
++        tokens={tokens ?? null}
+```
+
+```diff
+diff --git a/src/lib/storefront.functions.ts b/src/lib/storefront.functions.ts
+@@
+ export const getStoreChrome = createServerFn({ method: "GET" })
+   .inputValidator((d: unknown) =>
+     z
+       .object({
+         slug: z.string().min(1),
+         template: z.enum([…the ten base keys…]),
++        /**
++         * The CLOSED variant suffix this surface renders (`listing` on the
++         * blog listing, `article` on the article detail). Optional: absent
++         * = the base template, exactly as before.
++         */
++        variant: z.enum(["listing", "article"]).optional(),
+       })
+       .parse(d),
+   )
+   .handler(async ({ data }) => {
+     const { loadStoreChrome } = await import("./storefront.server");
+     const { requestOrigin } = await import("./site-origin.server");
+     const chrome = await loadStoreChrome(data.slug, data.template);
+     if (!chrome) return null;
++    // The VARIANT composition: the published map resolved through the closed
++    // vocabulary (`blog_listing` → `blog`), never through the open-ended
++    // `page`/`index` tail of `resolveTemplate`.
++    …
+     return { ...chrome, origin: requestOrigin() };
+   });
+```
+
+```diff
+diff --git a/src/routes/store.$slug.blog.index.tsx b/src/routes/store.$slug.blog.index.tsx
+@@
+   loader: async ({ params, deps }) => {
+     …
++    // The theme's `blog_listing` composition (Batch C), or the base `blog`
++    // body, or the platform's own grid. The route carries a STORE SLUG, so
++    // it can resolve a theme at all.
++    const chrome = await getStoreChrome({
++      data: { slug: params.slug, template: "blog", variant: "listing" },
++    }).catch(() => null);
+     return { ...store, chrome };
+   },
+@@
+     <BlogArchiveTheme
+       feed={…}
++      ast={data.chrome?.ast ?? null}
++      tokens={data.chrome?.tokens ?? null}
++      themeKey={data.chrome?.themeKey ?? null}
+```
+
+```diff
+diff --git a/src/routes/store.$slug.blog.$slug.tsx b/src/routes/store.$slug.blog.$slug.tsx
+@@
+   loader: async ({ params }) => {
+     …
++    // The theme's `blog_article` composition (Batch C), or the base `blog`
++    // body, or the platform's own article render.
++    const chrome = await getStoreChrome({
++      data: { slug: params.slug, template: "blog", variant: "article" },
++    }).catch(() => null);
+     return { ...store, chrome };
+   },
+@@
+   return (
+-    <div className="mx-auto max-w-3xl space-y-10 px-4 py-10 pb-16">
++    <ThemeChrome
++      template="blog"
++      ast={data.chrome?.ast ?? null}
++      tokens={data.chrome?.tokens ?? null}
++      contentSlot="page_content"
++      contextSlots={{ page_content: body, blog_terms: null, blog_archive: null, blog_pager: null }}
++      ownsPrimary
++      fallback={body}
++    >
+```
+
+```diff
+diff --git a/src/lib/themes.server.ts b/src/lib/themes.server.ts
+@@
++/**
++ * Reset ONE template to the theme's default and write a NEW version.
++ *
++ * Never a silent overwrite of the whole map: the merchant's map is read,
++ * exactly ONE key is replaced, and the merged map is linted before it is
++ * committed. A broken default fails closed (`builder.reset_blocked`).
++ */
++export async function resetTemplateToDefault(
++  db: Client,
++  merchantId: string,
++  input: { themeId: string; template: string },
++) { … }
+```
+
+```diff
+diff --git a/src/routes/_authenticated/dashboard/builder.tsx b/src/routes/_authenticated/dashboard/builder.tsx
+@@
+-  const [template, setTemplate] = useState<TemplateKey>("index");
++  // The selected template IDENTITY: a base key, or one of the closed
++  // variant keys. The base stays the default selection.
++  const [template, setTemplate] = useState<EditorTemplateKey>("index");
+@@
++  {/* The reset affordance: restore ONE template to the theme's default. */}
+```
+
+```diff
+diff --git a/src/components/store/ThemePreviewFrame.tsx b/src/components/store/ThemePreviewFrame.tsx
+@@
+   const blogSlots =
+     template === "blog"
+       ? {
+           blog_terms: null,
+           blog_archive: null,
+           blog_pager: null,
+         }
+       : undefined;
+```
+
+### (k.3) The two files this batch touches that neither brief names
+
+| file | what the escalation covers | why it had to move |
+| --- | --- | --- |
+| `src/lib/storefront.functions.ts` | the `getStoreChrome` validator gains the CLOSED variant suffixes, and the handler resolves the variant composition | **The plan's step 5.5 cannot be implemented without it.** `getStoreChrome` is the ONLY seam a storefront route has to the published theme, and its hand-written `z.enum` (`:98-108`) accepts the ten BASE keys only — a variant key is rejected at runtime, so the merchant-scoped blog routes could never resolve `blog_listing` / `blog_article`. The file IS on the plan's G1 list (the owner's §7 relaxation) and was already edited by Task 1; this batch's edit is the same kind: the hand-written duplicate of the key space must track the key space. |
+| `src/lib/themes-reset.functions.ts` (NEW) | the server function that exposes `resetTemplateToDefault` to the editor | §7 allows NEW files. The reset needs a server function, and `src/lib/themes.functions.ts` is **not** named by either brief — a NEW file keeps the brief's file list intact. |
+
+### (k.4) Backward compatibility
+
+The `templates` column is `jsonb`; **no migration and no DDL**; the archive key's statement in §(c) stands unchanged. For the variants specifically:
+
+- A map written before this batch has no `blog_listing` / `blog_article` key. `parseTemplates` drops nothing it did not already drop, and the routes fall back explicitly: `blog_listing` → `blog` → **the platform's own grid**. Never the homepage (`resolveTemplate`'s `→ index` tail is not used: the resolution accepts only a `"suffix"` or a `"base"` match).
+- `parseTemplates` keeps its **open-ended** variant shape (`isVariantTemplateKey`) on purpose: the old theme-package per-page shape (`page_<slug>`) is a legal persisted key, and dropping it would silently discard a third-party package's layouts. The CLOSED vocabulary governs the **authoring surface** and the **route resolution**, not the parser.
+
+### (k.5) The platform's authority (unchanged by this batch)
+
+| concern | where it stays |
+| --- | --- |
+| the blog's data | the route's own reader (`storeBlogIndexFn` / `storeBlogArticleFn`) — the theme never queries an article |
+| the article's title, excerpt, cover and body | **route context**: they flow through the route-owned body slot (`page_content`), the same slot the authored page and the account dashboard use |
+| the taxonomy surfaces | the platform's grid — the three platform routes carry no store subject (Task 2 step 2.4) |
+| the publish gate | `publishVersion`'s `lintTemplateMap` lints every variant **with its base key** (Batch A) — a variant never reaches a storefront unlinted |
+
+### (k.6) The rules that hold throughout this batch
+
+No new npm dependency and no lockfile change. No test is weakened, deleted or skipped — every suite that changes here changes to a **stronger** expectation: the blog host's "generic by design" pin becomes its **opposite** assertion (with no AST the render is byte-identical to the platform grid; with an AST the theme's composition wraps the SAME articles), the two hard-coded nine-key arrays become `TEMPLATE_KEYS`-driven loops that cover **more** templates than the literals did, and the new suites prove the isolation and the publish contract. Every commit stages **explicit paths** only. The three churn files (`.artifacts/e2e/playwright-report/index.html`, `ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`) and `.output-snapshots/` are never staged and never committed.
+
+### (k.7) The measured facts this batch recorded
+
+- `TEMPLATE_KEYS` has **ten** members (`index, product, collection, account, page, blog, cart, checkout, search, archive`).
+- `parseTemplates` already persists `blog_listing` and `blog_article` through a parse → JSON → parse round trip (measured: `isVariantTemplateKey("blog_listing")` is true because `blog` is a known base and `listing` matches `^[a-z0-9_]+$`).
+- The two platform blog routes have a **custom-host branch** that DOES carry a merchant slug (`resolveStorefrontHostFn()` → `host.merchantSlug`, `src/routes/blog.index.tsx:41-58` and `src/routes/blog.$slug.tsx:34-50`). The plan's step 5.5 sentence — "the two platform routes carry no slug and therefore keep the platform's grid" — was measured on the platform-host mode and does not describe the custom-host branch. This batch applies the plan's own governing rule (a route resolves a theme exactly when it carries a store slug): the custom-host branch resolves the variant, the global branch keeps the platform's grid. Recorded here, not silently.
+- `src/lib/theme-preview-nav.test.ts` enumerates the template keys in **three** places: the `FIRST_SECTION: Record<TemplateKey, string>` map (now ten entries) and two hard-coded nine-key arrays (`:134-144` Songoskriti, `:375-385` Somvabona). The two literals omit `archive` — the tenth template — so the sweep that says "authors demo content for every template" does not yet cover the archive's demo body.

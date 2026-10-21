@@ -9,11 +9,19 @@ import {
   publicArticlePageFn,
   publicArticleResolutionFn,
 } from "@/lib/blog-reader.functions";
-import { resolveStorefrontHostFn } from "@/lib/storefront.functions";
-import { storeBlogArticleFn } from "@/lib/store-blog.functions";
+import {
+  resolveStorefrontHostFn,
+  getStoreChrome,
+} from "@/lib/storefront.functions";
+import {
+  storeBlogArticleFn,
+  storeBlogIndexFn,
+} from "@/lib/store-blog.functions";
+import { BlogFeedProvider, type BlogFeed } from "@/components/builder/blog";
+import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { storeArticleHead } from "@/lib/store-blog-head";
 import { articleJsonLd, articleOutline } from "@/lib/blog-reader";
-import { breadcrumbJsonLd, termArchivePath } from "@/lib/blog-taxonomy";
+import { breadcrumbJsonLd, termArchivePath, paging } from "@/lib/blog-taxonomy";
 import { ArticleView } from "@/components/store/ArticleView";
 import { ArticleGrid } from "@/components/store/BlogList";
 import { NewsletterBlock } from "@/components/public/NewsletterForm";
@@ -40,7 +48,19 @@ export const Route = createFileRoute("/blog/$slug")({
         data: { slug: host.merchantSlug, articleSlug: params.slug },
       });
       if (!store) throw notFound();
-      return { kind: "store" as const, ...store };
+      // Batch C — the theme's `blog_article` composition. This branch DOES
+      // carry a store subject (the custom host's merchant slug), so by the
+      // store-subject rule it resolves a theme. The GLOBAL branch below has
+      // no store subject at all, so it keeps the platform's own surface.
+      const chrome = await getStoreChrome({
+        data: { slug: host.merchantSlug, template: "blog", variant: "article" },
+      }).catch(() => null);
+      // The store's OTHER articles — the feed the theme's related-content
+      // rail reads. Best-effort: a failure degrades to an empty feed.
+      const related = await storeBlogIndexFn({
+        data: { slug: host.merchantSlug, page: 1 },
+      }).catch(() => null);
+      return { kind: "store" as const, ...store, chrome, related };
     }
     const result = await publicArticlePageFn({ data: { slug: params.slug } });
     if (!result) {
@@ -215,6 +235,27 @@ function ReadingProgressBar() {
   );
 }
 
+/**
+ * The store's articles, minus the one being read — the feed the theme's
+ * related-content rail reads. Without it the widget would render the
+ * engine's synthetic sample rows on a live page.
+ */
+function relatedFeed(
+  related: Awaited<ReturnType<typeof storeBlogIndexFn>> | null,
+  currentSlug: string,
+  basePath: string,
+): BlogFeed {
+  return {
+    articles: (related?.listing.articles ?? []).filter(
+      (a) => a.slug !== currentSlug,
+    ),
+    facets: related?.listing.facets ?? [],
+    paging: related?.listing.paging ?? paging(() => basePath, 1, 0),
+    basePath: (page: number) =>
+      page > 1 ? `${basePath}?page=${page}` : basePath,
+  };
+}
+
 function ArticlePage() {
   const data = Route.useLoaderData();
   if (data.kind === "store") {
@@ -238,7 +279,10 @@ function StoreArticlePage({
   const { article } = data;
   const merchantName = article.merchant?.name ?? data.merchantSlug;
   const outline = articleOutline(article.body ?? "");
-  return (
+  // The route's own body — the article. It flows through the theme's
+  // route-owned body slot when the theme publishes a `blog_article`
+  // composition, and it IS the fallback when the theme publishes none.
+  const body = (
     <>
       <ReadingProgressBar />
       <div className="mx-auto grid max-w-6xl gap-10 px-4 lg:grid-cols-[minmax(0,1fr)_260px]">
@@ -294,6 +338,28 @@ function StoreArticlePage({
         </nav>
       </div>
     </>
+  );
+  return (
+    <BlogFeedProvider value={relatedFeed(data.related, article.slug, "/blog")}>
+      <ThemeChrome
+        template="blog"
+        ast={data.chrome?.ast ?? null}
+        tokens={data.chrome?.tokens ?? null}
+        themeKey={data.chrome?.themeKey ?? null}
+        contentSlot="page_content"
+        contextSlots={{
+          // The route-owned body slot: the article.
+          page_content: body,
+          // The blog pack: the terms rail, the listing and the pager.
+          blog_terms: null,
+          blog_archive: null,
+          blog_pager: null,
+        }}
+        ownsPrimary
+        containerClassName="mx-auto max-w-6xl px-4 py-8"
+        fallback={body}
+      />
+    </BlogFeedProvider>
   );
 }
 

@@ -10,6 +10,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { z } from "zod";
 import { BlogArchiveTheme } from "@/components/store/BlogArchiveTheme";
 import { storeBlogIndexFn } from "@/lib/store-blog.functions";
+import { getStoreChrome } from "@/lib/storefront.functions";
 import {
   StorefrontError,
   isStorefrontInfrastructureError,
@@ -36,7 +37,15 @@ export const Route = createFileRoute("/store/$slug/blog/")({
       throw normalizeStorefrontLoaderError(err);
     }
     if (!store) throw notFound();
-    return store;
+    // The theme's `blog_listing` composition (Batch C) — the CLOSED variant
+    // of the `blog` key this surface renders. This route carries a STORE
+    // SLUG, so it can resolve a theme at all (`getStoreChrome` needs one);
+    // with no authored composition the resolution is null and the platform's
+    // own grid renders — never the homepage.
+    const chrome = await getStoreChrome({
+      data: { slug: params.slug, template: "blog", variant: "listing" },
+    }).catch(() => null);
+    return { ...store, chrome };
   },
   head: ({ loaderData }) => {
     if (!loaderData)
@@ -82,6 +91,9 @@ function StoreBlogIndexPage() {
         basePath: (page: number) =>
           page > 1 ? `${basePath}?page=${page}` : basePath,
       }}
+      ast={data.chrome?.ast ?? null}
+      tokens={data.chrome?.tokens ?? null}
+      themeKey={data.chrome?.themeKey ?? null}
       header={
         <header className="mb-8 border-b border-border pb-6">
           <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">

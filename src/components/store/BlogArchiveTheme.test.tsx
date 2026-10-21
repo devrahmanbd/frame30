@@ -79,10 +79,16 @@ describe("BlogArchiveTheme", () => {
     expect(html).not.toContain("No articles published yet.");
   });
 
-  it("forwards themeKey to ThemeChrome with zero behavioral change (generic by design)", () => {
+  it("forwards themeKey to ThemeChrome; with NO composition every key renders identically", () => {
     // Fix round: the prop was accepted but dropped. It is now forwarded;
     // with a null AST the blog has no themed sections, so every key —
     // including songoskriti — renders byte-identical generic markup.
+    //
+    // Batch C: the OLD title of this pin said "generic by design", which
+    // was the wrong BASIS — the platform reader surfaces are store-less,
+    // not themeless. The assertion is unchanged and still true; the two
+    // cases below pin the OPPOSITE behaviour, which is the new truth: with
+    // a composition resolved, the theme's body wraps the same articles.
     const render = (themeKey?: string | null) =>
       renderToStaticMarkup(
         <BlogArchiveTheme
@@ -98,5 +104,79 @@ describe("BlogArchiveTheme", () => {
     expect(themed).toBe(unkeyed);
     expect(foreign).toBe(unkeyed);
     expect(themed).toContain("How a jamdani saree is woven");
+  });
+
+  // Batch C — the pin is REVERSED, and it is STRONGER than the one it
+  // replaces. The old pin said "the blog is themeless by design"; the
+  // measured basis is that the platform reader surfaces are STORE-LESS,
+  // not themeless: a merchant-scoped caller carries a store slug, resolves
+  // the theme's `blog` composition, and wears it around the SAME articles.
+  it("renders the platform's grid byte-identically when NO composition is resolved", () => {
+    // No AST at all — the platform's own surface. The grid is the page.
+    const grid = renderToStaticMarkup(
+      <BlogArchiveTheme
+        feed={feed}
+        header={<h1>Blog</h1>}
+        empty={<p>No articles published yet.</p>}
+      />,
+    );
+    // An explicit null AST is the SAME render — the default is the grid.
+    const explicitNull = renderToStaticMarkup(
+      <BlogArchiveTheme
+        feed={feed}
+        header={<h1>Blog</h1>}
+        empty={<p>No articles published yet.</p>}
+        ast={null}
+        tokens={null}
+      />,
+    );
+    expect(explicitNull).toBe(grid);
+    // The grid carries the article row and the pager.
+    expect(grid).toContain("How a jamdani saree is woven");
+    expect(grid).toContain("/blog/how-jamdani-is-woven");
+  });
+
+  it("wears the theme's composition around the SAME articles when one is resolved", () => {
+    const themed = renderToStaticMarkup(
+      <BlogArchiveTheme
+        feed={feed}
+        header={<h1>Blog</h1>}
+        empty={<p>No articles published yet.</p>}
+        ast={{
+          header: [],
+          main: [
+            {
+              id: "opening-1",
+              type: "heading",
+              props: { text: "Browse the journal" },
+            },
+            {
+              // The pack's listing widget: it reads the SAME feed the
+              // platform's grid reads, through the SAME provider.
+              id: "archive-1",
+              type: "blog_archive",
+              props: {
+                heading: "From the journal",
+                layout: "magazine",
+                columns: 3,
+                limit: 9,
+                showCover: true,
+                showExcerpt: true,
+                showMeta: true,
+              },
+            },
+          ],
+          footer: [],
+        }}
+        tokens={null}
+        themeKey="songoskriti"
+      />,
+    );
+    // The theme's composition rendered …
+    expect(themed).toContain("Browse the journal");
+    // … around the SAME article the platform's grid renders. The feed is
+    // still the platform's: the theme never re-authors the data.
+    expect(themed).toContain("How a jamdani saree is woven");
+    expect(themed).toContain("/blog/how-jamdani-is-woven");
   });
 });

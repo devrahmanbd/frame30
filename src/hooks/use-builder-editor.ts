@@ -11,10 +11,15 @@ import {
   type SectionType,
   type Slot,
   type TemplateKey,
+  type TemplateMap,
   type ThemeAst,
-  type ThemeTemplates,
   type ThemeTokens,
 } from "@/lib/builder-ast";
+import {
+  TEMPLATE_VARIANT_KEYS,
+  baseTemplateKey,
+  type TemplateVariantKey,
+} from "@/lib/template-variants";
 import type { VisibilityRule } from "@/lib/visibility";
 import { getWidget } from "@/lib/unified-widget-registry";
 import {
@@ -36,7 +41,26 @@ import {
   type DropPosition,
 } from "@/lib/builder-tree";
 
-export type EditorDoc = { templates: ThemeTemplates; tokens: ThemeTokens };
+/**
+ * The editor's document.
+ *
+ * `templates` is a `TemplateMap`, not a `ThemeTemplates`: the map carries
+ * the VARIANT keys (`blog_listing`, `blog_article`, `archive_category`, …)
+ * beside the base keys, and a variant is a first-class editable template
+ * from Batch C on — the editor can address it, lint it, save it and publish
+ * it beside its base.
+ */
+export type EditorDoc = { templates: TemplateMap; tokens: ThemeTokens };
+
+/**
+ * The editor's template IDENTITY: a base key, or one of the CLOSED variant
+ * keys (`blog_listing`, `blog_article`, `archive_category`, …).
+ *
+ * Nothing else is addressable. An unvalidated suffix is not a template: the
+ * closed vocabulary (`src/lib/template-variants.ts`) is what the editor, the
+ * routes and the publish gate all agree on.
+ */
+export type EditorTemplateKey = TemplateKey | TemplateVariantKey;
 
 /* ---------------------------------------------------------------------------
  * Frame30 Loop B — client save path: `setPropAt` validation.
@@ -167,7 +191,7 @@ export function validateSchemaPropEdit(
  */
 export function checkSetPropAt(
   doc: EditorDoc | null,
-  template: TemplateKey,
+  template: EditorTemplateKey,
   slot: Slot,
   id: string,
   key: string,
@@ -330,7 +354,7 @@ export function useBuilderEditor(
 
   const actions = useMemo(() => {
     const editSlot = (
-      template: TemplateKey,
+      template: EditorTemplateKey,
       slot: Slot,
       fn: (sections: Section[]) => Section[],
     ) =>
@@ -345,7 +369,7 @@ export function useBuilderEditor(
 
     /** Patch one node anywhere in the tree. */
     const editNode = (
-      template: TemplateKey,
+      template: EditorTemplateKey,
       slot: Slot,
       id: string,
       fn: (section: Section) => Section,
@@ -360,7 +384,7 @@ export function useBuilderEditor(
        * without one it lands at the end of the slot.
        */
       add(
-        template: TemplateKey,
+        template: EditorTemplateKey,
         slot: Slot,
         type: SectionType,
         target?: { parentId?: string | null; index?: number },
@@ -381,7 +405,7 @@ export function useBuilderEditor(
       },
       /** Insert already-built nodes (saved blocks, clipboard) with fresh ids. */
       insert(
-        template: TemplateKey,
+        template: EditorTemplateKey,
         slot: Slot,
         nodes: Section[],
         target?: { parentId?: string | null; index?: number },
@@ -403,14 +427,18 @@ export function useBuilderEditor(
         });
         return copies.map((node) => node.id);
       },
-      remove(template: TemplateKey, slot: Slot, id: string) {
+      remove(template: EditorTemplateKey, slot: Slot, id: string) {
         editSlot(
           template,
           slot,
           (sections) => removeNodes(sections, [id]).tree,
         );
       },
-      removeMany(template: TemplateKey, slot: Slot, ids: readonly string[]) {
+      removeMany(
+        template: EditorTemplateKey,
+        slot: Slot,
+        ids: readonly string[],
+      ) {
         editSlot(
           template,
           slot,
@@ -418,12 +446,17 @@ export function useBuilderEditor(
         );
       },
       /** Reorder within the current parent — the keyboard and arrow-button path. */
-      nudge(template: TemplateKey, slot: Slot, id: string, delta: -1 | 1) {
+      nudge(
+        template: EditorTemplateKey,
+        slot: Slot,
+        id: string,
+        delta: -1 | 1,
+      ) {
         editSlot(template, slot, (sections) => nudge(sections, id, delta));
       },
       /** Drag-and-drop: place `dragId` before/after/inside `targetId`. */
       moveNode(
-        template: TemplateKey,
+        template: EditorTemplateKey,
         slot: Slot,
         dragId: string,
         targetId: string | null,
@@ -433,7 +466,7 @@ export function useBuilderEditor(
           moveRelative(sections, dragId, targetId, position),
         );
       },
-      duplicate(template: TemplateKey, slot: Slot, id: string) {
+      duplicate(template: EditorTemplateKey, slot: Slot, id: string) {
         editSlot(template, slot, (sections) => {
           const found = locate(sections, id);
           if (!found) return sections;
@@ -443,11 +476,15 @@ export function useBuilderEditor(
           return insertNodes(sections, found.parentId, found.index + 1, [copy]);
         });
       },
-      duplicateMany(template: TemplateKey, slot: Slot, ids: readonly string[]) {
+      duplicateMany(
+        template: EditorTemplateKey,
+        slot: Slot,
+        ids: readonly string[],
+      ) {
         for (const id of ids) this.duplicate(template, slot, id);
       },
       setProp(
-        template: TemplateKey,
+        template: EditorTemplateKey,
         slot: Slot,
         id: string,
         key: string,
@@ -470,7 +507,7 @@ export function useBuilderEditor(
        * for legacy widgets (which always pass validation).
        */
       setPropAt(
-        template: TemplateKey,
+        template: EditorTemplateKey,
         slot: Slot,
         id: string,
         key: string,
@@ -502,7 +539,7 @@ export function useBuilderEditor(
       },
       /** Phase 3.2: conditional visibility rules for one node. */
       setWhen(
-        template: TemplateKey,
+        template: EditorTemplateKey,
         slot: Slot,
         id: string,
         rules: VisibilityRule[],
@@ -515,7 +552,12 @@ export function useBuilderEditor(
         });
       },
       /** Phase 3.2: bind (or unbind) a node to an experiment variant. */
-      setAb(template: TemplateKey, slot: Slot, id: string, ab: Section["ab"]) {
+      setAb(
+        template: EditorTemplateKey,
+        slot: Slot,
+        id: string,
+        ab: Section["ab"],
+      ) {
         editNode(template, slot, id, (s) => {
           const next: Section = { ...s };
           if (ab?.experiment && ab.variant) next.ab = ab;
@@ -525,7 +567,7 @@ export function useBuilderEditor(
       },
       /** Drop a breakpoint override so the field inherits the base value again. */
       clearOverride(
-        template: TemplateKey,
+        template: EditorTemplateKey,
         slot: Slot,
         id: string,
         key: string,
@@ -545,7 +587,7 @@ export function useBuilderEditor(
         });
       },
       toggleHidden(
-        template: TemplateKey,
+        template: EditorTemplateKey,
         slot: Slot,
         id: string,
         breakpoint: Breakpoint,
@@ -572,7 +614,7 @@ export function useBuilderEditor(
        * never land as two separate undo entries.
        */
       updateNode(
-        template: TemplateKey,
+        template: EditorTemplateKey,
         slot: Slot,
         id: string,
         fn: (section: Section) => Section,
@@ -584,7 +626,7 @@ export function useBuilderEditor(
        * placement) verbatim, keeping its reserved props, at the given target.
        */
       insertRaw(
-        template: TemplateKey,
+        template: EditorTemplateKey,
         slot: Slot,
         node: Section,
         target?: { parentId?: string | null; index?: number },
@@ -607,7 +649,7 @@ export function useBuilderEditor(
        * nodes, in place, atomically.
        */
       detachPlacement(
-        template: TemplateKey,
+        template: EditorTemplateKey,
         slot: Slot,
         id: string,
         nodes: Section[],
@@ -629,8 +671,15 @@ export function useBuilderEditor(
   }, [commit]);
 
   const issues = useMemo(() => {
-    if (!doc) return {} as Record<TemplateKey, ReturnType<typeof lintTemplate>>;
-    const out = {} as Record<TemplateKey, ReturnType<typeof lintTemplate>>;
+    if (!doc)
+      return {} as Record<
+        TemplateKey | TemplateVariantKey,
+        ReturnType<typeof lintTemplate>
+      >;
+    const out = {} as Record<
+      TemplateKey | TemplateVariantKey,
+      ReturnType<typeof lintTemplate>
+    >;
     // The template KEY is part of the lint contract: templates whose <h1> is
     // supplied by the ROUTE (`ROUTE_H1_TEMPLATES`) must not be told they are
     // missing a primary heading, or a merchant who obeys the warning adds a
@@ -638,6 +687,19 @@ export function useBuilderEditor(
     // its heading, so the warning stays exactly as strict as before.
     for (const key of TEMPLATE_KEYS)
       out[key] = lintTemplate(doc.templates[key] ?? EMPTY_AST, key);
+    // Every VARIANT is linted with its BASE key (`blog_listing` as `blog`),
+    // so a context widget inside a variant is checked against the template
+    // that owns the data. Linting a variant as if it were a template would
+    // make every context widget inside it a publish-blocking "needs data
+    // this template does not provide" error — the same rule the publish
+    // gate applies (`lintTemplateMap`, `src/lib/themes.server.ts`).
+    for (const variant of TEMPLATE_VARIANT_KEYS) {
+      const ast = doc.templates[variant];
+      if (!ast) continue;
+      const base = baseTemplateKey(variant);
+      if (!base) continue;
+      out[variant] = lintTemplate(ast, base);
+    }
     return out;
   }, [doc]);
 
