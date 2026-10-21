@@ -21,7 +21,8 @@ import {
   termArchivePath,
 } from "@/lib/blog-taxonomy";
 import { useLang } from "@/lib/i18n";
-import { BlogArchiveTheme } from "@/components/store/BlogArchiveTheme";
+import { archiveContextFrom } from "@/lib/archive-context";
+import { ArchiveView } from "@/components/store/ArchiveView";
 
 export const Route = createFileRoute("/blog/category/$slug")({
   validateSearch: z.object({
@@ -123,8 +124,25 @@ function CategoryArchive() {
       }))
     : data.facets;
 
+  // The route-owned context — DERIVED from the loader's own output, never
+  // re-queried (`src/lib/archive-context.ts`). The route carries NO store
+  // subject, so it resolves no theme: the platform's grid is what this
+  // surface serves (the archive key's storefront render path in this
+  // programme is the editor and the theme preview host, both merchant-scoped
+  // by construction).
+  const context = archiveContextFrom({
+    kind: "category",
+    term: data.term,
+    articles: data.articles,
+    facets,
+    paging: data.paging,
+    ancestry: data.ancestry,
+  });
+
   return (
-    <BlogArchiveTheme
+    <ArchiveView
+      kind="category"
+      context={context}
       feed={{
         articles: data.articles,
         facets,

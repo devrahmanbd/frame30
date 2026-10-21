@@ -16,7 +16,8 @@ import {
   termArchivePath,
 } from "@/lib/blog-taxonomy";
 import { useLang } from "@/lib/i18n";
-import { BlogArchiveTheme } from "@/components/store/BlogArchiveTheme";
+import { archiveContextFrom } from "@/lib/archive-context";
+import { ArchiveView } from "@/components/store/ArchiveView";
 
 export const Route = createFileRoute("/blog/tag/$slug")({
   validateSearch: z.object({
@@ -109,8 +110,25 @@ function TagArchive() {
   const { t } = useLang();
   const { term } = data;
 
+  // The route-owned context — DERIVED from the loader's own output, never
+  // re-queried (`src/lib/archive-context.ts`). The route carries NO store
+  // subject, so it resolves no theme: the platform's grid is what this
+  // surface serves (the archive key's storefront render path in this
+  // programme is the editor and the theme preview host, both merchant-scoped
+  // by construction).
+  const context = archiveContextFrom({
+    kind: "tag",
+    term: data.term,
+    articles: data.articles,
+    facets: data.facets,
+    paging: data.paging,
+    ancestry: data.ancestry,
+  });
+
   return (
-    <BlogArchiveTheme
+    <ArchiveView
+      kind="tag"
+      context={context}
       feed={{
         articles: data.articles,
         facets: data.facets,
