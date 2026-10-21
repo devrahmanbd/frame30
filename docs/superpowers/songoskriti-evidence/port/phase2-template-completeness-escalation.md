@@ -2536,3 +2536,232 @@ statement. **No ✅ stands on a claim the live build does not deliver**: the
 row says, in the cell, that the state is user-visible **from this commit
 onwards** and that the live build at `bd52c246` still serves the homepage
 for that URL.
+
+---
+
+## (o) The payment-rails defect — the platform's own payment component renders no radios _(appended 2026-10-21 by the closing wave)_
+
+**Appended, not a rewrite: sections (a)–(n) stand as written.** §(j.3) recorded
+the platform's `payment_methods` defect as an **OPEN** item — "recorded, not
+fixed" — because the file that carries it, `src/components/builder/cart.tsx`,
+is §7-prohibited and no owner-approved set included it. **This section
+escalates that file**, records the owner's standing instruction that covers
+it, and states the exact hunks — written **before** the code is touched, per
+§9.
+
+### (o.1) The finding — the platform's own payment component renders a legend and nothing else
+
+**The defect.** `PaymentMethods` builds
+
+```tsx
+const grouped = groupMethods(cart.methods);
+```
+
+— an **array** of `{ layer, methods }` objects
+(`src/lib/payment-rails.ts:358-363`) — and then indexes it **by group name**:
+
+```tsx
+const keys = (grouped[group] ?? []) as PaymentMethodKey[];
+```
+
+(`src/components/builder/cart.tsx:560`, `:584`). Indexing an **array** by a
+string key is always `undefined`; the `?? []` fallback therefore made every
+group empty; every group rendered `null`; and the fieldset rendered its
+legend and **no payment-method radios at all**
+(`src/components/builder/cart.tsx:576-617`). The platform's own
+`groupMethods()` is used **correctly** everywhere else — the production
+checkout route iterates the same array correctly
+(`src/routes/store.$slug.checkout.tsx:405`, `:570-604`, and its custom-host
+twin `src/routes/checkout.tsx:264`, `:427`) — so this one call site is the
+whole defect.
+
+**Measured on the pre-fix tree** (`2f46c634`), with the new suite
+`src/components/builder/cart-payment-methods.test.tsx` rendering the widget
+through `SectionRenderer` over a cart context whose rails are
+`["cod", "bkash", "nagad"]`:
+
+```
+node_modules/.bin/vitest run src/components/builder/cart-payment-methods.test.tsx
+# → Test Files  1 failed (1)
+#   Tests  7 failed | 1 passed (8)
+#   AssertionError: expected [] to deeply equal [ 'cod', 'bkash', 'nagad' ]
+```
+
+The one case that passes on the pre-fix tree is the one that asserts the
+**absence** of radios (a store with no rail offered) — every case that
+expects a radio is red.
+
+**Where it shows — a correction to §(j.3)'s wording.** §(j.3) said "the
+**same defect is on the live checkout**, because the live checkout renders
+the same widget", and the evidence record's §(G.1) repeated it. **That is
+not what the tree does**, and the correction is recorded here because a record
+must not carry a claim the code does not support:
+
+| host                                                        | renders the `payment_methods` widget?                                                                                                                                                     | the defect?                                                                                                    |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| the theme preview's **checkout** tab                        | **yes** — the widget is granted (`src/components/store/ThemePreviewFrame.tsx:686-696`) and the Songoskriti checkout body authors it (`src/lib/themes/songoskriti/preview.ts:359`) | **yes** — the fieldset renders its legend and no radios |
+| the storefront's **cart** route (and its custom-host twin)   | **yes** — the widget is granted (`src/routes/store.$slug.cart.tsx:102-108`, `src/routes/cart.tsx:102-108`)                                                                              | **yes** — same                                                                                                  |
+| the storefront's **checkout** route (and its custom-host twin) | **no** — the route renders its **own** hand-built payment fieldset (`ast={null}` at `src/routes/store.$slug.checkout.tsx:415-421`), built from `groupMethods(offered)` and iterated **correctly** (`:570-604`) | **no** — that route's own radios render one per method |
+
+So the defect is **not** a preview-only artefact: it is in the platform's
+**widget**, and the widget is granted on the storefront's **cart** page
+too. But the production **checkout** page is **unaffected** — it does not
+render the widget at all, and its own hand-built list is correct.
+
+### (o.2) The standing instruction this fix acts under
+
+The owner's standing instruction on this programme (2026-10-20/21) is
+**"as per the expert opinion, whatever goes"**, and the expert's **P0 item
+4** requires the preview's checkout to render theme-specific presentation
+**"from approved platform-owned form and payment components"**. A
+platform-owned payment component that renders **no options** is broken, so
+the preview's authored checkout body cannot be said to present
+platform-owned payment components until this is fixed. **§7 is therefore
+widened for this file, one file at a time**, and this section is that
+record — written **before** the edit, as §9 requires.
+
+### (o.3) The file set — one §7-prohibited file, one NEW test file
+
+| file                                                             | change                                                                                                              | authority                                                                 |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `src/components/builder/cart.tsx`                                | the grouping/lookup in `PaymentMethods` — **nothing else in the file**                                             | **this section** (§(o.2) — the owner's standing instruction)             |
+| `src/components/builder/cart-payment-methods.test.tsx` (**NEW**) | the proof: one radio per method of the group, and no radios for a group with no methods                            | §7's carve-out — "NEW test/fixture files"                                 |
+| `src/lib/themes/songoskriti/unsupported-template-state.test.tsx` | the `?max=` pin (§(o.6)) — the suite this programme created (§(m.3)), grown as §(n.4) grew it from 9 to 15 cases | §7's **Editable** `src/lib/themes/songoskriti/**` path, and this programme's own file |
+
+**Not touched, by rule:** the production checkout route
+(`src/routes/store.$slug.checkout.tsx` and its twin `src/routes/checkout.tsx`
+— the defect is **not** there), the storefront's cart routes, the preview
+host, the theme's own files, the distinctness gate, every other route, and
+the three churn files plus `.output-snapshots/`.
+
+### (o.4) The exact hunks — `src/components/builder/cart.tsx`
+
+**Hunk 1 — the import gains the group's LAYER type** (the lookup is by
+layer, so the layer type is the map's key type):
+
+```diff
+@@ -16,8 +16,9 @@
+ import {
+   METHOD_GROUP_ORDER,
+   groupMethods,
+   methodLabel,
++  type MethodLayer,
+   type PaymentMethodKey,
+ } from "@/lib/payment-rails";
+```
+
+**Hunk 2 — the grouping becomes a lookup keyed by the group's layer** (the
+array `groupMethods()` returns is turned into a map; the data is the
+component's own, unchanged):
+
+```diff
+@@ -557,7 +558,16 @@
+ const PaymentMethods: WidgetComponent = (ctx) => {
+   const { str, Heading, locale } = ctx;
+   const cart = useCartContext();
+-  const grouped = groupMethods(cart.methods);
++  /**
++   * The platform's own grouping. `groupMethods()` returns an ARRAY of
++   * `{ layer, methods }` objects in `METHOD_GROUP_ORDER` order — NOT a map
++   * keyed by group name — so the lookup is by the group's LAYER. (Indexing
++   * the array by a name is always `undefined`, which is why the widget used
++   * to render its legend and no radios at all.)
++   */
++  const byLayer = new Map<MethodLayer, PaymentMethodKey[]>(
++    groupMethods(cart.methods).map((group) => [
++      group.layer,
++      group.methods,
++    ] as const),
++  );
+   const lang = locale === "bn" ? "bn" : "en";
+```
+
+**Hunk 3 — the group reads its own methods out of the map:**
+
+```diff
+@@ -583,7 +593,7 @@
+       {METHOD_GROUP_ORDER.map((group) => {
+-        const keys = (grouped[group] ?? []) as PaymentMethodKey[];
++        const keys = byLayer.get(group) ?? [];
+         if (keys.length === 0) return null;
+         return (
+           <div key={group} className="mt-3">
+```
+
+**What does NOT change.** The fieldset, the legend, the group headings
+(`GROUP_LABEL`), the radio markup, the `name="fq-payment-method"` group, the
+`checked`/`onChange` binding to `cart.method` / `cart.setMethod`, the empty
+state, the note, and the class names — all **byte-identical**. The
+`if (keys.length === 0) return null;` guard stays, so **a group with no
+methods renders no radios and no heading**.
+
+**The security posture is unchanged.** The rails still come from the cart
+context — the server's quote (`cart.methods`), never from a theme prop; the
+totals are still the server's (`cart.totals`); the widget still imports **no
+theme module** and the theme still contributes **nothing** to the payment
+decision. The fix changes **only** which of the platform's own rails the
+platform draws.
+
+### (o.5) The proof
+
+`src/components/builder/cart-payment-methods.test.tsx` (NEW) renders the
+widget through `SectionRenderer` — the same path the storefront's cart route
+and the preview use — over a cart context whose rails the test chooses. Its
+**eight** cases:
+
+1. **one radio per method the server offered** — `["cod", "bkash", "nagad"]`
+   renders exactly three radios, with the values `cod`, `bkash`, `nagad`;
+2. **the platform's own group headings** — "Cash on delivery" and "Mobile
+   wallets", and the labels are the platform's catalogue labels
+   (`methodLabel`);
+3. **a radio per method of EACH group** — one rail in each of the five
+   groups renders five radios and five headings, in the platform's
+   `METHOD_GROUP_ORDER`;
+4. **a group with no methods renders NO radios** — `["cod"]` renders exactly
+   one radio and neither the "Mobile wallets" heading nor bKash/Nagad;
+5. **never offers a rail the server did not offer**;
+6. **the empty state** — no rails offered renders the platform's empty copy
+   and **no** fieldset and **no** radios;
+7. **the same radios on the storefront's cart host** (`template="cart"`);
+8. **the platform stays in charge of the payment decision** — the rendered
+   radios are exactly `groupMethods(cart.methods)`'s methods, in that order,
+   and the selected method is the cart context's own selection.
+
+**The suite is red without the fix** (measured above: 7 of 8 cases fail).
+
+### (o.6) The `?max=` quirk — KNOWN and PINNED (the same round)
+
+§(n.6) measured the `?max=` quirk and deliberately left it **unpinned**,
+because pinning it would have frozen a defect. The closing wave's brief is
+to **pin the CURRENT behaviour** so that a future change **flips a test**
+rather than silently changing behaviour, and to re-label the item as
+**known and pinned** rather than open.
+
+**The measured current behaviour** (the same helper the suite already uses,
+`canonicalPreviewHref`, which reproduces the router's own canonicalisation
+with the **real** router and the route's own `validateSearch`):
+
+| request                                                | the canonical URL the router serves        | the `max` key |
+| ------------------------------------------------------ | ----------------------------------------- | ------------- |
+| `/theme-preview/songoskriti?template=search&max=99900` | `/theme-preview/songoskriti?template=search` | **dropped**  |
+| `/theme-preview/songoskriti?template=search&q=jamdani`  | `/theme-preview/songoskriti?template=search&q=jamdani` | kept |
+
+**The cause**, unchanged: the router's default `parseSearch`
+(`@tanstack/router-core/dist/esm/searchParams.js`, `parseSearchWith`) parses
+`max=99900` as the **number** `99900` (`toValue`, `qss.js`), and
+`validateThemePreviewSearch` accepts `max` only when it is a **string**
+(`src/lib/theme-preview-nav.ts:354-357`), so the second validation drops it.
+
+**The pin** — three cases appended to
+`src/lib/themes/songoskriti/unsupported-template-state.test.tsx`:
+
+1. the validator accepts `max` as a **string** and drops it as a **number**
+   — the quirk's mechanism, pinned at the unit;
+2. the **canonical URL drops `?max=`** — the quirk's effect, pinned at the
+   URL, with the exact canonical href asserted;
+3. **`?q=` survives** — so the pin says which keys are affected and which
+   are not.
+
+**A future fix flips these three cases** (they assert the drop), and the
+fix's own change is then visible as a red test rather than as a silent
+behaviour change.
