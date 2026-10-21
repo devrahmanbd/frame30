@@ -1078,7 +1078,7 @@ plan's Decision Gate carries the same rulings (amended in place, dated).
   `buildHomepageMain`), `collection` and `product`
   (`src/lib/themes/somvabona/preview.ts:52-90`) — and its `default:` branch
   returns `null`, so the other six templates fall through to the engine's
-  **generic** body (`src/lib/theme-preview-nav.ts:357-372`). A gate with no
+  **generic** body (`src/lib/theme-preview-nav.ts:396-440`). A gate with no
   Somvabona expectation table would either fail every Somvabona body or have to
   be weakened to mean nothing; the expert's bar was a Songoskriti proof, and a
   Songoskriti proof is what this programme delivers.
@@ -1090,6 +1090,16 @@ plan's Decision Gate carries the same rulings (amended in place, dated).
   and the table it would extend —
   `src/lib/themes/songoskriti/template-distinctness.ts:132` (a Somvabona table
   beside it, and a Somvabona gate module beside that).
+
+**Citation corrected 2026-10-21 (record-accuracy pass) — D3's reason above
+cited the wrong range for the engine's generic body.** It read
+`src/lib/theme-preview-nav.ts:357-372`; that range is the **search-param
+validator** (`search.max` and friends), not the generic body. The generic body
+is **`src/lib/theme-preview-nav.ts:396-440`** — `GENERIC_TITLES` at `:413` and
+the *"Demo page. The live theme authors this template — what you see here is
+the engine fallback."* body at `:440` (verified by reading the file at
+`4206f9a2`). The ruling itself is unchanged. The same citation is corrected in
+the phase-2 plan's **D3** entry and in the closing wave A report.
 
 #### D5 — the storefront reader blog: **"themeless by design" stands**
 
@@ -1354,6 +1364,56 @@ machine baseline is the **viewport** (1440×900). Ten of the 42 differences sit
 threshold and Playwright did not rewrite those machine baselines. That is the
 expected consequence of the spec's own capture geometry, not a discrepancy.
 
+**CORRECTION (2026-10-21, record-accuracy pass) — the "below the fold"
+explanation above is FALSE, and its parenthesis is incomplete.** Measured on
+the **committed** artefacts at `4206f9a2` — the 59 human stills in
+`docs/superpowers/songoskriti-evidence/port/reference/` and the 59 machine
+baselines in `.e2e/songoskriti-port-parity.spec.ts-snapshots/`, the pre-freeze
+blobs taken from `a93ebfd2` with `git show`:
+
+1. **Every still in the freeze is viewport-height, so there is no below-the-fold
+   content at all.** All **59** human stills and all **59** machine baselines are
+   exactly **900 px** tall — **22 × 1440×900, 19 × 375×900, 18 × 768×900** in
+   **each** of the two directories (read from the PNG headers). The preview
+   page's document height therefore **equals** the viewport height, and the
+   `fullPage` capture and the viewport capture are **the same pixels**: under
+   the spec's own comparator (Playwright's `pixelmatch`, `threshold: 0.2`) the
+   **pre-freeze** human still and the **pre-freeze** machine baseline are
+   identical for **all 59** files — **0** differing pixels, **0.000 %**.
+2. **Every difference is inside the viewport.** All **42** changed stills have
+   their materially differing pixels **within** the 900 rows — rows **92…899**
+   (the comparator's differing-pixel rows; the lowest is `checkout-375-en` at
+   row 92, the highest is row 899). Nothing in these captures is below the
+   fold, because nothing is below the fold.
+3. **The 10 machine baselines Playwright did not rewrite are the ones whose
+   difference stayed inside the spec's ratio tolerance, and they still carry
+   the pre-freeze pixels:** `account-1440-bn` (0.48 %), `cart-375-bn`
+   (1.71 %), `cart-768-bn` (1.00 %), `cart-768-en` (1.43 %) and the six
+   `product-*` stills (≤ 0.51 %) — every one **≤ `maxDiffPixelRatio` 0.02**.
+   **The parenthesis above omitted `cart-768-en`**; the corrected list of ten is
+   the one here.
+4. **The table above counts in a stricter reading of the threshold than the one
+   Playwright applies.** Under the spec's own comparator the 118 files split
+   **64 materially changed** (32 human stills + 32 machine baselines), **10
+   changed but within the threshold** (the ten listed above) and **44
+   byte-identical** (17 human + 27 machine). The table's **66 / 8 / 44** comes
+   from the **per-channel** reading of the same threshold (a pixel differs when
+   **any** channel moves by more than `0.2 × 255 = 51`), and the table's own
+   figures are that reading (`cart-768-bn` 1.83 %, `account-1440-bn` 0.86 %,
+   `cart-375-bn` 3.19 %) — under it `cart-375-bn` and `cart-768-en` also exceed
+   2 %, which is why the table lists eight where the comparator lists ten. The
+   **machine** side is identical under both readings: **32** rewritten, **27**
+   byte-identical.
+
+**The mechanism, stated once: all 42 differences are inside the viewport; 10 of
+them are small enough that the spec's own tolerance accepts them, and those 10
+baselines are exactly the ones Playwright left in place.** A bare
+`--update-snapshots` is Playwright's **`changed`** mode
+(`node_modules/playwright/lib/program.js:395`), which rewrites a baseline only
+when the comparator says the snapshot does not match
+(`node_modules/playwright/lib/matchers/toMatchSnapshot.js:208-215`) — so a
+difference **inside** the tolerance leaves the old baseline on disk.
+
 **Why each surface changed — the new copy, fetched from the live preview:**
 
 | template | now renders (verified in the served HTML) |
@@ -1428,6 +1488,15 @@ stamps the SHA it reads from `git rev-parse HEAD` at module load, so the
 freeze SHA necessarily names the *parent* of the commit that carries the
 baselines; that is the spec's design, not a drift.
 
+**Amended 2026-10-21 (record-accuracy pass) — the manifest state above is the
+state at `afde2871`, not at HEAD.** The committed manifest after `4206f9a2` is
+stamped **`freezeSha: afde28712f8e`** and
+**`generatedAt: 2026-10-21T03:43:55.648Z`** (60 entries — 59 `pass` + the one
+`manual-review` — all 60 stamped `afde28712f8e`); the re-run that re-stamped
+it is **§(L.6)**. Both `freezeSha` values are correct **for the tree that
+carried the baselines at the time they were written** — `a93ebfd29c4c` is
+simply no longer what the committed manifest says.
+
 **The 84 stale files are no longer stale.** `reference/` and the snapshot
 directory now hold the current programme's pixels, and the two directories
 that §(D) named are the two directories that changed.
@@ -1475,10 +1544,40 @@ touched is `reference-manifest.json`, and the only fields that moved in it are
 (same outfiles, same URLs, same `pass` / `manual-review` statuses, same
 thresholds, same `catalogue`).
 
-So the freeze is **deterministic** on this environment: the same tree renders
-the same pixels, the committed baselines match a fresh render exactly, and the
+**Amended 2026-10-21 (record-accuracy pass) — `0` baselines re-generated is
+guaranteed by construction, so it is not the evidence; "60 passed" is.** A run
+**without** `--update-snapshots` uses Playwright's default
+`updateSnapshots: "missing"`
+(`node_modules/playwright/lib/common/config.js:94`), and `toMatchSnapshot`
+writes a baseline **only when the file does not exist**
+(`node_modules/playwright/lib/matchers/toMatchSnapshot.js:198-199`) — an
+existing baseline that differs **fails the test** instead of being rewritten
+(`:216-220`, `:142-168`). So the meaningful result of the re-run is **60
+passed, 1 skipped** — the committed freeze is *accepted* by the suite — and
+not "0 re-generated", which the `missing` mode guarantees whether or not the
+render is deterministic.
+
+So the freeze is **reproducible** on this environment: the same tree renders
+the same pixels, the committed baselines match a fresh render **within the
+spec's own thresholds** (`maxDiffPixelRatio` 0.02, `threshold` 0.2), and the
 suite that produced them is green against them. `freezeSha` now names the
 commit that **carries** the baselines (`afde28712f8e`), which is the tree that
 renders these pixels — the source code is identical to the tree the freeze was
 first captured from (`a93ebfd2`; the intervening commit changed baselines and
 documents only, no `src/`), and the re-run proves the pixels are the same.
+
+**Amended 2026-10-21 (record-accuracy pass) — "match a fresh render exactly"
+was too strong, and the sentence above now says what the evidence supports.**
+The comparison is **within the spec's thresholds**, not exact: **10** of the 59
+machine baselines still differ from the fresh render — `cart-375-bn` (1.71 %
+under the spec's comparator; 3.19 % under the per-channel reading),
+`cart-768-en` (1.43 % / 2.42 %), `cart-768-bn` (1.00 % / 1.83 %),
+`account-1440-bn` (0.48 % / 0.86 %) and the six `product-*` baselines
+(≤ 0.51 % / ≤ 0.86 %) — every one of them **inside** `maxDiffPixelRatio` 0.02,
+which is exactly why Playwright accepted them and left the files alone (§(L.3)).
+The remaining **49** machine baselines are byte-identical to the committed
+freeze: the **32** that were rewritten *are* the fresh render's pixels
+byte-for-byte (Playwright wrote the rendered buffer to the file), and the
+**17** that were never rewritten are the ones whose fresh render matched within
+the same thresholds. The same measurement, method and numbers are in
+**§(L.3)**'s correction.
