@@ -108,6 +108,11 @@ export function songoskritiPreviewSource(
           //   occasion  — bridal, festive, wedding: editorial intro + subnav
           return [
             s("category_header", {
+              // The DECLARED `heading` field (Batch D, self-critique fix 3):
+              // the legacy `text` prop is dropped by the sanitiser, so the
+              // storefront would show the catalogue's default instead of the
+              // theme's own title.
+              heading: "New Arrivals",
               text: "New Arrivals",
               text_bn: "নতুন এসেছে",
               description:

@@ -215,7 +215,12 @@ function AccountPage() {
     const row = overview?.profile
       ? mapProfileToRow(overview.profile)
       : undefined;
-    if (p) {
+    // (Batch D, self-critique fix 2) The theme's profile card is the shopper's
+    // OWN profile — it is granted to a SIGNED-IN shopper only. An anonymous
+    // visitor gets the platform's single, designed order-lookup panel; the
+    // widget's own bare "Sign in to continue." prompt is a SECOND sign-in
+    // block, in a different type language, directly above it.
+    if (p && signedIn) {
       out.profile_card = (
         <ProfileCard
           {...accountSlotCtx(p, {
@@ -228,7 +233,7 @@ function AccountPage() {
       );
     }
     return out;
-  }, [chrome, overview, pending, lang, slug]);
+  }, [chrome, overview, pending, lang, slug, signedIn]);
 
   // The composed profile card. The THEME places it when its account body
   // carries a `profile_card` section (the slot above); when it does not, the

@@ -2271,7 +2271,12 @@ const SongoskritiCategoryHeader: WidgetComponent = ({
   link,
   section,
 }) => {
-  const title = str("title") || str("text") || "Collection";
+  // The DECLARED catalogue field is `heading` (`src/lib/builder-ast.ts:2719`);
+  // `title` / `text` are NOT declared, so the sanitiser drops them on the way
+  // to storage and the storefront would fall through to the literal
+  // "Collection" on every band. The declared field is therefore the last prop
+  // in the chain, and the legacy props keep the preview identical.
+  const title = str("title") || str("text") || str("heading") || "Collection";
   const titleBn = str("title_bn") || str("text_bn") || title;
   const desc = str("description") || str("body") || "";
   const descBn = str("description_bn") || str("body_bn") || desc;

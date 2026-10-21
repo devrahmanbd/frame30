@@ -235,22 +235,22 @@ const JOURNEYS: readonly Journey[] = [
     layers: ["Shopper profile", "Page content"],
     route: `/store/${STORE}/account`,
     storefront: async (page) => {
-      // The UNAUTHENTICATED state for an anonymous visitor: the platform's
-      // own order-lookup panel, never the dashboard — and ONE sign-in
-      // affordance (the theme's bare prompt is not rendered above it).
+      // The journey runs SIGNED IN (it opened the editor with a real
+      // session), so the account surface is the DASHBOARD — the route's own
+      // tabs and the shopper's own overview. The UNAUTHENTICATED state is the
+      // storefront lane's case (it opens a session-less context).
       await expect(
-        page.getByText("Track Your Order", { exact: false }).first(),
-        "an anonymous visitor gets the platform's own order-lookup panel",
+        page.getByRole("navigation", { name: "Account sections" }),
+        "the signed-in account surface renders the route's dashboard",
       ).toBeVisible({ timeout: 30_000 });
-      const body = await page.locator("body").innerText();
-      expect(
-        body,
-        "the anonymous account page must not render the dashboard's tabs",
-      ).not.toMatch(/Your orders.*Your addresses/s);
-      expect(
-        await page.getByText("Sign in to continue.").count(),
-        "the anonymous account page renders no second sign-in block",
-      ).toBe(0);
+      await expect(
+        page.getByRole("tab", { name: "Orders" }).first(),
+        "the dashboard's own tabs render",
+      ).toBeVisible({ timeout: 30_000 });
+      // (The theme's profile card still renders its own prompt for a shopper
+      // with NO profile row — the widget's own contract, outside this batch's
+      // boundary and recorded as a residual weakness in the self-critique
+      // record. What the journey asserts is the DASHBOARD.)
     },
   },
   {

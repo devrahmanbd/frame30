@@ -38,6 +38,7 @@ import {
 import { getStoreChrome } from "@/lib/storefront.functions";
 import { BlogFeedProvider, type BlogFeed } from "@/components/builder/blog";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
+import { StoreHeader } from "@/components/store/StoreHeader";
 import {
   StorefrontError,
   isStorefrontInfrastructureError,
@@ -175,6 +176,15 @@ function StoreBlogArticlePage() {
         `/store/${data.merchantSlug}/blog`,
       )}
     >
+      {/* The store's chrome (Batch D, self-critique fix 1): the article is a
+          STOREFRONT surface, so it carries the store's header — the same one
+          the cart, account, search, checkout and page routes render. */}
+      <StoreHeader
+        slug={data.merchantSlug}
+        name={merchantName}
+        menus={data.chrome?.menus ?? []}
+        themeKey={data.chrome?.themeKey ?? null}
+      />
       <ThemeChrome
         template="blog"
         ast={data.chrome?.ast ?? null}

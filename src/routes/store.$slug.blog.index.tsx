@@ -9,6 +9,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { z } from "zod";
 import { BlogArchiveTheme } from "@/components/store/BlogArchiveTheme";
+import { StoreHeader } from "@/components/store/StoreHeader";
 import { storeBlogIndexFn } from "@/lib/store-blog.functions";
 import { getStoreChrome } from "@/lib/storefront.functions";
 import {
@@ -83,45 +84,57 @@ function StoreBlogIndexPage() {
   const basePath = storeBlogBasePath(data.settings);
 
   return (
-    <BlogArchiveTheme
-      feed={{
-        articles: data.listing.articles,
-        facets: data.listing.facets,
-        paging: data.listing.paging,
-        basePath: (page: number) =>
-          page > 1 ? `${basePath}?page=${page}` : basePath,
-      }}
-      ast={data.chrome?.ast ?? null}
-      tokens={data.chrome?.tokens ?? null}
-      themeKey={data.chrome?.themeKey ?? null}
-      header={
-        <header className="mb-8 border-b border-border pb-6">
-          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-            {merchantName}
-          </p>
-          <h1 className="mt-1 font-bangla-display text-3xl font-semibold">
-            {t("Blog", "ব্লগ")}
-          </h1>
-          {data.listing.paging.total > 0 ? (
-            <p className="mt-2 text-xs text-muted-foreground">
-              {t(
-                `${data.listing.paging.total} articles`,
-                `${data.listing.paging.total}টি লেখা`,
-              )}
+    <>
+      {/* The store's chrome (Batch D, self-critique fix 1): the blog listing is a
+          STOREFRONT surface, so it carries the store's header — the same one the
+          cart, account, search, checkout and page routes render. Without it the
+          reader lands on a page with no navigation, no logo and no cart. */}
+      <StoreHeader
+        slug={data.merchantSlug}
+        name={merchantName}
+        menus={data.chrome?.menus ?? []}
+        themeKey={data.chrome?.themeKey ?? null}
+      />
+      <BlogArchiveTheme
+        feed={{
+          articles: data.listing.articles,
+          facets: data.listing.facets,
+          paging: data.listing.paging,
+          basePath: (page: number) =>
+            page > 1 ? `${basePath}?page=${page}` : basePath,
+        }}
+        ast={data.chrome?.ast ?? null}
+        tokens={data.chrome?.tokens ?? null}
+        themeKey={data.chrome?.themeKey ?? null}
+        header={
+          <header className="mb-8 border-b border-border pb-6">
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              {merchantName}
             </p>
-          ) : null}
-        </header>
-      }
-      empty={
-        <p className="rounded-lg border border-dashed border-border px-4 py-12 text-center text-sm text-muted-foreground">
-          {data.listing.paging.overrun
-            ? t("That page does not exist yet.", "এই পেজটি এখনো নেই।")
-            : t(
-                "No articles published yet.",
-                "এখনো কোনো লেখা প্রকাশ করা হয়নি।",
-              )}
-        </p>
-      }
-    />
+            <h1 className="mt-1 font-bangla-display text-3xl font-semibold">
+              {t("Blog", "ব্লগ")}
+            </h1>
+            {data.listing.paging.total > 0 ? (
+              <p className="mt-2 text-xs text-muted-foreground">
+                {t(
+                  `${data.listing.paging.total} articles`,
+                  `${data.listing.paging.total}টি লেখা`,
+                )}
+              </p>
+            ) : null}
+          </header>
+        }
+        empty={
+          <p className="rounded-lg border border-dashed border-border px-4 py-12 text-center text-sm text-muted-foreground">
+            {data.listing.paging.overrun
+              ? t("That page does not exist yet.", "এই পেজটি এখনো নেই।")
+              : t(
+                  "No articles published yet.",
+                  "এখনো কোনো লেখা প্রকাশ করা হয়নি।",
+                )}
+          </p>
+        }
+      />
+    </>
   );
 }
