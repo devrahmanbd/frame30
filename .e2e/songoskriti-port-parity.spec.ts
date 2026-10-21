@@ -43,6 +43,7 @@ const TEMPLATES = [
   "cart",
   "checkout",
   "search",
+  "archive",
 ] as const;
 const WIDTHS = [1440, 768, 375] as const;
 const LOCALES = ["en", "bn"] as const;

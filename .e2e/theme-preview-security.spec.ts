@@ -572,6 +572,7 @@ test("4 — full preview interaction emits zero non-loopback responses", async (
       "account",
       "blog",
       "page",
+      "archive",
     ]) {
       console.log(`[e2e exfil] template sweep: ${template}`);
       const res = await page.goto(`${PREVIEW}?template=${template}`, {

@@ -4215,3 +4215,637 @@ $ node_modules/.bin/vitest run
 The same three **pre-existing** failures, the same file and test counts as the run quoted
 in §(l.6) — the correction changed no observable behaviour. The typecheck is clean
 (`tsgo --noEmit`, exit 0) and the lint reports the same three pre-existing warnings.
+
+---
+
+## (m) Batch D — the test lanes: the three `.e2e` sweeps gain `archive` (appended, 2026-10-21)
+
+**Branch:** `frame30` · **Base commit:** `26ff6fd2` (`docs(escalation): the fix round's three commits, and the correction to its one-commit statement`) — the tip after Batch C's fix round.
+**Plan:** `docs/superpowers/plans/2026-10-21-frame30-core-cms-upgrade.md` — **Task 7** (the test lanes) and **Task 8** (the self-critique pass).
+**Governing spec:** port spec §7 (Boundary) and §9 (Testing & evidence).
+
+### (m.1) The finding
+
+**Three existing `.e2e/**` files walk a list of template keys, and all three omitted
+`archive` — the tenth template and the one whose body a merchant authors.** Port spec §7
+prohibits *"existing `.e2e/**` files (specs and `playwright.config.ts`; new `.e2e` specs /
+helpers are additive-only, config edits escalate)"*, so every one of the three edits below
+is **escalation-required**, and this section is written **before** the first of them.
+
+The three omissions are the same omission with three different consequences:
+
+1. `.e2e/songoskriti-port-parity.spec.ts` — the **parity harness**. Its `TEMPLATES` list
+   (`:36-46`) drives the frozen capture: 9 templates × 3 widths × 2 locales = 54 stills
+   plus 6 chrome stills. With `archive` absent, **the new surface is never captured and
+   never compared** — the parity harness is blind to the exact surface Decision **D1'**
+   created.
+2. `.e2e/real-frames.spec.ts` — the **real-frame sweep** (`:63-73`). It opens
+   `/theme-preview/<theme>?template=<key>` for every template and counts the REAL (sandboxed)
+   frames the preview renders. With `archive` absent, the archive preview's frames are
+   never inspected, so a frame the archive body mounts would go unreported.
+3. `.e2e/theme-preview-security.spec.ts` — the **preview exfiltration probe** (`:567-575`).
+   It sweeps seven `?template=` variants with a hover on each, asserting that nothing
+   reaches outside loopback. With `archive` absent, the archive preview — the body a
+   merchant authors and the one the archive key makes authorable — **was never swept**.
+   This file is assigned to Task 7 by the plan itself (2026-10-21) and was owned by no task
+   before it.
+
+All three edits are **ADDITIONS**. No entry is removed, renamed or reordered, no assertion
+is weakened, and no baseline is rewritten.
+
+### (m.2) The exact old → new diff
+
+```diff
+--- a/.e2e/songoskriti-port-parity.spec.ts
++++ b/.e2e/songoskriti-port-parity.spec.ts
+@@ -36,14 +36,15 @@
+ const TEMPLATES = [
+   "index",
+   "product",
+   "collection",
+   "account",
+   "page",
+   "blog",
+   "cart",
+   "checkout",
+   "search",
++  "archive",
+ ] as const;
+ const WIDTHS = [1440, 768, 375] as const;
+```
+
+```diff
+--- a/.e2e/real-frames.spec.ts
++++ b/.e2e/real-frames.spec.ts
+@@ -63,14 +63,15 @@
+ const TEMPLATES = [
+   "index",
+   "product",
+   "collection",
+   "account",
+   "page",
+   "blog",
+   "cart",
+   "checkout",
+   "search",
++  "archive",
+ ] as const;
+ const INDEX_VARIATIONS: Record<(typeof THEMES)[number], string[]> = {
+```
+
+```diff
+--- a/.e2e/theme-preview-security.spec.ts
++++ b/.e2e/theme-preview-security.spec.ts
+@@ -565,12 +565,13 @@
+     // Template-switch sweep (?template= variants) with hover per template.
+     for (const template of [
+       "product",
+       "collection",
+       "search",
+       "cart",
+       "account",
+       "blog",
+       "page",
++      "archive",
+     ]) {
+```
+
+### (m.3) What this batch does NOT do to the frozen evidence
+
+**The machine baselines are NOT written here and the human captures in `reference/` are
+NOT rewritten.** The parity harness is run in **compare mode** only (never
+`--update-snapshots`), and only against the repo's **throwaway** stack
+(`docker-compose.e2e.yml`, project `e2e-supabase`, `http://127.0.0.1:58000`) — never
+against the configured database, whose `.env` routes to the **production** database
+container (`report.md` §5.1 D6). The re-freeze that would write the `archive` baselines is
+the **owner's action** under Decision Gate **G3**, and it happens on the throwaway stack.
+
+**The consequence, stated plainly:** the `archive` captures the harness now attempts have
+**no machine baseline yet**, so the harness's `toHaveScreenshot` for `archive` has nothing
+to compare against and **fails** until the owner re-freezes. That is the honest state of
+the world and it is **not** papered over here: the batch's parity run is reported with
+that measurement (see §(m.5)), and the plan's own commits write nothing into
+`reference/` or into the snapshot directory.
+
+### (m.4) Backward compatibility
+
+The `archive` key rides the same `templates` jsonb map as every other key
+(`src/lib/builder-ast.ts`), so these three edits change **no** persisted state, **no**
+schema and **no** runtime behaviour: they widen three *test* lists. The preview route
+already answers `?template=archive` with the theme's authored archive body (the key is in
+`TEMPLATE_KEYS` since Task 1), so the three sweeps reach a live, 200-responding surface.
+
+### (m.5) The rules that hold throughout this batch
+
+No new npm dependency and no lockfile change. No test is weakened, deleted or skipped —
+the three edits are pure additions to a list, and each sweep therefore **asserts more**
+than before. Every commit stages **explicit paths** only. The three churn files
+(`.artifacts/e2e/playwright-report/index.html`, `ops/routing/canary-weights.conf`,
+`ops/routing/upstream.conf`) and `.output-snapshots/` are never staged and never
+committed.
+
+### (m.6) The boundary
+
+This section escalates **exactly three files**, all of them existing `.e2e/**` specs named
+by the plan's Decision Gate **G1** ("existing `.e2e` files — `.e2e/real-frames.spec.ts` ·
+`.e2e/songoskriti-port-parity.spec.ts`") and by the plan's Task 7 Files block, plus
+`.e2e/theme-preview-security.spec.ts`, which the plan's Task 7 Files block names as
+assigned-to-Task-7 on 2026-10-21. No file outside that list is edited by this section.
+
+---
+
+## (n) Batch D — two defects the Task 7 lanes found, and their fixes (appended, 2026-10-21)
+
+**Branch:** `frame30` · **Base commit:** `26ff6fd2`.
+**Plan:** `docs/superpowers/plans/2026-10-21-frame30-core-cms-upgrade.md` — **Task 7** (the test lanes) and **Task 8** (the self-critique pass).
+**Governing spec:** port spec §7 (Boundary) and §9 (Testing & evidence).
+
+### (n.1) The finding
+
+Task 7's two browser lanes are the first time the editor's **variant** surface and the
+store-scoped blog article route are driven through a real browser. Both found a defect,
+and both are recorded here **before** the edit.
+
+**(1) The studio CRASHES when a merchant selects a VARIANT.** Batch C made the editor's
+selected template identity a base key **or** a variant key
+(`EditorTemplateKey`, `src/routes/_authenticated/dashboard/builder.tsx:448`) and taught
+the publish modal the variant-aware label (`templateLabel`, `:609-611`) — but the
+**canvas breadcrumb** still indexed the BASE-only label map with the selected identity:
+
+```
+src/routes/_authenticated/dashboard/builder.tsx:2208
+  {t(TEMPLATE_LABEL[template].en, TEMPLATE_LABEL[template].bn)}
+```
+
+`TEMPLATE_LABEL` is a `Record<TemplateKey, …>` — it has **no** `archive_category`,
+`archive_tag`, `archive_author`, `blog_listing` or `blog_article` key — so the read is
+`undefined.en` and the whole studio dies:
+
+```
+TypeError: Cannot read properties of undefined (reading 'en')
+    at BuilderStudio (src/routes/_authenticated/dashboard/builder.tsx)
+```
+
+**Measured on the throwaway stack (2026-10-21, Chromium):** selecting
+`Archive category` in the editor's own variant strip (or the `Archive category` entry
+of the top bar's template switcher) replaces the whole page with the route's error
+boundary — *"This page didn't load / Something went wrong. Try again — nothing was
+lost."* — and the studio is unusable. **Every** variant of every base is affected: the
+whole of Batch C's variant surface is unreachable in the browser. The unit suites did
+not catch it because they never render the studio.
+
+**(2) The store-scoped blog article route answers 404 for EVERY article.** The route
+file was `src/routes/store.$slug.blog.$slug.tsx` — path `/store/$slug/blog/$slug` —
+with **two** path parameters of the same name. TanStack Router matches both segments
+into the **same** `params.slug` key, so only ONE slug survives, and the loader read the
+STORE slug as the ARTICLE slug:
+
+```
+src/routes/store.$slug.blog.$slug.tsx:55-57
+  storeBlogArticleFn({ data: { slug: params.slug, articleSlug: params.slug } })
+```
+
+`storeBlogContext` then looks the merchant up **by slug**
+(`merchantIdForSlug`, `src/lib/storefront-host.server.ts:393-403`) with the ARTICLE's
+slug, finds no merchant, and the route throws `notFound()`.
+
+**Measured on the throwaway stack (2026-10-21):** the article row was visible to the
+very same anon query the loader makes (PostgREST returned the row for
+`merchant_id=eq.<demo>`, `slug=eq.the-jamdani-weavers-of-sonargaon`, `status=eq.published`,
+`published_at=lte.now`, `deleted_at=is.null`), the store's own blog LISTING rendered the
+article, and the article route still answered **404 "Article not found"** — with **no**
+`render_read.failed` event in the server log, which is what proves the loader never
+reached the article query: the merchant context was already null. The route could only
+ever resolve an article whose slug **equalled** the store's slug, so it was unusable for
+every real article.
+
+This is a **pre-existing** defect (the file was created in `11d4265f`, before this
+programme), but it is on the surface Task 7.4 must assert — *"the blog listing and the
+blog article render **different** compositions"* — and the theme's `blog_article`
+composition (Batch C) is unreachable without it.
+
+### (n.2) The exact old → new diff
+
+```diff
+--- a/src/routes/_authenticated/dashboard/builder.tsx
++++ b/src/routes/_authenticated/dashboard/builder.tsx
+@@ -606,9 +606,12 @@ function BuilderStudio() {
+   const selectedBase = baseTemplateKey(template) ?? "index";
+   const selectedVariant = isTemplateVariantKey(template) ? template : null;
+-  const templateLabel = selectedVariant
+-    ? TEMPLATE_VARIANT_LABEL[selectedVariant].en
+-    : TEMPLATE_LABEL[selectedBase].en;
++  // The label PAIR of the selected identity: the variant's own label when a
++  // variant is selected, the base's otherwise. `TEMPLATE_LABEL` is a BASE-only
++  // map, so the selected identity — which may be a VARIANT key — must never be
++  // used to index it (that read is `undefined` and crashed the studio).
++  const templateLabelPair = selectedVariant
++    ? TEMPLATE_VARIANT_LABEL[selectedVariant]
++    : TEMPLATE_LABEL[selectedBase];
++  const templateLabel = templateLabelPair.en;
+   const sections = ast[slot];
+@@ -2205,7 +2208,7 @@ function BuilderStudio() {
+               <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground pr-2 border-r border-border/60">
+                 <span className="font-semibold text-foreground">
+-                  {t(TEMPLATE_LABEL[template].en, TEMPLATE_LABEL[template].bn)}
++                  {t(templateLabelPair.en, templateLabelPair.bn)}
+                 </span>
+```
+
+```diff
+--- a/src/routes/store.$slug.blog.$slug.tsx
++++ b/src/routes/store.$slug.blog.$articleSlug.tsx
+@@
+-export const Route = createFileRoute("/store/$slug/blog/$slug")({
++export const Route = createFileRoute("/store/$slug/blog/$articleSlug")({
+   loader: async ({ params }) => {
+     let store;
+     try {
+       store = await storeBlogArticleFn({
+-        data: { slug: params.slug, articleSlug: params.slug },
++        data: { slug: params.slug, articleSlug: params.articleSlug },
+       });
+```
+
+The file is **renamed** (`git mv`), because the route path is derived from the file
+name; the URL shape is **unchanged** (`/store/<slug>/blog/<article>`), and no link in
+the tree referenced the old path (`grep -rn 'store/\$slug/blog/\$slug' src/` matched only
+the route file itself and the generated tree). `src/routeTree.gen.ts` is **generated**
+by the TanStack Router Vite plugin and is regenerated by it; the diff is **20
+insertions / 19 deletions**, all of them the renamed route's id, path, import and type
+entries — no unrelated churn.
+
+### (n.3) Backward compatibility
+
+- **The studio fix** changes no behaviour for a BASE template: `templateLabelPair` is
+  `TEMPLATE_LABEL[selectedBase]` for every base key, exactly what the old code read
+  through `TEMPLATE_LABEL[template]`. For a VARIANT it now reads the variant's own
+  label instead of crashing.
+- **The route fix** changes the URL shape **not at all**; only the *name* of the second
+  path parameter changes, so the two slugs stop colliding. A merchant's saved links
+  (`/store/<slug>/blog/<article>`) keep resolving; the route's own canonicals
+  (`storeBlogBasePath`, `storeArticleHead`) are untouched.
+- No migration, no DDL, no persisted state changes.
+
+### (n.4) The platform's authority (unchanged)
+
+Neither fix touches authorisation, tenancy, pricing or the payment rails. The studio
+still lints and publishes through `publishVersion`; the article route still resolves
+the merchant by slug and the article by the platform's own published-status rules
+(`status = 'published'`, `published_at <= now`, `deleted_at is null`).
+
+### (n.5) The rules that hold throughout this batch
+
+No new npm dependency and no lockfile change. No test is weakened, deleted or skipped.
+Every commit stages **explicit paths** only. The three churn files
+(`.artifacts/e2e/playwright-report/index.html`, `ops/routing/canary-weights.conf`,
+`ops/routing/upstream.conf`) and `.output-snapshots/` are never staged and never
+committed.
+
+### (n.6) The boundary
+
+This section escalates **three** §7-prohibited files: the two route files above (both
+named by the plan's Decision Gate **G1** — `src/routes/_authenticated/dashboard/builder.tsx`
+and `src/routes/store.$slug.blog.$slug.tsx`) and the **generated** `src/routeTree.gen.ts`,
+which is regenerated by the router's own Vite plugin as a mechanical consequence of the
+route rename. No file outside that list is edited by this section.
+
+---
+
+## (o) Batch D — the install seeds the theme's VARIANT defaults (appended, 2026-10-21)
+
+**Branch:** `frame30` · **Base commit:** `26ff6fd2`.
+**Plan:** `docs/superpowers/plans/2026-10-21-frame30-core-cms-upgrade.md` — **Task 7** (the test lanes).
+
+### (o.1) The finding
+
+Task 7.4 must assert that *"the blog listing and the blog article render **different**
+compositions"*. On the throwaway stack they render the **same** composition, and the
+reason is a gap in the **install seed**, not in the routes.
+
+**The theme AUTHORS two variant bodies** — `blog_listing` (the pack: the terms rail, the
+article grid and the pager) and `blog_article` (the theme's frame around the article: the
+route-owned body slot, the related-content rail and the newsletter) —
+`src/lib/themes/songoskriti/preview.ts:479-530` (`variantMain`). They are assembled into
+the theme's preview preset as a **separate map**, `variants`
+(`src/lib/theme-preview-nav.ts:535-560`).
+
+**But the PACKAGE that seeds a merchant's installation carries only the BASE keys.**
+`registryPackage` (`src/lib/themes.server.ts:1222-1245`) returns
+`preview.templates` — the base map — and never `preview.variants`:
+
+```ts
+const preview = resolveThemePreview(key);
+if (preview) {
+  return {
+    templates: preview.templates as ThemeTemplates,   // ← the base keys only
+    tokens: preview.tokens,
+    version: "1.0.0",
+  };
+}
+```
+
+**Measured on the throwaway stack (2026-10-21):** the installed theme's
+`theme_versions.templates` map carries exactly the **ten base keys** — `account, archive,
+blog, cart, checkout, collection, index, page, product, search` — and **no variant key**.
+So the merchant's storefront resolves `blog_listing` and `blog_article` through
+`resolveTemplate`'s fallback to the **base `blog` body**, and the two surfaces render the
+SAME composition. The editor's variant strip opens an **empty canvas** for the same
+reason: the merchant's map carries no variant body to edit.
+
+This is the mirror image of the gap §(h.2) closed — *"the package's map carries only the
+base keys"* — which is why Batch C's own seed-merge fix (keep the MERCHANT's variant
+keys) was necessary but not sufficient: the merchant's variants were protected, while the
+THEME's variant defaults were never seeded at all.
+
+### (o.2) The exact old → new diff
+
+```diff
+--- a/src/lib/themes.server.ts
++++ b/src/lib/themes.server.ts
+@@ -1222,14 +1222,22 @@ export function registryPackage(key: string): {
+   version: string;
+ } {
+   const preview = resolveThemePreview(key);
+   if (preview) {
+     return {
+-      templates: preview.templates as ThemeTemplates,
++      // The package carries the theme's VARIANT bodies beside its base
++      // bodies. `preview.variants` is a SEPARATE map in the preview preset
++      // (the base map is the template-key space the preview host resolves
++      // against), and the install seed is the ONE place a merchant's map is
++      // filled with the theme's defaults — so the theme's authored variant
++      // defaults have to travel with the package. Without them a merchant
++      // who installs the theme gets no `blog_listing` / `blog_article` body:
++      // the editor's variant strip opens EMPTY and the storefront's
++      // listing and article both fall back to the base `blog` body, so the
++      // two surfaces are not distinguishable.
++      templates: {
++        ...preview.templates,
++        ...preview.variants,
++      } as unknown as ThemeTemplates,
+       tokens: preview.tokens,
+       version: "1.0.0",
+     };
+   }
+```
+
+### (o.3) Backward compatibility and the merchant's own work
+
+- `parseTemplates` keeps the variant keys (`isVariantTemplateKey`), so the seeded map
+  round-trips through the draft, the version rows and the publish payload unchanged.
+- The per-key seed merge (`mergeSeedTemplates`, `:1394-1404`) fills only the keys the
+  merchant's map does NOT carry — so a merchant who already authored `blog_listing`
+  keeps their own body, and a merchant who authored nothing gets the theme's default.
+- The publish gate lints every variant **with its base key**
+  (`lintTemplateMap`, `:849-900`), so the seeded variants are linted before they can
+  reach a storefront.
+- No migration, no DDL, and **no** change to any base template's body: the parity
+  captures for the base templates are untouched by this change.
+
+### (o.4) The boundary
+
+This section escalates **one** §7-prohibited file: `src/lib/themes.server.ts`, which the
+plan's Decision Gate **G1** names ("engine / platform libs — … `src/lib/themes.server.ts`").
+No file outside that list is edited by this section.
+
+---
+
+## (p) Batch D, Task 8 — the self-critique's three fixes (appended, 2026-10-21)
+
+**Branch:** `frame30` · **Base commit:** `26ff6fd2`.
+**Plan:** `docs/superpowers/plans/2026-10-21-frame30-core-cms-upgrade.md` — **Task 8** (the self-critique pass).
+**Record:** `docs/superpowers/songoskriti-evidence/port/phase3-self-critique.md`.
+
+### (p.1) The finding — the three weakest failures, and what each one is
+
+The seven surfaces were captured at 1440 / 1280 / 768 / 430 / 390 / 375 in both
+locales (84 stills, `/tmp/opencode/frame30-self-critique/first/`) and read. **The three
+weakest failures are:**
+
+**(1) The store-scoped blog surfaces carry NO store chrome.** The listing
+(`/store/<slug>/blog`) and the article (`/store/<slug>/blog/<article>`) are the only
+storefront surfaces that render with **no store header, no navigation, no logo, no cart
+and no account link** — the page starts at the reader's own breadcrumb. Every other
+storefront surface (search, cart, account, checkout, page) renders the store's
+`StoreHeader`. A shopper who reaches the blog from a search result or a link cannot get
+back into the shop. **Measured:** the `blog-1440-en.png` capture has no nav row at all,
+while `cart-1440-en.png` has the full one.
+
+**(2) The account page shows an ANONYMOUS visitor TWO sign-in affordances.** The theme's
+`profile_card` widget renders its own bare prompt — a centred, letter-spaced,
+uppercase **"YOUR PROFILE / Sign in to continue. / SIGN IN"** block, in a different type
+language from the rest of the theme — and the platform's own order-lookup panel renders
+a second one immediately below it ("Track Your Order", also centred). The account
+surface is the programme's **highest-priority visual repair** (the brief's own words),
+and this is what a visitor sees on it.
+
+**(3) The search page's `<h1>` and breadcrumb say "Collection".** The theme's Songoskriti
+`category_header` renderer reads the title from `title` / `text` — **neither of which the
+catalogue declares** (`src/lib/builder-ast.ts:2708-2732` declares `heading`, `body`,
+`imageUrl`, `scrim`, `showCount`, `showBreadcrumb`, `homeLabel`). The sanitiser drops
+every undeclared prop on the way to storage, so on the **storefront** the title chain
+falls through to the renderer's literal fallback — **"Collection"** — on a page whose
+`<h1>` should name the search. The theme's own search composition already sets the
+DECLARED `heading: "Search the collection"`; the renderer simply never reads it. (The
+PREVIEW renders the theme's source unparsed, which is why the frozen preview captures
+were never affected and the bug was invisible until the storefront was captured.)
+
+### (p.2) The exact old → new diff
+
+```diff
+--- a/src/routes/store.$slug.blog.index.tsx
++++ b/src/routes/store.$slug.blog.index.tsx
+@@
+ import { BlogArchiveTheme } from "@/components/store/BlogArchiveTheme";
++import { StoreHeader } from "@/components/store/StoreHeader";
+@@
+   return (
+-    <BlogArchiveTheme
++    <>
++      {/* The store's chrome (Batch D, self-critique fix 1): the blog listing is a
++          STOREFRONT surface, so it carries the store's header — the same one the
++          cart, account, search, checkout and page routes render. Without it the
++          reader lands on a page with no navigation, no logo and no cart. */}
++      <StoreHeader
++        slug={data.merchantSlug}
++        name={merchantName}
++        menus={data.chrome?.menus ?? []}
++        themeKey={data.chrome?.themeKey ?? null}
++      />
++      <BlogArchiveTheme
+       feed={{
+         articles: data.listing.articles,
+@@
+       }
+-    />
++      />
++    </>
+   );
+ }
+```
+
+```diff
+--- a/src/routes/store.$slug.blog.$articleSlug.tsx
++++ b/src/routes/store.$slug.blog.$articleSlug.tsx
+@@
+ import { ThemeChrome } from "@/components/store/ThemeChrome";
++import { StoreHeader } from "@/components/store/StoreHeader";
+@@
+   return (
+     <BlogFeedProvider
+       value={relatedFeed(
+         data.related,
+         article.slug,
+         `/store/${data.merchantSlug}/blog`,
+       )}
+     >
++      {/* The store's chrome (Batch D, self-critique fix 1). */}
++      <StoreHeader
++        slug={data.merchantSlug}
++        name={merchantName}
++        menus={data.chrome?.menus ?? []}
++        themeKey={data.chrome?.themeKey ?? null}
++      />
+       <ThemeChrome
+```
+
+```diff
+--- a/src/routes/store.$slug.account.tsx
++++ b/src/routes/store.$slug.account.tsx
+@@
+     const p = sections.find((s) => s.type === "profile_card");
+     const row = overview?.profile
+       ? mapProfileToRow(overview.profile)
+       : undefined;
+-    if (p) {
++    // (Batch D, self-critique fix 2) The theme's profile card is the shopper's
++    // OWN profile — it is granted to a SIGNED-IN shopper only. An anonymous
++    // visitor gets the platform's single, designed order-lookup panel; the
++    // widget's own bare "Sign in to continue." prompt is a SECOND sign-in
++    // block, in a different type language, directly above it.
++    if (p && signedIn) {
+```
+
+```diff
+--- a/src/components/builder/songoskriti.tsx
++++ b/src/components/builder/songoskriti.tsx
+@@
+-  const title = str("title") || str("text") || "Collection";
++  // The DECLARED catalogue field is `heading` (`src/lib/builder-ast.ts:2719`);
++  // `title` / `text` are NOT declared, so the sanitiser drops them on the way
++  // to storage and the storefront would fall through to the literal
++  // "Collection" on every band. The declared field is therefore the last
++  // prop in the chain, and the legacy props keep the preview identical.
++  const title = str("title") || str("text") || str("heading") || "Collection";
+```
+
+```diff
+--- a/src/lib/themes/songoskriti/preview.ts
++++ b/src/lib/themes/songoskriti/preview.ts
+@@
+             s("category_header", {
++              // The DECLARED `heading` field (Batch D, self-critique fix 3):
++              // the legacy `text` prop is dropped by the sanitiser, so the
++              // storefront would show the catalogue's default instead of the
++              // theme's own title.
++              heading: "New Arrivals",
+               text: "New Arrivals",
+```
+
+### (p.3) Backward compatibility and the platform's authority
+
+- None of the three fixes touches authorisation, tenancy, pricing or the payment
+  rails. The blog routes still resolve the theme through `getStoreChrome` (the same
+  seam), the account route still reads the shopper's overview through the
+  `auth.uid()`-scoped RPC, and the theme's band still renders the merchant's own
+  record — the account fix only decides **whether the theme's profile card is
+  placed** for a visitor who has no profile.
+- The blog routes' URL shapes, their `<h1>`s, their canonicals and the platform's
+  grid fallback are unchanged; a header is added above them.
+- The category_header change reads one more PROP; the preview's rendering is
+  byte-identical (the legacy props still come first in the chain), so the frozen
+  parity captures are untouched. The storefront's band titles become the theme's own.
+- No migration, no DDL, no persisted-state change.
+
+### (p.4) The boundary
+
+This section escalates **three** §7-prohibited files — all three named by the plan's
+Decision Gate **G1** ("routes — … `src/routes/store.$slug.account.tsx` …") — and
+records the two §7-**allowed** files it also touches
+(`src/components/builder/songoskriti.tsx`, a theme-owned renderer, and
+`src/lib/themes/songoskriti/preview.ts`, the theme's own compositions). No file
+outside that list is edited by this section.
+
+### (n.7) The three existing suites that read the renamed route file — their path, and nothing else
+
+The rename in §(n.2) moves `src/routes/store.$slug.blog.$slug.tsx` to
+`src/routes/store.$slug.blog.$articleSlug.tsx`. **Three existing suites read that route
+file as TEXT** (the repo's "read the source and pin it" pattern), so the path they read
+changed. **No assertion changed, no assertion was weakened, and no suite was skipped** —
+the same assertion now runs against the same file under its new name.
+
+```diff
+--- a/src/routes/storefront-resilience.test.ts
++++ b/src/routes/storefront-resilience.test.ts
+@@ -32,7 +32,7 @@
+   "src/routes/store.$slug.pages.$pageSlug.tsx",
+   "src/routes/store.$slug.blog.index.tsx",
+-  "src/routes/store.$slug.blog.$slug.tsx",
++  "src/routes/store.$slug.blog.$articleSlug.tsx",
+   "src/routes/store.$slug.track.tsx",
+ ];
+@@ -81,7 +81,7 @@
+       "src/routes/store.$slug.c.$collectionSlug.tsx",
+       "src/routes/store.$slug.blog.index.tsx",
+-      "src/routes/store.$slug.blog.$slug.tsx",
++      "src/routes/store.$slug.blog.$articleSlug.tsx",
+       "src/routes/store.$slug.order.$orderId.tsx",
+     ]) {
+       expect(readFileSync(path, "utf8")).toContain("throw notFound()");
+```
+
+```diff
+--- a/src/lib/template-variants.test.ts
++++ b/src/lib/template-variants.test.ts
+@@ -40,7 +40,7 @@
+ );
+ const ARTICLE_ROUTE = readFileSync(
+-  join(ROUTE_DIR, "store.$slug.blog.$slug.tsx"),
++  join(ROUTE_DIR, "store.$slug.blog.$articleSlug.tsx"),
+   "utf8",
+ );
+```
+
+```diff
+--- a/src/lib/preview-parity.contract.test.ts
++++ b/src/lib/preview-parity.contract.test.ts
+@@ -183,7 +183,7 @@
+   it("blog article — the pack plus the route-owned article body", () => {
+     const preview = grantedSlots(PREVIEW, "const blogSlots =");
+     const production = grantedSlots(
+-      read("routes", "store.$slug.blog.$slug.tsx"),
++      read("routes", "store.$slug.blog.$articleSlug.tsx"),
+       "contextSlots={{",
+     );
+```
+
+**Measured after the update** (the three suites, whole-file):
+
+```
+$ node_modules/.bin/vitest run src/routes/storefront-resilience.test.ts \
+    src/lib/template-variants.test.ts src/lib/preview-parity.contract.test.ts
+
+ ✓ src/routes/storefront-resilience.test.ts (27 tests) 94ms
+ ✓ src/lib/preview-parity.contract.test.ts (9 tests) 7599ms
+ ✓ src/lib/template-variants.test.ts (16 tests) 123ms
+
+ Test Files  3 passed (3)
+      Tests  52 passed (52)
+```
+
+These three files are **existing test files** and are therefore §7-prohibited; they are
+named here, with their exact diff, in the same way the earlier batches named their
+existing-test updates. The plan's on-disk G1 table does not name them (nor did it name
+the two files Batch B had to escalate) — the table is a list of the batch's **known**
+blast radius, and this is the correction to it.

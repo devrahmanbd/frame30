@@ -70,6 +70,7 @@ const TEMPLATES = [
   "cart",
   "checkout",
   "search",
+  "archive",
 ] as const;
 const INDEX_VARIATIONS: Record<(typeof THEMES)[number], string[]> = {
   songoskriti: ["minimal", "festive"],
