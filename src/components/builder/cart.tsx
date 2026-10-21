@@ -17,6 +17,7 @@ import {
   METHOD_GROUP_ORDER,
   groupMethods,
   methodLabel,
+  type MethodLayer,
   type PaymentMethodKey,
 } from "@/lib/payment-rails";
 import type { WidgetComponent, WidgetCtx } from "./widgets";
@@ -557,7 +558,18 @@ const GROUP_LABEL: Record<string, { en: string; bn: string }> = {
 const PaymentMethods: WidgetComponent = (ctx) => {
   const { str, Heading, locale } = ctx;
   const cart = useCartContext();
-  const grouped = groupMethods(cart.methods);
+  /**
+   * The platform's own grouping. `groupMethods()` returns an ARRAY of
+   * `{ layer, methods }` objects in `METHOD_GROUP_ORDER` order — NOT a map
+   * keyed by group name — so the lookup is by the group's LAYER. (Indexing
+   * the array by a name is always `undefined`, which is why the widget used
+   * to render its legend and no radios at all.)
+   */
+  const byLayer = new Map<MethodLayer, PaymentMethodKey[]>(
+    groupMethods(cart.methods).map(
+      (group) => [group.layer, group.methods] as const,
+    ),
+  );
   const lang = locale === "bn" ? "bn" : "en";
 
   if (cart.methods.length === 0) {
@@ -581,7 +593,7 @@ const PaymentMethods: WidgetComponent = (ctx) => {
         </Heading>
       </legend>
       {METHOD_GROUP_ORDER.map((group) => {
-        const keys = (grouped[group] ?? []) as PaymentMethodKey[];
+        const keys = byLayer.get(group) ?? [];
         if (keys.length === 0) return null;
         return (
           <div key={group} className="mt-3">

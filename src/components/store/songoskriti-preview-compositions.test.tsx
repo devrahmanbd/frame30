@@ -18,15 +18,16 @@
  * the suite cannot drift from the data it checks: a number typed twice is a
  * number that can disagree with itself.
  *
- * One known PLATFORM defect is deliberately not asserted here: the
- * platform's `payment_methods` widget renders NO payment-method radios,
- * because it indexes `groupMethods()`'s ARRAY by group name
+ * **The platform's payment rails are now asserted.** The platform's
+ * `payment_methods` widget used to render NO payment-method radios — it
+ * indexed `groupMethods()`'s ARRAY by group name
  * (`src/components/builder/cart.tsx:560`, `:584` against
- * `src/lib/payment-rails.ts:358-363`). The file that fixes it is
- * §7-prohibited, so the defect is recorded as an OPEN item in
- * `docs/superpowers/songoskriti-evidence/port/phase2-template-completeness-escalation.md`
- * §(j.3) and in the evidence record's open list — and the checkout case
- * asserts the theme's payment MARKS, which is what actually renders.
+ * `src/lib/payment-rails.ts:358-363`). That defect was escalated and fixed
+ * on 2026-10-21 (the escalation record's §(o)); the widget's own suite is
+ * `src/components/builder/cart-payment-methods.test.tsx`, and the checkout
+ * case below now asserts the radios the preview's authored checkout body
+ * actually renders — the platform-owned payment components the expert's P0
+ * item 4 asks for.
  */
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -285,9 +286,21 @@ describe("songoskriti preview — the checkout composition", () => {
     // The platform's `payment_methods` widget is granted and renders its
     // own fieldset legend.
     expect(html).toContain("Payment method");
+    // … and it renders a RADIO per method the synthetic cart's server
+    // quote offers — the platform-owned payment components the expert's P0
+    // item 4 asks the preview to present. The rails come from the
+    // synthetic cart's own `methods` (`src/lib/themes/songoskriti/preview-demo-data.ts:183`).
+    const cart = songoskritiPreviewCart();
+    const platformRadios = [...html.matchAll(/<input[^>]*type="radio"[^>]*>/g)];
+    expect(platformRadios).toHaveLength(cart.methods.length);
+    for (const method of cart.methods) {
+      expect(html).toContain(`name="fq-payment-method"`);
+      expect(html).toMatch(
+        new RegExp(`<input[^>]*type="radio"[^>]*value="${method}"`),
+      );
+    }
     // The synthetic order the demo cart quotes — the money comes from the
     // synthetic cart context, never from a literal.
-    const cart = songoskritiPreviewCart();
     expect(html).toContain(money(cart.totals!.totalMinor));
     // The mock's hard-coded line and money never reach the preview.
     expect(html).not.toContain("Muslin Floral Festive Saree");

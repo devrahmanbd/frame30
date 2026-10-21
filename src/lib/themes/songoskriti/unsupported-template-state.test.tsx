@@ -442,3 +442,55 @@ describe("the unsupported request survives the route's canonicalisation", () => 
     expect(home).not.toContain("This template is not supported by this theme");
   });
 });
+
+/* ------------------------------------------------------------------------- *
+ * The `?max=` quirk — KNOWN and PINNED (2026-10-21).
+ *
+ * The escalation record's §(n.6) measured this quirk and deliberately left
+ * it UNPINNED: pinning a defect would freeze it, and the quirk is a
+ * different contract (the preserved search keys) from the unsupported state
+ * the round closed. The closing wave pins it deliberately instead, so that a
+ * future change to the behaviour FLIPS A TEST rather than silently changing
+ * what the server serves.
+ *
+ * The quirk: the router's default `parseSearch`
+ * (`@tanstack/router-core/dist/esm/searchParams.js`, `parseSearchWith`)
+ * parses `max=99900` as the NUMBER `99900` (`toValue`, `qss.js`), and
+ * `validateThemePreviewSearch` accepts `max` only when it is a STRING
+ * (`src/lib/theme-preview-nav.ts:354-357`) — so the second validation (the
+ * canonicalisation's) drops it and the canonical URL loses the key. The
+ * route's own comment promises the key survives
+ * (`src/routes/theme-preview.$key.tsx:161-163`); it does not.
+ *
+ * The three cases below pin the CURRENT behaviour, measured on the tree at
+ * `2f46c634`:
+ *   · `/theme-preview/songoskriti?template=search&max=99900`
+ *     → `/theme-preview/songoskriti?template=search`  (the key is DROPPED)
+ *   · `/theme-preview/songoskriti?template=search&q=jamdani`
+ *     → `/theme-preview/songoskriti?template=search&q=jamdani`  (kept)
+ * ------------------------------------------------------------------------- */
+
+describe("the ?max= quirk is KNOWN and PINNED — the current behaviour", () => {
+  it("the validator accepts max as a STRING and drops it as a NUMBER", () => {
+    // The quirk's mechanism, pinned at the unit.
+    expect(validateThemePreviewSearch({ max: "99900" }).max).toBe("99900");
+    expect(validateThemePreviewSearch({ max: 99900 }).max).toBeUndefined();
+  });
+
+  it("the canonical URL DROPS ?max= — the quirk's effect, pinned at the URL", async () => {
+    const canonical = await canonicalPreviewHref(
+      "/theme-preview/songoskriti?template=search&max=99900",
+    );
+    // The route's own comment promises the key survives; it does not. This
+    // assertion is the PIN: a fix flips it.
+    expect(canonical).toBe("/theme-preview/songoskriti?template=search");
+    expect(canonical).not.toContain("max=");
+  });
+
+  it("?q= survives the same canonicalisation — only ?max= is dropped", async () => {
+    const canonical = await canonicalPreviewHref(
+      "/theme-preview/songoskriti?template=search&q=jamdani",
+    );
+    expect(canonical).toContain("q=jamdani");
+  });
+});
