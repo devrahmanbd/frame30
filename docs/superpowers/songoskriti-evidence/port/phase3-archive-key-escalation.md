@@ -4182,3 +4182,36 @@ file the round touches, so the record and the code land together:
 `9705a67e` (`fix(builder): the reset restores a variant, the publish gate enforces the
 closed vocabulary, and the preview renders a variant`). It stages **explicit paths**
 only. The three churn files and `.output-snapshots/` are **unstaged** at that commit.
+
+### (l.7) The round's commits — a correction to §(l.6)
+
+**Correction.** §(l.6) says the round is ONE commit. It is **three** — the last one is a
+correction §(l.2) already describes, not new scope:
+
+| commit | subject | files |
+| --- | --- | --- |
+| `9705a67e` | `fix(builder): the reset restores a variant, the publish gate enforces the closed vocabulary, and the preview renders a variant` | 14 |
+| `3ee3fe1e` | `docs(escalation): the fix round's measured evidence — the reconciled test delta and the round's commit` | 1 |
+| `f085bc5c` | `fix(builder): the reset hands back the STORED map, so the editor's document and the stored document are the same bytes` | 2 |
+
+**What `f085bc5c` changes.** The reset returned the PRE-PARSE merged map while the commit
+RPC stores the PARSED one, so the map the client replaced its document with was not
+byte-identical to the map the storage layer held. The result now carries the parsed map —
+the same shape `parseTemplates` gives the commit — and the contract suite pins it
+(`JSON.stringify(out.templates)` equals the map the commit RPC received).
+
+**The final measured state** (the tree at `f085bc5c`):
+
+```
+$ node_modules/.bin/vitest run
+  Test Files  2 failed | 615 passed | 1 skipped (618)
+       Tests  3 failed | 8754 passed | 3 skipped (8760)
+
+  FAIL src/lib/analytics-live-shape.test.ts > builds a funnel from flat daily rows without touching events
+  FAIL src/lib/analytics-live-shape.test.ts > serves traffic from flat geo+daily rows with empty splits
+  FAIL src/lib/site.server.test.ts > throws a guarded missing-env error, never a placeholder client
+```
+
+The same three **pre-existing** failures, the same file and test counts as the run quoted
+in §(l.6) — the correction changed no observable behaviour. The typecheck is clean
+(`tsgo --noEmit`, exit 0) and the lint reports the same three pre-existing warnings.
