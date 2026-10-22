@@ -9,7 +9,7 @@
  *
  * No theme module is imported: colour, radius and shadow come from tokens.
  */
-import { useCallback, useState } from "react";
+import { useCallback, useState, type ReactNode } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { isCustomHostPath } from "@/lib/storefront-url";
 import type { SectionType } from "@/lib/builder-ast";
@@ -20,6 +20,7 @@ import {
   type MethodLayer,
   type PaymentMethodKey,
 } from "@/lib/payment-rails";
+import { partOrder } from "@/lib/widget-parts";
 import type { WidgetComponent, WidgetCtx } from "./widgets";
 import {
   useCartContext,
@@ -32,6 +33,15 @@ import { OverlayHost } from "./primitives/OverlayHost";
 
 function t(locale: string, en: string, bn: string) {
   return locale === "bn" ? bn : en;
+}
+
+/**
+ * The widget's row layout. `row` is today's layout — the default — and `card`
+ * is the same parts stacked inside one bordered card. The choice is a class,
+ * not a second renderer, so the parts stay the parts.
+ */
+function layoutOf(ctx: WidgetCtx): "row" | "card" {
+  return ctx.str("layout") === "card" ? "card" : "row";
 }
 
 function LineSkeleton() {
@@ -65,6 +75,149 @@ function SummarySkeleton() {
 
 /* ------------------------------------------------------------- cart_lines */
 
+/**
+ * The line row's text parts. They share ONE flex child today (the product's
+ * name, its variant and its unit price sit in the same block), so the group
+ * stays together when a theme reorders the row — and the group's position in
+ * the row is the position of its FIRST part.
+ */
+const LINE_TEXT_PARTS = ["title", "variant", "unitPrice"] as const;
+
+/**
+ * One cart line, drawn as its parts.
+ *
+ * **The order is the author's.** `partOrder` returns the widget's effective
+ * part order — the theme's list when it is valid, today's order otherwise — and
+ * a part the theme dropped is simply not drawn. **The values are the
+ * server's**: the title, the variant, the unit price, the line total and the
+ * quantity all come from the quote.
+ */
+function LineRow({
+  ctx,
+  line,
+  compact = false,
+}: {
+  ctx: WidgetCtx;
+  line: {
+    variantId: string;
+    productTitle: string;
+    variantName: string;
+    unitPriceMinor: number;
+    quantity: number;
+    lineTotalMinor: number;
+    stock: number;
+  };
+  compact?: boolean;
+}) {
+  const { str, locale, money } = ctx;
+  const cart = useCartContext();
+  const order = partOrder(str("parts"), "cart_lines");
+  const textParts = order.filter((part) =>
+    (LINE_TEXT_PARTS as readonly string[]).includes(part),
+  );
+  const children: ReactNode[] = [];
+  let textGroupDrawn = false;
+  order.forEach((part) => {
+    if ((LINE_TEXT_PARTS as readonly string[]).includes(part)) {
+      // The text parts share one flex child; it is drawn once, at the
+      // position of the first of them.
+      if (textGroupDrawn) return;
+      textGroupDrawn = true;
+      children.push(
+        <div key="line-text" className="min-w-0 flex-1 basis-40">
+          {textParts.map((text) => {
+            if (text === "title") {
+              return (
+                <p
+                  key="title"
+                  className="break-words text-[13.5px] font-medium leading-relaxed"
+                >
+                  {line.productTitle}
+                </p>
+              );
+            }
+            if (text === "variant") {
+              if (!line.variantName) return null;
+              return (
+                <p
+                  key="variant"
+                  className="mt-0.5 text-[12px] font-medium tracking-wide text-muted-foreground"
+                >
+                  {line.variantName}
+                </p>
+              );
+            }
+            return (
+              <p
+                key="unitPrice"
+                className="mt-2 text-[13.5px] font-semibold tracking-wide tabular-nums text-foreground"
+              >
+                {money(line.unitPriceMinor)}
+              </p>
+            );
+          })}
+        </div>,
+      );
+      return;
+    }
+    if (part === "quantity") {
+      children.push(
+        <QtyStepper
+          key="quantity"
+          value={line.quantity}
+          max={line.stock}
+          label={t(
+            locale,
+            `Quantity for ${line.productTitle}`,
+            `${line.productTitle} এর পরিমাণ`,
+          )}
+          locale={locale}
+          disabled={!cart.live}
+          onChange={(next) => cart.setQuantity(line.variantId, next)}
+        />,
+      );
+      return;
+    }
+    if (part === "lineTotal") {
+      children.push(
+        <p
+          key="lineTotal"
+          className="w-24 shrink-0 text-right text-[13.5px] font-semibold tracking-wide tabular-nums"
+        >
+          {money(line.lineTotalMinor)}
+        </p>,
+      );
+      return;
+    }
+    if (part === "remove" && !compact) {
+      children.push(
+        <button
+          key="remove"
+          type="button"
+          onClick={() => cart.remove(line.variantId)}
+          disabled={!cart.live}
+          className="inline-flex min-h-11 items-center px-4 py-2 text-[11px] font-bold fq-caps tracking-widest text-muted-foreground hover:text-foreground transition-colors"
+        >
+          {str("removeLabel") || t(locale, "Remove", "সরান")}
+          <span className="sr-only"> {line.productTitle}</span>
+        </button>,
+      );
+    }
+  });
+  const layout = layoutOf(ctx);
+  return (
+    <li
+      className={
+        layout === "card"
+          ? "flex flex-col items-stretch gap-3 border border-border/60 p-4"
+          : "flex flex-wrap items-center gap-x-4 gap-y-3 py-4"
+      }
+    >
+      {children}
+    </li>
+  );
+}
+
 function LineList({
   ctx,
   compact = false,
@@ -72,7 +225,7 @@ function LineList({
   ctx: WidgetCtx;
   compact?: boolean;
 }) {
-  const { str, locale, money, storeSlug } = ctx;
+  const { str, locale, storeSlug } = ctx;
   const cart = useCartContext();
   const { location } = useRouterState();
   const base = storeBase(storeSlug, location.pathname);
@@ -151,50 +304,12 @@ function LineList({
         aria-busy={cart.pending || undefined}
       >
         {rows.map((line) => (
-          <li
+          <LineRow
             key={line.variantId}
-            className="flex flex-wrap items-center gap-x-4 gap-y-3 py-4"
-          >
-            <div className="min-w-0 flex-1 basis-40">
-              <p className="break-words text-[13.5px] font-medium leading-relaxed">
-                {line.productTitle}
-              </p>
-              {line.variantName && (
-                <p className="mt-0.5 text-[12px] font-medium tracking-wide text-muted-foreground">
-                  {line.variantName}
-                </p>
-              )}
-              <p className="mt-2 text-[13.5px] font-semibold tracking-wide tabular-nums text-foreground">
-                {money(line.unitPriceMinor)}
-              </p>
-            </div>
-            <QtyStepper
-              value={line.quantity}
-              max={line.stock}
-              label={t(
-                locale,
-                `Quantity for ${line.productTitle}`,
-                `${line.productTitle} এর পরিমাণ`,
-              )}
-              locale={locale}
-              disabled={!cart.live}
-              onChange={(next) => cart.setQuantity(line.variantId, next)}
-            />
-            <p className="w-24 shrink-0 text-right text-[13.5px] font-semibold tracking-wide tabular-nums">
-              {money(line.lineTotalMinor)}
-            </p>
-            {!compact && (
-              <button
-                type="button"
-                onClick={() => cart.remove(line.variantId)}
-                disabled={!cart.live}
-                className="inline-flex min-h-11 items-center px-4 py-2 text-[11px] font-bold fq-caps tracking-widest text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {str("removeLabel") || t(locale, "Remove", "সরান")}
-                <span className="sr-only"> {line.productTitle}</span>
-              </button>
-            )}
-          </li>
+            ctx={ctx}
+            line={line}
+            compact={compact}
+          />
         ))}
       </ul>
     </>
@@ -339,42 +454,72 @@ function SummaryBody({ ctx }: { ctx: WidgetCtx }) {
         <FreeShippingBar ctx={ctx} totals={totals} />
       )}
       <dl className="m-0 space-y-2">
-        <SummaryRow
-          label={str("subtotalLabel") || t(locale, "Subtotal", "সাবটোটাল")}
-          value={money(totals.subtotalMinor)}
-        />
-        {totals.discountMinor > 0 && (
-          <SummaryRow
-            label={str("discountLabel") || t(locale, "Discount", "ছাড়")}
-            value={money(totals.discountMinor)}
-          />
-        )}
-        <SummaryRow
-          label={str("shippingLabel") || t(locale, "Delivery", "ডেলিভারি")}
-          value={money(totals.shippingMinor)}
-        />
-        {totals.codSurchargeMinor > 0 && (
-          <SummaryRow
-            label={
-              str("codLabel") ||
-              t(locale, "Cash on delivery fee", "ক্যাশ অন ডেলিভারি ফি")
-            }
-            value={money(totals.codSurchargeMinor)}
-          />
-        )}
-        {totals.vatMinor > 0 && (
-          <SummaryRow
-            label={str("vatLabel") || t(locale, "VAT", "ভ্যাট")}
-            value={money(totals.vatMinor)}
-          />
-        )}
-        <div className="border-t border-border/60 pt-4 mt-2">
-          <SummaryRow
-            label={str("totalLabel") || t(locale, "Total", "সর্বমোট")}
-            value={money(totals.totalMinor)}
-            strong
-          />
-        </div>
+        {partOrder(str("parts"), "cart_summary").map((part) => {
+          if (part === "subtotal") {
+            return (
+              <SummaryRow
+                key="subtotal"
+                label={
+                  str("subtotalLabel") || t(locale, "Subtotal", "সাবটোটাল")
+                }
+                value={money(totals.subtotalMinor)}
+              />
+            );
+          }
+          if (part === "discount") {
+            if (totals.discountMinor <= 0) return null;
+            return (
+              <SummaryRow
+                key="discount"
+                label={str("discountLabel") || t(locale, "Discount", "ছাড়")}
+                value={money(totals.discountMinor)}
+              />
+            );
+          }
+          if (part === "shipping") {
+            return (
+              <SummaryRow
+                key="shipping"
+                label={
+                  str("shippingLabel") || t(locale, "Delivery", "ডেলিভারি")
+                }
+                value={money(totals.shippingMinor)}
+              />
+            );
+          }
+          if (part === "cod") {
+            if (totals.codSurchargeMinor <= 0) return null;
+            return (
+              <SummaryRow
+                key="cod"
+                label={
+                  str("codLabel") ||
+                  t(locale, "Cash on delivery fee", "ক্যাশ অন ডেলিভারি ফি")
+                }
+                value={money(totals.codSurchargeMinor)}
+              />
+            );
+          }
+          if (part === "vat") {
+            if (totals.vatMinor <= 0) return null;
+            return (
+              <SummaryRow
+                key="vat"
+                label={str("vatLabel") || t(locale, "VAT", "ভ্যাট")}
+                value={money(totals.vatMinor)}
+              />
+            );
+          }
+          return (
+            <div key="total" className="border-t border-border/60 pt-4 mt-2">
+              <SummaryRow
+                label={str("totalLabel") || t(locale, "Total", "সর্বমোট")}
+                value={money(totals.totalMinor)}
+                strong
+              />
+            </div>
+          );
+        })}
       </dl>
       {/* Screen-reader announcement for the server total on every re-quote. */}
       <p className="sr-only" aria-live="polite" aria-atomic="true">
@@ -508,27 +653,41 @@ const CheckoutSteps: WidgetComponent = (ctx) => {
   const { str, int, locale, storeSlug } = ctx;
   const { location } = useRouterState();
   const base = storeBase(storeSlug, location.pathname);
+  /**
+   * The trail's parts. `labels` draws the step names, `links` draws the
+   * back-links to the completed steps, and `active` marks where the shopper
+   * is. A trail with no active step has no completed steps — and therefore
+   * no back-links either: the links belong to the steps that are done.
+   */
+  const order = partOrder(str("parts"), "checkout_steps");
+  const wantsLabels = order.includes("labels");
+  const wantsLinks = order.includes("links");
+  const wantsActive = order.includes("active");
   const steps: TrailStep[] = [
     {
       key: "cart",
-      label: str("step1") || t(locale, "Cart", "কার্ট"),
-      href: `${base}/cart`,
+      label: wantsLabels ? str("step1") || t(locale, "Cart", "কার্ট") : "",
+      href: wantsLinks ? `${base}/cart` : undefined,
     },
     {
       key: "details",
-      label: str("step2") || t(locale, "Details", "তথ্য"),
-      href: `${base}/checkout`,
+      label: wantsLabels ? str("step2") || t(locale, "Details", "তথ্য") : "",
+      href: wantsLinks ? `${base}/checkout` : undefined,
     },
-    { key: "payment", label: str("step3") || t(locale, "Payment", "পেমেন্ট") },
+    {
+      key: "payment",
+      label: wantsLabels ? str("step3") || t(locale, "Payment", "পেমেন্ট") : "",
+    },
     {
       key: "confirm",
-      label: str("step4") || t(locale, "Confirmation", "নিশ্চিতকরণ"),
+      label: wantsLabels
+        ? str("step4") || t(locale, "Confirmation", "নিশ্চিতকরণ")
+        : "",
     },
   ];
-  const active = Math.min(
-    steps.length - 1,
-    Math.max(0, int("activeStep", 1, 1, 4) - 1),
-  );
+  const active = wantsActive
+    ? Math.min(steps.length - 1, Math.max(0, int("activeStep", 1, 1, 4) - 1))
+    : -1;
   return (
     <nav
       aria-label={
@@ -571,6 +730,18 @@ const PaymentMethods: WidgetComponent = (ctx) => {
     ),
   );
   const lang = locale === "bn" ? "bn" : "en";
+  /**
+   * The rail's parts. `legend` is the fieldset's caption (it stays the
+   * fieldset's first child — an HTML requirement), `groups` are the rail
+   * groups, `options` are the rails themselves, and `note` is the note under
+   * them. A theme that drops `groups` flattens the rails; a theme that drops
+   * `options` keeps the group names alone.
+   */
+  const order = partOrder(str("parts"), "payment_methods");
+  const wants = (part: string): boolean => order.includes(part);
+  const layout = layoutOf(ctx);
+  const railsClass =
+    layout === "card" ? "grid gap-2 sm:grid-cols-2" : "space-y-2";
 
   if (cart.methods.length === 0) {
     return (
@@ -585,47 +756,70 @@ const PaymentMethods: WidgetComponent = (ctx) => {
     );
   }
 
+  const railOption = (key: PaymentMethodKey) => (
+    <label
+      key={key}
+      className="flex min-h-11 cursor-pointer items-center gap-3 rounded-fq-md border border-border px-3 py-2 text-sm"
+    >
+      <input
+        type="radio"
+        name="fq-payment-method"
+        value={key}
+        checked={cart.method === key}
+        onChange={() => cart.setMethod(key)}
+        className="h-4 w-4"
+      />
+      <span className="min-w-0 break-words">{methodLabel(key, lang)}</span>
+    </label>
+  );
+
+  const groupBlocks = METHOD_GROUP_ORDER.map((group) => {
+    const keys = byLayer.get(group) ?? [];
+    if (keys.length === 0) return null;
+    return (
+      <div key={group} className="mt-3">
+        <p className="mb-1 text-xs fq-caps text-muted-foreground">
+          {GROUP_LABEL[group]![lang]}
+        </p>
+        {wants("options") ? (
+          <div className={railsClass}>{keys.map(railOption)}</div>
+        ) : null}
+      </div>
+    );
+  });
+
+  const flatRails = (
+    <div className={`mt-3 ${railsClass}`}>
+      {METHOD_GROUP_ORDER.flatMap((group) => byLayer.get(group) ?? []).map(
+        railOption,
+      )}
+    </div>
+  );
+
   return (
     <fieldset className="rounded-fq-lg border border-border bg-card p-4">
-      <legend className="px-1 text-sm font-semibold">
-        <Heading className="text-base font-semibold">
-          {str("heading") || t(locale, "Payment method", "পেমেন্ট পদ্ধতি")}
-        </Heading>
-      </legend>
-      {METHOD_GROUP_ORDER.map((group) => {
-        const keys = byLayer.get(group) ?? [];
-        if (keys.length === 0) return null;
-        return (
-          <div key={group} className="mt-3">
-            <p className="mb-1 text-xs fq-caps text-muted-foreground">
-              {GROUP_LABEL[group]![lang]}
-            </p>
-            <div className="space-y-2">
-              {keys.map((key) => (
-                <label
-                  key={key}
-                  className="flex min-h-11 cursor-pointer items-center gap-3 rounded-fq-md border border-border px-3 py-2 text-sm"
-                >
-                  <input
-                    type="radio"
-                    name="fq-payment-method"
-                    value={key}
-                    checked={cart.method === key}
-                    onChange={() => cart.setMethod(key)}
-                    className="h-4 w-4"
-                  />
-                  <span className="min-w-0 break-words">
-                    {methodLabel(key, lang)}
-                  </span>
-                </label>
-              ))}
-            </div>
-          </div>
-        );
-      })}
-      {str("note") && (
-        <p className="mt-3 text-xs text-muted-foreground">{str("note")}</p>
+      {wants("legend") && (
+        <legend className="px-1 text-sm font-semibold">
+          <Heading className="text-base font-semibold">
+            {str("heading") || t(locale, "Payment method", "পেমেন্ট পদ্ধতি")}
+          </Heading>
+        </legend>
       )}
+      {order
+        .filter((part) => part !== "legend")
+        .map((part) => {
+          if (part === "groups") return groupBlocks;
+          if (part === "options") return wants("groups") ? null : flatRails;
+          if (part === "note") {
+            if (!str("note")) return null;
+            return (
+              <p key="note" className="mt-3 text-xs text-muted-foreground">
+                {str("note")}
+              </p>
+            );
+          }
+          return null;
+        })}
     </fieldset>
   );
 };

@@ -58,10 +58,16 @@ vi.mock("@tanstack/react-router", async (importOriginal) => {
 
 import { AccountDashboard } from "./AccountDashboard";
 
-const DASHBOARD_SRC = readFileSync(
-  "src/components/store/AccountDashboard.tsx",
-  "utf8",
-);
+/**
+ * The account SURFACE's source — the dashboard and the panels module that
+ * holds its four panels. Frame30 moved the nav, the overview, the order
+ * rows and the details block into `src/components/store/account-widgets.tsx`
+ * (they are placeable widgets now), so this contract reads the surface's
+ * source, not one module's. The assertions below are unchanged.
+ */
+const DASHBOARD_SRC =
+  readFileSync("src/components/store/AccountDashboard.tsx", "utf8") +
+  readFileSync("src/components/store/account-widgets.tsx", "utf8");
 const ROUTE_SRC = readFileSync("src/routes/store.$slug.account.tsx", "utf8");
 
 /** The paths this tree actually serves (`src/routes/store.$slug.*`). */

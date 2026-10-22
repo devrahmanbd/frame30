@@ -32,6 +32,12 @@ import { PDP_WIDGETS } from "./pdp";
 import { COLLECTION_WIDGETS } from "./collection";
 import { CART_WIDGETS } from "./cart";
 import { ACCOUNT_WIDGETS } from "./account";
+import {
+  AccountNav,
+  AccountOverview,
+  AccountOrders,
+  AccountDetails,
+} from "@/components/store/account-widgets";
 import { MERCH_WIDGETS, cardVariantOf } from "./merch";
 import { APPAREL_WIDGETS } from "./apparel";
 import { BEAUTY_WIDGETS } from "./beauty";
@@ -1661,6 +1667,16 @@ export const GENERIC_WIDGETS: Partial<Record<SectionType, WidgetComponent>> = {
   ...CIRCUIT_WIDGETS,
   ...BEAUTY_WIDGETS,
   ...BEAUTY_HOME_WIDGETS,
+  // Frame30 — the account's placeable panels. Their renderers live in the
+  // storefront's account module because the panels ARE the account surface:
+  // they read the account provider (the route's own session-scoped state)
+  // and nothing else. With no provider they render nothing — they fail
+  // closed, they never fetch. They are GENERIC (no theme owns them), so
+  // every theme key resolves them to the same renderer.
+  account_nav: AccountNav,
+  account_overview: AccountOverview,
+  account_orders: AccountOrders,
+  account_details: AccountDetails,
 };
 
 export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {

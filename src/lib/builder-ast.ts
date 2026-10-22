@@ -363,6 +363,15 @@ export type SectionType =
   | "blog_pager"
   | "orders_list"
   | "profile_card"
+  // Frame30 — the account's placeable panels. The account's contents become
+  // the theme's to place: four route-owned panels the theme may drop into its
+  // own body. Their renderers live in
+  // `src/components/store/account-widgets.tsx` and read the account provider
+  // and nothing else.
+  | "account_nav"
+  | "account_overview"
+  | "account_orders"
+  | "account_details"
   // Songoskriti (heritage) homepage gap widgets. Renderers live in
   // heritage.tsx (hero_carousel, already wired) and songoskriti.tsx (the
   // other four); studio defs mirror these defaults 1:1.
@@ -775,6 +784,16 @@ const menu = (key: string, label: string): Field => ({
   kind: "menu",
   panel: "content",
 });
+/**
+ * A closed two-or-more choice. The `layout` prop of the composable widgets
+ * (row | card) is one of these: a plain select, so the inspector needs no new
+ * control.
+ */
+const select = (
+  key: string,
+  label: string,
+  options: { value: string; label: string }[],
+): Field => ({ key, label, kind: "select", panel: "layout", options });
 
 /**
  * Phase 7.4: guides make claims, so they carry attribution. Shared so every
@@ -1662,6 +1681,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       showCoupon: true,
       showCta: true,
       showFreeShipping: true,
+      parts: "subtotal,discount,shipping,cod,vat,total",
     },
     fields: [
       text("heading", "Heading"),
@@ -1681,6 +1701,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       bool("showCoupon", "Show coupon field"),
       bool("showCta", "Show checkout button"),
       bool("showFreeShipping", "Show free shipping progress"),
+      text("parts", "Part order (comma separated)", 200),
     ],
   },
 
@@ -2930,11 +2951,18 @@ const BASE_CATALOG: CatalogEntry[] = [
       heading: "Your items",
       removeLabel: "Remove",
       emptyText: "Your cart is empty.",
+      parts: "title,variant,unitPrice,quantity,lineTotal,remove",
+      layout: "row",
     },
     fields: [
       text("heading", "Heading"),
       text("removeLabel", "Remove label", 40),
       text("emptyText", "Empty text", 120),
+      text("parts", "Part order (comma separated)", 200),
+      select("layout", "Row layout", [
+        { value: "row", label: "Row" },
+        { value: "card", label: "Card" },
+      ]),
     ],
   },
   {
@@ -2982,6 +3010,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       step3: "Payment",
       step4: "Confirmation",
       activeStep: 1,
+      parts: "labels,active,links",
     },
     fields: [
       text("heading", "Accessible label"),
@@ -2990,6 +3019,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       text("step3", "Step 3 label", 40),
       text("step4", "Step 4 label", 40),
       num("activeStep", "Active step (1-4)"),
+      text("parts", "Part order (comma separated)", 200),
     ],
   },
   {
@@ -3003,11 +3033,18 @@ const BASE_CATALOG: CatalogEntry[] = [
       heading: "Payment method",
       note: "",
       emptyText: "No payment method is available right now.",
+      parts: "legend,groups,options,note",
+      layout: "row",
     },
     fields: [
       text("heading", "Heading"),
       area("note", "Note", 200),
       text("emptyText", "Empty text", 120),
+      text("parts", "Part order (comma separated)", 200),
+      select("layout", "Row layout", [
+        { value: "row", label: "Row" },
+        { value: "card", label: "Card" },
+      ]),
     ],
   },
   {
@@ -5034,7 +5071,12 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["main"],
     heading: false,
     templates: ["account"],
-    defaults: { heading: "Your orders", emptyText: "No orders yet." },
+    defaults: {
+      heading: "Your orders",
+      emptyText: "No orders yet.",
+      parts: "number,date,status,total",
+      layout: "row",
+    },
     fields: [
       { key: "heading", label: "Heading", kind: "bitext", panel: "content" },
       {
@@ -5043,6 +5085,11 @@ const BASE_CATALOG: CatalogEntry[] = [
         kind: "bitext",
         panel: "content",
       },
+      text("parts", "Part order (comma separated)", 200),
+      select("layout", "Row layout", [
+        { value: "row", label: "Row" },
+        { value: "card", label: "Card" },
+      ]),
     ],
   },
   {
@@ -5052,10 +5099,60 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["main"],
     heading: false,
     templates: ["account"],
-    defaults: { heading: "Your profile" },
+    defaults: {
+      heading: "Your profile",
+      parts: "avatar,name,email,phone",
+    },
     fields: [
       { key: "heading", label: "Heading", kind: "bitext", panel: "content" },
+      text("parts", "Part order (comma separated)", 200),
     ],
+  },
+  /* ---------------- Frame30 — the account's placeable panels ---------------- */
+  {
+    // Route-owned data (the session-scoped `customer_overview` payload) that
+    // a theme may place in its own body. The renderers live in
+    // `src/components/store/account-widgets.tsx`; they read the account
+    // provider and nothing else, so a panel can never reach another
+    // shopper's rows — and a panel with no provider renders nothing at all.
+    type: "account_nav",
+    label: "Account navigation",
+    group: "context",
+    slots: ["main"],
+    heading: false,
+    templates: ["account"],
+    defaults: {},
+    fields: [],
+  },
+  {
+    type: "account_overview",
+    label: "Account overview",
+    group: "context",
+    slots: ["main"],
+    heading: false,
+    templates: ["account"],
+    defaults: {},
+    fields: [],
+  },
+  {
+    type: "account_orders",
+    label: "Account orders",
+    group: "context",
+    slots: ["main"],
+    heading: false,
+    templates: ["account"],
+    defaults: {},
+    fields: [],
+  },
+  {
+    type: "account_details",
+    label: "Account details",
+    group: "context",
+    slots: ["main"],
+    heading: false,
+    templates: ["account"],
+    defaults: {},
+    fields: [],
   },
   /* --------------------------------------- Songoskriti heritage gap pack */
   {

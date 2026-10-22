@@ -67,7 +67,26 @@ describe("extension catalog registration (additive only)", () => {
     expect(entry?.heading).toBe(false);
     const { SECTION_CATALOG } = await import("./builder-ast");
     expect(SECTION_CATALOG.some((e) => e.type === EXT)).toBe(false);
-    expect(SECTION_CATALOG.length).toBe(157);
+    expect(SECTION_CATALOG.length).toBe(161);
+    // Frame30 added the account's four placeable panels — named here, so a
+    // silent addition or removal still fails loudly.
+    expect(
+      SECTION_CATALOG.map((e) => e.type).filter((type) =>
+        (
+          [
+            "account_nav",
+            "account_overview",
+            "account_orders",
+            "account_details",
+          ] as string[]
+        ).includes(type),
+      ),
+    ).toEqual([
+      "account_nav",
+      "account_overview",
+      "account_orders",
+      "account_details",
+    ]);
   });
 });
 

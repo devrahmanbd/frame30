@@ -277,7 +277,7 @@ describe("widget E2E workflow (fixture plugin, real units)", () => {
 
   it("STEP 02/16 — registry lists both widgets, core catalogue untouched", () => {
     expect(SECTION_CATALOG.some((e) => e.type === EXT)).toBe(false);
-    expect(SECTION_CATALOG.length).toBe(157);
+    expect(SECTION_CATALOG.length).toBe(161);
 
     const verdict = parseManifest(manifestRaw);
     expect(verdict.ok).toBe(true);

@@ -602,6 +602,22 @@ export const WIDGET_HELP: Record<SectionType, BiText> = {
     en: "Signed-in shopper's name and contact details.",
     bn: "সাইন-ইন করা ক্রেতার নাম ও যোগাযোগের তথ্য।",
   },
+  account_nav: {
+    en: "The account's five destinations — orders, addresses, wishlist, profile and privacy.",
+    bn: "অ্যাকাউন্টের পাঁচটি বিভাগ — অর্ডার, ঠিকানা, উইশলিস্ট, প্রোফাইল ও গোপনীয়তা।",
+  },
+  account_overview: {
+    en: "A strip of facts about this shopper's own account — orders, latest order, default address and saved items.",
+    bn: "এই ক্রেতার নিজের অ্যাকাউন্টের কিছু তথ্য — অর্ডার, সর্বশেষ অর্ডার, ডিফল্ট ঠিকানা ও সংরক্ষিত পণ্য।",
+  },
+  account_orders: {
+    en: "The shopper's own order history — the order number, the date, the status and the total.",
+    bn: "ক্রেতার নিজের অর্ডারের ইতিহাস — অর্ডার নম্বর, তারিখ, অবস্থা ও মোট।",
+  },
+  account_details: {
+    en: "The shopper's own details — the saved addresses, the profile, the message preferences and the wishlist.",
+    bn: "ক্রেতার নিজের তথ্য — সংরক্ষিত ঠিকানা, প্রোফাইল, বার্তার পছন্দ ও উইশলিস্ট।",
+  },
   finder_row: {
     en: "An occasion-based gift and outfit finder leading to matching collections.",
     bn: "উপলক্ষভিত্তিক উপহার ও পোশাক সন্ধান — মানানসই কালেকশনে নিয়ে যায়।",

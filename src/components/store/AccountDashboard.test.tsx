@@ -63,10 +63,14 @@ vi.mock("@tanstack/react-router", async (importOriginal) => {
 import { AccountDashboard, OrderDetail } from "./AccountDashboard";
 import type { AccountOrderDetail } from "./AccountDashboard";
 
-const SOURCE = readFileSync(
-  "src/components/store/AccountDashboard.tsx",
-  "utf8",
-);
+/**
+ * The account SURFACE's source — the dashboard and the panels module that
+ * holds its four panels (Frame30 made them placeable widgets). The
+ * assertions below are unchanged; they now cover the surface's source.
+ */
+const SOURCE =
+  readFileSync("src/components/store/AccountDashboard.tsx", "utf8") +
+  readFileSync("src/components/store/account-widgets.tsx", "utf8");
 
 const OVERVIEW: AccountOverview = {
   profile: {

@@ -1615,6 +1615,8 @@ export const WIDGETS: WidgetDef[] = [
       heading_bn: "",
       emptyText: "No orders yet.",
       emptyText_bn: "",
+      parts: "number,date,status,total",
+      layout: "row",
     },
   },
   {
@@ -1626,7 +1628,42 @@ export const WIDGETS: WidgetDef[] = [
     defaults: {
       heading: "Your profile",
       heading_bn: "",
+      parts: "avatar,name,email,phone",
     },
+  },
+  // Frame30 — the account's placeable panels. Route-owned data a theme may
+  // place in its own body; the twins mirror the BASE defaults 1:1.
+  {
+    key: "account_nav",
+    label: "Account navigation",
+    category: "commerce",
+    icon: "Menu",
+    keywords: ["account", "navigation", "tabs", "menu", "destinations"],
+    defaults: catalogDefaults("account_nav"),
+  },
+  {
+    key: "account_overview",
+    label: "Account overview",
+    category: "commerce",
+    icon: "LayoutDashboard",
+    keywords: ["account", "overview", "summary", "facts", "glance"],
+    defaults: catalogDefaults("account_overview"),
+  },
+  {
+    key: "account_orders",
+    label: "Account orders",
+    category: "commerce",
+    icon: "Receipt",
+    keywords: ["account", "orders", "history", "purchases", "shopper"],
+    defaults: catalogDefaults("account_orders"),
+  },
+  {
+    key: "account_details",
+    label: "Account details",
+    category: "commerce",
+    icon: "User",
+    keywords: ["account", "details", "addresses", "profile", "wishlist"],
+    defaults: catalogDefaults("account_details"),
   },
   // Songoskriti heritage gap pack: defaults mirror builder-ast 1:1, with
   // empty বাংলা twins for every theme-authored string.

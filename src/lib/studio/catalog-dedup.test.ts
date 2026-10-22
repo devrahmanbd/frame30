@@ -90,8 +90,8 @@ describe("P7 generated-defaults equality", () => {
     (type) => !EXCLUDED_CATALOG.has(type),
   );
 
-  it("covers the full shared surface (155 keys)", () => {
-    expect(sharedTypes.length).toBe(155);
+  it("covers the full shared surface (159 keys)", () => {
+    expect(sharedTypes.length).toBe(159);
   });
 
   for (const type of sharedTypes) {
