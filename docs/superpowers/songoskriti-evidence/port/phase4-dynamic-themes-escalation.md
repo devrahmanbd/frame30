@@ -4649,3 +4649,56 @@ Three corrections were made while writing the lane, each because the tree's meas
 The commits are: **(1)** this record (both corrections named, exact diffs above) — committed before the edits; **(2)** the single-file code edit to `.e2e/songoskriti-seven-templates.spec.ts`; **(3)** the appendix naming (2)'s commit, appended to this record.
 
 No other file is edited by this correction. The test is not weakened: §(k.1) changes *where* the storefront assertion reads, and §(k.2) renames the expected layers to the composition the programme shipped. No skip is added, no assertion is deleted, no threshold moves. The three churn files and the untracked `.output-snapshots/` remain unstaged.
+
+## (k.4) The second live run's two remaining lane defects — recorded before the edit
+
+*(Append-only, dated 2026-10-22, continuing §(k). First run after §(k.1)/(k.2): six of eight tests passed; one failed and one was flaky. Both causes were measured in the run output. This section names the edits **before** they are made; the record commit precedes the code commit as in §(k.3).)*
+
+### (k.4.1) The layer check read the navigator before it hydrated
+
+**Measured.** `the editor journey: Blog` failed on its first attempt with `Received array: []` and passed on retry. `layerNames(page)` reads `document.querySelectorAll('[role="treeitem"]')` immediately after `openTemplate()`, whose only settle is a fixed `waitForTimeout(1_500)`. On a cold SSR route the navigator can still be empty after 1.5 s, so the check asserts against an unrendered panel — a race in the lane, not a missing layer.
+
+**The edit.** Make `layerNames()` wait until the navigator has at least one `treeitem` (or the page reports the empty composition after a generous timeout), so every journey reads a settled panel. No expectation changes.
+
+```diff
+ async function layerNames(page: Page): Promise<string[]> {
++  await page
++    .waitForFunction(
++      () => document.querySelectorAll('[role="treeitem"]').length > 0,
++      undefined,
++      { timeout: 60_000 },
++    )
++    .catch(() => {
++      /* an empty composition is a legitimate state; the assertions report it */
++    });
+   return page.evaluate(() =>
+     Array.from(document.querySelectorAll('[role="treeitem"]')).map((el) =>
+       (el.textContent ?? "").trim().replace(/\s+/g, " ").slice(0, 40),
+     ),
+   );
+ }
+```
+
+### (k.4.2) `getByText("Filters").first()` matched the hidden mobile drawer trigger
+
+**Measured.** `the editor journey: Search results` failed with *“the theme's search composition renders its own facet panel”*: `getByText("Filters", { exact: true }).first()` resolved to `<button …>Filters</button>`, whose value was `hidden` at the 1280 px desktop viewport. The rendered document carries the facet panel's own **heading** `<h2>Filters</h2>` (visible), plus that drawer trigger (hidden on desktop). The assertion is about the panel, so it must select the heading.
+
+**The edit.** Assert the visible heading instead of the first text node. The claim — the theme renders its own facet panel — is unchanged.
+
+```diff
+       await expect(
+-        page.getByText("Filters", { exact: true }).first(),
++        page.getByRole("heading", { name: "Filters", exact: true }).first(),
+         "the theme's search composition renders its own facet panel",
+       ).toBeVisible({ timeout: 30_000 });
+```
+
+### (k.4.3) The dynamic lane's add-to-cart step can click before hydration
+
+**Measured.** On the first dynamic run the cart journey failed at *“the product page confirms the add”* (`Added to cart` never appeared) and the retry reached the publish step. A click on the product page's `Add to cart` can land before React has hydrated the island, in which case the click is a no-op. The same hydration marker the shipped login helper waits for (`__reactProps$` on the submit button) applies here.
+
+**The edit.** New file `.e2e/songoskriti-dynamic-themes-helpers.ts` (a Task 5a NEW file — §7-allowed, no relaxation): wait for the add button's React props before clicking it. No assertion is weakened; the existing “Added to cart” confirmation stays.
+
+### (k.4.4) Ordering and boundary
+
+Commits: **(1)** this section; **(2)** the single-file edit to `.e2e/songoskriti-seven-templates.spec.ts` (k.4.1 + k.4.2) and the helper edit (k.4.3); **(3)** the appendix naming (2). No skip is added, no assertion is removed, no threshold moves.
