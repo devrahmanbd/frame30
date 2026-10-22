@@ -5057,3 +5057,267 @@ Measured substance, one clause at a time:
 3. **The theme's presentation receives the same `WidgetCtx` and has no server access.** A theme presentation (`src/lib/theme-presentations.ts`, extended by claim) is a **presentation function over the same `WidgetCtx` the platform widget receives** (`src/components/store/account-widgets.tsx:36`, `:1196`) — no fetch, no server-side import, no `createServerFn` seam of its own. The server stays the platform's; the package manifest and the theme artifact are static JSON read through the existing manifest gate. Money renders through `ctx.money` over the quote's **minor units**, as it did before the programme.
 
 **Boundary of this section.** Words only — no product file, no test, no config is touched. It closes the six statements Task 7.1 enumerates; the record remains append-only, ending here.
+
+---
+
+## (n) Batch A of the stricter acceptance gate — the planned §7-prohibited edits, recorded before the edit
+
+*(Append-only, dated 2026-10-23, continuing the record after the programme's §(m) close, because the owner's stricter acceptance gate opened gaps 2, 5, 6, 7 and 8 of the audit (`/opt/frame28/.superpowers/sdd/2026-10-22-frame30-dynamic-themes/audit-acceptance.md`) and Batch A closes five of them in place. Two of the target files are programme G1 pins and two are the programme's proof lanes — §7-prohibited — so this section names every planned edit **before** it is made, with its exact old → new hunk, and is committed before the code commit it governs (the §(k.3)/(l) ordering). No assertion anywhere is weakened, skipped, or deleted; no new npm dependency is added; the stored-AST compatibility rule (§(d), §(h.7)) is preserved: every change below is additive in the route/component/lane layers, and the AST parser, renderer seed and published bytes are untouched.)*
+
+### (n.1) The finding — what Batch A closes, and why the targets are §7 relaxations
+
+The audit's five Batch A gaps and their closing mechanics:
+
+1. **Gap 5 — a merchant's account panel removal must stick.** The route re-supplies every panel the served body does not place (`src/routes/store.$slug.account.tsx:234`, predicate `themePlacesAccountPanel` in `src/lib/theme-shell-slots.ts:98`), so a panel the theme's DEFAULT body places but the merchant deleted comes back as the dashboard's fallback. Close: the route computes a `removed` set — panels the theme's default composition places but the served body does not — and the dashboard's fallback skips `placed ∪ removed`. A removed panel is shown NOWHERE; a panel the theme never placed is still the dashboard's.
+2. **Gap 6 — nested composition is unproven.** Two halves: (a) a NEW handler-level contract test that drives the REAL `useBuilderEditor` ("Add inside" → insert → reorder → delete → autosave) against the REAL `autosave` server function over the in-memory DB double — no mocked double of the persistence seam; (b) the seven-templates lane's Cart journey gains a nested add-inside/reorder/delete leg through the real editor UI.
+3. **Gap 7 — the theme-switch round trip is unproven at the DB seam.** The keyed RPC double in `template-persistence-isolation.test.ts:174` is a hand-written mirror, not the shipped functions. Close: a NEW handler-level test running the REAL `activateTheme`, `loadWorkspace` (draft read) and `autosave` over the DB double, A→B→A, asserting draft bytes at every leg; plus a browser leg doing one real editor edit → switch → switch back → assert both compositions.
+4. **Gap 8 — the stale 76% in the lane's own contract comment** (`.e2e/songoskriti-seven-templates.spec.ts:30`): the comment is made self-correcting ("the floor is 90 %; the measured value is recorded in the evidence record"), so a future copy change cannot make the comment drift again. Batch C owns the content itself; only this comment changes here.
+5. **Gap 2 — the Blog lane edits the base `blog` while the route serves `blog_listing`** (`.e2e/songoskriti-seven-templates.spec.ts:275` vs `src/routes/store.$slug.blog.index.tsx:41-47`): the journey's Blog leg selects the `blog_listing` VARIANT first (`data-template-variant`), edits a visible property, and asserts the store's blog listing shows it; the existing base-blog assertions stay.
+
+### (n.2) The NEW files — no diff (a NEW file needs no relaxation)
+
+- `src/lib/account-panel-survival.ts` — the pure default-vs-saved panel rule (gap 5), reusing `themePlacesAccountPanel`.
+- `src/lib/account-panel-survival.test.ts` — the rule's unit lane: removed stays removed, other panels still supplied, and the signed-out / no-chrome safety net intact.
+- `src/components/builder/nested-composition.contract.test.tsx` — the gap 6(a) contract test over the real editor hook and the real `autosave` handler.
+- `src/lib/theme-switch-roundtrip.test.ts` — the gap 7 handler-level A→B→A test over the real `activateTheme` / `loadWorkspace` / `autosave`.
+
+### (n.3) The exact planned diffs
+
+#### (n.3.1) `src/routes/store.$slug.account.tsx` (G1)
+
+Three hunks. **Loader** — compute the removed set beside the chrome fetch:
+
+```diff
+     const chrome = await getStoreChrome({
+       data: { slug: params.slug, template: "account" },
+     }).catch(() => null);
+-    return { chrome };
++    return { chrome, removedPanels: accountPanelsRemoved(chrome) };
+```
+
+with `accountPanelsRemoved` (NEW `src/lib/account-panel-survival.ts`) dynamically importing `@/lib/themes.server`'s `registryPackage` inside an established loader-only dynamic import — the loader is a server context, the G1 import-graph gate is untouched. **Placed/removed in the tree:**
+
+```diff
+   const placedPanels = useMemo(() => {
+     const out: AccountPanelType[] = [];
+     for (const panel of ACCOUNT_PANEL_TYPES) {
+       if (themePlacesAccountPanel(chrome?.ast, panel)) out.push(panel);
+     }
+     return out;
+   }, [chrome?.ast]);
++  // The MERCHANT's removals: panels the theme's default composition places
++  // but the served body does not. The dashboard's fallback skips them too —
++  // a deleted panel is deleted, not re-supplied.
++  const removedPanels = routeLoaderData.removedPanels;
+```
+
+**Slots + state** — the four grant lines take the union into account and the provider gains `removed`:
+
+```diff
++    // A panel the merchant removed from the body is NOT granted to the
++    // theme, and the dashboard's fallback skips it: it renders NOWHERE.
+     if (placedPanels.includes("account_nav")) out.account_nav = null;
+     if (placedPanels.includes("account_overview")) out.account_overview = null;
+     if (placedPanels.includes("account_orders")) out.account_orders = null;
+     if (placedPanels.includes("account_details")) out.account_details = null;
+```
+
+```diff
+       placed: placedPanels,
++      removed: removedPanels,
+```
+
+#### (n.3.2) `src/components/store/AccountDashboard.tsx` (G1)
+
+The four fallback skip spots take the removed set — `!placed` becomes `!placed && !removed`, four times (nav :272, overview :291, orders :295, details :308):
+
+```diff
+-      {!placed.includes("account_nav") && (
++      {!placed.includes("account_nav") && !removed.includes("account_nav") && (
+```
+
+…and the state read beside `placed`:
+
+```diff
+   const placed: readonly AccountPanelType[] = state?.placed ?? [];
++  const removed: readonly AccountPanelType[] = state?.removed ?? [];
+```
+
+#### (n.3.3) `src/components/store/AccountDashboardContext.tsx`
+
+The state contract gains the third panel state, beside `placed`:
+
+```diff
+   placed?: readonly AccountPanelType[];
++  /**
++   * The panels the MERCHANT removed from the body. The dashboard's fallback
++   * skips these too: a removed panel is absent, never re-supplied.
++   */
++  removed?: readonly AccountPanelType[];
+```
+
+#### (n.3.4) `.e2e/songoskriti-seven-templates.spec.ts` (gaps 2, 6(b), 8)
+
+**Gap 8, the comment (:28-31)** — prose only, no `it.skip`, no token change:
+
+```diff
+- * platform's publish gate refuses a theme whose authored copy is more than
+- * 10% untranslated (`translationGate`, `src/lib/builder-guardrails.ts:166`),
+- * and the shipped Songoskriti copy is **76%** translated — so the publish is
+- * currently REFUSED with a named reason.
++ * platform's publish gate refuses a theme whose authored copy is more than
++ * 10% untranslated (`translationGate`, `src/lib/builder-guardrails.ts:166`);
++ * the gate's floor is 90 % and the shipped Songoskriti copy has measured
++ * below it — the exact measured value is recorded in the evidence record
++ * (`phase4-dynamic-themes-evidence.md`), so this comment self-corrects
++ * instead of quoting a stale number.
+```
+
+**Gap 6(b)** — the Cart journey's nested leg, driven by the layer navigator's OWN "+ / Add inside" affordance (`LayerTree.tsx:373-378`) and the real tray, then reordered with the node's own Move up, and a second nested container added-and-deleted to prove a removed node is gone:
+
+```diff
+     // 6. Change a REAL inspector property (the schema-generated control).
+     ...
+     await expect(
+       height,
+       "the inspector control holds the edited value",
+     ).toHaveValue("48");
++
++    // 6b. NESTED COMPOSITION — only where the body has a container (Cart).
++    //     "Add inside" on the Columns container, insert a Container into
++    //     it, insert a Text block INTO the container, set the text block's
++    //     body marker, move the container up, then add and DELETE a second
++    //     nested container. (The inserted widget is a `rich_text` with a
++    //     blank heading on purpose: a second <h1> claimant is the platform's
++    //     blocking lint error and would disable the publish confirm.)
++    if (journey.nested) {
++      const columnItem = page
++        .getByRole("treeitem")
++        .filter({ hasText: "Columns" })
++        .first();
++      const addInside = columnItem.getByRole("button", { name: "Add inside" });
++      await expect(addInside, "the navigator offers Add inside").toBeVisible({
++        timeout: 30_000,
++      });
++      await addInside.click();
++      await expect(
++        page.getByText("Adding inside container"),
++        "the tray announces the container target",
++      ).toBeVisible({ timeout: 30_000 });
++      await insertContainer(page);            // NEW helper: the tray's own control
++      … select the new container, click ITS "Add inside",
++        insert "Text block", open its body (area) control,
++        fill journey.nested.marker,
++        Move up on the nested container …
++      … insert a SECOND container inside Columns, delete it, and assert
++        the navigator no longer lists it …
++    }
+```
+
+*(The exact helper and final string/pin table is appended to this record after the code commit — §(n.5); the branch conditions, assertion text and the published/refusal split below are already fixed.)* The storefront half follows the lane's own 9b pattern — unique markers, both publish outcomes honoured:
+
+```diff
++    if (journey.nested) {
++      const marker = page.getByText(journey.nested.marker, { exact: true });
++      const removedMarker = page.getByText(journey.nested.removedMarker, {
++        exact: true,
++      });
++      if (publish.outcome === "published") {
++        await expect(
++          marker.first(),
++          "the nested text block's marker is on the storefront",
++        ).toBeVisible({ timeout: 30_000 });
++        expect(
++          await removedMarker.count(),
++          "the deleted nested container's text did not half-apply anywhere",
++        ).toBe(0);
++      } else if (journey.route.startsWith(`/store/`)) {
++        expect(await marker.count(), "…did not half-apply").toBe(0);
++      }
++    }
+```
+
+The top-level Spacer steps and their 9b 56 px assertions are untouched.
+
+**Gap 2** — the Blog journey selects the `blog_listing` VARIANT before its editor steps, and the storefront half gains the variant assertion:
+
+```diff
+   {
+     label: "Blog",
+     layers: ["Blog topics", "Blog archive", "Blog pagination"],
+     route: `/store/${STORE}/blog`,
++    variant: "blog_listing",
+     storefront: async (page) => {
+-      await expect(
+-        page.getByText("From the journal", { exact: true }).first(),
+-        "the theme's blog listing renders its own pack",
+-      ).toBeVisible({ timeout: 30_000 });
++      … the variant's own heading assert, and the MERCHANT's edited visible
++        property asserted on the listing when the publish succeeded …
+     },
+   },
+```
+
+with, in the loop's editor half:
+
+```diff
+     await openTemplate(page, journey.label);
++    if (journey.variant) {
++      const variantButton = page
++        .locator(`[data-template-variant="${journey.variant}"]`)
++        .first();
++      await expect(variantButton, "the strip offers the variant").toBeVisible({
++        timeout: 30_000,
++      });
++      await variantButton.click();
++      await page.waitForTimeout(1_500);
++    }
+```
+
+…and the journey edits a visible `blog_listing` property through its schema-generated control before the save, so the served listing route (`src/routes/store.$slug.blog.index.tsx:41-47` resolves `blog_listing`) carries the edit in the published branch, and shows neither the edit nor the editor-only marker in the refusal branch.
+
+#### (n.3.5) `.e2e/songoskriti-dynamic-themes.spec.ts` — the gap 7 browser leg
+
+A new test in the existing real-editor suite, using the shipped helpers only (`openTemplateInEditor`, `selectLayer`, `setInspectorHeading`, `readInspectorHeading`, `saveDraft`, `reloadEditorAndSelect` from `songoskriti-dynamic-themes-helpers`; `setActiveTheme`/`activeThemeKey` from `helpers-songoskriti`):
+
+```diff
++  test("the theme switch round trip: a saved draft survives A→B→A", async ({
++    page,
++  }) => {
++    const collector = new NetworkCollector(page).attach();
++    await blockExternalRequests(page, []);
++    await ensureSongoskritiActive(page);            // A active
++    await openTemplateInEditor(page, "Cart");
++    await selectLayer(page, "Cart lines");
++    await setInspectorHeading(page, `Frame30 switch — draft ${RUN}`);
++    await saveDraft(page);
++    await reloadEditorAndSelect(page, "Cart");
++    await selectLayer(page, "Cart lines");
++    expect(await readInspectorHeading(page),
++      "the draft is saved before the switch").toBe(`Frame30 switch — draft ${RUN}`);
++    await setActiveTheme(page, "somvabona");        // B ACTIVE
++    expect(await activeThemeKey(page)).toBe("somvabona");
++    await setActiveTheme(page, "songoskriti");      // BACK to A
++    expect(await activeThemeKey(page)).toBe("songoskriti");
++    await openTemplateInEditor(page, "Cart");
++    await selectLayer(page, "Cart lines");
++    expect(await readInspectorHeading(page),
++      "A's OWN draft came back from the switch — server truth").toBe(
++      `Frame30 switch — draft ${RUN}`);
++    expect(collector.externalResponses()).toEqual([]);
++  });
+```
+
+### (n.4) The browser leg's file choice — a stated deviation from the owner's wording
+
+The owner named `.e2e/levelb-theme-switch-serve.spec.ts`. Measured before the edit: that lane is the custom dev-theme serve lane — it runs WITHOUT the builder, without merchant drafts and without the auth stack (`.e2e/helpers-levelb.ts` proves the lane dynamic-imports `@/`-aliased server modules that are unresolvable in the lane's worker; its themes are fixture themes with no registry packages), so it **cannot** open the real editor, write a real draft, round-trip it through `setActiveTheme`'s real `themeActivateFn`, and re-read it. The real-editor leg therefore lives in `.e2e/songoskriti-dynamic-themes.spec.ts` — the suite that owns the real-editor journeys and the credential gates — and this deviation stands recorded here, ahead of the edit.
+
+### (n.5) Ratification and boundary
+
+**Ratification.** The programme owner's standing instruction for this wave — *"whatever goes, as per the expert opinion"*, applied to the stricter acceptance gate — ratifies these relaxations of §7 for the exact old → new edits named above. The two G1 files take additive, named-state edits; the two lanes take additive blocks whose every new assertion strengthens claims that cannot be weakened; the `AccountDashboardContext` edit is the state contract's third panel state, not a copy change. No skip, no deleted assertion, no moved threshold, no dependency.
+
+**Boundary.** The Batch A code commit touches exactly: the four §7-prohibited files above, the four NEW files of §(n.2), and this record. `src/lib/storefront.functions.ts` / `getStoreChrome` is NOT edited — the reading of the default composition happens at the route's loader through the established loader dynamic import, keeping the getter's body untouched. The churn files (`.artifacts/e2e/playwright-report/index.html`, `ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`) and the untracked `.output-snapshots/` remain unstaged; staging is explicit-path only.
+
+**Ordering.** This section is committed first, by explicit path, BEFORE any Batch A edit is made; the code commit follows it, named by an appended appendix in this record's established style.
+
+**Known edges, stated in place of silence.** (1) The default-vs-saved rule compares the CURRENT package's default composition against the served body: a future theme update that ADDS a panel to its default body reads as a merchant-removal for an old draft, and the panel stays absent from the storefront (an explicit cost of choosing this rule — tombstones were rejected because `parseAst` (`src/lib/builder-ast.ts:8224`) strips every unknown key and `parseTemplates` (`:8349`) drops unknown template keys, so a meta bag cannot survive the canonical round trip without touching the parser, i.e. WITHOUT risking the stored-AST compatibility rule). (2) A theme with no registry package (custom seeded content) resolves to an empty default set → `removed` is empty → the wholesale safety net is retained untouched.
