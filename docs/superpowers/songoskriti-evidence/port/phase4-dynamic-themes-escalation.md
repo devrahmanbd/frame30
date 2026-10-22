@@ -4551,3 +4551,22 @@ Three corrections were made while writing the lane, each because the tree's meas
 2. **The seven-template journey's new assertion is scoped to storefront routes.** The inserted spacer is read from `div[aria-hidden="true"][style*="height: 56px"]`. A successful publish must show it; a refused publish must not have half-applied it. The `archive` journey's route is `/theme-preview/songoskriti?template=archive`, and the preview resolves the merchant's **latest version** rather than the published pointer (`src/lib/preview-sources.ts`), so a save that was never published legitimately appears there. The assertion therefore applies the refusal branch only to `/store/…` routes, and the archive journey keeps every existing assertion it had. The success branch applies to all seven.
 
 3. **The markers are unique per run, and the refusal branch is judged by the pointer and the absent markers.** A fixed marker string could be left behind by an earlier run's published composition and make a later refusal look half-applied (or a later success look pre-existing). Each marker now carries a per-run token. A refusal is proved by the untouched published pointer plus the absence of **this run's** live and draft markers; the published composition's own copy is deliberately not asserted, because it may legitimately be an earlier run's composition.
+
+## (j.7) The applied diffstat and the commits (appended after the code commit)
+
+**The record commit (before the edits):** `ab432e0e` — *"docs(record): the proof lane's three measured corrections, before the edit"* (this section (j.6)).
+
+**The code commit (the five files Task 5's list names):** `d9e4774e` — *"test(e2e): the cart, account and checkout journeys prove the storefront matches"*
+
+```
+ .e2e/songoskriti-dynamic-themes-helpers.ts         | 464 +++++++++++++++++++++
+ .e2e/songoskriti-dynamic-themes.spec.ts            | 384 +++++++++++++++++
+ .e2e/songoskriti-seven-templates.spec.ts           |  24 ++
+ .e2e/songoskriti-storefront-surfaces.spec.ts       |  62 +++
+ src/lib/themes/songoskriti/distinctness-dynamic.test.ts | 249 +++++++++++
+ 5 files changed, 1183 insertions(+)
+```
+
+**What the diff proves about the two existing `.e2e` files.** Both are additions only: the seven-template journey gains the 24-line changed-composition block (all of its existing assertions are untouched), and the storefront-surface lane gains one import and three new cases (no existing case is edited, weakened or skipped). The three new files carry no edit to any prohibited path.
+
+**The boundary.** The three churn files (`.artifacts/e2e/playwright-report/index.html`, `ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`) and the untracked `.output-snapshots/` are unstaged and unmodified by these commits. No migration, no dependency, no deploy.
