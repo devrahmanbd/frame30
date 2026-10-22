@@ -787,7 +787,7 @@ Common pitfalls:
   instead of hand-editing SQL. **Measured on the shipped Songoskriti theme
   (2026-10-21): its copy is 76% বাংলা against the 90% floor**, so a merchant
   publish of that theme is refused with `theme.publish_blocked codes=translation`.
-  The unblock is an owner action — translate the remaining ~32 strings, or
+  The unblock is an owner action — translate the remaining ~36 strings, or
   rule on the floor for a source-owned official theme (an official theme is
   **installed from source**, not published by a merchant). The refusal is the
   platform's rule working, not a defect: see the phase-3 evidence record for

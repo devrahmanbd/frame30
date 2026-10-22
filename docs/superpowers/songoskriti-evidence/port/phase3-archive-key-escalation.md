@@ -4849,7 +4849,6 @@ named here, with their exact diff, in the same way the earlier batches named the
 existing-test updates. The plan's on-disk G1 table does not name them (nor did it name
 the two files Batch B had to escalate) — the table is a list of the batch's **known**
 blast radius, and this is the correction to it.
-
 ---
 
 ## (q) Final-fix round — the review's fourteen findings (appended, 2026-10-22)
@@ -4879,32 +4878,32 @@ renderer's chain `str("title") || str("text") || str("heading") || "Collection"`
 (`src/components/builder/songoskriti.tsx:2279`) then falls through to the literal
 **"Collection"**.
 
-**The class, measured.** The defect is not the archive's alone: it is *a prop the
+**The class, measured.** The defect is not the archive's alone: it is _a prop the
 theme authors that the catalogue does not declare, so the sanitiser drops it on
-save*. The new contract suite
+save_. The new contract suite
 (`src/lib/themes/songoskriti/composition-props.test.ts`, a NEW file — §7-allowed)
 enumerates **every** composition the theme authors — the ten base templates and
 the two variant bodies — and measures the class at **41 distinct
 `(widget, prop)` pairs** that were dropped on save:
 
-| widget                  | the props the theme authors that the catalogue did not declare                                                                                                       |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `category_header`       | `title`, `title_bn`, `text`, `text_bn`, `description`, `description_bn`, `collectionType`, `subnav`                                                                       |
-| `blog_archive`          | `heading_bn`                                                                                                                                                          |
-| `blog_terms`            | `heading_bn`                                                                                                                                                          |
-| `collection_story`      | `heading_bn`, `subhead`, `subhead_bn`, `collections`                                                                                                                  |
-| `craft_story`           | `eyebrow_bn`, `heading_bn`, `body_bn`                                                                                                                                 |
-| `department_grid`       | `heading`, `heading_bn`                                                                                                                                               |
-| `finder_row`            | `heading_bn`, `body_bn`                                                                                                                                               |
-| `heading`               | `text_bn`                                                                                                                                                              |
-| `product_grid`          | `collection`, `heading_bn`, `promise_bn`, `source`                                                                                                                     |
-| `product_rail`          | `badgeLabel`, `heading_bn`, `promise_bn`, `subhead`, `subhead_bn`                                                                                                      |
-| `recently_viewed`       | `heading_bn`                                                                                                                                                          |
-| `result_toolbar`        | `sortDefault`                                                                                                                                                         |
-| `rich_text`             | `heading_bn`, `body_bn`                                                                                                                                               |
-| `split_feature`         | `heading_bn`, `body_bn`                                                                                                                                               |
-| `store_locator`         | `heading_bn`, `images`                                                                                                                                                 |
-| `ugc_gallery`           | `heading_bn`, `subhead_bn`                                                                                                                                             |
+| widget             | the props the theme authors that the catalogue did not declare                                      |
+| ------------------ | --------------------------------------------------------------------------------------------------- |
+| `category_header`  | `title`, `title_bn`, `text`, `text_bn`, `description`, `description_bn`, `collectionType`, `subnav` |
+| `blog_archive`     | `heading_bn`                                                                                        |
+| `blog_terms`       | `heading_bn`                                                                                        |
+| `collection_story` | `heading_bn`, `subhead`, `subhead_bn`, `collections`                                                |
+| `craft_story`      | `eyebrow_bn`, `heading_bn`, `body_bn`                                                               |
+| `department_grid`  | `heading`, `heading_bn`                                                                             |
+| `finder_row`       | `heading_bn`, `body_bn`                                                                             |
+| `heading`          | `text_bn`                                                                                           |
+| `product_grid`     | `collection`, `heading_bn`, `promise_bn`, `source`                                                  |
+| `product_rail`     | `badgeLabel`, `heading_bn`, `promise_bn`, `subhead`, `subhead_bn`                                   |
+| `recently_viewed`  | `heading_bn`                                                                                        |
+| `result_toolbar`   | `sortDefault`                                                                                       |
+| `rich_text`        | `heading_bn`, `body_bn`                                                                             |
+| `split_feature`    | `heading_bn`, `body_bn`                                                                             |
+| `store_locator`    | `heading_bn`, `images`                                                                              |
+| `ugc_gallery`      | `heading_bn`, `subhead_bn`                                                                          |
 
 **Two of the 41 are material beyond the label.**
 
@@ -4953,12 +4952,12 @@ survives as `"Archive"` and its `heading` stays blank.
 
 **The files this MUST FIX touches.**
 
-| file                                                              | §7 status                                                                                                                                   |
-| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/lib/builder-ast.ts`                                         | **§7-prohibited** — on the plan's G1 list ("engine / platform libs"), and named in the escalation record's §(f) table from Task 1.             |
-| `src/lib/themes/songoskriti/preview.ts`                         | **§7-allowed** (`src/lib/themes/songoskriti/**`) — the archive composition is unchanged; the label now survives because the catalogue declares it. |
-| `src/lib/themes/songoskriti/composition-props.test.ts`          | **NEW** — §7 allows a new file.                                                                                                              |
-| `src/lib/themes/songoskriti/search-template.test.ts`            | **§7-prohibited** (an existing test file under `src/`) — its "props outside the catalogue" pin changes: the set becomes **empty**, which is a **stronger** expectation than the five it replaces. |
+| file                                                   | §7 status                                                                                                                                                                                         |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/lib/builder-ast.ts`                               | **§7-prohibited** — on the plan's G1 list ("engine / platform libs"), and named in the escalation record's §(f) table from Task 1.                                                                |
+| `src/lib/themes/songoskriti/preview.ts`                | **§7-allowed** (`src/lib/themes/songoskriti/**`) — the archive composition is unchanged; the label now survives because the catalogue declares it.                                                |
+| `src/lib/themes/songoskriti/composition-props.test.ts` | **NEW** — §7 allows a new file.                                                                                                                                                                   |
+| `src/lib/themes/songoskriti/search-template.test.ts`   | **§7-prohibited** (an existing test file under `src/`) — its "props outside the catalogue" pin changes: the set becomes **empty**, which is a **stronger** expectation than the five it replaces. |
 
 ### (q.2) MUST FIX 5 — the production checkout's order
 
@@ -5009,7 +5008,7 @@ before this key existed), so the blast radius is near-zero — but the trap has
 no exit.
 
 **The choice: the trap keeps its refusal, and the editor's reset affordance
-becomes the exit.** The refusal is *correct* — a template nothing routes to must
+becomes the exit.** The refusal is _correct_ — a template nothing routes to must
 not ship — so it is **not** downgraded. Instead the merchant is given a way to
 **remove** the stray key, which is what the reset affordance is for: a key with
 no theme default has nothing to restore, so "reset this template" on it means
@@ -5078,18 +5077,18 @@ it decided, what superseded it, and why.
 
 ### (q.8) The remaining SHOULD FIX findings — documents, not source
 
-| #   | the finding                                                                                                          | the file                                                                                     |
-| --- | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| 6   | the test-delta arithmetic names a mid-programme baseline (`2f4eb2f5`) instead of the programme's base (`182c37b5`)  | `docs/superpowers/songoskriti-evidence/port/phase3-evidence.md`                                |
-| 9   | the governing plan is untracked while three phase-3 records cite it by path                                        | `docs/superpowers/plans/2026-10-21-frame30-core-cms-upgrade.md` — **committed**                 |
-| 10  | the CI record quotes only the first push (`182c37b5..a7b210cd`)                                                       | `docs/superpowers/songoskriti-evidence/port/phase3-ci.md`                                      |
-| 12  | "~32 strings" is "~36" (254 authored, 193 ok, 61 fallback → 229 needed for 90.2 %)                                    | `docs/superpowers/songoskriti-evidence/port/phase3-evidence.md`                                |
-| 13  | `docs/04-builder/theme-runtime.md` §9's archive row names three store-less routes as the ones that "grant" the six slots | `docs/04-builder/theme-runtime.md`                                                             |
-| 14  | the local-gate table is silent on the owner-run `gates:release` chain                                                | `docs/superpowers/songoskriti-evidence/port/phase3-evidence.md` and `phase3-ci.md`              |
+| #   | the finding                                                                                                              | the file                                                                           |
+| --- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| 6   | the test-delta arithmetic names a mid-programme baseline (`2f4eb2f5`) instead of the programme's base (`182c37b5`)       | `docs/superpowers/songoskriti-evidence/port/phase3-evidence.md`                    |
+| 9   | the governing plan is untracked while three phase-3 records cite it by path                                              | `docs/superpowers/plans/2026-10-21-frame30-core-cms-upgrade.md` — **committed**    |
+| 10  | the CI record quotes only the first push (`182c37b5..a7b210cd`)                                                          | `docs/superpowers/songoskriti-evidence/port/phase3-ci.md`                          |
+| 12  | "~32 strings" is "~36" (254 authored, 193 ok, 61 fallback → 229 needed for 90.2 %)                                       | `docs/superpowers/songoskriti-evidence/port/phase3-evidence.md`                    |
+| 13  | `docs/04-builder/theme-runtime.md` §9's archive row names three store-less routes as the ones that "grant" the six slots | `docs/04-builder/theme-runtime.md`                                                 |
+| 14  | the local-gate table is silent on the owner-run `gates:release` chain                                                    | `docs/superpowers/songoskriti-evidence/port/phase3-evidence.md` and `phase3-ci.md` |
 
 ### (q.9) The FINAL diffs and the measured evidence
 
-*(appended after the edits — see the section that follows this one.)*
+_(appended after the edits — see the section that follows this one.)_
 
 ### (q.10) The additional §7-prohibited files this round touches (appended, 2026-10-22)
 
@@ -5097,11 +5096,11 @@ The MUST FIX 1 catalogue work reached three more files that §7 prohibits.
 They are named here, **before** the edits, for the same reason §(q.1) names
 its files.
 
-| file                                                              | why it is edited                                                                                                                                                    |
-| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/lib/widget-help.ts`                                          | the bilingual HINTS a merchant reads under a prop. The new `category_header.collectionType` is a `select`, and the platform's exit gate (`src/lib/widget-metadata.test.ts` — "every non-obvious prop resolves a hint") requires a hint for every non-obvious kind. |
-| `src/lib/themes/songoskriti/checkout-composition.test.ts`        | the checkout composition's pinned ORDER — the SHOULD FIX 5 reorder. The pin is re-pointed at the new order and a **new** pin is added: the route's own body must come BEFORE the payment/summary band. |
-| `src/lib/themes/songoskriti/search-template.test.ts`             | named in §(q.1) already — its "props outside the catalogue" pin becomes the **empty** set.                                                                            |
+| file                                                      | why it is edited                                                                                                                                                                                                                                                   |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `src/lib/widget-help.ts`                                  | the bilingual HINTS a merchant reads under a prop. The new `category_header.collectionType` is a `select`, and the platform's exit gate (`src/lib/widget-metadata.test.ts` — "every non-obvious prop resolves a hint") requires a hint for every non-obvious kind. |
+| `src/lib/themes/songoskriti/checkout-composition.test.ts` | the checkout composition's pinned ORDER — the SHOULD FIX 5 reorder. The pin is re-pointed at the new order and a **new** pin is added: the route's own body must come BEFORE the payment/summary band.                                                             |
+| `src/lib/themes/songoskriti/search-template.test.ts`      | named in §(q.1) already — its "props outside the catalogue" pin becomes the **empty** set.                                                                                                                                                                         |
 
 **One correction to §(q.1), stated rather than hidden.** §(q.1) listed the
 class as "41 distinct `(widget, prop)` pairs". The first measurement counted a
@@ -5121,3 +5120,434 @@ corrected predicate: a prop is declared when it is a catalogue field **or** the
 `${key}_bn` sibling of a `bitext` field **or** an advanced-tab field — and it
 asserts, for every prop, that the value **survives `parseTemplates`**, which is
 the property that actually matters.
+
+### (q.9) The FINAL diffs and the measured evidence (appended, 2026-10-22)
+
+The diffs below are the **committed** diffs of the final-fix round, measured
+against the round's base commit `38aad54d`. The file list is exactly the one
+§(q.1)–§(q.10) named — no file outside it is edited.
+
+```
+$ git diff 38aad54d..HEAD --stat -- src/ .e2e/
+ .e2e/songoskriti-storefront-surfaces.spec.ts       |  51 ++++
+ .../builder/songoskriti-port-freeze.test.tsx       |   8 +-
+ src/components/store/ArchiveView.tsx               |  16 +-
+ src/lib/builder-ast.ts                             | 107 +++++++-
+ src/lib/template-variants.ts                       |  35 +++
+ src/lib/themes-reset.contract.test.ts              |  61 +++++
+ src/lib/themes.server.ts                           |  46 +++-
+ .../songoskriti/checkout-composition.test.ts       |  17 +-
+ .../songoskriti/composition-props.test.ts          | 276 +++++++++++++++++++++
+ src/lib/themes/songoskriti/preview.ts              |  16 +-
+ src/lib/themes/songoskriti/search-template.test.ts |  34 +--
+ src/lib/widget-help.ts                             |   4 +
+ src/routes/_authenticated/dashboard/builder.tsx    | 105 ++++++--
+ 13 files changed, 722 insertions(+), 54 deletions(-)
+```
+
+#### (q.9.1) `src/lib/builder-ast.ts` — the catalogue declares what the theme authors
+
+```diff
+@@ `product_grid`
+     defaults: {
+       heading: "Products",
+       limit: 12,
+       columns: 4,
+       cardVariant: "standard",
+       density: "comfortable",
+       showRating: false,
+       promise: "",
+       skin: "cards",
++      // The data params the widget REGISTRY reads for this widget
++      // (`requestForSection`, `src/lib/widget-data.ts:134-148`).
++      collection: "",
++      source: "collection",
+     },
+     fields: [
+       text("heading", "Heading"),
+@@
+       cols("columns", "Columns (2-4)"),
++      // The data params the widget REGISTRY reads for this widget
++      // (`requestForSection`, `src/lib/widget-data.ts:134-148`, over
++      // `WIDGET_REGISTRY.product_grid.data.params`,
++      // `src/lib/widget-registry.ts:109-144`). Undeclared, they were dropped
++      // by the sanitiser and the grid resolved no collection at all.
++      text("collection", "Collection handle", 80),
++      {
++        key: "source",
++        label: "Source",
++        kind: "select",
++        panel: "content",
++        options: [
++          { value: "collection", label: "Collection" },
++          { value: "bestsellers", label: "Bestsellers" },
++          { value: "recommended", label: "Recommended" },
++        ],
++      },
+       text("promise", "Delivery promise", 60),
+@@ `product_rail`
+       promise: "",
+       skin: "editorial",
++      subhead: "",
++      badgeLabel: "",
+     },
+     fields: [
+       text("heading", "Heading"),
++      text("subhead", "Subhead", 160),
+@@
+       text("promise", "Delivery promise", 60),
+       bool("showRating", "Show rating"),
++      text("badgeLabel", "Card badge label", 40),
+@@ `category_header`
+       showBreadcrumb: true,
+       homeLabel: "Home",
++      // The band's OWN label. `title` is the canonical prop; `text` is the
++      // older alias the renderer still honours (`str("title") ||
++      // str("text") || str("heading")`, `src/components/builder/songoskriti.tsx`).
++      // Both default to EMPTY, so a composition that authors neither falls
++      // through the chain to `heading` exactly as before.
++      title: "",
++      text: "",
++      description: "",
++      collectionType: "curated",
++      subnav: "",
+     },
+     fields: [
+       text("heading", "Title", 120),
+@@
+       text("homeLabel", "Breadcrumb home label", 40),
++      // The band label. `title` wins over the legacy `text` alias in the
++      // renderer's chain, and neither participates in the <h1>-claim rule
++      // (`blankHeading` reads only `heading`).
++      text("title", "Band label", 120),
++      text("text", "Band label (legacy alias)", 120),
++      area("description", "Editorial line", 600),
++      {
++        key: "collectionType",
++        label: "Collection type",
++        kind: "select",
++        panel: "content",
++        options: [
++          { value: "curated", label: "Curated" },
++          { value: "department", label: "Department" },
++          { value: "occasion", label: "Occasion" },
++        ],
++      },
++      area("subnav", "Subnav (Label:/c/slug, comma separated)", 600),
+@@ `result_toolbar`
+       sortLabel: "Sort",
++      sortDefault: "",
+     },
+     fields: [
+@@
+       text("sortLabel", "Sort label", 40),
++      // The default sort the toolbar shows when the shopper has not chosen
++      // one. The Songoskriti renderer reads it
++      // (`src/components/builder/songoskriti.tsx`, `SongoskritiResultToolbar`).
++      text("sortDefault", "Default sort label", 40),
+@@ `collection_story`
+       scrim: true,
++      subhead: "",
++      collections: [],
+     },
+     fields: [
+       text("eyebrow", "Eyebrow", 60),
+       text("heading", "Heading", 120),
++      text("subhead", "Subhead", 300),
+@@
+       bool("scrim", "Darken image behind text"),
++      // The collection cards the Songoskriti renderer reads
++      // (`rowsOf(section, "collections")`,
++      // `src/components/builder/songoskriti.tsx`).
++      {
++        key: "collections",
++        label: "Collection cards",
++        kind: "array",
++        panel: "content",
++        itemLabel: "title",
++        maxRows: 8,
++        fields: [
++          text("title", "Title", 80),
++          text("image", "Image URL", 200),
++          url("href", "Link URL"),
++          text("subtitle", "Subtitle", 80),
++        ],
++      },
+@@ `store_locator`
+     defaults: {
+       heading: "Visit us",
++      images: "",
+       s1Name: "",
+@@
+     fields: [
+       text("heading", "Heading", 80),
++      // The Songoskriti renderer's own fallback list: a comma-separated URL
++      // string it splits per store (`src/components/builder/songoskriti.tsx`,
++      // `SongoskritiStoreLocator`).
++      area("images", "Store images (comma separated URLs)", 2000),
+@@ `hero_carousel`'s `slides` ROW schema (an array row is NOT promoted to
+   `bitext`, so its বাংলা siblings must be declared in the row schema)
+           area("subhead_bn", "Subhead (বাংলা)", 300),
+           text("ctaLabel", "CTA label", 40),
++          text("ctaLabel_bn", "CTA label (বাংলা)", 40),
+           url("ctaUrl", "CTA link"),
+           text("caption", "Eyebrow caption", 60),
++          text("caption_bn", "Eyebrow caption (বাংলা)", 60),
+@@ `department_grid`
+-    defaults: { columns: 4, departments: [] },
++    defaults: { heading: "", columns: 4, departments: [] },
+     fields: [
++      text("heading", "Heading", 80),
+@@ `BITEXT_FIELDS` — the platform's own bilingual mechanism, which is where a
+   বাংলা sibling belongs
+-  product_rail: ["heading", "promise"],
++  product_rail: ["heading", "promise", "subhead"],
+@@
+-  category_header: ["heading", "body", "homeLabel"],
++  // `title` / `text` / `description` are the Songoskriti band's own
++  // vocabulary (the renderer's chain is
++  // `str("title") || str("text") || str("heading")`), and they are
++  // shopper-facing prose, so each gains its বাংলা sibling here.
++  category_header: [
++    "heading",
++    "body",
++    "homeLabel",
++    "title",
++    "text",
++    "description",
++  ],
+@@
+-  collection_story: ["eyebrow", "heading", "body", "ctaLabel"],
++  collection_story: ["eyebrow", "heading", "body", "ctaLabel", "subhead"],
+@@
+   blog_archive: ["heading", "emptyText"],
++  blog_terms: ["heading"],
++  department_grid: ["heading"],
+ };
+```
+
+#### (q.9.2) `src/lib/themes/songoskriti/preview.ts` — the checkout's order (§7-allowed)
+
+```diff
+@@ the `case "checkout":` body
+           return [
+             s("heading", { text: "Checkout", text_bn: "চেকআউট" }),
+             s("checkout_steps", {
+               heading: "Checkout progress",
+               activeStep: 2,
+             }),
++            // The route's OWN body comes FIRST: the customer fields, the
++            // validated submission and the place-order action. The payment
++            // block and the order summary follow it, so the shopper reads
++            // the address first and picks the rail with the total in view —
++            // not the other way round.
++            //
++            // The route's own body: the production checkout form — the
++            // customer fields, the validated submission and the place-order
++            // action. The theme contributes the frame around it (Decision
++            // D2'); the platform keeps the form, the totals and the rails.
++            s("page_content", {}),
+             {
+               ...s("columns", { columns: 2, asymmetrical: true, gap: 64 }),
+@@
+                 },
+               ],
+             },
+-            // The route's OWN body: the production checkout form — the
+-            // customer fields, the validated submission and the place-order
+-            // action. The theme contributes the frame around it (Decision
+-            // D2'); the platform keeps the form, the totals and the rails.
+-            s("page_content", {}),
+           ];
+```
+
+#### (q.9.3) `src/lib/themes.server.ts` — the reset's two guards
+
+```diff
+@@ `resetTemplateToDefault`
+   return withSpan("builder.reset_template", async () => {
+     const key = input.template;
++    // The workspace is the merchant's ACTIVE theme (`loadWorkspace` resolves
++    // it). The reset must write to the theme it READ — a `themeId` for a
++    // second of the merchant's themes would otherwise receive the active
++    // theme's templates.
+     const workspace = await loadWorkspace(db, merchantId);
++    if (input.themeId !== workspace.theme.id) {
++      incr("framique_builder_reset_total", { result: "rejected" });
++      throw new BuilderError(
++        "builder.reset_unknown_theme",
++        `Theme "${input.themeId}" is not the theme this workspace holds`,
++      );
++    }
++    // A STRAY variant key — one shaped `<known base>_<suffix>` whose suffix
++    // is not in the closed vocabulary — has no theme default to restore, so
++    // "reset this template" on it means "drop it". That is the merchant's
++    // exit from the `builder.unknown_variant` refusal: the key nothing
++    // routes to can be removed here. The legacy `page_<slug>` shape is
++    // exempt (a legal persisted key of a third-party package) and is never
++    // a stray.
++    const stray = strayVariantKeys(workspace.templates).includes(key);
+     // Only a known template key, a variant inside the CLOSED vocabulary, or
+     // a stray variant can be reset — any other key would silently create a
+     // new one.
+-    if (!isKnownTemplateKey(key)) {
++    if (!isKnownTemplateKey(key) && !stray) {
+       throw new BuilderError(
+         "builder.reset_unknown_template",
+         `Unknown template "${key}"`,
+@@
+-    // Exactly ONE key is replaced. Every other template — and every other
+-    // variant — rides the map untouched.
+-    const templates: TemplateMap = { ...workspace.templates, [key]: ast };
++    // Exactly ONE key is replaced — or, for a stray variant, REMOVED. Every
++    // other template — and every other variant — rides the map untouched.
++    const templates: TemplateMap = { ...workspace.templates };
++    if (stray) {
++      delete (templates as Record<string, ThemeAst | undefined>)[key];
++    } else {
++      templates[key] = ast;
++    }
+@@
+-      note: `Reset ${key} to the theme default`,
+-      label: `Reset ${key}`,
++      note: stray
++        ? `Remove the stray template ${key}`
++        : `Reset ${key} to the theme default`,
++      label: stray ? `Remove ${key}` : `Reset ${key}`,
+```
+
+#### (q.9.4) `src/lib/template-variants.ts` — the stray-key helper (NEW, this round)
+
+```diff
++/**
++ * The STRAY variant keys a merchant's own map carries.
++ *
++ * A key shaped `<known base>_<suffix>` whose suffix is **not** in the closed
++ * table is a typo or a leftover — a template nothing routes to. The publish
++ * gate refuses it (`builder.unknown_variant`,
++ * `src/lib/themes.server.ts`), so the merchant needs a way to get rid of it:
++ * this list is what the editor's reset/cleanup affordance offers.
++ *
++ * The legacy theme-package per-page shape (`page_<slug>`) is **exempt**: it is
++ * a legal persisted key of a third-party package, it is never refused, and it
++ * is therefore never listed here either.
++ */
++export function strayVariantKeys(
++  templates: Record<string, unknown> | null | undefined,
++): string[] {
++  if (!templates) return [];
++  const out: string[] = [];
++  for (const key of Object.keys(templates)) {
++    if (isTemplateKey(key)) continue;
++    if (!isVariantTemplateKey(key)) continue;
++    const sep = key.indexOf("_");
++    if (sep < 1) continue;
++    const base = key.slice(0, sep);
++    // The legacy per-page shape is exempt, exactly as the publish gate
++    // exempts it.
++    if (base === "page") continue;
++    if (!isTemplateKey(base)) continue;
++    if (isTemplateVariantKey(key)) continue;
++    out.push(key);
++  }
++  return out.sort();
++}
+```
+
+#### (q.9.5) `src/routes/_authenticated/dashboard/builder.tsx` — the cleanup affordance
+
+The template nav gains a THIRD level — the merchant's own stray keys — and
+the reset button becomes a **remove** for the selected one. The full diff is
+in the commit (`439e7b76`); its three parts are the import, the state, and
+the nav + button.
+
+#### (q.9.6) The measured evidence
+
+**The contract suite (NEW) — the covering test for MUST FIX 1:**
+
+```
+$ node_modules/.bin/vitest run src/lib/themes/songoskriti/composition-props.test.ts
+
+ ✓ src/lib/themes/songoskriti/composition-props.test.ts (4 tests) 121ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+```
+
+**The reset contract — the covering test for SHOULD FIX 7 and SHOULD FIX 8:**
+
+```
+$ node_modules/.bin/vitest run src/lib/themes-reset.contract.test.ts
+
+ ✓ src/lib/themes-reset.contract.test.ts (9 tests) 1290ms
+
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+```
+
+**The checkout composition — the covering test for SHOULD FIX 5:**
+
+```
+$ node_modules/.bin/vitest run src/lib/themes/songoskriti/checkout-composition.test.ts
+
+ ✓ src/lib/themes/songoskriti/checkout-composition.test.ts (8 tests) 78ms
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+```
+
+**The whole suite, at the tip of the round:**
+
+```
+$ node_modules/.bin/vitest run
+
+ Test Files  2 failed | 617 passed | 1 skipped (620)
+      Tests  3 failed | 8772 passed | 3 skipped (8778)
+```
+
+The three failures are the **pre-existing, environment-bound** ones —
+`src/lib/analytics-live-shape.test.ts` (2) and `src/lib/site.server.test.ts`
+(1) — and they fail at the base commit too (§2.1 of the evidence record).
+
+**The build, at the tip of the round:**
+
+```
+$ node_modules/.bin/vite build
+…
+✓ 3631 modules transformed.
+✓ built in 6.17s
+ℹ Generated .output/nitro.json
+[nitro] ✔ You can preview this build using npx vite preview
+$ echo $?
+0
+```
+
+| the measurement          | the value                                                                                                      |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| the exit status          | **0**                                                                                                          |
+| the output directory     | **`.output/`** — the client assets at `.output/public/assets/`, the server bundle at `.output/server/`         |
+| the bundle size          | **55 MB** in total, **1 332** files: **5.50 MB** client JS, **0.32 MB** client CSS, **14.38 MB** server `.mjs` |
+| the largest client chunk | `index-*.js` at **608 KB**                                                                                     |
+
+**The type check and the linter, at the tip of the round:**
+
+```
+$ node_modules/.bin/tsgo --noEmit
+(no output — exit 0)
+
+$ node_modules/.bin/eslint src scripts
+✖ 319 problems (0 errors, 319 warnings)
+(exit 0 — the 319 warnings are the pre-existing ones; 0 errors)
+```
+
+**The doc gate, at the tip of the round:**
+
+```
+$ node scripts/doc-gate.mjs
+doc gate — canonical documentation checks
+scope: 24 documents (23 require a status line)
+self-test: PASS
+
+findings: 0
+(exit 0)
+```

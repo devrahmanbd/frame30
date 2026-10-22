@@ -114,17 +114,122 @@ These are the questions I put to you while implementing, with the options offere
 
 ### 5.1 Resolved on 2026-10-20/21 (the expert's programme is now shipped)
 
-| #                                                                                                                                                                                                                                                                                                                                                                                                                          | Ruling                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Where it lives                                                                                     |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| **D1**                                                                                                                                                                                                                                                                                                                                                                                                                     | **Option A** — "Archive" is the blog taxonomy surface (index / category / tag / author), served by the `blog` template + the platform's blog pack. **No `archive` template key** was added, so `TEMPLATE_KEYS`, the 41 per-widget allowlists, the hand-written `z.enum`, the package contract and `THEME_API_RANGE` are all untouched. An unknown `?template=` now renders an explicit **unsupported state** that names the key and links home.                                                                                                                | `docs/superpowers/songoskriti-evidence/port/phase2-template-completeness-escalation.md` §(l), §(n) |
-| **D4**                                                                                                                                                                                                                                                                                                                                                                                                                     | Port spec §7 **relaxed** for a narrow, owner-ruled list: the preview host (`src/components/store/ThemePreviewFrame.tsx`), the two composition pins (`src/components/builder/songoskriti-port-freeze.test.tsx`, `src/lib/theme-preview-nav.test.ts`), the theme-owned `skins.test.ts` pin, the Phase-1 preview-page pin, the search route (`src/routes/store.$slug.search.tsx`), `src/lib/theme-preview-nav.ts`, `src/routes/theme-preview.$key.tsx`, and the platform's payment widget (`src/components/builder/cart.tsx`). Every other §7 prohibition stands. | the same record, §(g), §(h), §(j), §(m), §(n)                                                      |
-| **D6**                                                                                                                                                                                                                                                                                                                                                                                                                     | **State B** — the storefront search route now exposes its pieces as per-widget context slots, with `CollectionQueryProvider` mounted and the platform's query box + category/kind chips still inside the results block the theme renders. The result set is **byte-identical** before and after.                                                                                                                                                                                                                                                               | `src/routes/store.$slug.search.tsx` + the record's §(k)                                            |
-| **D2 / D3 / D5 / D7**                                                                                                                                                                                                                                                                                                                                                                                                      | **RULED 2026-10-21 — no longer open**: production checkout stays tokens-only (the theme's checkout composition is an authoring/preview surface, not a production shell), the programme is Songoskriti-only, the storefront reader blog stays "themeless by design", and the storefront still mounts no `WidgetDataProvider` (so `facet_sidebar` is preview-only).                                                                                                                                                                                              | the phase-2 plan's Decision Gate (each with its dated amendment) and the evidence record's §(K.3)  |
+| #                                                                                                                                                                                                                                                                                                                                                                                                                          | Ruling                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | Where it lives                                                                            |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| **D1** — **SUPERSEDED 2026-10-22 by D1′**                                                                                                                                                                                                                                                                                                                                                                                  | **Option A** (2026-10-20) — "Archive" is the blog taxonomy surface (index / category / tag / author), served by the `blog` template + the platform's blog pack, and **no `archive` template key** was added. **D1′ (2026-10-22) supersedes it**: the `archive` key **IS** in the union, with its own zone row, editor entry, distinctness row, package rule and its three validated variants (`archive_category` / `archive_tag` / `archive_author`). The _semantics_ D1 chose carry over — the archive is the **content** archive, never a product listing. See **§5.2**.                                    | the phase-2 record §(l), §(n) (D1) and **§5.2** (D1′)                                     |
+| **D4**                                                                                                                                                                                                                                                                                                                                                                                                                     | Port spec §7 **relaxed** for a narrow, owner-ruled list: the preview host (`src/components/store/ThemePreviewFrame.tsx`), the two composition pins (`src/components/builder/songoskriti-port-freeze.test.tsx`, `src/lib/theme-preview-nav.test.ts`), the theme-owned `skins.test.ts` pin, the Phase-1 preview-page pin, the search route (`src/routes/store.$slug.search.tsx`), `src/lib/theme-preview-nav.ts`, `src/routes/theme-preview.$key.tsx`, and the platform's payment widget (`src/components/builder/cart.tsx`). Every other §7 prohibition stands.                                                | the same record, §(g), §(h), §(j), §(m), §(n)                                             |
+| **D6**                                                                                                                                                                                                                                                                                                                                                                                                                     | **State B** — the storefront search route now exposes its pieces as per-widget context slots, with `CollectionQueryProvider` mounted and the platform's query box + category/kind chips still inside the results block the theme renders. The result set is **byte-identical** before and after.                                                                                                                                                                                                                                                                                                              | `src/routes/store.$slug.search.tsx` + the record's §(k)                                   |
+| **D2 / D3 / D5 / D7** — **D2 and D5 SUPERSEDED 2026-10-22 by D2′ / D5′**                                                                                                                                                                                                                                                                                                                                                   | **RULED 2026-10-21 — no longer open**: production checkout stays tokens-only (the theme's checkout composition is an authoring/preview surface, not a production shell), the programme is Songoskriti-only, the storefront reader blog stays "themeless by design", and the storefront still mounts no `WidgetDataProvider` (so `facet_sidebar` is preview-only). **D2′ and D5′ (2026-10-22) supersede two of those**: the theme's checkout composition **IS** the production shell (D2′), and the storefront reader blog **DOES** wear the theme's two `blog` variants (D5′). D3 and D7 stand. See **§5.2**. | the phase-2 plan's Decision Gate and the evidence record's §(K.3); **§5.2** for D2′ / D5′ |
 | **The expert's six items, as shipped:** 1 real Search template ✅ · 2 representative Cart/Account previews ✅ · 3 Blog/Page preview composition ✅ · 4 authored Checkout template in preview ✅ · 5 Archive contract ✅ (Option A — a documented contract, not a new key) · 6 a template-distinctness acceptance gate ✅ (seven rules, a firing fixture each, and it rejects the engine's generic body on every template). |
 
-Each carries the evidence that settles it. **D1, D2, D3, D4, D5, D6 and D7 are all ruled** — D1 (archive semantics), D4 (§7) and D6 (the search-route state) when the phase-2 plan was written; D2, D3, D5 and D7 on **2026-10-21**, each with its reason, its follow-up path and where it lives. The master plan's Decision Gate carries the same dated amendments. The open-questions list's own D6 — the parity re-freeze — and D7 — the storefront criterion — are now CLOSED (see below).
+Each carries the evidence that settles it. **D1, D2, D3, D4, D5, D6 and D7 are all ruled** — D1 (archive semantics), D4 (§7) and D6 (the search-route state) when the phase-2 plan was written; D2, D3, D5 and D7 on **2026-10-21**, each with its reason, its follow-up path and where it lives. **Three of them moved on 2026-10-22** (D1 → D1′, D2 → D2′, D5 → D5′) when the phase-3 programme landed; §5.2 records the amendment, the reason and where each change lives. The earlier rulings are kept, not erased. The master plan's Decision Gate carries the same dated amendments. The open-questions list's own D6 — the parity re-freeze — and D7 — the storefront criterion — are now CLOSED (see below).
 
-### D1 — Does `archive` need to be a template _key_ at all? _(RULED 2026-10-20: **Option A** — see §5.1)_
+### 5.2 Amended on 2026-10-22 (the phase-3 rulings: D1′ / D2′ / D5′)
+
+**This section is an AMENDMENT, not a replacement.** The rulings of 2026-10-20/21
+stand as they were decided; this records what the phase-3 programme changed,
+why it changed, and where each change lives. Nothing below erases the earlier
+decision — the earlier decision is quoted, and the reason it changed is given.
+
+**Why the amendment exists.** §5.1 records the state of the programme at the end
+of phase 2. The phase-3 range (`182c37b5` → the tip) never touched `report.md`,
+so three of its rulings went stale: the phase-3 work **superseded** two of them
+and **extended** one. A reader of §5.1 alone would have read three statements
+that are false at HEAD.
+
+#### D1′ — the `archive` template key IS real (supersedes D1 “Option A”)
+
+**What D1 decided (2026-10-20, quoted).** _"Option A — 'Archive' is the blog
+taxonomy surface (index / category / tag / author), served by the `blog`
+template + the platform's blog pack. **No `archive` template key** was added, so
+`TEMPLATE_KEYS`, the 41 per-widget allowlists, the hand-written `z.enum`, the
+package contract and `THEME_API_RANGE` are all untouched."_
+
+**Why it changed.** D1 chose "no new key" to avoid the measured blast radius
+(36 files / 46 edit sites, 31 of them §7-prohibited). The phase-3 brief accepts
+that blast radius and asks for the **real** key: an archive is a surface a
+merchant must be able to design, and a surface that is not a key is a surface
+that can only ever be the blog's composition. The owner granted the §7
+relaxation (Decision Gate **G1**) for a named 40-file list.
+
+**What carries over from D1, and what does not.** The **semantics** carry over
+unchanged: the archive is the **content** archive — a category, a tag or an
+author — and never a product listing; the product collection keeps the
+`collection` template. What does **not** carry over is the mechanism: the
+`archive` key is now in the union.
+
+**Where it lives.**
+
+| what                                                                    | where                                                                                            |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| the key, its zone row and the exhaustive maps                           | `src/lib/builder-ast.ts` (`TEMPLATE_KEYS`, `TEMPLATE_ZONES`)                                     |
+| the closed variant vocabulary (`archive_category` / `_tag` / `_author`) | `src/lib/template-variants.ts` (`TEMPLATE_VARIANTS`)                                             |
+| the route-owned context and the host                                    | `src/lib/archive-context.ts`, `src/components/store/ArchiveView.tsx`                             |
+| the editor entry, the package rule and the distinctness row             | `src/lib/themes/songoskriti/template-distinctness.ts`, the `templates.archive_requires_api` rule |
+| the escalation record (every §7 relaxation, with the exact diffs)       | `docs/superpowers/songoskriti-evidence/port/phase3-archive-key-escalation.md` §(b)–§(o)          |
+| the evidence record                                                     | `docs/superpowers/songoskriti-evidence/port/phase3-evidence.md` §1.1                             |
+
+#### D2′ — the theme's checkout composition IS the production shell (supersedes D2)
+
+**What D2 decided (2026-10-21, quoted).** _"production checkout stays
+tokens-only (the theme's checkout composition is an authoring/preview surface,
+not a production shell)."_
+
+**Why it changed.** The phase-3 brief asks for a themeable checkout with
+**strict platform constraints**, and the constraint is a better reason to change
+the route than a reason to leave it: the theme may own the **composition** (the
+progress trail, the payment block, the order summary — all of them platform
+widgets reading the server's quote) while the platform keeps the **authority**
+(the form, the customer fields, the server quote, the validation, the stock
+hold, the order write, the payment rails). The route now hands the theme its
+own body through the platform's route-owned body slot
+(`contentSlot="page_content"`), exactly as the authored page does.
+
+**What carries over from D2, and what does not.** D2's **substance** — that the
+platform keeps every authority a checkout needs — carries over **unchanged and
+is now asserted by a test**, not merely intended. D2's **mechanism** — discarding
+the theme's AST — does not.
+
+**Where it lives.** `src/routes/store.$slug.checkout.tsx` (the shell),
+`src/lib/themes/songoskriti/preview.ts` (the `case "checkout":` body),
+`src/lib/checkout-shell.contract.test.ts` (the platform's authority is
+asserted, not assumed), and the escalation record's §(i).
+
+#### D5′ — the storefront reader blog wears the theme (supersedes D5 "themeless by design")
+
+**What D5 decided (2026-10-21, quoted).** _"the storefront reader blog stays
+'themeless by design'."_
+
+**Why it changed.** The blog is a surface a merchant's customers read, and
+"themeless by design" was the **placeholder** the phase-1 build left behind:
+`BlogArchiveTheme` passed `ast={null}` with a comment saying the generic
+render was intentional. Two phases later that is not a design decision any more
+— it is a surface with no theme on it. The phase-3 work gave the blog **two**
+distinguishable compositions, `blog_listing` and `blog_article`, resolved
+through the same storefront seam as every other template, and the store-scoped
+blog routes now render the store's own chrome.
+
+**What carries over from D5, and what does not.** The _reason_ D5 gave for
+"themeless by design" — that the reader blog carries **no store subject** on
+the three store-less taxonomy routes — is still true, and still stated: those
+three routes resolve no theme and keep the platform's grid (D5′ does not change
+them). What changed is the **store-scoped** reader blog
+(`/store/<slug>/blog` and `/store/<slug>/blog/<article>`), which now wears the
+theme.
+
+**Where it lives.** `src/routes/store.$slug.blog.index.tsx`,
+`src/routes/store.$slug.blog.$articleSlug.tsx`, `src/lib/template-variants.ts`
+(`blog: [listing, article]`), and the escalation record's §(k)–§(n).
+
+**The honest summary.** D1, D2 and D5 were each reasonable answers to the
+question as it stood on 2026-10-20/21, and each was made to keep the blast
+radius small. The phase-3 programme accepted a larger blast radius — with the
+owner's §7 relaxation — and the three rulings moved with it. **What did not
+change:** the archive is the content archive and never a product listing; the
+platform keeps the checkout's authority; and the store-less taxonomy routes
+stay themeless.
+
+### D1 — Does `archive` need to be a template _key_ at all? _(RULED 2026-10-20: **Option A** — **SUPERSEDED 2026-10-22 by D1′, see §5.2**)_
 
 **Question:** is "Archive" the **blog taxonomy** surface (index / category / tag / author — the only route-level taxonomy archives that exist) or a **product-side** listing archive (category / brand / search-kind, where "brand" has no route at all)?
 
@@ -132,7 +237,7 @@ Each carries the evidence that settles it. **D1, D2, D3, D4, D5, D6 and D7 are a
 - **If product-side** → a new `archive` key touches **16 `TEMPLATE_KEYS` sites, 7 `Record<TemplateKey,…>`/switch maps, 41 per-widget `templates:` allowlists, a hand-written `z.enum` (`src/lib/storefront.functions.ts:97-107` that no compiler sees), the theme-package contract and `THEME_API_RANGE` ("^3.0.0")** — and every one of those files is prohibited by §7, so the whole phase is an escalation. Note also that `parseTemplates` **silently drops unknown keys**, so a key added to the editor but not to the parser would appear in the builder and vanish from every page.
 - **Settled by:** `grep -rn 'template="' src/routes/` + `grep -rn 'activeSlug\|termArchivePath' src/routes/blog.*.tsx` + the product ruling _"must merchants design a product-category listing distinct from the Collection template?"_
 
-### D2 — Is the checkout template meant to be themeable at all? _(RULED 2026-10-21: the production checkout stays platform-owned — see §5.1)_
+### D2 — Is the checkout template meant to be themeable at all? _(RULED 2026-10-21: the production checkout stays platform-owned — **SUPERSEDED 2026-10-22 by D2′, see §5.2**)_
 
 The route deliberately discards the theme AST (`ast={null}`) while the theme surface implies otherwise. The brief's §9 asks for a themeable checkout with strict platform constraints. **Is the current "tokens only" behaviour the intent, or a gap?** Highest-risk phase (payment integrity), and it needs a decision before any design starts.
 
@@ -144,7 +249,7 @@ Somvabona authors **none** of the six secondary surfaces — it falls through to
 
 Phases 2–5 all require `src/routes/**` and `src/components/store/**`. Phase 1 needed three escalated files (granted) and the closure wave added three more (granted). **The remaining phases cannot be done without a standing escalation.** Options: amend §7 for the template programme, or run each phase as its own escalation, or keep the boundary and accept that the storefront templates stay shared.
 
-### D5 — The blog: reverse "themeless by design", or drop it from scope? _(RULED 2026-10-21: "themeless by design" stands — see §5.1)_
+### D5 — The blog: reverse "themeless by design", or drop it from scope? _(RULED 2026-10-21: "themeless by design" stands — **SUPERSEDED 2026-10-22 by D5′, see §5.2**)_
 
 `BlogArchiveTheme` passes `ast={null}` with a comment saying the generic render is intentional and is pinned by a test. Phase 2 would make the storefront blog wear the theme's `blog` template and the blog pack (the widgets already exist). **Is "themeless by design" a product decision to keep, or a placeholder to replace?**
 

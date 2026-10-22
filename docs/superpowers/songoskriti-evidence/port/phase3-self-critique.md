@@ -177,9 +177,7 @@ smaller on the three fixed surfaces and unchanged on the other four"*. Measured 
 the **first** capture, the four surfaces that were **not** fixed are **pixel-identical**
 (a diff ratio of exactly `0`) and the three that **were** fixed carry a **non-zero** diff
 — and that non-zero diff is the **proof the fix landed** (a fix that changed nothing
-would measure zero). The three fixed surfaces' ratios are also **below the plan's own
-`maxDiffPixelRatio` of 0.02**: each fix is a surgical change to one band, one card or one
-header, not a redesign of the surface.
+would measure zero).
 
 ## 5. The residual weaknesses that remain
 

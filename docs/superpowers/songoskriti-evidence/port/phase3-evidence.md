@@ -1,6 +1,6 @@
 # Phase 3 — the evidence record: seven first-class templates, the account dashboard, the checkout shell, the variants, the lanes
 
-**Branch:** `frame30` · **Base commit:** `182c37b5` · **Tip at the time of writing:** `0a794b549315`
+**Branch:** `frame30` · **Base commit:** `182c37b5` · **Tip at the time of writing:** the tip of the final-fix round (see the CI record §5 for the push)
 **Recorded:** 2026-10-22
 **Plan:** `docs/superpowers/plans/2026-10-21-frame30-core-cms-upgrade.md` — Tasks 1–10
 **Escalation record (every §7 relaxation, with the exact diffs):** `docs/superpowers/songoskriti-evidence/port/phase3-archive-key-escalation.md`
@@ -113,10 +113,38 @@ The three failures are **pre-existing and environment-bound**, and they are
 
 Both fail at the base commit `2f4eb2f5` in the same environment — the
 escalation record carries the side-by-side baseline
-(`phase3-archive-key-escalation.md:4139-4148`). The programme's own delta
-across the batches, measured from that baseline (**613** files / **8 701**
-tests) to this tip (**619** files / **8 769** tests), is **+6 test files and
-+68 tests, with 0 new failures**.
+(`phase3-archive-key-escalation.md:4139-4148`).
+
+**Two deltas, and they are not the same measurement.** The first is the **last
+batch's** delta: from that mid-programme baseline (`2f4eb2f5`, **613** files /
+**8 701** tests) to the tip of this batch it is **+6 test files and +68 tests,
+with 0 new failures**. The second is the **programme's** delta, measured from
+the programme's real base — **`182c37b5`**, the commit this record names as
+the base — and it is the one that describes what the programme shipped.
+
+**The programme's base, measured in a clean worktree** (`git worktree add
+/tmp/opencode/frame28-base 182c37b5`, then `node_modules/.bin/vitest run` in
+it): **604 test files** (602 passed, 1 skipped, 1 failed) and **8 566 tests**
+(8 560 passed, 4 skipped, 2 failed). The one failing file there is
+`src/lib/analytics-live-shape.test.ts` — the same warehouse-shape failure.
+(The `src/lib/site.server.test.ts` "missing-env" guard **passes** in that
+worktree because the worktree has no `.env`; it fails in this tree because this
+tree has one. That is the environment difference the phase-0 implementation map
+already records, and it is why the base's failure count is **two**, not three.)
+
+**The programme's delta from its base:** **+16 test files and +212 tests** at
+the tip of this round — **15 new `src/` test files plus the final-fix round's
+own contract suite** (`src/lib/themes/songoskriti/composition-props.test.ts`),
+**+3 new `.e2e` specs** (outside the vitest count), and **13 existing `src/`
+test files + 3 existing `.e2e` specs touched** — **34 test files** in all.
+**0 new failures** were introduced by the programme: the tip's failures are the
+same environment-bound ones the base has.
+
+### 2.1.1 The suites the final-fix round added
+
+| suite                                                  | what it pins                                                                                                                                                                                                                                                          |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/lib/themes/songoskriti/composition-props.test.ts` | every prop the theme authors, on **every** composition (the ten templates and the two variants), is a **declared** field **and survives `parseTemplates`** — the defect class behind the archive's "Collection" band label — plus the archive's rendered label itself |
 
 **The new suites that carry the programme's contracts:**
 
@@ -227,21 +255,87 @@ are the actual results, measured on **2026-10-22** at `0a794b549315`:
 | --------------------------------------------------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `lint-typecheck`                                          | `node_modules/.bin/tsgo --noEmit`                 | **green** — no output, exit 0                                                                                                                                                                                                                                               |
 | `lint-typecheck`                                          | `node_modules/.bin/eslint src scripts`            | **green** — exit 0: 0 errors, 319 pre-existing warnings, none added here. A repo-wide `eslint .` stalls on the untracked `.output-snapshots/` tree, so the paths are linted instead.                                                                                        |
-| `unit-contract`                                           | `node_modules/.bin/vitest run`                    | **red on three pre-existing, environment-bound failures** — 616 files passed, 1 skipped, 2 failed (§2.1)                                                                                                                                                                    |
+| `unit-contract`                                           | `node_modules/.bin/vitest run`                    | **red on three pre-existing, environment-bound failures** — 620 files: 617 passed, 1 skipped, 2 failed; 8 778 tests: 8 772 passed, 3 skipped, 3 failed (§2.1)                                                                                                               |
 | `unit-contract`                                           | `node scripts/doc-gate.mjs`                       | **green** — `0 findings`, exit 0                                                                                                                                                                                                                                            |
 | `unit-contract`                                           | `node scripts/contract-gate.mjs`                  | **EXPECTED RED**, exit 2 — the script hardcodes `spawnSync("bunx", …)` and `bun` is not on `PATH` here. Pre-existing; not fixed, not hidden.                                                                                                                                |
 | `scan`                                                    | `node scripts/secret-scan.mjs`                    | **not run here** — it sweeps the whole tree and the untracked `.output-snapshots/` directory holds 110 MB of build output; the prior record's local findings inside that tree are a known local artefact, not a source finding. CI runs it on a clean checkout.             |
 | `scan`                                                    | `node scripts/sast-scan.mjs`                      | **not run here** — the same whole-tree sweep, with the same `.output-snapshots/` caveat.                                                                                                                                                                                    |
 | `scan`                                                    | `node scripts/dep-audit.mjs`                      | **not run here** — it needs the registry/network reachability this box does not have for the audit endpoint.                                                                                                                                                                |
-| `build`                                                   | `node_modules/.bin/vite build`                    | **not run here** — the build writes into the same untracked `.output-snapshots/` tree; the type checker (`tsgo --noEmit`, green) is the compile-level proof.                                                                                                                |
+| `build`                                                   | `node_modules/.bin/vite build`                    | **green — exit 0**, at the tip of this round (see §3.1 below for the measured output).                                                                                                                                                                                      |
 | `e2e-critical` / `e2e-security` / `e2e-levelb-production` | the Playwright suites                             | **partially run here** — the programme's own three lanes ran on the throwaway stack (§2.2); the platform-wide suites were not re-run in this batch, and the seven-template journey **skips** without merchant credentials, which is reported as a skip and never as a pass. |
 | `plugin-storefront-gate`                                  | —                                                 | **not run here** — it is a CI job over the plugin storefront and needs the CI environment.                                                                                                                                                                                  |
 | asset gate                                                | `node scripts/songoskriti-assets-check.mjs`       | **green** — `0 findings`, 11 advisory notes                                                                                                                                                                                                                                 |
 | asset generator                                           | `node scripts/gen-songoskriti-assets.mjs --check` | **green** — 21 planned assets match the frozen expectation                                                                                                                                                                                                                  |
 | schema fingerprint                                        | `node scripts/schema-fingerprint.mjs --check`     | **EXPECTED RED**, exit 1 — it needs a live Supabase RPC (`rpc failed (400)`). Pre-existing; not fixed, not hidden.                                                                                                                                                          |
 
-**The three reds in this table are the three the plan named**, and none of
-them was fixed to go green.
+### 3.1 The build, measured — and the reason it was never run, corrected
+
+**The earlier reason was false.** This record said the build was _"not run here
+— the build writes into the same untracked `.output-snapshots/` tree"_. It does
+not. `vite.config.ts` sets **no** `build.outDir`, and the TanStack Start + Nitro
+plugin writes the build to **`.output/`** — a gitignored directory (`.gitignore`
+line 3). `.output-snapshots/` holds dated **snapshot copies** of a build of the
+base commit (`snap_20261021T041306Z_182c37b`, and an earlier
+`snap_20261021T013330Z_2f46c63`); nothing writes into it.
+
+**So the build is now run at the tip, and it passes.** The tip's commits —
+including the route-file rename (`store.$slug.blog.$slug.tsx` →
+`store.$slug.blog.$articleSlug.tsx`) and the regenerated
+`src/routeTree.gen.ts` — have now been bundled, which they had never been.
+
+```
+$ node_modules/.bin/vite build
+…
+✓ 3631 modules transformed.
+✓ built in 6.17s
+ℹ Generated .output/nitro.json
+[nitro] ✔ You can preview this build using npx vite preview
+$ echo $?
+0
+```
+
+| the measurement                      | the value                                                                                                               |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| the **exit status**                  | **0** — the build succeeds                                                                                              |
+| the **output directory**             | **`.output/`** — the client assets at `.output/public/assets/`, the server bundle at `.output/server/`                  |
+| the **bundle size**                  | **55 MB** in total, **1 332** files: **5.50 MB** of client JS, **0.32 MB** of client CSS, **14.38 MB** of server `.mjs` |
+| the largest client chunk             | `index-*.js` at **608 KB** (the framework + router entry)                                                               |
+| the other client chunks worth naming | `analytics-*.js` 388 KB, `SectionRenderer-*.js` 332 KB, `editor-*.js` 304 KB, `builder-*.js` 284 KB                     |
+
+**Why it matters.** `build` is a **hard gate** in the remote pipeline: the
+`e2e-critical`, `e2e-security` and `e2e-levelb-production` jobs all carry
+`requires: build`, so a failed build fails the workflow with those three jobs
+left `blocked`. The tip had **never** been bundled; it is now.
+
+### 3.2 The owner-run `gates:release` chain — every step's status
+
+The chain is `assets:songoskriti && perf:budget && seo:weight && a11y:gate &&
+vitals:gate && responsive:sweep && console:gate && rhythm:gate && design:gate
+&& doc:gate && e2e:browsers` (`package.json`). It is **owner-run**, not a CI
+job, and each step was measured here. **Four are green; seven are not runnable
+on this box** — each for a stated reason, and each needing the build or the
+loopback stack.
+
+| the step             | the command                                 | the measured status                                                                                                                                                                                                                                                                                                                                                        |
+| -------------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `assets:songoskriti` | `node scripts/songoskriti-assets-check.mjs` | **green** — `0 findings`, 11 advisory notes                                                                                                                                                                                                                                                                                                                                |
+| `perf:budget`        | `node scripts/perf-budget.mjs`              | **not runnable here** — exit 2, _"perf-budget: no Vite manifest under dist. Run `bun run build` first."_ The gate reads the **Vite manifest under `dist/`**; this repo's build writes to **`.output/`** (TanStack Start + Nitro), so the manifest the gate wants is not the one this build produces. Needs the build/loopback stack.                                       |
+| `seo:weight`         | `node scripts/seo-weight-gate.mjs`          | **green** — exit 0, _"seo-weight gate OK — storefront imports and render reads satisfy Phase 7"_, with the warning _"dist manifest absent; source contracts ran, admin chunk check requires a completed build"_. The source contracts ran; the admin-chunk half needs a completed build.                                                                                   |
+| `a11y:gate`          | `node scripts/a11y-gate.mjs`                | **not runnable here** — exit 1, every navigation `net::ERR_CONNECTION_REFUSED at http://localhost:8080/…`. It drives a **live server**.                                                                                                                                                                                                                                    |
+| `vitals:gate`        | `node scripts/vitals-gate.mjs`              | **not runnable here** — exit 1, _"vitals-gate: no product URL found for store \"frame19-demo\". Seed the store or set E2E_PRODUCT_SLUG."_ It needs a **seeded store on the loopback stack**.                                                                                                                                                                               |
+| `responsive:sweep`   | `node scripts/responsive-sweep.mjs`         | **not runnable here** — exit 1, `net::ERR_CONNECTION_REFUSED at http://localhost:8080/…`. It drives a **live server**.                                                                                                                                                                                                                                                     |
+| `console:gate`       | `node scripts/console-gate.mjs`             | **skipped, not passed** — exit 0, _"console gate skipped — no authenticated session available for /admin. Inject a session, or set GATE_EMAIL / GATE_PASSWORD to sign in through /auth."_                                                                                                                                                                                  |
+| `rhythm:gate`        | `node scripts/rhythm-gate.mjs`              | **not runnable here** — exit 2, _"Dev server at http://localhost:8080 did not answer after 15 probes."_ It needs the **loopback dev server**.                                                                                                                                                                                                                              |
+| `design:gate`        | `node scripts/design-gate.mjs`              | **not runnable here** — exit 2: the source scan ran (_"files: 67, findings: 29"_) and then the gate died on `Cannot find module '/opt/frame28/src/lib/seo-technical' imported from /opt/frame28/src/lib/marketing-seo.ts`. The script is a **`bun` script** (`bun scripts/design-gate.mjs`) and `bun` is not on `PATH` here, so Node cannot resolve the TypeScript import. |
+| `doc:gate`           | `node scripts/doc-gate.mjs`                 | **green** — `0 findings`, exit 0                                                                                                                                                                                                                                                                                                                                           |
+| `e2e:browsers`       | `node scripts/browser-smoke.mjs`            | **not runnable here** — exit 2, _"Browser support gate requires E2E_STORE_SLUG for a seeded storefront with at least one in-stock product."_ It needs the **seeded storefront**.                                                                                                                                                                                           |
+
+**These seven are "not runnable here", not "red".** None of them is a finding
+about this programme's code: each one needs a live server, a seeded store, or
+`bun`. **No claim is made for any of them.**
+
+**The three reds in the CI table above are the three the plan named**, and none
+of them was fixed to go green.
 
 ---
 
@@ -262,7 +356,7 @@ This is **not** absorbed and **not** worked around:
 - The rule is the platform's deliberate one: _"a theme that is more than 10 %
   untranslated cannot go live half-Bangla."_
 - The **unblock is an owner action**, and there are exactly two of them:
-  **(a)** translate the remaining **~32 strings** of the theme's own copy, or
+  **(a)** translate the remaining **~36 strings** of the theme's own copy, or
   **(b)** rule on whether the floor applies to a **source-owned official
   theme** — which is **installed from source** by the owner rather than
   published by a merchant, and is therefore a different act from a
@@ -341,7 +435,7 @@ The full statement, with the measurement that settles it, is in
 
 | #   | the open item                                                                                                                                                                          | whose action             | why it is open                                                                                                                                                                                                                                                                                                          |
 | --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | the shipped Songoskriti theme's 76 % বাংলা against the 90 % floor                                                                                                                      | **owner**                | translate ~32 strings, or rule on the floor for a source-owned official theme (§4.1)                                                                                                                                                                                                                                    |
+| 1   | the shipped Songoskriti theme's 76 % বাংলা against the 90 % floor                                                                                                                      | **owner**                | translate ~36 strings, or rule on the floor for a source-owned official theme (§4.1)                                                                                                                                                                                                                                    |
 | 2   | the stale parity baselines — the six `archive` captures with no baseline, plus `account` (0.03) and `page` (0.06) out of tolerance                                                     | **owner**                | the re-freeze needs the throwaway stack and a disposable merchant (§4.2)                                                                                                                                                                                                                                                |
 | 3   | the remote CircleCI run                                                                                                                                                                | **owner**                | no token, no CLI config; the run's URL and result are the owner's to open (§5)                                                                                                                                                                                                                                          |
 | 4   | the merchant-scoped content-archive route (`/store/<slug>/blog/category/<slug>`)                                                                                                       | **a follow-on**          | the three existing content-archive routes carry no store slug and therefore cannot resolve a theme; the `archive` key's storefront render path in this programme is the editor and the theme preview host, both merchant-scoped by construction. This is a **deferral**, stated in the plan's own terms, not a shortcut |
