@@ -14,6 +14,7 @@ import { facetIndexPolicy } from "@/lib/seo-technical";
 import { listingPolicy } from "@/lib/url-lifecycle";
 import { searchStorefrontFn } from "@/lib/storefront-search.functions";
 import { getStoreChrome } from "@/lib/storefront.functions";
+import { resolveWidgetDataFn } from "@/lib/widget-data.functions";
 import {
   StorefrontError,
   isStorefrontInfrastructureError,
@@ -122,25 +123,21 @@ export const Route = createFileRoute("/store/$slug/search")({
     let widgetMap: WidgetDataMap = {};
     if (widgetBundle.requests.length > 0 && chrome) {
       try {
-        const { resolveWidgetData } = await import("@/lib/widget-data.server");
-        const { currentRequestHost, storeLinkBase } =
-          await import("@/lib/storefront-host.server");
         // S4: the sidebar counts the SAME query the grid beside it runs.
         // Without this, `loadFacetsSource` counts the merchant's whole
         // active catalogue and a search for one term shows every product.
         const facetScope = searchFacetScope(outcome);
-        widgetMap = await resolveWidgetData(
-          chrome.merchant.id,
-          widgetBundle,
-          undefined,
-          {
-            base: storeLinkBase(
-              currentRequestHost(),
-              chrome.merchant.slug ?? params.slug,
-            ),
+        // The resolver is reached through the public RPC
+        // (`resolveWidgetDataFn`, `src/lib/widget-data.functions.ts:43-74`),
+        // whose handler runs in a `createServerFn` — the canonical seam that
+        // keeps `widget-data.server` out of the client module graph.
+        widgetMap = await resolveWidgetDataFn({
+          data: {
+            slug: chrome.merchant.slug ?? params.slug,
+            requests: widgetBundle.requests,
             ...(facetScope ?? {}),
           },
-        );
+        });
       } catch {
         // A resolver failure degrades to an empty facet column — never a
         // broken page, never a wrong tenant's rows.
