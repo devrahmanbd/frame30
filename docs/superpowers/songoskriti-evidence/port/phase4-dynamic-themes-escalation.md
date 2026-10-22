@@ -4430,3 +4430,7 @@ The M3 capture harness was reconstructed (the previous wave's harness was delete
 | `src/routes/theme-preview.$key.tsx` | `21907047` | yes — owner's standing instruction, 2026-10-22 |
 
 **The 11 G1 files** are listed with their commits in §(i.1.1); they carry the plan's own named relaxation and need no file-by-file ratification.
+
+### (i.9) The marker's clause — its final form (a precision note to §(i.2))
+
+§(i.2) quoted the clause in its lower-case form, as the wave wrote it. The split marker ships the clause as its own sentence — **"Payment selection changes this preview only."** — so the shared sentence stands alone as **"Disabled in preview"** and the clause reads as a sentence rather than as a colon-glued continuation. The words are unchanged; only the capitalisation and the boundary moved, and the existing assertion was re-pinned **stronger** (`src/components/store/ThemePreviewFrame.test.tsx`: the clause's new form, the shared sentence standing alone as its own element, and the old colon-glued form **gone**). The clause remains **English-only** and remains **outside the translation meter**, for the reasons in §(i.2). No Bangla copy was authored.
