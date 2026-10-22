@@ -33,6 +33,9 @@ vi.mock("@/components/store/StoreHeader", () => ({
       </form>
     </header>
   ),
+  MinimalCheckoutHeader: ({ name }: { name: string }) => (
+    <header>{name}</header>
+  ),
 }));
 
 const { ThemePreviewFrame } = await import("./ThemePreviewFrame");
@@ -111,6 +114,25 @@ beforeEach(() => {
 });
 
 describe("ThemePreviewFrame chrome", () => {
+  it("labels the payment rail's selection as a preview demo (S5)", () => {
+    const cart = renderToStaticMarkup(
+      <ThemePreviewFrame {...frameProps("cart")} />,
+    );
+    expect(cart).toContain('data-fq-demo-marker="payment-methods"');
+    expect(cart).toContain(PREVIEW_DISABLED_MESSAGE);
+    expect(cart).toContain("payment selection changes this preview only");
+
+    const checkout = renderToStaticMarkup(
+      <ThemePreviewFrame {...frameProps("checkout")} />,
+    );
+    expect(checkout).toContain('data-fq-demo-marker="payment-methods"');
+
+    const home = renderToStaticMarkup(
+      <ThemePreviewFrame {...frameProps("index")} />,
+    );
+    expect(home).not.toContain('data-fq-demo-marker="payment-methods"');
+  });
+
   it("renders the store with no preview dock", () => {
     const html = renderToStaticMarkup(<ThemePreviewFrame {...frameProps()} />);
     expect(html).toContain('role="dialog"');

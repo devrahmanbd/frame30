@@ -110,6 +110,7 @@ import {
   previewSearchForSwitch,
   resolveDemoFocus,
   resolvePreviewVariantAst,
+  PREVIEW_DISABLED_MESSAGE,
 } from "@/lib/theme-preview-nav";
 import {
   baseTemplateKey,
@@ -135,6 +136,11 @@ const UNSUPPORTED_TEMPLATE_TITLE =
   "This template is not supported by this theme";
 const UNSUPPORTED_TEMPLATE_BODY =
   "The theme does not author a body for this template, so there is nothing to preview. The archive is a first-class template a theme may author, and the platform's own reader surfaces — the blog listing and its category, tag and author archives — keep the platform grid, because they carry no store slug and so they cannot resolve a theme.";
+
+// M4: the merchant-facing builder names the same state in the same words.
+// The declarations stay `const` (the archive contract reads them textually);
+// this re-export is the one module boundary the builder imports through.
+export { UNSUPPORTED_TEMPLATE_TITLE, UNSUPPORTED_TEMPLATE_BODY };
 
 /**
  * The explicit unsupported state — a named panel, never a redirect.
@@ -911,9 +917,10 @@ export function ThemePreviewFrame({
   // The six Phase-2.4 search widgets are CONTEXT widgets: they render only
   // where the host grants permission (`SectionRenderer.tsx:814-833`). The
   // preview grants the storefront's set — `result_toolbar`, `filter_chips`,
-  // `pagination`, `category_header` and (conditionally) `empty_state` —
-  // PLUS `facet_sidebar`, which is preview-only: the preview is the only
-  // host that mounts a `WidgetDataProvider` (D7).
+  // `pagination`, `category_header`, `facet_sidebar` and (conditionally)
+  // `empty_state`. `facet_sidebar` is no longer preview-only: Decision
+  // G2 (a) closed the difference, and the storefront's search route mounts
+  // the `WidgetDataProvider` that feeds the same facet rows.
   //
   // `empty_state` is the ONE conditional grant, and it mirrors the
   // storefront's own contract: the platform's `EmptyState` widget renders
@@ -1159,6 +1166,25 @@ export function ThemePreviewFrame({
 
   // ---- preview canvas: full-bleed, no frame. Clicks navigate between
   // templates in place; actions and submits are blocked. ----
+  /**
+   * S5 / Decision D6 — the payment rail's visible DEMO marker.
+   *
+   * The preview's rail selection is a real local transition (the control is
+   * not inert), but it never reaches a cart or an order. The marker says so
+   * beside the rail on the two templates that show it, using the one shared
+   * preview sentence so it cannot drift into new copy.
+   */
+  const paymentDemoMarker =
+    baseTemplate === "cart" || baseTemplate === "checkout" ? (
+      <p
+        data-fq-demo-marker="payment-methods"
+        role="note"
+        className="mx-auto max-w-7xl px-4 pt-4 text-[12px] text-muted-foreground sm:px-6 lg:px-8"
+      >
+        <span className="font-semibold">{PREVIEW_DISABLED_MESSAGE}</span>:
+        payment selection changes this preview only.
+      </p>
+    ) : null;
   const canvas = (
     <div
       className="flex-1 overflow-auto bg-background"
@@ -1229,6 +1255,7 @@ export function ThemePreviewFrame({
                     name={themeName}
                     themeKey={blueprintKey}
                   />
+                  {paymentDemoMarker}
                   {focusedMain.length > 0 ? (
                     <main className="space-y-12 sm:space-y-16 pb-16">
                       {focusedMain.map((section) => (
@@ -1269,6 +1296,7 @@ export function ThemePreviewFrame({
                     menus={null}
                     themeKey={blueprintKey}
                   />
+                  {baseTemplate === "cart" ? paymentDemoMarker : null}
                   <WidgetDataProvider
                     bundle={previewData.bundle}
                     map={previewData.map}

@@ -39,6 +39,7 @@ import {
 import { primarySectionId, usedWidgetSkins } from "@/lib/builder-ast";
 import { themeRendersBody } from "@/lib/theme-body-slot";
 import { filterSkinCss } from "@/lib/themes/assets";
+import { templateDisplayName } from "@/lib/template-display";
 
 type Props = {
   template: TemplateKey;
@@ -447,8 +448,8 @@ export function ThemeChrome({
           >
             <p className="fq-declined-template__label mb-4 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
               {(storeName ?? storeSlug)
-                ? `${storeName ?? storeSlug} — this theme does not design the ${template} page`
-                : `This theme does not design the ${template} page`}
+                ? `${storeName ?? storeSlug} — this theme does not design the ${templateDisplayName(template)} page`
+                : `This theme does not design the ${templateDisplayName(template)} page`}
             </p>
             {fallback}
           </div>

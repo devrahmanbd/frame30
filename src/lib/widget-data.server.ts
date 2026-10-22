@@ -19,11 +19,18 @@ import {
   type WidgetRow,
 } from "./widget-data";
 import type { WidgetDataSource } from "./widget-registry";
+import type { SearchFacets } from "./storefront-search";
 
 export type SourceLoader = (
   merchantId: string,
   requests: WidgetDataRequest[],
-  ctx?: { base: string },
+  ctx?: {
+    base: string;
+    /** Query-scoped search facets, when the host is a search results page. */
+    facets?: SearchFacets;
+    /** The scoped result total that accompanies `facets`. */
+    total?: number;
+  },
 ) => Promise<Record<string, WidgetRow[]>>;
 
 export type SourceLoaders = Partial<Record<WidgetDataSource, SourceLoader>>;
@@ -842,15 +849,101 @@ const loadQnaSource: SourceLoader = async (_merchantId, requests) =>
   Object.fromEntries(requests.map((r) => [r.key, [] as WidgetRow[]]));
 
 /**
+ * Scoped facet rows — the SAME row shape the catalogue-wide loader builds,
+ * but derived from the search backend's already query-scoped facets.
+ *
+ * The search route passes `facets` and `total` for the shopper's current
+ * query, so a sidebar count answers "how many match this search", never
+ * "how many products the merchant has". The function is pure and exported
+ * so the scope contract is testable without a database.
+ */
+export function facetRowsFromSearch(
+  facets: SearchFacets,
+  total: number,
+  base: string,
+): WidgetRow[] {
+  const groups = facetGroupsFromSearch(facets, total, base);
+  return [
+    ...groups.categoryRows,
+    ...groups.kindRows,
+    groups.stockRow,
+    groups.totalRow,
+  ];
+}
+
+/** The scoped rows split by facet group, for the per-request `limit` cap. */
+function facetGroupsFromSearch(
+  facets: SearchFacets,
+  total: number,
+  base: string,
+): {
+  categoryRows: WidgetRow[];
+  kindRows: WidgetRow[];
+  stockRow: WidgetRow;
+  totalRow: WidgetRow;
+} {
+  const categoryRows: WidgetRow[] = facets.categories
+    .map((category) => ({
+      id: category.slug,
+      title: category.name,
+      href: storeHref(base, "category", category.slug),
+      count: category.count,
+      subtitle: "category",
+    }))
+    .sort((a, b) => (b.count ?? 0) - (a.count ?? 0));
+  const kindRows: WidgetRow[] = facets.kinds
+    .map((kind) => ({
+      id: kind.kind,
+      title: kind.kind,
+      href: storeHref(base, "brand", kind.kind),
+      count: kind.count,
+      subtitle: "kind",
+    }))
+    .sort((a, b) => (b.count ?? 0) - (a.count ?? 0));
+  return {
+    categoryRows,
+    kindRows,
+    stockRow: {
+      id: "1",
+      title: "in_stock",
+      count: facets.in_stock,
+      subtitle: "stock",
+    },
+    totalRow: { id: "total", title: "total", count: total, subtitle: "total" },
+  };
+}
+
+/**
  * Phase 2.4 — facet counts for the collection surface. One products query
  * feeds every facet widget on the page: the sidebar, the chips and the
  * toolbar all read the same rows, so filtering never costs a second trip.
  *
  * `subtitle` carries the facet group (`category` / `kind` / `stock`), which
  * keeps the row shape theme-neutral: no widget reads a source-specific column.
+ *
+ * When the host supplies the search scope (`ctx.facets`), the query-scoped
+ * rows win and this loader never touches the database: the counts describe
+ * the shopper's current query, matching the grid beside them.
  */
 const loadFacetsSource: SourceLoader = async (merchantId, requests, ctx) => {
   const base = ctx?.base ?? "";
+  if (ctx?.facets) {
+    const groups = facetGroupsFromSearch(ctx.facets, ctx.total ?? 0, base);
+    const out: Record<string, WidgetRow[]> = {};
+    for (const request of requests) {
+      const limit = Math.min(
+        MAX_WIDGET_ROWS,
+        Math.max(1, Number(request.params["limit"]) || 12),
+      );
+      out[request.key] = [
+        ...groups.categoryRows.slice(0, limit),
+        ...groups.kindRows.slice(0, limit),
+        groups.stockRow,
+        groups.totalRow,
+      ];
+    }
+    return out;
+  }
   const db = publicClient();
   const [{ data: products }, { data: categories }] = await Promise.all([
     db
@@ -1271,7 +1364,13 @@ export async function resolveWidgetData(
   merchantId: string,
   bundle: WidgetDataBundle,
   loaders: SourceLoaders = DEFAULT_LOADERS,
-  opts: { timeoutMs?: number; base?: string } = {},
+  opts: {
+    timeoutMs?: number;
+    base?: string;
+    /** Search route only: query-scoped facets/total for the facet widgets. */
+    facets?: SearchFacets;
+    total?: number;
+  } = {},
 ): Promise<WidgetDataMap> {
   if (bundle.requests.length === 0) return {};
   // Phase 8.4: isolation is enforced here, at the only place that turns a
@@ -1304,7 +1403,12 @@ export async function resolveWidgetData(
       const sourceStarted = Date.now();
       try {
         const rows = await withTimeout(
-          loader(tenantId, requests, { base: opts.base ?? "" }),
+          loader(tenantId, requests, {
+            base: opts.base ?? "",
+            ...(opts.facets
+              ? { facets: opts.facets, total: opts.total ?? 0 }
+              : {}),
+          }),
           timeoutMs,
         );
         observe("framique_widget_resolver_ms", Date.now() - sourceStarted, {
@@ -1346,7 +1450,12 @@ export async function resolveWidgetData(
 export async function resolveTemplateData(
   merchantId: string,
   bundle: WidgetDataBundle,
-  opts: { timeoutMs?: number; base?: string } = {},
+  opts: {
+    timeoutMs?: number;
+    base?: string;
+    facets?: SearchFacets;
+    total?: number;
+  } = {},
 ) {
   return resolveWidgetData(merchantId, bundle, undefined, opts);
 }

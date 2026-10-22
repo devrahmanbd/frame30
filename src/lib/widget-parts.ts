@@ -51,6 +51,17 @@ export const WIDGET_PART_VOCABULARY: Partial<
     "remove",
   ],
   cart_summary: ["subtotal", "discount", "shipping", "cod", "vat", "total"],
+  /**
+   * `legend` is the ONE document-order exception in the vocabulary.
+   *
+   * HTML requires a `<legend>` to be the FIRST child of its `<fieldset>`;
+   * a legend placed after the controls is invalid markup and browsers hoist
+   * it anyway. The renderer therefore always draws the legend first and
+   * filters it out of the authored order — the authored order is honoured
+   * for every OTHER part. The exception is documented here, not silently
+   * applied: a merchant who writes `groups,legend,options` gets
+   * `legend,groups,options`, and the suite pins that exact behaviour.
+   */
   payment_methods: ["legend", "groups", "options", "note"],
   checkout_steps: ["labels", "active", "links"],
   orders_list: ["number", "date", "status", "total"],

@@ -15,16 +15,23 @@ import { toast } from "sonner";
 import { useLang, LanguageProvider } from "@/lib/i18n";
 import { SectionRenderer } from "@/components/builder/SectionRenderer";
 import type { DevThemeBinding } from "@/components/builder/SectionRenderer";
-import { CartProvider } from "@/components/builder/CartContext";
-import { BlogFeedProvider } from "@/components/builder/blog";
-import { CollectionQueryProvider } from "@/components/builder/collection";
+import { CanvasDemoScope } from "@/components/builder/CanvasDemoScope";
+import type { CartContextValue } from "@/components/builder/CartContext";
+import type { BlogFeed } from "@/components/builder/blog";
+import type { CollectionQuery } from "@/components/builder/collection";
+import type { AccountDashboardState } from "@/components/store/AccountDashboardContext";
+import { UNSUPPORTED_TEMPLATE_TITLE } from "@/components/store/ThemePreviewFrame";
+import { resolveTemplateForHost } from "@/lib/pipeline-resolver";
+import type { AccountTab } from "@/lib/account-tab";
 import { normalizeSearchParams } from "@/lib/storefront-search";
 import {
   SONGOSKRITI_PREVIEW_QUERY_TERM,
   SONGOSKRITI_PREVIEW_SEARCH_PATH,
   SONGOSKRITI_PREVIEW_SEARCH_TOTAL,
+  songoskritiPreviewAccountOverview,
   songoskritiPreviewCart,
   songoskritiPreviewFeed,
+  songoskritiPreviewOrders,
 } from "@/lib/themes/songoskriti/preview-demo-data";
 import {
   TRAY_MIME,
@@ -123,6 +130,7 @@ import {
   type Slot,
   type TemplateKey,
 } from "@/lib/builder-ast";
+import { themeRendersBody } from "@/lib/theme-body-slot";
 import {
   builderAutosaveFn,
   builderCancelScheduleFn,
@@ -142,7 +150,6 @@ import {
   baseTemplateKey,
   isTemplateVariantKey,
   strayVariantKeys,
-  templateAstOf,
   variantKeysFor,
   type EditorTemplateKey,
 } from "@/lib/template-variants";
@@ -381,24 +388,47 @@ function BuilderStudio() {
   const activeThemeKey = workspace.data?.theme?.sourceKey ?? null;
   /**
    * The canvas's DEMO data — the theme's own, the same the preview mounts
-   * (the plan's **D2**).
+   * (the plan's **D2**), and ONLY for the theme that ships it (review
+   * **S3**).
    *
-   * Before this, the canvas mounted NO data provider at all: the cart
-   * widgets read the studio's `DEMO_CART` snapshot ("Sample product",
-   * "Second product"), the blog pack read the engine's own `SAMPLE` rows,
-   * and the account panels had nothing to read — so the editor showed
-   * something the merchant's storefront would never show. The preview
-   * mounted the theme's synthetic cart, feed and query; the storefront
-   * mounts the live ones. Now the editor mounts the SAME demo providers the
-   * preview mounts, and only the storefront differs — by design, and
-   * labelled.
+   * The preview gates its providers on `isSongoskriti`; the editor now makes
+   * the SAME choice. A non-Songoskriti theme's canvas renders the platform's
+   * fail-closed widgets — never Songoskriti products, prices or account rows
+   * borrowed from another theme.
+   *
+   * The account provider joins the same scope (review **M5**): the account
+   * template places `account_nav`, `account_overview` and `account_orders`,
+   * and every one of them reads the provider. Without it, the editor's
+   * account template rendered three blank sections.
    *
    * The storefront NEVER mounts these: the theme host mounts only the live
    * cart scope, and the pipeline contract asserts the separation
    * (`src/lib/pipeline-resolver.test.ts`).
    */
+  const isSongoskriti = activeThemeKey === "songoskriti";
   const canvasDemoCart = useMemo(() => songoskritiPreviewCart(), []);
   const canvasDemoFeed = useMemo(() => songoskritiPreviewFeed(), []);
+  const [canvasAccountTab, setCanvasAccountTab] =
+    useState<AccountTab>("orders");
+  const [canvasOpenOrderId, setCanvasOpenOrderId] = useState<string | null>(
+    null,
+  );
+  const canvasDemoAccount = useMemo<AccountDashboardState>(
+    () => ({
+      slug: workspace.data?.theme?.sourceKey ?? "songoskriti",
+      currency: "BDT",
+      status: "ready",
+      overview: songoskritiPreviewAccountOverview(),
+      orders: songoskritiPreviewOrders(),
+      tab: canvasAccountTab,
+      setTab: setCanvasAccountTab,
+      openOrderId: canvasOpenOrderId,
+      setOpenOrderId: setCanvasOpenOrderId,
+      orderDetail: null,
+      placed: [],
+    }),
+    [canvasAccountTab, canvasOpenOrderId, workspace.data?.theme?.sourceKey],
+  );
   const canvasDemoQuery = useMemo(
     () => ({
       params: normalizeSearchParams({ q: SONGOSKRITI_PREVIEW_QUERY_TERM }),
@@ -646,7 +676,43 @@ function BuilderStudio() {
   });
 
   const doc = editor.doc;
-  const ast = doc ? templateAstOf(doc.templates, template) : EMPTY_AST;
+  /**
+   * The draft resolution goes through the ONE resolver (review **M2**).
+   *
+   * The editor asks the same question the preview and the storefront ask —
+   * `(template, map, tenant, mode)` — with the mode `draft` and the host
+   * `editor`. The resolver, not this route, owns the answer: an absent
+   * template is ABSENT (never the homepage), and the label carried in
+   * `source` is the one the canvas shows (`data-fq-resolution`, review
+   * **S8**).
+   */
+  const draftResolution = doc
+    ? resolveTemplateForHost({
+        template,
+        variants: doc.templates,
+        tenant: activeThemeKey,
+        mode: "draft",
+        host: "editor",
+        tokens: doc.tokens,
+      })
+    : null;
+  const ast =
+    draftResolution?.status === "resolved" ? draftResolution.ast : EMPTY_AST;
+  const resolutionMode =
+    draftResolution?.status === "resolved" ||
+    draftResolution?.status === "absent"
+      ? draftResolution.source.mode
+      : "draft";
+  const resolutionLabel =
+    draftResolution?.status === "resolved" ||
+    draftResolution?.status === "absent"
+      ? draftResolution.source.label
+      : null;
+  const declinedTemplate =
+    !!doc &&
+    !themeRendersBody(
+      draftResolution?.status === "resolved" ? draftResolution.ast : null,
+    );
   // The merchant's own STRAY variant keys — the templates nothing routes to.
   const strayKeys = useMemo(
     () => (doc ? strayVariantKeys(doc.templates) : []),
@@ -669,7 +735,21 @@ function BuilderStudio() {
   const selected = selectedId
     ? (locate(sections, selectedId)?.node ?? null)
     : null;
-  const issues = doc ? (editor.issues[template] ?? []) : [];
+  const issues = useMemo(() => {
+    const base = doc ? (editor.issues[template] ?? []) : [];
+    if (!declinedTemplate) return base;
+    // The publish gate names the template the theme does not design (review
+    // M4 / D5). `PublishModal` renders every `warn`, so this is visible
+    // before the merchant publishes — and it never blocks the publish.
+    return [
+      ...base,
+      {
+        level: "warn" as const,
+        sectionId: null,
+        message: `${UNSUPPORTED_TEMPLATE_TITLE} — ${templateLabel}`,
+      },
+    ];
+  }, [doc, editor.issues, template, declinedTemplate, templateLabel]);
   const coverage = useMemo(
     () => (doc ? translationCoverage(doc.templates) : null),
     [doc],
@@ -1577,6 +1657,16 @@ function BuilderStudio() {
             <button
               key={key}
               type="button"
+              data-fq-declined={
+                doc && (doc.templates[key]?.main.length ?? 0) === 0
+                  ? "true"
+                  : undefined
+              }
+              title={
+                doc && (doc.templates[key]?.main.length ?? 0) === 0
+                  ? UNSUPPORTED_TEMPLATE_TITLE
+                  : undefined
+              }
               aria-current={template === key ? "page" : undefined}
               onClick={() => {
                 setTemplate(key);
@@ -1593,6 +1683,14 @@ function BuilderStudio() {
               }`}
             >
               {t(TEMPLATE_LABEL[key].en, TEMPLATE_LABEL[key].bn)}
+              {doc && (doc.templates[key]?.main.length ?? 0) === 0 ? (
+                <span
+                  aria-hidden="true"
+                  className="ml-1 text-[9px] align-super"
+                >
+                  ●
+                </span>
+              ) : null}
             </button>
           ))}
           {/* The SECOND level (Batch C): the closed variant vocabulary of the
@@ -1726,6 +1824,21 @@ function BuilderStudio() {
                   : t("Reset to default", "ডিফল্টে ফেরান")}
           </button>
         </nav>
+
+        {declinedTemplate ? (
+          <div
+            data-fq-theme-state="declined-template"
+            data-fq-template={selectedBase}
+            className="flex flex-wrap items-baseline gap-x-2 gap-y-1 border-b border-border/70 bg-muted/30 px-3 py-1.5 text-[11px] text-muted-foreground"
+          >
+            <span className="font-semibold text-foreground">
+              {UNSUPPORTED_TEMPLATE_TITLE}
+            </span>
+            <span>
+              {templateLabelPair.en} · {templateLabelPair.bn}
+            </span>
+          </div>
+        ) : null}
 
         {/* Slide-out Lint / Quality Drawer */}
         {lintDrawerOpen && (
@@ -2494,6 +2607,7 @@ function BuilderStudio() {
                     <div
                       lang={frameLang}
                       dir="ltr"
+                      data-fq-resolution={resolutionMode}
                       onDragOver={handleCanvasDragOver}
                       onDrop={handleCanvasDrop}
                       onDragLeave={handleCanvasDragLeave}
@@ -2531,103 +2645,117 @@ function BuilderStudio() {
                         color: doc?.tokens.ink,
                       }}
                     >
-                      <CartProvider value={canvasDemoCart}>
-                        <CollectionQueryProvider value={canvasDemoQuery}>
-                          <BlogFeedProvider value={canvasDemoFeed}>
-                            {canvas.sections.length === 0 ? (
-                              <div className="flex flex-col items-center justify-center py-20 px-4 text-center border-2 border-dashed border-border/70 rounded-fq-lg my-6 bg-muted/20">
-                                <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary mb-3">
-                                  <svg
-                                    className="size-6"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                  >
-                                    <rect
-                                      width="18"
-                                      height="18"
-                                      x="3"
-                                      y="3"
-                                      rx="2"
-                                    />
-                                    <path d="M12 8v8" />
-                                    <path d="M8 12h8" />
-                                  </svg>
-                                </div>
-                                <h4 className="text-sm font-bold text-foreground">
-                                  {t("This slot is empty", "এই স্লট খালি")}
-                                </h4>
-                                <p className="mt-1 text-xs text-muted-foreground max-w-sm">
-                                  {t(
-                                    "Compose your storefront by adding headers, heroes, product rails, or banners from the left panel.",
-                                    "বাম পাশের প্যানেল থেকে হেডার, হিরো ব্যানার বা প্রোডাক্ট গ্রিড যোগ করে স্টোরফ্রন্ট সাজান।",
-                                  )}
-                                </p>
-                                <button
-                                  type="button"
-                                  onClick={() => setLeftTab("add")}
-                                  className="mt-4 inline-flex items-center gap-1.5 rounded-fq-md bg-primary px-3.5 py-1.5 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90 cursor-pointer"
-                                >
-                                  + {t("Add Section", "সেকশন যোগ করুন")}
-                                </button>
-                              </div>
-                            ) : (
-                              <div data-drop-root className="contents">
-                                {canvas.sections.map((section, i) => (
-                                  <Fragment key={section.id}>
-                                    {dropGap === i && (
-                                      <div
-                                        aria-hidden="true"
-                                        className="h-1 rounded-full bg-primary"
-                                      />
-                                    )}
-                                    <SectionRenderer
-                                      key={section.id}
-                                      section={section}
-                                      editing
-                                      themeKey={activeThemeKey}
-                                      device={device}
-                                      locale={frameLang}
-                                      template={selectedBase}
-                                      selectedIds={selectedIds}
-                                      registry={builderRegistry}
-                                      devThemeBinding={devThemeBinding}
-                                      onInlineEdit={(nodeId, key, value) => {
-                                        // Grafted global-block content is a projection: editing
-                                        // it here would be silently discarded on next resolve.
-                                        if (isGraftedId(nodeId)) {
-                                          toast.error(
-                                            t(
-                                              "Open the global block to edit its content",
-                                              "কনটেন্ট বদলাতে গ্লোবাল ব্লকটি খুলুন",
-                                            ),
-                                          );
-                                          return;
-                                        }
-                                        editor.setPropAt(
-                                          template,
-                                          slot,
-                                          nodeId,
-                                          key,
-                                          value,
-                                          device,
-                                        );
-                                      }}
-                                    />
-                                  </Fragment>
-                                ))}
-                                {dropGap === canvas.sections.length && (
+                      {resolutionLabel ? (
+                        <p
+                          data-fq-resolution-label={resolutionMode}
+                          className="mb-2 text-center text-[10px] font-semibold uppercase tracking-wider text-muted-foreground"
+                        >
+                          {resolutionLabel}
+                        </p>
+                      ) : null}
+                      <CanvasDemoScope
+                        enabled={isSongoskriti}
+                        cart={canvasDemoCart}
+                        query={canvasDemoQuery}
+                        feed={canvasDemoFeed}
+                        account={canvasDemoAccount}
+                      >
+                        {canvas.sections.length === 0 ? (
+                          <div className="flex flex-col items-center justify-center py-20 px-4 text-center border-2 border-dashed border-border/70 rounded-fq-lg my-6 bg-muted/20">
+                            <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary mb-3">
+                              <svg
+                                className="size-6"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                              >
+                                <rect
+                                  width="18"
+                                  height="18"
+                                  x="3"
+                                  y="3"
+                                  rx="2"
+                                />
+                                <path d="M12 8v8" />
+                                <path d="M8 12h8" />
+                              </svg>
+                            </div>
+                            <h4 className="text-sm font-bold text-foreground">
+                              {t("This slot is empty", "এই স্লট খালি")}
+                            </h4>
+                            <p className="mt-1 text-xs text-muted-foreground max-w-sm">
+                              {t(
+                                "Compose your storefront by adding headers, heroes, product rails, or banners from the left panel.",
+                                "বাম পাশের প্যানেল থেকে হেডার, হিরো ব্যানার বা প্রোডাক্ট গ্রিড যোগ করে স্টোরফ্রন্ট সাজান।",
+                              )}
+                            </p>
+                            <button
+                              type="button"
+                              onClick={() => setLeftTab("add")}
+                              className="mt-4 inline-flex items-center gap-1.5 rounded-fq-md bg-primary px-3.5 py-1.5 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90 cursor-pointer"
+                            >
+                              + {t("Add Section", "সেকশন যোগ করুন")}
+                            </button>
+                          </div>
+                        ) : (
+                          <div data-drop-root className="contents">
+                            {canvas.sections.map((section, i) => (
+                              <Fragment key={section.id}>
+                                {dropGap === i && (
                                   <div
                                     aria-hidden="true"
                                     className="h-1 rounded-full bg-primary"
                                   />
                                 )}
-                              </div>
+                                <SectionRenderer
+                                  key={section.id}
+                                  section={section}
+                                  editing
+                                  themeKey={activeThemeKey}
+                                  demoData={
+                                    isSongoskriti &&
+                                    section.type !== "page_content"
+                                  }
+                                  device={device}
+                                  locale={frameLang}
+                                  template={selectedBase}
+                                  selectedIds={selectedIds}
+                                  registry={builderRegistry}
+                                  devThemeBinding={devThemeBinding}
+                                  onInlineEdit={(nodeId, key, value) => {
+                                    // Grafted global-block content is a projection: editing
+                                    // it here would be silently discarded on next resolve.
+                                    if (isGraftedId(nodeId)) {
+                                      toast.error(
+                                        t(
+                                          "Open the global block to edit its content",
+                                          "কনটেন্ট বদলাতে গ্লোবাল ব্লকটি খুলুন",
+                                        ),
+                                      );
+                                      return;
+                                    }
+                                    editor.setPropAt(
+                                      template,
+                                      slot,
+                                      nodeId,
+                                      key,
+                                      value,
+                                      device,
+                                    );
+                                  }}
+                                />
+                              </Fragment>
+                            ))}
+                            {dropGap === canvas.sections.length && (
+                              <div
+                                aria-hidden="true"
+                                className="h-1 rounded-full bg-primary"
+                              />
                             )}
-                          </BlogFeedProvider>
-                        </CollectionQueryProvider>
-                      </CartProvider>
+                          </div>
+                        )}
+                      </CanvasDemoScope>
                     </div>
                   </div>
                 </div>

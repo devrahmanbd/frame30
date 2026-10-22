@@ -44,7 +44,10 @@ export function builtinThemeKeys(): BuiltinThemeKey[] {
  * themes' own source modules (`BRAND_NAME*`); summaries describe the
  * source-owned theme honestly (no installs/ratings — those stay honest
  * zeros in `catalog-meta.ts`). Version is the documented source version:
- * source has no version field, so the registry carries `1.0.0`.
+ * the source has no version field, so the registry carries it. Songoskriti
+ * is **1.1.0** because Task 2 changed its cart/checkout/account
+ * presentations; existing installs are keyed by `source_listing_slug`, so the
+ * bump records the change without gating it (the install is source-owned).
  */
 export type BuiltinThemeMeta = {
   key: BuiltinThemeKey;
@@ -65,7 +68,7 @@ const META: Record<BuiltinThemeKey, BuiltinThemeMeta> = {
       "Official Framique heritage theme: jamdani, panjabi and festive craft.",
     summaryBn: "অফিসিয়াল ফ্রামিক হেরিটেজ থিম।",
     category: "general",
-    version: "1.0.0",
+    version: "1.1.0",
   },
   somvabona: {
     key: "somvabona",

@@ -120,7 +120,7 @@ describe("Frame30 official catalogue shape", () => {
     const songo = sections.official[0]!;
     expect(songo).toMatchObject({
       name: "Songoskriti",
-      version: "1.0.0",
+      version: "1.1.0",
       provenance: "official",
       installed: false,
       active: false,
@@ -151,7 +151,10 @@ describe("Frame30 official catalogue shape", () => {
       "somvabona",
     ]);
     for (const entry of sections.official) {
-      expect(entry).toMatchObject({ provenance: "official", version: "1.0.0" });
+      expect(entry).toMatchObject({
+        provenance: "official",
+        version: entry.key === "songoskriti" ? "1.1.0" : "1.0.0",
+      });
     }
     expect(sections.community.map((t) => t.key)).toEqual(["acme-pack"]);
   });
@@ -176,7 +179,7 @@ describe("Frame30 official install initializes from source", () => {
       merchant_id: MERCHANT,
       name: "Songoskriti",
       source_listing_slug: "songoskriti",
-      source_version: "1.0.0",
+      source_version: "1.1.0",
       is_active: false,
     });
     const versions = db.rows("theme_versions");

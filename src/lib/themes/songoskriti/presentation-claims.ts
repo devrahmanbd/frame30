@@ -1,12 +1,13 @@
 /**
  * Songoskriti presentation claims — lane (b) of the unified port.
  *
- * Claims the 13 theme-fixable leak keys (classification.md §2/§3 rows:
- * HP-PRODUCT-RAIL, RK-PRODUCT-GRID, RK-RICH-TEXT, RK-NEWSLETTER,
- * RK-FOOTER-SITEMAP, RK-PAYMENT-ICONS, HP-DEPARTMENT-GRID,
- * HP-STORE-LOCATOR, HP-SPLIT-FEATURE, HP-COLLECTION-STORY, HP-UGC-GALLERY,
- * RK-CATEGORY-HEADER, RK-RESULT-TOOLBAR) for `songoskriti × key` in the
- * theme presentation registry (spec §4.2(b) presentation lane + §4.4
+ * Claims the 23 theme-fixable keys: the original 13 leak keys
+ * (classification.md §2/§3 rows: HP-PRODUCT-RAIL, RK-PRODUCT-GRID,
+ * RK-RICH-TEXT, RK-NEWSLETTER, RK-FOOTER-SITEMAP, RK-PAYMENT-ICONS,
+ * HP-DEPARTMENT-GRID, HP-STORE-LOCATOR, HP-SPLIT-FEATURE, HP-COLLECTION-STORY,
+ * HP-UGC-GALLERY, RK-CATEGORY-HEADER, RK-RESULT-TOOLBAR) plus the ten
+ * commerce and account widget types the composable-parts contract made
+ * authorable — for `songoskriti × key` in the theme presentation registry (spec §4.2(b) presentation lane + §4.4
  * registration contract).
  *
  * Excluded: `mega_menu` is already live through `header-presentation.tsx:776`

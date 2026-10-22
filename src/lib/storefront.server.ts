@@ -4,8 +4,10 @@ import {
   templateOf,
   type TemplateKey,
   type ThemeAst,
+  type ThemeTemplates,
   type ThemeTokens,
 } from "./builder-ast";
+import { resolveTemplateForHost } from "./pipeline-resolver";
 import { publishedTheme } from "./themes.server";
 import type { DevThemeManifest } from "./dev-theme-manifest";
 import type { DevThemeBindingInputs } from "./themes.server";
@@ -102,6 +104,34 @@ async function fetchPublicVariantsBy(
 }
 
 /**
+ * The published body for one template, through the ONE resolver.
+ *
+ * Exported as the narrow host seam the pipeline contract exercises: change
+ * the map and the storefront's body changes; remove the template and the
+ * result is `null` (the route keeps its own platform surface and
+ * `ThemeChrome` names the declined state). `mode: "published"` is the only
+ * thing that differs from the editor and the preview.
+ */
+export function resolvePublishedTemplate({
+  templates,
+  template,
+  tenant,
+}: {
+  templates: ThemeTemplates;
+  template: TemplateKey;
+  tenant: string | null;
+}): ThemeAst | null {
+  const resolution = resolveTemplateForHost({
+    template,
+    variants: templates,
+    tenant,
+    mode: "published",
+    host: "storefront",
+  });
+  return resolution.status === "resolved" ? resolution.ast : null;
+}
+
+/**
  * Published layout + tokens for a store template, or null when nothing is
  * published. Served from the tenant-keyed storefront cache, which the publish /
  * rollback / sweep paths purge, so a shopper never lands on a stale page.
@@ -131,7 +161,16 @@ async function loadPublished(
   const theme = await publishedTheme(publicClient(), merchantId);
   observe("framique_template_render_ms", Date.now() - started, { template });
   if (!theme) return null;
-  const ast = templateOf(theme.templates, template);
+  const ast = resolvePublishedTemplate({
+    templates: theme.templates,
+    template,
+    tenant: merchantId,
+  });
+  // The theme does not design this template: the route's own platform
+  // surface renders, and `ThemeChrome` names the declined state. Returning
+  // null is the explicit absence — never the homepage, never an empty AST
+  // dressed as a theme page.
+  if (!ast) return null;
   // A theme that publishes no header/footer for a secondary template (search,
   // cart, checkout) borrows the home template's chrome, so a shopper never
   // lands on a page without the store's navigation or its policy links.

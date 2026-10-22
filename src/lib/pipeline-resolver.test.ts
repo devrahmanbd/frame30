@@ -36,6 +36,7 @@ import { describe, expect, it } from "vitest";
 import {
   TEMPLATE_KEYS,
   type Section,
+  type SectionBuilder,
   type TemplateKey,
   type ThemeAst,
   type ThemeTokens,
@@ -48,6 +49,8 @@ import {
 } from "./pipeline-resolver";
 import { assemblePreviewTemplates } from "@/lib/theme-preview-nav";
 import type { PreviewThemeSource } from "@/lib/theme-preview-nav";
+import { previewSourceFor } from "./preview-sources";
+import { resolvePublishedTemplate } from "./storefront.server";
 
 /** The theme's OWN preview source — the platform's real map. */
 const SOURCE_READER = readFileSync(
@@ -64,6 +67,13 @@ function ast(main: Section[] = []): ThemeAst {
 function section(type: string): Section {
   return { id: `${type}-1`, type: type as Section["type"], props: {} };
 }
+
+/** The theme builder the preview port hands each source. */
+const buildSection: SectionBuilder = (type, props = {}) => ({
+  id: `${type}-1`,
+  type,
+  props,
+});
 
 /** The source's CODE — the comments are stripped, so a scan reads the code
  *  and not the prose that documents it. */
@@ -116,6 +126,32 @@ describe("the pipeline resolver — one resolver for the three hosts", () => {
     expect(resolved(preview).ast).toBe(resolved(editor).ast);
     expect(resolved(storefront).ast).toBe(resolved(editor).ast);
     expect(resolved(preview).tokens).toBe(resolved(editor).tokens);
+  });
+
+  it("the MAP is the input that changes the answer — a different body resolves differently", () => {
+    // The old suite varied host/mode/tenant over ONE map and called that
+    // "the three hosts agree"; one code path cannot disagree with itself
+    // (review M2). This case varies the MAP and pins that the resolver's
+    // output follows it.
+    const lines = ast([section("cart_lines")]);
+    const summary = ast([section("cart_summary")]);
+    const a = resolveTemplateForHost({
+      template: "cart",
+      variants: { cart: lines },
+      tenant: "demo",
+      mode: "published",
+      host: "storefront",
+    });
+    const b = resolveTemplateForHost({
+      template: "cart",
+      variants: { cart: summary },
+      tenant: "demo",
+      mode: "published",
+      host: "storefront",
+    });
+    expect(resolved(a).ast).toBe(lines);
+    expect(resolved(b).ast).toBe(summary);
+    expect(resolved(a).ast).not.toBe(resolved(b).ast);
   });
 
   it("the three modes are exactly draft, published and source — and each is labelled", () => {
@@ -212,6 +248,77 @@ describe("the pipeline resolver — one resolver for the three hosts", () => {
   });
 });
 
+describe("the three hosts consume the resolver — their OUTPUT follows the map", () => {
+  it("the preview source resolves through `mode: source` and its body follows the artifact", () => {
+    const lines = ast([section("cart_lines")]);
+    const summary = ast([section("cart_summary")]);
+    const a = previewSourceFor("acme", undefined, [
+      { key: "acme", tokens: {}, templates: { cart: lines } },
+    ]);
+    const b = previewSourceFor("acme", undefined, [
+      { key: "acme", tokens: {}, templates: { cart: summary } },
+    ]);
+    expect(a).not.toBeNull();
+    expect(b).not.toBeNull();
+    // The host's public output — not the resolver's return value. The
+    // stored AST goes through `parseTemplates`, which normalises props, so
+    // the assertion is on the resolved SECTION, not raw prop identity.
+    expect(a!.main("cart", buildSection)!.map((s) => s.type)).toEqual([
+      "cart_lines",
+    ]);
+    expect(b!.main("cart", buildSection)!.map((s) => s.type)).toEqual([
+      "cart_summary",
+    ]);
+    expect(a!.main("cart", buildSection)).not.toEqual(
+      b!.main("cart", buildSection),
+    );
+    // An absent template is the preview's explicit absent state.
+    expect(a!.main("archive", buildSection)).toBeNull();
+  });
+
+  it("the storefront body resolves through `mode: published` and returns null for an absent template", () => {
+    const lines = ast([section("cart_lines")]);
+    const summary = ast([section("cart_summary")]);
+    const a = resolvePublishedTemplate({
+      templates: { cart: lines },
+      template: "cart",
+      tenant: "demo",
+    });
+    const b = resolvePublishedTemplate({
+      templates: { cart: summary },
+      template: "cart",
+      tenant: "demo",
+    });
+    expect(a).toEqual(lines);
+    expect(b).toEqual(summary);
+    expect(a).not.toEqual(b);
+    expect(
+      resolvePublishedTemplate({
+        templates: {},
+        template: "cart",
+        tenant: "demo",
+      }),
+    ).toBeNull();
+  });
+
+  it("each host module calls the ONE resolver with its own mode and host label", () => {
+    const preview = readFileSync(
+      new URL("./preview-sources.ts", import.meta.url),
+      "utf8",
+    );
+    const storefront = readFileSync(
+      new URL("./storefront.server.ts", import.meta.url),
+      "utf8",
+    );
+    expect(preview).toContain("resolveTemplateForHost({");
+    expect(preview).toContain('mode: "source"');
+    expect(preview).toContain('host: "preview"');
+    expect(storefront).toContain("resolveTemplateForHost({");
+    expect(storefront).toContain('mode: "published"');
+    expect(storefront).toContain('host: "storefront"');
+  });
+});
+
 describe("the preview's assembled map — the THEME's own length", () => {
   it("a theme that authors nine of the ten templates carries NINE keys, and the tenth is absent", () => {
     const authored = TEMPLATE_KEYS.filter((key) => key !== "archive");
@@ -267,10 +374,55 @@ describe("the editor canvas — the theme's presentation and the theme's demo da
     expect(block).toContain("themeKey={activeThemeKey}");
   });
 
+  it("the canvas resolves its DRAFT through the ONE resolver — mode and host labelled", () => {
+    // The editor is not a fourth path (review M2): it calls the same
+    // resolver with `mode: "draft"`, `host: "editor"` and the draft map.
+    expect(BUILDER).toContain("resolveTemplateForHost({");
+    expect(BUILDER).toContain('mode: "draft"');
+    expect(BUILDER).toContain('host: "editor"');
+    expect(BUILDER).toContain("variants: doc.templates");
+    // S8: the mode label is RENDERED, not merely computed.
+    expect(BUILDER).toContain("data-fq-resolution={resolutionMode}");
+    expect(BUILDER).toContain("data-fq-resolution-label={resolutionMode}");
+  });
+
+  it("names a declined template in the switcher and the publish gate (M4)", () => {
+    // The switcher marks the template and the canvas shows a named banner.
+    expect(BUILDER).toContain('data-fq-theme-state="declined-template"');
+    expect(BUILDER).toContain("data-fq-declined");
+    // The publish gate receives a `warn` issue — visible, never blocking.
+    expect(BUILDER).toContain('level: "warn" as const');
+    expect(BUILDER).toContain(
+      "message: `${UNSUPPORTED_TEMPLATE_TITLE} — ${templateLabel}`",
+    );
+    // The same words the preview/storefront frame uses, imported rather than
+    // retyped.
+    expect(BUILDER).toContain(
+      'import { UNSUPPORTED_TEMPLATE_TITLE } from "@/components/store/ThemePreviewFrame"',
+    );
+  });
+
   it("the canvas mounts the theme's DEMO providers — and never the live cart", () => {
-    expect(BUILDER).toContain("CartProvider");
-    expect(BUILDER).toContain("CollectionQueryProvider");
-    expect(BUILDER).toContain("BlogFeedProvider");
+    expect(BUILDER).toContain("CanvasDemoScope");
+    // M5: the account panels read the SAME provider the preview mounts.
+    const scope = readFileSync(
+      new URL("../components/builder/CanvasDemoScope.tsx", import.meta.url),
+      "utf8",
+    );
+    expect(scope).toContain("CartProvider");
+    expect(scope).toContain("CollectionQueryProvider");
+    expect(scope).toContain("BlogFeedProvider");
+    expect(scope).toContain("AccountDashboardProvider");
+    expect(BUILDER).toContain("canvasDemoAccount");
+    expect(BUILDER).toContain("enabled={isSongoskriti}");
+    // The canvas draws the provider-backed context widgets, not the editing
+    // placeholder — the demo scope's whole point (Task 4(a)).
+    expect(BUILDER).toContain('section.type !== "page_content"');
+    // S3: the demo scope is GATED on the theme key, exactly as the preview
+    // gates it — another theme never receives Songoskriti fixtures.
+    expect(BUILDER).toContain(
+      'const isSongoskriti = activeThemeKey === "songoskriti"',
+    );
     // The storefront mounts the LIVE scope; the canvas must never mount it.
     // The scan reads the CODE (the comments are stripped) — a comment that
     // NAMES the live scope is documentation, not a mount.

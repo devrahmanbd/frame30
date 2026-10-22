@@ -15,9 +15,10 @@
  *
  * The differences the suite NAMES (and does not close):
  *
- *  - **`facet_sidebar` is preview-only on the search surface** (Decision
- *    D7): its rows come from the widget-data pipeline (`source: "facets"`)
- *    and no storefront route mounts a `WidgetDataProvider`.
+ *  - **`facet_sidebar` is granted by BOTH hosts** (Decision G2 (a)): the
+ *    storefront resolves the widget-data batch on the server and mounts the
+ *    `WidgetDataProvider` that feeds the same `source: "facets"` rows the
+ *    preview uses. The old preview-only difference is CLOSED.
  *  - **The article detail grants `page_content` on top of the pack** — the
  *    route-owned body slot the article's title, excerpt, cover and body
  *    flow through. The blog LISTING grants exactly the pack.
@@ -278,17 +279,24 @@ describe("the preview and the storefront grant the SAME slots", () => {
 
 describe("the editor, the preview and the storefront mount the RIGHT data", () => {
   const BUILDER = read("routes", "_authenticated", "dashboard", "builder.tsx");
+  const CANVAS_SCOPE = read("components", "builder", "CanvasDemoScope.tsx");
   const CHROME = read("components", "store", "ThemeChrome.tsx");
 
   it("the editor and the preview mount the SAME demo providers — the theme's own data", () => {
+    // The builder's provider scope is the extracted `CanvasDemoScope`, so the
+    // mount is asserted on the module the builder actually renders (review
+    // M5: the account provider joins the same scope).
+    expect(BUILDER).toContain("<CanvasDemoScope");
     for (const provider of [
       "CartProvider",
       "CollectionQueryProvider",
       "BlogFeedProvider",
+      "AccountDashboardProvider",
     ]) {
-      expect(BUILDER, `the editor canvas must mount ${provider}`).toContain(
-        provider,
-      );
+      expect(
+        CANVAS_SCOPE,
+        `the editor canvas must mount ${provider}`,
+      ).toContain(provider);
       expect(PREVIEW, `the preview must mount ${provider}`).toContain(provider);
     }
     // The theme's OWN demo values — the same module on both sides, so the
@@ -298,6 +306,8 @@ describe("the editor, the preview and the storefront mount the RIGHT data", () =
       expect(source).toContain("songoskritiPreviewCart");
       expect(source).toContain("songoskritiPreviewFeed");
     }
+    expect(BUILDER).toContain("songoskritiPreviewAccountOverview");
+    expect(BUILDER).toContain("songoskritiPreviewOrders");
   });
 
   it("the storefront mounts ONLY the live scope — never the demo providers", () => {

@@ -95,6 +95,15 @@ describe("storefront search route — the theme composes the platform's pieces",
     expect(slots).toContain("!query.isPending");
   });
 
+  it("scopes the facet widget data to the shopper's query (S4)", () => {
+    // S4 — the route passes the search backend's query-scoped facets and
+    // total into the same resolver that feeds the sidebar; the facets loader
+    // then answers from that scope instead of counting the whole catalogue.
+    expect(SRC).toContain("facets: outcome.result.facets");
+    expect(SRC).toContain("total: outcome.result.total");
+    expect(SRC).toContain('outcome.status === "ok"');
+  });
+
   it("hands the theme the RESULTS BLOCK, and that block still carries the query box and the filters", () => {
     // The identifier handed to `productSlot` is NOT the one handed to
     // `fallback`.

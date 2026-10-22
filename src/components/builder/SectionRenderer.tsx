@@ -76,6 +76,14 @@ type Props = {
    * missing slot renders a labelled placeholder instead of crashing.
    */
   contextSlots?: Partial<Record<SectionType, React.ReactNode>>;
+  /**
+   * Draw context widgets even when the host supplies no `contextSlots`
+   * entry, because the caller mounted the theme's demo providers (the
+   * editor canvas). The widget reads those providers; without them the
+   * editing placeholder is the honest state. Never set on a storefront
+   * host — production data must come from the route's grant.
+   */
+  demoData?: boolean;
   /** Template being rendered — drives context-widget resolution. */
   template?: TemplateKey;
   /**
@@ -282,6 +290,7 @@ export function SectionRenderer({
   themeKey,
   primary = false,
   editing = false,
+  demoData = false,
   device,
   locale: localeProp,
   selectedIds,
@@ -501,6 +510,7 @@ export function SectionRenderer({
               themeKey={themeKey}
               primary={primary}
               editing={editing}
+              demoData={demoData}
               device={device}
               locale={locale}
               selectedIds={selectedIds}
@@ -596,6 +606,7 @@ export function SectionRenderer({
                 storeSlug={storeSlug}
                 themeKey={themeKey}
                 editing={editing}
+                demoData={demoData}
                 device={device}
                 locale={locale}
                 selectedIds={selectedIds}
@@ -730,6 +741,7 @@ export function SectionRenderer({
                 storeSlug={storeSlug}
                 themeKey={themeKey}
                 editing={editing}
+                demoData={demoData}
                 device={device}
                 locale={locale}
                 selectedIds={selectedIds}
@@ -823,7 +835,7 @@ export function SectionRenderer({
       );
     }
     slot = contextSlots?.[section.type];
-    if (slot === undefined) {
+    if (slot === undefined && !demoData) {
       if (!editing) return null;
       return (
         <div className="rounded-fq-md border border-dashed border-border p-4 text-sm text-muted-foreground">
@@ -845,6 +857,7 @@ export function SectionRenderer({
         storeSlug={storeSlug}
         themeKey={themeKey}
         editing={editing}
+        demoData={demoData}
         device={device}
         locale={locale}
         selectedIds={selectedIds}

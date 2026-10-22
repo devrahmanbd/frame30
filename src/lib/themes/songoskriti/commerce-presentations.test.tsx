@@ -36,6 +36,8 @@ import {
   SONGOSKRITI_COMMERCE_WIDGETS,
   SongoskritiCartLines,
   SongoskritiCartSummary,
+  SongoskritiCheckoutSteps,
+  SongoskritiPaymentMethods,
 } from "./commerce-presentations";
 import { SONGOSKRITI_PRESENTATION_CLAIMS } from "./presentation-claims";
 
@@ -204,6 +206,67 @@ describe("songoskriti commerce presentations — the parts prop survives the swa
     expect(shippingAt).toBeGreaterThan(subtotalAt);
     expect(totalAt).toBeGreaterThan(shippingAt);
   });
+
+  it("the cart's Checkout Now CTA points at the store's real checkout route", () => {
+    // The platform renderer's destination (`cart.tsx:572`) is the store's
+    // `/checkout`; a bare `#` made the primary cart action dead on every
+    // Songoskriti store (review M1). `ctx.link` is the host seam that adds
+    // the store's base path.
+    const section = sectionWith("cart_summary", { showCta: true });
+    const html = renderToStaticMarkup(
+      createElement(
+        CartProvider,
+        { value: songoskritiPreviewCart() },
+        createElement(
+          SongoskritiCartSummary,
+          ctxFor(section, {
+            link: (href: string) => `/store/songoskriti${href}`,
+          }),
+        ),
+      ),
+    );
+    expect(html).toContain('href="/store/songoskriti/checkout"');
+    expect(html).not.toContain('href="#"');
+  });
+
+  it("the checkout trail's links part renders the completed steps' back-links", () => {
+    // `links` was computed but never passed to `StepTrail` (review S1). The
+    // platform renderer sets the same two destinations (`cart.tsx:665`).
+    const section = sectionWith("checkout_steps", {
+      parts: "labels,active,links",
+      activeStep: 3,
+    });
+    const html = renderToStaticMarkup(
+      createElement(
+        SongoskritiCheckoutSteps,
+        ctxFor(section, {
+          link: (href: string) => `/store/songoskriti${href}`,
+        }),
+      ),
+    );
+    expect(html).toContain('href="/store/songoskriti/cart"');
+    expect(html).toContain('href="/store/songoskriti/checkout"');
+  });
+
+  it("the payment legend stays first even when the authored order puts it later — the documented fieldset exception", () => {
+    // HTML requires `<legend>` to be the first child of `<fieldset>`. The
+    // vocabulary documents this as the one order exception; the renderer
+    // must not pretend otherwise.
+    const section = sectionWith("payment_methods", {
+      parts: "groups,legend,options,note",
+    });
+    const html = renderToStaticMarkup(
+      createElement(
+        CartProvider,
+        { value: songoskritiPreviewCart() },
+        createElement(SongoskritiPaymentMethods, ctxFor(section)),
+      ),
+    );
+    const legendAt = html.indexOf("<legend");
+    const groupsAt = html.indexOf("Cash on delivery");
+    expect(legendAt).toBeGreaterThanOrEqual(0);
+    expect(groupsAt).toBeGreaterThan(legendAt);
+  });
 });
 
 describe("songoskriti commerce presentations — the data is the route's", () => {
@@ -234,7 +297,9 @@ describe("songoskriti commerce presentations — the data is the route's", () =>
 describe("songoskriti commerce presentations — no money is computed", () => {
   /** The module's CODE — the comments (which contain prose asterisks) and the
    *  import paths (which contain slashes) are stripped, so the operator scan
-   *  sees only executable text. */
+   *  sees only executable text. String LITERALS stay in the scan: the slash
+   *  lookbehind below excludes a quoted route from the division test, so the
+   *  scan never needs to erase a template expression. */
   const CODE = SOURCE.replace(/\/\*[\s\S]*?\*\//g, "")
     .replace(/^\s*import[\s\S]*?;\s*$/gm, "")
     .replace(/\/\/.*$/gm, "");
@@ -243,7 +308,10 @@ describe("songoskriti commerce presentations — no money is computed", () => {
     // The platform's own rule (`src/components/builder/cart.tsx:1-11`):
     // every figure comes from `ctx.money` over the server's minor units.
     // A renderer that divides (or multiplies a minor-unit figure) is a bug.
-    const divisions = CODE.match(/(?<![\w<])\/\s*[0-9a-zA-Z_(]/g) ?? [];
+    // A quoted route such as `"/checkout"` is not a division; the lookbehind
+    // excludes a slash that begins a literal, while every computed `/` in
+    // executable code (including a template interpolation) still matches.
+    const divisions = CODE.match(/(?<![\w<"'`])\/\s*[0-9a-zA-Z_(]/g) ?? [];
     expect(divisions).toEqual([]);
     const multiplications = CODE.match(/(?<![\w<])\*\s*[0-9a-zA-Z_(]/g) ?? [];
     expect(multiplications).toEqual([]);

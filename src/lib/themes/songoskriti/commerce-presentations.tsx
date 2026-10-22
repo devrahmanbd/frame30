@@ -356,7 +356,7 @@ export const SongoskritiCartSummary: WidgetComponent = (ctx) => {
       </dl>
       {bool("showCta") ? (
         <a
-          href="#"
+          href={ctx.link("/checkout")}
           className="mt-6 inline-flex min-h-14 w-full items-center justify-center border border-foreground px-8 text-[12px] font-bold fq-caps tracking-widest transition-colors hover:bg-muted/40"
         >
           {str("ctaLabel") || t(locale, "Checkout Now", "চেকআউট")}
@@ -492,7 +492,7 @@ function groupLabel(group: MethodLayer, lang: "en" | "bn"): string {
  * the links back to the completed steps. The theme chooses their order.
  */
 export const SongoskritiCheckoutSteps: WidgetComponent = (ctx) => {
-  const { str, int, locale } = ctx;
+  const { str, int, locale, link } = ctx;
   const order = partOrder(str("parts"), "checkout_steps");
   const wantsLabels = order.includes("labels");
   const wantsLinks = order.includes("links");
@@ -501,10 +501,12 @@ export const SongoskritiCheckoutSteps: WidgetComponent = (ctx) => {
     {
       key: "cart",
       label: wantsLabels ? str("step1") || t(locale, "Cart", "কার্ট") : "",
+      href: wantsLinks ? link("/cart") : undefined,
     },
     {
       key: "details",
       label: wantsLabels ? str("step2") || t(locale, "Details", "তথ্য") : "",
+      href: wantsLinks ? link("/checkout") : undefined,
     },
     {
       key: "payment",

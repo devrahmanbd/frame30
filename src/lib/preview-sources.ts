@@ -26,6 +26,7 @@ import {
   variationForKey,
   type ThemeVariation,
 } from "./theme-variations";
+import { resolveTemplateForHost } from "./pipeline-resolver";
 
 /* ------------------------- build-time static sources ------------------- */
 
@@ -96,10 +97,11 @@ function installedArtifactFor(
 }
 
 /**
- * Preview source synthesized from an installed version's artifact content.
- * Tokens parse through the same gate as drafts; templates serve their
- * stored AST per template (un-authored templates return null so the engine
- * synthesizes its generic demo body — same contract as built-in sources).
+ * Preview source built from an installed version's artifact content.
+ * Tokens parse through the same gate as drafts; each template's body resolves
+ * through the ONE pipeline resolver (`mode: "source"`), so an un-authored
+ * template is ABSENT and returns null — the preview host renders its explicit
+ * unsupported panel, never a synthesised body.
  * The requested variation applies over the stored base tokens; unknown
  * keys fall back to the base, never throw.
  */
@@ -130,8 +132,16 @@ function installedPreviewSource(
     header: (template: TemplateKey) => templateOf(templates, template).header,
     footer: (template: TemplateKey) => templateOf(templates, template).footer,
     main: (template: TemplateKey) => {
-      const main = templateOf(templates, template).main;
-      return main.length ? main : null;
+      const resolution = resolveTemplateForHost({
+        template,
+        variants: templates,
+        tenant: artifact.key,
+        mode: "source",
+        host: "preview",
+        tokens: applyVariationTokens(base, variation),
+      });
+      if (resolution.status !== "resolved") return null;
+      return resolution.ast.main.length ? resolution.ast.main : null;
     },
   };
 }

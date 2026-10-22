@@ -107,6 +107,15 @@ export const Route = createFileRoute("/store/$slug/search")({
               currentRequestHost(),
               chrome.merchant.slug ?? params.slug,
             ),
+            // S4: the sidebar counts the SAME query the grid beside it runs.
+            // Without this, `loadFacetsSource` counts the merchant's whole
+            // active catalogue and a search for one term shows every product.
+            ...(outcome.status === "ok"
+              ? {
+                  facets: outcome.result.facets,
+                  total: outcome.result.total,
+                }
+              : {}),
           },
         );
       } catch {
