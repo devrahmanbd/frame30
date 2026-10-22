@@ -1,6 +1,6 @@
 # Songoskriti — template genericity & the asset-inventory gap: consolidated report
 
-**Date:** 2026-10-22 · **Repo:** `/opt/frame28` · **Branch:** `frame30` · **Deployed:** `be96b320` (`origin/frame30` and `origin/main` — both at this SHA; the programmes since it ship dark, unpushed)
+**Date:** 2026-10-22 · **Repo:** `/opt/frame28` · **Branch:** `frame30` · **Deployed:** `109e2d3d` — the last deploy this report ran and verified (a docs-only commit above the phase-3 code at `be96b320`); everything since — this programme and this docs batch — ships on the next push + `ops/deploy-from-git.sh` from a pushed ref (§3.7)
 **Current as of:** 2026-10-22 — the Frame30 core CMS upgrade programme has shipped (phase 3, `182c37b5` → `be96b320`), **and the dynamic-themes programme has shipped in full behind it** (`109e2d3d` → the tip of this docs batch; §2.2, §3.6–§3.7). §2, §3, §5, §6, §7 and §8 carry phase 3's decisions, evidence and rulings **and the dynamic-themes programme's**. The phases before phase 3 are unchanged.
 **Purpose:** one self-contained document for an expert review — the problem as found, every implementation question that was asked and the answer it received, what has since shipped and been verified, and the questions that remain open.
 
