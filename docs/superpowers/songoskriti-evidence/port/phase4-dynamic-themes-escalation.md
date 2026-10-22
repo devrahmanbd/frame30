@@ -4189,3 +4189,158 @@ This appendix is committed **before** any Task 4 code change. The Task 4 code co
 **What did not change.** The platform path is byte-identical for all three surfaces (it is the “before” column), and the stored ASTs are untouched — no migration, no rewrite, no id change. The earlier 18-surface capture remains valid for what it measured. What was missing was this second projection, and it is now on the record.
 
 **Owner ratification (M3).** The programme owner's Task 4 fix instruction of **2026-10-22** directs this exact remedy — *bump the version, measure the theme path before/after, correct the record* — and accepts the resulting visual change for existing Songoskriti stores. It is file- and programme-scoped to this task, not a precedent, and it does not relax A9 for any future change: a future theme-path change must again be measured and either gated or ratified before the claim is made.
+
+---
+
+# Phase 4 — Fix wave 2: the re-review's corrections (escalation appendix)
+
+**Recorded:** 2026-10-22 · **Branch:** `frame30` · **Base reviewed:** `5f283eb1` · **Re-review:** `.superpowers/sdd/2026-10-22-frame30-dynamic-themes/review-4.md`
+
+**Why this appendix exists.** Review 4 found that the Task 4 wave closed M1/M3/M4/M5 and S1–S8 but introduced **one shopper-facing regression** (the storefront payload lost the theme's chrome, tokens and presentations for every template a theme does not author) and left **one false in-code claim** (the demo marker's comment denied a clause the render appends). It also found that this record's boundary statement stops at `21907047` and therefore does not cover the wave's own seven existing beyond-G1 files, and that four of the wave's pins assert a **source string** where the plan asks for behaviour.
+
+This appendix is **append-only**: nothing above is rewritten, because the record is evidence and evidence is corrected by a dated correction, never by erasure. Where this appendix conflicts with an earlier section, **this appendix governs**. It is committed **before** the code commit it governs (§7.1's ordering), exactly as §(h.6) proved for the previous wave.
+
+## (i.1) The boundary statement over the FULL programme (`3ca5e8ad..HEAD`)
+
+**Corrected boundary statement.** *This record escalates the programme's full change set from the pre-programme base `109e2d3d` to `HEAD`: the **11** files of the plan's 12-file Decision Gate G1 that the shipped work actually edited, **18** new files (a NEW file needs no §7 relaxation — 17 product files plus this record), and **36** existing product files beyond G1 — 26 from Tasks 1–3 (enumerated in §(h.2)), 7 from the Task 4 fix wave (`5f283eb1`, enumerated in §(i.1.2)) and 3 from this wave (enumerated in §(i.1.3)). No other file is edited. Every beyond-G1 existing file is enumerated with its commit and the owner's ratification.*
+
+The review names the range **`3ca5e8ad..HEAD`** — Task 1's commit through the head of the branch. That range is the programme's *own* commits; Task 1's own diff is measured against the pre-programme base `109e2d3d`, so the enumeration below is the union of `109e2d3d..3ca5e8ad` (Task 1), `3ca5e8ad..4b522b93` (Task 2), `4b522b93..21907047` (Task 3), `21907047..5f283eb1` (the Task 4 fix wave) and `5f283eb1..HEAD` (this wave). The arithmetic, measured from `git diff --name-status 109e2d3d..HEAD` at this wave's record commit:
+
+| category | count | meaning |
+| --- | ---: | --- |
+| G1 files edited | **11** | the named relaxation list; exact diffs in §(b)–(g) |
+| G1 files not edited | **1** | `src/components/store/songoskriti-preview-compositions.test.tsx` — no change was needed |
+| new files | **18** | 17 new product files + this record; a NEW file needs no relaxation |
+| existing product files beyond G1 | **36** | 26 in §(h.2) + 7 in §(i.1.2) + 3 in §(i.1.3) |
+| **total unique files** | **65** | `109e2d3d..HEAD` |
+
+### (i.1.1) The 11 G1 files — the named relaxation list
+
+| # | G1 file | first edited | why |
+| ---: | --- | --- | --- |
+| 1 | `src/lib/builder-ast.ts` | `3ca5e8ad` | the `SectionType` union, the four new catalogue rows, the `parts` / `layout` fields |
+| 2 | `src/components/builder/widgets.tsx` | `3ca5e8ad` | the closed `WIDGET_COMPONENTS` map |
+| 3 | `src/components/builder/cart.tsx` | `3ca5e8ad` | the part order in the four commerce widgets |
+| 4 | `src/components/builder/account.tsx` | `3ca5e8ad` | the part order in the two account widgets |
+| 5 | `src/components/store/AccountDashboard.tsx` | `3ca5e8ad` | the dashboard becomes the provider's default composition |
+| 6 | `src/lib/preview-parity.contract.test.ts` | `4b522b93` | the hosts' grant sets (EXTENDED, never weakened) |
+| 7 | `src/routes/store.$slug.account.tsx` | `4b522b93` | the provider mount and the four new grants |
+| 8 | `src/routes/store.$slug.search.tsx` | `4b522b93` | the storefront's `facet_sidebar` grant (G2 (a)) |
+| 9 | `src/routes/store.$slug.checkout.tsx` | `4b522b93` | the disabled place-order action and the shared empty state |
+| 10 | `src/components/store/ThemeChrome.tsx` | `21907047` | the declined-template fallback becomes an explicit, named state (D5) |
+| 11 | `src/routes/_authenticated/dashboard/builder.tsx` | `21907047` | the canvas's `themeKey`, its demo providers and its draft resolution |
+
+### (i.1.2) The Task 4 fix wave's SEVEN existing beyond-G1 files (`5f283eb1`)
+
+Review 4 found these named nowhere in this record — §(h.2)'s ratification list covers Tasks 1–3 only, and the wave's own commit sat outside every boundary statement. They are enumerated here, one line per file, with the owner's ratification.
+
+| # | beyond-G1 existing file | why it had to change | ratified |
+| ---: | --- | --- | --- |
+| 1 | `src/lib/storefront.server.ts` | the storefront's published body resolves through the ONE resolver (`mode: "published"`, `host: "storefront"`) | yes — owner's standing instruction, 2026-10-22 |
+| 2 | `src/lib/widget-data.server.ts` | the search surface's facets answer from the shopper's query scope (S4) | yes — owner's standing instruction, 2026-10-22 |
+| 3 | `src/lib/preview-sources.ts` | the installed artifact's body resolves through the ONE resolver (`mode: "source"`, `host: "preview"`) | yes — owner's standing instruction, 2026-10-22 |
+| 4 | `src/components/builder/SectionRenderer.tsx` | the editor canvas draws the provider-backed context widgets instead of the editing placeholder (M5) | yes — owner's standing instruction, 2026-10-22 |
+| 5 | `src/lib/themes/builtin-themes.ts` | the version metadata records the theme-path change (`1.0.0` → `1.1.0`) — records, it does not gate (M3) | yes — owner's standing instruction, 2026-10-22 |
+| 6 | `src/lib/themes-official-catalog.test.ts` | re-pinned to the new metadata (a version pin — the loop still asserts an exact version for every official entry) | yes — owner's standing instruction, 2026-10-22 |
+| 7 | `src/components/store/ThemePreviewFrame.test.tsx` | re-pinned: the demo marker renders on the cart and the checkout (S5) | yes — owner's standing instruction, 2026-10-22 |
+
+### (i.1.3) THIS wave's THREE further beyond-G1 existing files
+
+| # | beyond-G1 existing file | why it had to change | ratified |
+| ---: | --- | --- | --- |
+| 1 | `src/components/builder/PublishModal.tsx` | the publish gate must surface the declined-template **warning text**, not a count (review F4) | yes — owner's standing instruction, 2026-10-22 |
+| 2 | `src/lib/template-key-contract.test.ts` | the label-map totality contract must enumerate EVERY per-template label map, including the storefront's (review F6) | yes — owner's standing instruction, 2026-10-22 |
+| 3 | `src/lib/template-variants.ts` | `templateAstOf` became dead when the editor swapped to the resolver (review F9) | yes — owner's standing instruction, 2026-10-22 |
+
+### (i.1.4) The owner's ratification, one line per beyond-G1 file
+
+**The owner's standing instruction of 2026-10-22** — *"whatever goes, as per the expert opinion"* — is the written ratification for the beyond-G1 files above. It is applied **file by file** and **programme by programme**: it relaxes §7 for the files named in §(h.2), §(i.1.2) and §(i.1.3) and for nothing else, it does not set a precedent for any future programme, and it does not move the plan's other constraints (no new dependency, no new registry or renderer, no weakened test, no migration, no deploy).
+
+| # | beyond-G1 existing file | ratified under the owner's standing instruction |
+| ---: | --- | --- |
+| 1 | `src/routes/store.$slug.search-composition.test.tsx` | yes — 2026-10-22 |
+| 2 | `src/components/store/ThemePreviewFrame.tsx` | yes — 2026-10-22 |
+| 3 | `src/lib/theme-preview-nav.ts` | yes — 2026-10-22 |
+| 4 | `src/lib/themes/songoskriti/presentation-claims.ts` | yes — 2026-10-22 |
+| 5 | `src/lib/themes/songoskriti/preview.ts` | yes — 2026-10-22 |
+| 6 | `src/lib/themes/songoskriti/template-distinctness.ts` | yes — 2026-10-22 |
+| 7 | `src/lib/themes/songoskriti/preview-demo-data.ts` | yes — 2026-10-22 |
+| 8 | `src/lib/theme-shell-slots.ts` | yes — 2026-10-22 |
+| 9 | `src/routes/theme-preview.$key.tsx` | yes — 2026-10-22 |
+| 10 | `src/lib/studio/catalog.ts` | yes — 2026-10-22 |
+| 11 | `src/lib/widget-help.ts` | yes — 2026-10-22 |
+| 12 | `src/components/builder/songoskriti-port-freeze.test.tsx` | yes — 2026-10-22 |
+| 13 | `src/components/store/account-dashboard.contract.test.ts` | yes — 2026-10-22 |
+| 14 | `src/components/store/AccountDashboard.test.tsx` | yes — 2026-10-22 |
+| 15 | `src/lib/builder-ast-extension.test.ts` | yes — 2026-10-22 |
+| 16 | `src/lib/studio/catalog-dedup.test.ts` | yes — 2026-10-22 |
+| 17 | `src/lib/template-persistence-isolation.test.ts` | yes — 2026-10-22 |
+| 18 | `src/lib/template-variants.test.ts` | yes — 2026-10-22 |
+| 19 | `src/lib/theme-preview-nav.test.ts` | yes — 2026-10-22 |
+| 20 | `src/lib/themes/songoskriti/claims-activation.test.ts` | yes — 2026-10-22 |
+| 21 | `src/lib/themes/songoskriti/presentation-claims-activation.test.ts` | yes — 2026-10-22 |
+| 22 | `src/lib/themes/songoskriti/preview.test.ts` | yes — 2026-10-22 |
+| 23 | `src/lib/themes/songoskriti/unsupported-template-state.test.tsx` | yes — 2026-10-22 |
+| 24 | `src/lib/theme-variation-preview.test.ts` | yes — 2026-10-22 |
+| 25 | `src/lib/widget-e2e-workflow.test.ts` | yes — 2026-10-22 |
+| 26 | `src/lib/widget-metadata.test.ts` | yes — 2026-10-22 |
+| 27 | `src/lib/storefront.server.ts` | yes — 2026-10-22 (Task 4 wave) |
+| 28 | `src/lib/widget-data.server.ts` | yes — 2026-10-22 (Task 4 wave) |
+| 29 | `src/lib/preview-sources.ts` | yes — 2026-10-22 (Task 4 wave) |
+| 30 | `src/components/builder/SectionRenderer.tsx` | yes — 2026-10-22 (Task 4 wave) |
+| 31 | `src/lib/themes/builtin-themes.ts` | yes — 2026-10-22 (Task 4 wave) |
+| 32 | `src/lib/themes-official-catalog.test.ts` | yes — 2026-10-22 (Task 4 wave) |
+| 33 | `src/components/store/ThemePreviewFrame.test.tsx` | yes — 2026-10-22 (Task 4 wave) |
+| 34 | `src/components/builder/PublishModal.tsx` | yes — 2026-10-22 (this wave) |
+| 35 | `src/lib/template-key-contract.test.ts` | yes — 2026-10-22 (this wave) |
+| 36 | `src/lib/template-variants.ts` | yes — 2026-10-22 (this wave) |
+
+## (i.2) The demo marker's English-only clause — stated, not silently "fixed"
+
+**The finding (review F3/F11).** `src/components/store/ThemePreviewFrame.tsx`'s demo marker rendered the shared preview sentence (`PREVIEW_DISABLED_MESSAGE = "Disabled in preview"`, `src/lib/theme-preview-nav.ts:137`) **plus a clause of its own** — *"payment selection changes this preview only."* — while its comment claimed the marker used *"the one shared preview sentence so it cannot drift into new copy"*. The claim was false.
+
+**The truth, stated in the code.** The marker **reuses the shared preview sentence as its PREFIX** and appends **one** clause that says what the demo selection affects. The clause is **English-only on purpose**:
+
+- **Translations are out of scope for this programme.** The plan's Global Constraints state *"No Bangla copy is authored, translated or re-worded by this programme"* (`docs/superpowers/plans/2026-10-22-frame30-dynamic-themes.md:321`). Authoring a Bangla sibling here would break that constraint.
+- **The marker is preview CHROME, not theme AST.** The clause lives in the preview host's own JSX, not in any template's authored AST.
+- **The translation meter therefore does not cover it.** `translationCoverage(templates)` (`src/lib/translation-coverage.ts:92`) is a pure function of the theme's template ASTs; it walks sections, fields and props. A string in the preview host's markup is not in an AST, so the meter cannot see it and the meter is unchanged by this clause — **measured**: 46 % (179/391 bilingual fields) before and after.
+
+**The change.** The comment now states exactly this. The marker is also **split** so the shared sentence stands alone as its own sentence instead of reading *"Disabled in preview: payment selection changes this preview only."* — the shared sentence keeps its own words, and the clause is a separate sentence beside it. A bilingual marker would need a separate, explicitly ratified translation task; it is not authored here.
+
+**Owner ratification.** The programme owner's standing instruction of 2026-10-22 (*"whatever goes, as per the expert opinion"*) covers this English-only clause: it is stated in the code, stated here, and left out of the translation meter on purpose.
+
+## (i.3) The storefront payload regression (review F1) — the fix and the re-measured compatibility
+
+**The defect.** The Task 4 wave changed `src/lib/storefront.server.ts`'s `loadPublished` to `if (!ast) return null;` for a template the theme does not author. That nulled the **whole theme payload** — `ast`, `tokens` **and** `themeKey` — so the store's header, footer, design tokens and widget presentations **disappeared** on `/search`, `/cart`, `/checkout`, `/account`, `/page` and `/blog` for every theme that declines that template. The official built-in `somvabona` authors only three of the ten templates (`src/lib/themes/somvabona/preview.test.ts:50-64`).
+
+**The fix.** An `absent` resolution now means **an empty BODY**, never "no theme": the storefront keeps the theme's chrome, tokens and `themeKey`, and the route's own platform surface renders inside the theme's chrome inside the named declined frame — exactly as Decision Gate G3 requires. The wave's own comment stated the invariant it broke (*"a shopper never lands on a page without the store's navigation or its policy links"*); the invariant is restored.
+
+**The compatibility re-measurement (the previous wave's capture logic, re-run).** The M3 harness was reconstructed — it renders the three real Songoskriti compositions (cart, checkout, account) through `ThemeChrome` with `parts` stripped from each stored AST, in two states: *before* = `themeKey={null}` (the platform renderers) and *after* = `themeKey="songoskriti"` (the theme's presentations). **The reconstruction reproduces the previous wave's six captures byte for byte** (1847 / 1492 / 33157 / 33120 / 8936 / 9047 bytes), which is what makes the cross-commit comparison below meaningful.
+
+| surface | platform path at `109e2d3d` | platform path at this wave's HEAD | verdict |
+| --- | ---: | ---: | --- |
+| cart | 1847 B | 1847 B | **byte-identical** |
+| checkout | 33157 B | 33157 B | **byte-identical** |
+| account | 718 B (the pre-programme composition) | 718 B for the same stored AST | **byte-identical** |
+
+The **declined-template storefront surface** — the one surface the 18-surface capture never covered — was captured at `109e2d3d` and at this wave's HEAD. The **only** difference is the D5 named frame (`data-fq-theme-state="declined-template"` and the label *"… this theme does not design the Search results page"*), which is the ratified Task 3 change; the theme's header chrome, its footer chrome and the route's own platform surface are byte-identical on both sides. The F1 defect (a payload with no chrome at all) is therefore **not** a change from `109e2d3d` — it is a change from `109e2d3d`'s behaviour **back** to `109e2d3d`'s behaviour.
+
+**The corrected claim.** The compatibility rule (*"a stored AST written before it renders byte-identically after it"*, plan A9) holds on the platform renderer path, and the storefront's payload for a declined template is byte-identical to `109e2d3d` again. The **theme presentation** path remains the one ratified visual change (§(h.7)); it is unchanged by this wave.
+
+## (i.4) The fifth per-template label map joins the repo's totality contract (review F6)
+
+`src/lib/template-display.ts`'s `TEMPLATE_DISPLAY_NAME` is a **fifth** per-template label map. It is dependency-light on purpose (the storefront must not pull the preview registry), but it sat **outside** the repo's own contract for label maps (`src/lib/template-key-contract.test.ts`), so a future template key would silently fall back to the raw key — the exact defect S7 was raised for.
+
+**The change.** The contract now **enumerates every** per-template label map — `TEMPLATE_LABEL` (the editor's bilingual map), `TEMPLATE_META` (the editor's top-bar map), `GENERIC_TITLES` (the preview's generic-body titles) and `TEMPLATE_DISPLAY_NAME` (the storefront's shopper names) — and asserts, for **every** template key, that every map carries it and that the maps' key sets are identical. It additionally asserts that the storefront's English names agree with the editor's `TEMPLATE_LABEL` English on **every** key, which is the duplication the module's docstring now names. **No sixth map is added.** `TEMPLATE_FALLBACK` (`src/lib/builder-seo.ts`) is a **SEO** map, not a label map: it is deliberately partial (it names only the templates that have an indexable page) and it stays outside the label-map agreement; the existing contract still pins its `archive` row.
+
+The storefront's names are **English-only** while the platform has bilingual labels available — acceptable under *"No Bangla copy is authored"*, and stated here as the report states it for the marker.
+
+## (i.5) The rest of the re-review's corrections
+
+| finding | the change | where |
+| --- | --- | --- |
+| **F4** — the publish modal renders a warning COUNT, not the warning text | the modal now lists the warning messages (the declined template is named by name), reusing the existing *"…and N more"* wording so no new copy is authored | `src/components/builder/PublishModal.tsx` |
+| **F5** — four pins assert a source string, not behaviour | each is converted to a behavioural assertion (the source pin is **kept in addition**, never instead): the preview's rail selection by an **interaction**, the rail-less place-order action by a **render**, the editor's draft resolution and mode label by a **render**, the search's facet scope by the **scope the route hands the resolver** | `src/lib/preview-safety.contract.test.ts`, `src/lib/pipeline-resolver.test.ts`, `src/routes/store.$slug.search-composition.test.tsx` |
+| **F8** — two storefront paths still resolve through `templateOf` | both now resolve through the ONE resolver. The **pinned** page resolves a **different** theme's published pointer (the page's own pinned theme, not the store's active theme) and the **draft** index resolves the merchant's unsaved draft (`mode: "draft"`); both are named in the code, and the draft path's label says `draft` | `src/lib/storefront.server.ts` |
+| **F9** — `templateAstOf` is dead | removed: it had no caller in `src/` once the editor swapped to the resolver | `src/lib/template-variants.ts` |
+| **F10** — the editor's variant fallback changed with no test | the editor's draft resolution is now a **pure, exported** function of the ONE resolver, and the variant→base fallback is pinned by a test that proves it against the storefront's own rule (`resolveVariantAst`) rather than assuming it | `src/lib/pipeline-resolver.ts`, `src/lib/pipeline-resolver.test.ts` |
