@@ -4434,3 +4434,108 @@ The M3 capture harness was reconstructed (the previous wave's harness was delete
 ### (i.9) The marker's clause — its final form (a precision note to §(i.2))
 
 §(i.2) quoted the clause in its lower-case form, as the wave wrote it. The split marker ships the clause as its own sentence — **"Payment selection changes this preview only."** — so the shared sentence stands alone as **"Disabled in preview"** and the clause reads as a sentence rather than as a colon-glued continuation. The words are unchanged; only the capitalisation and the boundary moved, and the existing assertion was re-pinned **stronger** (`src/components/store/ThemePreviewFrame.test.tsx`: the clause's new form, the shared sentence standing alone as its own element, and the old colon-glued form **gone**). The clause remains **English-only** and remains **outside the translation meter**, for the reasons in §(i.2). No Bangla copy was authored.
+
+# Phase 4 — Task 5: the proof lane (the browser lane that proves the storefront matches)
+
+**Recorded:** 2026-10-22 · **Branch:** `frame30` · **Base commit:** `f1df5135` · **Task brief:** `.superpowers/sdd/2026-10-22-frame30-dynamic-themes/task-5-brief.md` (steps 5.1–5.4) · **Plan:** `docs/superpowers/plans/2026-10-22-frame30-dynamic-themes.md` (Task 5) · **Dispatch:** part 1 of Task 5 (the lane and the strengthened lanes); steps 5.5–5.6 are a separate dispatch.
+
+This appendix is **append-only**: nothing above is rewritten, because the record is evidence and evidence is corrected by a dated correction, never by erasure. It is written **before** any §7-prohibited file this task touches is edited, and it is committed **before** the code commit it governs (§7.1's ordering, proved for the previous waves in §(h.6)).
+
+---
+
+## (j.1) The finding — what the platform actually does at the publish step (measured, not assumed)
+
+**The finding.** The plan's Task 5 asks for a lane that proves *edit → save → reload → publish → the storefront matches*. The proof's hinge is the **publish**, and the publish is **gated by the platform's own content gate** — so the lane must assert the platform's contract in BOTH branches and must never convert a refusal into a pass. Three measurements decide the lane's shape. All three were measured on this tree, at this commit.
+
+| # | the measurement | how it was measured | what it forces on the lane |
+| --- | --- | --- | --- |
+| 1 | **The theme's own lint is clean for all ten templates** — the publish modal's confirm is enabled whenever the document has changes | `lintTemplate(doc.templates[key], key)` over Songoskriti's shipped bodies, measured in this task's own harness | the lane's publish step can reach the server, so the lane can read the platform's real outcome |
+| 2 | **The server's publish gate REFUSES the shipped theme**: the bilingual coverage of the shipped bodies is **76 %** (234 authored pairs, 179 ok) and the gate's floor is **90 %** — *"বাংলা translation coverage is 76% — publishing needs at least 90%."* | `translationCoverage(shippedBodies)` + `authoredCoverage` + `translationGate` over the same bodies | the publish is refused **today**, by a content finding the prior programme already recorded as an **owner action** (`phase3-evidence.md` §4.1). The lane must therefore assert the refusal contract (the pointer untouched, the reason named) and report the proof as **not completed** — a skip, never a pass |
+| 3 | **The cart's composition has ONE `<h1>` claimant by construction**, and a merchant-authored heading on the lines block would make it two — *"More than one widget claims the page `<h1>` — only one may be the primary heading."* (a **lint error**, which **disables the publish modal's confirm**) | `lintTemplate` over the shipped cart body, then over the same body with a non-blank `cart_lines.heading` | the lane's cart journey **must not** create a second claimant: it edits the lines block's heading only, and the publish step must handle a **disabled** confirm (the platform's refusal, named in the modal) as a first-class branch |
+
+**The lane's verdict, stated once.** A publish that **succeeds** must be visible on the storefront (the merchant-authored marker IS there and the old text is NOT); a publish that is **refused** must leave the published pointer untouched, must **say why**, and must not half-apply (the old text is still there and the marker is not). A lane that cannot find the marker **fails**; a lane whose publish the platform refused reports a **skip with the platform's own reason** — never a pass.
+
+## (j.2) The files this task touches
+
+**NEW files — §7-allowed, no relaxation needed** (*"a NEW file needs no relaxation"*, `phase3-archive-key-escalation.md:33`):
+
+| file | what it is |
+| --- | --- |
+| `.e2e/songoskriti-dynamic-themes.spec.ts` | the proof lane: one test per surface (Cart, Account, Checkout) plus the *"no session is ever faked"* guard |
+| `.e2e/songoskriti-dynamic-themes-helpers.ts` | the lane's helpers: the editor steps, the publish contract, the storefront assertions and the permitted-interaction steps |
+| `src/lib/themes/songoskriti/distinctness-dynamic.test.ts` | the distinctness gate's re-run for the new compositions (the `cart` row's forbidden `orders_list`, the `checkout` row's no-authored-field/no-price rule, and the *"every template a theme does not author is rejected as generic"* loop) |
+
+**EXISTING files — §7-prohibited** (*"existing `.e2e/**` files (specs and `playwright.config.ts`)"*, port spec §7). The plan's Task 5 file list marks both of them **"Modify (allowed)"**; §7 still prohibits them, so both are escalated here, by name, with their exact edits.
+
+| file | on the plan's Task 5 list? | the edit |
+| --- | --- | --- |
+| `.e2e/songoskriti-seven-templates.spec.ts` | **yes — "Modify (allowed)"** | **one addition**: after the publish, the journey asserts the **changed** composition on the storefront (the spacer the journey authored, at the height it edited). **Every existing assertion is kept**; nothing is weakened, removed or skipped |
+| `.e2e/songoskriti-storefront-surfaces.spec.ts` | **yes — "Modify (allowed)"** | **one addition**: three permitted-interaction cases (the checkout's payment rail, the account's tab, the cart's quantity stepper) + the import of the shared helpers. **Every existing assertion is kept** |
+
+**The owner's ratification.** The owner's standing instruction of 2026-10-22 (*"whatever goes, as per the expert opinion"*) covers these two files as it covers the 36 beyond-G1 files of §(i.1.4): it relaxes §7 for the files named here and for nothing else, it sets no precedent, and it moves none of the plan's other constraints (no new dependency, no weakened test, no migration, no deploy). The plan's own Task 5 file list already names both files as editable, so this record **names the exact edit** rather than widening the boundary.
+
+## (j.3) The exact old → new diffs
+
+Each block below is appended **before** the file it names is edited. The applied diffs are re-stated in §(j.5) as committed.
+
+### (j.3.1) `.e2e/songoskriti-seven-templates.spec.ts` — the journey asserts the CHANGED composition
+
+**The edit.** One block, inserted between the publish contract (§9) and the storefront navigation (§10). It asserts the **edited node's presence on the storefront** — the spacer the journey inserted and set to **56 px** — and it does so **against the platform's own outcome**: a publish that succeeded must show it; a publish that was refused must NOT show it (a refusal never half-applies). Every existing assertion of the journey is untouched.
+
+```ts
+    // The CHANGED composition on the storefront. The journey edited the
+    // spacer it inserted (56 px), so the storefront must carry that node —
+    // against the platform's own outcome: a publish that advanced the
+    // pointer must be visible, and a refused publish must not have
+    // half-applied.
+    const editedSpacer = page.locator(
+      'div[aria-hidden="true"][style*="height: 56px"]',
+    );
+    if (publish.outcome === "published") {
+      await expect(
+        editedSpacer.first(),
+        "the edited spacer (56px) is on the storefront after the publish",
+      ).toBeVisible({ timeout: 30_000 });
+    } else {
+      expect(
+        await editedSpacer.count(),
+        "a refused publish did not half-apply: the storefront still serves the published composition",
+      ).toBe(0);
+    }
+```
+
+**Why the spacer's DOM is the marker.** The platform's spacer renders `<div aria-hidden="true" style={{ height: int("size", 32, 8, 160) }} />` (`src/components/builder/widgets.tsx:1449`) and the Songoskriti pack claims no `spacer` presentation (`src/lib/themes/songoskriti/presentation-claims.ts`), so the storefront renders the platform's own node — and the journey's final edit (48 → 56 px) is the value it carries.
+
+### (j.3.2) `.e2e/songoskriti-storefront-surfaces.spec.ts` — three permitted-interaction cases
+
+**The edit.** One import (the shared helpers this task creates) and **three new cases** inside the existing `describe("the storefront surfaces")` block. **Nothing existing is changed, removed or weakened.**
+
+```ts
+import {
+  DYNAMIC_STORE,
+  changeCartQuantity,
+  choosePaymentRail,
+  ensureCartHasLine,
+  switchAccountTab,
+} from "./songoskriti-dynamic-themes-helpers";
+```
+
+| # | the case | what it asserts |
+| --- | --- | --- |
+| 1 | the composed checkout's payment rail can be chosen and the selection sticks | the theme's `payment_methods` widget renders the rails the **server** offered; a rail can be chosen; the choice survives the server's re-quote |
+| 2 | the composed account's tab can be switched and the panel changes | the theme's placed nav switches the tab (`aria-selected` moves, the URL carries the tab) and the **panel** changes — the orders panel is replaced by the addresses panel |
+| 3 | the composed cart's quantity stepper changes the cart and the quote follows | the theme's line row renders the quantity stepper; increasing it changes the quantity and the **server's quote** (the total row changes) |
+
+### (j.4) The ordering proof
+
+§7.1's ordering is that no §7-prohibited file is edited before this record **names** it. The order of this task's commits is therefore:
+
+1. **this record** (the two existing `.e2e` files named, with their exact edits) — committed **before** the edits;
+2. **the code** — the three new files and the two strengthened `.e2e` files;
+3. **the appendix** naming the code commit, appended to this record (the §(i.8) precedent).
+
+The three churn files (`.artifacts/e2e/playwright-report/index.html`, `ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`) and the untracked `.output-snapshots/` are **not** staged, **not** committed and **not** touched by this task.
+
+## (j.5) The applied diffstat and the applied diffs
+
+*(appended below, after the code commit — the §(i.8) precedent)*
