@@ -256,6 +256,57 @@ test.describe("the storefront surfaces", () => {
     ).toBe(false);
   });
 
+  test("the checkout asks for the address first and shows the rail and the total below it", async ({
+    page,
+  }) => {
+    await open(page, `/store/${STORE}/checkout`);
+    // The customer's own fields — the contact block the platform's form
+    // renders.
+    const contact = page
+      .getByText("Contact Information", { exact: true })
+      .first();
+    await expect(
+      contact,
+      "the platform's own contact block renders",
+    ).toBeVisible({ timeout: 30_000 });
+    await expect(
+      page.getByRole("button", { name: /Place Order/i }).first(),
+      "the platform's own place-order action renders",
+    ).toBeVisible({ timeout: 30_000 });
+
+    // The PAYMENT control: the theme's `payment_methods` widget. It renders
+    // either the picker (when the store has rails) or its own empty state —
+    // both are the payment control, and both must sit BELOW the customer's
+    // fields.
+    const paymentControl = page
+      .getByText("No payment method is available right now.")
+      .first();
+    const picker = page.getByText("Payment method", { exact: true }).first();
+    const paymentBox = (await paymentControl.count())
+      ? await paymentControl.boundingBox()
+      : await picker.boundingBox();
+    expect(paymentBox, "the payment control renders").not.toBeNull();
+
+    // The TOTAL: the theme's `cart_summary` reads the server's quote.
+    const total = page.getByText("Total", { exact: true }).first();
+    await expect(total, "the order summary's total renders").toBeVisible({
+      timeout: 30_000,
+    });
+    const totalBox = await total.boundingBox();
+    const contactBox = await contact.boundingBox();
+
+    expect(contactBox, "the contact block is laid out").not.toBeNull();
+    expect(totalBox, "the total is laid out").not.toBeNull();
+    expect(
+      paymentBox!.y,
+      "the payment control renders BELOW the customer's fields",
+    ).toBeGreaterThan(contactBox!.y);
+    expect(
+      totalBox!.y,
+      "the total renders BELOW the customer's fields",
+    ).toBeGreaterThan(contactBox!.y);
+  });
+
   test("the archive routes keep the platform's grid; the preview renders the theme's archive body", async ({
     page,
   }) => {

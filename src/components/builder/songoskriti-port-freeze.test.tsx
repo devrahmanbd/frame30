@@ -115,7 +115,13 @@ const TEMPLATE_MAIN: Record<string, string[]> = {
   cart: ["heading", "columns"],
   // Batch B — the production checkout shell (Task 4). The theme's checkout
   // body gains the route-owned body slot the checkout FORM flows through.
-  checkout: ["heading", "checkout_steps", "columns", "page_content"],
+  //
+  // The final-fix round (2026-10-22) REORDERED the body: the route's own
+  // body (`page_content`) now comes BEFORE the payment/summary band, so the
+  // shopper reads the address first and picks the rail with the total in
+  // view. The composition is frozen at the new order — a move back above the
+  // band would put the rail before the address again.
+  checkout: ["heading", "checkout_steps", "page_content", "columns"],
   search: [
     "category_header",
     "result_toolbar",

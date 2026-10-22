@@ -413,6 +413,17 @@ export function songoskritiPreviewSource(
               heading: "Checkout progress",
               activeStep: 2,
             }),
+            // The route's OWN body comes FIRST: the customer fields, the
+            // validated submission and the place-order action. The payment
+            // block and the order summary follow it, so the shopper reads
+            // the address first and picks the rail with the total in view —
+            // not the other way round.
+            //
+            // The route's own body: the production checkout form — the
+            // customer fields, the validated submission and the place-order
+            // action. The theme contributes the frame around it (Decision
+            // D2'); the platform keeps the form, the totals and the rails.
+            s("page_content", {}),
             {
               ...s("columns", { columns: 2, asymmetrical: true, gap: 64 }),
               children: [
@@ -437,11 +448,6 @@ export function songoskritiPreviewSource(
                 },
               ],
             },
-            // The route's OWN body: the production checkout form — the
-            // customer fields, the validated submission and the place-order
-            // action. The theme contributes the frame around it (Decision
-            // D2'); the platform keeps the form, the totals and the rails.
-            s("page_content", {}),
           ];
         case "account":
           // The account surface (Batch B). The theme's body is a FRAME around

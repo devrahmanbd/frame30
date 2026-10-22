@@ -54,9 +54,22 @@ describe("songoskriti checkout composition", () => {
     expect(types).toEqual([
       "heading",
       "checkout_steps",
-      "columns",
       "page_content",
+      "columns",
     ]);
+  });
+
+  it("puts the route's own body BEFORE the payment block and the summary", () => {
+    // The shopper reads the address FIRST and picks the rail with the
+    // total in view — the final review's finding that the production
+    // checkout "asks for the rail before the address and hides the total
+    // from the Place Order button". The route's own body (`page_content`)
+    // therefore precedes the two-column payment/summary band.
+    const bodyAt = types.indexOf("page_content");
+    const bandAt = types.indexOf("columns");
+    expect(bodyAt).toBeGreaterThanOrEqual(0);
+    expect(bandAt).toBeGreaterThanOrEqual(0);
+    expect(bodyAt, "the route's body must come first").toBeLessThan(bandAt);
   });
 
   it("holds nothing but platform-owned commerce widgets", () => {
@@ -67,13 +80,13 @@ describe("songoskriti checkout composition", () => {
     expect(flattenSections(main).map((section) => section.type)).toEqual([
       "heading",
       "checkout_steps",
+      "page_content",
       "columns",
       "container",
       "payment_methods",
       "payment_icons",
       "container",
       "cart_summary",
-      "page_content",
     ]);
   });
 
