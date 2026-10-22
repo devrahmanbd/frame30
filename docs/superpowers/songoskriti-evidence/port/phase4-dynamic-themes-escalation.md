@@ -4383,3 +4383,50 @@ The M3 capture harness was reconstructed (the previous wave's harness was delete
 **This wave's HEAD vs the previous wave's stored captures** (the same harness, the same ASTs): all six are byte-identical — cart 1847 / 1492, checkout 33157 / 33120, account 8936 / 9047. The fixes moved nothing on the platform path.
 
 **The declined-template storefront surface** — the one surface the 18-surface capture never covered — differs between `109e2d3d` and this wave's HEAD by exactly **one** insertion: the D5 named frame (`<div data-fq-theme-state="declined-template" data-fq-template="search" class="fq-declined-template">` and the label *"… this theme does not design the Search results page"*). The theme's header chrome, the theme's footer chrome and the route's own platform surface are byte-identical on both sides (1816 → 2104 characters). The D5 frame is the ratified Task 3 change; the F1 defect (a payload with **no** chrome at all) is not a change from `109e2d3d` — it is a change **back** to `109e2d3d`'s behaviour.
+
+### (i.8) The commit for every §7-prohibited existing file, one line per file
+
+**Why this appendix comes after the code commit.** §7.1's ordering is that no §7-prohibited file is edited before the record **names and ratifies** it. §(i.1.2), §(i.1.3) and §(i.1.4) did exactly that, in the two record commits that precede the wave's code commit (`ecbadffb`, `4886fae8`). This appendix fills in the one thing that could not be written before the fact — **the commit identifier** of each file's first edit — and it introduces **no new relaxation**: every file below was already enumerated and ratified before it was edited.
+
+**The 36 §7-prohibited existing files, with the commit that first edited them and the ratification that covers each.**
+
+| beyond-G1 existing file | first edited | ratified |
+| --- | --- | --- |
+| `src/components/builder/PublishModal.tsx` | `0ebaaa5b` | yes — owner's standing instruction, 2026-10-22 |
+| `src/components/builder/SectionRenderer.tsx` | `5f283eb1` | yes — owner's standing instruction, 2026-10-22 |
+| `src/components/builder/songoskriti-port-freeze.test.tsx` | `4b522b93` | yes — owner's standing instruction, 2026-10-22 |
+| `src/components/store/account-dashboard.contract.test.ts` | `3ca5e8ad` | yes — owner's standing instruction, 2026-10-22 |
+| `src/components/store/AccountDashboard.test.tsx` | `3ca5e8ad` | yes — owner's standing instruction, 2026-10-22 |
+| `src/components/store/ThemePreviewFrame.test.tsx` | `5f283eb1` | yes — owner's standing instruction, 2026-10-22 |
+| `src/components/store/ThemePreviewFrame.tsx` | `4b522b93` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/builder-ast-extension.test.ts` | `3ca5e8ad` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/preview-sources.ts` | `5f283eb1` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/storefront.server.ts` | `5f283eb1` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/studio/catalog-dedup.test.ts` | `3ca5e8ad` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/studio/catalog.ts` | `3ca5e8ad` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/template-key-contract.test.ts` | `0ebaaa5b` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/template-persistence-isolation.test.ts` | `21907047` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/template-variants.test.ts` | `21907047` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/template-variants.ts` | `0ebaaa5b` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/theme-preview-nav.test.ts` | `21907047` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/theme-preview-nav.ts` | `21907047` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/themes/builtin-themes.ts` | `5f283eb1` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/theme-shell-slots.ts` | `4b522b93` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/themes-official-catalog.test.ts` | `5f283eb1` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/themes/songoskriti/claims-activation.test.ts` | `4b522b93` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/themes/songoskriti/presentation-claims-activation.test.ts` | `4b522b93` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/themes/songoskriti/presentation-claims.ts` | `4b522b93` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/themes/songoskriti/preview-demo-data.ts` | `21907047` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/themes/songoskriti/preview.test.ts` | `4b522b93` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/themes/songoskriti/preview.ts` | `4b522b93` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/themes/songoskriti/template-distinctness.ts` | `4b522b93` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/themes/songoskriti/unsupported-template-state.test.tsx` | `21907047` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/theme-variation-preview.test.ts` | `21907047` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/widget-data.server.ts` | `5f283eb1` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/widget-e2e-workflow.test.ts` | `3ca5e8ad` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/widget-help.ts` | `3ca5e8ad` | yes — owner's standing instruction, 2026-10-22 |
+| `src/lib/widget-metadata.test.ts` | `3ca5e8ad` | yes — owner's standing instruction, 2026-10-22 |
+| `src/routes/store.$slug.search-composition.test.tsx` | `21907047` | yes — owner's standing instruction, 2026-10-22 |
+| `src/routes/theme-preview.$key.tsx` | `21907047` | yes — owner's standing instruction, 2026-10-22 |
+
+**The 11 G1 files** are listed with their commits in §(i.1.1); they carry the plan's own named relaxation and need no file-by-file ratification.
