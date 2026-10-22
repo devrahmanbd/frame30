@@ -5033,3 +5033,27 @@ The edit is a **prose comment only** — inside the file's module doc block. No 
 **Boundary.** The Task 6 commit touches exactly five paths — the deleted `src/components/store/CheckoutMock.tsx`, the two prose re-words (`ThemePreviewFrame.tsx`, `songoskriti-preview-compositions.test.tsx`), the gate's doc-comment re-word (`src/lib/theme-preview-nav.ts`), and the new obsolete-path record. The churn files (`.artifacts/e2e/playwright-report/index.html`, `ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`) and `.output-snapshots/` remain unstaged.
 
 **Ordering.** This section is committed first, by explicit path, before any Task 6 edit is made; the code commit follows it. That is the ordering §(k.4) and §(k.6) used.
+
+---
+
+## (m) The closing statements — the two plan-required sentences this record had not yet carried
+
+*(Append-only, dated 2026-10-22, committed at the programme's close (Task 7.1). Task 7.1 requires the record to contain six statements, (a)–(f). Five are on the record — (a) the finding opens the record's first line, (b) the exact diffs are §(b)–(g) and each later §7-prohibited wave's own diff hunks, (c) the compatibility rule is stated and measured in §(d) and §(f) and re-measured on the theme path in §(h.7), and (f) the boundary over the FULL programme is the corrected authority of §(i.1). Two statements were never written because no task record had needed them: the **package-contract** statement and the **security** statement. They close the record here, verbatim as the plan's Task 7.1 words them, so the record satisfies its own plan literally rather than by inference.)*
+
+### (m.1) The package-contract statement (§7.1 (d))
+
+> **A package's `supportedWidgets` may name the new `account_*` types; a package that does not is unaffected; `THEME_API_RANGE` stays `^3.0.0` and `BUILDER_API_VERSION` stays `3.1.0`; the only per-key rule remains `templates.archive_requires_api`.**
+
+Measured substance: the range and the running API are constants that did not move — `THEME_API_RANGE = "^3.0.0"` (`src/lib/theme-package.ts:56`) and `BUILDER_API_VERSION = "3.1.0"` (`src/lib/plugin-manifest.ts:32`) are byte-stable across the programme (§(m)'s greps at `3753eaf3`). A package may now declare `supportedWidgets: ["account_nav", …]` because the four panels are first-class catalogue rows (§ line 38 above); a package that names none of them changes nothing, since `WIDGET_SET` is derived from `WIDGET_TYPES` and the manifest gate already accepts any catalogue entry (plan A9). The one per-key rule in the template contract remains exactly what it was before the programme: `templates.archive_requires_api`. No column, no schema line, no API interpretation changes — the theme-package module states that fact at `src/lib/theme-package.ts:151-152`, and this section is the record's own statement of it.
+
+### (m.2) The security statement (§7.1 (e))
+
+> **The parts prop is a closed list of keys, never values; the account panels read only the route's provider; the theme's presentation receives the same `WidgetCtx` and has no server access.**
+
+Measured substance, one clause at a time:
+
+1. **The parts prop is a closed list of keys, never values.** `parseOrderedParts` (`src/lib/widget-parts.ts:94`) tokenises the comma-separated prop against the widget's `WIDGET_PART_VOCABULARY` (`:42`), deduplicates with a `Set`, and an unknown token is dropped — the authored value can only ever **re-order keys the widget already owns**, never inject markup, labels or copy (money, addresses and statuses come from the widget's own props, unchanged).
+2. **The account panels read only the route's provider.** The four `account_*` panels render through the route's `AccountDashboardProvider` (`src/components/store/AccountDashboardContext.tsx`), which aggregates the platform's own loaders for the signed-in merchant; a panel mounted without the provider renders the platform's delegated fallback, exactly as the account route's contract pins it.
+3. **The theme's presentation receives the same `WidgetCtx` and has no server access.** A theme presentation (`src/lib/theme-presentations.ts`, extended by claim) is a **presentation function over the same `WidgetCtx` the platform widget receives** (`src/components/store/account-widgets.tsx:36`, `:1196`) — no fetch, no server-side import, no `createServerFn` seam of its own. The server stays the platform's; the package manifest and the theme artifact are static JSON read through the existing manifest gate. Money renders through `ctx.money` over the quote's **minor units**, as it did before the programme.
+
+**Boundary of this section.** Words only — no product file, no test, no config is touched. It closes the six statements Task 7.1 enumerates; the record remains append-only, ending here.
