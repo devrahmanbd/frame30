@@ -74,9 +74,19 @@ const ARCHIVE_SLOTS: Partial<Record<SectionType, ReactNode>> = {
 /**
  * The theme's authored archive body, or null.
  *
- * The BASE key only: the closed variant vocabulary does not exist yet, and
- * the open-ended `isVariantTemplateKey` would accept a suffix the platform
- * does not route to.
+ * The BASE key only, for now. The closed variant vocabulary DOES exist
+ * (`TEMPLATE_VARIANTS` carries `archive: [category, tag, author]`,
+ * `src/lib/template-variants.ts`), and `resolveVariantAst` is the one
+ * resolver that honours it — but the archive's three variants are reached
+ * through the **deferred merchant-scoped route**
+ * (`/store/<slug>/blog/category/<slug>` and its two siblings), which does
+ * not exist yet. The three store-less routes that DO exist today
+ * (`/blog/category/$slug`, `/blog/tag/$slug`, `/blog/author/$slug`) carry no
+ * store subject, resolve no theme and render the platform's grid, so there
+ * is no variant for them to resolve. When the merchant-scoped route lands,
+ * THIS function must resolve the VARIANT first and the base second — the
+ * order `resolveVariantAst` already implements — or a theme's
+ * `archive_category` composition would never render.
  */
 function resolveArchiveBody(
   templates: Partial<Record<TemplateKey, ThemeAst>> | null | undefined,
