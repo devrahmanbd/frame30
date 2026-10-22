@@ -172,13 +172,6 @@ moves every pixel below it. The one fixed surface whose fix does **not** move th
 `maxDiffPixelRatio` of 0.02 — which is the number a reviewer should read as "the fix is
 surgical".
 
-**How the plan's expectation is read.** The plan asks for *"the re-capture's diff to be
-smaller on the three fixed surfaces and unchanged on the other four"*. Measured against
-the **first** capture, the four surfaces that were **not** fixed are **pixel-identical**
-(a diff ratio of exactly `0`) and the three that **were** fixed carry a **non-zero** diff
-— and that non-zero diff is the **proof the fix landed** (a fix that changed nothing
-would measure zero).
-
 ## 5. The residual weaknesses that remain
 
 These are **recorded, not papered over**:
