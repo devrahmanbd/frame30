@@ -5321,3 +5321,60 @@ The owner named `.e2e/levelb-theme-switch-serve.spec.ts`. Measured before the ed
 **Ordering.** This section is committed first, by explicit path, BEFORE any Batch A edit is made; the code commit follows it, named by an appended appendix in this record's established style.
 
 **Known edges, stated in place of silence.** (1) The default-vs-saved rule compares the CURRENT package's default composition against the served body: a future theme update that ADDS a panel to its default body reads as a merchant-removal for an old draft, and the panel stays absent from the storefront (an explicit cost of choosing this rule — tombstones were rejected because `parseAst` (`src/lib/builder-ast.ts:8224`) strips every unknown key and `parseTemplates` (`:8349`) drops unknown template keys, so a meta bag cannot survive the canonical round trip without touching the parser, i.e. WITHOUT risking the stored-AST compatibility rule). (2) A theme with no registry package (custom seeded content) resolves to an empty default set → `removed` is empty → the wholesale safety net is retained untouched.
+
+## (n.6) Batch A — the corrective hunks, recorded before the edit
+
+*(Append-only, continuing §(n) after its planning section was committed at `0ca11d6e`. Four corrections were forced by measuring the tree before the code edit. Each is named here with its exact target, BEFORE the edit, under the §(n.5) ratification.)*
+
+### (n.6.1) The Gap-5 loader seam: the default read is a SERVER FUNCTION, not a loader `await import`
+
+§(n.3.1) planned `await import("@/lib/themes.server")` inside the account route's **loader**. Measured before the edit: route loaders are client-executed on client-side navigation (the repo's own loaders call `createServerFn` wrappers, e.g. `src/routes/store.$slug.index.tsx:222`, never a `.server` module), and `themes.server` statically imports `observability.server`, which imports `node:async_hooks` (`src/lib/observability.server.ts:19`). A client-executed loader that dynamically imported it would fail at the first client navigation.
+
+The correction keeps the rule pure and puts the read behind the established seam: `src/lib/account-panel-survival.ts` (already a NEW file in §(n.2), so **no fifth file**) gains ONE `createServerFn` — `accountRemovedPanelsFn` — whose handler dynamically imports `./themes.server` exactly as every other server function does. The route's loader calls that wrapper:
+
+```diff
+-    return { chrome };
++    return {
++      chrome,
++      removedPanels: await accountRemovedPanelsFn({
++        data: { themeKey: chrome?.themeKey ?? null, ast: chrome?.ast ?? null },
++      }).catch(() => [] as readonly AccountPanelType[]),
++    };
+```
+
+The AST that is compared is the one `getStoreChrome` already served in the same request; the server function only names the difference, it grants nothing. `src/lib/storefront.functions.ts` stays untouched, as §(n.5) required.
+
+### (n.6.2) The Gap-5 browser leg — the Account journey loses one panel, and the storefront proves it
+
+The audit's gap asks for a LANE assertion, not only the rendered unit proof. The Account journey in `.e2e/songoskriti-seven-templates.spec.ts` gains a removal leg AFTER the shared reload and BEFORE the final publish edit:
+
+1. select the journey's own `"Account navigation"` layer in the navigator;
+2. press the navigator's documented `Delete` key (`LayerTree.tsx:349-354`) and assert the layer is gone from `layerNames(page)`;
+3. save through the toolbar, reload, re-select the template, and assert the removed layer is still gone (server truth), while `"Account overview"`, `"Account orders"` and `"Page content"` are still listed;
+4. then the shared final height edit and the real publish run as they already do.
+
+The storefront half is asserted against the platform's REAL outcome: in the **published** branch the signed-in account page must NOT render the dashboard's `navigation "Account sections"` (the merchant removed it) while `"At a glance"` (the overview panel) is still visible; in the **refused** branch the published seed still renders the navigation (no half-apply), which is the current platform outcome until the content gate is cleared. The signed-out safety net is already asserted by `.e2e/songoskriti-storefront-surfaces.spec.ts:130-150` (`Track Your Order` renders, no dashboard) and stays untouched.
+
+### (n.6.3) The Gap-2 visible property — the Blog journey edits `blog_listing`'s OWN terms heading
+
+§(n.3.4) said "edit a visible property"; measured: editing `blog_archive`'s heading would replace the lane's existing `"From the journal"` assertion in the PUBLISHED branch. The journey therefore selects `[data-template-variant="blog_listing"]` after the base Blog button (keeping every existing base assertion), and edits the **`"Blog topics"`** layer's schema-generated `Heading` control to a per-run marker. `"From the journal"` (the archive pack's heading) is untouched, so the existing base assertion remains true in both branches. The 9b block asserts the marker visible after a successful publish and absent after a refusal.
+
+### (n.6.4) The Gap-6(b) nested leg — Cart only, with markers that survive the save
+
+The Cart journey gains, after the shared inspector step and before the shared Save:
+
+1. select `"Columns"`, click its own `"Add inside"` control, insert `"Container"` through the real tray;
+2. select that container, `"Add inside"`, insert `"Text block"`, set its `Heading` to a per-run NESTED marker through the schema control;
+3. `"Move up"` the nested container inside the columns;
+4. add a SECOND container inside the columns, rename it to a per-run `Nested to delete` name through the navigator's own rename input, then press `Delete`; assert it is gone;
+5. the shared Save + reload then assert the NESTED marker and the first container still exist, the deleted name does not, and the marker value survived.
+
+The storefront half follows the lane's 9b split: published ⇒ the NESTED marker is visible; refused ⇒ it is absent (no half-apply). The existing top-level Spacer steps and their 56 px assertions are untouched.
+
+### (n.6.5) The second stale number, and the boundary of this correction
+
+Gap 8 names `.e2e/songoskriti-seven-templates.spec.ts:30`; `.e2e/songoskriti-dynamic-themes.spec.ts:51` carries the same hard-coded **76 %** finding and is corrected in the same self-correcting wording ("the floor is 90 %; the measured value at the time of the freeze is in the evidence record"). Both are comment-only edits under a §7-prohibited lane; no assertion changes. Gap 7's browser leg remains in `.e2e/songoskriti-dynamic-themes.spec.ts` for the reason already recorded at §(n.4), and its editable surface is corrected here: **Collection** (not Cart) — Somvabona authors no Cart body (`src/lib/themes/somvabona/preview.ts:91`), but both themes author Collection with a `product_rail` ("Product rail") carrying a schema-generated `Heading`, so A→B→A reads the same layer on both sides.
+
+### (n.6.6) Boundary of the correction
+
+The code commit still touches only: the three G1/state files of §(n.3.1)-(n.3.3), the four NEW files of §(n.2) (with the server-function addition above), the two §7 lane files (`.e2e/songoskriti-seven-templates.spec.ts`, `.e2e/songoskriti-dynamic-themes.spec.ts`), and this record. No parser, renderer, seed or published-byte file changes; the stored-AST compatibility rule is untouched. This section is committed before the code commit, by explicit path.
