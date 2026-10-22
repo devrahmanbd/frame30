@@ -4161,3 +4161,31 @@ index 0b20cd31..5d0ea7dc 100644
 
 This appendix is committed **before** any Task 4 code change. The Task 4 code commit that follows is therefore provably later than the correction it implements, which is what the plan's §7.1 ordering requires. The record itself is amended again only by appendices, never by rewriting the sections above.
 
+
+### (h.7) M3 — the compatibility claim, corrected and measured on the THEME path
+
+**The defect (review 1–3, M3).** This record claimed compatibility while conceding, at §(f), that the measurement covered only the platform renderers. The concession was load-bearing: `SONGOSKRITI_PRESENTATION_CLAIMS` grew from **13 to 23** entries, the claims registry is keyed by **theme key × widget type** (`src/lib/theme-presentations.ts:26`, `:146`), and the storefront's theme key is the theme row's **`source_listing_slug`** (`src/lib/themes.server.ts:759`) — the value both install paths write (`src/lib/themes/appearance.server.ts:448`, `src/lib/marketplace-install.server.ts:963`). No version participates in claim resolution. Therefore **every existing `songoskriti`-keyed store renders the ten new commerce/account presentations immediately**, from the same stored AST. The platform-renderer capture could not and did not measure that path.
+
+**The corrected rule.** The compatibility rule (*"a stored AST written before it renders byte-identically after it"*, plan A9) is satisfied on the **platform renderer** path, and it remains byte-identical there. It is **not** satisfied on the **theme presentation** path: for a `songoskriti`-keyed store the same stored AST now renders in the theme's own commerce/account type language. That is a **deliberate visual change**, not a byte-identical one. The correct claim is therefore:
+
+> Stored ASTs remain byte-identical through the platform renderers. On the **songoskriti theme path** the cart, checkout and account surfaces change by design, because presentation claims are keyed by `source_listing_slug`, not by version. The change is measured below and ratified by the programme owner's Task 4 instruction of 2026-10-22. No stored AST is migrated or rewritten.
+
+**The version bump records, it does not gate.** `src/lib/themes/builtin-themes.ts:71` now carries `version: "1.1.0"` (was `"1.0.0"`); the module comment (`:46–54`) states the truth explicitly: the version is the documented source version, existing installs are keyed by `source_listing_slug`, and the bump **records** the change without gating it. `src/lib/themes-official-catalog.test.ts` follows the metadata. The bump does **not** migrate an installed row (`source_version` is written at install time; `installCatalogTheme` returns `alreadyInstalled` for an existing slug), and no code path compares it before resolving a claim. It is provenance, not an opt-in. An opt-in gate was considered and rejected: it would fork every existing install into two renderers indefinitely, and the owner's Task 4 instruction chose the measured-and-ratified route instead.
+
+**The measurement (the theme path this time).** The harness is the same temporary capture used in Tasks 1–3 (created for the measurement, deleted before the commit, never part of the diff). It rendered the three real Songoskriti compositions — `cart`, `checkout`, `account` — through `ThemeChrome`, with `parts` stripped from each stored AST to mimic an AST written **before** Task 2, in two states: **before** = `themeKey={null}` (the platform renderers, i.e. the pre-claim path) and **after** = `themeKey="songoskriti"` (today's claim path). Both captures are the same stored AST, same data, same locale.
+
+| surface | before (platform path) | after (songoskriti path) | tags | text characters |
+| --- | ---: | ---: | ---: | ---: |
+| cart | 1847 bytes | 1492 bytes | 25 → 22 | 116 → 72 |
+| checkout | 33157 bytes | 33120 bytes | 162 → 162 | 306 → 306 |
+| account | 8936 bytes | 9047 bytes | 83 → 86 | 266 → 266 |
+
+**The named differences (not "some markup changed"):**
+
+- **cart** — the platform's empty-state block (title, secondary line, and the “Continue shopping” link to `/store/songoskriti/`) is replaced by the theme's single-line empty state; the order-summary heading loses the platform panel chrome and its body drops one type size. This is the same break M1 named: the old CTA targeted the demo path and is gone; the theme's cart is text-only by design.
+- **checkout** — the theme's payment empty-state body is one type size smaller, and the platform order-summary card chrome is replaced by the theme's heading treatment. No control, label, step or amount is added or removed (162 → 162 tags, 306 → 306 text characters).
+- **account** — three presentational `<section class="space-y-4">` wrappers are added around the theme's own `account_nav`, `account_overview` and `account_orders`; the text is unchanged (266 → 266 characters). No panel is blank: the three account widgets render their rows, which is what M5 and Task 4 require.
+
+**What did not change.** The platform path is byte-identical for all three surfaces (it is the “before” column), and the stored ASTs are untouched — no migration, no rewrite, no id change. The earlier 18-surface capture remains valid for what it measured. What was missing was this second projection, and it is now on the record.
+
+**Owner ratification (M3).** The programme owner's Task 4 fix instruction of **2026-10-22** directs this exact remedy — *bump the version, measure the theme path before/after, correct the record* — and accepts the resulting visual change for existing Songoskriti stores. It is file- and programme-scoped to this task, not a precedent, and it does not relax A9 for any future change: a future theme-path change must again be measured and either gated or ratified before the claim is made.
