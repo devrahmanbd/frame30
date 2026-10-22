@@ -4763,3 +4763,13 @@ No retry logic is added and no assertion is relaxed: the lane still fails if the
 ### (k.6.4) Ordering and boundary
 
 Commits: **(1)** this section; **(2)** the single-file edit to `.e2e/songoskriti-storefront-surfaces.spec.ts`; **(3)** the appendix naming (2). No skip is added, no assertion is weakened or removed, no threshold moves, no test is re-ordered. The churn files and `.output-snapshots/` remain unstaged.
+
+### (k.6.5) Appendix — the code commit this record preceded
+
+*(Append-only, dated 2026-10-22, closing §(k.6).)*
+
+The record commit for §(k.6) is `fb0dad77`. The code commit it named arrived after it:
+
+- `64199757` — `fix(e2e): select the facet heading and seed the checkout total's precondition` — `.e2e/songoskriti-storefront-surfaces.spec.ts` only, +6/-1 (k.6.1 the heading selector, k.6.2 the `ensureCartHasLine(page)` precondition, with its comment). No other edit.
+
+`prettier --check` passed and `tsgo --noEmit` exited 0 before the commit. The churn files and `.output-snapshots/` remain unstaged.
