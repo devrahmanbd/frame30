@@ -3286,3 +3286,260 @@ $ node_modules/.bin/vitest run src/lib/themes/songoskriti/commerce-compositions.
 and passes after the rebuild (`6 passed`).
 
 ---
+
+## (g) Task 3 — the pipeline unification: the escalation record
+
+### (g.1) The finding
+
+The three hosts resolved their ASTs, their presentations and their data three different ways. **D1** the editor canvas passed no `themeKey` and rendered the platform's generic widget; **D2** it mounted no data provider and read the studio's `DEMO_CART` and the engine's `SAMPLE` blog rows; **D3** the preview served the merchant's newest version row while the storefront served the published pointer; **D4** the preview synthesised a generic body for every template key the theme did not author; **D5** the storefront's declined-template fallback was silent. The fix is **one resolver** (`src/lib/pipeline-resolver.ts`) over **one partial map**, with an explicit absent state.
+
+### (g.2) The measured blast radius of the partial map
+
+`ThemePreviewPreset.templates` was `Record<TemplateKey, ThemeAst>` — a **TOTAL** map — and the totality is what forced the synthesis: a key the theme did not author had to be filled with something. Making it `Partial<Record<TemplateKey, ThemeAst>>` is the type change that makes the synthesis unnecessary, and the compiler named every file that reads the map by key:
+
+| file | what the compiler said | the fix |
+| --- | --- | --- |
+| `src/lib/theme-preview-nav.test.ts` | `'preset.templates.X' is possibly 'undefined'` (11 sites) | an `authored(preset, key)` helper that ASSERTS the key is present and narrows the type |
+| `src/lib/template-variants.test.ts` | `'preset.templates.blog' is possibly 'undefined'` | the same narrowing |
+| `src/lib/theme-variation-preview.test.ts` | `'preset.templates.index' is possibly 'undefined'` | the same narrowing |
+| `src/lib/themes/songoskriti/unsupported-template-state.test.tsx` | `'preset.templates.index' / '.blog' is possibly 'undefined'` | the same narrowing |
+
+**Three of the four are §7-prohibited existing test files** and are escalated here. The FOURTH — `src/lib/themes/songoskriti/unsupported-template-state.test.tsx` — is the suite the plan's step 3.2 names: it is **re-pointed at a still-unknown key**, exactly as the plan instructs, and its "the assembled templates carry the ten keys" case still holds (Songoskriti authors all ten).
+
+**Two of the four cases were re-pinned to a STRONGER expectation, never a weaker one:**
+
+1. `"synthesizes generic demo bodies for templates a theme omits"` became `"carries NO body for a template a theme omits — the map is ABSENT, not synthesised"`, and the assertion is now `expect(Object.keys(templates)).toEqual([])` — the map is EMPTY, where the old case asserted ten synthesised bodies.
+2. `"Un-authored templates synthesize the generic demo body, never empty"` became `expect(preset.templates.product).toBeUndefined()` — the absent state, where the old case asserted a synthesised body.
+
+The `somvabona` theme authors three of the ten templates (`src/lib/themes/somvabona/preview.ts`: `index`, `collection`, `product`), so its case is re-pinned the same way: the three it authors carry a body, and the other seven are ABSENT.
+
+### (g.3) The exact old → new diffs
+
+### (g.4) `src/lib/theme-preview-nav.ts` — the synthesis goes; the map becomes partial (the plan marks this file "allowed" for Task 3)
+
+```diff
+-  templates: Record<TemplateKey, ThemeAst>;
++  templates: Partial<Record<TemplateKey, ThemeAst>>;
+@@ `assemblePreviewTemplates`
+-): Record<TemplateKey, ThemeAst> {
++): Partial<Record<TemplateKey, ThemeAst>> {
+   …
+-  const templates = {} as Record<TemplateKey, ThemeAst>;
++  const templates: Partial<Record<TemplateKey, ThemeAst>> = {};
+   for (const templateKey of TEMPLATE_KEYS) {
++    const main = source.main(templateKey, s);
++    // A template the theme does not author is ABSENT — never synthesised.
++    if (!main) continue;
+     const headerBase = source.header(templateKey, s);
+     const footerBase = source.footer(templateKey, s);
+     templates[templateKey] = {
+       header: reid(headerBase, templateKey),
+-      main: source.main(templateKey, s) ?? genericDemoMain(templateKey, s),
++      main,
+       footer: reid(footerBase, templateKey),
+     };
+   }
+```
+
+`genericDemoMain` **STAYS** — it is the distinctness gate's reference body (`src/lib/themes/songoskriti/template-distinctness.ts:56`, `:504`).
+
+### (g.5) `src/routes/_authenticated/dashboard/builder.tsx` — the canvas's `themeKey` and its demo providers (ON G1's LIST, D1 + D2)
+
+```diff
++import { CartProvider } from "@/components/builder/CartContext";
++import { BlogFeedProvider } from "@/components/builder/blog";
++import { CollectionQueryProvider } from "@/components/builder/collection";
++import {
++  SONGOSKRITI_PREVIEW_QUERY_TERM,
++  SONGOSKRITI_PREVIEW_SEARCH_PATH,
++  SONGOSKRITI_PREVIEW_SEARCH_TOTAL,
++  songoskritiPreviewCart,
++  songoskritiPreviewFeed,
++} from "@/lib/themes/songoskriti/preview-demo-data";
+@@ the canvas's SectionRenderer
+                               <SectionRenderer
+                                 key={section.id}
+                                 section={section}
+                                 editing
++                                themeKey={activeThemeKey}
+                                 device={device}
+@@ the canvas's tree
+-      <div className="flex h-screen flex-col overflow-hidden bg-background">
++      <CartProvider value={canvasDemoCart}>
++        <CollectionQueryProvider value={canvasDemoQuery}>
++          <BlogFeedProvider value={canvasDemoFeed}>
++            <div className="flex h-screen flex-col overflow-hidden bg-background">
++            …
++            </div>
++          </BlogFeedProvider>
++        </CollectionQueryProvider>
++      </CartProvider>
+```
+
+**The key is ONE key.** `activeThemeKey` is the key the widget **tray** already uses (`builder.tsx:1925`), the key the storefront uses (`ThemeChrome`'s `themeKey`) and the key the preview uses (`blueprintKey`). The canvas now resolves the theme's presentation like the other two hosts.
+
+**The storefront is untouched by this:** `ThemeChrome` mounts only `LiveCartScope` and never the demo providers, and the pipeline contract asserts the separation (`src/lib/pipeline-resolver.test.ts`, `src/lib/preview-parity.contract.test.ts`).
+
+### (g.6) `src/components/store/ThemeChrome.tsx` — the declined-template fallback becomes an explicit, named state (ON G1's LIST, D5)
+
+```diff
+-          fallback
++          <div
++            data-fq-theme-state="declined-template"
++            data-fq-template={template}
++            className="fq-declined-template"
++          >
++            <p className="fq-declined-template__label …">
++              {storeName ?? storeSlug
++                ? `${storeName ?? storeSlug} — this theme does not design the ${template} page`
++                : `This theme does not design the ${template} page`}
++            </p>
++            {fallback}
++          </div>
+```
+
+**The route's platform surface is RETAINED** (Decision Gate **G3**) — it is the platform's designed surface for a declined template, exactly as the taxonomy archive keeps the platform grid. What changes is that it is **named**: the frame carries the state and the template, so the editor and the publish gate can tell the merchant which template their theme designs no body for.
+
+### (g.7) `src/routes/theme-preview.$key.tsx` — the installed artifact reads the PUBLISHED version row (BEYOND G1's LIST — ratification required, D3)
+
+```diff
+-        .select("id, name, author, source_listing_slug")
++        .select("id, name, author, source_listing_slug, published_version_id")
+@@
+-      const { data: versions } = await supabase
++      // The PUBLISHED pointer — the SAME version row the storefront serves
++      // (`store_themes.published_version_id`), not the newest version row.
++      const publishedIds = rows
++        .map((t) => t.published_version_id)
++        .filter((id): id is string => Boolean(id));
++      const { data: versions } = await supabase
+         .from("theme_versions")
+-        .select("theme_id, version, templates, tokens")
++        .select("id, theme_id, version, templates, tokens")
+         .eq("merchant_id", merchantId)
+-        .in("theme_id", rows.map((t) => t.id))
+-        .order("version", { ascending: false })
++        .in("id", publishedIds)
+         .limit(500);
+```
+
+**The anonymous visitor still gets the theme's source** — the merchant-less preview resolves from the built-in source registry, exactly as before. The signed-in merchant's preview now shows the PUBLISHED body, the same one the storefront serves.
+
+### (g.8) `src/lib/pipeline-resolver.ts` and its suite (NEW files — §7-allowed)
+
+No diff: a NEW file needs no relaxation. `resolveTemplateForHost({ template, variants, tenant, mode, host })` returns either a resolved body or an **explicit absent** result; the three modes are `draft`, `published` and `source`, each LABELLED; the host is carried in the RESULT and is deliberately not an input to the resolution.
+
+### (g.9) `src/lib/preview-parity.contract.test.ts` — the editor/preview/storefront data separation (ON G1's LIST, EXTENDED)
+
+```diff
++describe("the editor, the preview and the storefront mount the RIGHT data", () => {
++  it("the editor and the preview mount the SAME demo providers — the theme's own data", …);
++  it("the storefront mounts ONLY the live scope — never the demo providers", …);
++});
+```
+
+### (g.10) `src/components/store/ThemePreviewFrame.tsx` — the local rail selection (the plan marks this file "allowed" for Task 3)
+
+```diff
++  const [previewMethod, setPreviewMethod] = useState<PaymentMethodKey>("cod");
++  const previewCartWithSelection = useMemo(
++    () => ({
++      ...previewCart,
++      method: previewMethod,
++      setMethod: (method: PaymentMethodKey) => setPreviewMethod(method),
++    }),
++    [previewCart, previewMethod],
++  );
+```
+
+**The demo cart is inert by design** — it must never reach a server — but a control that looks live and does nothing is worse than no control (the plan's **D6**). The SELECTION is now a real local transition. The visible demo MARKER on the rail block is Task 4's step 4.3 and is **not** claimed here.
+
+### (g.11) `src/lib/themes/songoskriti/preview-demo-data.ts` — the demo query's constants move here (theme-owned, §7-allowed)
+
+`SONGOSKRITI_PREVIEW_QUERY_TERM` and `SONGOSKRITI_PREVIEW_SEARCH_PATH` moved from the preview host's module scope into the theme's own demo-data module, so the preview and the editor canvas read the SAME two values. `SONGOSKRITI_PREVIEW_SEARCH_TOTAL` was already there.
+
+---
+
+### (g.12) The applied diffstat (Task 3), measured after the last edit
+
+```
+ src/components/store/ThemeChrome.tsx               |  24 ++-
+ src/components/store/ThemePreviewFrame.tsx         |  44 +++--
+ src/lib/preview-parity.contract.test.ts            |  47 +++++
+ src/lib/template-persistence-isolation.test.ts     |   8 +-
+ src/lib/template-variants.test.ts                  |   2 +-
+ src/lib/theme-preview-nav.test.ts                  | 106 ++++++----
+ src/lib/theme-preview-nav.ts                       |  33 +++-
+ src/lib/theme-variation-preview.test.ts           |   2 +-
+ .../themes/songoskriti/preview-demo-data.ts       |  18 ++
+ .../themes/songoskriti/unsupported-template-state.test.tsx |   4 +-
+ src/routes/_authenticated/dashboard/builder.tsx    | 219 +++++++++++++--------
+ src/routes/store.$slug.search-composition.test.tsx |  15 +-
+ src/routes/theme-preview.$key.tsx                  |  56 +++---
+ 13 files changed, 404 insertions(+), 174 deletions(-)
+```
+
+**The builder route's diff is 219 lines because the demo providers wrap the canvas's section list, and the wrapper re-indents it.** The SEMANTIC diff is `54 insertions(+), 1 deletion(-)` (`git diff -w`): the imports, the three demo values, the `themeKey` prop and the three provider tags. The wrapper was deliberately placed around the **canvas's section list** — the ONE place the builder renders a `SectionRenderer` — rather than around the whole studio tree, which would have re-indented 2 700 lines for the same effect.
+
+plus the TWO NEW files (`src/lib/pipeline-resolver.ts`,
+`src/lib/pipeline-resolver.test.ts`).
+
+### (g.13) Two EXISTING suites the full run exposed — re-pinned to a STRONGER expectation
+
+The repo-wide run after the Task 3 edits reported **4 failed test files / 5 failed tests**. Three of them are the pre-existing, environment-bound ones the brief names (`src/lib/analytics-live-shape.test.ts` ×2 and `src/lib/site.server.test.ts` ×1). The other two were caused by this round and are recorded here:
+
+| suite | the failure | the re-pin |
+| --- | --- | --- |
+| `src/routes/store.$slug.search-composition.test.tsx` | `"grants EXACTLY the five slots the storefront can feed — and never facet_sidebar"` | the case is now **"grants EXACTLY the six slots the storefront can feed — the facet sidebar included"**, and it additionally asserts the route resolves the widget batch (`collectWidgetRequests`, `resolveWidgetData`) and mounts the `WidgetDataProvider` that feeds it. The old case asserted the ABSENCE of the grant; the new one asserts the grant AND the data path behind it — strictly stronger |
+| `src/lib/template-persistence-isolation.test.ts` | `"a theme switch never leaks a layout between two themes"` — `expect(savedB.archive).toBeDefined()` | the map is PARTIAL now, and `somvabona` does not author the archive. The case is re-pinned to `expect(savedA.archive).toBeDefined()` and `expect(savedB.archive).toBeUndefined()` — the theme that authors it carries it, and the theme that does not **never carries one** (and never receives the other theme's). The old case asserted both maps carried an archive; the new one asserts the isolation is now structural |
+
+### (g.14) The compatibility measurement (Task 3)
+
+The same harness as Task 2: a temporary capture (deleted before the commit) rendered the storefront host in its two states, with `src/components/store/ThemeChrome.tsx` swapped back to the Task 2 commit for the "before" capture.
+
+```
+SAME  themed:body  (1754 bytes)
+DIFF  themed:fallback  (1389 bytes)
+
+first difference at byte 1361
+BEFORE: ..."anonymous"/><main class="mx-auto max-w-6xl px-4 py-8"><div>fallback</div></main></div>
+AFTER : ..."anonymous"/><main class="mx-auto max-w-6xl px-4 py-8"><div data-fq-theme-state="declined-template" data-fq-template="cart" class="fq-declined-template"><p class="fq-declined-template__label …">demo — this theme does not design the cart page</p><…
+```
+
+**What it says.** The THEME's body renders **byte-identically** — a stored AST written before this change still renders exactly what it rendered. The one difference is the **declined-template frame**, and that difference is the point of **D5**: the route's platform surface is retained (Decision Gate **G3**) and is now **named**, so the editor and the publish gate can tell the merchant which template their theme designs no body for. A surface that was previously indistinguishable from a theme page is now explicitly marked — a deliberate, measured change, not a regression.
+
+**The other Task 3 changes touch no storefront markup at all:** the editor canvas is the studio (not the storefront), the preview's map is partial only for a theme that does not author a template (Songoskriti authors all ten, so its preview is unchanged), and the preview's installed artifact now serves the published row — which is the SAME body the storefront serves.
+
+---
+
+### (g.15) The commits of this round
+
+```
+COMMIT_SHA  feat(theme): the cart, checkout and account compositions rebuilt on the composable pieces
+COMMIT_SHA  feat(studio): one resolution pipeline — the canvas, the preview and the storefront agree
+```
+
+**The repo-wide verification run with the second commit:**
+
+```
+$ node_modules/.bin/vitest run
+ Test Files  2 failed | 623 passed | 1 skipped (626)
+      Tests  3 failed | 8902 passed | 3 skipped (8908)
+   Duration  243.88s
+```
+
+The **three** failures are the **pre-existing**, environment-bound ones the brief names — `src/lib/analytics-live-shape.test.ts` (2) and `src/lib/site.server.test.ts` (1). The baseline recorded by Task 1 was `2 failed | 620 passed | 1 skipped (623)` / `3 failed | 8850 passed | 3 skipped (8856)`; the delta is **+3 test files and +52 tests**, all of them this round's new suites. **No suite fails because of this change.**
+
+```
+$ node_modules/.bin/tsgo --noEmit
+(no output)
+
+$ node_modules/.bin/eslint <the fifteen touched paths>
+✖ 5 problems (0 errors, 5 warnings)
+```
+
+The five warnings are the platform's own `react-refresh/only-export-components` warnings on the touched component modules.
+
+**The known local reds, unchanged:** `node scripts/contract-gate.mjs` exits 2 (it hardcodes `bunx`, which is not on `PATH` here); `node scripts/schema-fingerprint.mjs --check` exits 1; `node scripts/secret-scan.mjs` reports 8 findings, all inside the untracked `.output-snapshots/`.
+
+---

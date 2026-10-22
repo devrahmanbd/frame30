@@ -429,7 +429,29 @@ export function ThemeChrome({
             ))}
           </div>
         ) : (
-          fallback
+          /*
+            The DECLINED-TEMPLATE state (the plan's **D5**).
+            The route's own platform surface is RETAINED — it is the
+            platform's designed surface for a template the theme does not
+            design (exactly as the taxonomy archive keeps the platform grid)
+            — but it is no longer INDISTINGUISHABLE from a theme page: the
+            frame NAMES the state and the template, so the editor and the
+            publish gate can tell the merchant which template their theme
+            designs no body for, and a shopper is never quietly served an
+            unbranded platform page as if it were the theme's own design.
+          */
+          <div
+            data-fq-theme-state="declined-template"
+            data-fq-template={template}
+            className="fq-declined-template"
+          >
+            <p className="fq-declined-template__label mb-4 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+              {(storeName ?? storeSlug)
+                ? `${storeName ?? storeSlug} — this theme does not design the ${template} page`
+                : `This theme does not design the ${template} page`}
+            </p>
+            {fallback}
+          </div>
         )}
         {/* The ROUTE's trailing action — after the theme's composition, so a
             route-owned control (the checkout's place-order action) can come

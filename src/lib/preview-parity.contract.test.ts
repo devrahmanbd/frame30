@@ -262,6 +262,53 @@ describe("the preview and the storefront grant the SAME slots", () => {
  * key is the VARIANT, not the base.
  * ------------------------------------------------------------------------- */
 
+/* ------------------------------------------------------------------------- *
+ * The EDITOR and the PREVIEW — the same demo data.
+ *
+ * The editor canvas used to mount NO data provider at all: it read the
+ * studio's `DEMO_CART` snapshot ("Sample product"), the blog pack's engine
+ * `SAMPLE` rows and no account rows at all, while the preview read the
+ * theme's own synthetic cart, feed and query. Two hosts, two datasets — the
+ * plan's **D2**.
+ *
+ * The storefront is the ONE host that differs, and it differs BY DESIGN: it
+ * mounts the LIVE scope (`LiveCartScope`), never the demo providers. The
+ * case below pins all three.
+ * ------------------------------------------------------------------------- */
+
+describe("the editor, the preview and the storefront mount the RIGHT data", () => {
+  const BUILDER = read("routes", "_authenticated", "dashboard", "builder.tsx");
+  const CHROME = read("components", "store", "ThemeChrome.tsx");
+
+  it("the editor and the preview mount the SAME demo providers — the theme's own data", () => {
+    for (const provider of [
+      "CartProvider",
+      "CollectionQueryProvider",
+      "BlogFeedProvider",
+    ]) {
+      expect(BUILDER, `the editor canvas must mount ${provider}`).toContain(
+        provider,
+      );
+      expect(PREVIEW, `the preview must mount ${provider}`).toContain(provider);
+    }
+    // The theme's OWN demo values — the same module on both sides, so the
+    // editor and the preview cannot disagree about a product, a price or a
+    // row.
+    for (const source of [BUILDER, PREVIEW]) {
+      expect(source).toContain("songoskritiPreviewCart");
+      expect(source).toContain("songoskritiPreviewFeed");
+    }
+  });
+
+  it("the storefront mounts ONLY the live scope — never the demo providers", () => {
+    expect(CHROME).toContain("LiveCartScope");
+    expect(CHROME).not.toContain("songoskritiPreviewCart");
+    expect(CHROME).not.toContain("songoskritiPreviewFeed");
+    expect(CHROME).not.toContain("BlogFeedProvider");
+    expect(CHROME).not.toContain("CollectionQueryProvider");
+  });
+});
+
 describe("a variant resolves to the SAME body through both seams", () => {
   it("the preview seam and the storefront seam agree on the key and the AST", async () => {
     const { resolvePreviewVariantAst } =

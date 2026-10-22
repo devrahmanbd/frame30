@@ -270,7 +270,7 @@ describe("the listing and the article detail are DIFFERENT compositions", () => 
   });
 
   it("the base blog body is still the listing's pack", () => {
-    const base = preset.templates.blog.main.map((s) => s.type);
+    const base = preset.templates.blog!.main.map((s) => s.type);
     expect(base).toEqual(["blog_terms", "blog_archive", "blog_pager"]);
   });
 

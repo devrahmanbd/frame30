@@ -103,7 +103,7 @@ const themePreviewInstalledFn = createServerFn({ method: "GET" }).handler(
       }
       const { data: themes } = await supabase
         .from("store_themes")
-        .select("id, name, author, source_listing_slug")
+        .select("id, name, author, source_listing_slug, published_version_id")
         .eq("merchant_id", merchantId)
         .not("source_listing_slug", "is", null)
         .limit(100);
@@ -113,34 +113,46 @@ const themePreviewInstalledFn = createServerFn({ method: "GET" }).handler(
           name: string;
           author: string | null;
           source_listing_slug: string | null;
+          published_version_id: string | null;
         }[]
       ).filter((t) => t.source_listing_slug?.trim());
       if (!rows.length) return [];
-      const { data: versions } = await supabase
-        .from("theme_versions")
-        .select("theme_id, version, templates, tokens")
-        .eq("merchant_id", merchantId)
-        .in(
-          "theme_id",
-          rows.map((t) => t.id),
-        )
-        .order("version", { ascending: false })
-        .limit(500);
-      const latest = new Map<string, { templates: Json; tokens: Json }>();
-      for (const v of (versions ?? []) as {
-        theme_id: string;
-        templates: Json;
-        tokens: Json;
-      }[]) {
-        if (!latest.has(v.theme_id))
-          latest.set(v.theme_id, { templates: v.templates, tokens: v.tokens });
+      // The PUBLISHED pointer — the SAME version row the storefront serves
+      // (`store_themes.published_version_id`), not the newest version row.
+      //
+      // Before this, the preview served the merchant's NEWEST draft version
+      // while their storefront served the published one — so a merchant
+      // previewing their own theme saw a composition their shoppers would
+      // never see (the plan's **D3**). The preview and the storefront now
+      // resolve the SAME map.
+      const publishedIds = rows
+        .map((t) => t.published_version_id)
+        .filter((id): id is string => Boolean(id));
+      const published = new Map<string, { templates: Json; tokens: Json }>();
+      if (publishedIds.length) {
+        const { data: versions } = await supabase
+          .from("theme_versions")
+          .select("id, theme_id, version, templates, tokens")
+          .eq("merchant_id", merchantId)
+          .in("id", publishedIds)
+          .limit(500);
+        for (const v of (versions ?? []) as {
+          id: string;
+          templates: Json;
+          tokens: Json;
+        }[]) {
+          published.set(v.id, { templates: v.templates, tokens: v.tokens });
+        }
       }
       return rows.flatMap((t) => {
         const key = t.source_listing_slug!.trim();
         if (!key) return [];
-        const v = latest.get(t.id);
-        // A theme row with no version row yet carries no artifact content:
-        // pass the keyed ref so discovery lists it, resolution falls back.
+        const v = t.published_version_id
+          ? published.get(t.published_version_id)
+          : undefined;
+        // A theme with NO published version carries no artifact content:
+        // pass the keyed ref so discovery lists it, resolution falls back
+        // to the theme's own source.
         return [
           {
             key,

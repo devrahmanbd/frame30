@@ -436,7 +436,16 @@ export type ThemePreviewPreset = {
   themeName: string;
   author: string;
   tokens: ThemeTokens;
-  templates: Record<TemplateKey, ThemeAst>;
+  /**
+   * The theme's AUTHORED bodies — a **PARTIAL** map.
+   *
+   * A template the theme does not author stays ABSENT from it: the preview
+   * host turns an absent key into its explicit "not supported by this theme"
+   * panel. The map used to be TOTAL, and that totality is what forced the
+   * engine to SYNTHESISE a body for every key it knew (the plan's **D4**) —
+   * a silent generic fallback dressed as a theme page.
+   */
+  templates: Partial<Record<TemplateKey, ThemeAst>>;
   /**
    * The theme's authored VARIANT bodies, keyed `blog_listing` / `blog_article`.
    *
@@ -488,14 +497,21 @@ export function genericDemoMain(
 }
 
 /**
- * Assemble every template for a source: one shared id counter, shared
+ * Assemble every template a source AUTHORS: one shared id counter, shared
  * header/footer cloned under template-scoped ids (same convention as
- * withSearch in theme-blueprints), theme-authored mains where present,
- * generic synthesis where absent.
+ * withSearch in theme-blueprints), and the theme-authored main.
+ *
+ * **A template the theme does not author stays ABSENT from the map.** The
+ * engine never synthesises a body for it: the preview host's existing
+ * `unsupported` branch renders the explicit "not supported by this theme"
+ * panel instead (the plan's **D4**). `genericDemoMain` STAYS in this module
+ * — it is the distinctness gate's REFERENCE body
+ * (`src/lib/themes/songoskriti/template-distinctness.ts`), the yardstick the
+ * gate measures a theme's own body against, not a synthesiser.
  */
 export function assemblePreviewTemplates(
   source: PreviewThemeSource,
-): Record<TemplateKey, ThemeAst> {
+): Partial<Record<TemplateKey, ThemeAst>> {
   let n = 0;
   const s: SectionBuilder = (type, props = {}) => {
     const section: Section = {
@@ -507,13 +523,16 @@ export function assemblePreviewTemplates(
   };
   const reid = (sections: Section[], scope: string): Section[] =>
     sections.map((section) => ({ ...section, id: `${section.id}-${scope}` }));
-  const templates = {} as Record<TemplateKey, ThemeAst>;
+  const templates: Partial<Record<TemplateKey, ThemeAst>> = {};
   for (const templateKey of TEMPLATE_KEYS) {
+    const main = source.main(templateKey, s);
+    // A template the theme does not author is ABSENT — never synthesised.
+    if (!main) continue;
     const headerBase = source.header(templateKey, s);
     const footerBase = source.footer(templateKey, s);
     templates[templateKey] = {
       header: reid(headerBase, templateKey),
-      main: source.main(templateKey, s) ?? genericDemoMain(templateKey, s),
+      main,
       footer: reid(footerBase, templateKey),
     };
   }

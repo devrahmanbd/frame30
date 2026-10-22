@@ -47,6 +47,7 @@ import {
   groupFacetRows,
 } from "@/components/builder/collection";
 import { ProductCard } from "@/components/builder/primitives/ProductCard";
+import type { PaymentMethodKey } from "@/lib/payment-rails";
 import {
   collectWidgetRequests,
   type WidgetDataBundle,
@@ -61,6 +62,8 @@ import { facetHref, toggleFacet } from "@/lib/facet-url";
 // ONLY for the Songoskriti blueprint; every other blueprint keeps today's
 // behaviour byte-for-byte. The data is SYNTHETIC and labelled as such.
 import {
+  SONGOSKRITI_PREVIEW_QUERY_TERM,
+  SONGOSKRITI_PREVIEW_SEARCH_PATH,
   SONGOSKRITI_PREVIEW_SEARCH_TOTAL,
   songoskritiPreviewAccountOverview,
   songoskritiPreviewCart,
@@ -117,17 +120,6 @@ import { useSectionChannel } from "@/components/builder/useSectionChannel";
 
 /* Click routing (block checks, href parsing, click/submit interception) lives in
    @/lib/theme-preview-nav — the single source. This frame only imports it. */
-
-/**
- * The preview's demo search term — the one the `CollectionQueryProvider`
- * carries, the one the demo query box pre-fills and the one the demo facet
- * links are built from. One constant, so the demo query and the demo query
- * box cannot disagree.
- */
-const SONGOSKRITI_PREVIEW_QUERY_TERM = "jamdani";
-
-/** The demo query's store path — the base every demo facet link hangs off. */
-const SONGOSKRITI_PREVIEW_SEARCH_PATH = "/store/songoskriti/search";
 
 /**
  * The unsupported-template panel's copy.
@@ -187,8 +179,12 @@ export type ThemePreviewFrameProps = {
   blueprintKey: string;
   /** Theme tokens applied to the preview surface. */
   tokens: ThemeTokens;
-  /** All authored templates keyed by template key. */
-  templates: Record<TemplateKey, ThemeAst>;
+  /**
+   * All authored templates keyed by template key — a **PARTIAL** map: a
+   * template the theme does not author is ABSENT, and the host renders its
+   * explicit "not supported by this theme" panel for it.
+   */
+  templates: Partial<Record<TemplateKey, ThemeAst>>;
   /**
    * The theme's authored VARIANT bodies (`blog_listing`, `blog_article`).
    *
@@ -1127,6 +1123,26 @@ export function ThemePreviewFrame({
   // byte-for-byte.
   const previewCart = useMemo(() => songoskritiPreviewCart(), []);
   const previewFeed = useMemo(() => songoskritiPreviewFeed(), []);
+  /**
+   * The preview's rail SELECTION — LOCAL state, not the cart's inert
+   * no-op.
+   *
+   * The demo cart is inert by design: it must never reach a server. But a
+   * control that looks live and does nothing is worse than no control (the
+   * plan's **D6**), so the SELECTION is a real local transition: choosing a
+   * rail in the preview changes the preview. The demo cart's own
+   * `setMethod` stays the no-op it was built with — the live cart context
+   * is never touched.
+   */
+  const [previewMethod, setPreviewMethod] = useState<PaymentMethodKey>("cod");
+  const previewCartWithSelection = useMemo(
+    () => ({
+      ...previewCart,
+      method: previewMethod,
+      setMethod: (method: PaymentMethodKey) => setPreviewMethod(method),
+    }),
+    [previewCart, previewMethod],
+  );
   const previewQuery = useMemo(
     () => ({
       params: normalizeSearchParams({ q: SONGOSKRITI_PREVIEW_QUERY_TERM }),
@@ -1376,7 +1392,7 @@ export function ThemePreviewFrame({
 
       {isSongoskriti ? (
         <AccountDashboardProvider value={previewAccountState}>
-          <CartProvider value={previewCart}>
+          <CartProvider value={previewCartWithSelection}>
             <CollectionQueryProvider value={previewQuery}>
               <BlogFeedProvider value={previewFeed}>{canvas}</BlogFeedProvider>
             </CollectionQueryProvider>

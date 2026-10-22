@@ -190,9 +190,13 @@ describe("per-template persistence isolation", () => {
     expect(bytes(savedB.index)).toBe(bytes(baselineB.index));
     expect(bytes(savedA.index)).not.toBe(bytes(savedB.index));
     // The archive key is a key like any other: it travels with the theme
-    // that authors it and never appears in the other's map.
+    // that AUTHORS it and never appears in the other's map. The assembled
+    // map is PARTIAL (a template a theme does not author is ABSENT — the
+    // engine no longer synthesises a body for it), so the theme that does
+    // not author the archive never carries one — and never receives the
+    // other theme's.
     expect(savedA.archive).toBeDefined();
-    expect(savedB.archive).toBeDefined();
+    expect(savedB.archive).toBeUndefined();
     expect(bytes(savedA.archive)).not.toBe(bytes(savedB.archive));
   });
 

@@ -149,7 +149,7 @@ const preset = resolveThemePreview("songoskriti")!;
  * derived, never typed twice. It is the marker that tells the homepage
  * composition apart from the unsupported panel.
  */
-const homeGrid = preset.templates.index.main.find(
+const homeGrid = preset.templates.index!.main.find(
   (section) => section.type === "department_grid",
 );
 const HOME_MARKER = String(homeGrid?.props["heading"] ?? "");
@@ -332,7 +332,7 @@ describe("the preview renders a CLOSED variant from the URL", () => {
   it("?template=blog_listing renders the VARIANT's body, not the base's", () => {
     const html = renderRequested({ template: "blog_listing" });
     const variant = preset.variants["blog_listing"]!;
-    const base = preset.templates.blog;
+    const base = preset.templates.blog!;
     // The VARIANT's own sections rendered …
     for (const section of [
       ...variant.header,

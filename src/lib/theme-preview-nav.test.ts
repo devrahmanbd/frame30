@@ -6,6 +6,7 @@ import {
   TEMPLATE_KEYS,
   flattenSections,
   type TemplateKey,
+  type ThemeAst,
 } from "./builder-ast";
 import {
   TEMPLATE_VARIANT_KEYS,
@@ -23,7 +24,22 @@ import {
   resolveDemoFocus,
   resolveThemePreview,
   validateThemePreviewSearch,
+  type ThemePreviewPreset,
 } from "./theme-preview-nav";
+
+/**
+ * The theme's AUTHORED body for one template.
+ *
+ * The assembled map is PARTIAL (a template the theme does not author is
+ * ABSENT — the engine no longer synthesises a body for it), so a suite that
+ * pins an authored body must SAY so. The helper asserts the key is present
+ * and narrows the type.
+ */
+function authored(preset: ThemePreviewPreset, key: TemplateKey): ThemeAst {
+  const ast = preset.templates[key];
+  expect(ast, `the theme must author the ${key} template`).toBeDefined();
+  return ast!;
+}
 
 // O2: static theme sources are build-time-only — this test file is a
 // build-time context, so it wires the factories explicitly (legacy
@@ -78,8 +94,8 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
     // announcement bar). Full order pinned in wiring.test.ts; the header
     // blueprint stays empty (StoreHeader owns search/account/cart chrome),
     // so the preview index header carries no sections.
-    expect(preset!.templates.index.header.length).toEqual(0);
-    expect(preset!.templates.index.main.map((s) => s.type)).toEqual([
+    expect(authored(preset!, "index").header.length).toEqual(0);
+    expect(authored(preset!, "index").main.map((s) => s.type)).toEqual([
       "hero_carousel",
       "department_grid",
       "product_rail",
@@ -102,7 +118,7 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
       "trust_footer",
       "store_locator",
     ]);
-    expect(preset!.templates.index.footer.length).toBeGreaterThan(0);
+    expect(authored(preset!, "index").footer.length).toBeGreaterThan(0);
   });
 
   it("returns null for unknown keys (route renders 404)", () => {
@@ -117,7 +133,7 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
     for (const key of Object.keys(
       preset.templates,
     ) as (keyof typeof preset.templates)[]) {
-      expect(preset.templates[key].main.length, `${key} main`).toBeGreaterThan(
+      expect(authored(preset, key).main.length, `${key} main`).toBeGreaterThan(
         0,
       );
     }
@@ -133,7 +149,7 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
     index: "hero_carousel",
     product: "heading",
     collection: "category_header",
-    account: "profile_card",
+    account: "account_nav",
     page: "breadcrumb",
     blog: "blog_terms",
     cart: "heading",
@@ -158,7 +174,7 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
     // knows — including `archive`, the tenth key, which the old literal
     // list of nine did not.
     for (const key of TEMPLATE_KEYS) {
-      const ast = preset.templates[key];
+      const ast = authored(preset, key);
       expect(ast.header.length, `${key} header`).toBeGreaterThanOrEqual(0);
       expect(ast.main.length, `${key} main`).toBeGreaterThan(0);
       // Distraction-free checkout by design: the checkout template renders
@@ -175,23 +191,25 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
       );
     }
     // Spot-check demo bodies use proven renderers.
-    expect(preset.templates.collection.main.map((s) => s.type)).toContain(
+    expect(authored(preset, "collection").main.map((s) => s.type)).toContain(
       "product_rail",
     );
     // product_media nests under columns > container (2-col product
     // layout), so assert presence with the recursive helper rather than
     // the top-level type list (same precedent as preview.test.ts).
     expect(
-      flattenSections(preset.templates.product.main).map((s) => s.type),
+      flattenSections(authored(preset, "product").main).map((s) => s.type),
     ).toContain("product_media");
-    expect(preset.templates.account.main.map((s) => s.type)).toEqual([
-      "profile_card",
+    expect(authored(preset, "account").main.map((s) => s.type)).toEqual([
+      "account_nav",
+      "account_overview",
+      "account_orders",
       "page_content",
     ]);
     // Section ids stay unique across templates sharing one counter.
-    const ids = (
-      Object.values(preset.templates) as (typeof preset.templates.index)[]
-    ).flatMap((t) => [...t.header, ...t.main, ...t.footer].map((s) => s.id));
+    const ids = (Object.values(preset.templates) as ThemeAst[]).flatMap((t) =>
+      [...t.header, ...t.main, ...t.footer].map((s) => s.id),
+    );
     expect(new Set(ids).size).toBe(ids.length);
   });
 
@@ -234,7 +252,12 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
     ).not.toEqual(preset.variants["blog_listing"]!.main.map((s) => s.type));
   });
 
-  it("synthesizes generic demo bodies for templates a theme omits", async () => {
+  it("carries NO body for a template a theme omits — the map is ABSENT, not synthesised", async () => {
+    // The engine no longer synthesises a generic body for a key the theme
+    // did not author: the key is simply ABSENT from the map, and the
+    // preview host turns an absent key into its explicit "not supported by
+    // this theme" panel. `genericDemoMain` STAYS in the module — it is the
+    // distinctness gate's reference body, not a synthesiser.
     const { assemblePreviewTemplates } = await import("./theme-preview-nav");
     const { DEFAULT_TOKENS } = await import("./builder-ast");
     const stub = {
@@ -247,9 +270,10 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
       main: () => null,
     };
     const templates = assemblePreviewTemplates(stub);
-    for (const key of Object.keys(templates) as (keyof typeof templates)[]) {
-      expect(templates[key].main.length, `${key} main`).toBeGreaterThan(0);
-      expect(templates[key].main[0]!.type).toBe("heading");
+    // The map carries NOTHING — not a synthesised body for the ten keys.
+    expect(Object.keys(templates)).toEqual([]);
+    for (const key of TEMPLATE_KEYS) {
+      expect(templates[key], `${key} must be absent`).toBeUndefined();
     }
   });
 });
@@ -372,10 +396,10 @@ describe("demo focus (slug-aware collection preview)", () => {
     // DemoProductMediaGallery (ThemePreviewFrame.tsx:108), not as an
     // injected product_media prop (no-inject design).
     expect(focus.image).toBe("/ph/songoskriti/prod-panjabi.png");
-    const before = flattenSections(preset.templates.product.main).find(
+    const before = flattenSections(authored(preset, "product").main).find(
       (s) => s.type === "product_media",
     )!;
-    const out = applyDemoFocus(preset.templates.product.main, focus);
+    const out = applyDemoFocus(authored(preset, "product").main, focus);
     const media = flattenSections(out).find((s) => s.type === "product_media")!;
     // Static media stays untouched so the frame gallery owns focused art.
     expect(media.props).toMatchObject({ ...before.props });
@@ -384,7 +408,7 @@ describe("demo focus (slug-aware collection preview)", () => {
 
   it("keeps static product_media for unknown product slugs", () => {
     const preset = resolveThemePreview("songoskriti")!;
-    const before = flattenSections(preset.templates.product.main).find(
+    const before = flattenSections(authored(preset, "product").main).find(
       (s) => s.type === "product_media",
     )!;
     const focus = resolveDemoFocus(
@@ -392,7 +416,7 @@ describe("demo focus (slug-aware collection preview)", () => {
       "product",
       "no-such-product-xyz",
     )!;
-    const out = applyDemoFocus(preset.templates.product.main, focus);
+    const out = applyDemoFocus(authored(preset, "product").main, focus);
     const media = flattenSections(out).find((s) => s.type === "product_media")!;
     expect(media.props).toMatchObject({ ...before.props });
   });
@@ -404,7 +428,7 @@ describe("resolveThemePreview (somvabona)", () => {
     expect(preset).not.toBeNull();
     expect(preset!.key).toBe("somvabona");
     expect(preset!.tokens.brand).toBe("#7C2A1A");
-    expect(preset!.templates.index.main.map((s) => s.type)).toEqual([
+    expect(authored(preset!, "index").main.map((s) => s.type)).toEqual([
       "announcement_bar",
       "hero_carousel",
       "trust_marquee",
@@ -418,26 +442,34 @@ describe("resolveThemePreview (somvabona)", () => {
       "craft_story",
       "testimonials",
     ]);
-    expect(preset!.templates.index.header.map((s) => s.type)).toEqual([
+    expect(authored(preset!, "index").header.map((s) => s.type)).toEqual([
       "mega_menu",
     ]);
-    expect(preset!.templates.index.footer.length).toBeGreaterThan(0);
+    expect(authored(preset!, "index").footer.length).toBeGreaterThan(0);
   });
 
-  it("authors demo content for every somvabona template", () => {
+  it("authors demo content for the templates somvabona authors — and ABSENT for the rest", () => {
     const preset = resolveThemePreview("somvabona")!;
-    // `TEMPLATE_KEYS`-driven: the sweep covers EVERY template the platform
-    // knows — including `archive`, the tenth key, which the old literal
-    // list of nine did not.
-    for (const key of TEMPLATE_KEYS) {
-      const ast = preset.templates[key];
+    // The map is PARTIAL: a template the theme does not author is ABSENT —
+    // the engine no longer synthesises a generic body for it (the plan's
+    // **D4**), and the preview host renders its explicit "not supported by
+    // this theme" panel for an absent key.
+    for (const key of ["index", "collection", "product"] as const) {
+      const ast = authored(preset, key);
       expect(ast.header.length, `${key} header`).toBeGreaterThan(0);
       expect(ast.main.length, `${key} main`).toBeGreaterThan(0);
       expect(ast.footer.length, `${key} footer`).toBeGreaterThan(0);
     }
-    const ids = (
-      Object.values(preset.templates) as (typeof preset.templates.index)[]
-    ).flatMap((t) => [...t.header, ...t.main, ...t.footer].map((s) => s.id));
+    // … and the templates somvabona does NOT author are absent — never a
+    // synthesised body.
+    for (const key of TEMPLATE_KEYS) {
+      if (key === "index" || key === "collection" || key === "product")
+        continue;
+      expect(preset.templates[key], `${key} must be absent`).toBeUndefined();
+    }
+    const ids = (Object.values(preset.templates) as ThemeAst[]).flatMap((t) =>
+      [...t.header, ...t.main, ...t.footer].map((s) => s.id),
+    );
     expect(new Set(ids).size).toBe(ids.length);
   });
 });
@@ -541,10 +573,10 @@ describe("resolveThemePreview installed packages (SWITCHOVER-4)", () => {
     expect(preset.key).toBe("acme-pack");
     expect(preset.themeName).toBe("Acme Pack");
     expect(preset.tokens.surface).toBe("#112233");
-    expect(preset.templates.index.main[0]!.props["text"]).toBe("Acme home");
-    // Un-authored templates synthesize the generic demo body, never empty.
-    expect(preset.templates.product.main.length).toBeGreaterThan(0);
-    expect(preset.templates.product.main[0]!.type).toBe("heading");
+    expect(authored(preset, "index").main[0]!.props["text"]).toBe("Acme home");
+    // A template the artifact does not author is ABSENT — never a
+    // synthesised generic body (the plan's D4).
+    expect(preset.templates.product).toBeUndefined();
   });
 
   it("uninstalled keys fail closed to null (never silent wrong theme)", () => {

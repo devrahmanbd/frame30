@@ -73,7 +73,7 @@ describe("resolveThemePreview with variation", () => {
   it("omitted variation keeps today's base behavior byte-identical", () => {
     const preset = resolveThemePreview("songoskriti")!;
     expect(preset.variation).toBeNull();
-    expect(preset.templates.index.main.length).toBeGreaterThan(0);
+    expect(preset.templates.index!.main.length).toBeGreaterThan(0);
     const somvabona = resolveThemePreview("somvabona")!;
     expect(somvabona.variation).toBeNull();
     expect(somvabona.tokens).toEqual(SOMVABONA_TOKENS);

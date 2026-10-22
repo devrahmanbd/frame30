@@ -67,7 +67,7 @@ describe("storefront search route — the theme composes the platform's pieces",
     expect(value).toContain("navigate: (next) => apply(next)");
   });
 
-  it("grants EXACTLY the five slots the storefront can feed — and never facet_sidebar", () => {
+  it("grants EXACTLY the six slots the storefront can feed — the facet sidebar included", () => {
     const slots = block("contextSlots={{");
     const granted = [...slots.matchAll(/([a-z_]+):\s*null/g)].map((m) => m[1]);
     expect(new Set(granted)).toEqual(
@@ -77,11 +77,18 @@ describe("storefront search route — the theme composes the platform's pieces",
         "pagination",
         "empty_state",
         "category_header",
+        "facet_sidebar",
       ]),
     );
-    // `facet_sidebar` reads the widget-data pipeline (source: "facets") and no
-    // storefront route mounts a WidgetDataProvider — it stays preview-only.
-    expect(slots).not.toContain("facet_sidebar");
+    // Decision Gate **G2 (a)**: the storefront GRANTS the facet sidebar —
+    // its rows come from the widget-data pipeline, and the route now
+    // resolves that batch on the server and mounts the
+    // `WidgetDataProvider` that feeds it. The preview and the storefront
+    // therefore show the SAME filters (the preview-parity contract asserts
+    // the two grant sets are EQUAL).
+    expect(SRC).toContain("WidgetDataProvider");
+    expect(SRC).toContain("collectWidgetRequests");
+    expect(SRC).toContain("resolveWidgetData");
     // The empty state is granted ONLY when the platform's own empty state
     // would have shown (the widget renders its panel unconditionally).
     expect(slots).toContain("result.items.length === 0");

@@ -15,6 +15,17 @@ import { toast } from "sonner";
 import { useLang, LanguageProvider } from "@/lib/i18n";
 import { SectionRenderer } from "@/components/builder/SectionRenderer";
 import type { DevThemeBinding } from "@/components/builder/SectionRenderer";
+import { CartProvider } from "@/components/builder/CartContext";
+import { BlogFeedProvider } from "@/components/builder/blog";
+import { CollectionQueryProvider } from "@/components/builder/collection";
+import { normalizeSearchParams } from "@/lib/storefront-search";
+import {
+  SONGOSKRITI_PREVIEW_QUERY_TERM,
+  SONGOSKRITI_PREVIEW_SEARCH_PATH,
+  SONGOSKRITI_PREVIEW_SEARCH_TOTAL,
+  songoskritiPreviewCart,
+  songoskritiPreviewFeed,
+} from "@/lib/themes/songoskriti/preview-demo-data";
 import {
   TRAY_MIME,
   decodeTrayDrop,
@@ -368,6 +379,35 @@ function BuilderStudio() {
    * the adapt, so discovery and registration can never disagree.
    */
   const activeThemeKey = workspace.data?.theme?.sourceKey ?? null;
+  /**
+   * The canvas's DEMO data — the theme's own, the same the preview mounts
+   * (the plan's **D2**).
+   *
+   * Before this, the canvas mounted NO data provider at all: the cart
+   * widgets read the studio's `DEMO_CART` snapshot ("Sample product",
+   * "Second product"), the blog pack read the engine's own `SAMPLE` rows,
+   * and the account panels had nothing to read — so the editor showed
+   * something the merchant's storefront would never show. The preview
+   * mounted the theme's synthetic cart, feed and query; the storefront
+   * mounts the live ones. Now the editor mounts the SAME demo providers the
+   * preview mounts, and only the storefront differs — by design, and
+   * labelled.
+   *
+   * The storefront NEVER mounts these: the theme host mounts only the live
+   * cart scope, and the pipeline contract asserts the separation
+   * (`src/lib/pipeline-resolver.test.ts`).
+   */
+  const canvasDemoCart = useMemo(() => songoskritiPreviewCart(), []);
+  const canvasDemoFeed = useMemo(() => songoskritiPreviewFeed(), []);
+  const canvasDemoQuery = useMemo(
+    () => ({
+      params: normalizeSearchParams({ q: SONGOSKRITI_PREVIEW_QUERY_TERM }),
+      total: SONGOSKRITI_PREVIEW_SEARCH_TOTAL,
+      basePath: SONGOSKRITI_PREVIEW_SEARCH_PATH,
+      navigate: undefined,
+    }),
+    [],
+  );
   const activeDevThemeDefs = useMemo(
     () =>
       activeDevThemeWidgetDefs({
@@ -2491,90 +2531,103 @@ function BuilderStudio() {
                         color: doc?.tokens.ink,
                       }}
                     >
-                      {canvas.sections.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center py-20 px-4 text-center border-2 border-dashed border-border/70 rounded-fq-lg my-6 bg-muted/20">
-                          <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary mb-3">
-                            <svg
-                              className="size-6"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                            >
-                              <rect width="18" height="18" x="3" y="3" rx="2" />
-                              <path d="M12 8v8" />
-                              <path d="M8 12h8" />
-                            </svg>
-                          </div>
-                          <h4 className="text-sm font-bold text-foreground">
-                            {t("This slot is empty", "এই স্লট খালি")}
-                          </h4>
-                          <p className="mt-1 text-xs text-muted-foreground max-w-sm">
-                            {t(
-                              "Compose your storefront by adding headers, heroes, product rails, or banners from the left panel.",
-                              "বাম পাশের প্যানেল থেকে হেডার, হিরো ব্যানার বা প্রোডাক্ট গ্রিড যোগ করে স্টোরফ্রন্ট সাজান।",
+                      <CartProvider value={canvasDemoCart}>
+                        <CollectionQueryProvider value={canvasDemoQuery}>
+                          <BlogFeedProvider value={canvasDemoFeed}>
+                            {canvas.sections.length === 0 ? (
+                              <div className="flex flex-col items-center justify-center py-20 px-4 text-center border-2 border-dashed border-border/70 rounded-fq-lg my-6 bg-muted/20">
+                                <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary mb-3">
+                                  <svg
+                                    className="size-6"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                  >
+                                    <rect
+                                      width="18"
+                                      height="18"
+                                      x="3"
+                                      y="3"
+                                      rx="2"
+                                    />
+                                    <path d="M12 8v8" />
+                                    <path d="M8 12h8" />
+                                  </svg>
+                                </div>
+                                <h4 className="text-sm font-bold text-foreground">
+                                  {t("This slot is empty", "এই স্লট খালি")}
+                                </h4>
+                                <p className="mt-1 text-xs text-muted-foreground max-w-sm">
+                                  {t(
+                                    "Compose your storefront by adding headers, heroes, product rails, or banners from the left panel.",
+                                    "বাম পাশের প্যানেল থেকে হেডার, হিরো ব্যানার বা প্রোডাক্ট গ্রিড যোগ করে স্টোরফ্রন্ট সাজান।",
+                                  )}
+                                </p>
+                                <button
+                                  type="button"
+                                  onClick={() => setLeftTab("add")}
+                                  className="mt-4 inline-flex items-center gap-1.5 rounded-fq-md bg-primary px-3.5 py-1.5 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90 cursor-pointer"
+                                >
+                                  + {t("Add Section", "সেকশন যোগ করুন")}
+                                </button>
+                              </div>
+                            ) : (
+                              <div data-drop-root className="contents">
+                                {canvas.sections.map((section, i) => (
+                                  <Fragment key={section.id}>
+                                    {dropGap === i && (
+                                      <div
+                                        aria-hidden="true"
+                                        className="h-1 rounded-full bg-primary"
+                                      />
+                                    )}
+                                    <SectionRenderer
+                                      key={section.id}
+                                      section={section}
+                                      editing
+                                      themeKey={activeThemeKey}
+                                      device={device}
+                                      locale={frameLang}
+                                      template={selectedBase}
+                                      selectedIds={selectedIds}
+                                      registry={builderRegistry}
+                                      devThemeBinding={devThemeBinding}
+                                      onInlineEdit={(nodeId, key, value) => {
+                                        // Grafted global-block content is a projection: editing
+                                        // it here would be silently discarded on next resolve.
+                                        if (isGraftedId(nodeId)) {
+                                          toast.error(
+                                            t(
+                                              "Open the global block to edit its content",
+                                              "কনটেন্ট বদলাতে গ্লোবাল ব্লকটি খুলুন",
+                                            ),
+                                          );
+                                          return;
+                                        }
+                                        editor.setPropAt(
+                                          template,
+                                          slot,
+                                          nodeId,
+                                          key,
+                                          value,
+                                          device,
+                                        );
+                                      }}
+                                    />
+                                  </Fragment>
+                                ))}
+                                {dropGap === canvas.sections.length && (
+                                  <div
+                                    aria-hidden="true"
+                                    className="h-1 rounded-full bg-primary"
+                                  />
+                                )}
+                              </div>
                             )}
-                          </p>
-                          <button
-                            type="button"
-                            onClick={() => setLeftTab("add")}
-                            className="mt-4 inline-flex items-center gap-1.5 rounded-fq-md bg-primary px-3.5 py-1.5 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90 cursor-pointer"
-                          >
-                            + {t("Add Section", "সেকশন যোগ করুন")}
-                          </button>
-                        </div>
-                      ) : (
-                        <div data-drop-root className="contents">
-                          {canvas.sections.map((section, i) => (
-                            <Fragment key={section.id}>
-                              {dropGap === i && (
-                                <div
-                                  aria-hidden="true"
-                                  className="h-1 rounded-full bg-primary"
-                                />
-                              )}
-                              <SectionRenderer
-                                key={section.id}
-                                section={section}
-                                editing
-                                device={device}
-                                locale={frameLang}
-                                template={selectedBase}
-                                selectedIds={selectedIds}
-                                registry={builderRegistry}
-                                devThemeBinding={devThemeBinding}
-                                onInlineEdit={(nodeId, key, value) => {
-                                  // Grafted global-block content is a projection: editing
-                                  // it here would be silently discarded on next resolve.
-                                  if (isGraftedId(nodeId)) {
-                                    toast.error(
-                                      t(
-                                        "Open the global block to edit its content",
-                                        "কনটেন্ট বদলাতে গ্লোবাল ব্লকটি খুলুন",
-                                      ),
-                                    );
-                                    return;
-                                  }
-                                  editor.setPropAt(
-                                    template,
-                                    slot,
-                                    nodeId,
-                                    key,
-                                    value,
-                                    device,
-                                  );
-                                }}
-                              />
-                            </Fragment>
-                          ))}
-                          {dropGap === canvas.sections.length && (
-                            <div
-                              aria-hidden="true"
-                              className="h-1 rounded-full bg-primary"
-                            />
-                          )}
-                        </div>
-                      )}
+                          </BlogFeedProvider>
+                        </CollectionQueryProvider>
+                      </CartProvider>
                     </div>
                   </div>
                 </div>

@@ -400,6 +400,24 @@ export function songoskritiPreviewProfile(): WidgetRow {
  */
 export const SONGOSKRITI_PREVIEW_SEARCH_TOTAL = 38;
 
+/**
+ * The preview's **demo** search term — the one the `CollectionQueryProvider`
+ * carries, the one the demo query box pre-fills and the one the demo facet
+ * links are built from.
+ *
+ * ONE constant, so the demo query and the demo query box cannot disagree —
+ * and so the EDITOR's canvas (which mounts the same demo providers as the
+ * preview) carries the same query.
+ */
+export const SONGOSKRITI_PREVIEW_QUERY_TERM = "jamdani";
+
+/**
+ * The demo query's store path — the base every demo facet link hangs off.
+ *
+ * ONE constant, shared by the preview and the editor canvas.
+ */
+export const SONGOSKRITI_PREVIEW_SEARCH_PATH = "/store/songoskriti/search";
+
 /* --------------------------------------------------------------------- blog */
 
 /**
