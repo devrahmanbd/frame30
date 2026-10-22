@@ -57,6 +57,7 @@ import { resolveThemePreview } from "./theme-preview-nav";
 import {
   isKnownTemplateKey,
   isTemplateVariantKey,
+  strayVariantKeys,
   variantSuffixesFor,
 } from "./template-variants";
 import { builtinThemeKeys, isOfficialThemeKey } from "./themes/builtin-themes";
@@ -1784,15 +1785,35 @@ export async function resetTemplateToDefault(
   await rateLimit("builder.update", merchantId);
   return withSpan("builder.reset_template", async () => {
     const key = input.template;
-    // Only a known template key, or a variant inside the CLOSED vocabulary,
-    // can be reset — an unknown key would silently create a new one.
-    if (!isKnownTemplateKey(key)) {
+    // The workspace is the merchant's ACTIVE theme (`loadWorkspace` resolves
+    // it). The reset must write to the theme it READ — a `themeId` for a
+    // second of the merchant's themes would otherwise receive the active
+    // theme's templates.
+    const workspace = await loadWorkspace(db, merchantId);
+    if (input.themeId !== workspace.theme.id) {
+      incr("framique_builder_reset_total", { result: "rejected" });
+      throw new BuilderError(
+        "builder.reset_unknown_theme",
+        `Theme "${input.themeId}" is not the theme this workspace holds`,
+      );
+    }
+    // A STRAY variant key — one shaped `<known base>_<suffix>` whose suffix
+    // is not in the closed vocabulary — has no theme default to restore, so
+    // "reset this template" on it means "drop it". That is the merchant's
+    // exit from the `builder.unknown_variant` refusal: the key nothing
+    // routes to can be removed here. The legacy `page_<slug>` shape is
+    // exempt (a legal persisted key of a third-party package) and is never
+    // a stray.
+    const stray = strayVariantKeys(workspace.templates).includes(key);
+    // Only a known template key, a variant inside the CLOSED vocabulary, or
+    // a stray variant can be reset — any other key would silently create a
+    // new one.
+    if (!isKnownTemplateKey(key) && !stray) {
       throw new BuilderError(
         "builder.reset_unknown_template",
         `Unknown template "${key}"`,
       );
     }
-    const workspace = await loadWorkspace(db, merchantId);
     const sourceKey = workspace.theme.sourceKey;
     // The theme's own default for ONE key. The preset carries the base
     // templates AND the VARIANT bodies in TWO maps (`preview.templates` /
@@ -1805,9 +1826,14 @@ export async function resetTemplateToDefault(
       ...((preset?.variants ?? {}) as Record<string, ThemeAst | undefined>),
     };
     const ast = bag[key] ?? EMPTY_AST;
-    // Exactly ONE key is replaced. Every other template — and every other
-    // variant — rides the map untouched.
-    const templates: TemplateMap = { ...workspace.templates, [key]: ast };
+    // Exactly ONE key is replaced — or, for a stray variant, REMOVED. Every
+    // other template — and every other variant — rides the map untouched.
+    const templates: TemplateMap = { ...workspace.templates };
+    if (stray) {
+      delete (templates as Record<string, ThemeAst | undefined>)[key];
+    } else {
+      templates[key] = ast;
+    }
     const blocking = lintTemplateMap(templates);
     if (blocking.length) {
       incr("framique_builder_reset_total", { result: "rejected" });
@@ -1820,8 +1846,10 @@ export async function resetTemplateToDefault(
       themeId: input.themeId,
       templates,
       tokens: workspace.tokens,
-      note: `Reset ${key} to the theme default`,
-      label: `Reset ${key}`,
+      note: stray
+        ? `Remove the stray template ${key}`
+        : `Reset ${key} to the theme default`,
+      label: stray ? `Remove ${key}` : `Reset ${key}`,
     });
     // The draft follows the reset, with a HIGHER revision than the one it
     // carried — the autosave RPC is last-writer-wins on a monotonic

@@ -215,6 +215,67 @@ describe("the reset replaces exactly ONE key", () => {
     expect(db.rpcCalls("theme_autosave")).toHaveLength(0);
     expect(db.rpcCalls("theme_publish")).toHaveLength(0);
   });
+
+  it("refuses a theme that is not the one the workspace holds — and writes nothing", async () => {
+    // The workspace is the merchant's ACTIVE theme. A `themeId` for a
+    // SECOND of the merchant's themes would otherwise receive the active
+    // theme's templates.
+    const mine = merchantMap();
+    const db = resetDb(mine);
+    await expect(
+      resetTemplateToDefault(db.asClient(), MERCHANT, {
+        themeId: "55555555-5555-4555-8555-555555555555",
+        template: "index",
+      }),
+    ).rejects.toThrow(/is not the theme this workspace holds/);
+    // Nothing was written: no version, no autosave, no publish.
+    expect(db.rpcCalls("theme_commit")).toHaveLength(0);
+    expect(db.rpcCalls("theme_autosave")).toHaveLength(0);
+    expect(db.rpcCalls("theme_publish")).toHaveLength(0);
+  });
+});
+
+describe("a STRAY variant key can be removed", () => {
+  it("drops the key from the committed map, so the publish gate stops refusing it", async () => {
+    // A key shaped `<known base>_<suffix>` whose suffix is NOT in the closed
+    // vocabulary is a template nothing routes to. The publish gate refuses it
+    // (`builder.unknown_variant`); the reset is the merchant's exit.
+    const mine = merchantMap();
+    mine["blog_anything"] = body("heading", "blog_anything-mine");
+    const db = resetDb(mine);
+    const out = await resetTemplateToDefault(db.asClient(), MERCHANT, {
+      themeId: THEME,
+      template: "blog_anything",
+    });
+    const saved = committedTemplates(db);
+    // The key is GONE …
+    expect(Object.keys(saved)).not.toContain("blog_anything");
+    // … every other key is untouched …
+    for (const key of [...TEMPLATE_KEYS, ...TEMPLATE_VARIANT_KEYS]) {
+      expect(
+        saved[key],
+        `${key} must ride the removal untouched`,
+      ).toBeDefined();
+    }
+    // … and the map that rides back no longer carries it either.
+    expect(Object.keys(out.templates)).not.toContain("blog_anything");
+  });
+
+  it("still refuses the legacy `page_<slug>` shape — it is exempt, not stray", async () => {
+    const mine = merchantMap();
+    mine["page_about_us"] = body("heading", "page_about_us-mine");
+    const db = resetDb(mine);
+    // `page_about_us` is a legal persisted key of a third-party package: it
+    // is neither a known key nor a stray one, so the reset refuses it rather
+    // than silently deleting a package's own layout.
+    await expect(
+      resetTemplateToDefault(db.asClient(), MERCHANT, {
+        themeId: THEME,
+        template: "page_about_us",
+      }),
+    ).rejects.toThrow(/Unknown template/);
+    expect(db.rpcCalls("theme_commit")).toHaveLength(0);
+  });
 });
 
 describe("a VARIANT reset restores the theme's AUTHORED variant body", () => {

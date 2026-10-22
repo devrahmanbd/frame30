@@ -130,6 +130,7 @@ import {
   TEMPLATE_VARIANT_LABEL,
   baseTemplateKey,
   isTemplateVariantKey,
+  strayVariantKeys,
   templateAstOf,
   variantKeysFor,
   type EditorTemplateKey,
@@ -453,6 +454,10 @@ function BuilderStudio() {
   // blank the homepage composition.
   const [resetArmed, setResetArmed] = useState(false);
   const [templateChosen, setTemplateChosen] = useState(false);
+  // The merchant's own STRAY variant keys — the ones the publish gate
+  // refuses (`builder.unknown_variant`). Selecting one turns the reset
+  // affordance into a REMOVE, which is the merchant's exit from the trap.
+  const [strayKey, setStrayKey] = useState<string | null>(null);
   const [slot, setSlot] = useState<Slot>("main");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [previewWidth, setPreviewWidth] = useState<number>(1440);
@@ -602,6 +607,11 @@ function BuilderStudio() {
 
   const doc = editor.doc;
   const ast = doc ? templateAstOf(doc.templates, template) : EMPTY_AST;
+  // The merchant's own STRAY variant keys — the templates nothing routes to.
+  const strayKeys = useMemo(
+    () => (doc ? strayVariantKeys(doc.templates) : []),
+    [doc],
+  );
   // The base and the variant of the selected identity. The switcher keeps
   // the BASE as the default selection and shows the variant beside it.
   const selectedBase = baseTemplateKey(template) ?? "index";
@@ -1286,7 +1296,10 @@ function BuilderStudio() {
   const resetTemplate = useMutation({
     mutationFn: async () => {
       if (!themeId || !doc) throw new Error("Workspace not ready");
-      return resetTemplateFn({ data: { themeId, template } });
+      // A stray key has no default to restore — the same call REMOVES it.
+      return resetTemplateFn({
+        data: { themeId, template: strayKey ?? template },
+      });
     },
     onSuccess: async (result) => {
       if (doc) {
@@ -1301,11 +1314,18 @@ function BuilderStudio() {
         });
       }
       setResetArmed(false);
+      const removed = Boolean(strayKey);
+      setStrayKey(null);
       toast.success(
-        t(
-          "Template reset to the theme default",
-          "টেমপ্লেটটি থিমের ডিফল্টে ফেরানো হয়েছে",
-        ),
+        removed
+          ? t(
+              "The unrecognised template was removed",
+              "অজানা টেমপ্লেটটি সরিয়ে দেওয়া হয়েছে",
+            )
+          : t(
+              "Template reset to the theme default",
+              "টেমপ্লেটটি থিমের ডিফল্টে ফেরানো হয়েছে",
+            ),
       );
       await refresh();
     },
@@ -1520,6 +1540,7 @@ function BuilderStudio() {
               aria-current={template === key ? "page" : undefined}
               onClick={() => {
                 setTemplate(key);
+                setStrayKey(null);
                 setTemplateChosen(true);
                 setResetArmed(false);
               }}
@@ -1552,6 +1573,7 @@ function BuilderStudio() {
                   aria-current={template === variant ? "page" : undefined}
                   onClick={() => {
                     setTemplate(variant);
+                    setStrayKey(null);
                     setTemplateChosen(true);
                     setResetArmed(false);
                   }}
@@ -1569,6 +1591,44 @@ function BuilderStudio() {
               ))}
             </>
           ) : null}
+          {/* The THIRD level — the merchant's own STRAY variant keys. A key
+              shaped `<known base>_<suffix>` whose suffix is not in the closed
+              vocabulary is a template nothing routes to; the publish gate
+              refuses it (`builder.unknown_variant`). It is listed here so the
+              merchant has an EXIT: selecting one turns the reset button into
+              a REMOVE, which drops the key from the map. The legacy
+              `page_<slug>` shape is exempt and is never listed. */}
+          {strayKeys.length ? (
+            <>
+              <span
+                aria-hidden
+                className="mx-1 h-4 w-px shrink-0 bg-border/80"
+              />
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider shrink-0">
+                {t("Unrecognised:", "অজানা:")}
+              </span>
+              {strayKeys.map((stray) => (
+                <button
+                  key={stray}
+                  type="button"
+                  data-stray-template={stray}
+                  aria-current={strayKey === stray ? "page" : undefined}
+                  onClick={() => {
+                    setStrayKey(stray);
+                    setTemplateChosen(true);
+                    setResetArmed(false);
+                  }}
+                  className={`rounded-fq-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer shrink-0 ${
+                    strayKey === stray
+                      ? "bg-danger-soft text-danger-foreground font-semibold shadow-xs"
+                      : "text-danger-foreground/80 hover:text-danger-foreground hover:bg-danger-soft"
+                  }`}
+                >
+                  {stray}
+                </button>
+              ))}
+            </>
+          ) : null}
           {/* The RESET affordance (Batch C): restore THIS template to the
               theme's own default. It writes a new version; it never
               overwrites the whole map.
@@ -1577,7 +1637,10 @@ function BuilderStudio() {
               for the confirmation, the second one performs the reset. And it
               stays disabled until a template is EXPLICITLY chosen — the
               initial selection is the homepage, and a stray first click
-              would blank the homepage composition. */}
+              would blank the homepage composition.
+
+              On a STRAY key the same affordance REMOVES it: a key nothing
+              routes to has no default to restore. */}
           <button
             type="button"
             data-reset-armed={resetArmed ? "true" : "false"}
@@ -1590,23 +1653,37 @@ function BuilderStudio() {
               resetTemplate.mutate();
             }}
             disabled={
-              resetTemplate.isPending || !themeId || !doc || !templateChosen
+              resetTemplate.isPending ||
+              !themeId ||
+              !doc ||
+              (!templateChosen && !strayKey)
             }
             title={
-              templateChosen
+              strayKey
                 ? t(
-                    "Reset this template to the theme's default",
-                    "এই টেমপ্লেটটি থিমের ডিফল্টে ফিরিয়ে দিন",
+                    "Remove this unrecognised template",
+                    "এই অজানা টেমপ্লেটটি সরিয়ে দিন",
                   )
-                : t("Choose a template first", "আগে একটি টেমপ্লেট বেছে নিন")
+                : templateChosen
+                  ? t(
+                      "Reset this template to the theme's default",
+                      "এই টেমপ্লেটটি থিমের ডিফল্টে ফিরিয়ে দিন",
+                    )
+                  : t("Choose a template first", "আগে একটি টেমপ্লেট বেছে নিন")
             }
             className="ml-auto shrink-0 rounded-fq-md border border-border/70 px-2.5 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-50 cursor-pointer"
           >
             {resetTemplate.isPending
-              ? t("Resetting…", "ফেরানো হচ্ছে…")
+              ? strayKey
+                ? t("Removing…", "সরানো হচ্ছে…")
+                : t("Resetting…", "ফেরানো হচ্ছে…")
               : resetArmed
-                ? t("Confirm reset", "রিসেট নিশ্চিত করুন")
-                : t("Reset to default", "ডিফল্টে ফেরান")}
+                ? strayKey
+                  ? t("Confirm removal", "সরানো নিশ্চিত করুন")
+                  : t("Confirm reset", "রিসেট নিশ্চিত করুন")
+                : strayKey
+                  ? t("Remove", "সরান")
+                  : t("Reset to default", "ডিফল্টে ফেরান")}
           </button>
         </nav>
 

@@ -31,6 +31,7 @@
 import {
   EMPTY_AST,
   isTemplateKey,
+  isVariantTemplateKey,
   resolveTemplate,
   type TemplateKey,
   type TemplateMap,
@@ -266,6 +267,40 @@ export function isKnownTemplateKey(value: unknown): boolean {
   if (typeof value !== "string") return false;
   if (isTemplateKey(value)) return true;
   return isTemplateVariantKey(value);
+}
+
+/**
+ * The STRAY variant keys a merchant's own map carries.
+ *
+ * A key shaped `<known base>_<suffix>` whose suffix is **not** in the closed
+ * table is a typo or a leftover — a template nothing routes to. The publish
+ * gate refuses it (`builder.unknown_variant`,
+ * `src/lib/themes.server.ts`), so the merchant needs a way to get rid of it:
+ * this list is what the editor's reset/cleanup affordance offers.
+ *
+ * The legacy theme-package per-page shape (`page_<slug>`) is **exempt**: it is
+ * a legal persisted key of a third-party package, it is never refused, and it
+ * is therefore never listed here either.
+ */
+export function strayVariantKeys(
+  templates: Record<string, unknown> | null | undefined,
+): string[] {
+  if (!templates) return [];
+  const out: string[] = [];
+  for (const key of Object.keys(templates)) {
+    if (isTemplateKey(key)) continue;
+    if (!isVariantTemplateKey(key)) continue;
+    const sep = key.indexOf("_");
+    if (sep < 1) continue;
+    const base = key.slice(0, sep);
+    // The legacy per-page shape is exempt, exactly as the publish gate
+    // exempts it.
+    if (base === "page") continue;
+    if (!isTemplateKey(base)) continue;
+    if (isTemplateVariantKey(key)) continue;
+    out.push(key);
+  }
+  return out.sort();
 }
 
 /**
