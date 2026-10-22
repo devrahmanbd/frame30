@@ -4826,3 +4826,165 @@ The record commit authorising the re-freeze is `45b5c900`. The freeze ran after 
 The single skip is the pre-existing, documented `chrome-mobile-drawer-375-bn` manual-review case (drawer does not open for `lang=bn` at 375 px; `SKIPPED` in the spec carries the reason and no baseline is written). It is not a pass.
 
 Artifacts committed with this appendix's parent: 27 machine baselines (21 re-frozen + 6 archive added), 65 human `after/` stills, and `reference-manifest.json` stamped `freezeSha: 45b5c900bb10`. The `reference/` stills are untouched from their pre-run state; the superseded baselines remain retrievable from git history and from `/tmp/opencode/e2e-auth/parity-before/`.
+
+## (k.8) The build blocker — the search route's server-only import, recorded before the edit
+
+*(Append-only, dated 2026-10-22. This section concerns the §7-prohibited file `src/routes/store.$slug.search.tsx`; it is written and committed **before** that file is edited, per the plan's §7.1 ordering. Nothing above is rewritten.)*
+
+### (k.8.1) What the build measured
+
+`node_modules/.bin/vite build` fails at HEAD `9f6b52ab`. The client environment's import-protection plugin denies the dynamic import the search loader added in `4b522b93`:
+
+```
+[plugin tanstack-start-core:import-protection]
+RolldownError:
+[import-protection] Import denied in client environment
+
+  Denied by file pattern: **/*.server.*
+  Importer: src/routes/store.$slug.search.tsx
+  Import: "src/lib/widget-data.server"
+  Resolved: src/lib/widget-data.server.ts
+
+  Trace:
+    1. src/router.tsx:3:28 (entry) (import "./routeTree.gen")
+    2. src/routeTree.gen.ts:112:54 (import "./routes/store.$slug.search")
+    3. src/routes/store.$slug.search.tsx (import "src/lib/widget-data.server")
+```
+
+The route is in the client module graph (`routeTree.gen.ts` imports it), so a `loader` cannot statically or dynamically import a `*.server.*` module — the bundler sees the import edge even though the loader runs on the server. The same block also carried `await import("@/lib/storefront-host.server")` (`src/routes/store.$slug.search.tsx:126-127` at the base commit); the plugin reports the first denial and would report the second after it. A red build means no deploy is possible.
+
+### (k.8.2) The canonical mechanism
+
+TanStack Start's supported seam for server-only logic reachable from a client-imported route is a `createServerFn(...).handler(...)`. The codebase already has that seam for exactly this resolver: `resolveWidgetDataFn` in `src/lib/widget-data.functions.ts:43-74` — *"The single storefront data call"* — whose handler dynamically imports `./widget-data.server` (`src/lib/widget-data.functions.ts:62`) and `./storefront-host.server` (`:63-64`). The build accepts it because the handler body is server-only; the route only imports the server function's RPC stub, not the server modules.
+
+The repair therefore:
+
+1. extends `resolveWidgetDataFn` with the **optional** query scope the search route already computes (`facets`, `total`) and forwards it to `resolveWidgetData`'s existing `opts` (`src/lib/widget-data.server.ts:1363-1380`, `1395-1402`) — the resolver already supports it, so no resolver change;
+2. replaces the route loader's two `.server` imports and direct `resolveWidgetData` call with one call to that server function, keeping `searchFacetScope(outcome)` and `...(facetScope ?? {})` exactly where they were.
+
+This is the same consumption pattern as the rest of the storefront: `store.$slug.search.tsx` already calls `searchStorefrontFn` and `getStoreChrome` (both `createServerFn`) from the loader; the homepage resolves its batch inside `storefront.server.ts`'s `loadStoreChrome`, which the route reaches through `getStorefront`. No data moves to the client, the resolver is not duplicated, and no import guard or config change is used. No new dependency.
+
+**Behaviour is unchanged and pinned:** the batch is still resolved during the loader on the server and shipped in the route payload; `WidgetDataProvider` still feeds the facet sidebar from that map; the facet scope is still the search backend's own facets/total (`S4`); the client still never refetches (no `useQuery` was added); the resolver still tenant-scopes by the merchant the active slug names (`assertTenantId` inside `resolveWidgetData`), and the public function still only resolves published/active catalogue rows for that tenant.
+
+### (k.8.3) The exact old → new diffs
+
+**`src/lib/widget-data.functions.ts`** (existing file, not §7-prohibited; required to carry the scope through the server-fn boundary):
+
+```diff
+ const paramValue = z.union([z.string().max(120), z.number(), z.boolean()]);
+
++/**
++ * The query-scoped facet payload a search results page hands the resolver.
++ * Mirrors `SearchFacets` (`src/lib/storefront-search.ts:51-57`) — the counts
++ * the search backend already computed for THIS query. Bounded, because the
++ * function is public: a client may repeat its own search's scope, never
++ * enlarge the resolver's work.
++ */
++const facetCount = z.number().int().min(0).max(1_000_000);
++const searchFacetsSchema = z.object({
++  categories: z
++    .array(
++      z.object({
++        slug: z.string().min(1).max(120),
++        name: z.string().min(1).max(200),
++        count: facetCount,
++      }),
++    )
++    .max(200),
++  kinds: z
++    .array(z.object({ kind: z.string().min(1).max(60), count: facetCount }))
++    .max(50),
++  in_stock: facetCount,
++  price_min_minor: z.number().int().min(0).nullable(),
++  price_max_minor: z.number().int().min(0).nullable(),
++});
++
+ /**
+  * Full WidgetDataSource union (see widget-registry.ts) — client-initiated
+  * refetches for product-detail/account widgets must validate exactly like the
+  * SSR batch serves them.
+  */
+ export const widgetDataRequestSchema = z.object({
+@@
+       .object({
+         slug: z.string().min(1).max(120),
+         requests: z.array(requestSchema).max(MAX_WIDGET_REQUESTS),
++        /**
++         * The search route's query scope (S4). Present only on a search
++         * results page; absent everywhere else, where the facets loader
++         * keeps its own behaviour.
++         */
++        facets: searchFacetsSchema.optional(),
++        total: z.number().int().min(0).max(1_000_000).optional(),
+       })
+       .parse(d),
+   )
+@@
+       },
+       undefined,
+-      { base: storeLinkBase(currentRequestHost(), data.slug) },
++      {
++        base: storeLinkBase(currentRequestHost(), data.slug),
++        ...(data.facets
++          ? { facets: data.facets, total: data.total ?? 0 }
++          : {}),
++      },
+     );
+   });
+```
+
+**`src/routes/store.$slug.search.tsx`** (§7-prohibited; this edit is the escalation):
+
+```diff
+ import { searchStorefrontFn } from "@/lib/storefront-search.functions";
+ import { getStoreChrome } from "@/lib/storefront.functions";
++import { resolveWidgetDataFn } from "@/lib/widget-data.functions";
+ import {
+   StorefrontError,
+   isStorefrontInfrastructureError,
+   normalizeStorefrontLoaderError,
+ } from "@/components/store/StorefrontError";
+@@
+     let widgetMap: WidgetDataMap = {};
+     if (widgetBundle.requests.length > 0 && chrome) {
+       try {
+-        const { resolveWidgetData } = await import("@/lib/widget-data.server");
+-        const { currentRequestHost, storeLinkBase } =
+-          await import("@/lib/storefront-host.server");
+         // S4: the sidebar counts the SAME query the grid beside it runs.
+         // Without this, `loadFacetsSource` counts the merchant's whole
+         // active catalogue and a search for one term shows every product.
+         const facetScope = searchFacetScope(outcome);
+-        widgetMap = await resolveWidgetData(
+-          chrome.merchant.id,
+-          widgetBundle,
+-          undefined,
+-          {
+-            base: storeLinkBase(
+-              currentRequestHost(),
+-              chrome.merchant.slug ?? params.slug,
+-            ),
+-            ...(facetScope ?? {}),
+-          },
+-        );
++        // The resolver is reached through the public RPC
++        // (`resolveWidgetDataFn`, `src/lib/widget-data.functions.ts:43-74`),
++        // whose handler runs in a `createServerFn` — the canonical seam that
++        // keeps `widget-data.server` out of the client module graph.
++        widgetMap = await resolveWidgetDataFn({
++          data: {
++            slug: chrome.merchant.slug ?? params.slug,
++            requests: widgetBundle.requests,
++            ...(facetScope ?? {}),
++          },
++        });
+       } catch {
+```
+
+### (k.8.4) Ratification and boundary
+
+**Ratification.** The programme owner's standing instruction for this wave — *"whatever goes, as per the expert opinion"* — ratifies this single-file repair of a build blocker. It changes no behaviour, no grant set, no test assertion and no threshold; it moves the already-existing server call behind the platform's own server-function seam.
+
+**Boundary.** Only the two files diffed above are edited. No new file, no config change, no import-protection bypass, no dependency, no test edit. The churn files (`.artifacts/e2e/playwright-report/index.html`, `ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`) and `.output-snapshots/` remain unstaged.
+
+**Ordering.** This section is committed first, by explicit path; the code commit follows it. That is the §7.1 ordering the previous sections used.
