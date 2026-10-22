@@ -88,7 +88,7 @@ test.describe("the storefront surfaces", () => {
       "the theme's search composition renders its own results band",
     ).toBeVisible({ timeout: 30_000 });
     await expect(
-      page.getByText("Filters", { exact: true }).first(),
+      page.getByRole("heading", { name: "Filters", exact: true }).first(),
       "the theme's search composition renders its own facet panel",
     ).toBeVisible({ timeout: 30_000 });
     // The platform's own count, rendered by the theme's toolbar …
@@ -280,6 +280,11 @@ test.describe("the storefront surfaces", () => {
   test("the checkout asks for the address first and shows the rail and the total below it", async ({
     page,
   }) => {
+    // The theme's order summary reads the SERVER's quote; with an empty cart
+    // it honestly renders "Add something to see your total." and there is no
+    // total to place. The assertion is about where the total sits, so its
+    // precondition is a real line, through the storefront's own flow.
+    await ensureCartHasLine(page);
     await open(page, `/store/${STORE}/checkout`);
     // The customer's own fields — the contact block the platform's form
     // renders.
