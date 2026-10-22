@@ -1110,6 +1110,10 @@ export const PROP_HINTS: Record<string, BiText> = {
     en: "Repeatable collection cards linking to curated product lists.",
     bn: "পুনরাবৃত্ত কালেকশন কার্ড — নির্বাচিত পণ্যতালিকায় নিয়ে যায়।",
   },
+  collectionType: {
+    en: "How this collection is merchandised: a curated edit, a department browse, or an occasion edit.",
+    bn: "এই কালেকশন কীভাবে সাজানো: নির্বাচিত সম্পাদনা, বিভাগ ভিত্তিক সাজ, নাকি উপলক্ষ ভিত্তিক সাজ।",
+  },
   showDiscount: {
     en: "Show the sale badge on discounted products; off hides the badge everywhere.",
     bn: "ছাড়ের পণ্যে সেল ব্যাজ দেখান; বন্ধ করলে সব জায়গায় লুকিয়ে যাবে।",

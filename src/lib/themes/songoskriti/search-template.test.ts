@@ -224,27 +224,29 @@ describe("songoskriti search template composition", () => {
     ]);
 
     // (c) The props OUTSIDE the catalogue field lists are asserted as an
-    // exact set: five, on two widgets. `text`/`text_bn`/`description`/
-    // `description_bn` are the Songoskriti header convention
-    // (`src/components/builder/songoskriti.tsx:2251-2254`) and `sortDefault`
-    // is the theme's own sort label
-    // (`src/components/builder/songoskriti.tsx:2369`). A merchant editing
-    // these widgets in the builder does NOT see them — which is why the
-    // theme passes the catalogue fields as well, with the same values.
+    // exact set. It is now EMPTY: every prop the search composition authors
+    // is a declared catalogue field, so a merchant editing these widgets in
+    // the builder sees all of them and the sanitiser drops none of them.
+    // (Before the final-fix round the set was five —
+    // `category_header:text` / `text_bn` / `description` / `description_bn`
+    // and `result_toolbar:sortDefault` — and every one of those five was
+    // silently dropped on save.)
+    //
+    // A `bitext` field's বাংলা sibling counts as DECLARED: the platform's
+    // own bilingual mechanism carries it (`withBiText`,
+    // `src/lib/builder-ast.ts:6505-6521`), and the inspector edits it.
     const outside: string[] = [];
     for (const section of searchMain()) {
-      const fields = catalogEntry(section.type)!.fields.map((f) => f.key);
+      const fields = catalogEntry(section.type)!.fields;
+      const declared = new Set(fields.map((f) => f.key));
+      for (const f of fields) {
+        if (f.kind === "bitext") declared.add(`${f.key}_bn`);
+      }
       for (const key of Object.keys(section.props)) {
-        if (!fields.includes(key)) outside.push(`${section.type}:${key}`);
+        if (!declared.has(key)) outside.push(`${section.type}:${key}`);
       }
     }
-    expect(outside).toEqual([
-      "category_header:text",
-      "category_header:text_bn",
-      "category_header:description",
-      "category_header:description_bn",
-      "result_toolbar:sortDefault",
-    ]);
+    expect(outside).toEqual([]);
   });
 });
 

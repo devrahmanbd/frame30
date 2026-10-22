@@ -1269,6 +1269,10 @@ const BASE_CATALOG: CatalogEntry[] = [
       showRating: false,
       promise: "",
       skin: "cards",
+      // The data params the widget REGISTRY reads for this widget
+      // (`requestForSection`, `src/lib/widget-data.ts:134-148`).
+      collection: "",
+      source: "collection",
     },
     fields: [
       text("heading", "Heading"),
@@ -1280,6 +1284,23 @@ const BASE_CATALOG: CatalogEntry[] = [
         responsive: true,
       },
       cols("columns", "Columns (2-4)"),
+      // The data params the widget REGISTRY reads for this widget
+      // (`requestForSection`, `src/lib/widget-data.ts:134-148`, over
+      // `WIDGET_REGISTRY.product_grid.data.params`,
+      // `src/lib/widget-registry.ts:109-144`). Undeclared, they were dropped
+      // by the sanitiser and the grid resolved no collection at all.
+      text("collection", "Collection handle", 80),
+      {
+        key: "source",
+        label: "Source",
+        kind: "select",
+        panel: "content",
+        options: [
+          { value: "collection", label: "Collection" },
+          { value: "bestsellers", label: "Bestsellers" },
+          { value: "recommended", label: "Recommended" },
+        ],
+      },
       text("promise", "Delivery promise", 60),
       bool("showRating", "Show rating"),
       CARD_VARIANT,
@@ -2310,9 +2331,12 @@ const BASE_CATALOG: CatalogEntry[] = [
       showRating: false,
       promise: "",
       skin: "editorial",
+      subhead: "",
+      badgeLabel: "",
     },
     fields: [
       text("heading", "Heading"),
+      text("subhead", "Subhead", 160),
       {
         key: "source",
         label: "Source",
@@ -2336,6 +2360,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       },
       text("promise", "Delivery promise", 60),
       bool("showRating", "Show rating"),
+      text("badgeLabel", "Card badge label", 40),
       CARD_VARIANT,
       SKIN_FIELD("product_rail"),
     ],
@@ -2719,6 +2744,16 @@ const BASE_CATALOG: CatalogEntry[] = [
       showCount: true,
       showBreadcrumb: true,
       homeLabel: "Home",
+      // The band's OWN label. `title` is the canonical prop; `text` is the
+      // older alias the renderer still honours (`str("title") ||
+      // str("text") || str("heading")`, `src/components/builder/songoskriti.tsx`).
+      // Both default to EMPTY, so a composition that authors neither falls
+      // through the chain to `heading` exactly as before.
+      title: "",
+      text: "",
+      description: "",
+      collectionType: "curated",
+      subnav: "",
     },
     fields: [
       text("heading", "Title", 120),
@@ -2728,6 +2763,24 @@ const BASE_CATALOG: CatalogEntry[] = [
       bool("showCount", "Show result count"),
       bool("showBreadcrumb", "Show breadcrumb"),
       text("homeLabel", "Breadcrumb home label", 40),
+      // The band label. `title` wins over the legacy `text` alias in the
+      // renderer's chain, and neither participates in the <h1>-claim rule
+      // (`blankHeading` reads only `heading`).
+      text("title", "Band label", 120),
+      text("text", "Band label (legacy alias)", 120),
+      area("description", "Editorial line", 600),
+      {
+        key: "collectionType",
+        label: "Collection type",
+        kind: "select",
+        panel: "content",
+        options: [
+          { value: "curated", label: "Curated" },
+          { value: "department", label: "Department" },
+          { value: "occasion", label: "Occasion" },
+        ],
+      },
+      area("subnav", "Subnav (Label:/c/slug, comma separated)", 600),
     ],
   },
   {
@@ -2797,6 +2850,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       showDensity: true,
       filtersLabel: "Filters",
       sortLabel: "Sort",
+      sortDefault: "",
     },
     fields: [
       text("countLabel", "Count noun", 40),
@@ -2804,6 +2858,10 @@ const BASE_CATALOG: CatalogEntry[] = [
       bool("showDensity", "Show density toggle"),
       text("filtersLabel", "Mobile filters label", 40),
       text("sortLabel", "Sort label", 40),
+      // The default sort the toolbar shows when the shopper has not chosen
+      // one. The Songoskriti renderer reads it
+      // (`src/components/builder/songoskriti.tsx`, `SongoskritiResultToolbar`).
+      text("sortDefault", "Default sort label", 40),
     ],
   },
   {
@@ -3192,15 +3250,35 @@ const BASE_CATALOG: CatalogEntry[] = [
       ctaHref: "",
       imageUrl: "",
       scrim: true,
+      subhead: "",
+      collections: [],
     },
     fields: [
       text("eyebrow", "Eyebrow", 60),
       text("heading", "Heading", 120),
+      text("subhead", "Subhead", 300),
       area("body", "Prose", 1200),
       text("ctaLabel", "Link label", 40),
       url("ctaHref", "Link URL"),
       url("imageUrl", "Background image"),
       bool("scrim", "Darken image behind text"),
+      // The collection cards the Songoskriti renderer reads
+      // (`rowsOf(section, "collections")`,
+      // `src/components/builder/songoskriti.tsx`).
+      {
+        key: "collections",
+        label: "Collection cards",
+        kind: "array",
+        panel: "content",
+        itemLabel: "title",
+        maxRows: 8,
+        fields: [
+          text("title", "Title", 80),
+          text("image", "Image URL", 200),
+          url("href", "Link URL"),
+          text("subtitle", "Subtitle", 80),
+        ],
+      },
     ],
   },
   {
@@ -3277,6 +3355,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     heading: false,
     defaults: {
       heading: "Visit us",
+      images: "",
       s1Name: "",
       s1Address: "",
       s1Hours: "",
@@ -3292,6 +3371,10 @@ const BASE_CATALOG: CatalogEntry[] = [
     },
     fields: [
       text("heading", "Heading", 80),
+      // The Songoskriti renderer's own fallback list: a comma-separated URL
+      // string it splits per store (`src/components/builder/songoskriti.tsx`,
+      // `SongoskritiStoreLocator`).
+      area("images", "Store images (comma separated URLs)", 2000),
       text("s1Name", "Store 1 name", 80),
       area("s1Address", "Store 1 address", 300),
       text("s1Hours", "Store 1 hours", 120),
@@ -5004,8 +5087,10 @@ const BASE_CATALOG: CatalogEntry[] = [
           area("subhead", "Subhead", 300),
           area("subhead_bn", "Subhead (বাংলা)", 300),
           text("ctaLabel", "CTA label", 40),
+          text("ctaLabel_bn", "CTA label (বাংলা)", 40),
           url("ctaUrl", "CTA link"),
           text("caption", "Eyebrow caption", 60),
+          text("caption_bn", "Eyebrow caption (বাংলা)", 60),
         ],
       },
       num("autoAdvanceMs", "Auto-advance (ms)"),
@@ -5158,8 +5243,9 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "content",
     slots: ["main"],
     heading: false,
-    defaults: { columns: 4, departments: [] },
+    defaults: { heading: "", columns: 4, departments: [] },
     fields: [
+      text("heading", "Heading", 80),
       {
         key: "departments",
         label: "Departments",
@@ -5985,7 +6071,7 @@ export const BITEXT_FIELDS: Partial<Record<SectionType, string[]>> = {
   search_command: ["placeholder", "buttonLabel"],
   account_cart: ["accountLabel", "cartLabel"],
   // Phase 2.2 merchandising.
-  product_rail: ["heading", "promise"],
+  product_rail: ["heading", "promise", "subhead"],
   deal_card: ["heading", "badgeLabel", "ctaLabel"],
   deal_strip: ["heading", "badgeLabel"],
   sponsored_slot: ["heading"],
@@ -6012,7 +6098,18 @@ export const BITEXT_FIELDS: Partial<Record<SectionType, string[]>> = {
   seller_card: ["name", "tagline", "policy", "linkLabel"],
   sticky_buy_bar: ["label"],
   // Phase 2.4 collection / search.
-  category_header: ["heading", "body", "homeLabel"],
+  // `title` / `text` / `description` are the Songoskriti band's own
+  // vocabulary (the renderer's chain is
+  // `str("title") || str("text") || str("heading")`), and they are
+  // shopper-facing prose, so each gains its বাংলা sibling here.
+  category_header: [
+    "heading",
+    "body",
+    "homeLabel",
+    "title",
+    "text",
+    "description",
+  ],
   facet_sidebar: [
     "heading",
     "drawerLabel",
@@ -6072,7 +6169,7 @@ export const BITEXT_FIELDS: Partial<Record<SectionType, string[]>> = {
     "ctaLabel2",
     "imageAlt",
   ],
-  collection_story: ["eyebrow", "heading", "body", "ctaLabel"],
+  collection_story: ["eyebrow", "heading", "body", "ctaLabel", "subhead"],
   ugc_gallery: ["heading", "subhead", "note"],
   social_strip: ["heading"],
   store_locator: [
@@ -6386,6 +6483,8 @@ export const BITEXT_FIELDS: Partial<Record<SectionType, string[]>> = {
   occasion_matrix: ["heading"],
   urgency_rail: ["heading", "promise", "endsLabel"],
   blog_archive: ["heading", "emptyText"],
+  blog_terms: ["heading"],
+  department_grid: ["heading"],
 };
 
 /**
