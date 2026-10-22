@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState, type ReactNode } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useCallback, useMemo, useState, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
@@ -9,8 +9,16 @@ import { StoreHeader } from "@/components/store/StoreHeader";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/lib/i18n";
 import { flattenAst, type Section } from "@/lib/builder-ast";
-import { themePlacesAccountProfile } from "@/lib/theme-shell-slots";
+import {
+  themePlacesAccountPanel,
+  themePlacesAccountProfile,
+} from "@/lib/theme-shell-slots";
 import { OrdersList, ProfileCard } from "@/components/builder/account";
+import {
+  AccountDashboardProvider,
+  type AccountAddressValues,
+  type AccountPanelType,
+} from "@/components/store/AccountDashboardContext";
 import {
   accountSlotCtx,
   mapOrdersToRows,
@@ -89,6 +97,20 @@ function AccountMissing() {
   );
 }
 
+/**
+ * The account's four placeable panels — the closed vocabulary the theme's
+ * own body may place. A panel the theme places is granted to the theme's
+ * body; a panel it does not place is the DASHBOARD's — and the dashboard's
+ * fallback skips the placed ones, so a panel is never shown twice on one
+ * page.
+ */
+const ACCOUNT_PANEL_TYPES: readonly AccountPanelType[] = [
+  "account_nav",
+  "account_overview",
+  "account_orders",
+  "account_details",
+];
+
 function AccountPage() {
   const { t, lang } = useLang();
   const { slug } = Route.useParams();
@@ -96,6 +118,7 @@ function AccountPage() {
   const search = Route.useSearch();
   const qc = useQueryClient();
   const overviewFn = useServerFn(accountOverviewFn);
+  const navigate = useNavigate();
 
   // The active tab is a URL state — the five destinations are `?tab=` values
   // on THIS route (`/store/$slug/account`), not separate routes. The dashboard's
@@ -195,6 +218,40 @@ function AccountPage() {
     signedIn,
     queryPending: account.isPending,
   });
+
+  /**
+   * The panels the THEME's own body placed.
+   *
+   * The generalised form of `themePlacesAccountProfile`: the route supplies a
+   * control the theme's body does not place, and the supply is explicit. A
+   * panel the theme places is the THEME's; a panel it does not place is the
+   * DASHBOARD's — and the dashboard's fallback skips the placed ones, so a
+   * panel is never shown twice on one page.
+   */
+  const placedPanels = useMemo(() => {
+    const out: AccountPanelType[] = [];
+    for (const panel of ACCOUNT_PANEL_TYPES) {
+      if (themePlacesAccountPanel(chrome?.ast, panel)) out.push(panel);
+    }
+    return out;
+  }, [chrome?.ast]);
+
+  /**
+   * The tab selection. The five destinations are `?tab=` values on THIS
+   * route, so the selection is the URL's — the provider's `setTab` navigates
+   * to the tab's own URL exactly as the dashboard's own nav links do.
+   */
+  const setTab = useCallback(
+    (next: AccountTab) => {
+      void navigate({
+        to: "/store/$slug/account",
+        params: { slug },
+        search: { tab: next },
+      });
+    },
+    [navigate, slug],
+  );
+
   const accountSlots = useMemo(() => {
     const sections = chrome?.ast ? flattenAst(chrome.ast) : [];
     const out: Partial<Record<string, ReactNode>> = {};
@@ -232,8 +289,16 @@ function AccountPage() {
         />
       );
     }
+    // The account's four PLACEABLE panels. A panel the theme's body places is
+    // granted here (the panel itself reads the account provider — the route's
+    // own session-scoped state — and nothing else); a panel it does not place
+    // is the dashboard's, and the dashboard's fallback skips the placed ones.
+    if (placedPanels.includes("account_nav")) out.account_nav = null;
+    if (placedPanels.includes("account_overview")) out.account_overview = null;
+    if (placedPanels.includes("account_orders")) out.account_orders = null;
+    if (placedPanels.includes("account_details")) out.account_details = null;
     return out;
-  }, [chrome, overview, pending, lang, slug, signedIn]);
+  }, [chrome, overview, pending, lang, slug, signedIn, placedPanels]);
 
   // The composed profile card. The THEME places it when its account body
   // carries a `profile_card` section (the slot above); when it does not, the
@@ -283,6 +348,80 @@ function AccountPage() {
     queryError: account.isError,
   });
 
+  /**
+   * The route's own account state — ONE object, shared by the dashboard's
+   * own copy of every panel and by the panel the THEME places in its body.
+   *
+   * The provider is mounted by the ROUTE, above `ThemeChrome`, so the two
+   * copies read ONE state: the same tab, the same open order, the same write
+   * callbacks. Without it a theme-placed panel and the dashboard's copy would
+   * disagree — and the shopper would see one tab selected in the nav and
+   * another tab's panel below it.
+   */
+  const accountState = useMemo(
+    () => ({
+      slug,
+      currency,
+      status,
+      overview,
+      orders: overview ? mapOrdersToRows(overview.orders ?? []) : [],
+      tab,
+      setTab,
+      openOrderId,
+      setOpenOrderId,
+      orderDetail:
+        orderDetail.data && openOrderId
+          ? { orderId: openOrderId, detail: orderDetail.data }
+          : null,
+      orderDetailPending: orderDetail.isFetching,
+      orderDetailError: orderDetail.isError,
+      // The order rows disclose the order inline, resolved under the
+      // shopper's own session. There is no link to the token-gated order
+      // route, so there is no link that can 404.
+      onLoadOrder: (orderId: string) => setOpenOrderId(orderId),
+      onSaveAddress: (values: AccountAddressValues) =>
+        saveAddress.mutate({ slug, ...values }),
+      onDeleteAddress: (addressId: string) =>
+        delAddress.mutate({ slug, addressId }),
+      onSaveProfile: (values: { name: string; email: string; phone: string }) =>
+        saveProfile.mutate({ slug, ...values, locale: "bn" }),
+      onSetConsent: (consent: {
+        channel: "email" | "sms";
+        purpose: "marketing" | "cart_recovery" | "stock_alerts";
+        granted: boolean;
+      }) => setConsent.mutate({ slug, ...consent }),
+      onToggleWishlist: (variantId: string) =>
+        toggleWish.mutate({ slug, variantId, stockAlert: false }),
+      busy: {
+        address: saveAddress.isPending || delAddress.isPending,
+        profile: saveProfile.isPending,
+        consent: setConsent.isPending,
+        wishlist: toggleWish.isPending,
+      },
+      // The panels the THEME's body placed — the dashboard's fallback skips
+      // them, so a panel is never shown twice on one page.
+      placed: placedPanels,
+    }),
+    [
+      slug,
+      currency,
+      status,
+      overview,
+      tab,
+      setTab,
+      openOrderId,
+      orderDetail.data,
+      orderDetail.isFetching,
+      orderDetail.isError,
+      saveAddress,
+      delAddress,
+      saveProfile,
+      setConsent,
+      toggleWish,
+      placedPanels,
+    ],
+  );
+
   const dashboard = (
     <AccountDashboard
       slug={slug}
@@ -322,31 +461,40 @@ function AccountPage() {
 
   return (
     <PluginLayer plugins={chrome?.installedPlugins ?? []}>
-      <ThemeChrome
-        template="account"
-        ast={chrome?.ast ?? null}
-        tokens={chrome?.tokens ?? null}
-        storeSlug={slug}
-        themeKey={chrome?.themeKey ?? null}
-        merchantId={chrome?.merchant.id ?? null}
-        siteKit={chrome?.siteKit ?? null}
-        ownsPrimary
-        // The theme's account body is composed AROUND the dashboard: the
-        // merchant's own sections (the profile card, and anything else they
-        // place) frame the route's body, which flows through the platform's
-        // route-owned body slot.
-        contentSlot="page_content"
-        contextSlots={{ ...accountSlots, page_content: dashboard }}
-        chrome={
-          <StoreHeader
-            slug={slug}
-            name={chrome?.merchant.name ?? store?.name ?? slug}
-            themeKey={chrome?.themeKey ?? null}
-          />
-        }
-        containerClassName="mx-auto max-w-[var(--fq-container,1280px)] px-4 py-12 sm:px-6 lg:px-8"
-        fallback={dashboard}
-      />
+      {/*
+        The account's ONE state, mounted ABOVE the theme host: a panel the
+        theme places in its own body and the dashboard's own copy of the same
+        panel read the same tab, the same open order and the same write
+        callbacks. The provider carries no credential and never queries — it
+        is the route's own state, verbatim.
+      */}
+      <AccountDashboardProvider value={accountState}>
+        <ThemeChrome
+          template="account"
+          ast={chrome?.ast ?? null}
+          tokens={chrome?.tokens ?? null}
+          storeSlug={slug}
+          themeKey={chrome?.themeKey ?? null}
+          merchantId={chrome?.merchant.id ?? null}
+          siteKit={chrome?.siteKit ?? null}
+          ownsPrimary
+          // The theme's account body is composed AROUND the dashboard: the
+          // merchant's own sections (the placeable account panels, and
+          // anything else they place) frame the route's body, which flows
+          // through the platform's route-owned body slot.
+          contentSlot="page_content"
+          contextSlots={{ ...accountSlots, page_content: dashboard }}
+          chrome={
+            <StoreHeader
+              slug={slug}
+              name={chrome?.merchant.name ?? store?.name ?? slug}
+              themeKey={chrome?.themeKey ?? null}
+            />
+          }
+          containerClassName="mx-auto max-w-[var(--fq-container,1280px)] px-4 py-12 sm:px-6 lg:px-8"
+          fallback={dashboard}
+        />
+      </AccountDashboardProvider>
     </PluginLayer>
   );
 }

@@ -55,6 +55,13 @@ export const WIDGET_PART_VOCABULARY: Partial<
   checkout_steps: ["labels", "active", "links"],
   orders_list: ["number", "date", "status", "total"],
   profile_card: ["avatar", "name", "email", "phone"],
+  /**
+   * The account's placeable orders panel — the same four fields the
+   * `orders_list` widget's rows carry, in the same order. The panel is the
+   * theme-placed twin of the dashboard's own orders tab: the row's
+   * interior is authorable, the row's VALUES are the server's.
+   */
+  account_orders: ["number", "date", "status", "total"],
 };
 
 /**

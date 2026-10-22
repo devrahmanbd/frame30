@@ -40,6 +40,7 @@ import {
 } from "./seo-answers";
 import { guardrailIssues } from "./builder-guardrails";
 import { isValidTimezone, DEFAULT_MERCHANT_TIMEZONE } from "./timezone";
+import { NO_PAYMENT_RAIL } from "./payment-rail-empty";
 
 export type { Locale };
 
@@ -3032,7 +3033,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     defaults: {
       heading: "Payment method",
       note: "",
-      emptyText: "No payment method is available right now.",
+      emptyText: NO_PAYMENT_RAIL.en,
       parts: "legend,groups,options,note",
       layout: "row",
     },
@@ -5115,14 +5116,21 @@ const BASE_CATALOG: CatalogEntry[] = [
     // `src/components/store/account-widgets.tsx`; they read the account
     // provider and nothing else, so a panel can never reach another
     // shopper's rows — and a panel with no provider renders nothing at all.
+    //
+    // The declared fields are the panel's OWN arrangement: `heading` is the
+    // panel's title (blank by default, so a panel never claims the page's
+    // <h1> — these rows are `heading: false`), and `account_orders` also
+    // declares the composable `parts` order and the `layout` of its rows.
+    // Without the declaration `parseSection` would DROP the props on save
+    // (`src/lib/builder-ast.ts:7844-7869`).
     type: "account_nav",
     label: "Account navigation",
     group: "context",
     slots: ["main"],
     heading: false,
     templates: ["account"],
-    defaults: {},
-    fields: [],
+    defaults: { heading: "" },
+    fields: [text("heading", "Heading")],
   },
   {
     type: "account_overview",
@@ -5131,8 +5139,8 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["main"],
     heading: false,
     templates: ["account"],
-    defaults: {},
-    fields: [],
+    defaults: { heading: "" },
+    fields: [text("heading", "Heading")],
   },
   {
     type: "account_orders",
@@ -5141,8 +5149,19 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["main"],
     heading: false,
     templates: ["account"],
-    defaults: {},
-    fields: [],
+    defaults: {
+      heading: "",
+      parts: "number,date,status,total",
+      layout: "row",
+    },
+    fields: [
+      text("heading", "Heading"),
+      text("parts", "Part order (comma separated)", 200),
+      select("layout", "Row layout", [
+        { value: "row", label: "Row" },
+        { value: "card", label: "Card" },
+      ]),
+    ],
   },
   {
     type: "account_details",
@@ -5151,8 +5170,8 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["main"],
     heading: false,
     templates: ["account"],
-    defaults: {},
-    fields: [],
+    defaults: { heading: "" },
+    fields: [text("heading", "Heading")],
   },
   /* --------------------------------------- Songoskriti heritage gap pack */
   {

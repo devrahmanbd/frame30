@@ -112,16 +112,20 @@ function difference(a: string[], b: string[]): string[] {
 }
 
 describe("the preview and the storefront grant the SAME slots", () => {
-  it("search — the preview adds facet_sidebar, and nothing else", () => {
+  it("search — the two hosts grant the SAME slots (Decision G2 (a) closed the difference)", () => {
     const preview = grantedSlots(PREVIEW, "const searchSlots =");
     const production = grantedSlots(
       read("routes", "store.$slug.search.tsx"),
       "contextSlots={{",
     );
     expect(difference(production, preview)).toEqual([]);
-    // Decision D7: the facet sidebar reads the widget-data pipeline and no
-    // storefront route mounts a `WidgetDataProvider` — it stays preview-only.
-    expect(difference(preview, production)).toEqual(["facet_sidebar"]);
+    // Decision G2 (a): the storefront grants the facet sidebar too — the
+    // widget batch its rows come from is resolved on the server and mounted
+    // by the route. The OLD difference — the preview's extra
+    // `facet_sidebar` — is CLOSED, so the two sets are EQUAL.
+    expect(difference(preview, production)).toEqual([]);
+    expect(preview).toContain("facet_sidebar");
+    expect(production).toContain("facet_sidebar");
     expect(production).toContain("empty_state");
   });
 
@@ -158,7 +162,7 @@ describe("the preview and the storefront grant the SAME slots", () => {
     expect(preview).toEqual(production);
   });
 
-  it("account — the two account widgets plus the route-owned body", () => {
+  it("account — the account widgets, the placeable panels and the route-owned body", () => {
     const preview = union(
       grantedSlots(PREVIEW, "const accountSlots ="),
       grantedSlots(PREVIEW, "const accountBodySlot ="),
@@ -167,7 +171,18 @@ describe("the preview and the storefront grant the SAME slots", () => {
       read("routes", "store.$slug.account.tsx"),
       "contextSlots={{",
     );
-    expect(preview).toEqual(["orders_list", "page_content", "profile_card"]);
+    // The four PLACEABLE panels join the two account widgets: a panel the
+    // theme places is granted to the theme's body, and a panel it does not
+    // place is the dashboard's.
+    expect(preview).toEqual([
+      "account_details",
+      "account_nav",
+      "account_orders",
+      "account_overview",
+      "orders_list",
+      "page_content",
+      "profile_card",
+    ]);
     expect(preview).toEqual(production);
   });
 

@@ -33,6 +33,7 @@ import {
 } from "@/lib/payment-keys";
 import { fmtMinor } from "@/lib/money";
 import { checkoutShellControls } from "@/lib/theme-shell-slots";
+import { noPaymentRailMessage } from "@/lib/payment-rail-empty";
 import type { ThemeAst, ThemeTokens } from "@/lib/builder-ast";
 import { useCart } from "@/lib/cart";
 import { useCartContext } from "@/components/builder/CartContext";
@@ -777,10 +778,7 @@ function CheckoutBody({
       </legend>
       {methodGroups.length === 0 ? (
         <p className="mt-2 text-sm text-muted-foreground">
-          {t(
-            "This store has not enabled any payment method yet.",
-            "এই দোকান এখনও কোনো পেমেন্ট মেথড চালু করেনি।",
-          )}
+          {noPaymentRailMessage(lang)}
         </p>
       ) : (
         <div className="grid gap-6">
@@ -876,8 +874,14 @@ function CheckoutBody({
     : chargeHop === "redirecting"
       ? t("Redirecting to payment…", "পেমেন্টে নিয়ে যাওয়া হচ্ছে…")
       : t("Place Order", "অর্ডার কনফার্ম করুন");
+  // The server decides whether the shopper may submit. The server also
+  // decides which rails this store may offer — and a store that offers NO
+  // rail cannot take the money, so the action is DISABLED and the notice
+  // says why (the plan's **D8**). The theme draws the rail; it never
+  // decides whether one exists.
+  const noRail = offered.length === 0;
   const submitDisabled =
-    !totals || mutation.isPending || chargeHop === "redirecting";
+    !totals || mutation.isPending || chargeHop === "redirecting" || noRail;
   const submitNotice =
     mutation.isPending || chargeHop === "redirecting"
       ? chargeHop === "redirecting"
@@ -886,7 +890,9 @@ function CheckoutBody({
             "পেমেন্ট প্রোভাইডারের সাথে যোগাযোগ করা হচ্ছে — এই পেজ বন্ধ করবেন না।",
           )
         : t("Placing your order…", "অর্ডার করা হচ্ছে…")
-      : null;
+      : noRail
+        ? noPaymentRailMessage(lang)
+        : null;
   // Primitive deps only: the report must never loop.
   useEffect(() => {
     onSubmitState?.({

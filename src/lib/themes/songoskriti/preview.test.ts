@@ -77,6 +77,14 @@ describe("songoskritiPreviewSource", () => {
     expect(
       flattenSections(source.main("product", s)!).map((x) => x.type),
     ).toContain("product_media");
-    expect(types("account")).toEqual(["profile_card", "page_content"]);
+    // The account body places the account's four PLACEABLE panels and keeps
+    // the route-owned body slot — the dashboard's own fallback renders
+    // everything the theme did not place.
+    expect(types("account")).toEqual([
+      "account_nav",
+      "account_overview",
+      "account_orders",
+      "page_content",
+    ]);
   });
 });

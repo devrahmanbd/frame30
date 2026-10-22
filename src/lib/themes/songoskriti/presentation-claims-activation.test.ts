@@ -22,6 +22,7 @@ import {
   registerSongoskritiPresentationClaims,
   SONGOSKRITI_PRESENTATION_CLAIMS,
 } from "./presentation-claims";
+import { SONGOSKRITI_COMMERCE_WIDGETS } from "./commerce-presentations";
 import { SongoskritiHeaderPresentation } from "./header-presentation";
 
 // Productive entry modules — import-time registration is the subject under
@@ -38,7 +39,10 @@ const CORE_REQUIRED = [
 ] as const;
 
 function packOf(key: string): WidgetComponent {
-  return SONGOSKRITI_WIDGETS[key as keyof typeof SONGOSKRITI_WIDGETS];
+  return (SONGOSKRITI_WIDGETS[key as keyof typeof SONGOSKRITI_WIDGETS] ??
+    SONGOSKRITI_COMMERCE_WIDGETS[
+      key as keyof typeof SONGOSKRITI_COMMERCE_WIDGETS
+    ]) as WidgetComponent;
 }
 
 function genericOf(key: string): WidgetComponent {
@@ -104,7 +108,7 @@ describe("songoskriti presentation claims — editor graph (unified-widget-regis
 });
 
 describe("songoskriti presentation claims — completeness", () => {
-  it("claims list is exactly 13 keys: the theme-fixable leak keys", () => {
+  it("claims list is exactly 23 keys: the theme-fixable leak keys plus the commerce and account types", () => {
     const generic = GENERIC_WIDGETS as Record<string, unknown>;
     const expected = Object.keys(SONGOSKRITI_WIDGETS).filter(
       (key) =>
@@ -112,9 +116,16 @@ describe("songoskriti presentation claims — completeness", () => {
         !CORE_REQUIRED.includes(key as never) &&
         key !== "mega_menu",
     );
-    expect(SONGOSKRITI_PRESENTATION_CLAIMS).toHaveLength(13);
+    // The theme's own pack claims thirteen; the commerce and account pack
+    // claims ten more — the surfaces the composable parts contract made
+    // authorable.
+    const commerce = Object.keys(SONGOSKRITI_COMMERCE_WIDGETS);
+    expect(SONGOSKRITI_PRESENTATION_CLAIMS).toHaveLength(
+      expected.length + commerce.length,
+    );
+    expect(SONGOSKRITI_PRESENTATION_CLAIMS).toHaveLength(23);
     expect([...SONGOSKRITI_PRESENTATION_CLAIMS].sort()).toEqual(
-      [...expected].sort(),
+      [...expected, ...commerce].sort(),
     );
   });
 });

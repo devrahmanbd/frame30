@@ -15,7 +15,7 @@
  * toast — capture-phase interception runs before widget handlers so no
  * contact/newsletter/coupon submission ever fires.
  */
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import {
@@ -76,12 +76,18 @@ import {
   AccountDashboard,
   type AccountOrderDetail,
 } from "@/components/store/AccountDashboard";
+import {
+  AccountDashboardProvider,
+  type AccountDashboardState,
+  type AccountPanelType,
+} from "@/components/store/AccountDashboardContext";
 import type { AccountTab } from "@/lib/account-tab";
 import { accountSlotCtx } from "./account-slots";
 import { useLang } from "@/lib/i18n";
 import { compileResponsiveCss } from "@/lib/responsive-css";
 import { fontStylesheetUrl } from "@/lib/theme-fonts";
 import {
+  flattenSections,
   type Section,
   type TemplateKey,
   type ThemeAst,
@@ -523,6 +529,18 @@ function useMockProductSlots(
   };
 }
 
+/**
+ * The account's four placeable panels — the closed vocabulary the theme's
+ * own body may place. The preview and the storefront grant the SAME set
+ * (`src/lib/preview-parity.contract.test.ts`).
+ */
+const ACCOUNT_PANEL_TYPES: readonly AccountPanelType[] = [
+  "account_nav",
+  "account_overview",
+  "account_orders",
+  "account_details",
+];
+
 export function ThemePreviewFrame({
   themeName,
   blueprintKey,
@@ -700,6 +718,25 @@ export function ThemePreviewFrame({
     themeName,
     blueprintKey,
   );
+  /**
+   * The account panels the THEME's own body placed.
+   *
+   * The generalised form of the storefront's rule: a panel the theme places
+   * is the THEME's; a panel it does not place is the DASHBOARD's — and the
+   * dashboard's fallback skips the placed ones, so a panel is never shown
+   * twice on one page.
+   */
+  const placedAccountPanels = useMemo(() => {
+    const sections = [
+      ...flattenSections(ast.header),
+      ...flattenSections(focusedMain),
+      ...flattenSections(ast.footer),
+    ];
+    return ACCOUNT_PANEL_TYPES.filter((panel) =>
+      sections.some((section) => section.type === panel),
+    );
+  }, [ast, focusedMain]);
+
   const accountSlots = useMemo(() => {
     if (baseTemplate !== "account") return undefined;
     const sections = [...ast.header, ...ast.main, ...ast.footer];
@@ -723,8 +760,23 @@ export function ThemePreviewFrame({
     return {
       orders_list: build("orders_list"),
       profile_card: build("profile_card"),
+      // The account's four PLACEABLE panels — granted exactly when the
+      // theme's own body places them, so the preview and the storefront
+      // grant the same set.
+      account_nav: placedAccountPanels.includes("account_nav")
+        ? null
+        : undefined,
+      account_overview: placedAccountPanels.includes("account_overview")
+        ? null
+        : undefined,
+      account_orders: placedAccountPanels.includes("account_orders")
+        ? null
+        : undefined,
+      account_details: placedAccountPanels.includes("account_details")
+        ? null
+        : undefined,
     };
-  }, [baseTemplate, ast, previewData, lang, blueprintKey]);
+  }, [baseTemplate, ast, previewData, lang, blueprintKey, placedAccountPanels]);
 
   // The account template's route-owned BODY slot (Batch B). The storefront's
   // account route renders the designed dashboard there; the preview renders
@@ -745,6 +797,46 @@ export function ThemePreviewFrame({
     const detail = songoskritiPreviewOrderDetail(orderId);
     setPreviewOrderDetail(detail ? { orderId, detail } : null);
   };
+  /**
+   * The preview's own open-order state — the same shape the storefront's
+   * route owns. The preview has no shopper and no session, so nothing real
+   * can reach it.
+   */
+  const setPreviewOpenOrder = useCallback((orderId: string | null) => {
+    if (orderId === null) setPreviewOrderDetail(null);
+  }, []);
+
+  /**
+   * The preview's account state — the ONE object the theme-placed panels and
+   * the dashboard's own copy read.
+   *
+   * The demo shopper is synthetic and visibly labelled
+   * ("Rumana Haque (demo shopper)", an RFC 2606 `.example` email), and the
+   * order rows come from the theme's own demo fixtures.
+   */
+  const previewAccountState = useMemo(
+    (): AccountDashboardState => ({
+      slug: blueprintKey,
+      currency: "BDT",
+      status: "ready",
+      overview: songoskritiPreviewAccountOverview(),
+      orders: songoskritiPreviewOrders(),
+      tab: previewAccountTab,
+      setTab: setPreviewAccountTab,
+      openOrderId: previewOrderDetail?.orderId ?? null,
+      setOpenOrderId: setPreviewOpenOrder,
+      orderDetail: previewOrderDetail,
+      onLoadOrder: loadPreviewOrder,
+      placed: placedAccountPanels,
+    }),
+    [
+      blueprintKey,
+      previewAccountTab,
+      previewOrderDetail,
+      setPreviewOpenOrder,
+      placedAccountPanels,
+    ],
+  );
   const accountBodySlot = useMemo(() => {
     if (baseTemplate !== "account") return undefined;
     if (!isSongoskriti) return { page_content: null };
@@ -1283,11 +1375,13 @@ export function ThemePreviewFrame({
       )}
 
       {isSongoskriti ? (
-        <CartProvider value={previewCart}>
-          <CollectionQueryProvider value={previewQuery}>
-            <BlogFeedProvider value={previewFeed}>{canvas}</BlogFeedProvider>
-          </CollectionQueryProvider>
-        </CartProvider>
+        <AccountDashboardProvider value={previewAccountState}>
+          <CartProvider value={previewCart}>
+            <CollectionQueryProvider value={previewQuery}>
+              <BlogFeedProvider value={previewFeed}>{canvas}</BlogFeedProvider>
+            </CollectionQueryProvider>
+          </CartProvider>
+        </AccountDashboardProvider>
       ) : (
         canvas
       )}

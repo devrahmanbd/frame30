@@ -34,6 +34,7 @@ import type { AccountTab } from "@/lib/account-tab";
 import type { AccountOverview as AccountOverviewPayload } from "@/lib/accounts.server";
 import type { WidgetRow } from "@/lib/widget-data";
 import type { WidgetComponent, WidgetCtx } from "@/components/builder/widgets";
+import { partOrder } from "@/lib/widget-parts";
 import {
   useAccountDashboardState,
   type AccountAddressValues,
@@ -154,6 +155,7 @@ export function AccountNavPanel({
   tab,
   onTabChange,
   onActivate,
+  heading,
 }: {
   slug: string;
   tab: AccountTab;
@@ -161,6 +163,12 @@ export function AccountNavPanel({
   onTabChange?: (tab: AccountTab) => void;
   /** Called when a tab is activated — the dashboard focuses its panel then. */
   onActivate?: () => void;
+  /**
+   * The panel's own title. Blank by default (the catalogue's default is the
+   * empty string), so the panel renders exactly what it rendered before the
+   * field existed.
+   */
+  heading?: string;
 }) {
   const { t } = useLang();
   const navigate = useNavigate();
@@ -210,58 +218,65 @@ export function AccountNavPanel({
   };
 
   return (
-    <nav
-      aria-label={t("Account sections", "অ্যাকাউন্ট বিভাগ")}
-      className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0 lg:gap-3"
-    >
-      <div
-        role="tablist"
-        onKeyDown={onTabKeyDown}
-        className="flex gap-2 sm:flex-wrap lg:gap-3"
+    <>
+      {heading ? (
+        <h2 className="text-[11px] font-bold fq-caps tracking-widest text-muted-foreground">
+          {heading}
+        </h2>
+      ) : null}
+      <nav
+        aria-label={t("Account sections", "অ্যাকাউন্ট বিভাগ")}
+        className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0 lg:gap-3"
       >
-        {ACCOUNT_TAB_ITEMS.map((item) => {
-          const selected = item.tab === tab;
-          return (
-            <Link
-              key={item.tab}
-              id={tabId(item.tab)}
-              ref={(element: HTMLAnchorElement | null) => {
-                tabRefs.current[item.tab] = element;
-              }}
-              to="/store/$slug/account"
-              params={{ slug }}
-              search={{ tab: item.tab }}
-              role="tab"
-              aria-selected={selected}
-              aria-controls={panelId}
-              // The ROVING tabindex: one tab stop for the whole tablist.
-              tabIndex={focusedTab === item.tab ? 0 : -1}
-              onFocus={() => setFocusedTab(item.tab)}
-              onKeyDown={(event) => {
-                // Space activates a tab (Enter is the link's own).
-                if (event.key !== " " && event.key !== "Spacebar") return;
-                event.preventDefault();
-                activateTab(item.tab);
-              }}
-              onClick={(event) => {
-                if (item.tab !== tab) onActivate?.();
-                if (!onTabChange) return;
-                event.preventDefault();
-                onTabChange(item.tab);
-              }}
-              className={`flex min-h-11 shrink-0 items-center gap-2 border-b-2 px-3 py-2 text-[13px] font-bold fq-caps tracking-widest transition-colors ${
-                selected
-                  ? "border-foreground text-foreground"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <TabIcon icon={item.icon} />
-              <span>{t(item.en, item.bn)}</span>
-            </Link>
-          );
-        })}
-      </div>
-    </nav>
+        <div
+          role="tablist"
+          onKeyDown={onTabKeyDown}
+          className="flex gap-2 sm:flex-wrap lg:gap-3"
+        >
+          {ACCOUNT_TAB_ITEMS.map((item) => {
+            const selected = item.tab === tab;
+            return (
+              <Link
+                key={item.tab}
+                id={tabId(item.tab)}
+                ref={(element: HTMLAnchorElement | null) => {
+                  tabRefs.current[item.tab] = element;
+                }}
+                to="/store/$slug/account"
+                params={{ slug }}
+                search={{ tab: item.tab }}
+                role="tab"
+                aria-selected={selected}
+                aria-controls={panelId}
+                // The ROVING tabindex: one tab stop for the whole tablist.
+                tabIndex={focusedTab === item.tab ? 0 : -1}
+                onFocus={() => setFocusedTab(item.tab)}
+                onKeyDown={(event) => {
+                  // Space activates a tab (Enter is the link's own).
+                  if (event.key !== " " && event.key !== "Spacebar") return;
+                  event.preventDefault();
+                  activateTab(item.tab);
+                }}
+                onClick={(event) => {
+                  if (item.tab !== tab) onActivate?.();
+                  if (!onTabChange) return;
+                  event.preventDefault();
+                  onTabChange(item.tab);
+                }}
+                className={`flex min-h-11 shrink-0 items-center gap-2 border-b-2 px-3 py-2 text-[13px] font-bold fq-caps tracking-widest transition-colors ${
+                  selected
+                    ? "border-foreground text-foreground"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <TabIcon icon={item.icon} />
+                <span>{t(item.en, item.bn)}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+    </>
   );
 }
 
@@ -270,8 +285,11 @@ export function AccountNavPanel({
 /** The overview strip — only facts the shopper's own payload carries. */
 export function AccountOverviewPanel({
   overview,
+  heading,
 }: {
   overview?: AccountOverviewPayload;
+  /** The panel's own title. Blank by default — today's own title then. */
+  heading?: string;
 }) {
   const { t } = useLang();
   const orders = overview?.orders ?? [];
@@ -288,10 +306,11 @@ export function AccountOverviewPanel({
     null,
   );
   const defaultAddress = addresses.find((address) => address.is_default);
+  const title = heading || t("At a glance", "এক নজরে");
   return (
     <section aria-label={t("At a glance", "এক নজরে")} className="space-y-4">
       <h2 className="text-[11px] font-bold fq-caps tracking-widest text-muted-foreground">
-        {t("At a glance", "এক নজরে")}
+        {title}
       </h2>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <Fact
@@ -349,6 +368,8 @@ function OrderRows({
   orderDetail,
   orderDetailPending,
   orderDetailError,
+  parts,
+  layout,
 }: {
   rows: WidgetRow[];
   lang: string;
@@ -358,6 +379,10 @@ function OrderRows({
   orderDetail?: { orderId: string; detail: AccountOrderDetail } | null;
   orderDetailPending?: boolean;
   orderDetailError?: boolean;
+  /** The author's part order — the row's interior, never its values. */
+  parts?: string;
+  /** `row` is today's layout; `card` stacks the same parts in a card. */
+  layout?: "row" | "card";
 }) {
   const { t } = useLang();
 
@@ -367,36 +392,84 @@ function OrderRows({
     if (next) onLoadOrder?.(next);
   };
 
+  /**
+   * The row's parts. `number` and `date` share ONE block today (the order
+   * number with its date under it), so the group stays together when a theme
+   * reorders the row — and the group's position in the row is the position
+   * of its FIRST part. The default order is today's order, so a row with no
+   * authored `parts` renders byte for byte what it rendered before.
+   */
+  const order = partOrder(parts, "account_orders");
+  const card = layout === "card";
+
   return (
     <ul className="divide-y divide-border/60">
       {rows.map((row) => {
         const open = openOrderId === row.id;
         const detail =
           orderDetail?.orderId === row.id ? orderDetail.detail : null;
+        const children: ReactNode[] = [];
+        let textGroupDrawn = false;
+        order.forEach((part) => {
+          if (part === "number" || part === "date") {
+            if (textGroupDrawn) return;
+            textGroupDrawn = true;
+            children.push(
+              <span key="order-text" className="min-w-0">
+                {order.includes("number") ? (
+                  <span className="money block text-[14px] font-bold text-foreground">
+                    {row.title}
+                  </span>
+                ) : null}
+                {order.includes("date") ? (
+                  <time
+                    dateTime={row.date}
+                    className="money text-[12px] font-medium tracking-wide text-muted-foreground mt-1 block"
+                  >
+                    {formatDay(row.date, lang)}
+                  </time>
+                ) : null}
+              </span>,
+            );
+            return;
+          }
+          if (part === "status") {
+            if (!row.subtitle) return;
+            children.push(
+              <span
+                key="status"
+                className="justify-self-start text-[11px] font-bold uppercase tracking-widest text-muted-foreground bg-muted/50 px-3 py-1 rounded-full"
+              >
+                {row.subtitle}
+              </span>,
+            );
+            return;
+          }
+          if (part === "total") {
+            if (typeof row.priceMinor !== "number") return;
+            children.push(
+              <span
+                key="total"
+                className="money text-[14px] font-semibold text-foreground tracking-wide"
+              >
+                {fmtMinor(row.priceMinor, row.currency)}
+              </span>,
+            );
+          }
+        });
         return (
-          <li key={row.id}>
-            <div className="grid gap-2 py-6 transition-colors hover:bg-muted/30 sm:grid-cols-[minmax(0,1fr)_auto_auto_auto] sm:items-center sm:gap-6 -mx-4 px-4 sm:mx-0 sm:px-0">
-              <span className="min-w-0">
-                <span className="money block text-[14px] font-bold text-foreground">
-                  {row.title}
-                </span>
-                <time
-                  dateTime={row.date}
-                  className="money text-[12px] font-medium tracking-wide text-muted-foreground mt-1 block"
-                >
-                  {formatDay(row.date, lang)}
-                </time>
-              </span>
-              {row.subtitle ? (
-                <span className="justify-self-start text-[11px] font-bold uppercase tracking-widest text-muted-foreground bg-muted/50 px-3 py-1 rounded-full">
-                  {row.subtitle}
-                </span>
-              ) : null}
-              {typeof row.priceMinor === "number" ? (
-                <span className="money text-[14px] font-semibold text-foreground tracking-wide">
-                  {fmtMinor(row.priceMinor, row.currency)}
-                </span>
-              ) : null}
+          <li
+            key={row.id}
+            className={card ? "border border-border/60 p-4" : undefined}
+          >
+            <div
+              className={
+                card
+                  ? "flex flex-col items-start gap-2 py-2"
+                  : "grid gap-2 py-6 transition-colors hover:bg-muted/30 sm:grid-cols-[minmax(0,1fr)_auto_auto_auto] sm:items-center sm:gap-6 -mx-4 px-4 sm:mx-0 sm:px-0"
+              }
+            >
+              {children}
               {onLoadOrder ? (
                 <button
                   type="button"
@@ -597,6 +670,9 @@ export function AccountOrdersPanel({
   orderDetail,
   orderDetailPending,
   orderDetailError,
+  heading,
+  parts,
+  layout,
 }: {
   slug: string;
   rows: WidgetRow[];
@@ -606,24 +682,49 @@ export function AccountOrdersPanel({
   orderDetail?: { orderId: string; detail: AccountOrderDetail } | null;
   orderDetailPending?: boolean;
   orderDetailError?: boolean;
+  /** The panel's own title. Blank by default — no title then. */
+  heading?: string;
+  /** The author's part order — the row's interior, never its values. */
+  parts?: string;
+  /** `row` is today's layout; `card` stacks the same parts in a card. */
+  layout?: "row" | "card";
 }) {
   const { t, lang } = useLang();
   if (rows.length === 0) {
     return (
-      <Empty text={t("No orders yet.", "এখনও কোনো অর্ডার নেই।")} slug={slug} />
+      <>
+        {heading ? (
+          <h2 className="text-[11px] font-bold fq-caps tracking-widest text-muted-foreground">
+            {heading}
+          </h2>
+        ) : null}
+        <Empty
+          text={t("No orders yet.", "এখনও কোনো অর্ডার নেই।")}
+          slug={slug}
+        />
+      </>
     );
   }
   return (
-    <OrderRows
-      rows={rows}
-      lang={lang}
-      openOrderId={openOrderId}
-      onOpenOrder={onOpenOrder}
-      onLoadOrder={onLoadOrder}
-      orderDetail={orderDetail}
-      orderDetailPending={orderDetailPending}
-      orderDetailError={orderDetailError}
-    />
+    <>
+      {heading ? (
+        <h2 className="text-[11px] font-bold fq-caps tracking-widest text-muted-foreground">
+          {heading}
+        </h2>
+      ) : null}
+      <OrderRows
+        rows={rows}
+        lang={lang}
+        openOrderId={openOrderId}
+        onOpenOrder={onOpenOrder}
+        onLoadOrder={onLoadOrder}
+        orderDetail={orderDetail}
+        orderDetailPending={orderDetailPending}
+        orderDetailError={orderDetailError}
+        parts={parts}
+        layout={layout}
+      />
+    </>
   );
 }
 
@@ -831,6 +932,7 @@ export function AccountDetailsPanel({
   onSetConsent,
   onToggleWishlist,
   busy,
+  heading,
 }: {
   slug: string;
   tab: AccountTab;
@@ -856,6 +958,8 @@ export function AccountDetailsPanel({
     consent?: boolean;
     wishlist?: boolean;
   };
+  /** The panel's own title. Blank by default — no title then. */
+  heading?: string;
 }) {
   const { t } = useLang();
   const addresses = overview?.addresses ?? [];
@@ -865,6 +969,11 @@ export function AccountDetailsPanel({
 
   return (
     <>
+      {heading ? (
+        <h2 className="text-[11px] font-bold fq-caps tracking-widest text-muted-foreground">
+          {heading}
+        </h2>
+      ) : null}
       {tab === "addresses" && (
         <div className="space-y-6">
           {addresses.length === 0 ? (
@@ -1075,49 +1184,73 @@ export function AccountDetailsPanel({
  * A panel rendered as a widget. It reads the account provider and **nothing
  * else** — no fetch, no query, no credential — and with no provider it
  * renders **nothing** (it fails closed).
+ *
+ * The widget's own `ctx` carries the panel's DECLARED props (`heading`, and
+ * for the orders panel the composable `parts` order and the row `layout`).
+ * A blank heading renders no title, so a panel with no authored props
+ * renders exactly what it rendered before the fields existed.
  */
 function panelWidget(
   render: (
     state: NonNullable<ReturnType<typeof useAccountDashboardState>>,
+    ctx: WidgetCtx,
   ) => ReactNode,
 ): WidgetComponent {
-  return () => {
+  return (ctx) => {
     const state = useAccountDashboardState();
     if (!state) return null;
-    return <>{render(state)}</>;
+    // A SIGNED-OUT visitor meets the dashboard's single designed order-lookup
+    // panel — the dashboard returns it INSTEAD of its panels. A theme-placed
+    // panel must not add a second sign-in block in a different type language,
+    // so it renders nothing here.
+    if (state.status === "unauthenticated") return null;
+    return <>{render(state, ctx)}</>;
   };
 }
 
 /** `account_nav` — the five-tab strip. */
-export const AccountNav: WidgetComponent = panelWidget((state) => (
+export const AccountNav: WidgetComponent = panelWidget((state, ctx) => (
   <AccountNavPanel
     slug={state.slug}
     tab={state.tab}
     onTabChange={state.setTab}
+    heading={ctx.str("heading")}
   />
 ));
 
 /** `account_overview` — the overview strip. */
-export const AccountOverview: WidgetComponent = panelWidget((state) => (
-  <AccountOverviewPanel overview={state.overview} />
-));
-
-/** `account_orders` — the structured order rows and the inline disclosure. */
-export const AccountOrders: WidgetComponent = panelWidget((state) => (
-  <AccountOrdersPanel
-    slug={state.slug}
-    rows={state.orders}
-    openOrderId={state.openOrderId}
-    onOpenOrder={state.setOpenOrderId}
-    onLoadOrder={state.onLoadOrder}
-    orderDetail={state.orderDetail}
-    orderDetailPending={state.orderDetailPending}
-    orderDetailError={state.orderDetailError}
+export const AccountOverview: WidgetComponent = panelWidget((state, ctx) => (
+  <AccountOverviewPanel
+    overview={state.overview}
+    heading={ctx.str("heading")}
   />
 ));
 
+/** `account_orders` — the structured order rows and the inline disclosure. */
+export const AccountOrders: WidgetComponent = panelWidget((state, ctx) => {
+  // The orders live on the ORDERS tab — the same rule the dashboard's own
+  // copy follows (`AccountDashboard.tsx:295`), so the theme's panel and the
+  // dashboard's never disagree about where the orders are.
+  if (state.tab !== "orders") return null;
+  return (
+    <AccountOrdersPanel
+      slug={state.slug}
+      rows={state.orders}
+      openOrderId={state.openOrderId}
+      onOpenOrder={state.setOpenOrderId}
+      onLoadOrder={state.onLoadOrder}
+      orderDetail={state.orderDetail}
+      orderDetailPending={state.orderDetailPending}
+      orderDetailError={state.orderDetailError}
+      heading={ctx.str("heading")}
+      parts={ctx.str("parts")}
+      layout={ctx.str("layout") === "card" ? "card" : "row"}
+    />
+  );
+});
+
 /** `account_details` — the addresses, the profile, the consents, the wishlist. */
-export const AccountDetails: WidgetComponent = panelWidget((state) => (
+export const AccountDetails: WidgetComponent = panelWidget((state, ctx) => (
   <AccountDetailsPanel
     slug={state.slug}
     tab={state.tab}
@@ -1129,5 +1262,6 @@ export const AccountDetails: WidgetComponent = panelWidget((state) => (
     onSetConsent={state.onSetConsent}
     onToggleWishlist={state.onToggleWishlist}
     busy={state.busy}
+    heading={ctx.str("heading")}
   />
 ));

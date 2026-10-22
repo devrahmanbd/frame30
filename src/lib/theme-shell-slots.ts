@@ -32,6 +32,7 @@ import {
   type ThemeAst,
 } from "./builder-ast";
 import { themeRendersBody } from "./theme-body-slot";
+import type { AccountPanelType } from "@/components/store/AccountDashboardContext";
 
 /**
  * True when the theme's MAIN body renders for the route-owned body slot.
@@ -78,6 +79,30 @@ export function themePlacesAccountProfile(
   if (carries(chromeSections(ast), "profile_card")) return true;
   if (!themeBodyRenders(ast)) return false;
   return carries(mainSections(ast), "profile_card");
+}
+
+/**
+ * The theme's account body places the ACCOUNT PANEL ITSELF.
+ *
+ * The generalised form of `themePlacesAccountProfile`: the account surface is
+ * made of four placeable panels (`account_nav`, `account_overview`,
+ * `account_orders`, `account_details`), and the rule is the same for every
+ * one of them — **the route supplies a control the theme's body does not
+ * place**, and the supply is explicit (the dashboard's own copy of the
+ * panel), never a blank.
+ *
+ * A panel the theme's body places is granted to the theme's body; a panel it
+ * does not place is the dashboard's, and the dashboard's fallback skips the
+ * ones the theme placed — so a panel is never shown twice on one page.
+ */
+export function themePlacesAccountPanel(
+  ast: ThemeAst | null | undefined,
+  panel: AccountPanelType,
+): boolean {
+  if (!ast) return false;
+  if (carries(chromeSections(ast), panel)) return true;
+  if (!themeBodyRenders(ast)) return false;
+  return carries(mainSections(ast), panel);
 }
 
 /**

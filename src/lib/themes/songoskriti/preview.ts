@@ -336,6 +336,11 @@ export function songoskritiPreviewSource(
               heading: "Filters",
               limit: 12,
               collapsed: false,
+              // Decision Gate **G2 (a)** — the storefront GRANTS the facet
+              // sidebar, so the preview and the storefront show the SAME
+              // filters. The difference this composition used to have (the
+              // preview's extra column) is closed.
+              //
               // The category and kind groups are ON: the platform's facet
               // panel renders them only when these two switches are true
               // (`collection.tsx:157`, `:177`; `bool()` is
@@ -387,11 +392,35 @@ export function songoskritiPreviewSource(
                   // carries a deliberately blank heading — the platform's
                   // documented remedy (`builder-ast.ts:8506-8513`) — so the
                   // order summary is the body's single claimant.
-                  children: [s("cart_lines", { heading: "" })],
+                  //
+                  // The `parts` order is the THEME's own arrangement of the
+                  // row's interior: the line total comes before the unit
+                  // price, so the shopper reads what they pay for the line
+                  // before what the line costs per unit. The values are the
+                  // server's — the order only chooses which of them to draw,
+                  // and in which order.
+                  children: [
+                    s("cart_lines", {
+                      heading: "",
+                      parts:
+                        "title,variant,quantity,lineTotal,unitPrice,remove",
+                      layout: "row",
+                    }),
+                  ],
                 },
                 {
                   ...s("container", {}),
-                  children: [s("cart_summary", { heading: "Order summary" })],
+                  // The totals, in the theme's own order: the delivery and
+                  // the VAT before the total, and no cash-on-delivery fee
+                  // row (the theme's totals never quote one — the platform
+                  // owns the quote, and a COD row the store cannot take is
+                  // not shown).
+                  children: [
+                    s("cart_summary", {
+                      heading: "Order summary",
+                      parts: "subtotal,discount,shipping,vat,total",
+                    }),
+                  ],
                 },
               ],
             },
@@ -412,6 +441,10 @@ export function songoskritiPreviewSource(
             s("checkout_steps", {
               heading: "Checkout progress",
               activeStep: 2,
+              // The trail's own arrangement: the step names, then the marker
+              // of where the shopper is, then the links back to the completed
+              // steps.
+              parts: "labels,active,links",
             }),
             // The route's OWN body comes FIRST: the customer fields and the
             // validated submission. The payment block and the order summary
@@ -439,7 +472,15 @@ export function songoskritiPreviewSource(
                     // page <h1> (the order summary is the one claimant) —
                     // the widget falls back to its built-in "Payment
                     // method" legend, so nothing disappears.
-                    s("payment_methods", { heading: "" }),
+                    //
+                    // The rail's own arrangement: the legend, then the rails
+                    // themselves, then their groups, then the note. The
+                    // RAILS are the server's — the theme chooses where they
+                    // sit, never which ones exist.
+                    s("payment_methods", {
+                      heading: "",
+                      parts: "legend,options,groups,note",
+                    }),
                     s("payment_icons", {
                       heading: "We accept",
                       marks:
@@ -449,17 +490,29 @@ export function songoskritiPreviewSource(
                 },
                 {
                   ...s("container", {}),
-                  children: [s("cart_summary", { heading: "Order summary" })],
+                  children: [
+                    s("cart_summary", {
+                      heading: "Order summary",
+                      parts: "subtotal,discount,shipping,vat,total",
+                    }),
+                  ],
                 },
               ],
             },
           ];
         case "account":
           // The account surface (Batch B). The theme's body is a FRAME around
-          // the route's dashboard: the merchant's own profile card, and the
-          // route-owned body slot the dashboard flows through
-          // (`ThemeChrome`'s `contentSlot` — the same slot the authored page
-          // uses for the merchant's CMS body).
+          // the route's dashboard — and the frame's own pieces are the
+          // account's FOUR PLACEABLE PANELS. Each panel is route-owned data
+          // (the session-scoped `customer_overview` payload) that the theme
+          // may place in its own body; the panels read the account provider
+          // and nothing else, so a panel can never reach another shopper's
+          // rows — and a panel with no provider renders nothing at all.
+          //
+          // The panels the theme does NOT place are the DASHBOARD's: the
+          // dashboard is the provider's default composition, and it skips the
+          // panels the theme placed — so a panel is never shown twice on one
+          // page.
           //
           // NO `heading`: `account` is a route-h1 template
           // (`ROUTE_H1_TEMPLATES`), so the route owns the page's <h1> and the
@@ -468,8 +521,26 @@ export function songoskritiPreviewSource(
           // NO `orders_list`: the dashboard's orders tab renders the shopper's
           // orders as STRUCTURED ROWS (the four fields `mapOrdersToRows`
           // produces). The widget's plain list beside them would show the
-          // same orders twice on one page.
-          return [s("profile_card", {}), s("page_content", {})];
+          // same orders twice on one page. The `account_orders` panel below
+          // IS the orders — and it is placeable in the theme's own body.
+          //
+          // NO `profile_card`: the route supplies the composed profile card
+          // when the theme's body places none of its own
+          // (`themePlacesAccountProfile`, `src/lib/theme-shell-slots.ts:74`),
+          // so the shopper's details are shown ONCE.
+          return [
+            s("account_nav", { heading: "" }),
+            s("account_overview", { heading: "" }),
+            s("account_orders", {
+              heading: "",
+              parts: "number,date,status,total",
+              layout: "row",
+            }),
+            // The route-owned body slot STAYS: the dashboard's fallback
+            // renders everything the theme did not place — the "no blank
+            // required slot" rule.
+            s("page_content", {}),
+          ];
       }
     },
     /**

@@ -2755,3 +2755,534 @@ $ node_modules/.bin/eslint <the eighteen touched paths>
 ```
 
 The twenty warnings are the platform's own `react-refresh/only-export-components` warnings — the same kind and count the touched builder files already carried (`src/components/builder/CartContext.tsx` carries six of them for the same reason: a provider module exports a hook as well as a component).
+
+---
+
+# Phase 4 — Dynamic themes, Tasks 2 and 3: the per-template wiring and the pipeline unification (escalation bundle)
+
+**Branch:** `frame30` · **Base commit:** `3ca5e8ad` (Task 1, merged locally) · **Recorded:** 2026-10-22
+**Plan:** `docs/superpowers/plans/2026-10-22-frame30-dynamic-themes.md` (Tasks 2 and 3)
+**Task briefs:** `.superpowers/sdd/2026-10-22-frame30-dynamic-themes/task-2-brief.md`, `.superpowers/sdd/2026-10-22-frame30-dynamic-themes/task-3-brief.md`
+**Governing spec:** `docs/superpowers/specs/2026-10-18-songoskriti-unified-port-design.md` §7 (Boundary) and §9 (Testing & evidence)
+**Owner's ruling in force:** Decision Gate **G1** (the twelve named existing files), **G2** (the storefront grants `facet_sidebar`), **G3** (the absent-template state).
+
+This record is the port spec §9 escalation for Tasks 2 and 3. It is **append-only**: every section below is an append; nothing already written is rewritten. Each §(c) block is written **before** the file it names is edited.
+
+## (a) The finding
+
+### (a.1) What Task 2 changes
+
+The theme's **Cart**, **Checkout** and **Account** compositions are rebuilt on the composable pieces Task 1 shipped: each commerce widget now carries an authored `parts` order, the account composition places the four new placeable panels (`account_nav`, `account_overview`, `account_orders`, `account_details`) and still carries the route-owned body slot, Songoskriti's own renderers take over the ten claimed commerce/account widget types, the account route mounts the account provider and grants the four panels, and the storefront's search surface grants `facet_sidebar` (Decision Gate **G2**, ruling (a)).
+
+### (a.2) The measured blast radius — the plan's Task 2 file list is NOT the whole set
+
+The plan's Task 2 file list names nine files. **Reality differs**: the plan's own step 2.4 authors `heading`, `parts` and `layout` props on the four `account_*` panels, and the plan's own step 2.1(e) requires every authored prop to **survive `parseTemplates`** — and `parseSection` copies **only** the props a widget's catalogue row **declares** (`src/lib/builder-ast.ts:7844-7869`). The four `account_*` rows Task 1 shipped carry `defaults: {}` and `fields: []` — **no declared props at all**. So the plan's prescribed composition would have had every one of its props **silently dropped on save**, and the plan's own contract would have failed.
+
+The chain the plan's steps therefore force, measured file by file:
+
+| # | the forced change | file | why it is forced |
+| --- | --- | --- | --- |
+| 1 | the four `account_*` rows gain a `heading` field; `account_orders` gains `parts` + `layout` | `src/lib/builder-ast.ts` | plan step 2.4 authors those props; plan step 2.1(e) requires them to survive the sanitiser |
+| 2 | the closed vocabulary gains `account_orders` | `src/lib/widget-parts.ts` | plan step 2.6: the renderers "honour the SAME `parts` prop through `partOrder(ctx, type)`" — `partOrder` reads `WIDGET_PART_VOCABULARY[type]`, and an absent entry yields `[]`, i.e. **nothing renders** |
+| 3 | the four panels honour `heading`, and `account_orders` honours `parts` + `layout` | `src/components/store/account-widgets.tsx` | a declared prop that no renderer reads is a defect: the merchant types a heading and nothing appears |
+| 4 | the generalised "the route supplies the control the theme's body does not" rule | `src/lib/theme-shell-slots.ts` | plan step 2.7 names "the generalised form of `themePlacesAccountProfile`"; the module is the platform's own home for that rule (plan O5: *"keep and generalise"*) |
+| 5 | the preview mounts the account provider | `src/components/store/ThemePreviewFrame.tsx` | the new account composition places `account_orders`, a panel that reads the provider and **fails closed** — with no provider the preview's account tab would render nothing |
+| 6 | the account composition is re-pinned | `src/components/builder/songoskriti-port-freeze.test.tsx` | the freeze pin carries `account: ["profile_card", "page_content"]` — the composition the plan's step 2.4 replaces |
+| 7 | the checkout's dead-end "no rail" state | `src/routes/store.$slug.checkout.tsx`, `src/components/builder/cart.tsx` | plan Task 2's file list names the checkout route; the plan's Task 4 step 4.2 names the same change. **Both name it** — this round implements it once, and §(f) records that Task 4's step 4.2 will find it closed |
+
+**The studio twins need no edit.** `src/lib/studio/catalog.ts` derives the four `account_*` twins' defaults from the catalogue (`catalogDefaults("account_nav")`, `src/lib/studio/catalog.ts:1642`), so a catalogue-default change propagates by itself and the generated-defaults equality contract (`src/lib/studio/catalog-dedup.test.ts:101-106`) still holds. **Measured, not assumed** — see §(f).
+
+### (a.3) The files this round touches
+
+**NEW files — §7-allowed, no relaxation needed** (*"a NEW file needs no relaxation"*, `phase3-archive-key-escalation.md:33`):
+
+| file | what it is |
+| --- | --- |
+| `src/lib/themes/songoskriti/commerce-compositions.test.ts` | the commerce/account composition contract |
+| `src/lib/themes/songoskriti/commerce-presentations.tsx` | Songoskriti's own renderers for the ten claimed commerce/account types |
+| `src/lib/themes/songoskriti/commerce-presentations.test.tsx` | their suite |
+| `src/lib/payment-rail-empty.ts` | the ONE shared "no payment rail" sentence (D8) |
+| `src/lib/pipeline-resolver.ts` | the ONE resolution pipeline (Task 3) |
+| `src/lib/pipeline-resolver.test.ts` | its contract suite |
+
+**EXISTING files — §7-prohibited, relaxed:**
+
+| file | on G1's list? | the edit |
+| --- | --- | --- |
+| `src/lib/builder-ast.ts` | **yes** | the four `account_*` rows gain their declared fields |
+| `src/components/builder/cart.tsx` | **yes** | the shared "no payment rail" sentence |
+| `src/routes/store.$slug.account.tsx` | **yes** | the provider mount, the four new grants, the placed-panel rule |
+| `src/routes/store.$slug.search.tsx` | **yes** | the storefront's `facet_sidebar` grant (G2 (a)) + the widget batch |
+| `src/routes/store.$slug.checkout.tsx` | **yes** | the disabled place-order action and the shared empty state (D8) |
+| `src/components/store/ThemeChrome.tsx` | **yes** | the declined-template fallback becomes an explicit, named state (D5) |
+| `src/routes/_authenticated/dashboard/builder.tsx` | **yes** | the canvas's `themeKey` and its demo providers (D1, D2) |
+| `src/lib/preview-parity.contract.test.ts` | **yes** | **extended**: the search grant sets are now equal; the account grants grow; the editor/preview grant sets are compared |
+| `src/lib/widget-parts.ts` | **no — forced by (a.2) #2** | the closed vocabulary gains `account_orders` |
+| `src/components/store/account-widgets.tsx` | **no — forced by (a.2) #3** | the panels honour their declared props |
+| `src/lib/theme-shell-slots.ts` | **no — forced by (a.2) #4** | the generalised placed-panel rule |
+| `src/components/store/ThemePreviewFrame.tsx` | **no — the plan marks it "allowed" (Task 3)** | the account provider mount; the absent-template panel; the local, labelled demo rail |
+| `src/lib/theme-preview-nav.ts` | **no — the plan marks it "allowed" (Task 3)** | the synthesis goes; the assembled map becomes partial |
+| `src/routes/theme-preview.$key.tsx` | **no — forced by D3** | the installed artifact reads the **published** version row |
+| `src/components/builder/songoskriti-port-freeze.test.tsx` | **no — forced by (a.2) #6** | the account composition is re-pinned |
+| `src/lib/theme-preview-nav.test.ts` | **no — forced by the partial map** | the map becomes partial; the account opener changes; the absent state is pinned |
+| `src/components/store/songoskriti-preview-compositions.test.tsx` | **yes** | the map becomes partial |
+| `src/components/store/songoskriti-preview-page.test.tsx` | **no — forced by the partial map** | the map becomes partial |
+| `src/components/store/ThemePreviewFrame.test.tsx` | **no — forced by the partial map** | the maps become partial |
+
+**Theme-owned files — §7-allowed** (`src/lib/themes/songoskriti/**`): `preview.ts`, `presentation-claims.ts`, `template-distinctness.ts`.
+
+### (a.4) The compatibility rule this round must not break
+
+> *A change is compatible when a stored AST written before it renders byte-identically after it.* (plan A9)
+
+Two properties carry it:
+
+1. **The `parts` prop stays optional and its default is today's order.** The theme's NEW authored orders are the theme's own choice on the theme's **own** bodies — the theme's bodies are theme-owned preview/demo sources, not a merchant's stored AST. A merchant's stored AST carries no `parts` key and therefore resolves to the catalogue default, which is byte-for-byte today's order (Task 1 proved it across eleven surfaces).
+2. **The new account panels' defaults reproduce today's markup.** Every new field's default is the value that renders exactly what the panel rendered before (`heading: ""` → no heading; `parts: "number,date,status,total"` → today's row order; `layout: "row"` → today's row layout). A stored AST written before the change therefore renders byte-identically — measured in §(f).
+
+---
+
+## (b) The NEW files — no diff (a NEW file needs no relaxation)
+
+Listed in (a.3) above. They are additions to the tree, not edits to §7-prohibited files.
+
+---
+
+## (c) The exact old → new diffs
+
+Each §(c) block is appended **before** the file it names is edited. The applied diffs are re-stated in §(f) as committed.
+
+### (c.1) `src/lib/builder-ast.ts` — the four `account_*` rows gain their declared fields (ON G1's LIST)
+
+```diff
+@@ the `account_nav` row
+     defaults: {},
+-    fields: [],
++    defaults: { heading: "" },
++    fields: [text("heading", "Heading")],
+@@ the `account_overview` row
+-    defaults: {},
+-    fields: [],
++    defaults: { heading: "" },
++    fields: [text("heading", "Heading")],
+@@ the `account_orders` row
+-    defaults: {},
+-    fields: [],
++    defaults: {
++      heading: "",
++      parts: "number,date,status,total",
++      layout: "row",
++    },
++    fields: [
++      text("heading", "Heading"),
++      text("parts", "Part order (comma separated)", 200),
++      select("layout", "Row layout", [
++        { value: "row", label: "Row" },
++        { value: "card", label: "Card" },
++      ]),
++    ],
+@@ the `account_details` row
+-    defaults: {},
+-    fields: [],
++    defaults: { heading: "" },
++    fields: [text("heading", "Heading")],
+```
+
+**No count pin moves.** The four rows already exist; no `SectionType` member is added and no catalogue row is added, so `SECTION_CATALOG.length`, the studio shared-surface count and the four catalogue-count pins are all unchanged.
+
+### (c.2) `src/lib/widget-parts.ts` — the closed vocabulary gains `account_orders` (BEYOND G1's LIST — ratification required)
+
+```diff
+   orders_list: ["number", "date", "status", "total"],
+   profile_card: ["avatar", "name", "email", "phone"],
++  account_orders: ["number", "date", "status", "total"],
+ };
+```
+
+**Why it is forced.** `partOrder(raw, type)` reads `WIDGET_PART_VOCABULARY[type]`; an absent entry yields `[]`, and the plan's step 2.6 requires the theme's account renderers to honour the parts prop **through `partOrder(ctx, type)`**. Without the entry the account order rows would render **nothing**.
+
+### (c.3) `src/components/store/account-widgets.tsx` — the panels honour their declared props (BEYOND G1's LIST — ratification required)
+
+```diff
+-function panelWidget(
++function panelWidget(
+   render: (
+     state: NonNullable<ReturnType<typeof useAccountDashboardState>>,
++    ctx: WidgetCtx,
+   ) => ReactNode,
+ ): WidgetComponent {
+-  return () => {
++  return (ctx) => {
+     const state = useAccountDashboardState();
+     if (!state) return null;
+-    return <>{render(state)}</>;
++    return <>{render(state, ctx)}</>;
+   };
+ }
+@@ `AccountNav`
+ export const AccountNav: WidgetComponent = panelWidget((state) => (
+   <AccountNavPanel
+     slug={state.slug}
+     tab={state.tab}
+     onTabChange={state.setTab}
+   />
+ ));
+```
+…and each of the four panels gains the `heading` prop it now declares, and `AccountOrdersPanel` gains the `parts` / `layout` props its widget declares. **The defaults reproduce today's markup exactly**: a blank `heading` renders no heading, the default `parts` is today's row order and the default `layout` is today's row layout — so the dashboard's own suite stays byte-identical (§(f)).
+
+### (c.4) `src/lib/theme-shell-slots.ts` — the generalised placed-panel rule (BEYOND G1's LIST — ratification required)
+
+```diff
++/**
++ * The account panels the THEME's own body places.
++ *
++ * The generalised form of `themePlacesAccountProfile`: the route supplies a
++ * control the theme's body does not place, and the supply is EXPLICIT — never
++ * a blank.
++ */
++export function themePlacesAccountPanel(
++  ast: ThemeAst | null | undefined,
++  panel: AccountPanelType,
++): boolean {
++  if (!ast) return false;
++  if (carries(chromeSections(ast), panel)) return true;
++  if (!themeBodyRenders(ast)) return false;
++  return carries(mainSections(ast), panel);
++}
+```
+
+### (c.5) `src/routes/store.$slug.account.tsx` — the provider mount, the four grants, the placed-panel rule (ON G1's LIST)
+
+```diff
++import { AccountDashboardProvider } from "@/components/store/AccountDashboardContext";
++import { themePlacesAccountPanel } from "@/lib/theme-shell-slots";
+@@ the route's own state
++  // The panels the THEME's own body placed. The dashboard's fallback skips
++  // them, so a panel is never shown twice on one page.
++  const placedPanels = useMemo(() => {
++    const out: AccountPanelType[] = [];
++    for (const panel of ACCOUNT_PANEL_TYPES) {
++      if (themePlacesAccountPanel(chrome?.ast, panel)) out.push(panel);
++    }
++    return out;
++  }, [chrome?.ast]);
+@@ the grants
++    // The account's four placeable panels. A panel the THEME places is
++    // granted; a panel it does not place is the DASHBOARD's — and the
++    // dashboard's fallback skips the placed ones.
++    if (placedPanels.includes("account_nav")) out.account_nav = null;
++    if (placedPanels.includes("account_overview")) out.account_overview = null;
++    if (placedPanels.includes("account_orders")) out.account_orders = null;
++    if (placedPanels.includes("account_details")) out.account_details = null;
+@@ the mount
+-      <ThemeChrome … />
++      <AccountDashboardProvider value={accountState}>
++        <ThemeChrome … />
++      </AccountDashboardProvider>
+```
+
+### (c.6) `src/routes/store.$slug.search.tsx` — the storefront's `facet_sidebar` grant (ON G1's LIST, per G2 (a))
+
+```diff
++// The widget batch the published SEARCH layout needs, resolved on the
++// server: the `facet_sidebar`'s rows come from the widget-data pipeline
++// (`source: "facets"`), and no storefront route mounted a
++// `WidgetDataProvider` — which is why the facet column existed in the
++// preview and not in production (Decision D7).
++// The loader resolves the batch for the search template's own AST and
++// ships it inside the route payload.
+@@ the loader
++    const widgetBundle = chrome?.ast
++      ? collectWidgetRequests(chrome.ast)
++      : EMPTY_BUNDLE;
++    const widgetMap = widgetBundle.requests.length
++      ? await resolveWidgetData(chrome.merchant.id, widgetBundle)
++      : {};
+@@ the grants
+           contextSlots={{
+             result_toolbar: null,
+             filter_chips: null,
+             pagination: null,
++            facet_sidebar: null,
+             …
+           }}
++          …
++        <WidgetDataProvider bundle={widgetBundle} map={widgetMap}>
+```
+
+### (c.7) `src/components/store/ThemePreviewFrame.tsx` — the account provider mount (the plan marks this file "allowed" for Task 3)
+
+```diff
++import { AccountDashboardProvider } from "./AccountDashboardContext";
+@@ the preview's account state
++  const previewAccountState = useMemo(() => ({
++    slug: blueprintKey,
++    currency: "BDT",
++    status: "ready" as const,
++    overview: songoskritiPreviewAccountOverview(),
++    orders: songoskritiPreviewOrders(),
++    tab: previewAccountTab,
++    setTab: setPreviewAccountTab,
++    openOrderId: previewOrderDetail?.orderId ?? null,
++    setOpenOrderId: () => {},
++    orderDetail: previewOrderDetail,
++    onLoadOrder: loadPreviewOrder,
++    placed: placedAccountPanels,
++  }), […]);
+@@ the mount
+-  {isSongoskriti ? (
+-    <CartProvider value={previewCart}>…
++  {isSongoskriti ? (
++    <AccountDashboardProvider value={previewAccountState}>
++      <CartProvider value={previewCart}>…
++    </AccountDashboardProvider>
+```
+
+### (c.8) `src/components/builder/songoskriti-port-freeze.test.tsx` — the account composition is re-pinned (BEYOND G1's LIST — ratification required)
+
+```diff
+-  account: ["profile_card", "page_content"],
++  account: ["account_nav", "account_overview", "account_orders", "page_content"],
+```
+
+**The pin is strengthened, not weakened**: the account body now names the four placeable panels it places, and the composition is frozen at the new order.
+
+### (c.9) `src/lib/preview-parity.contract.test.ts` — the search grant sets are now EQUAL (ON G1's LIST, EXTENDED)
+
+```diff
+-  it("search — the preview adds facet_sidebar, and nothing else", () => {
++  it("search — the two hosts grant the SAME slots (Decision G2 (a) closed the difference)", () => {
+     const preview = grantedSlots(PREVIEW, "const searchSlots =");
+     const production = grantedSlots(
+       read("routes", "store.$slug.search.tsx"),
+       "contextSlots={{",
+     );
+     expect(difference(production, preview)).toEqual([]);
+-    // Decision D7: the facet sidebar reads the widget-data pipeline and no
+-    // storefront route mounts a `WidgetDataProvider` — it stays preview-only.
+-    expect(difference(preview, production)).toEqual(["facet_sidebar"]);
++    // Decision G2 (a): the storefront grants the facet sidebar too, so the
++    // preview and the storefront show the SAME filters. The old difference
++    // — the preview's extra `facet_sidebar` — is CLOSED.
++    expect(difference(preview, production)).toEqual([]);
++    expect(preview).toContain("facet_sidebar");
+     expect(production).toContain("empty_state");
+   });
+```
+
+### (c.10) `src/lib/theme-preview-nav.ts` — the synthesis goes; the map becomes partial (the plan marks this file "allowed" for Task 3)
+
+```diff
+-  templates: Record<TemplateKey, ThemeAst>;
++  templates: Partial<Record<TemplateKey, ThemeAst>>;
+@@ `assemblePreviewTemplates`
+-): Record<TemplateKey, ThemeAst> {
++): Partial<Record<TemplateKey, ThemeAst>> {
+   …
+-  const templates = {} as Record<TemplateKey, ThemeAst>;
++  const templates: Partial<Record<TemplateKey, ThemeAst>> = {};
+   for (const templateKey of TEMPLATE_KEYS) {
+     const headerBase = source.header(templateKey, s);
+     const footerBase = source.footer(templateKey, s);
+-    templates[templateKey] = {
++    const main = source.main(templateKey, s);
++    // A template the theme does not author stays ABSENT from the map: the
++    // preview host's existing `unsupported` branch renders the explicit
++    // "not supported by this theme" panel. The engine never synthesises a
++    // body for a key the theme did not author.
++    if (!main) continue;
++    templates[templateKey] = {
+       header: reid(headerBase, templateKey),
+-      main: source.main(templateKey, s) ?? genericDemoMain(templateKey, s),
++      main,
+       footer: reid(footerBase, templateKey),
+     };
+   }
+```
+
+`genericDemoMain` **STAYS** — it is the distinctness gate's reference body (`src/lib/themes/songoskriti/template-distinctness.ts:56`, `:504`).
+
+### (c.11) `src/routes/theme-preview.$key.tsx` — the installed artifact reads the PUBLISHED version row (BEYOND G1's LIST — ratification required, D3)
+
+```diff
+-      const { data: versions } = await supabase
++      // The PUBLISHED pointer — the same row the storefront serves
++      // (`store_themes.published_version_id`) — not the newest version row.
++      // A merchant's preview must show what their storefront shows.
++      const { data: versions } = await supabase
+         .from("theme_versions")
+         .select("theme_id, version, templates, tokens")
+         .eq("merchant_id", merchantId)
++        .in("theme_id", publishedIds)
+```
+
+### (c.12) `src/components/store/ThemeChrome.tsx` — the declined-template fallback becomes an explicit, named state (ON G1's LIST, D5)
+
+```diff
+-          fallback
++          <div
++            data-fq-declined-template={template}
++            data-fq-theme-state="declined-template"
++            className="fq-declined-template"
++          >
++            <p className="fq-declined-template__label">
++              {storeName ?? storeSlug
++                ? `${storeName ?? storeSlug} — this theme does not design the ${template} page`
++                : `This theme does not design the ${template} page`}
++            </p>
++            {fallback}
++          </div>
+```
+
+### (c.13) `src/routes/_authenticated/dashboard/builder.tsx` — the canvas's `themeKey` and its demo providers (ON G1's LIST, D1 + D2)
+
+```diff
+                               <SectionRenderer
+                                 key={section.id}
+                                 section={section}
+                                 editing
++                                themeKey={activeThemeKey}
+                                 device={device}
+```
+
+…and the canvas's tree is wrapped in the theme's demo providers (`CartProvider` / `CollectionQueryProvider` / `BlogFeedProvider`), the same three the preview mounts.
+
+### (c.14) `src/routes/store.$slug.checkout.tsx` + `src/components/builder/cart.tsx` — ONE shared "no payment rail" sentence and a disabled action (D8)
+
+```diff
+@@ `src/components/builder/cart.tsx`
+-        {str("emptyText") ||
+-          t(
+-            locale,
+-            "No payment method is available right now.",
+-            "এই মুহূর্তে কোনো পেমেন্ট পদ্ধতি নেই।",
+-          )}
++        {str("emptyText") || NO_PAYMENT_RAIL[locale === "bn" ? "bn" : "en"]}
+@@ `src/routes/store.$slug.checkout.tsx`
+-        {t(
+-          "This store has not enabled any payment method yet.",
+-          "এই দোকান এখনও কোনো পেমেন্ট মেথড চালু করেনি।",
+-        )}
++        {NO_PAYMENT_RAIL[lang === "bn" ? "bn" : "en"]}
+@@ the action's state
+-  const submitDisabled =
+-    !totals || mutation.isPending || chargeHop === "redirecting";
++  const submitDisabled =
++    !totals ||
++    mutation.isPending ||
++    chargeHop === "redirecting" ||
++    // The server offered no rail: the shopper cannot pay, so the action is
++    // disabled and says why.
++    offered.length === 0;
+```
+
+**The shared sentence** lives in the NEW file `src/lib/payment-rail-empty.ts` — one place, imported by both hosts. The English text is the **widget's own existing sentence** (`"No payment method is available right now."`), which the widget's suite (`src/components/builder/cart-payment-methods.test.tsx:169`) and the browser lane (`.e2e/songoskriti-storefront-surfaces.spec.ts:298`) already pin. **No Bangla copy is authored** — the shared constant reuses the widget's existing বাংলা sentence verbatim, so the translation meter reports exactly what it reported before.
+
+---
+
+## (d) The compatibility proof — measured, not claimed
+
+See §(f). The measurement compares the rendered markup of the account dashboard in all five tab states and of the six composable widgets, before and after this round, byte for byte.
+
+---
+
+## (e) The commits of this round
+
+Recorded in §(f) as committed.
+
+---
+
+## (f) Task 2 — the applied diffs and the compatibility measurement
+
+**The applied diffstat (Task 2)**, measured after the last edit and before the commit:
+
+```
+ src/components/builder/cart.tsx                    |   8 +-
+ .../builder/songoskriti-port-freeze.test.tsx       |  21 +-
+ src/components/store/ThemePreviewFrame.tsx         | 108 ++++++-
+ src/components/store/account-widgets.tsx           | 342 ++++++++++++++-------
+ src/lib/builder-ast.ts                             |  37 ++-
+ src/lib/preview-parity.contract.test.ts            |  27 +-
+ src/lib/theme-shell-slots.ts                       |  25 ++
+ .../themes/songoskriti/claims-activation.test.ts   |  15 +-
+ .../presentation-claims-activation.test.ts         |  19 +-
+ .../themes/songoskriti/presentation-claims.ts      |  43 ++-
+ .../themes/songoskriti/preview.test.ts             |  10 +-
+ .../themes/songoskriti/preview.ts                  |  91 +++++-
+ .../themes/songoskriti/template-distinctness.ts    |  42 +-
+ src/lib/widget-parts.ts                            |   7 +
+ src/routes/store.$slug.account.tsx                 | 206 +++++++++++--
+ src/routes/store.$slug.checkout.tsx                |  18 +-
+ src/routes/store.$slug.search.tsx                  | 160 +++++++---
+ 17 files changed, 919 insertions(+), 260 deletions(-)
+```
+
+plus the FOUR NEW files (`src/lib/payment-rail-empty.ts`,
+`src/lib/themes/songoskriti/commerce-compositions.test.ts`,
+`src/lib/themes/songoskriti/commerce-presentations.tsx`,
+`src/lib/themes/songoskriti/commerce-presentations.test.tsx`).
+
+**Two §(c) blocks were amended by the code as written, and the amendments are named here rather than silently absorbed.**
+
+1. **§(c.3)** — the account panels' `heading` prop is honoured as a **title above** the panel (the nav, the orders and the details) and as the overview strip's own title (the overview already had a title). A blank heading renders nothing, so the dashboard's own markup is unchanged.
+2. **§(c.3)** — `account_orders` honours the parts order and the row layout; the platform's `AccountOrdersPanel` grew the two optional props (`parts`, `layout`) and the row's parts are drawn in the authored order. The DEFAULT order is today's order, so a panel with no authored props renders byte for byte what it rendered before — **measured**, below.
+
+**The compatibility measurement (Task 2).** The rule is *"a change is compatible when a stored AST written before it renders byte-identically after it"*. The measurement is the same harness Task 1 used: a temporary capture (deleted before the commit) rendered the surfaces, the "before" capture was taken with the two changed renderers swapped back to their base-commit versions (`git show 3ca5e8ad:…`), and the two captures were compared byte for byte (the generated section id is normalised — it is random per `newSection`, so it is not part of the markup).
+
+```
+$ node /tmp/opencode/compare.js /tmp/opencode/markup-before.json /tmp/opencode/markup-after.json
+SAME  widget:cart_lines:en                      (6042 bytes)
+SAME  widget:cart_lines:bn                      (5992 bytes)
+SAME  widget:cart_summary:en                    (2458 bytes)
+SAME  widget:cart_summary:bn                    (2468 bytes)
+SAME  widget:checkout_steps:en                  (1928 bytes)
+SAME  widget:checkout_steps:bn                  (1919 bytes)
+SAME  widget:payment_methods:en                 (1259 bytes)
+SAME  widget:payment_methods:bn                 (1269 bytes)
+SAME  widget:payment_methods:no-rail            (152 bytes)
+SAME  widget:payment_methods:no-rail:bn         (162 bytes)
+SAME  dashboard:orders                          (7914 bytes)
+SAME  dashboard:addresses                       (7211 bytes)
+SAME  dashboard:wishlist                        (7241 bytes)
+SAME  dashboard:profile                         (6555 bytes)
+SAME  dashboard:privacy                         (8239 bytes)
+SAME  dashboard:unauthenticated                 (1472 bytes)
+SAME  dashboard:loading                         (238 bytes)
+SAME  dashboard:error                           (305 bytes)
+
+18 surfaces compared, 0 different
+```
+
+**What the measurement covers, and what it does not.** It covers the platform's own renderers for the six composable widgets and the account dashboard's eight states — the surfaces a stored AST reaches. It does **not** cover the theme's OWN new presentation of those surfaces: `SONGOSKRITI_PRESENTATION_CLAIMS` grew by the ten commerce and account types (the plan's A3.2), so the **songoskriti** theme key now renders those surfaces in the theme's own type language. That is the plan's design, not a regression: the compatibility rule is about a **stored AST**, and a merchant's published AST is rendered under the MERCHANT's theme key, not under `songoskriti`. A merchant who installed Songoskriti sees the theme's own presentation — which is what installing a theme means.
+
+**The Task 2 suites (the exact output).**
+
+```
+$ node_modules/.bin/vitest run src/lib/themes/songoskriti/composition-props.test.ts … src/components/builder/songoskriti-port-freeze.test.tsx
+ Test Files  17 passed (17)
+      Tests  203 passed (203)
+
+$ node_modules/.bin/tsgo --noEmit
+(no output)
+
+$ node_modules/.bin/eslint <the twenty-two touched paths>
+✖ 22 problems (0 errors, 22 warnings)
+```
+
+The twenty-two warnings are the platform's own `react-refresh/only-export-components` and `react-hooks/exhaustive-deps` warnings — the same kind the touched files already carried.
+
+**The failing-first proof (Task 2 step 2.1).** The composition contract was written BEFORE the compositions were rebuilt, and it failed:
+
+```
+$ node_modules/.bin/vitest run src/lib/themes/songoskriti/commerce-compositions.test.ts
+ × the cart composition places cart_lines and cart_summary, each with an authored parts order
+ × the checkout composition places payment_methods, cart_summary and checkout_steps, each with an authored parts order
+ × the account composition places an account panel and keeps the route-owned body slot
+ × every authored parts value in the theme's source is inside the closed vocabulary
+ Test Files  1 failed (1)
+      Tests  4 failed | 2 passed (6)
+```
+
+and passes after the rebuild (`6 passed`).
+
+---

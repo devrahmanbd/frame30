@@ -21,6 +21,7 @@ import {
   type PaymentMethodKey,
 } from "@/lib/payment-rails";
 import { partOrder } from "@/lib/widget-parts";
+import { noPaymentRailMessage } from "@/lib/payment-rail-empty";
 import type { WidgetComponent, WidgetCtx } from "./widgets";
 import {
   useCartContext,
@@ -746,12 +747,7 @@ const PaymentMethods: WidgetComponent = (ctx) => {
   if (cart.methods.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
-        {str("emptyText") ||
-          t(
-            locale,
-            "No payment method is available right now.",
-            "এই মুহূর্তে কোনো পেমেন্ট পদ্ধতি নেই।",
-          )}
+        {str("emptyText") || noPaymentRailMessage(locale)}
       </p>
     );
   }

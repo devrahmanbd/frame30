@@ -21,8 +21,15 @@ import {
 } from "@/components/store/StorefrontError";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { PluginLayer } from "@/components/store/PluginLayer";
+import { WidgetDataProvider } from "@/components/builder/WidgetDataContext";
 import { SupportWidget } from "@/components/store/SupportWidget";
 import { CollectionQueryProvider } from "@/components/builder/collection";
+import {
+  EMPTY_BUNDLE,
+  collectWidgetRequests,
+  type WidgetDataBundle,
+  type WidgetDataMap,
+} from "@/lib/widget-data";
 import {
   PAGE_SIZE,
   SORTS,
@@ -71,7 +78,50 @@ export const Route = createFileRoute("/store/$slug/search")({
       if (!isStorefrontInfrastructureError(err)) throw err;
       throw normalizeStorefrontLoaderError(err);
     }
-    return { ...outcome, chrome, origin: chrome?.origin ?? null };
+    // Decision Gate **G2 (a)** — the storefront GRANTS the facet sidebar, so
+    // the preview and the storefront show the SAME filters. The sidebar's
+    // rows come from the widget-data pipeline (`source: "facets"`), and no
+    // storefront route mounted a `WidgetDataProvider` — which is exactly why
+    // the facet column existed in the preview and not in production
+    // (Decision **D7**).
+    //
+    // The batch is resolved HERE, on the server, for the published SEARCH
+    // layout's own AST — the same mechanism the homepage uses
+    // (`src/lib/storefront.server.ts:506-514`). It is shipped inside the
+    // route payload, so the client never refetches it on hydrate.
+    const widgetBundle: WidgetDataBundle = chrome?.ast
+      ? collectWidgetRequests(chrome.ast)
+      : EMPTY_BUNDLE;
+    let widgetMap: WidgetDataMap = {};
+    if (widgetBundle.requests.length > 0 && chrome) {
+      try {
+        const { resolveWidgetData } = await import("@/lib/widget-data.server");
+        const { currentRequestHost, storeLinkBase } =
+          await import("@/lib/storefront-host.server");
+        widgetMap = await resolveWidgetData(
+          chrome.merchant.id,
+          widgetBundle,
+          undefined,
+          {
+            base: storeLinkBase(
+              currentRequestHost(),
+              chrome.merchant.slug ?? params.slug,
+            ),
+          },
+        );
+      } catch {
+        // A resolver failure degrades to an empty facet column — never a
+        // broken page, never a wrong tenant's rows.
+        widgetMap = {};
+      }
+    }
+    return {
+      ...outcome,
+      chrome,
+      origin: chrome?.origin ?? null,
+      widgetBundle,
+      widgetMap,
+    };
   },
   head: ({ params, match, loaderData }) => {
     // Phase 7.1 canonical discipline: one allowlisted facet on page 1 stays
@@ -124,7 +174,8 @@ function SearchPage() {
   const { t } = useLang();
   const { slug } = Route.useParams();
   const rawSearch = Route.useSearch();
-  const { chrome, ...loaderData } = Route.useLoaderData();
+  const { chrome, widgetBundle, widgetMap, ...loaderData } =
+    Route.useLoaderData();
   const navigate = useNavigate();
   const params = normalizeSearchParams(rawSearch as Record<string, unknown>);
   const [term, setTerm] = useState(params.q);
@@ -603,54 +654,63 @@ function SearchPage() {
           navigate: (next) => apply(next),
         }}
       >
-        <ThemeChrome
-          template="search"
-          storeSlug={slug}
-          themeKey={chrome?.themeKey ?? null}
-          merchantId={chrome?.merchant.id ?? null}
-          ast={chrome?.ast ?? null}
-          tokens={chrome?.tokens ?? null}
-          siteKit={chrome?.siteKit ?? null}
-          chrome={
-            <>
-              <StoreHeader
-                slug={slug}
-                name={chrome?.merchant.name ?? slug}
-                menus={chrome?.menus}
-                themeKey={chrome?.themeKey ?? null}
-              />
-              {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
-              {/* <SupportWidget slug={slug} /> */}
-            </>
-          }
-          // The storefront grants five of the platform's search widgets;
-          // `facet_sidebar` stays preview-only because its rows come from the
-          // widget-data pipeline (D7). A themed storefront search page therefore
-          // has NO independent facet sidebar — the platform's own category/kind
-          // chips remain visible inside the results block, which is where the
-          // shopper filters the search.
-          contextSlots={{
-            result_toolbar: null,
-            filter_chips: null,
-            pagination: null,
-            // The `empty_state` widget renders its panel unconditionally
-            // (`src/components/builder/collection.tsx:707-753`), so the GRANT
-            // is what decides whether the theme's empty copy appears — it is
-            // granted only when the platform's own empty state would have
-            // shown.
-            ...(result && result.items.length === 0 && !query.isPending
-              ? { empty_state: null }
-              : {}),
-            category_header: null,
-          }}
-          productSlot={resultsBlock}
-          fallback={
-            <>
-              {heading}
-              {listing}
-            </>
-          }
-        />
+        {/*
+          Decision Gate **G2 (a)** — the storefront grants the facet sidebar,
+          and the widget batch the sidebar reads is resolved on the server
+          (the loader) and shipped in the payload. The preview and the
+          storefront therefore show the SAME filters.
+        */}
+        <WidgetDataProvider bundle={widgetBundle} map={widgetMap}>
+          <ThemeChrome
+            template="search"
+            storeSlug={slug}
+            themeKey={chrome?.themeKey ?? null}
+            merchantId={chrome?.merchant.id ?? null}
+            ast={chrome?.ast ?? null}
+            tokens={chrome?.tokens ?? null}
+            siteKit={chrome?.siteKit ?? null}
+            chrome={
+              <>
+                <StoreHeader
+                  slug={slug}
+                  name={chrome?.merchant.name ?? slug}
+                  menus={chrome?.menus}
+                  themeKey={chrome?.themeKey ?? null}
+                />
+                {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
+                {/* <SupportWidget slug={slug} /> */}
+              </>
+            }
+            // The storefront grants the platform's search widgets — and, per
+            // Decision Gate **G2 (a)**, the facet sidebar too. Its rows come
+            // from the widget-data pipeline, which this route now resolves and
+            // mounts (the `WidgetDataProvider` above). The platform's own
+            // category/kind chips stay visible inside the results block as
+            // well, so the shopper can filter from either place.
+            contextSlots={{
+              result_toolbar: null,
+              filter_chips: null,
+              pagination: null,
+              facet_sidebar: null,
+              // The `empty_state` widget renders its panel unconditionally
+              // (`src/components/builder/collection.tsx:707-753`), so the GRANT
+              // is what decides whether the theme's empty copy appears — it is
+              // granted only when the platform's own empty state would have
+              // shown.
+              ...(result && result.items.length === 0 && !query.isPending
+                ? { empty_state: null }
+                : {}),
+              category_header: null,
+            }}
+            productSlot={resultsBlock}
+            fallback={
+              <>
+                {heading}
+                {listing}
+              </>
+            }
+          />
+        </WidgetDataProvider>
       </CollectionQueryProvider>
     </PluginLayer>
   );

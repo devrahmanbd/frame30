@@ -103,13 +103,20 @@ const TEMPLATE_MAIN: Record<string, string[]> = {
     "product_rail",
   ],
   // Batch B — the account dashboard (Task 3). The theme's account body is a
-  // FRAME around the route's dashboard: the merchant's own profile card and
-  // the route-owned body slot the dashboard flows through. NO `heading` (the
-  // account template is a route-h1 template — the route owns the page's
-  // <h1>) and NO `orders_list` (the dashboard's orders tab renders the
-  // orders as structured rows; the widget's plain list beside them would
-  // show the same orders twice).
-  account: ["profile_card", "page_content"],
+  // FRAME around the route's dashboard: the account's PLACEABLE panels (the
+  // nav, the overview and the orders) plus the route-owned body slot the
+  // dashboard flows through. NO `heading` (the account template is a
+  // route-h1 template — the route owns the page's <h1>), NO `orders_list`
+  // (the dashboard's orders tab renders the orders as structured rows; the
+  // widget's plain list beside them would show the same orders twice) and
+  // NO `profile_card` (the route supplies the composed profile card when the
+  // theme's body places none of its own).
+  account: [
+    "account_nav",
+    "account_overview",
+    "account_orders",
+    "page_content",
+  ],
   page: ["breadcrumb", "page_content"],
   blog: ["blog_terms", "blog_archive", "blog_pager"],
   cart: ["heading", "columns"],

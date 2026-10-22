@@ -154,16 +154,29 @@ export const SONOSKRITI_TEMPLATE_EXPECTATIONS: Record<
     forbiddenTypes: [],
   },
   account: {
-    // Batch B — the account dashboard. The theme's account body is a FRAME
-    // around the route's dashboard: the merchant's own profile card plus the
-    // route-owned body slot the dashboard flows through. `heading` is
-    // forbidden because `account` is a route-h1 template (the route owns the
-    // page's <h1>), and `orders_list` is not required because the dashboard's
-    // orders tab renders the shopper's orders as structured rows — the
-    // widget's plain list beside them would show the same orders twice.
-    requiredTypes: ["profile_card", "page_content"],
-    requiredSlots: ["profile_card", "page_content"],
-    forbiddenTypes: ["heading", "rich_text"],
+    // The account's placeable panels. The theme's account body is a FRAME
+    // around the route's dashboard: the four placeable panels it chooses to
+    // place, plus the route-owned body slot the dashboard flows through.
+    // `heading` is forbidden because `account` is a route-h1 template (the
+    // route owns the page's <h1>), `orders_list` is forbidden because the
+    // dashboard's orders tab renders the shopper's orders as structured rows
+    // — the widget's plain list beside them would show the same orders twice
+    // — and `profile_card` is forbidden because the ROUTE supplies the
+    // composed profile card when the theme's body places none of its own
+    // (`themePlacesAccountProfile`), so the shopper's details are shown ONCE.
+    requiredTypes: [
+      "account_nav",
+      "account_overview",
+      "account_orders",
+      "page_content",
+    ],
+    requiredSlots: [
+      "account_nav",
+      "account_overview",
+      "account_orders",
+      "page_content",
+    ],
+    forbiddenTypes: ["heading", "rich_text", "orders_list", "profile_card"],
   },
   page: {
     requiredTypes: ["breadcrumb", "page_content"],
@@ -178,7 +191,10 @@ export const SONOSKRITI_TEMPLATE_EXPECTATIONS: Record<
   cart: {
     requiredTypes: ["heading", "columns"],
     requiredSlots: ["cart_lines", "cart_summary"],
-    forbiddenTypes: ["product_rail"],
+    // The account's orders live in the dashboard, and a commerce surface
+    // carries no demo rail: both are the generic shapes this surface must
+    // not have.
+    forbiddenTypes: ["product_rail", "orders_list"],
   },
   checkout: {
     // Batch B (Decision D2') — the theme's checkout composition is the
@@ -279,9 +295,9 @@ export const SONOSKRITI_APPROVED_EXCEPTIONS: Partial<
   },
   search: {
     reason:
-      'the six per-widget search sections are context widgets whose permission the host grants (`src/components/builder/SectionRenderer.tsx:814-833`); on a host that does not grant it they render nothing. The storefront grants five of them — `result_toolbar`, `filter_chips`, `pagination`, `empty_state`, `category_header` — and `facet_sidebar` stays **preview-only**, because its rows come from the widget-data pipeline (`source: "facets"`, `src/lib/widget-registry.ts:483-503`) and no storefront route mounts a `WidgetDataProvider` (Decision **D7**). The gate requires the six sections in the composition and their catalogue allowlist, and does not require them to render on every host (Decisions **D6** — ruled, State B — and **D7**).',
+      "the six per-widget search sections are context widgets whose permission the host grants (`src/components/builder/SectionRenderer.tsx:814-833`); on a host that does not grant it they render nothing. The storefront now grants all six — `result_toolbar`, `filter_chips`, `pagination`, `empty_state`, `category_header` and `facet_sidebar` — and the storefront's search route mounts the widget batch the published layout needs, so the facet rows the sidebar reads are the storefront's own. That CLOSED the preview-only difference Decision **D7** had named (Decision **G2 (a)**). The gate requires the six sections in the composition and their catalogue allowlist, and does not require them to render on every host.",
     basis:
-      "Decisions **D6** (ruled, State B) and **D7** — the storefront grants five of the six search widgets and `facet_sidebar` stays preview-only (`src/lib/widget-registry.ts:483-503`).",
+      "Decisions **D7** (named) and **G2 (a)** (closed) — the storefront grants `facet_sidebar` too, and resolves its rows through the widget-data pipeline (`src/lib/widget-registry.ts:483-503`); the preview and the storefront now grant the SAME set (`src/lib/preview-parity.contract.test.ts`).",
   },
 };
 
