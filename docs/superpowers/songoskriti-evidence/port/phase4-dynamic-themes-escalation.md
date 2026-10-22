@@ -4812,3 +4812,17 @@ What is frozen:
 No threshold moves, no case is skipped, no assertion is removed. The lane is re-run after the freeze as an unmodified pass/fail check.
 
 **Deviation, recorded:** the first parity run used the default `PORT_CAPTURE_OUT`, so it overwrote 25 tracked stills and the manifest under `docs/.../port/reference/`. Those files were restored with `git checkout --` before the freeze, and both the freeze run and the verification run use `PORT_CAPTURE_OUT=after`, so `reference/` is untouched from here on.
+
+### (k.7.4) Appendix — the freeze, and the unmodified re-run
+
+*(Append-only, dated 2026-10-22, closing §(k.7).)*
+
+The record commit authorising the re-freeze is `45b5c900`. The freeze ran after it:
+
+- `45b5c900` — `docs(evidence): classify the parity stills and authorise the re-freeze`
+- freeze run (`--update-snapshots`, `PORT_CAPTURE_OUT=after`): **66 passed, 1 skipped, 0 failed** (8.3 m)
+- verification run (no `--update-snapshots`, same env): **66 passed, 1 skipped, 0 failed** (8.1 m)
+
+The single skip is the pre-existing, documented `chrome-mobile-drawer-375-bn` manual-review case (drawer does not open for `lang=bn` at 375 px; `SKIPPED` in the spec carries the reason and no baseline is written). It is not a pass.
+
+Artifacts committed with this appendix's parent: 27 machine baselines (21 re-frozen + 6 archive added), 65 human `after/` stills, and `reference-manifest.json` stamped `freezeSha: 45b5c900bb10`. The `reference/` stills are untouched from their pre-run state; the superseded baselines remain retrievable from git history and from `/tmp/opencode/e2e-auth/parity-before/`.
