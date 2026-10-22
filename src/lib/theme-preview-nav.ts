@@ -475,9 +475,12 @@ const GENERIC_TITLES: Record<TemplateKey, [string, string]> = {
 };
 
 /**
- * Generic demo body for templates a theme does not author. Static sections
- * only (heading + rich text always render; no data, no art, no theme copy),
- * opening with a heading so the page still owns its h1.
+ * The distinctness gate's REFERENCE body — the yardstick the gate measures a
+ * theme's own body against (`src/lib/themes/songoskriti/template-distinctness.ts`),
+ * not a synthesiser: the preview never renders it, because a template the
+ * theme does not author stays absent from the map (the plan's **D4**).
+ * Static sections only (heading + rich text always render; no data, no art,
+ * no theme copy), opening with a heading so the reference body owns its h1.
  */
 export function genericDemoMain(
   template: TemplateKey,

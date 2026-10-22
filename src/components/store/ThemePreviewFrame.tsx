@@ -135,7 +135,7 @@ import { useSectionChannel } from "@/components/builder/useSectionChannel";
 const UNSUPPORTED_TEMPLATE_TITLE =
   "This template is not supported by this theme";
 const UNSUPPORTED_TEMPLATE_BODY =
-  "The theme does not author a body for this template, so there is nothing to preview. The archive is a first-class template a theme may author, and the platform's own reader surfaces — the blog listing and its category, tag and author archives — keep the platform grid, because they carry no store slug and so they cannot resolve a theme.";
+  "The theme does not author a body for this template, and the engine never synthesises one — a template the theme does not author is not filled with a generic fallback body, so there is nothing to preview. The archive is a first-class template a theme may author, and the platform's own reader surfaces — the blog listing and its category, tag and author archives — keep the platform grid, because they carry no store slug and so they cannot resolve a theme.";
 
 // M4: the merchant-facing builder names the same state in the same words.
 // The declarations stay `const` (the archive contract reads them textually);
@@ -1282,11 +1282,13 @@ export function ThemePreviewFrame({
               {baseTemplate === "checkout" ? (
                 <>
                   {/* The AUTHORED checkout template, rendered through the same
-                    SectionRenderer the storefront uses — not `CheckoutMock`.
-                    The five cart slots are granted above, so the platform's
-                    `checkout_steps` / `payment_methods` / `cart_summary`
-                    widgets render against the synthetic cart context.
-                    `MinimalCheckoutHeader` is the CHROME (the header
+                    SectionRenderer the storefront uses — the composition that
+                    replaced the generic checkout mock (the file was deleted
+                    2026-10-22, proven unused by the obsolete-path record's
+                    O1). The five cart slots are granted above, so the
+                    platform's `checkout_steps` / `payment_methods` /
+                    `cart_summary` widgets render against the synthetic cart
+                    context. `MinimalCheckoutHeader` is the CHROME (the header
                     lockup), never the body. */}
                   <MinimalCheckoutHeader
                     slug={blueprintKey}

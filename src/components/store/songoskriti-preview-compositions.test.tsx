@@ -5,7 +5,10 @@
  * six surfaces it shows (cart, account, search, blog, page, checkout) must be
  * the theme's **own** compositions, over **representative, visibly labelled**
  * demo data — never the studio's `DEMO_CART`, never the shared `DEMO_ORDERS`,
- * never the pack's `SAMPLE` blog rows and never the generic `CheckoutMock`.
+ * never the pack's `SAMPLE` blog rows; the checkout surface can only be the
+ * theme's authored composition rendered through `SectionRenderer` — the
+ * composition that replaced the generic checkout mock (the file was deleted
+ * 2026-10-22, proven unused by the obsolete-path record's O1).
  *
  * This suite renders the frame with the theme's REAL template bodies (the
  * same plain builder the engine uses) and asserts what a merchant sees:
