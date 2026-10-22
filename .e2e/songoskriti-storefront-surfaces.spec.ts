@@ -1,6 +1,14 @@
 import { test, expect, type Page } from "@playwright/test";
 import { blockExternalRequests, NetworkCollector } from "./helpers";
 import { ensureSongoskritiActive, merchantCreds } from "./helpers-songoskriti";
+import {
+  DYNAMIC_STORE,
+  changeCartQuantity,
+  choosePaymentRail,
+  ensureCartHasLine,
+  paymentRailCount,
+  switchAccountTab,
+} from "./songoskriti-dynamic-themes-helpers";
 
 /**
  * The storefront-surface lane — the PRODUCTION surfaces the seven templates
@@ -392,5 +400,59 @@ test.describe("the storefront surfaces", () => {
       headings.join(" "),
       "the page route's <h1> is the merchant's own record",
     ).toContain("Our Story");
+  });
+
+  // The permitted-interaction cases: a composed surface is not proved by its
+  // markup alone. Each of these drives the control the THEME's composition
+  // carries and asserts the platform's own response — a server re-quote, a
+  // URL-driven tab change, a selection that survives the re-quote.
+
+  test("the composed checkout's payment rail can be chosen and the selection sticks", async ({
+    page,
+  }) => {
+    await open(page, `/store/${DYNAMIC_STORE}/checkout`);
+    test.skip(
+      (await paymentRailCount(page)) === 0,
+      "the disposable store offers no payment rail, so the checkout's permitted interaction cannot be proven",
+    );
+    const chosen = await choosePaymentRail(page);
+    expect(chosen, "the chosen rail is one of the server's own").not.toBe("");
+    await expect(
+      page.locator(`input[name="fq-payment-method"][value="${chosen}"]`),
+      "the chosen rail is still the selected one",
+    ).toBeChecked();
+  });
+
+  test("the composed account's tab can be switched and the panel changes", async ({
+    page,
+  }) => {
+    await open(page, `/store/${DYNAMIC_STORE}/account`);
+    const before = await page.locator("body").innerText();
+    await switchAccountTab(page, "Addresses");
+    await expect(page, "the tab selection is the URL's own").toHaveURL(
+      /[?&]tab=addresses/,
+    );
+    await expect(
+      page.getByText("Add an Address").first(),
+      "the switched tab renders the addresses panel",
+    ).toBeVisible({ timeout: 30_000 });
+    expect(
+      await page.locator("body").innerText(),
+      "the panel changed with the tab",
+    ).not.toBe(before);
+  });
+
+  test("the composed cart's quantity stepper changes the cart and the quote follows", async ({
+    page,
+  }) => {
+    // A real line through the storefront's own product page — never a seeded
+    // cart, so the quote that follows is a real quote.
+    await ensureCartHasLine(page);
+    await open(page, `/store/${DYNAMIC_STORE}/cart`);
+    const quote = await changeCartQuantity(page);
+    expect(
+      quote.after,
+      "the server's quote followed the quantity change",
+    ).not.toBe(quote.before);
   });
 });
