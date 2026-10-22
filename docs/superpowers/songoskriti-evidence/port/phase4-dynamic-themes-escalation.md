@@ -4539,3 +4539,15 @@ The three churn files (`.artifacts/e2e/playwright-report/index.html`, `ops/routi
 ## (j.5) The applied diffstat and the applied diffs
 
 *(appended below, after the code commit — the §(i.8) precedent)*
+
+## (j.6) The Task 5a corrections — recorded before the code commit
+
+*(Append-only, dated 2026-10-22. These correct the lane's own shape; they do not move any pinned output and they touch no file outside Task 5's five-file list.)*
+
+Three corrections were made while writing the lane, each because the tree's measured behaviour contradicted the first draft. They are recorded here **before** the code commit that carries them.
+
+1. **The cart journey clears the summary's title as well as editing the lines block's heading.** `.e2e/songoskriti-dynamic-themes.spec.ts`'s first draft edited `cart_lines.heading` only, and §(j.1) measurement 3 predicted exactly what that does: the summary's `Order summary` is already the body's one `<h1>` claimant, so a non-blank lines heading makes **two** and the publish modal's confirm is disabled by the platform's lint. A proof lane must not manufacture its own refusal, so the journey now clears `cart_summary.heading` through the **same schema-generated inspector control** before saving. The lines marker is then the body's single claimant, the summary's old title is the "old text" the success branch asserts is gone, and the only remaining gate is the server's own translation gate. This supersedes §(j.1) measurement 3's "leaves the summary's title alone" clause; the measurement itself is unchanged.
+
+2. **The seven-template journey's new assertion is scoped to storefront routes.** The inserted spacer is read from `div[aria-hidden="true"][style*="height: 56px"]`. A successful publish must show it; a refused publish must not have half-applied it. The `archive` journey's route is `/theme-preview/songoskriti?template=archive`, and the preview resolves the merchant's **latest version** rather than the published pointer (`src/lib/preview-sources.ts`), so a save that was never published legitimately appears there. The assertion therefore applies the refusal branch only to `/store/…` routes, and the archive journey keeps every existing assertion it had. The success branch applies to all seven.
+
+3. **The markers are unique per run, and the refusal branch is judged by the pointer and the absent markers.** A fixed marker string could be left behind by an earlier run's published composition and make a later refusal look half-applied (or a later success look pre-existing). Each marker now carries a per-run token. A refusal is proved by the untouched published pointer plus the absence of **this run's** live and draft markers; the published composition's own copy is deliberately not asserted, because it may legitimately be an earlier run's composition.
