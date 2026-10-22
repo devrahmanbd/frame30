@@ -4570,3 +4570,82 @@ Three corrections were made while writing the lane, each because the tree's meas
 **What the diff proves about the two existing `.e2e` files.** Both are additions only: the seven-template journey gains the 24-line changed-composition block (all of its existing assertions are untouched), and the storefront-surface lane gains one import and three new cases (no existing case is edited, weakened or skipped). The three new files carry no edit to any prohibited path.
 
 **The boundary.** The three churn files (`.artifacts/e2e/playwright-report/index.html`, `ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`) and the untracked `.output-snapshots/` are unstaged and unmodified by these commits. No migration, no dependency, no deploy.
+
+## (k) The Task 5b corrections — recorded before the edit
+
+*(Append-only, dated 2026-10-22. First live execution of the Task 5 lanes on the throwaway stack. Two defects in `.e2e/songoskriti-seven-templates.spec.ts` — a §7-prohibited existing file — were measured, not inferred. They are named here with their exact edits **before** the edit, and this section is committed before the code commit it governs (§7.1's ordering, the §(h.6)/(i.8)/(j.6) precedent). No assertion is weakened: both blocks keep every claim they made and gain the placement/expectation that makes the claim true.)*
+
+### (k.1) The 9b assertion ran against the EDITOR canvas, not the storefront
+
+**Measured.** The 24-line block §(j.3.1) added runs immediately after `attemptPublish(page)` and before `page.goto(journey.route, …)`. At that moment the page is still `/dashboard/builder`, so `page.locator('div[aria-hidden="true"][style*="height: 56px"]')` counts the **editor canvas's** copy of the spacer the journey just set to 56 px. On a refused publish the block therefore read `1` (the first attempt) and `2` (the retry, whose draft already carried the prior attempt's spacer) and failed with *“a refused publish did not half-apply: the storefront still serves the published composition”* — a false alarm: the **published** version (`1dde62b3`, version 1) carries no `"size": 56` spacer at all, and an anonymous `GET /store/frame19-demo/search?q=saree` served `themeVersionId:"1dde62b3"` with zero 56 px spacers. The storefront was correct; the assertion looked at the wrong document.
+
+**The edit.** Move the whole 9b block **after** the real storefront navigation and its own `journey.storefront(page)` assertions, so it reads the served document. The branches, the locator, the `/store/` scoping of the refusal branch and every existing assertion are unchanged.
+
+```diff
+     // 9b. The CHANGED composition on the storefront. …
+-    const editedSpacer = page.locator(
+-      'div[aria-hidden="true"][style*="height: 56px"]',
+-    );
+-    if (publish.outcome === "published") {
+-      await expect(
+-        editedSpacer.first(),
+-        "the edited spacer (56px) is on the storefront after the publish",
+-      ).toBeVisible({ timeout: 30_000 });
+-    } else if (journey.route.startsWith(`/store/`)) {
+-      expect(
+-        await editedSpacer.count(),
+-        "a refused publish did not half-apply: the storefront still serves the published composition",
+-      ).toBe(0);
+-    }
+-
+     // 10. The real storefront route.
+     await page.goto(journey.route, {
+       waitUntil: "domcontentloaded",
+       timeout: 120_000,
+     });
+     expect(page.url(), "the storefront route answers").toContain(
+       journey.route.split("?")[0]!,
+     );
+     await journey.storefront(page);
++
++    // 9b. The CHANGED composition on the storefront — read from the SERVED
++    //     document, after the navigation above. …
++    const editedSpacer = page.locator(
++      'div[aria-hidden="true"][style*="height: 56px"]',
++    );
++    if (publish.outcome === "published") {
++      await expect(
++        editedSpacer.first(),
++        "the edited spacer (56px) is on the storefront after the publish",
++      ).toBeVisible({ timeout: 30_000 });
++    } else if (journey.route.startsWith(`/store/`)) {
++      expect(
++        await editedSpacer.count(),
++        "a refused publish did not half-apply: the storefront still serves the published composition",
++      ).toBe(0);
++    }
+```
+
+### (k.2) The Account journey's layer list predates the rebuilt account composition
+
+**Measured.** The journey asserted `layers: ["Shopper profile", "Page content"]`. The editor's navigator now lists `["Account navigation", "Account overview", "Account orders", "Page content"]` — the composition this programme rebuilt (`commerce-compositions.test.ts` names `account_nav`, `account_overview`, `account_orders`, `account_details`, plus the host's `page_content`). The old `Shopper profile` layer no longer exists in the authored account body, so the lane failed at the pre-insert layer check on both attempts.
+
+**The edit.** Replace the two stale names with the four the composition actually authors. The check is still "every named layer the journey will touch is present"; nothing is removed from the storefront assertions.
+
+```diff
+   {
+     label: "Account",
+-    layers: ["Shopper profile", "Page content"],
++    layers: [
++      "Account navigation",
++      "Account overview",
++      "Account orders",
++      "Page content",
++    ],
+```
+
+### (k.3) Ordering proof and boundary
+
+The commits are: **(1)** this record (both corrections named, exact diffs above) — committed before the edits; **(2)** the single-file code edit to `.e2e/songoskriti-seven-templates.spec.ts`; **(3)** the appendix naming (2)'s commit, appended to this record.
+
+No other file is edited by this correction. The test is not weakened: §(k.1) changes *where* the storefront assertion reads, and §(k.2) renames the expected layers to the composition the programme shipped. No skip is added, no assertion is deleted, no threshold moves. The three churn files and the untracked `.output-snapshots/` remain unstaged.
