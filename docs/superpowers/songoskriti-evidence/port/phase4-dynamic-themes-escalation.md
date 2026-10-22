@@ -4773,3 +4773,42 @@ The record commit for §(k.6) is `fb0dad77`. The code commit it named arrived af
 - `64199757` — `fix(e2e): select the facet heading and seed the checkout total's precondition` — `.e2e/songoskriti-storefront-surfaces.spec.ts` only, +6/-1 (k.6.1 the heading selector, k.6.2 the `ensureCartHasLine(page)` precondition, with its comment). No other edit.
 
 `prettier --check` passed and `tsgo --noEmit` exited 0 before the commit. The churn files and `.output-snapshots/` remain unstaged.
+
+## (k.7) The parity baselines — measured, classified, and re-frozen on the throwaway stack
+
+*(Append-only, dated 2026-10-22, continuing §(k). The first parity run of Task 5b is the measurement below. This section is committed **before** the snapshot update it authorises, as in §(k.3)/(k.4)/(k.6).)*
+
+### (k.7.1) What the run measured
+
+`playwright test --config=.e2e/playwright.config.ts songoskriti-port-parity --retries=0`: **39 passed, 27 failed, 1 skipped**. The 27 failures split cleanly:
+
+- **21** baselines exist and no longer match, at ratios **0.03–0.12** (threshold `maxDiffPixelRatio 0.02`, `threshold 0.2`, unchanged);
+- **6** baselines do not exist at all — `archive-{1440,768,375}-{en,bn}-chromium-linux.png`. The archive capture was added to the lane without ever being frozen; Playwright wrote the actuals and failed "A snapshot doesn't exist". Confirmed against `git status`: those six files were untracked before this run, and `docs/.../port/reference/` carried no `archive-*.png`.
+
+The five templates that pass are **index, product, collection, blog, search** — i.e. every surface that was *not* rebuilt in the Task 2/4 wave either visually or in the preview resolution pipeline. The failing surfaces are exactly the ones that were.
+
+### (k.7.2) The named differences (visual comparison, not "pixels moved")
+
+The baselines were frozen at `afde2871` (2026-10-21 05:35), **before** `4b522b93` (*the cart, checkout and account compositions rebuilt on the composable pieces*, 2026-10-22 09:51) and `21907047` (*one resolution pipeline — the canvas, the preview and the storefront agree*, 2026-10-22 10:32).
+
+- **cart (6 stills)** — the theme's rebuilt cart: the composition's own preview notice band (`Disabled in preview — Payment selection changes this preview only.`), product names at the theme's uppercase/bold line treatment, `REMOVE` at its own type size, and the order summary in the theme's own display type instead of the platform panel's condensed heading. Data is identical in every still: the same three lines, the same **18,500 / 2,850 / 1,850**, the same **Subtotal 23,200 / Delivery 60 / Total 23,260**.
+- **checkout (4 stills)** — same notice band, the payment block loses the platform's boxed fieldset chrome for the theme's heading + rule treatment, headings take the theme's display type, and the page regains the vertical rhythm of the composition. Rails, labels, steps and amounts are unchanged: **23,200 / 60 / 23,260**, four steps, the same five accept marks. This is the change §(h.7) measured as 162 → 162 tags and 306 → 306 characters — no control, label, step or amount added or removed.
+- **account (5 stills)** — the rebuilt account composition is now actually on screen: the five-tab nav (Orders / Addresses / Wishlist / Profile / Privacy), the `AT A GLANCE` overview (3 orders, latest ORD-2477 packed, default address Dhaka, 2 saved items) and `VIEW ORDER` on each row. Same three orders, same numbers and statuses as the baseline. This is the M5 "no panel is blank" state; the baseline predates it. At 375 px the tab row is a horizontally scrollable rail (Wishlist clipped at the viewport edge) — the composition's own overflow behaviour, not a broken document.
+- **page (6 stills)** — the merchant page's text is byte-for-byte the same title, lead, four body paragraphs and `Last updated: 20/10/2026`; only the type scale changed (the `<h1>` is larger, the rule above it is new). This is the same theme display-type language reaching the `page` composition.
+- **archive (6 stills, new)** — the theme's archive composition: breadcrumb, centred `Archive` masthead, `Browse the archive` with the taxonomy chips (`Craft 1`, `Fabric 2`, `Care 1`, `Provenance 1`, `handloom 3`) and the article grid. No baseline existed to compare against; the content is the disposable stack's own seeded taxonomy and articles, and the seven-template lane already asserts the archive preview renders the theme's six slots.
+
+No still shows a content regression: no missing line, amount, status, article or field; no clipped heading beyond the account tab rail's horizontal scroll; no unloaded image beyond the Bangla tofu that every bn baseline already carries (the capture blocks external fonts by design).
+
+### (k.7.3) The decision
+
+**Re-freeze, on the throwaway stack only.** Every difference is the ratified theme-path presentation change of §(h.7) (cart/checkout/account) or its continuation onto the rebuilt `page` and newly captured `archive` compositions — the same change the seven-template and storefront-surfaces lanes assert functionally. Nothing differs for an unrelated reason, so the alternative ("report as defect") does not apply.
+
+What is frozen:
+
+- the 21 stale machine baselines under `.e2e/songoskriti-port-parity.spec.ts-snapshots/`, and the 6 archive baselines that never existed;
+- fresh human stills under `docs/superpowers/songoskriti-evidence/port/after/` via `PORT_CAPTURE_OUT=after` — the **after** half of the evidence;
+- the **before** half is kept: the 21 superseded baselines and the 6 measured archive actuals are copied to `/tmp/opencode/e2e-auth/parity-before/`, and the old human stills remain in git at `.e2e/...-snapshots/` history and `docs/.../port/reference/` at `7085eb27`'s tree.
+
+No threshold moves, no case is skipped, no assertion is removed. The lane is re-run after the freeze as an unmodified pass/fail check.
+
+**Deviation, recorded:** the first parity run used the default `PORT_CAPTURE_OUT`, so it overwrote 25 tracked stills and the manifest under `docs/.../port/reference/`. Those files were restored with `git checkout --` before the freeze, and both the freeze run and the verification run use `PORT_CAPTURE_OUT=after`, so `reference/` is untouched from here on.
