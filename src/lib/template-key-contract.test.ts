@@ -192,6 +192,136 @@ describe("the archive template key — the editor's label maps", () => {
   });
 });
 
+/**
+ * EVERY per-template label map in the repo.
+ *
+ * A label map is a table that names a TEMPLATE for a human. There are four
+ * of them, and a fifth arrived with the storefront's declined-template copy
+ * (`src/lib/template-display.ts`). A new template key that misses ONE of them
+ * silently falls back to the raw key (`blog_article`) in shopper copy — the
+ * exact defect S7 was raised for — so the contract below is a TOTality
+ * contract over the whole SET: every map carries every key, the maps' key
+ * sets are identical, and the storefront's names agree with the editor's.
+ *
+ * Two of the four are module-private, so they are read as TEXT (the pattern
+ * this suite already uses for the storefront's hand-written enum); the other
+ * two are imported.
+ */
+type LabelMap = { name: string; labels: Record<string, string> };
+
+/**
+ * The `{ key: "English" }` rows of one label map, read out of a source file.
+ *
+ * The map's own block is located first (a declaration, then its balanced
+ * braces), so a neighbouring table with a similar shape cannot leak into the
+ * answer.
+ */
+function labelMapFromSource(
+  file: string,
+  name: string,
+  pattern: RegExp,
+): Record<string, string> {
+  const src = readFileSync(join(REPO, file), "utf8");
+  const at = src.indexOf(name);
+  expect(at, `${file} must declare ${name}`).toBeGreaterThan(0);
+  // The map's own block: the `= {` that OPENS the table (the declaration's
+  // own type annotation carries braces too — `Record<TemplateKey, {…}>`).
+  const assign = src.indexOf("=", at);
+  expect(assign, `${file}'s ${name} must be assigned`).toBeGreaterThan(0);
+  const open = src.indexOf("{", assign);
+  let depth = 0;
+  let close = -1;
+  for (let i = open; i < src.length; i++) {
+    const ch = src[i];
+    if (ch === "{") depth++;
+    else if (ch === "}") {
+      depth--;
+      if (depth === 0) {
+        close = i;
+        break;
+      }
+    }
+  }
+  expect(close, `${file}'s ${name} must be a balanced block`).toBeGreaterThan(
+    0,
+  );
+  const body = src.slice(open, close + 1);
+  const out: Record<string, string> = {};
+  for (const m of body.matchAll(pattern)) out[m[1]!] = m[2]!;
+  return out;
+}
+
+/** Every per-template label map, by name. */
+async function everyLabelMap(): Promise<LabelMap[]> {
+  const meta = await import("@/components/builder/BuilderTopBar");
+  const display = await import("@/lib/template-display");
+  const editor = labelMapFromSource(
+    "src/routes/_authenticated/dashboard/builder.tsx",
+    "TEMPLATE_LABEL",
+    /(\w+):\s*\{\s*en:\s*"([^"]*)"/g,
+  );
+  const generic = labelMapFromSource(
+    "src/lib/theme-preview-nav.ts",
+    "GENERIC_TITLES",
+    /(\w+):\s*\["([^"]*)"/g,
+  );
+  const metaLabels: Record<string, string> = {};
+  for (const key of TEMPLATE_KEYS) metaLabels[key] = meta.TEMPLATE_META[key].en;
+  return [
+    { name: "TEMPLATE_LABEL", labels: editor },
+    { name: "TEMPLATE_META", labels: metaLabels },
+    { name: "GENERIC_TITLES", labels: generic },
+    {
+      name: "TEMPLATE_DISPLAY_NAME",
+      labels: { ...display.TEMPLATE_DISPLAY_NAME },
+    },
+  ];
+}
+
+describe("the template key — EVERY per-template label map", () => {
+  it("every label map carries EVERY template key — and no other", async () => {
+    const maps = await everyLabelMap();
+    // The four maps the repo has. A FIFTH would have to join this list.
+    expect(maps.map((m) => m.name).sort()).toEqual([
+      "GENERIC_TITLES",
+      "TEMPLATE_DISPLAY_NAME",
+      "TEMPLATE_LABEL",
+      "TEMPLATE_META",
+    ]);
+    for (const map of maps) {
+      for (const key of TEMPLATE_KEYS) {
+        expect(map.labels[key], `${map.name} must carry ${key}`).toBeDefined();
+        expect(map.labels[key]!.length, `${map.name}'s ${key}`).toBeGreaterThan(
+          0,
+        );
+      }
+      // …and the maps agree on the SET of keys: none carries a key the
+      // union does not know, and none is missing one.
+      expect(Object.keys(map.labels).sort()).toEqual([...TEMPLATE_KEYS].sort());
+    }
+  });
+
+  it("the storefront's names agree with the EDITOR's label on every key", async () => {
+    const maps = await everyLabelMap();
+    const editor = maps.find((m) => m.name === "TEMPLATE_LABEL")!;
+    const storefront = maps.find((m) => m.name === "TEMPLATE_DISPLAY_NAME")!;
+    for (const key of TEMPLATE_KEYS) {
+      expect(
+        storefront.labels[key],
+        `TEMPLATE_DISPLAY_NAME must agree with TEMPLATE_LABEL on ${key}`,
+      ).toBe(editor.labels[key]);
+    }
+  });
+
+  it("the storefront's names are human — never a raw template key", async () => {
+    const { TEMPLATE_DISPLAY_NAME } = await import("@/lib/template-display");
+    for (const key of TEMPLATE_KEYS) {
+      expect(TEMPLATE_DISPLAY_NAME[key]).not.toBe(key);
+      expect(TEMPLATE_DISPLAY_NAME[key]).not.toContain("_");
+    }
+  });
+});
+
 describe("the archive template key — the weight and SEO tables", () => {
   it("TEMPLATE_JS_BUDGET carries the key", async () => {
     const mod = await import("@/lib/widget-weight");

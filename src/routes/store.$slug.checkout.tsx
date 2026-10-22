@@ -34,6 +34,10 @@ import {
 import { fmtMinor } from "@/lib/money";
 import { checkoutShellControls } from "@/lib/theme-shell-slots";
 import { noPaymentRailMessage } from "@/lib/payment-rail-empty";
+import {
+  checkoutSubmitState,
+  type CheckoutSubmitState,
+} from "@/lib/checkout-submit-state";
 import type { ThemeAst, ThemeTokens } from "@/lib/builder-ast";
 import { useCart } from "@/lib/cart";
 import { useCartContext } from "@/components/builder/CartContext";
@@ -396,14 +400,13 @@ export function CheckoutShell({
  * form, which owns the order write. The form REPORTS this triple up; the
  * route renders the action.
  */
-export type CheckoutSubmitState = {
-  /** The action's label. */
-  label: string;
-  /** True while the shopper may not submit (no quote yet, or an order in flight). */
-  disabled: boolean;
-  /** The live-region notice under the action while the order is in flight. */
-  notice: string | null;
-};
+/**
+ * The place-order ACTION's state — the PURE decision, in its own module
+ * (`src/lib/checkout-submit-state.ts`) so the rail-less case can be RENDERED
+ * and asserted (the button is disabled; the notice names the reason), not
+ * read out of this file's source text.
+ */
+export type { CheckoutSubmitState } from "@/lib/checkout-submit-state";
 
 /**
  * The place-order ACTION — the route's own submit button.
@@ -416,7 +419,7 @@ export type CheckoutSubmitState = {
  * still validates the form's own fields and still treats this button as the
  * form's default button.
  */
-function CheckoutSubmit({
+export function CheckoutSubmit({
   state,
   formId,
 }: {
@@ -879,20 +882,19 @@ function CheckoutBody({
   // rail cannot take the money, so the action is DISABLED and the notice
   // says why (the plan's **D8**). The theme draws the rail; it never
   // decides whether one exists.
-  const noRail = offered.length === 0;
-  const submitDisabled =
-    !totals || mutation.isPending || chargeHop === "redirecting" || noRail;
-  const submitNotice =
-    mutation.isPending || chargeHop === "redirecting"
-      ? chargeHop === "redirecting"
-        ? t(
-            "Contacting the payment provider — do not close this page.",
-            "পেমেন্ট প্রোভাইডারের সাথে যোগাযোগ করা হচ্ছে — এই পেজ বন্ধ করবেন না।",
-          )
-        : t("Placing your order…", "অর্ডার করা হচ্ছে…")
-      : noRail
-        ? noPaymentRailMessage(lang)
-        : null;
+  //
+  // The decision itself is the PURE `checkoutSubmitState` — the same
+  // function the checkout contract renders and asserts.
+  const submitState = checkoutSubmitState({
+    totals,
+    pending: mutation.isPending,
+    chargeHop,
+    offered,
+    lang,
+    label: submitLabel,
+  });
+  const submitDisabled = submitState.disabled;
+  const submitNotice = submitState.notice;
   // Primitive deps only: the report must never loop.
   useEffect(() => {
     onSubmitState?.({

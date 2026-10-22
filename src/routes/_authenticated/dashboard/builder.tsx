@@ -21,7 +21,7 @@ import type { BlogFeed } from "@/components/builder/blog";
 import type { CollectionQuery } from "@/components/builder/collection";
 import type { AccountDashboardState } from "@/components/store/AccountDashboardContext";
 import { UNSUPPORTED_TEMPLATE_TITLE } from "@/components/store/ThemePreviewFrame";
-import { resolveTemplateForHost } from "@/lib/pipeline-resolver";
+import { resolveEditorDraft } from "@/lib/pipeline-resolver";
 import type { AccountTab } from "@/lib/account-tab";
 import { normalizeSearchParams } from "@/lib/storefront-search";
 import {
@@ -118,7 +118,6 @@ import { TranslationMeter } from "@/components/builder/TranslationMeter";
 import { CustomCodeEditor } from "@/components/builder/CustomCodeEditor";
 import {
   BREAKPOINTS,
-  EMPTY_AST,
   SLOTS,
   TEMPLATE_KEYS,
   catalogEntry,
@@ -130,7 +129,6 @@ import {
   type Slot,
   type TemplateKey,
 } from "@/lib/builder-ast";
-import { themeRendersBody } from "@/lib/theme-body-slot";
 import {
   builderAutosaveFn,
   builderCancelScheduleFn,
@@ -685,34 +683,21 @@ function BuilderStudio() {
    * template is ABSENT (never the homepage), and the label carried in
    * `source` is the one the canvas shows (`data-fq-resolution`, review
    * **S8**).
+   *
+   * The answer itself lives in `resolveEditorDraft`
+   * (`src/lib/pipeline-resolver.ts`) — the same function the canvas's
+   * contract exercises, so the canvas's behaviour is pinned by a RENDER and
+   * not by a scan of this file.
    */
-  const draftResolution = doc
-    ? resolveTemplateForHost({
-        template,
-        variants: doc.templates,
-        tenant: activeThemeKey,
-        mode: "draft",
-        host: "editor",
-        tokens: doc.tokens,
-      })
-    : null;
-  const ast =
-    draftResolution?.status === "resolved" ? draftResolution.ast : EMPTY_AST;
-  const resolutionMode =
-    draftResolution?.status === "resolved" ||
-    draftResolution?.status === "absent"
-      ? draftResolution.source.mode
-      : "draft";
-  const resolutionLabel =
-    draftResolution?.status === "resolved" ||
-    draftResolution?.status === "absent"
-      ? draftResolution.source.label
-      : null;
-  const declinedTemplate =
-    !!doc &&
-    !themeRendersBody(
-      draftResolution?.status === "resolved" ? draftResolution.ast : null,
-    );
+  const draftResolution = resolveEditorDraft({
+    template,
+    doc: doc ? { templates: doc.templates, tokens: doc.tokens } : null,
+    tenant: activeThemeKey,
+  });
+  const ast = draftResolution.ast;
+  const resolutionMode = draftResolution.mode;
+  const resolutionLabel = draftResolution.label;
+  const declinedTemplate = draftResolution.declined;
   // The merchant's own STRAY variant keys — the templates nothing routes to.
   const strayKeys = useMemo(
     () => (doc ? strayVariantKeys(doc.templates) : []),

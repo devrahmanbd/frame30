@@ -143,6 +143,29 @@ const UNSUPPORTED_TEMPLATE_BODY =
 export { UNSUPPORTED_TEMPLATE_TITLE, UNSUPPORTED_TEMPLATE_BODY };
 
 /**
+ * The preview's rail SELECTION — the local state the demo rail owns.
+ *
+ * The demo cart is inert by design: it must never reach a server. But a
+ * control that looks live and does nothing is worse than no control (the
+ * plan's **D6**), so the SELECTION is a real local transition: choosing a
+ * rail in the preview changes the preview. The demo cart's own `setMethod`
+ * stays the no-op it was built with — the live cart context is never
+ * touched.
+ *
+ * It is a hook of its own so the transition can be exercised for what it is
+ * — a state change that the rail's `checked` state follows — rather than
+ * read out of the source text. The preview frame uses it, and so does the
+ * preview-safety contract.
+ */
+export function usePreviewRailSelection(): {
+  method: PaymentMethodKey;
+  setMethod: (method: PaymentMethodKey) => void;
+} {
+  const [previewMethod, setPreviewMethod] = useState<PaymentMethodKey>("cod");
+  return { method: previewMethod, setMethod: setPreviewMethod };
+}
+
+/**
  * The explicit unsupported state — a named panel, never a redirect.
  *
  * It NAMES the template key, LINKS BACK to the home tab (an in-canvas `/`
@@ -1141,14 +1164,15 @@ export function ThemePreviewFrame({
    * `setMethod` stays the no-op it was built with — the live cart context
    * is never touched.
    */
-  const [previewMethod, setPreviewMethod] = useState<PaymentMethodKey>("cod");
+  const { method: previewMethod, setMethod: setPreviewMethod } =
+    usePreviewRailSelection();
   const previewCartWithSelection = useMemo(
     () => ({
       ...previewCart,
       method: previewMethod,
       setMethod: (method: PaymentMethodKey) => setPreviewMethod(method),
     }),
-    [previewCart, previewMethod],
+    [previewCart, previewMethod, setPreviewMethod],
   );
   const previewQuery = useMemo(
     () => ({
@@ -1171,8 +1195,22 @@ export function ThemePreviewFrame({
    *
    * The preview's rail selection is a real local transition (the control is
    * not inert), but it never reaches a cart or an order. The marker says so
-   * beside the rail on the two templates that show it, using the one shared
-   * preview sentence so it cannot drift into new copy.
+   * beside the rail on the two templates that show it.
+   *
+   * The marker REUSES the shared preview sentence (`PREVIEW_DISABLED_MESSAGE`)
+   * as its PREFIX and appends ONE clause of its own, which says what the demo
+   * selection affects. The clause is ENGLISH-ONLY on purpose: translations
+   * are out of scope for this programme (the plan's Global Constraints), the
+   * marker is preview CHROME and not part of the theme's template AST, and
+   * the translation meter (`src/lib/translation-coverage.ts:92`) is a pure
+   * function of those ASTs — so it does not cover this string at all. The
+   * clause is stated here and recorded in the escalation record; it is not
+   * silently "fixed", and a bilingual marker would need a separate,
+   * explicitly ratified translation task.
+   *
+   * The marker is SPLIT so the shared sentence stands alone as its own
+   * sentence, instead of reading "Disabled in preview: payment selection
+   * changes this preview only."
    */
   const paymentDemoMarker =
     baseTemplate === "cart" || baseTemplate === "checkout" ? (
@@ -1181,8 +1219,8 @@ export function ThemePreviewFrame({
         role="note"
         className="mx-auto max-w-7xl px-4 pt-4 text-[12px] text-muted-foreground sm:px-6 lg:px-8"
       >
-        <span className="font-semibold">{PREVIEW_DISABLED_MESSAGE}</span>:
-        payment selection changes this preview only.
+        <span className="font-semibold">{PREVIEW_DISABLED_MESSAGE}</span>{" "}
+        <span>Payment selection changes this preview only.</span>
       </p>
     ) : null;
   const canvas = (

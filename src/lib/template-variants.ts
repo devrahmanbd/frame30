@@ -29,7 +29,6 @@
  * Pure data and pure functions: no React, no DOM, no DB, no network.
  */
 import {
-  EMPTY_AST,
   isTemplateKey,
   isVariantTemplateKey,
   resolveTemplate,
@@ -189,21 +188,6 @@ export function variantKeyFor(
  * keys. Nothing else is addressable.
  */
 export type EditorTemplateKey = TemplateKey | TemplateVariantKey;
-
-/**
- * The AST of one editor identity — a base key's body, or a variant's.
- *
- * The map carries both beside each other, so the lookup is one read: the
- * variant is NOT merged into its base and the base is NOT shadowed by it.
- */
-export function templateAstOf(
-  templates: ThemeTemplates | TemplateMap | null | undefined,
-  key: EditorTemplateKey,
-): ThemeAst {
-  if (!templates) return EMPTY_AST;
-  const bag = templates as Record<string, ThemeAst | undefined>;
-  return bag[key] ?? EMPTY_AST;
-}
 
 /**
  * The editor switcher's SECOND level: every base that owns variants, with

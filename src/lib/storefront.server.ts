@@ -1,7 +1,7 @@
 import { publicClient } from "./pricing.server";
 import { log, observe } from "./observability.server";
 import {
-  templateOf,
+  EMPTY_AST,
   type TemplateKey,
   type ThemeAst,
   type ThemeTemplates,
@@ -132,6 +132,68 @@ export function resolvePublishedTemplate({
 }
 
 /**
+ * The STOREFRONT PAYLOAD for one template — the theme's body when the theme
+ * authors it, and the theme's CHROME with an EMPTY body when it does not.
+ *
+ * **An absent template is an empty BODY, never "no theme".** The resolver
+ * says `absent` for a template the theme does not author; that means the
+ * route's own platform surface renders (the plan's **G3**: the platform keeps
+ * its designed surface for a declined template) — it never means the theme's
+ * chrome, its design tokens or its widget presentations disappear. A store
+ * whose theme declines `/search` still shows the store's navigation, its
+ * policy links and the theme's own look; only the BODY is the platform's.
+ *
+ * **The chrome merge.** A theme that publishes no header/footer for a
+ * secondary template (search, cart, checkout) borrows the home template's
+ * chrome, so a shopper never lands on a page without the store's navigation
+ * or its policy links.
+ *
+ * Exported as the pure seam the storefront contract exercises: it is the
+ * payload `loadPublished` serves, with no database and no request.
+ */
+export function publishedTemplatePayload({
+  templates,
+  template,
+  tenant,
+}: {
+  templates: ThemeTemplates;
+  template: TemplateKey;
+  tenant: string | null;
+}): { ast: ThemeAst; authored: boolean } {
+  const resolution = resolveTemplateForHost({
+    template,
+    variants: templates,
+    tenant,
+    mode: "published",
+    host: "storefront",
+  });
+  // `absent` ⇒ an empty body. The theme's chrome is borrowed below.
+  const ast = resolution.status === "resolved" ? resolution.ast : EMPTY_AST;
+  // The home chrome is read through the SAME resolver — the storefront host
+  // has ONE resolution rule, not two lookups that could disagree.
+  const homeResolution =
+    template === "index"
+      ? resolution
+      : resolveTemplateForHost({
+          template: "index",
+          variants: templates,
+          tenant,
+          mode: "published",
+          host: "storefront",
+        });
+  const home =
+    homeResolution.status === "resolved" ? homeResolution.ast : EMPTY_AST;
+  return {
+    ast: {
+      header: ast.header.length ? ast.header : home.header,
+      main: ast.main,
+      footer: ast.footer.length ? ast.footer : home.footer,
+    },
+    authored: resolution.status === "resolved",
+  };
+}
+
+/**
  * Published layout + tokens for a store template, or null when nothing is
  * published. Served from the tenant-keyed storefront cache, which the publish /
  * rollback / sweep paths purge, so a shopper never lands on a stale page.
@@ -161,26 +223,17 @@ async function loadPublished(
   const theme = await publishedTheme(publicClient(), merchantId);
   observe("framique_template_render_ms", Date.now() - started, { template });
   if (!theme) return null;
-  const ast = resolvePublishedTemplate({
+  // The theme may not design this template: the route's own platform surface
+  // renders, and `ThemeChrome` names the declined state. That is an empty
+  // BODY, never an absent THEME — the store's chrome, the theme's design
+  // tokens and the theme's widget presentations all keep rendering (the
+  // plan's **G3**). Returning `null` here would null the whole payload and
+  // leave a shopper on a page with no navigation and no policy links.
+  const payload = publishedTemplatePayload({
     templates: theme.templates,
     template,
     tenant: merchantId,
   });
-  // The theme does not design this template: the route's own platform
-  // surface renders, and `ThemeChrome` names the declined state. Returning
-  // null is the explicit absence — never the homepage, never an empty AST
-  // dressed as a theme page.
-  if (!ast) return null;
-  // A theme that publishes no header/footer for a secondary template (search,
-  // cart, checkout) borrows the home template's chrome, so a shopper never
-  // lands on a page without the store's navigation or its policy links.
-  const home =
-    template === "index" ? ast : templateOf(theme.templates, "index");
-  const withChrome = {
-    header: ast.header.length ? ast.header : home.header,
-    main: ast.main,
-    footer: ast.footer.length ? ast.footer : home.footer,
-  };
   // Level B public projection: approved release for the PUBLISHED active
   // theme only; unapproved/inactive/missing/tampered yield null (fail-closed,
   // never throws, never breaks the storefront render).
@@ -202,7 +255,7 @@ async function loadPublished(
     approvedDevManifest = null;
   }
   return {
-    ast: withChrome,
+    ast: payload.ast,
     tokens: theme.tokens,
     themeKey: theme.themeKey,
     versionId: theme.versionId,
@@ -217,6 +270,16 @@ async function loadPublished(
  * Phase 17: when the page pins a theme (`themeId`) that theme's published
  * `page` template wins; an unpublished or deleted pin falls back to the
  * store's active theme so the page still renders.
+ *
+ * **The pinned path is a DIFFERENT map, not a different rule.** It resolves
+ * the PINNED theme's published pointer — not the store's active theme's — so
+ * it goes through the SAME resolver (`mode: "published"`, `host:
+ * "storefront"`) over a different map. The pinned theme's own published
+ * chrome is served exactly as published: a pinned page does **not** borrow
+ * the pinned theme's home chrome, because that merge belongs to the active
+ * theme's template chain (`loadPublished`) and applying it here would change
+ * what a pinned page renders for a theme that publishes a `page` template
+ * with no header of its own.
  */
 export async function loadPageTemplate(
   merchantId: string,
@@ -229,9 +292,17 @@ export async function loadPageTemplate(
       merchantId,
       themeId,
     );
-    if (pinned)
+    if (pinned) {
+      // The ONE resolver, over the PINNED theme's published map. An absent
+      // `page` is an empty body — never the homepage, never a synthesised
+      // body — exactly as `templateOf` answered it before.
+      const body = resolvePublishedTemplate({
+        templates: pinned.templates,
+        template: "page",
+        tenant: merchantId,
+      });
       return {
-        ast: templateOf(pinned.templates, "page"),
+        ast: body ?? EMPTY_AST,
         tokens: pinned.tokens,
         themeKey: pinned.themeKey,
         versionId: pinned.versionId,
@@ -241,6 +312,7 @@ export async function loadPageTemplate(
         devThemeBinding: null,
         approvedDevManifest: null,
       };
+    }
   }
   return loadPublished(merchantId, "page");
 }
@@ -389,6 +461,13 @@ export type StorefrontPreview = { merchantId: string; themeId: string } | null;
  * so a token minted for one tenant can never render another tenant's draft.
  * Preview responses must never enter the shared storefront cache (see
  * withStorefrontCache) and are always noindex (see the route head).
+ *
+ * **The draft branch is the SAME rule over a different MAP.** The preview
+ * serves the merchant's UNSAVED DRAFT, so it resolves through the ONE
+ * resolver with `mode: "draft"` — the same mode the editor canvas uses — and
+ * the host label stays `storefront`, because the storefront host is what
+ * renders it. An absent `index` is an empty body (the draft has no home
+ * template), never the homepage and never a synthesised body.
  */
 async function resolveIndexTheme(
   merchantId: string,
@@ -399,15 +478,21 @@ async function resolveIndexTheme(
       const { supabaseAdmin } =
         await import("@/integrations/supabase/client.server");
       const { previewTheme } = await import("./themes.server");
-      const { templateOf } = await import("./builder-ast");
       const draft = await previewTheme(
         supabaseAdmin as never,
         merchantId,
         preview.themeId,
       );
       if (draft) {
+        const resolution = resolveTemplateForHost({
+          template: "index",
+          variants: draft.templates,
+          tenant: merchantId,
+          mode: "draft",
+          host: "storefront",
+        });
         return {
-          ast: templateOf(draft.templates, "index"),
+          ast: resolution.status === "resolved" ? resolution.ast : EMPTY_AST,
           tokens: draft.tokens,
           themeKey: draft.themeKey,
           versionId: null as string | null,

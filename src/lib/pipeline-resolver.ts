@@ -40,12 +40,14 @@ import type {
   ThemeTemplates,
   ThemeTokens,
 } from "./builder-ast";
+import { EMPTY_AST } from "./builder-ast";
 import {
   baseTemplateKey,
   isTemplateVariantKey,
   resolveVariantAst,
   type TemplateVariantKey,
 } from "./template-variants";
+import { themeRendersBody } from "./theme-body-slot";
 
 /**
  * The three ways a body can be resolved.
@@ -198,4 +200,79 @@ function findBody(
   }
   const direct = (variants as Record<string, ThemeAst | undefined>)[template];
   return direct ?? null;
+}
+
+/**
+ * The EDITOR's draft resolution — the canvas's answer, as DATA.
+ *
+ * The canvas draws the merchant's UNSAVED DRAFT, so it asks the same
+ * resolver the preview and the storefront ask, with `mode: "draft"` and the
+ * host `editor`. This function is that answer, in one place, so the canvas's
+ * behaviour can be exercised as a value (and rendered) instead of read out of
+ * the route's source text.
+ *
+ * **The variant rule is the storefront's rule.** A VARIANT key whose own map
+ * entry is absent falls back to its BASE body — the same rule
+ * `resolveVariantAst` applies on the storefront (`src/lib/template-variants.ts`).
+ * The editor and the storefront therefore agree on what a variant key shows.
+ */
+export type EditorDraftResolution = {
+  /** The body the canvas draws — the EMPTY AST when the draft has none. */
+  ast: ThemeAst;
+  /** The mode the canvas is in — `draft` whenever a document is loaded. */
+  mode: PipelineMode;
+  /** The mode's human label, or null when there is no document at all. */
+  label: string | null;
+  /** True when the draft does not author a body for the requested template. */
+  declined: boolean;
+  /** The resolver's own source record — null when there is no document. */
+  source: PipelineSource | null;
+};
+
+/**
+ * Resolve the editor's draft for one template.
+ *
+ * `doc` is the merchant's document (`null` before it loads). An absent
+ * template is an EMPTY body — never the homepage, never a synthesised body
+ * — and the canvas says so through `declined`.
+ */
+export function resolveEditorDraft({
+  template,
+  doc,
+  tenant = null,
+}: {
+  /** The template being resolved — a base key or a closed variant key. */
+  template: string;
+  /** The merchant's document, or null before it loads. */
+  doc: { templates: PipelineVariants; tokens?: ThemeTokens | null } | null;
+  /** The theme the document belongs to. */
+  tenant?: string | null;
+}): EditorDraftResolution {
+  if (!doc) {
+    return {
+      ast: EMPTY_AST,
+      mode: "draft",
+      label: null,
+      declined: false,
+      source: null,
+    };
+  }
+  const resolution = resolveTemplateForHost({
+    template,
+    variants: doc.templates,
+    tenant,
+    mode: "draft",
+    host: "editor",
+    tokens: doc.tokens ?? null,
+  });
+  const ast = resolution.status === "resolved" ? resolution.ast : EMPTY_AST;
+  return {
+    ast,
+    mode: resolution.source.mode,
+    label: resolution.source.label,
+    declined: !themeRendersBody(
+      resolution.status === "resolved" ? resolution.ast : null,
+    ),
+    source: resolution.source,
+  };
 }

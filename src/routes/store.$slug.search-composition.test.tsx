@@ -25,6 +25,10 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { searchFacetScope } from "./store.$slug.search";
+import { DEFAULT_LOADERS, facetRowsFromSearch } from "@/lib/widget-data.server";
+import type { WidgetDataRequest } from "@/lib/widget-data";
+import type { SearchFacets } from "@/lib/storefront-search";
 
 const DIR = dirname(fileURLToPath(import.meta.url));
 const SRC = readFileSync(join(DIR, "store.$slug.search.tsx"), "utf8");
@@ -99,9 +103,60 @@ describe("storefront search route — the theme composes the platform's pieces",
     // S4 — the route passes the search backend's query-scoped facets and
     // total into the same resolver that feeds the sidebar; the facets loader
     // then answers from that scope instead of counting the whole catalogue.
-    expect(SRC).toContain("facets: outcome.result.facets");
-    expect(SRC).toContain("total: outcome.result.total");
-    expect(SRC).toContain('outcome.status === "ok"');
+    //
+    // The WIRING (a scan of the route's source) …
+    expect(SRC).toContain("searchFacetScope(outcome)");
+    expect(SRC).toContain("const facetScope = searchFacetScope(outcome);");
+    expect(SRC).toContain("...(facetScope ?? {}),");
+    expect(SRC).toContain('outcome.status !== "ok"');
+  });
+
+  it("BEHAVIOUR: the scope the route hands the resolver IS the search's scope", async () => {
+    // … and the BEHAVIOUR (the route's own scope builder, called).
+    //
+    // The scope is the SEARCH's own facets and total — the counts the grid
+    // beside the sidebar was rendered from — and nothing else. A degraded
+    // outcome has no scope at all, so the resolver never counts the
+    // merchant's whole catalogue by accident.
+    const facets: SearchFacets = {
+      categories: [{ slug: "sarees", name: "Sarees", count: 4 }],
+      kinds: [{ kind: "physical", count: 11 }],
+      in_stock: 6,
+      price_min_minor: 1000,
+      price_max_minor: 9000,
+    };
+    const scope = searchFacetScope({
+      status: "ok",
+      result: { facets, total: 13 },
+    });
+    expect(scope).toEqual({ facets, total: 13 });
+    // A degraded or failed search has NO scope.
+    expect(searchFacetScope({ status: "degraded" })).toBeUndefined();
+    expect(
+      searchFacetScope({ status: "ok", result: { total: 13 } }),
+    ).toBeUndefined();
+
+    // …and the data path: the facets loader answers from THAT scope, so the
+    // sidebar's counts are the shopper's query, not the catalogue's.
+    const request: WidgetDataRequest = {
+      key: "facets:search",
+      source: "facets",
+      params: { limit: 12 },
+    };
+    const out = await DEFAULT_LOADERS.facets!("merchant", [request], {
+      base: "/store/demo",
+      ...scope!,
+    });
+    expect(out[request.key]).toEqual(
+      facetRowsFromSearch(facets, 13, "/store/demo"),
+    );
+    // The scoped rows carry the SEARCH's counts.
+    expect(out[request.key]?.map((row) => [row.subtitle, row.count])).toEqual([
+      ["category", 4],
+      ["kind", 11],
+      ["stock", 6],
+      ["total", 13],
+    ]);
   });
 
   it("hands the theme the RESULTS BLOCK, and that block still carries the query box and the filters", () => {

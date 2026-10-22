@@ -19,7 +19,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
-import { createElement } from "react";
+import { createElement, useMemo } from "react";
 
 vi.mock("@tanstack/react-router", async (importOriginal) => {
   const actual =
@@ -75,8 +75,14 @@ import {
 } from "./builder-ast";
 import { songoskritiPreviewSource } from "./themes/songoskriti/preview";
 import { ThemePreviewFrame } from "@/components/store/ThemePreviewFrame";
+import { usePreviewRailSelection } from "@/components/store/ThemePreviewFrame";
 import { AccountDashboard } from "@/components/store/AccountDashboard";
+import { SectionRenderer } from "@/components/builder/SectionRenderer";
+import { CartProvider } from "@/components/builder/CartContext";
 import { PAYMENT_METHOD_CATALOG } from "./payment-rails";
+import { noPaymentRailMessage } from "./payment-rail-empty";
+import { CheckoutSubmit } from "@/routes/store.$slug.checkout";
+import { checkoutSubmitState } from "@/lib/checkout-submit-state";
 
 const read = (path: string): string => readFileSync(path, "utf8");
 
@@ -253,6 +259,63 @@ function renderPreview(template: TemplateKey): string {
   );
 }
 
+/** The cart the rail is rendered against — two catalogue rails, no money. */
+const RAIL_CART = {
+  lines: [],
+  count: 0,
+  totals: null,
+  pending: false,
+  error: null,
+  methods: ["cod", "bkash"] as string[],
+  method: "cod" as string,
+  setMethod: () => {},
+  couponCode: "",
+  setCouponCode: () => {},
+  setQuantity: () => {},
+  remove: () => {},
+  clear: () => {},
+  live: false,
+};
+
+/**
+ * The rail, rendered with the preview's OWN local selection.
+ *
+ * `click` chooses the SECOND catalogue rail — the exact call the radio's
+ * `onChange` makes (`cart.setMethod(key)`). The selection is the preview's
+ * own hook (`usePreviewRailSelection`), and the radio is the platform's own
+ * `payment_methods` widget.
+ */
+function renderRail({ click }: { click: boolean }): string {
+  function RailHarness() {
+    const { method, setMethod } = usePreviewRailSelection();
+    const cart = useMemo(
+      () => ({
+        ...RAIL_CART,
+        method,
+        setMethod: (next: string) => setMethod(next as never),
+      }),
+      [method, setMethod],
+    );
+    // The click: choose the second catalogue rail.
+    if (click && method === "cod") setMethod("bkash" as never);
+    return createElement(
+      CartProvider,
+      { value: cart as never },
+      createElement(SectionRenderer, {
+        section: {
+          id: "payment_methods-0",
+          type: "payment_methods",
+          props: {},
+        },
+        template: "cart",
+        editing: false,
+        contextSlots: { payment_methods: null },
+      }),
+    );
+  }
+  return renderToStaticMarkup(createElement(RailHarness));
+}
+
 describe("Task 4 (a) — no blank required slot", () => {
   for (const template of TEMPLATE_KEYS) {
     const required = requiredSlots(template);
@@ -351,12 +414,72 @@ describe("Task 4 (b) — the anonymous account is a designed state, not a blank"
   });
 });
 
+/** The action's own `<button>` tag — the attributes, not the class list. */
+function actionButtonTag(markup: string): string {
+  return /<button\b[^>]*>/.exec(markup)?.[0] ?? "";
+}
+
+/** True when the action's button carries the `disabled` ATTRIBUTE. */
+function actionIsDisabled(markup: string): boolean {
+  return /\sdisabled(=|\s|>)/.test(actionButtonTag(markup));
+}
+
 describe("Task 4 (c) — a rail-less store cannot submit and says why once", () => {
-  it("adds the no-rail term to the server-decided disabled action", () => {
-    expect(CHECKOUT_ROUTE).toContain("const noRail = offered.length === 0;");
-    const disabled = /const submitDisabled =([\s\S]*?);/.exec(CHECKOUT_ROUTE);
-    expect(disabled, "the checkout must declare submitDisabled").toBeTruthy();
-    expect(disabled![1]).toContain("noRail");
+  it("RENDERS a disabled place-order action that names the reason", () => {
+    // The RENDER, not a source string: the SERVER offers no rail, so the
+    // action is disabled and the notice under it names the reason.
+    const state = checkoutSubmitState({
+      totals: { totalMinor: 100 },
+      pending: false,
+      chargeHop: "idle",
+      offered: [],
+      lang: "en",
+      label: "Place Order",
+    });
+    expect(state.disabled).toBe(true);
+    expect(state.notice).toBe(noPaymentRailMessage("en"));
+
+    const markup = renderToStaticMarkup(
+      createElement(CheckoutSubmit, {
+        state,
+        formId: "fq-checkout-form",
+      }),
+    );
+    // The button is disabled…
+    expect(actionIsDisabled(markup)).toBe(true);
+    expect(markup).toContain('type="submit"');
+    expect(markup).toContain('form="fq-checkout-form"');
+    // …and the notice names the reason, in the ONE shared sentence.
+    expect(markup).toContain(noPaymentRailMessage("en"));
+  });
+
+  it("RENDERS an enabled place-order action when the server offers a rail", () => {
+    const state = checkoutSubmitState({
+      totals: { totalMinor: 100 },
+      pending: false,
+      chargeHop: "idle",
+      offered: ["cod"],
+      lang: "en",
+      label: "Place Order",
+    });
+    expect(state.disabled).toBe(false);
+    expect(state.notice).toBeNull();
+    const markup = renderToStaticMarkup(
+      createElement(CheckoutSubmit, {
+        state,
+        formId: "fq-checkout-form",
+      }),
+    );
+    expect(actionIsDisabled(markup)).toBe(false);
+    expect(markup).toContain("Place Order");
+  });
+
+  it("the route WIRES the server's rails into that decision", () => {
+    // The wiring scan, kept IN ADDITION to the renders above: the route's
+    // own decision is the pure function the renders exercise, and it is fed
+    // the SERVER's rails.
+    expect(CHECKOUT_ROUTE).toContain("checkoutSubmitState({");
+    expect(CHECKOUT_ROUTE).toContain("offered,");
     expect(CHECKOUT_ROUTE).toContain("noPaymentRailMessage(lang)");
   });
 
@@ -381,11 +504,55 @@ describe("Task 4 (c) — a rail-less store cannot submit and says why once", () 
   });
 });
 
+/**
+ * True when the radio for `value` is the CHECKED one.
+ *
+ * The markup's attribute order is React's, not ours, so the radio's tag is
+ * read and its own attributes are inspected.
+ */
+function isChecked(markup: string, value: string): boolean {
+  const tag = [...markup.matchAll(/<input\b[^>]*>/g)]
+    .map((m) => m[0])
+    .find((t) => t.includes('type="radio"') && t.includes(`value="${value}"`));
+  if (!tag) return false;
+  return /\schecked(=|\s|>)/.test(tag);
+}
+
 describe("Task 4 (d) — the preview rail is local, labelled, and never inert", () => {
-  it("owns its selection in local state", () => {
-    expect(PREVIEW).toContain(
-      'const [previewMethod, setPreviewMethod] = useState<PaymentMethodKey>("cod");',
-    );
+  it("choosing a rail CHANGES the selection (the radio is locally stateful)", () => {
+    // The INTERACTION, not a source string: the rail's `onChange` calls
+    // `cart.setMethod(key)`, the preview's cart context turns that into a
+    // local state transition, and the rail's `checked` state follows it.
+    //
+    // The repo has no DOM environment (no jsdom, and this programme adds no
+    // dependency), so the DOM event dispatch is the one step that cannot be
+    // exercised here. Everything the event triggers IS exercised: the SAME
+    // `usePreviewRailSelection` hook the preview frame uses, the SAME cart
+    // context shape, and the SAME `payment_methods` widget that renders the
+    // radio — driven by the SAME call the radio's `onChange` makes.
+    const before = renderRail({ click: false });
+    expect(before).toContain('value="cod"');
+    expect(isChecked(before, "cod")).toBe(true);
+    expect(isChecked(before, "bkash")).toBe(false);
+
+    const after = renderRail({ click: true });
+    // The selection changed: the SECOND rail is now the checked one, and
+    // the first is not.
+    expect(isChecked(after, "bkash")).toBe(true);
+    expect(isChecked(after, "cod")).toBe(false);
+    // The rail itself is unchanged — only the selection moved.
+    expect(after).toContain('value="cod"');
+    expect(after).toContain('name="fq-payment-method"');
+  });
+
+  it("the preview frame's own rail is the initial selection", () => {
+    // The frame renders the rail with the initial (local) selection checked,
+    // and the OTHER catalogue rail is present but not checked.
+    const markup = renderPreview("checkout");
+    expect(isChecked(markup, "cod")).toBe(true);
+    expect(isChecked(markup, "bkash")).toBe(false);
+    // …and the frame uses the very hook the interaction above drives.
+    expect(PREVIEW).toContain("usePreviewRailSelection()");
     expect(PREVIEW).toContain("method: previewMethod");
     expect(PREVIEW).toContain(
       "setMethod: (method: PaymentMethodKey) => setPreviewMethod(method)",

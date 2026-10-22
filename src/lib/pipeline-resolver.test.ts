@@ -33,17 +33,22 @@
  */
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import { renderToStaticMarkup } from "react-dom/server";
+import { createElement } from "react";
 import {
+  DEFAULT_TOKENS,
   TEMPLATE_KEYS,
   type Section,
   type SectionBuilder,
   type TemplateKey,
   type ThemeAst,
+  type ThemeTemplates,
   type ThemeTokens,
 } from "@/lib/builder-ast";
 import {
   PIPELINE_MODES,
   PIPELINE_MODE_LABELS,
+  resolveEditorDraft,
   resolveTemplateForHost,
   type PipelineSource,
 } from "./pipeline-resolver";
@@ -51,6 +56,21 @@ import { assemblePreviewTemplates } from "@/lib/theme-preview-nav";
 import type { PreviewThemeSource } from "@/lib/theme-preview-nav";
 import { previewSourceFor } from "./preview-sources";
 import { resolvePublishedTemplate } from "./storefront.server";
+import { resolveVariantAst } from "./template-variants";
+import { songoskritiPreviewSource } from "@/lib/themes/songoskriti/preview";
+import {
+  SONGOSKRITI_PREVIEW_QUERY_TERM,
+  SONGOSKRITI_PREVIEW_SEARCH_PATH,
+  SONGOSKRITI_PREVIEW_SEARCH_TOTAL,
+  songoskritiPreviewAccountOverview,
+  songoskritiPreviewCart,
+  songoskritiPreviewFeed,
+  songoskritiPreviewOrders,
+} from "@/lib/themes/songoskriti/preview-demo-data";
+import { LanguageProvider } from "@/lib/i18n";
+import { SectionRenderer } from "@/components/builder/SectionRenderer";
+import { CanvasDemoScope } from "@/components/builder/CanvasDemoScope";
+import { normalizeSearchParams } from "@/lib/storefront-search";
 
 /** The theme's OWN preview source — the platform's real map. */
 const SOURCE_READER = readFileSync(
@@ -374,13 +394,142 @@ describe("the editor canvas — the theme's presentation and the theme's demo da
     expect(block).toContain("themeKey={activeThemeKey}");
   });
 
+  it("RENDERS the editor's draft resolution and its mode label", () => {
+    // The RENDER, not a source scan: the canvas's draft is resolved, the
+    // mode label is shown, and the resolved body draws the THEME's own
+    // presentation — the three claims the editor's pipeline rests on.
+    const source = songoskritiPreviewSource();
+    const templates = {
+      cart: {
+        header: [],
+        main: source.main("cart", buildSection) ?? [],
+        footer: [],
+      },
+    };
+    const resolution = resolveEditorDraft({
+      template: "cart",
+      doc: { templates, tokens: DEFAULT_TOKENS },
+      tenant: "songoskriti",
+    });
+    // The mode is the editor's own — `draft` — and it is LABELLED.
+    expect(resolution.mode).toBe("draft");
+    expect(resolution.label).toBe(PIPELINE_MODE_LABELS.draft);
+    expect(resolution.label).toBe("Your unsaved draft");
+    // The draft authors the cart, so nothing is declined.
+    expect(resolution.declined).toBe(false);
+    expect(resolution.ast.main.length).toBeGreaterThan(0);
+
+    // The canvas frame, as the route draws it: the resolution attribute, the
+    // visible label, and the resolved body.
+    const markup = renderToStaticMarkup(
+      createElement(
+        LanguageProvider,
+        null,
+        createElement(
+          "div",
+          { "data-fq-resolution": resolution.mode },
+          createElement(
+            "p",
+            { "data-fq-resolution-label": resolution.mode },
+            resolution.label,
+          ),
+          createElement(CanvasDemoScope, {
+            children: resolution.ast.main.map((section) =>
+              createElement(SectionRenderer, {
+                key: section.id,
+                section,
+                template: "cart",
+                editing: true,
+                themeKey: "songoskriti",
+                demoData: section.type !== "page_content",
+              }),
+            ),
+            enabled: true,
+            cart: songoskritiPreviewCart(),
+            query: {
+              params: normalizeSearchParams({
+                q: SONGOSKRITI_PREVIEW_QUERY_TERM,
+              }),
+              total: SONGOSKRITI_PREVIEW_SEARCH_TOTAL,
+              basePath: SONGOSKRITI_PREVIEW_SEARCH_PATH,
+              navigate: undefined,
+            },
+            feed: songoskritiPreviewFeed(),
+            account: {
+              slug: "songoskriti",
+              currency: "BDT",
+              status: "ready",
+              overview: songoskritiPreviewAccountOverview(),
+              orders: songoskritiPreviewOrders(),
+              tab: "orders",
+              setTab: () => {},
+              openOrderId: null,
+              setOpenOrderId: () => {},
+              orderDetail: null,
+              placed: [],
+            },
+          }),
+        ),
+      ),
+    );
+    // The mode and its visible label render.
+    expect(markup).toContain('data-fq-resolution="draft"');
+    expect(markup).toContain('data-fq-resolution-label="draft"');
+    expect(markup).toContain("Your unsaved draft");
+    // The draft's body draws the THEME's presentation, not the platform's
+    // generic widget (the platform's order-summary panel chrome is absent).
+    expect(markup).toContain('aria-label="Order summary"');
+    expect(markup).not.toContain('aria-label="Order summary" class="p-6');
+  });
+
+  it("a VARIANT key falls back to its BASE — the storefront's own rule", () => {
+    // F10: the editor swapped `templateAstOf` for the resolver, and the
+    // resolver's variant rule is the storefront's rule. This PROVES it
+    // rather than assuming it: the editor's answer and the storefront's own
+    // `resolveVariantAst` are the same body.
+    const baseBody = ast([section("blog_archive")]);
+    const variantBody = ast([section("blog_terms")]);
+    const baseOnly = { blog: baseBody };
+
+    const fell = resolveEditorDraft({
+      template: "blog_listing",
+      doc: { templates: baseOnly },
+      tenant: "demo",
+    });
+    expect(fell.ast).toBe(baseBody);
+
+    // The storefront's own rule, called directly.
+    const storefront = resolveVariantAst(
+      baseOnly as unknown as ThemeTemplates,
+      "blog",
+      "listing",
+    );
+    expect(storefront).not.toBeNull();
+    expect(fell.ast).toBe(storefront!.ast);
+
+    // …and the variant's OWN body still wins when the theme authors it.
+    const withVariant = { blog: baseBody, blog_listing: variantBody };
+    const own = resolveEditorDraft({
+      template: "blog_listing",
+      doc: { templates: withVariant },
+      tenant: "demo",
+    });
+    expect(own.ast).toBe(variantBody);
+  });
+
   it("the canvas resolves its DRAFT through the ONE resolver — mode and host labelled", () => {
     // The editor is not a fourth path (review M2): it calls the same
     // resolver with `mode: "draft"`, `host: "editor"` and the draft map.
-    expect(BUILDER).toContain("resolveTemplateForHost({");
-    expect(BUILDER).toContain('mode: "draft"');
-    expect(BUILDER).toContain('host: "editor"');
-    expect(BUILDER).toContain("variants: doc.templates");
+    // The wiring scan is kept IN ADDITION to the render above.
+    expect(BUILDER).toContain("resolveEditorDraft({");
+    expect(BUILDER).toContain("templates: doc.templates");
+    // The resolver call itself is labelled — the mode and the host.
+    const resolver = readFileSync(
+      new URL("./pipeline-resolver.ts", import.meta.url),
+      "utf8",
+    );
+    expect(resolver).toContain('mode: "draft"');
+    expect(resolver).toContain('host: "editor"');
     // S8: the mode label is RENDERED, not merely computed.
     expect(BUILDER).toContain("data-fq-resolution={resolutionMode}");
     expect(BUILDER).toContain("data-fq-resolution-label={resolutionMode}");

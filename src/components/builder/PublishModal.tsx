@@ -21,6 +21,10 @@ export function PublishModal({
   const { t } = useLang();
   const errors = issues.filter((i) => i.level === "error");
   const warnings = issues.filter((i) => i.level === "warn");
+  // The "…and N more" line, shared by the two lists — one wording, one
+  // translation, no new copy authored for the warnings.
+  const more = (count: number) =>
+    t(`…and ${count} more`, `…এবং আরো ${count}টি`);
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
@@ -51,14 +55,7 @@ export function PublishModal({
                 {errors.slice(0, 5).map((e, i) => (
                   <li key={i}>{e.message}</li>
                 ))}
-                {errors.length > 5 && (
-                  <li>
-                    {t(
-                      `…and ${errors.length - 5} more`,
-                      `…এবং আরো ${errors.length - 5}টি`,
-                    )}
-                  </li>
-                )}
+                {errors.length > 5 && <li>{more(errors.length - 5)}</li>}
               </ul>
             </div>
           )}
@@ -70,6 +67,19 @@ export function PublishModal({
                   `${warnings.length}টি সতর্কতা — এগিয়ে যেতে পারেন`,
                 )}
               </p>
+              {/*
+                The warnings are READABLE, not a count: the merchant must be
+                able to read WHICH template their theme designs no body for
+                before they publish (review F4). The list is capped so a
+                pathological template cannot push the modal off the screen,
+                and the cap line is the same wording the error list uses.
+              */}
+              <ul className="mt-1 list-disc pl-4 text-xs text-foreground/80">
+                {warnings.slice(0, 5).map((w, i) => (
+                  <li key={i}>{w.message}</li>
+                ))}
+                {warnings.length > 5 && <li>{more(warnings.length - 5)}</li>}
+              </ul>
             </div>
           )}
           {errors.length === 0 && hasChanges && (

@@ -120,7 +120,13 @@ describe("ThemePreviewFrame chrome", () => {
     );
     expect(cart).toContain('data-fq-demo-marker="payment-methods"');
     expect(cart).toContain(PREVIEW_DISABLED_MESSAGE);
-    expect(cart).toContain("payment selection changes this preview only");
+    expect(cart).toContain("Payment selection changes this preview only.");
+    // The shared sentence stands ALONE: it is its own sentence, not a prefix
+    // glued to the clause with a colon.
+    expect(cart).toContain(
+      `<span class="font-semibold">${PREVIEW_DISABLED_MESSAGE}</span> <span>Payment selection changes this preview only.</span>`,
+    );
+    expect(cart).not.toContain(`${PREVIEW_DISABLED_MESSAGE}:`);
 
     const checkout = renderToStaticMarkup(
       <ThemePreviewFrame {...frameProps("checkout")} />,

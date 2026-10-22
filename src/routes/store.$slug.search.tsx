@@ -37,9 +37,36 @@ import {
   normalizeSearchParams,
   pageCount,
   toSearchQuery,
+  type SearchFacets,
   type SearchParams,
   type SortKey,
 } from "@/lib/storefront-search";
+
+/**
+ * The facet SCOPE the storefront hands the widget-data resolver.
+ *
+ * The sidebar's counts must describe the SAME query the grid beside it runs
+ * (the plan's **S4**). The search backend already computed the scoped
+ * facets and the total over its own filtered hit set; this hands exactly
+ * those to `resolveWidgetData`, so the loader answers from the scope instead
+ * of counting the merchant's whole catalogue.
+ *
+ * A degraded or failed outcome has no scope: the resolver then falls back
+ * to its own behaviour (never a wrong count, never a second tenant's rows).
+ *
+ * It is a pure function of the search outcome so the scope can be asserted
+ * as a VALUE, not read out of this route's source text.
+ */
+export function searchFacetScope(outcome: {
+  status: string;
+  result?: { facets?: SearchFacets; total?: number } | null;
+}): { facets: SearchFacets; total: number } | undefined {
+  if (outcome.status !== "ok") return undefined;
+  const facets = outcome.result?.facets;
+  const total = outcome.result?.total;
+  if (!facets || typeof total !== "number") return undefined;
+  return { facets, total };
+}
 
 export const Route = createFileRoute("/store/$slug/search")({
   validateSearch: (search: Record<string, unknown>) =>
@@ -98,6 +125,10 @@ export const Route = createFileRoute("/store/$slug/search")({
         const { resolveWidgetData } = await import("@/lib/widget-data.server");
         const { currentRequestHost, storeLinkBase } =
           await import("@/lib/storefront-host.server");
+        // S4: the sidebar counts the SAME query the grid beside it runs.
+        // Without this, `loadFacetsSource` counts the merchant's whole
+        // active catalogue and a search for one term shows every product.
+        const facetScope = searchFacetScope(outcome);
         widgetMap = await resolveWidgetData(
           chrome.merchant.id,
           widgetBundle,
@@ -107,15 +138,7 @@ export const Route = createFileRoute("/store/$slug/search")({
               currentRequestHost(),
               chrome.merchant.slug ?? params.slug,
             ),
-            // S4: the sidebar counts the SAME query the grid beside it runs.
-            // Without this, `loadFacetsSource` counts the merchant's whole
-            // active catalogue and a search for one term shows every product.
-            ...(outcome.status === "ok"
-              ? {
-                  facets: outcome.result.facets,
-                  total: outcome.result.total,
-                }
-              : {}),
+            ...(facetScope ?? {}),
           },
         );
       } catch {
