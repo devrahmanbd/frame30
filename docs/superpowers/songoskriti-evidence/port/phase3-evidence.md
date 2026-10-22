@@ -274,7 +274,7 @@ are the actual results, measured on **2026-10-22** at `0a794b549315`:
 — the build writes into the same untracked `.output-snapshots/` tree"_. It does
 not. `vite.config.ts` sets **no** `build.outDir`, and the TanStack Start + Nitro
 plugin writes the build to **`.output/`** — a gitignored directory (`.gitignore`
-line 3). `.output-snapshots/` holds dated **snapshot copies** of a build of the
+line 4). `.output-snapshots/` holds dated **snapshot copies** of a build of the
 base commit (`snap_20261021T041306Z_182c37b`, and an earlier
 `snap_20261021T013330Z_2f46c63`); nothing writes into it.
 
@@ -312,9 +312,11 @@ left `blocked`. The tip had **never** been bundled; it is now.
 The chain is `assets:songoskriti && perf:budget && seo:weight && a11y:gate &&
 vitals:gate && responsive:sweep && console:gate && rhythm:gate && design:gate
 && doc:gate && e2e:browsers` (`package.json`). It is **owner-run**, not a CI
-job, and each step was measured here. **Four are green; seven are not runnable
-on this box** — each for a stated reason, and each needing the build or the
-loopback stack.
+job, and each step was measured here. **Three are green** — `assets:songoskriti`,
+`seo:weight` and `doc:gate` (the asset *generator* is not one of the chain's
+eleven steps); **seven are not runnable on this box**, and `console:gate` is
+**skipped, not passed** — every non-green step for a stated reason, and each of
+those needing the build or the loopback stack.
 
 | the step             | the command                                 | the measured status                                                                                                                                                                                                                                                                                                                                                        |
 | -------------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

@@ -5551,3 +5551,198 @@ self-test: PASS
 findings: 0
 (exit 0)
 ```
+
+---
+
+## (r) Final-tidy round — the last five findings (appended, 2026-10-22)
+
+**Branch:** `frame30` · **Base commit:** `7a7f9b70` (`docs(self-critique): the duplicated paragraph, gone`).
+**Plan:** `docs/superpowers/plans/2026-10-21-frame30-core-cms-upgrade.md`.
+**Why this section exists:** the re-review of the final-fix round raised **five**
+findings — one of them a real shopper-facing defect (the place-order action
+rendered BEFORE the payment rail and the total), four of them documentation
+nits. Every §7-prohibited file this round edits is named here **before** the
+edit, with the finding, the planned change and the covering test; the measured
+evidence is appended in §(r.5) after the edits. This section is **appended**,
+not rewritten — the record stays append-only.
+
+**The governing rule, restated.** Port spec §7 ("no core files") is relaxed only
+for the plan's Decision Gate **G1** list, for the files this programme itself
+created (a NEW file needs no relaxation), and for the one file §(r.1) escalates
+below that is on neither list (`src/components/store/ThemeChrome.tsx` — named
+here, in this section, before the edit, exactly as §(q.1) names its files).
+Nothing outside that set is edited.
+
+### (r.1) MUST FIX — the shopper must meet "Place Order" AFTER the rail and the total
+
+**The finding.** The final-fix round reordered the theme's checkout composition
+so the route's own body (`page_content`) precedes the payment/summary band.
+But the platform's place-order action lives **inside that body** — inside the
+route's `<form>` — so the rendered order became: contact fields → **Place
+Order** → payment rail → order summary. The shopper met the action before the
+rail they pay with and before the total they pay. The rationale recorded in
+`src/lib/themes/songoskriti/preview.ts:416-421` and in the fix report claimed
+the shopper "reads the address first and picks the rail with the total in
+view" — that was no longer literally true.
+
+**Why the theme's AST cannot fix it.** The theme may only arrange
+platform-owned pieces; the action is the ROUTE's, and the route's form is the
+thing the theme's body slot carries. A theme that carried its own action would
+be authoring a submit button — the very thing the checkout's authority
+contract forbids (`src/lib/checkout-shell.contract.test.ts`). So the ORDER has
+to be fixed on the platform side, in the route, with the theme's composition
+left exactly as it is.
+
+**The change — the platform's contracts, used as they are.**
+
+1. **`ThemeChrome` gains a trailing slot** (`afterBody`): the ROUTE's own
+   action, rendered after the page body (the theme's composition) inside the
+   same `<main>`. The theme cannot place it, cannot fill it and does not know
+   it exists — the route alone decides that its action comes last.
+2. **The route's `<form>` gets an `id`, and the action names it through the
+   HTML form owner** (`<button type="submit" form="…">`). The action therefore
+   submits the route's own form while living outside the form element — the
+   only way a submit button can follow a band the theme draws *beside* the
+   route's body. The form still owns the fields, the validation, the quote and
+   the order write; the browser still runs the form's constraint validation and
+   still treats the action as the form's default button (Enter submits).
+3. **The form REPORTS the action's state up** (label, disabled, live-region
+   notice) because the state that drives it — the server quote, the pending
+   mutation and the charge hop — belongs to the form, while the action renders
+   outside it. The report is a plain primitive triple, so it cannot loop.
+4. **The seam decides where the action goes.** `checkoutShellControls`
+   (`src/lib/theme-shell-slots.ts`, created by this programme) grows a third
+   answer, `submitAfterBody`: true for the `shell` variant when the theme's
+   body renders (the band exists, so the action follows it), false for the
+   `fallback` variant — today's hand-built checkout, whose action stays inside
+   its own form, unchanged.
+
+**The files this MUST FIX touches.**
+
+| file                                                                       | §7 status                                                                                                                                                                                                                                     |
+| -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/routes/store.$slug.checkout.tsx`                                       | **§7-prohibited** — on the plan's Decision Gate **G1** list (the "routes" group).                                                                                                                                                              |
+| `src/routes/checkout.tsx`                                                   | **§7-prohibited** — on the plan's Decision Gate **G1** list (the "routes" group).                                                                                                                                                              |
+| `src/components/store/ThemeChrome.tsx`                                      | **§7-prohibited, and NOT on the G1 list** — an existing file under `src/`, not created by this programme. **Escalated by this section**, before the edit, in the same way §(q.1) escalates its files. The change is additive: one optional prop, rendered after the body. |
+| `src/lib/theme-shell-slots.ts`                                              | **created by this programme** (`2f4eb2f5`, 2026-10-21) — the batch owns it, exactly as §(q.4) states for `src/lib/template-variants.ts`.                                                                                                                |
+| `src/lib/checkout-shell.contract.test.ts`                                   | **created by this programme** (`fdd654ff`, 2026-10-21) — the batch owns it.                                                                                                                                                                     |
+| `src/routes/checkout-dom-order.test.tsx`                                    | **NEW** — §7 allows a new file.                                                                                                                                                                                                                |
+| `src/lib/themes/songoskriti/preview.ts`                                     | **§7-allowed** (`src/lib/themes/songoskriti/**`). The composition is **unchanged** — only the comment that described the order is corrected.                                                                                                        |
+| `src/lib/themes/songoskriti/checkout-composition.test.ts`                   | **§7-prohibited** (an existing test file under `src/`) — already named in §(q.10) for the previous round; re-named here because it is edited again (its pin is re-pointed and a new pin added).                                                   |
+| `.e2e/songoskriti-storefront-surfaces.spec.ts`                              | **§7-prohibited** (an existing `.e2e` file) — already named in §(q.2) for the previous round; re-named here because it is edited again (the checkout case gains the action's own position).                                                              |
+
+**The covering tests.**
+
+- `src/routes/checkout-dom-order.test.tsx` (**NEW**) — the rendered DOM-order
+  pin. It renders the **production shell** for **both** routes
+  (`store.$slug.checkout.tsx`'s and `checkout.tsx`'s own exported
+  `CheckoutShell`, with the Songoskriti checkout AST) and asserts the order
+  of the four landmarks in the emitted markup: the route's customer field →
+  the theme's payment block → the theme's order summary → the route's
+  place-order action. It also asserts that the theme's band carries no `<form>`
+  and no submit button, and that the action names the route's form.
+- `src/lib/checkout-shell.contract.test.ts` — the authority contract gains the
+  new seams: the trailing slot, the form owner, the report-up, and the seam's
+  third answer.
+- `src/lib/themes/songoskriti/checkout-composition.test.ts` — the theme's own
+  composition pin: the order it authors is unchanged, the theme still carries
+  **no** form, input or submit button, and the rationale comment is corrected.
+- `.e2e/songoskriti-storefront-surfaces.spec.ts` — the browser lane: the
+  checkout case now asserts the action renders **below** the payment control
+  and **below** the total, and finds the order form through the action's own
+  `form` attribute (the HTML form owner) instead of assuming the action is a
+  descendant of the form.
+
+### (r.2) The four documentation nits
+
+| #   | the finding                                                                                                                                                                            | the file(s)                                                                                                                                                    |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2   | the "expert's six items" row still records the superseded D1 mechanism ("5 Archive contract ✅ (Option A — a documented contract, not a new key)")                                    | `report.md` — the row is re-pointed at **§5.2** (D1′)                                                                                                        |
+| 3   | `phase3-evidence.md` cites `.gitignore` "line 3" for `.output/`; the entry is **line 4**                                                                                           | `docs/superpowers/songoskriti-evidence/port/phase3-evidence.md`                                                                                              |
+| 4   | the same file says "**Four are green**" while its own §3.2 table has **three** green rows (`assets:songoskriti`, `seo:weight`, `doc:gate`) — the asset generator is not one of the chain's 11 steps | `docs/superpowers/songoskriti-evidence/port/phase3-evidence.md`                                                                                              |
+| 5   | the "written BEFORE the first §7-prohibited edit" claim is unverifiable for the §(q) block — see §(r.3)                                                                            | `.superpowers/sdd/2026-10-21-frame30-core-cms-upgrade/final-fix-report.md` §17, and **this record** (§(r.3))                                                  |
+
+### (r.3) A correction to §(q)'s ordering claim — what git can actually prove
+
+**The claim as §(q) states it.** The §(q) preamble says: _"Every §7-prohibited
+file this round edits is named here **before** the edit, with the finding, the
+planned change and the covering test."_ The final-fix report's §17 repeated it
+as "**§(q.1)–§(q.10) was written BEFORE the first §7-prohibited edit**".
+
+**Why it cannot be stated that way.** The §(q) headers and the first
+§7-prohibited edits landed in the **same** commit:
+
+```
+$ git log --oneline --name-only 38aad54d..7a7f9b70
+5debc16c fix(builder): the catalogue declares what the theme authors
+  docs/superpowers/songoskriti-evidence/port/phase3-archive-key-escalation.md
+  src/lib/builder-ast.ts
+  src/lib/themes/songoskriti/composition-props.test.ts
+  src/lib/themes/songoskriti/search-template.test.ts
+  src/lib/widget-help.ts
+```
+
+For those three files (`src/lib/builder-ast.ts`, `src/lib/widget-help.ts`,
+`src/lib/themes/songoskriti/search-template.test.ts`) the naming and the edit
+are in one commit, and no commit order can separate them. For **every other**
+§7-prohibited file the round edited, the naming commit precedes the edit
+commit: `src/lib/themes.server.ts`, `src/lib/themes-reset.contract.test.ts`
+and `src/routes/_authenticated/dashboard/builder.tsx` are named in `5debc16c`
+and edited in `439e7b76`; `src/lib/themes/songoskriti/preview.ts`,
+`src/lib/themes/songoskriti/checkout-composition.test.ts`,
+`src/components/builder/songoskriti-port-freeze.test.tsx` and
+`.e2e/songoskriti-storefront-surfaces.spec.ts` are named in `5debc16c` and
+edited in `e707017f`; `src/components/store/ArchiveView.tsx` is named in
+`5debc16c` and edited in `3cfe33c8`.
+
+**What git can prove, and what this section therefore claims.**
+
+1. **The record is append-only.** Measured:
+
+   ```
+   $ git diff --numstat 38aad54d..7a7f9b70 -- docs/superpowers/songoskriti-evidence/port/phase3-archive-key-escalation.md
+   702	0	docs/superpowers/songoskriti-evidence/port/phase3-archive-key-escalation.md
+   $ git diff 38aad54d..7a7f9b70 -- docs/superpowers/songoskriti-evidence/port/phase3-archive-key-escalation.md | grep -cE "^-[^-]"
+   0
+   ```
+
+   — 702 insertions, **0** deletions, and every added line lands after the
+   record's original last line (4849).
+
+2. **The record's hunks match the committed diffs byte-for-byte.** Measured
+   over the four files whose diffs §(q.9) quotes: `src/lib/builder-ast.ts`
+   **107/107** changed lines quoted, **0** mismatches (the record quotes the
+   FULL diff); `src/lib/themes/songoskriti/preview.ts` **16/16**, **0**
+   mismatches (the FULL diff); `src/lib/themes.server.ts` 38 quoted lines, **0**
+   of them absent from the committed diff (quoted abridged — 8 committed lines
+   are not quoted); `src/lib/template-variants.ts` 33 quoted lines, **0**
+   absent (quoted abridged — 2 committed lines are not quoted). **194 quoted
+   changed lines, 0 that differ from the commit.**
+
+3. **The "named before the edit" ordering holds for the files edited in later
+   commits** — and only for those. The three files edited in `5debc16c` itself
+   are named in the same commit as their edit; the record does not, and cannot,
+   claim otherwise.
+
+**The corrected claim.** The final-fix report's §17 and this record now say
+exactly that: the record is append-only (702 insertions, 0 deletions, measured);
+its quoted hunks match the committed diffs byte-for-byte (194 quoted changed
+lines, 0 mismatches, measured); and the "named before the edit" ordering holds
+for the files edited in the commits **after** the one that introduced §(q)'s
+headers. This round's own edits are named in §(r.1) and §(r.2) **before** the
+edits, in this appended section.
+
+### (r.4) The round's own discipline
+
+- **Explicit-path staging only.** Every commit uses `git add <paths>`. The
+  three churn files (`.artifacts/e2e/playwright-report/index.html`,
+  `ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`) and the
+  untracked `.output-snapshots/` are never staged.
+- **No test deleted, skipped or weakened.** The pins this round touches are
+  re-pointed at an intended behaviour change and each asserts at least as
+  much.
+- **No new npm dependency**, no lockfile change, no migration, no DDL.
+
+### (r.5) The measured evidence
+
+_(appended after the edits — see the section that follows this one.)_
