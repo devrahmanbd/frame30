@@ -292,6 +292,22 @@ export async function ensureCartHasLine(page: Page): Promise<void> {
     await add.isDisabled(),
     "the product page offers an in-stock variant",
   ).toBe(false);
+  // The product page hydrates its buy box as an island; a click that lands
+  // before hydration is a no-op and the confirmation never arrives
+  // (recorded as §(k.4.3)). Wait for the React marker the shipped login
+  // helper uses, then click.
+  await expect
+    .poll(
+      async () =>
+        add.evaluate((el) =>
+          Object.keys(el).some((key) => key.startsWith("__reactProps$")),
+        ),
+      {
+        timeout: 60_000,
+        message: "the product page's buy box is hydrated before the add",
+      },
+    )
+    .toBe(true);
   await add.click();
   await expect(
     page.getByText("Added to cart").first(),

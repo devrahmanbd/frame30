@@ -64,6 +64,19 @@ function templateStrip(page: Page) {
 
 /** The layer navigator's tree items — the editor's own composition list. */
 async function layerNames(page: Page): Promise<string[]> {
+  // The navigator hydrates after the toolbar; reading it immediately can see
+  // an empty panel on a cold SSR route (recorded as §(k.4.1)). Wait for the
+  // tree to settle (an empty composition is a legitimate state, so the
+  // assertions — not this read — report it).
+  await page
+    .waitForFunction(
+      () => document.querySelectorAll('[role="treeitem"]').length > 0,
+      undefined,
+      { timeout: 60_000 },
+    )
+    .catch(() => {
+      /* empty composition: the caller's assertions report the missing layer */
+    });
   return page.evaluate(() =>
     Array.from(document.querySelectorAll('[role="treeitem"]')).map((el) =>
       (el.textContent ?? "").trim().replace(/\s+/g, " ").slice(0, 40),
@@ -194,7 +207,7 @@ const JOURNEYS: readonly Journey[] = [
         "the theme's search composition renders its own results band",
       ).toBeVisible({ timeout: 30_000 });
       await expect(
-        page.getByText("Filters", { exact: true }).first(),
+        page.getByRole("heading", { name: "Filters", exact: true }).first(),
         "the theme's search composition renders its own facet panel",
       ).toBeVisible({ timeout: 30_000 });
       // The ROUTE's context: the platform's own result count, rendered by
