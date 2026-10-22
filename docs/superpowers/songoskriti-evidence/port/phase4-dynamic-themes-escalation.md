@@ -4988,3 +4988,48 @@ This is the same consumption pattern as the rest of the storefront: `store.$slug
 **Boundary.** Only the two files diffed above are edited. No new file, no config change, no import-protection bypass, no dependency, no test edit. The churn files (`.artifacts/e2e/playwright-report/index.html`, `ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`) and `.output-snapshots/` remain unstaged.
 
 **Ordering.** This section is committed first, by explicit path; the code commit follows it. That is the §7.1 ordering the previous sections used.
+
+---
+
+## (l) Task 6 — the stale `CheckoutMock` prose in an existing test file, recorded before the edit
+
+*(Append-only, dated 2026-10-22, continuing the record. The plan's Task 6 (step 6.2) re-words the two prose mentions of the deleted `CheckoutMock` in the same commit as the deletion. One of the two is inside an **existing test file**, which the report's §7 pins as untouched — so the edit is recorded here **before** it is made, as §(k.4) and §(k.6) were.)*
+
+### (l.1) What the citation measured
+
+Task 6.1's citation ran first, at the programme tip `4eef8f5c`:
+
+```
+$ grep -rn "CheckoutMock" src .e2e --include=*.ts --include=*.tsx
+src/components/store/songoskriti-preview-compositions.test.tsx:8:  * never the pack's `SAMPLE` blog rows and never the generic `CheckoutMock`.
+src/components/store/CheckoutMock.tsx:4:export function CheckoutMock({
+src/components/store/ThemePreviewFrame.tsx:1285:                     SectionRenderer the storefront uses — not `CheckoutMock`.
+```
+
+Three hits: the file's own definition and **two comments** that say what the preview does **not** render it as — **no importer** (the plan's A8, O1: the removal is proven unused). The other citations measured the same morning: `genericDemoMain` has no preview consumer left (it is the distinctness gate's reference body — it **stays**); `BlogArchiveTheme` is the archive host's delegated fallback (`ArchiveView.tsx:152`) — it **stays**; `DEMO_CART` is the context's default value — it **stays**. The plan's step 6.2 re-words only the two prose mentions; the deletion and the other re-words are plan-**allowed** file actions (the dead file, the gate's doc comment, the panel copy's state) and are not this section's subject.
+
+### (l.2) The exact old → new diff
+
+The edit is a **prose comment only** — inside the file's module doc block. No import, no assertion, no fixture, no expectation changes; the suite's claim (*the preview renders the theme's own compositions over visibly labelled demo data*) is untouched, and the file is **never weakened**.
+
+**`src/components/store/songoskriti-preview-compositions.test.tsx:7-8`** (§7-prohibited; this edit is the escalation):
+
+```diff
+- * demo data — never the studio's `DEMO_CART`, never the shared `DEMO_ORDERS`,
+- * never the pack's `SAMPLE` blog rows and never the generic `CheckoutMock`.
++ * demo data — never the studio's `DEMO_CART`, never the shared `DEMO_ORDERS`,
++ * never the pack's `SAMPLE` blog rows; the checkout surface can only be the
++ * theme's authored composition rendered through `SectionRenderer` — the
++ * composition that replaced the generic checkout mock (the file was deleted
++ * 2026-10-22, proven unused by the obsolete-path record's O1).
+```
+
+(The same commit's other prose edits — `ThemePreviewFrame.tsx` `:1285`'s *not `CheckoutMock`* clause and the two plan-allowed copy changes — are not §7 relaxations; they are listed here only so this section is the complete description of the Task 6 edit wave.)
+
+### (l.3) Ratification and boundary
+
+**Ratification.** The programme owner's standing instruction for this wave — *"whatever goes, as per the expert opinion"* — ratifies this single-comment re-word that Task 6's own brief demands ("the stale `CheckoutMock` mention at `:8` is re-worded. **Never weakened.**"). It relaxes §7 for one existing test file by eight lines of prose, zero of them executable. It does not set a precedent for any future programme.
+
+**Boundary.** The Task 6 commit touches exactly five paths — the deleted `src/components/store/CheckoutMock.tsx`, the two prose re-words (`ThemePreviewFrame.tsx`, `songoskriti-preview-compositions.test.tsx`), the gate's doc-comment re-word (`src/lib/theme-preview-nav.ts`), and the new obsolete-path record. The churn files (`.artifacts/e2e/playwright-report/index.html`, `ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`) and `.output-snapshots/` remain unstaged.
+
+**Ordering.** This section is committed first, by explicit path, before any Task 6 edit is made; the code commit follows it. That is the ordering §(k.4) and §(k.6) used.
