@@ -4712,3 +4712,54 @@ The record commit for §(k.4) is `9e41c496`. The code commit it named arrived af
 - `25e5e494` — `fix(e2e): settle the layer navigator and hydrate the product buy box` — `.e2e/songoskriti-seven-templates.spec.ts` (k.4.1 `layerNames()` wait, k.4.2 the facet-panel heading) and `.e2e/songoskriti-dynamic-themes-helpers.ts` (k.4.3 the hydration wait). Two files, +30/-1.
 
 `prettier --check` passed on both files and `tsgo --noEmit` exited 0 before the commit. No assertion was deleted, no skip added, no threshold moved. The churn files (`.artifacts/e2e/playwright-report/index.html`, `ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`) and the untracked `.output-snapshots/` remain unstaged.
+
+## (k.6) The storefront-surfaces lane's two defects — recorded before the edit
+
+*(Append-only, dated 2026-10-22, continuing §(k). First run of `.e2e/songoskriti-storefront-surfaces.spec.ts` on the Task 5b stack: 7 passed, 1 skipped, 1 flaky, 2 failed on both attempts. Both failures were measured from the run's own snapshots and error contexts. This section names the edits **before** they are made; the record commit precedes the code commit as in §(k.3) and §(k.4).)*
+
+### (k.6.1) The surfaces search check selects the hidden mobile drawer trigger
+
+**Measured.** `the search route renders the theme's composition with the platform's own result count` failed on both attempts: `getByText("Filters", { exact: true }).first()` resolved to `<button type="button">Filters</button>`, `unexpected value "hidden"`. This is the same defect §(k.4.2) fixed in the seven-templates lane, present independently in this file. The accessibility snapshot of the same page shows the rendered facet panel as `complementary "Filters"` carrying `heading "Filters" [level=2]`, visible; the hidden node is the compact drawer trigger.
+
+**The edit.** Select the visible heading, as in §(k.4.2). The claim — the theme renders its own facet panel — is unchanged.
+
+```diff
+       await expect(
+-        page.getByText("Filters", { exact: true }).first(),
++        page.getByRole("heading", { name: "Filters", exact: true }).first(),
+         "the theme's search composition renders its own facet panel",
+       ).toBeVisible({ timeout: 30_000 });
+```
+
+### (k.6.2) The checkout-position check assumes a cart line it never creates
+
+**Measured.** `the checkout asks for the address first and shows the rail and the total below it` failed on both attempts at `getByText("Total", { exact: true }).first()` — *element(s) not found*, 30 s. Its error context shows the platform form rendered and the theme's order summary in its honest empty state: `paragraph: Add something to see your total.` The test opened `/checkout` in a fresh browser context and never put a line in the cart, so no total exists to place. The assertion is about *where the total sits*, so its precondition is a real cart line.
+
+**The edit.** Establish that precondition through the storefront's own flow, with the shipped `ensureCartHasLine()` helper the cart-stepper case already uses — a real product page add, never a seeded cart. Nothing about the position assertions changes.
+
+```diff
+   test("the checkout asks for the address first and shows the rail and the total below it", async ({
+     page,
+   }) => {
++    // The theme's order summary reads the SERVER's quote; with an empty cart
++    // it honestly renders "Add something to see your total." and there is no
++    // total to place. The assertion is about where the total sits, so its
++    // precondition is a real line, through the storefront's own flow.
++    await ensureCartHasLine(page);
+     await open(page, `/store/${STORE}/checkout`);
+```
+
+### (k.6.3) The one flake, left as a flake
+
+`the composed cart's quantity stepper changes the cart and the quote follows` failed once and passed on retry. The failure screenshot is a blank document, and the app log at that instant carries exactly two client-side exceptions, both on this route:
+
+```
+{"level":"error","event":"exception","message":"Invariant failed: Expected to find bootstrap data on window.$_TSR, but we did not. Please file an issue!","route":"client/store/frame19-demo/cart","mechanism":"unhandledrejection"}
+{"level":"error","event":"exception","message":"Invariant failed: Expected to find bootstrap data on window.$_TSR, but we did not. Please file an issue!","route":"client/store/frame19-demo/cart","mechanism":"onerror"}
+```
+
+No retry logic is added and no assertion is relaxed: the lane still fails if the cart does not render. This is a dev-server client-router bootstrap race on one of ~14 navigations in the run (it never recurs in any other lane, including the same route in the passing surfaces test and in the seven-template Cart journey). It is reported as a flake in the Task 5b report, not treated as a pass.
+
+### (k.6.4) Ordering and boundary
+
+Commits: **(1)** this section; **(2)** the single-file edit to `.e2e/songoskriti-storefront-surfaces.spec.ts`; **(3)** the appendix naming (2). No skip is added, no assertion is weakened or removed, no threshold moves, no test is re-ordered. The churn files and `.output-snapshots/` remain unstaged.
