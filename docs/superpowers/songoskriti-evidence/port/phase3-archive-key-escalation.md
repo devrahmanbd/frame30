@@ -5625,6 +5625,7 @@ left exactly as it is.
 | `src/routes/checkout.tsx`                                                   | **§7-prohibited** — on the plan's Decision Gate **G1** list (the "routes" group).                                                                                                                                                              |
 | `src/components/store/ThemeChrome.tsx`                                      | **§7-prohibited, and NOT on the G1 list** — an existing file under `src/`, not created by this programme. **Escalated by this section**, before the edit, in the same way §(q.1) escalates its files. The change is additive: one optional prop, rendered after the body. |
 | `src/lib/theme-shell-slots.ts`                                              | **created by this programme** (`2f4eb2f5`, 2026-10-21) — the batch owns it, exactly as §(q.4) states for `src/lib/template-variants.ts`.                                                                                                                |
+| `src/lib/theme-shell-slots.test.ts`                                         | **created by this programme** (`2f4eb2f5`, 2026-10-21) — the batch owns it. Its pins gain the seam's third answer (`submitAfterBody`), so each asserts the FULL object it did not assert before.                                                          |
 | `src/lib/checkout-shell.contract.test.ts`                                   | **created by this programme** (`fdd654ff`, 2026-10-21) — the batch owns it.                                                                                                                                                                     |
 | `src/routes/checkout-dom-order.test.tsx`                                    | **NEW** — §7 allows a new file.                                                                                                                                                                                                                |
 | `src/lib/themes/songoskriti/preview.ts`                                     | **§7-allowed** (`src/lib/themes/songoskriti/**`). The composition is **unchanged** — only the comment that described the order is corrected.                                                                                                        |
@@ -5644,6 +5645,10 @@ left exactly as it is.
 - `src/lib/checkout-shell.contract.test.ts` — the authority contract gains the
   new seams: the trailing slot, the form owner, the report-up, and the seam's
   third answer.
+- `src/lib/theme-shell-slots.test.ts` — the seam's own unit pins now assert
+  the FULL answer (the two booleans **and** where the action renders), and a
+  new case pins that the action follows the band only when the theme's body
+  renders at all.
 - `src/lib/themes/songoskriti/checkout-composition.test.ts` — the theme's own
   composition pin: the order it authors is unchanged, the theme still carries
   **no** form, input or submit button, and the rationale comment is corrected.
@@ -5746,3 +5751,128 @@ edits, in this appended section.
 ### (r.5) The measured evidence
 
 _(appended after the edits — see the section that follows this one.)_
+
+### (r.5) The measured evidence (appended, 2026-10-22)
+
+The diffs below are the **committed** diffs of this round, measured against
+this round's base (`7a7f9b70`).
+
+```
+$ git diff 7a7f9b70..06406185 --stat -- src/ .e2e/
+ .e2e/songoskriti-storefront-surfaces.spec.ts       |  36 ++-
+ src/components/store/ThemeChrome.tsx               |  16 ++
+ src/lib/checkout-shell.contract.test.ts            |  76 +++++
+ src/lib/theme-shell-slots.test.ts                  |  29 +-
+ src/lib/theme-shell-slots.ts                       |  31 +-
+ .../songoskriti/checkout-composition.test.ts       |  36 ++-
+ src/lib/themes/songoskriti/preview.ts              |  21 +-
+ src/routes/checkout-dom-order.test.tsx             | 260 +++++++++++++++++
+ src/routes/checkout.tsx                            | 248 ++++++++++++----
+ src/routes/store.$slug.checkout.tsx                | 317 ++++++++++++++++-----
+ 10 files changed, 917 insertions(+), 153 deletions(-)
+```
+
+(The documents — this record, `phase3-evidence.md` and `report.md` — are in
+the round's first commit, `dc1f5a63`; the numbers above are the code
+commit's. The two documents are **also** normalised by the repository's own
+formatter in the commit that carries this section — `prettier --check` was
+clean for `phase3-evidence.md` and `report.md` at the base and this round's
+edits changed the tables' padding, so `prettier --write` put them back.)
+
+**The DOM-order pin — the covering test for MUST FIX 1:**
+
+```
+$ node_modules/.bin/vitest run src/routes/checkout-dom-order.test.tsx
+
+ ✓ src/routes/checkout-dom-order.test.tsx (8 tests) 240ms
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+```
+
+**The authority contract, the seam and the theme's own composition:**
+
+```
+$ node_modules/.bin/vitest run src/lib/checkout-shell.contract.test.ts src/lib/theme-shell-slots.test.ts src/lib/themes/songoskriti/checkout-composition.test.ts src/routes/store.$slug.checkout.rescue.test.ts src/lib/checkout-token.test.ts src/components/builder/songoskriti-port-freeze.test.tsx
+
+ ✓ src/lib/theme-shell-slots.test.ts (15 tests) 112ms
+ ✓ src/lib/themes/songoskriti/checkout-composition.test.ts (9 tests) 71ms
+ ✓ src/lib/checkout-shell.contract.test.ts (29 tests) 153ms
+ ✓ src/components/builder/songoskriti-port-freeze.test.tsx (22 tests) 270ms
+ ✓ src/routes/store.$slug.checkout.rescue.test.ts (10 tests) 20ms
+ ✓ src/lib/checkout-token.test.ts (15 tests) 19ms
+
+ Test Files  6 passed (6)
+      Tests  100 passed (100)
+```
+
+**The whole suite, at the tip of this round:**
+
+```
+$ node_modules/.bin/vitest run
+
+ Test Files  2 failed | 618 passed | 1 skipped (621)
+      Tests  3 failed | 8790 passed | 3 skipped (8796)
+```
+
+The three failures are the **pre-existing, environment-bound** ones —
+`src/lib/analytics-live-shape.test.ts` (2) and `src/lib/site.server.test.ts`
+(1) — the same three the final-fix round recorded, and they fail at the base
+commit in the same environment.
+
+**The type check, the linter, the formatter, the build and the doc gate:**
+
+```
+$ node_modules/.bin/tsgo --noEmit
+(no output — exit 0)
+
+$ node_modules/.bin/eslint src scripts
+✖ 319 problems (0 errors, 319 warnings)
+(exit 0 — the 319 warnings are the pre-existing ones; 0 errors)
+
+$ node_modules/.bin/prettier --check <the files this round touched>
+Checking formatting...
+All matched files use Prettier code style!
+
+$ node_modules/.bin/vite build
+✓ built in 6.00s
+ℹ Generated .output/nitro.json
+(exit 0)
+
+$ node scripts/doc-gate.mjs
+doc gate — canonical documentation checks
+scope: 24 documents (23 require a status line)
+self-test: PASS
+
+findings: 0
+(exit 0)
+```
+
+**The rendered order, measured on the production shell** (the storefront
+route, the Songoskriti checkout AST, `renderToStaticMarkup` — the byte
+offsets of the landmarks in the emitted markup):
+
+```
+   2541  ROUTE heading: Contact Information
+   3466  ROUTE FIELD (phone)            <- the route's own customer fields
+   3610  ROUTE heading: Delivery Address
+   6099  the route's form closes         <- </form>
+   6568  THEME payment block             <- the theme's `payment_methods`
+  36534  THEME order summary             <- the theme's `cart_summary` (the total)
+  37035  ROUTE place-order action        <- <button type="submit" form="fq-checkout-form-demo">Place Order</button>
+```
+
+**contact/address fields → payment control → order summary with the total →
+"Place Order" (last).**
+
+**The commits of this round:**
+
+```
+dc1f5a63 docs(evidence): the last five findings, named before the edits
+06406185 fix(storefront): the place-order action comes LAST, after the rail and the total
+```
+
+The first carries **§(r)** — the round's escalation, appended **before** the
+§7-prohibited edits — and the documentation nits; the second carries the code
+and the pins §(r.1) names. The record stays append-only: this section is an
+append too.

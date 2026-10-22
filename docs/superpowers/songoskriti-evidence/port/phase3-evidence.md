@@ -313,7 +313,7 @@ The chain is `assets:songoskriti && perf:budget && seo:weight && a11y:gate &&
 vitals:gate && responsive:sweep && console:gate && rhythm:gate && design:gate
 && doc:gate && e2e:browsers` (`package.json`). It is **owner-run**, not a CI
 job, and each step was measured here. **Three are green** — `assets:songoskriti`,
-`seo:weight` and `doc:gate` (the asset *generator* is not one of the chain's
+`seo:weight` and `doc:gate` (the asset _generator_ is not one of the chain's
 eleven steps); **seven are not runnable on this box**, and `console:gate` is
 **skipped, not passed** — every non-green step for a stated reason, and each of
 those needing the build or the loopback stack.
