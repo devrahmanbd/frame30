@@ -4702,3 +4702,13 @@ No other file is edited by this correction. The test is not weakened: §(k.1) ch
 ### (k.4.4) Ordering and boundary
 
 Commits: **(1)** this section; **(2)** the single-file edit to `.e2e/songoskriti-seven-templates.spec.ts` (k.4.1 + k.4.2) and the helper edit (k.4.3); **(3)** the appendix naming (2). No skip is added, no assertion is removed, no threshold moves.
+
+### (k.5) Appendix — the code commit this record preceded
+
+*(Append-only, dated 2026-10-22, closing §(k.4).)*
+
+The record commit for §(k.4) is `9e41c496`. The code commit it named arrived after it, as required:
+
+- `25e5e494` — `fix(e2e): settle the layer navigator and hydrate the product buy box` — `.e2e/songoskriti-seven-templates.spec.ts` (k.4.1 `layerNames()` wait, k.4.2 the facet-panel heading) and `.e2e/songoskriti-dynamic-themes-helpers.ts` (k.4.3 the hydration wait). Two files, +30/-1.
+
+`prettier --check` passed on both files and `tsgo --noEmit` exited 0 before the commit. No assertion was deleted, no skip added, no threshold moved. The churn files (`.artifacts/e2e/playwright-report/index.html`, `ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`) and the untracked `.output-snapshots/` remain unstaged.
