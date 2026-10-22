@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import {
   createFileRoute,
   notFound,
@@ -6,6 +7,7 @@ import {
   Link,
 } from "@tanstack/react-router";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
+import type { StorefrontSiteKit } from "@/components/store/SiteKitTags";
 import { PluginLayer } from "@/components/store/PluginLayer";
 import { getStoreChrome } from "@/lib/storefront.functions";
 import {
@@ -31,6 +33,7 @@ import {
 } from "@/lib/payment-keys";
 import { fmtMinor } from "@/lib/money";
 import { checkoutShellControls } from "@/lib/theme-shell-slots";
+import type { ThemeAst, ThemeTokens } from "@/lib/builder-ast";
 import { useCart } from "@/lib/cart";
 import { useCartContext } from "@/components/builder/CartContext";
 import { useLang } from "@/lib/i18n";
@@ -232,13 +235,57 @@ function CheckoutMissing() {
  * does.
  *
  * A store whose theme publishes NO checkout body gets today's hand-built
- * checkout, unchanged — the `fallback` below is that markup verbatim.
+ * checkout, unchanged — that is the `fallback` in `CheckoutShell` below.
  */
 function CheckoutPage() {
   const { merchant, ast, tokens, siteKit, installedPlugins, themeKey } =
     Route.useLoaderData();
   const { slug } = Route.useParams();
 
+  return (
+    <PluginLayer plugins={installedPlugins}>
+      <CheckoutShell
+        slug={slug}
+        store={{ merchant, ast, tokens, siteKit, themeKey }}
+        chrome={
+          <MinimalCheckoutHeader
+            slug={slug}
+            name={merchant.name}
+            themeKey={themeKey ?? null}
+          />
+        }
+        containerClassName="bg-muted/10 min-h-screen pb-24"
+      />
+    </PluginLayer>
+  );
+}
+
+/**
+ * The production checkout's SHELL — the theme's composition around the
+ * platform's own form.
+ *
+ * Exported so the DOM-order pin renders the PRODUCTION wiring itself rather
+ * than a restatement of it
+ * (`src/routes/checkout-dom-order.test.tsx`).
+ */
+export function CheckoutShell({
+  slug,
+  store,
+  chrome,
+  containerClassName,
+}: {
+  slug: string;
+  store: {
+    merchant: { id: string };
+    ast: ThemeAst | null;
+    tokens: ThemeTokens | null;
+    siteKit: StorefrontSiteKit | null;
+    themeKey: string | null;
+  };
+  chrome: ReactNode;
+  containerClassName: string;
+}) {
+  const { merchant, ast, tokens, siteKit, themeKey } = store;
   // The two controls a checkout cannot be without: the PAYMENT PICKER and
   // the ORDER SUMMARY. The theme's body may carry them — `payment_methods`
   // and `cart_summary` are platform widgets that read the live cart — or it
@@ -255,59 +302,145 @@ function CheckoutPage() {
   const shellControls = checkoutShellControls(ast, "shell");
   const fallbackControls = checkoutShellControls(ast, "fallback");
 
+  // The place-order ACTION renders AFTER the theme's band (the payment block
+  // and the order summary) — the shopper meets the address first, then the
+  // rail, then the total, and only then the button. Its state (the server
+  // quote, the pending mutation, the charge hop) belongs to the FORM, which
+  // owns the order write, so the form reports it up.
+  const { t } = useLang();
+  const [submit, setSubmit] = useState<CheckoutSubmitState>(() => ({
+    label: t("Place Order", "অর্ডার কনফার্ম করুন"),
+    disabled: true,
+    notice: null,
+  }));
+  const reportSubmit = useCallback((next: CheckoutSubmitState) => {
+    setSubmit((prev) =>
+      prev.label === next.label &&
+      prev.disabled === next.disabled &&
+      prev.notice === next.notice
+        ? prev
+        : next,
+    );
+  }, []);
+  // The form's own id — the action names it through the HTML form owner, so
+  // it can submit the route's form while living outside the form element.
+  const formId = `fq-checkout-form-${slug}`;
+
   return (
-    <PluginLayer plugins={installedPlugins}>
-      <ThemeChrome
-        template="checkout"
-        storeSlug={slug}
-        themeKey={themeKey ?? null}
-        merchantId={merchant.id}
-        ast={ast}
-        tokens={tokens}
-        siteKit={siteKit}
-        ownsPrimary
-        // The route's own body — the checkout FORM — flows through the
-        // platform's route-owned body slot. The theme's body renders only
-        // when it declares that slot, so a theme-less store keeps today's
-        // hand-built checkout (the `fallback`).
-        contentSlot="page_content"
-        contextSlots={{
-          // The five cart slots the theme's checkout body reads: the lines,
-          // the summary, the drawer, the trail and the payment block. `null`
-          // is the platform's "granted" token — the widgets read the live
-          // cart themselves.
-          cart_lines: null,
-          cart_summary: null,
-          cart_drawer: null,
-          checkout_steps: null,
-          payment_methods: null,
-          page_content: (
-            <CheckoutBody
-              slug={slug}
-              variant="shell"
-              showPaymentPicker={shellControls.showPaymentPicker}
-              showSummary={shellControls.showSummary}
-            />
-          ),
-        }}
-        chrome={
-          <MinimalCheckoutHeader
-            slug={slug}
-            name={merchant.name}
-            themeKey={themeKey ?? null}
-          />
-        }
-        containerClassName="bg-muted/10 min-h-screen pb-24"
-        fallback={
+    <ThemeChrome
+      template="checkout"
+      storeSlug={slug}
+      themeKey={themeKey}
+      merchantId={merchant.id}
+      ast={ast}
+      tokens={tokens}
+      siteKit={siteKit}
+      ownsPrimary
+      // The route's own body — the checkout FORM — flows through the
+      // platform's route-owned body slot. The theme's body renders only
+      // when it declares that slot, so a theme-less store keeps today's
+      // hand-built checkout (the `fallback`).
+      contentSlot="page_content"
+      contextSlots={{
+        // The five cart slots the theme's checkout body reads: the lines,
+        // the summary, the drawer, the trail and the payment block. `null`
+        // is the platform's "granted" token — the widgets read the live
+        // cart themselves.
+        cart_lines: null,
+        cart_summary: null,
+        cart_drawer: null,
+        checkout_steps: null,
+        payment_methods: null,
+        page_content: (
           <CheckoutBody
             slug={slug}
-            variant="fallback"
-            showPaymentPicker={fallbackControls.showPaymentPicker}
-            showSummary={fallbackControls.showSummary}
+            variant="shell"
+            formId={formId}
+            showPaymentPicker={shellControls.showPaymentPicker}
+            showSummary={shellControls.showSummary}
+            submitTrailing={shellControls.submitAfterBody}
+            onSubmitState={reportSubmit}
           />
-        }
-      />
-    </PluginLayer>
+        ),
+      }}
+      chrome={chrome}
+      containerClassName={containerClassName}
+      // The route's own trailing action — AFTER the theme's band, so the
+      // shopper meets the button after the rail and the total.
+      afterBody={
+        shellControls.submitAfterBody ? (
+          <div className="mx-auto max-w-[var(--fq-container,1280px)] px-4 pb-10 pt-2 sm:px-6 lg:px-8">
+            <CheckoutSubmit state={submit} formId={formId} />
+          </div>
+        ) : null
+      }
+      fallback={
+        <CheckoutBody
+          slug={slug}
+          variant="fallback"
+          formId={formId}
+          showPaymentPicker={fallbackControls.showPaymentPicker}
+          showSummary={fallbackControls.showSummary}
+        />
+      }
+    />
+  );
+}
+
+/**
+ * The place-order ACTION's state.
+ *
+ * The action renders after the theme's band, but the state that drives it —
+ * the server quote, the pending mutation and the charge hop — belongs to the
+ * form, which owns the order write. The form REPORTS this triple up; the
+ * route renders the action.
+ */
+export type CheckoutSubmitState = {
+  /** The action's label. */
+  label: string;
+  /** True while the shopper may not submit (no quote yet, or an order in flight). */
+  disabled: boolean;
+  /** The live-region notice under the action while the order is in flight. */
+  notice: string | null;
+};
+
+/**
+ * The place-order ACTION — the route's own submit button.
+ *
+ * It renders AFTER the theme's band when the theme's body carries one (the
+ * production shell), so the shopper meets it last: the address first, then the
+ * rail, then the total, then the button. It is the route's own, and it
+ * submits the route's own FORM through the HTML form owner (`form="…"`), so
+ * it can live outside the form element and still submit it — the browser
+ * still validates the form's own fields and still treats this button as the
+ * form's default button.
+ */
+function CheckoutSubmit({
+  state,
+  formId,
+}: {
+  state: CheckoutSubmitState;
+  formId: string;
+}) {
+  return (
+    <div className="pt-8 border-t border-border/40">
+      <button
+        type="submit"
+        form={formId}
+        disabled={state.disabled}
+        className="min-h-14 w-full rounded-fq-md bg-foreground px-8 text-[13.5px] font-bold fq-caps tracking-widest text-background shadow-sm transition-transform active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100"
+      >
+        {state.label}
+      </button>
+      {state.notice ? (
+        <p
+          aria-live="polite"
+          className="mt-3 text-center text-[12.5px] text-muted-foreground"
+        >
+          {state.notice}
+        </p>
+      ) : null}
+    </div>
   );
 }
 
@@ -329,13 +462,25 @@ function CheckoutPage() {
 function CheckoutBody({
   slug,
   variant,
+  formId,
   showPaymentPicker,
   showSummary,
+  submitTrailing = false,
+  onSubmitState,
 }: {
   slug: string;
   variant: "shell" | "fallback";
+  formId: string;
   showPaymentPicker: boolean;
   showSummary: boolean;
+  /**
+   * True when the place-order ACTION renders in the route's trailing slot
+   * (after the theme's band) rather than inside this form. The action then
+   * submits this form through the HTML form owner.
+   */
+  submitTrailing?: boolean;
+  /** Reports the action's state up to the route's trailing slot. */
+  onSubmitState?: (next: CheckoutSubmitState) => void;
 }) {
   const { t, lang } = useLang();
   const cart = useCartContext();
@@ -721,33 +866,45 @@ function CheckoutBody({
     </>
   );
 
+  // The place-order ACTION's state — the server quote decides whether the
+  // shopper may submit, the mutation and the charge hop decide the label.
+  // When the action renders in the route's trailing slot (after the theme's
+  // band), this triple is REPORTED up: the route renders the action, and the
+  // state that drives it belongs to this form.
+  const submitLabel = mutation.isPending
+    ? t("Processing…", "প্রসেসিং…")
+    : chargeHop === "redirecting"
+      ? t("Redirecting to payment…", "পেমেন্টে নিয়ে যাওয়া হচ্ছে…")
+      : t("Place Order", "অর্ডার কনফার্ম করুন");
+  const submitDisabled =
+    !totals || mutation.isPending || chargeHop === "redirecting";
+  const submitNotice =
+    mutation.isPending || chargeHop === "redirecting"
+      ? chargeHop === "redirecting"
+        ? t(
+            "Contacting the payment provider — do not close this page.",
+            "পেমেন্ট প্রোভাইডারের সাথে যোগাযোগ করা হচ্ছে — এই পেজ বন্ধ করবেন না।",
+          )
+        : t("Placing your order…", "অর্ডার করা হচ্ছে…")
+      : null;
+  // Primitive deps only: the report must never loop.
+  useEffect(() => {
+    onSubmitState?.({
+      label: submitLabel,
+      disabled: submitDisabled,
+      notice: submitNotice,
+    });
+  }, [onSubmitState, submitLabel, submitDisabled, submitNotice]);
+
   const placeOrderButton = (
-    <div className="pt-8 border-t border-border/40">
-      <button
-        type="submit"
-        disabled={!totals || mutation.isPending || chargeHop === "redirecting"}
-        className="min-h-14 w-full rounded-fq-md bg-foreground px-8 text-[13.5px] font-bold fq-caps tracking-widest text-background shadow-sm transition-transform active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100"
-      >
-        {mutation.isPending
-          ? t("Processing…", "প্রসেসিং…")
-          : chargeHop === "redirecting"
-            ? t("Redirecting to payment…", "পেমেন্টে নিয়ে যাওয়া হচ্ছে…")
-            : t("Place Order", "অর্ডার কনফার্ম করুন")}
-      </button>
-      {(mutation.isPending || chargeHop === "redirecting") && (
-        <p
-          aria-live="polite"
-          className="mt-3 text-center text-[12.5px] text-muted-foreground"
-        >
-          {chargeHop === "redirecting"
-            ? t(
-                "Contacting the payment provider — do not close this page.",
-                "পেমেন্ট প্রোভাইডারের সাথে যোগাযোগ করা হচ্ছে — এই পেজ বন্ধ করবেন না।",
-              )
-            : t("Placing your order…", "অর্ডার করা হচ্ছে…")}
-        </p>
-      )}
-    </div>
+    <CheckoutSubmit
+      state={{
+        label: submitLabel,
+        disabled: submitDisabled,
+        notice: submitNotice,
+      }}
+      formId={formId}
+    />
   );
 
   // The order summary — the SERVER's quote (the lines, the delivery, the
@@ -852,6 +1009,7 @@ function CheckoutBody({
 
   const form = (
     <form
+      id={formId}
       className="grid gap-10"
       onSubmit={(e) => {
         e.preventDefault();
@@ -861,7 +1019,10 @@ function CheckoutBody({
       {contactAndAddress}
       {showPaymentPicker ? paymentPicker : null}
       {messages}
-      {placeOrderButton}
+      {/* The action renders AFTER the theme's band when the theme's body
+          carries one — then the route's trailing slot draws it, and it
+          submits this form through the HTML form owner. */}
+      {submitTrailing ? null : placeOrderButton}
     </form>
   );
 

@@ -234,9 +234,22 @@ test.describe("the storefront surfaces", () => {
     // The theme contributes LAYOUT only: the form that carries the order is
     // the platform's own, with the platform's own customer fields — and the
     // theme's shell (its progress trail) is not inside any form.
-    const orderForm = page.locator("form", {
-      has: page.getByRole("button", { name: /Place Order/i }),
-    });
+    //
+    // The place-order ACTION renders AFTER the theme's band, so it is not a
+    // descendant of the form: it submits it through the HTML form owner
+    // (`form="…"`). The order form is therefore found THROUGH the action's
+    // own `form` attribute — a stronger assertion than "the button is inside
+    // the form": it pins that the action and the form are the platform's own
+    // two pieces, bound to each other.
+    const placeOrder = page
+      .getByRole("button", { name: /Place Order/i })
+      .first();
+    const formId = await placeOrder.getAttribute("form");
+    expect(
+      formId,
+      "the platform's own place-order action names the platform's own order form",
+    ).toBeTruthy();
+    const orderForm = page.locator(`form#${formId}`);
     expect(await orderForm.count(), "exactly one form carries the order").toBe(
       1,
     );
@@ -269,8 +282,11 @@ test.describe("the storefront surfaces", () => {
       contact,
       "the platform's own contact block renders",
     ).toBeVisible({ timeout: 30_000 });
+    const placeOrder = page
+      .getByRole("button", { name: /Place Order/i })
+      .first();
     await expect(
-      page.getByRole("button", { name: /Place Order/i }).first(),
+      placeOrder,
       "the platform's own place-order action renders",
     ).toBeVisible({ timeout: 30_000 });
 
@@ -294,9 +310,11 @@ test.describe("the storefront surfaces", () => {
     });
     const totalBox = await total.boundingBox();
     const contactBox = await contact.boundingBox();
+    const placeOrderBox = await placeOrder.boundingBox();
 
     expect(contactBox, "the contact block is laid out").not.toBeNull();
     expect(totalBox, "the total is laid out").not.toBeNull();
+    expect(placeOrderBox, "the place-order action is laid out").not.toBeNull();
     expect(
       paymentBox!.y,
       "the payment control renders BELOW the customer's fields",
@@ -305,6 +323,16 @@ test.describe("the storefront surfaces", () => {
       totalBox!.y,
       "the total renders BELOW the customer's fields",
     ).toBeGreaterThan(contactBox!.y);
+    // The ACTION comes last: the shopper meets it after the rail and after
+    // the total, never before.
+    expect(
+      placeOrderBox!.y,
+      "the place-order action renders BELOW the payment control",
+    ).toBeGreaterThan(paymentBox!.y);
+    expect(
+      placeOrderBox!.y,
+      "the place-order action renders BELOW the total",
+    ).toBeGreaterThan(totalBox!.y);
   });
 
   test("the archive routes keep the platform's grid; the preview renders the theme's archive body", async ({

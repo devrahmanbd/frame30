@@ -144,10 +144,12 @@ describe("the checkout shell — the controls it renders", () => {
 
   it("leaves the theme's own controls alone when the theme brings both", () => {
     // The theme's `payment_methods` widget and its `cart_summary` widget
-    // are the real ones — the route adds nothing beside them.
+    // are the real ones — the route adds nothing beside them. The
+    // place-order ACTION still comes after the theme's band.
     expect(checkoutShellControls(WITH_BOTH, "shell")).toEqual({
       showPaymentPicker: false,
       showSummary: false,
+      submitAfterBody: true,
     });
   });
 
@@ -158,6 +160,7 @@ describe("the checkout shell — the controls it renders", () => {
     expect(checkoutShellControls(WITH_NEITHER, "shell")).toEqual({
       showPaymentPicker: true,
       showSummary: true,
+      submitAfterBody: true,
     });
   });
 
@@ -169,6 +172,7 @@ describe("the checkout shell — the controls it renders", () => {
     expect(checkoutShellControls(onlyPicker, "shell")).toEqual({
       showPaymentPicker: false,
       showSummary: true,
+      submitAfterBody: true,
     });
     const onlySummary = ast([
       section("cart_summary", "cs"),
@@ -177,6 +181,7 @@ describe("the checkout shell — the controls it renders", () => {
     expect(checkoutShellControls(onlySummary, "shell")).toEqual({
       showPaymentPicker: true,
       showSummary: false,
+      submitAfterBody: true,
     });
   });
 
@@ -185,7 +190,29 @@ describe("the checkout shell — the controls it renders", () => {
       expect(checkoutShellControls(body, "fallback")).toEqual({
         showPaymentPicker: true,
         showSummary: true,
+        // The hand-built checkout has no theme band, so its action stays
+        // inside its own form — today's checkout, unchanged.
+        submitAfterBody: false,
       });
     }
+  });
+
+  it("puts the action after the band ONLY when the theme's body renders", () => {
+    // The band exists only when the theme's body declares the route-owned
+    // body slot. A body without it is dropped whole — the route's fallback
+    // renders instead, and there is nothing for the action to follow.
+    const dropped = ast([section("payment_methods", "pm")]);
+    expect(themeBodyRenders(dropped)).toBe(false);
+    expect(checkoutShellControls(dropped, "shell")).toEqual({
+      showPaymentPicker: true,
+      showSummary: true,
+      submitAfterBody: false,
+    });
+    // …and with no theme at all, the same.
+    expect(checkoutShellControls(null, "shell")).toEqual({
+      showPaymentPicker: true,
+      showSummary: true,
+      submitAfterBody: false,
+    });
   });
 });

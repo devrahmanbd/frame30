@@ -81,6 +81,17 @@ type Props = {
    * content. Routes that name no slot keep the legacy behavior.
    */
   contentSlot?: SectionType;
+  /**
+   * The ROUTE's trailing action — rendered after the page body (the theme's
+   * composition, or the route's fallback), inside the same `<main>`.
+   *
+   * The production checkout uses it to render the place-order action LAST: the
+   * action belongs to the route, while the payment rail and the order total
+   * belong to the theme's band — and the shopper must meet the action after
+   * both, never before. The theme cannot place this slot, cannot fill it and
+   * does not know it exists: it is the route's, not the theme's.
+   */
+  afterBody?: ReactNode;
   ownsPrimary?: boolean;
   containerClassName?: string;
   /**
@@ -225,6 +236,7 @@ export function ThemeChrome({
   siteKit,
   fallback,
   contentSlot,
+  afterBody,
   ownsPrimary = false,
   containerClassName = "mx-auto max-w-6xl px-4 py-8",
   customCss = null,
@@ -419,6 +431,10 @@ export function ThemeChrome({
         ) : (
           fallback
         )}
+        {/* The ROUTE's trailing action — after the theme's composition, so a
+            route-owned control (the checkout's place-order action) can come
+            last. */}
+        {afterBody}
       </main>
       {chromeAst && chromeAst.footer.length > 0 && (
         <footer className="w-full pt-16 bg-[var(--theme-muted)] text-[var(--theme-ink)] border-t border-[var(--theme-border)]">

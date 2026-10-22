@@ -251,3 +251,79 @@ describe("the checkout shell — the platform's controls are never missing", () 
     }
   });
 });
+
+describe("the checkout shell — the place-order ACTION is the route's, and it comes last", () => {
+  it.each(ROUTES)(
+    "$name renders the action in the route's trailing slot, after the theme's band",
+    ({ src }) => {
+      // The theme cannot place the action, fill it or know it exists: the
+      // route alone decides that its own action comes after the theme's
+      // composition.
+      expect(src).toContain("afterBody=");
+      expect(src).toContain("afterBody={");
+      // …and the SEAM decides when: the shell puts the action after the
+      // theme's band; the hand-built fallback keeps it inside its form.
+      expect(src).toContain("submitAfterBody");
+      expect(src).toContain("shellControls.submitAfterBody");
+    },
+  );
+
+  it.each(ROUTES)(
+    "$name's action submits the route's OWN form (the HTML form owner)",
+    ({ src }) => {
+      // The form the route owns carries an id; the action names it, so it
+      // can live OUTSIDE the form element (after the theme's band) and still
+      // submit it — the browser still validates the form's own fields.
+      expect(src).toContain("id={formId}");
+      expect(src).toContain("form={formId}");
+      // The form is the route's: the action is not a second form.
+      expect(src).toContain("const formId = `fq-checkout-form-${slug}`");
+    },
+  );
+
+  it.each(ROUTES)(
+    "$name's form REPORTS the action's state up (the quote owns it)",
+    ({ src }) => {
+      // The server quote, the pending mutation and the charge hop live with
+      // the form, which owns the order write; the action renders outside it,
+      // so the form reports the action's state up.
+      expect(src).toContain("onSubmitState");
+      expect(src).toContain("reportSubmit");
+      expect(src).toContain("CheckoutSubmitState");
+    },
+  );
+
+  it("the seam answers the third question: where does the action render?", () => {
+    // `checkoutShellControls` is the ONE seam both routes ask; it now
+    // answers where the place-order action renders as well.
+    const seam = readFileSync("src/lib/theme-shell-slots.ts", "utf8");
+    expect(seam).toContain("submitAfterBody");
+    expect(seam).toContain('variant === "shell" && themeBodyRenders(ast)');
+  });
+
+  it("the theme's own composition still carries no form, input or action", () => {
+    // The AST-level half of the same contract: the theme may only arrange
+    // platform-owned pieces.
+    const source = songoskritiPreviewSource();
+    let n = 0;
+    const s = (type: string, props: Record<string, unknown> = {}) => ({
+      id: `${type}-${n++}`,
+      type,
+      props,
+    });
+    const main = source.main("checkout", s as never)!;
+    const flat = [
+      ...main,
+      ...main.flatMap((section) => section.children ?? []),
+      ...main.flatMap((section) =>
+        (section.children ?? []).flatMap((child) => child.children ?? []),
+      ),
+    ];
+    for (const section of flat) {
+      expect(
+        ["form", "input", "button", "submit"].includes(section.type),
+        `${section.type} is not a platform-owned piece`,
+      ).toBe(false);
+    }
+  });
+});

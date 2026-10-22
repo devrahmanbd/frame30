@@ -13,7 +13,10 @@
  *  - the **checkout** route: "does the theme's body carry a payment picker
  *    and an order summary, or must the route supply its own?" A checkout
  *    with no rail chosen and no total shown is not a checkout, whatever the
- *    theme published.
+ *    theme published. And: "where does the place-order ACTION render?" — it
+ *    is the route's, so when the theme's body renders, it comes AFTER the
+ *    theme's band (the shopper meets it last, never before the rail and the
+ *    total it pays).
  *
  * The theme's CHROME (its header and its footer) always renders, whatever
  * the body does — so a control in the chrome is a control the theme HAS,
@@ -114,18 +117,34 @@ export function themeCarriesOrderSummary(
  * The controls a production checkout renders.
  *
  * The `fallback` is today's hand-built checkout: it ALWAYS carries the
- * payment picker and the order summary. The `shell` is the route's body
- * inside the theme's frame — it carries the ROUTE's own picker and summary
- * exactly when the theme's body carries none, so a checkout never shows an
- * order with no rail chosen and no total.
+ * payment picker and the order summary, and its place-order action stays
+ * inside its own form. The `shell` is the route's body inside the theme's
+ * frame — it carries the ROUTE's own picker and summary exactly when the
+ * theme's body carries none, so a checkout never shows an order with no rail
+ * chosen and no total.
  */
 export function checkoutShellControls(
   ast: ThemeAst | null | undefined,
   variant: "shell" | "fallback",
-): { showPaymentPicker: boolean; showSummary: boolean } {
+): {
+  showPaymentPicker: boolean;
+  showSummary: boolean;
+  /**
+   * True when the place-order ACTION renders AFTER the theme's band.
+   *
+   * The theme's band carries the payment block and the order summary; the
+   * action is the route's. When the theme's body renders, the shopper must
+   * meet the action LAST — after the rail and after the total — so the route
+   * renders it in its trailing slot (and names the route's own form through
+   * the HTML form owner). The hand-built fallback has no band, so its action
+   * stays inside its own form, unchanged.
+   */
+  submitAfterBody: boolean;
+} {
   return {
     showPaymentPicker:
       variant === "fallback" || !themeCarriesPaymentPicker(ast),
     showSummary: variant === "fallback" || !themeCarriesOrderSummary(ast),
+    submitAfterBody: variant === "shell" && themeBodyRenders(ast),
   };
 }

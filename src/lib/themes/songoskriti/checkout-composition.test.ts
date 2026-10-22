@@ -60,16 +60,42 @@ describe("songoskriti checkout composition", () => {
   });
 
   it("puts the route's own body BEFORE the payment block and the summary", () => {
-    // The shopper reads the address FIRST and picks the rail with the
-    // total in view — the final review's finding that the production
-    // checkout "asks for the rail before the address and hides the total
-    // from the Place Order button". The route's own body (`page_content`)
-    // therefore precedes the two-column payment/summary band.
+    // The shopper reads the address FIRST and picks the rail with the total
+    // in view. The route's own body (`page_content`) therefore precedes the
+    // two-column payment/summary band.
+    //
+    // The place-order ACTION is the route's and renders after that whole
+    // band (the route's trailing slot — see
+    // `src/routes/checkout-dom-order.test.tsx`, which measures the rendered
+    // order). The theme's composition never carries it.
     const bodyAt = types.indexOf("page_content");
     const bandAt = types.indexOf("columns");
     expect(bodyAt).toBeGreaterThanOrEqual(0);
     expect(bandAt).toBeGreaterThanOrEqual(0);
     expect(bodyAt, "the route's body must come first").toBeLessThan(bandAt);
+  });
+
+  it("carries NO form, NO input and NO submit button of its own", () => {
+    // The theme may only ARRANGE platform-owned pieces. The action, the
+    // fields and the order write are the route's: the theme authors no
+    // `form`, no `input` and no submit button, and no prop that could make
+    // a section render one.
+    const authored = flattenSections(main);
+    for (const section of authored) {
+      expect(
+        ["form", "input", "submit", "button", "form_action"].includes(
+          section.type,
+        ),
+        `${section.type} would author a control the platform owns`,
+      ).toBe(false);
+      for (const [key, value] of Object.entries(section.props)) {
+        if (typeof value !== "string") continue;
+        expect(
+          /<\s*(form|input|button)\b/i.test(value),
+          `${section.type}.${key} would inject markup the platform owns`,
+        ).toBe(false);
+      }
+    }
   });
 
   it("holds nothing but platform-owned commerce widgets", () => {
