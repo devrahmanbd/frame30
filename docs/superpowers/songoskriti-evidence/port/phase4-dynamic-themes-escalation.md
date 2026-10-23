@@ -6422,3 +6422,29 @@ and `renderHost` carries an optional `storeName` the Songoskriti and declined le
 And the §(o.6.5) record's own two: `ArchiveView`'s composed-branch `ThemeChrome` mount carries the threaded `storeName` (`storeName={storeName ?? undefined}`, after the recorded `storeSlug` line — order kept as written), and the route passes `storeName={data.merchant.name}` immediately after its `storeSlug` line; the §(o.6.4) "ArchiveView is NOT re-edited" boundary was superseded by §(o.6.5)'s recorded hunk before the edit, not silently.
 
 **Boundary:** no translation file touched (Batch C's lane), nothing pushed or deployed, §7 untouched outside the named hunks.
+
+### (p) Batch C — the owner ruled "translate the theme copy" (dated 2026-10-23, before the edit)
+
+**The ruling.** The publish gate's `theme.publish_blocked codes=translation` refusal is the last open acceptance blocker. The owner's ruling: **translate Songoskriti's theme copy into natural Bengali; no gate is weakened, no floor lowered.** This batch touches only the theme's own copy. Not a meter hack: the strings get real `_bn` twins.
+
+**Measured BEFORE — by RUNNING the gate's own functions** (`translationCoverage` over the theme's full source template map — the exact map `registryPackage("songoskriti")` seeds: the 10 base templates the preview source authors plus the 2 variant bodies `blog_listing`/`blog_article`; compiled through `assemblePreviewTemplates` + `assemblePreviewVariants`, the same composition the publish payload is built from), then `authoredCoverage`:
+
+- the walk universe is **438 bilingual pair slots** across the 12 authored templates: **ok 207, fallback 63, empty 168**;
+- the gate's own number (`authoredCoverage`: `percent = ok / (ok + fallback)` — empty, unauthored slots are NOT in the denominator) reads **207/270 = 77 %** → refusal (77 < 90). The phase4 lane's live "**63 %**" message was measured on the disposable store's publish payload, which carried the merchant-edited compositions' added English copy on top of the seed; the seed itself is what Batch C translates, and the same dilution mechanism is why mere seed-90 % would not have been enough (Batch D's lanes carry their own editor edits);
+- uncovered = the **63 fallback slots** (English authored, বাংলা missing) = **48 unique strings**. The **168 empty slots are UNAUTHORED optional props** (alt texts, optional eyebrows/headings, not-yet-authored statement zones) — the gate does not count them, and "translating" them would be inventing copy (R4), which is refused.
+
+**Measured AFTER (planned):** translating all 63 fallback slots → **270/270 = 100 %**, the gate passes with zero warning strings left.
+
+**Constraint inventory respected (the refusal inventory):**
+
+- `PREVIEW_DISABLED_MESSAGE` and the preview marker's English-only clause — platform chrome, explicitly recorded English-only; NOT touched. (Out of theme scope anyway.)
+- `UNSUPPORTED_TEMPLATE_BODY` / `UNSUPPORTED_TEMPLATE_TITLE` — carry their stated English-only contract (their own comment); NOT touched.
+- `page` template body and every route-h1 template's h1 — route context, no copy authored (empty slots, untouched).
+- The 168 empty slots — unauthored; no invented copy.
+- `paymentsMarks` EN leg and `PAYMENT_MARKS` itself stay unchanged (the shared platform fallback `StoreFooterMenus` reads the same constant); the twin goes in as a NEW `paymentsMarks_bn` on the theme's footer section only.
+- The `collection` category_header legacy `text`/`text_bn` alias — untouched (Batch D's declared-field note stands); the gate counts the declared `heading`, which gets its twin.
+- `parts` strings (`"title,variant,quantity,…"` etc.) are wire contracts, not copy — untouched.
+
+**Meter's file set:** `translationCoverage` runs ONLY over the publish input's template map (server) and the editor's live map (studio meter) — there is no separate copy table the meter counts; the uncovered set above is the complete set the gate sees.
+
+**Parity stills:** the theme's copy appears in the stills, so they WILL change again; Batch D must re-classify and re-freeze them. They are NOT re-frozen by Batch C.
