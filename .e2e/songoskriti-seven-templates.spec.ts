@@ -726,6 +726,15 @@ for (const journey of JOURNEYS) {
         doomedLayer,
         `the ${journey.label} composition carries its "${journey.remove}" layer`,
       ).toBeVisible({ timeout: 30_000 });
+      // Select the doomed layer first (§(r.4)a): a treeitem `press` focuses
+      // without selecting, and the navigator's Delete ALSO reaches the
+      // studio's window-level delete shortcut, which removes the CURRENT
+      // selection (`builder.tsx:997-1009`) — with the spacer still selected
+      // from the legs above, the Delete would remove two layers at once.
+      // A plain click REPLACES the selection (`LayerTree.tsx:302-309`), so
+      // both handlers act on the same single node.
+      await doomedLayer.click();
+      await page.waitForTimeout(500);
       await doomedLayer.press("Delete");
       await page.waitForTimeout(1_500);
       const afterRemove = await layerNames(page);
@@ -834,6 +843,22 @@ for (const journey of JOURNEYS) {
       .getByRole("button", { name: journey.label, exact: true })
       .click();
     await page.waitForTimeout(1_500);
+    // A variant journey re-selects its variant BEFORE the comparison
+    // (§(r.4)b): the reload re-clicks only the BASE template button, so
+    // comparing here would read the base composition against the edited
+    // variant. The variant is the composition the journey edited — the
+    // comparison below must read it.
+    if (journey.variant) {
+      const variant = page.locator(
+        `[data-template-variant="${journey.variant}"]`,
+      );
+      await expect(
+        variant,
+        `the strip still offers the "${journey.variant}" variant after the reload`,
+      ).toBeVisible({ timeout: 30_000 });
+      await variant.click();
+      await page.waitForTimeout(1_500);
+    }
     const afterReload = await layerNames(page);
     expect(afterReload, "the saved composition survived the reload").toEqual(
       beforeReload,
@@ -862,19 +887,8 @@ for (const journey of JOURNEYS) {
     ).toHaveValue("48");
 
     // 8c. The journey's OWN leg survived the reload too — server truth on
-    //     the surfaces that own one. A variant journey re-selects its
-    //     variant FIRST: the reload re-clicks only the BASE template button.
-    if (journey.variant) {
-      const variant = page.locator(
-        `[data-template-variant="${journey.variant}"]`,
-      );
-      await expect(
-        variant,
-        `the strip still offers the "${journey.variant}" variant after the reload`,
-      ).toBeVisible({ timeout: 30_000 });
-      await variant.click();
-      await page.waitForTimeout(1_500);
-    }
+    //     the surfaces that own one (a variant was re-selected above,
+    //     §(r.4)b, so every read here is the edited composition).
     if (journey.marker) {
       const markerLayer = page
         .getByRole("treeitem")
