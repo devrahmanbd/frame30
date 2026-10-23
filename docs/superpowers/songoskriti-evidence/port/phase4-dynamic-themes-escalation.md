@@ -6400,3 +6400,25 @@ and `renderHost` carries an optional `storeName` the Songoskriti and declined le
 ### (o.6.6) Boundary of the §(o.6.5) threading
 
 `ArchiveView.tsx` (already under §(o.3.3)'s escalation), the NEW route file and the NEW route test change. Nothing else. The declined copy's own test (`ThemeChrome.declined-copy.test.tsx`) already covers `storeName` in its third case and needs no change.
+
+### (o.7) §(o)'s code commit — the Batch B gaps land, with verification and the two §(o.6.5)-forced deviations (dated 2026-10-23, after the code)
+
+**The code commit:** `45ca77cd` — 19 files (5 created: the route, its test, the fn, the loader and the tenant reader suite; 14 modified: the two store blog routes, `ArchiveView`, `BlogList`, the builder packs, the reader, `facet-url.ts`, both contract suites, the regenerated `routeTree.gen.ts`, the e2e spec's comment, and the two §(o.5) doc corrections — `docs/04-builder/theme-runtime.md`:410,417 and `report.md`:445, both now describing the LANDED route instead of the deferral). No test weakened, skipped or deleted. Staged by explicit path; the churn files (`.artifacts/e2e/playwright-report/index.html`, `ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`, `.output-snapshots/`) are NOT in the commit.
+
+**Verification run before the commit** (all green):
+
+- `node_modules/.bin/tsgo --noEmit` — clean (run twice: before the storeName hunk's lint reformat and again after).
+- `node_modules/.bin/vitest run 'src/routes/store.$slug.blog.category.$termSlug.test.tsx'` — **10 passed**: the five wiring pins, the four §(o) legs, and the two §(o.6.3) gate legs (Songoskriti published composition + the declined frame).
+- `node_modules/.bin/vitest run` on `src/components/store/ArchiveView.test.tsx`, `src/lib/blog-index-tenant.test.ts`, `src/lib/preview-parity.contract.test.ts`, `src/lib/preview-safety.contract.test.ts`, `src/lib/store-blog-functions.test.ts`, `src/lib/store-blog.test.ts`, `src/lib/widget-parts.test.ts`, `src/lib/theme-update.test.ts`, `src/lib/pipeline-resolver.test.ts`, `src/routes/store.$slug.search-composition.test.tsx`, `src/lib/phase2-collection.test.tsx`, `src/lib/themes/songoskriti/{search-template,blog-page-composition}.test.ts`, `src/lib/widget-registry.test.ts` — **all passed** (53 + 60 + 62 + 22 across the four batches).
+- `node_modules/.bin/eslint` on the fifteen touched source/test files — **0 errors** (5 pre-existing `react-refresh/only-export-components` warnings in `collection.tsx`/`BlogList.tsx`, none introduced); the route test's prettier gaps auto-fixed, re-run green.
+- `node_modules/.bin/playwright test -c .e2e/playwright.config.ts --list` on `'.e2e/songoskriti-seven-templates.spec.ts'` — **8 tests listed** (no browser run, per the gate).
+- Pre-existing failures elsewhere, not touched, not mine: `src/lib/analytics-live-shape.test.ts` (2), `src/lib/site.server.test.ts` (1) — unchanged from Batch A's report.
+
+**Cosmetic deviations between §(o.6.3)'s planned leg shapes and the applied legs** (both inside the NEW test file, both §7-free):
+
+1. the record sketched `renderHost`'s `ast` selection as a single ternary over a shared `THEME_PAGER_AST`/`DECLINED_AST` constant; the applied legs compute the Songoskriti ASTs through two named helpers (`songoskritiPublishedAst()` / `songoskritiDeclinedAst()`) built on `resolveAsLoaderDoes()` over an in-test `songoskritiMap(withArchive)` — the same resolver-first construction §(o.6.3) named, one helper per shipped contract;
+2. the §(o.6.3) source quote pin adopted §(o.6)'s exact line form (`'main: resolution.status === "resolved" ? resolution.ast.main : [],'`) — applied as recorded.
+
+And the §(o.6.5) record's own two: `ArchiveView`'s composed-branch `ThemeChrome` mount carries the threaded `storeName` (`storeName={storeName ?? undefined}`, after the recorded `storeSlug` line — order kept as written), and the route passes `storeName={data.merchant.name}` immediately after its `storeSlug` line; the §(o.6.4) "ArchiveView is NOT re-edited" boundary was superseded by §(o.6.5)'s recorded hunk before the edit, not silently.
+
+**Boundary:** no translation file touched (Batch C's lane), nothing pushed or deployed, §7 untouched outside the named hunks.
