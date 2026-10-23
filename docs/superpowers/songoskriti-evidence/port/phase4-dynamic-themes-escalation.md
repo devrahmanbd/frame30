@@ -6565,3 +6565,17 @@ First freeze pass (`run-capture.sh`, default `--update-snapshots`) refreshed `re
 3. **Repair the live draft through the same real editor path** (open Cart → select the summary heading → clear BOTH tabs → Save) so the workspace is lint-clean again. No DB write; the editor's own autosave is the writer. This also exercises the exact interaction the lane will use.
 
 **Not touched:** `builder-ast.ts:8901-8912` (rule intact), `builder-guardrails.ts`, `translation-coverage.ts`. If the rule itself were wrong this would be a platform question, not a lane workaround; the rule is not wrong (a Bengali-only heading has no English side to render, and the platform's fallback copy would appear instead — exactly what the empty state expresses deliberately).
+
+### (t.1) Correction measured on the live inspector: the schema-routed widget has NO বাংলা control, so the tab-clear is not reachable — corrective lane edit recorded before re-editing
+
+**(t) planned to clear the বাংলা tab. The live editor refutes the premise for this widget.** `cart_summary` resolves as a registered widget with a `propsSchema` (`resolveInspectorSchema` → `SchemaSectionInspector`, `SectionInspector.tsx:212-221`), and the schema renderer (`SchemaControls`) has no bitext branch: grep finds no `bitext`/`bnKey`/`বাংলা` in `SchemaControls.tsx` or `widget-presentation.ts`, and the live accessibility snapshot of `cart_summary-62` shows ONE plain `textbox "Heading"` with no `tablist`, no coverage chip, and no `_bn` field (probe run 2026-10-23T16:1xZ, `.artifacts/e2e/test-results/__batche_probe-*`). The bilingual tab pair exists only on the LEGACY catalog path (`BiTextField`, `SectionInspector.tsx:772-793`), which schema-routed widgets bypass. **Product gap (reported, not fixed here):** once a schema-routed bilingual prop is bn-only, the inspector offers no way to clear the বাংলা side — a merchant can only restore English.
+
+**Why the lane needs a different fix.** The lane sets the marker on `cart_lines.heading`, which makes that widget the page's h1 claimant; the cart's single-claimant rule (`builder-ast.ts:8734-8760`) then forces the summary heading blank, and blanking EN alone yields the bn-only blocking state. No lane-side tab-clear can resolve it through the UI.
+
+**Corrective lane edit (recorded before the edit; assertions unchanged in count and strength):** put the journey's marker on the **summary's own bilingual heading** (`cart_summary.heading`) instead of `cart_lines.heading`, and drop the `beforeSave` blanking step. Then:
+- `cart_lines.heading` stays the theme's deliberately blank heading (source), so the summary heading is the ONE claimant — the two-claimant state is never manufactured;
+- the marker pair is `EN marker + existing বাংলা` → `ok` (no missing-language lint, no bn-only pair);
+- every existing assertion stays: the marker is visible on the draft and after reload, the publish replaces it with the live marker, the old copy ("Order summary") is absent from the storefront, and the theme's "Your bag" composition copy is present.
+The `setInspectorHeadingBn` helper added in (t) stays in the helpers file as the correct affordance for LEGACY bilingual fields; the cart surface (`cart_summary`) cannot use it.
+
+**Draft repair for the current workspace (still needed, and now the only reachable path):** restore the summary's EN heading to "Order summary" through the real inspector (EN textbox), giving an `ok` pair. This is what unblocks `builder.reset_template`; the earlier bn-only state remains the evidence for the §(t) finding.
