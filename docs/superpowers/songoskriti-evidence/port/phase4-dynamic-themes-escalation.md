@@ -5481,3 +5481,721 @@ The code commit is **`f172b249`** — `feat(frame30): Batch A — the dynamic-th
 #### (n.8.3) The verification that gates this commit
 
 Run on this branch, at this commit's tree: `node_modules/.bin/vitest run` over the three NEW suites plus the eight existing suites that cover the touched files — **11 files, 147 tests, all passing** (the three pre-existing failures elsewhere in the repo — `analytics-live-shape.test.ts` ×2 and `site.server.test.ts` ×1 — are not in this set and are not mine); `node_modules/.bin/tsgo --noEmit` — clean; `node_modules/.bin/eslint` over the nine touched paths — 0 errors (the two `react-refresh` warnings on `AccountDashboardContext.tsx` pre-date this change and fire on the file's existing hook exports); `node_modules/.bin/playwright test -c .e2e/playwright.config.ts --list` on both touched specs — 8 tests and 5 tests respectively, including the new theme-switch test. No docker stack and no browser lane was run in this batch; the two browser legs are Mode-B lanes and are asserted by `--list` here.
+
+---
+
+## (o) Batch B of the stricter acceptance gate — the planned §7-prohibited edits for gaps 3 and 4, recorded before the edits
+
+*(Append-only, dated 2026-10-23, continuing the record after Batch A's §(n.8) close, because the owner's stricter acceptance gate opened gaps 3 and 4 (`/opt/frame28/.superpowers/sdd/2026-10-22-frame30-dynamic-themes/audit-acceptance.md`) and Batch B closes them in place. Gap 3 is the deferred merchant-scoped category-archive route (`/store/<slug>/blog/category/<termSlug>`); gap 4 is the archive's `pagination` widget, which today renders only in preview because no production archive host mounted the collection query the widget reads. Four of the target files are programme pins or proof lanes — §7-prohibited — so this section names every planned edit **before** it is made, with its exact old → new hunk, and is committed before the code commit it governs (the §(k.3)/(l)/(n) ordering). No assertion anywhere is weakened, skipped, or deleted; no new npm dependency is added; the stored-AST compatibility rule (§(d), §(h.7)) is preserved: the AST parser, renderer seed and published bytes are untouched, and the new route receives its composition **server-resolved** (`resolveTemplateForHost`) — the client never ships the theme's template map to re-resolve it.)*
+
+### (o.1) The finding — what Batch B closes, and why the targets are §7 relaxations
+
+1. **Gap 3 — the merchant-scoped archive composition has no storefront route.** The closed variant vocabulary (`TEMPLATE_VARIANTS` carries `archive: [category, tag, author]`, `src/lib/template-variants.ts`) and the parity contract (`src/lib/preview-parity.contract.test.ts:219-248`) both exist, but the only production archive hosts are the three store-less taxonomy routes (`/blog/category/$slug`, `/blog/tag/$slug`, `/blog/author/$slug`), which carry no store subject, resolve no theme and render the platform grid. The theme's `archive_category` body therefore renders only in the editor and the preview host. Close: a NEW route file `src/routes/store.$slug.blog.category.$termSlug.tsx` (the `$termSlug` param avoids the phase-3 two-`$slug` defect) served by a NEW server function that, in order: rate-limits `blog.read` (the reader bucket the other blog surfaces use), loads the store chrome through the existing `loadStoreChrome(slug, "archive")` (tenant authority: merchant lookup with `status = "active"`, menus, tokens, theme key — null ⇒ `notFound()`), resolves the composition through **`resolveTemplateForHost({ template: "archive_category", variants, tenant, mode: "published", host: "storefront", tokens })`** — whose `findBody` already resolves the variant first and the base second and accepts only a `"suffix"`/`"base"` match — merges the home chrome through the SAME resolver on `"index"` (the merge rule `publishedTemplatePayload` already applies), and loads the listing through `loadTermArchive` extended with an optional tenant scope. Data authority stays platform-side: the route is a server loader over server functions; there is no client fetch.
+2. **Gap 4 — the archive's `pagination` renders only in preview.** `template-distinctness.ts:247-261` requires `pagination` in the archive row's `requiredTypes` AND `requiredSlots` (the R2/R3 gates), so removing the widget — or dropping it from the parity test's `six` array — would weaken two existing assertions and is rejected. The real defect is that `Pagination` (`collection.tsx:537`) reads `useCollectionQuery()`, which defaults to `DEFAULT_QUERY` (total 0 ⇒ the widget returns null) and is mounted by no archive host; preview mounts one global search-demo query (`ThemePreviewFrame.tsx:1177`, total 38, search base path). Close: the shared archive host mounts `CollectionQueryProvider` with the archive's OWN `{params, total, basePath, pageSize}`. Because `Pagination` computes `pageCount(query.total)` at the search default of 24 (`storefront-search.ts:177`) while archives window at `BLOG_PAGE_SIZE = 12` (`blog-taxonomy.ts`), and `withPage` (`facet-url.ts:136`) re-clamps with the same constant, the page math must be threaded: `CollectionQuery` gains an optional `pageSize` and `withPage` an optional `limit`, both defaulting to today's 24 so every existing call site stays byte-identical (`seo-technical.ts:147,151` keeps its three-arg form).
+
+The §7-prohibited targets, and why each is a relaxation:
+
+- `src/components/builder/collection.tsx` — **G1 pin** (the widget pack). The `CollectionQuery` type and `Pagination`'s page math change.
+- `src/lib/facet-url.ts` — **G1 pin** (the pure URL contract). `withPage` gains a defaulted `limit`.
+- `src/components/store/ArchiveView.tsx` — **the archive's shared host** (a Batch-C proof-adjacent pin). Gains the `ast`/`storeSlug` props, the two provider mounts, and `storeSlug` on its `ThemeChrome` call.
+- `src/lib/blog-index.server.ts` — **a reader-runtime pin** (`renderRead` contract). `loadFacets`, `resolveTerm` and `loadTermArchive` gain optional tenant-scope parameters.
+- `src/components/builder/blog.tsx` + `src/components/store/BlogList.tsx` — the blog widget/card markup (category chips become store-aware through `useStoreSlug()`).
+- `src/routes/store.$slug.blog.index.tsx` + `src/routes/blog.index.tsx` (store branch) — existing store blog surfaces, wrapped in `StoreSlugContext` so their cards' category chips point at the merchant-scoped archive.
+- `src/lib/preview-parity.contract.test.ts` + `src/lib/preview-safety.contract.test.ts` — **proof lanes**: the archive case gains a production-side equality (pure addition; every existing expectation is kept), and one stale test TITLE plus two stale header comments are corrected. No assertion is weakened: `preview == six`, the theme-body-uses-exactly-six check and the required-subset premise all stand unchanged.
+- `.e2e/songoskriti-seven-templates.spec.ts` — **proof lane**: one stale comment (the archive journey's "its storefront route is the deferred merchant-scoped one") is corrected; comment-only, no locator or assertion touched.
+
+### (o.2) The NEW files — no diff (a NEW file needs no relaxation)
+
+- `src/lib/store-blog-archive.functions.ts` — `storeBlogArchiveFn`: zod-validated `{slug, termSlug, page?}`, `enforceRateLimit("blog.read", blog:<ipHash>)` (the same subject shape `blog-taxonomy.functions.ts` uses), then the dynamic server import. The handler never accepts a merchant id from the client.
+- `src/lib/store-blog-archive.server.ts` — `loadStoreBlogArchive(slug, termSlug, page)`: `loadStoreChrome(slug, "archive")` (null ⇒ null ⇒ route `notFound()`); when a theme is published, `publishedTheme` (the tenant-keyed, version-cached read `getStoreChrome`'s variant path already uses) + the direct `resolveTemplateForHost` call above + the home-chrome merge through the same resolver on `"index"`; `loadTermArchive("category", termSlug, page, { merchantId, basePath })` with `TermNotFound ⇒ null`; `permalinkSettingsFor` + `requestOrigin` for the head. It returns `{merchant, origin, settings, menus, themeKey, tokens, ast, archive, basePath}`. The base path is `/store/<slug>/blog/category/<termSlug>` (no query on page 1, `?page=N` above), built once and used for the loader's `paging.prevPath/nextPath`, the feed and the head.
+- `src/routes/store.$slug.blog.category.$termSlug.tsx` — `validateSearch` page (1..500, the sibling routes' validator), loader over the new fn with the `isStorefrontInfrastructureError ⇒ normalizeStorefrontLoaderError` split the store blog index uses (null ⇒ `notFound()`), `head` = `archiveHead` (store-scoped base path, `indexable: term.robots_index !== false`, the term's own title/description/cover) + a store-scoped `CollectionPage` JSON-LD graph (the merchant's own canonicals, mirroring `storeListingHead`'s ItemList — `listingJsonLd` hardcodes `/blog/*` platform paths and is deliberately global-mode-only) + `breadcrumbJsonLd` over manual store crumbs (`merchant /`, `Blog /store/<slug>/blog`, term archive) because `archiveCrumbs` bakes `/blog/...` paths; `StoreHeader` + `ArchiveView` with `ast`/`storeSlug`/`tokens`/`themeKey`; a `notFoundComponent` linking back to the store's blog; `StorefrontError` as the error component.
+- `src/routes/store.$slug.blog.category.$termSlug.test.tsx` — the route-level contract in the `store.$slug.search-composition.test.tsx` pattern: source-as-text over the route + fn + server files (the route path, the fn wiring, `resolveTemplateForHost` with `mode: "published"`/`host: "storefront"`/`tenant`, the `enforceRateLimit("blog.read")` call, `TermNotFound ⇒ notFound`, the `ast`/`storeSlug` props) plus a render test proving the storefront pager: `ArchiveView` under a real `RouterProvider`-less render with the archive feed renders the platform `<a href>` pagination links at the archive's own base path and page size (the gap-4 proof), and the store-scoped category chip points at `/store/<slug>/blog/category/<term>`.
+- `src/lib/blog-index-tenant.test.ts` — `loadTermArchive`'s tenant scope over a fake query builder in the `store-blog.test.ts` pattern (`vi.mock("./pricing.server")` for `publicClient`; `renderRead` runs for real): same-named terms in two merchants resolve independently, the scoped call returns only its merchant's articles/facets and honours the `basePath` override in `prevPath/nextPath`, the unscoped call keeps the global behaviour and the global cache key, and an unknown scoped slug throws `TermNotFound`.
+
+### (o.3) The exact planned diffs
+
+#### (o.3.1) `src/lib/facet-url.ts` — `withPage` gains a defaulted page size
+
+```diff
+ /** Clamps to the real page range so a hand-typed `?page=9999` cannot deep-scan. */
+ export function withPage(
+   params: SearchParams,
+   page: number,
+   total: number,
++  /** Page size the listing windows at. Absent = the search default (24). */
++  limit: number = PAGE_SIZE,
+ ): SearchParams {
+   const last = Math.min(
+-    pageCount(total),
+-    Math.floor(MAX_OFFSET / PAGE_SIZE) + 1,
++    pageCount(total, limit),
++    Math.floor(MAX_OFFSET / limit) + 1,
+   );
+   const clamped = Math.min(Math.max(1, Math.trunc(page) || 1), last);
+   return normalizeSearchParams({ ...toSearchQuery(params), page: clamped });
+ }
+```
+
+Every existing call site keeps three arguments (`collection.tsx:543,544,555,562` are updated in §(o.3.2); `seo-technical.ts:147,151` are not), so the produced queries are byte-identical everywhere the default applies.
+
+#### (o.3.2) `src/components/builder/collection.tsx` — the query carries the listing's own page size
+
+```diff
+ import {
+   SORTS,
+   activeFilters,
+   clearFacets,
+   facetHref,
++  PAGE_SIZE,
+   pageCount,
+   pageWindow,
+   toggleFacet,
+   withFacet,
+   withPage,
+   withSort,
+   type FacetKey,
+   type SearchParams,
+ } from "@/lib/facet-url";
+```
+
+```diff
+ export type CollectionQuery = {
+   params: SearchParams;
+   /** Total results the server reported, used by the toolbar and the pager. */
+   total: number;
+   /** Path the facet links point at, e.g. `/store/acme/search`. */
+   basePath: string;
++  /** Page size the listing windows at. Absent = the search default (24). */
++  pageSize?: number;
+   /** Supplied by the route; absent in the studio, where links are inert. */
+   navigate?: (next: SearchParams) => void;
+ };
+```
+
+```diff
+ const Pagination: WidgetComponent = (ctx) => {
+   const { str, locale } = ctx;
+   const { query, href, go } = useFacetLinks();
+-  const last = pageCount(query.total);
++  // The listing's OWN page size, when the host supplies one (the archive
++  // windows at 12, the search at 24): the pager and the URL clamp must
++  // agree with the window that produced `total`, or page N links past the
++  // real last page.
++  const pageSize = query.pageSize ?? PAGE_SIZE;
++  const last = pageCount(query.total, pageSize);
+   if (last <= 1) return null;
+   const current = Math.min(query.params.page, last);
+-  const prev = withPage(query.params, current - 1, query.total);
+-  const next = withPage(query.params, current + 1, query.total);
++  const prev = withPage(query.params, current - 1, query.total, pageSize);
++  const next = withPage(query.params, current + 1, query.total, pageSize);
+   const mode = str("mode") || "numbered";
+```
+
+```diff
+     <a
+       key={`${label}-${page}`}
+-      href={href(withPage(query.params, page, query.total))}
++      href={href(withPage(query.params, page, query.total, pageSize))}
+       aria-current={current2 ? "page" : undefined}
+```
+
+```diff
+           ? (e) => {
+               e.preventDefault();
+-              if (!disabled) go(withPage(query.params, page, query.total));
++              if (!disabled) go(withPage(query.params, page, query.total, pageSize));
+             }
+           : undefined
+```
+
+`DEFAULT_QUERY` is untouched (no `pageSize` ⇒ the default 24 ⇒ byte-identical studio/search behaviour).
+
+#### (o.3.3) `src/components/store/ArchiveView.tsx` — the server-resolved composition, the store slug and the collection query
+
+The imports:
+
+```diff
+ import { parseArchiveKind, type ArchiveContext } from "@/lib/archive-context";
+ import { BlogFeedProvider, type BlogFeed } from "@/components/builder/blog";
++import { CollectionQueryProvider } from "@/components/builder/collection";
+ import { ArticleGrid, Pager } from "@/components/store/BlogList";
+ import { BlogArchiveTheme } from "@/components/store/BlogArchiveTheme";
+ import { ThemeChrome } from "@/components/store/ThemeChrome";
++import { StoreSlugContext } from "@/lib/store-slug-context";
++import { normalizeSearchParams } from "@/lib/storefront-search";
+```
+
+The props:
+
+```diff
+   /** The theme's templates, when a theme IS resolved. */
+   templates?: Partial<Record<TemplateKey, ThemeAst>> | null;
++  /**
++   * The `archive` composition, resolved SERVER-SIDE through
++   * `resolveTemplateForHost` (`mode: "published"`, `host: "storefront"`)
++   * by the merchant-scoped route (`/store/<slug>/blog/category/<termSlug>`).
++   * Preferred over the client-side `resolveArchiveBody(templates)` when
++   * present; the store-less routes pass neither and keep the platform grid.
++   */
++  ast?: ThemeAst | null;
+   /** The theme's tokens, when a theme IS resolved. */
+   tokens?: ThemeTokens | null;
+   /** The merchant theme key, when a theme IS resolved. */
+   themeKey?: string | null;
++  /** The store slug when this archive serves a merchant storefront. */
++  storeSlug?: string | null;
+ };
+```
+
+The stale "deferred route" note on `resolveArchiveBody` (comment-only):
+
+```diff
+- * The BASE key only, for now. The closed variant vocabulary DOES exist
+- * (`TEMPLATE_VARIANTS` carries `archive: [category, tag, author]`,
+- * `src/lib/template-variants.ts`), and `resolveVariantAst` is the one
+- * resolver that honours it — but the archive's three variants are reached
+- * through the **deferred merchant-scoped route**
+- * (`/store/<slug>/blog/category/<slug>` and its two siblings), which does
+- * not exist yet. The three store-less routes that DO exist today
+- * (`/blog/category/$slug`, `/blog/tag/$slug`, `/blog/author/$slug`) carry no
+- * store subject, resolve no theme and render the platform's grid, so there
+- * is no variant for them to resolve. When the merchant-scoped route lands,
+- * THIS function must resolve the VARIANT first and the base second — the
+- * order `resolveVariantAst` already implements — or a theme's
+- * `archive_category` composition would never render.
++ * The BASE key only — this client-side path serves the three store-less
++ * routes, which carry no store subject and resolve no theme. The VARIANT
++ * (`archive_category`, and its tag/author siblings when they land) is
++ * resolved SERVER-SIDE through `resolveTemplateForHost` by the
++ * merchant-scoped route and arrives here through the `ast` prop — a
++ * stored-AST host never ships the theme's template map to the client to
++ * re-resolve it.
+```
+
+The component — signature, resolution, and both branches wrapped in the two providers:
+
+```diff
+ export function ArchiveView({
+   kind,
+   context,
+   feed,
+   header,
+   empty,
+   templates,
++  ast: composedAst,
+   tokens,
+   themeKey,
++  storeSlug,
+ }: ArchiveViewProps) {
+```
+
+```diff
+-  const ast = resolveArchiveBody(templates);
++  // The server-resolved composition wins (the merchant-scoped route resolves
++  // it through `resolveTemplateForHost`); the client-side resolve stays for
++  // the store-less routes' legacy `templates` path.
++  const ast = composedAst ?? resolveArchiveBody(templates);
++  // The collection query the theme's `pagination` widget reads: the
++  // ARCHIVE's own total, base path and page size, never the search demo's
++  // 24 — a pager windowed at the wrong size links past the real last page
++  // (gap 4).
++  const collectionQuery = {
++    params: normalizeSearchParams({ page: feed.paging.page }),
++    total: feed.paging.total,
++    basePath: feed.basePath(1),
++    pageSize: feed.paging.pageSize,
++  };
+   if (!ast) {
+     // The platform's grid — DELEGATED, not re-implemented, so the fallback
+     // is byte-identical to the grid the platform has always served.
+     return (
+       <BlogFeedProvider value={feed}>
+-        <BlogArchiveTheme
+-          feed={feed}
+-          header={header}
+-          empty={empty}
+-          themeKey={themeKey ?? null}
+-        />
++        <CollectionQueryProvider query={collectionQuery}>
++          <StoreSlugContext.Provider value={storeSlug ?? null}>
++            <BlogArchiveTheme
++              feed={feed}
++              header={header}
++              empty={empty}
++              themeKey={themeKey ?? null}
++            />
++          </StoreSlugContext.Provider>
++        </CollectionQueryProvider>
+       </BlogFeedProvider>
+     );
+   }
+ 
+   // The theme's archive composition, around the SAME records the grid
+-  // would have rendered.
++  // would have rendered. `storeSlug` enters ThemeChrome only HERE — with a
++  // composed body the store is themed, so the storefront side effects
++  // (store linkBase, per-store language scope, the live-cart scope, the
++  // SectionRenderer slug context) are standard storefront behaviour. The
++  // themeless branch deliberately does NOT pass it: ThemeChrome answers a
++  // themeless store-slug page with the StoreWelcome frame, and a store
++  // without a theme must keep the platform grid on this surface (the rule
++  // the store blog index route already pins).
+   return (
+     <BlogFeedProvider value={feed}>
+-      <ThemeChrome
+-        template="archive"
+-        ast={ast}
+-        tokens={tokens ?? null}
+-        themeKey={themeKey ?? null}
+-        chrome={<div className="mx-auto max-w-6xl px-4 pt-12">{header}</div>}
+-        ownsPrimary
+-        containerClassName="mx-auto max-w-6xl px-4 py-8"
+-        contextSlots={ARCHIVE_SLOTS}
+-        fallback={
+-          feed.articles.length ? (
+-            <>
+-              <ArticleGrid articles={feed.articles} />
+-              <Pager paging={feed.paging} basePath={feed.basePath} />
+-            </>
+-          ) : (
+-            empty
+-          )
+-        }
+-      />
++      <CollectionQueryProvider query={collectionQuery}>
++        <StoreSlugContext.Provider value={storeSlug ?? null}>
++          <ThemeChrome
++            template="archive"
++            ast={ast}
++            tokens={tokens ?? null}
++            themeKey={themeKey ?? null}
++            storeSlug={storeSlug ?? null}
++            chrome={<div className="mx-auto max-w-6xl px-4 pt-12">{header}</div>}
++            ownsPrimary
++            containerClassName="mx-auto max-w-6xl px-4 py-8"
++            contextSlots={ARCHIVE_SLOTS}
++            fallback={
++              feed.articles.length ? (
++                <>
++                  <ArticleGrid articles={feed.articles} />
++                  <Pager paging={feed.paging} basePath={feed.basePath} />
++                </>
++              ) : (
++                empty
++              )
++            }
++          />
++        </StoreSlugContext.Provider>
++      </CollectionQueryProvider>
+     </BlogFeedProvider>
+   );
+```
+
+`ARCHIVE_SLOTS` — the six-slot grant set — is unchanged; the new route inherits it by rendering this host, which is exactly what the parity test's new production-side read asserts (§(o.3.9)).
+
+#### (o.3.4) `src/lib/blog-index.server.ts` — the optional tenant scope
+
+`loadFacets` (a store archive shows ITS store's terms, not the platform-wide rail):
+
+```diff
+-async function loadFacets(db: Db): Promise<BlogListing["facets"]> {
+-  const { data } = await db
++async function loadFacets(
++  db: Db,
++  merchantId?: string,
++): Promise<BlogListing["facets"]> {
++  let query = db
+     .from("blog_terms")
+     .select("slug, name, kind, article_count")
+-    .gt("article_count", 0)
++    .gt("article_count", 0);
++  // Tenant scope: ONE store's terms, when a store surface asks.
++  if (merchantId) query = query.eq("merchant_id", merchantId);
++  const { data } = await query
+     .order("article_count", { ascending: false })
+     .limit(24);
+```
+
+`resolveTerm` (slugs are unique per MERCHANT — a store surface must resolve its own claimant, never another store's same-named term):
+
+```diff
+ async function resolveTerm(
+   db: Db,
+   kind: TermKind,
+   slug: string,
++  merchantId?: string,
+ ): Promise<TermRow | null> {
+-  const { data } = await db
++  let query = db
+     .from("blog_terms")
+     .select(TERM_COLUMNS)
+     .eq("kind", kind)
+-    .eq("slug", slug)
++    .eq("slug", slug);
++  // Tenant scope: the same word in two stores resolves independently.
++  if (merchantId) query = query.eq("merchant_id", merchantId);
++  const { data } = await query
+     .order("article_count", { ascending: false })
+     .order("id", { ascending: true })
+     .limit(1);
+   return ((data ?? [])[0] as TermRow | undefined) ?? null;
+ }
+```
+
+`loadTermArchive` — the opts, the cache key, the facets call and the articles window:
+
+```diff
+ export async function loadTermArchive(
+   kind: TermKind,
+   slug: string,
+   rawPage: unknown,
++  opts?: {
++    /** Tenant scope: resolve the term and window the listing to ONE merchant. */
++    merchantId?: string;
++    /** Base-path override — the store archive's own URL, not the global one. */
++    basePath?: (page: number) => string;
++  },
+ ): Promise<TermArchive> {
+   const page = normalizePage(rawPage);
+-  const basePath = (p: number) => termArchivePath(kind, slug, p);
++  const basePath =
++    opts?.basePath ?? ((p: number) => termArchivePath(kind, slug, p));
+   const db = await anonDb();
+ 
+   // Resolution happens outside `renderRead` because its failure mode is a 404,
+   // not a fallback — but it is still cached by the inner listing read below.
+-  const term = await resolveTerm(db, kind, slug);
++  const term = await resolveTerm(db, kind, slug, opts?.merchantId);
+   if (!term) throw new TermNotFound(slug);
+```
+
+```diff
+   return renderRead<TermArchive>({
+     name: "blog.archive",
+-    key: `blog|archive|${kind}|${slug}|${page}`,
++    // Tenant-prefixed when scoped: one store's archive can never be served
++    // from another's entry — or from the global one.
++    key: opts?.merchantId
++      ? `blog|archive|${opts.merchantId}|${kind}|${slug}|${page}`
++      : `blog|archive|${kind}|${slug}|${page}`,
+     fallback,
+     context: { kind, page },
+```
+
+```diff
+-        loadFacets(db),
++        loadFacets(db, opts?.merchantId),
+```
+
+```diff
+-      const { data } = await db
++      let articlesQuery = db
+         .from("articles")
+         .select(CARD_COLUMNS)
+         .in("id", ids)
+-        .eq("status", "published")
++        .eq("status", "published");
++      // Tenant scope on the one query whose rows actually render: the id
++      // window comes from this term's links, but the articles are filtered
++      // again — belt and braces on the data-authority path.
++      if (opts?.merchantId)
++        articlesQuery = articlesQuery.eq("merchant_id", opts.merchantId);
++      const { data } = await articlesQuery
+         .lte("published_at", new Date().toISOString())
+         .is("deleted_at", null)
+         .order("published_at", { ascending: false, nullsFirst: false });
+```
+
+The sibling/ancestry query is ALREADY merchant-scoped by the term's own `merchant_id` (`blog-index.server.ts:383`), so it is untouched; the `article_terms` count is keyed by `term_id`, which the scoped `resolveTerm` has already made tenant-unique. The unscoped path — the three store-less routes — changes only in that its intermediate variables are named; the query chains, the cache key and the produced values are identical.
+
+#### (o.3.5) `src/components/store/BlogList.tsx` — the card chip and the rail follow the store slug
+
+```diff
+ import { termArchivePath,
+   pageWindow,
+   type Paging,
+   type TermKind,
+ } from "@/lib/blog-taxonomy";
+ import { useLang } from "@/lib/i18n";
++import { useStoreSlug } from "@/lib/store-slug-context";
+```
+
+`BlogCard` (the chip in `ArticleGrid`, which every listing surface renders):
+
+```diff
+ function BlogCard({
+   article,
+   priority,
+ }: {
+   article: BlogCardData;
+   priority: boolean;
+ }) {
+   const { t, lang } = useLang();
++  const storeSlug = useStoreSlug();
+   const published = formatDate(article.publishedAt, lang);
+```
+
+```diff
+         {article.category ? (
+           <Link
+-            to="/blog/category/$slug"
+-            params={{ slug: article.category.slug }}
++            to={
++              storeSlug
++                ? "/store/$slug/blog/category/$termSlug"
++                : "/blog/category/$slug"
++            }
++            params={
++              storeSlug
++                ? { slug: storeSlug, termSlug: article.category.slug }
++                : { slug: article.category.slug }
++            }
+             className="w-fit rounded-full bg-secondary px-2 py-1 text-[11px] font-medium text-secondary-foreground"
+           >
+```
+
+`ArchiveRail` — only the CATEGORY link becomes store-aware; tags have no store route and stay global:
+
+```diff
+ export function ArchiveRail({
+   facets,
+   activeSlug,
+ }: {
+   facets: { slug: string; name: string; kind: TermKind; count: number }[];
+   activeSlug?: string;
+ }) {
+   const { t } = useLang();
++  const storeSlug = useStoreSlug();
+   if (!facets.length) return null;
+```
+
+```diff
+           <Link
+             key={`${facet.kind}:${facet.slug}`}
+             to={
+-              facet.kind === "tag" ? "/blog/tag/$slug" : "/blog/category/$slug"
++              facet.kind === "tag"
++                ? "/blog/tag/$slug"
++                : storeSlug
++                  ? "/store/$slug/blog/category/$termSlug"
++                  : "/blog/category/$slug"
+             }
+-            params={{ slug: facet.slug }}
++            params={
++              facet.kind !== "tag" && storeSlug
++                ? { slug: storeSlug, termSlug: facet.slug }
++                : { slug: facet.slug }
++            }
+             aria-current={active ? "page" : undefined}
+```
+
+#### (o.3.6) `src/components/builder/blog.tsx` — the widget card and the terms list follow the store slug
+
+```diff
+ import type { BlogCardData } from "@/components/store/BlogList";
+ import { ArchiveRail, Pager } from "@/components/store/BlogList";
+ import type { Paging, TermKind } from "@/lib/blog-taxonomy";
+ import { parsePickedHandles } from "@/lib/builder-ast";
++import { useStoreSlug } from "@/lib/store-slug-context";
+ import type { WidgetComponent } from "./widgets";
+```
+
+`Card` (the blog-listing widget's card):
+
+```diff
+ function Card({
+   article,
+   showCover,
+   showExcerpt,
+   showMeta,
+   lead = false,
+ }: {
+   article: BlogCardData;
+   showCover: boolean;
+   showExcerpt: boolean;
+   showMeta: boolean;
+   lead?: boolean;
+ }) {
++  const storeSlug = useStoreSlug();
+   return (
+```
+
+```diff
+         {article.category ? (
+           <Link
+-            to="/blog/category/$slug"
+-            params={{ slug: article.category.slug }}
++            to={
++              storeSlug
++                ? "/store/$slug/blog/category/$termSlug"
++                : "/blog/category/$slug"
++            }
++            params={
++              storeSlug
++                ? { slug: storeSlug, termSlug: article.category.slug }
++                : { slug: article.category.slug }
++            }
+             className="w-fit rounded-full bg-secondary px-2 py-1 text-[11px] font-medium text-secondary-foreground"
+           >
+```
+
+`BlogTermsWidget` (its list variant; its rail variant delegates to `ArchiveRail` above):
+
+```diff
+ const BlogTermsWidget: WidgetComponent = ({ str, bool }) => {
+   const feed = useBlogFeed();
++  const storeSlug = useStoreSlug();
+   const facets = feed?.facets ?? [];
+```
+
+```diff
+               <Link
+                 to={
+-                  facet.kind === "tag"
+-                    ? "/blog/tag/$slug"
+-                    : "/blog/category/$slug"
++                  facet.kind === "tag"
++                    ? "/blog/tag/$slug"
++                    : storeSlug
++                      ? "/store/$slug/blog/category/$termSlug"
++                      : "/blog/category/$slug"
+                 }
+-                params={{ slug: facet.slug }}
++                params={
++                  facet.kind !== "tag" && storeSlug
++                    ? { slug: storeSlug, termSlug: facet.slug }
++                    : { slug: facet.slug }
++                }
+                 className="inline-flex min-h-11 items-center gap-2 hover:text-primary"
+               >
+```
+
+#### (o.3.7) `src/routes/store.$slug.blog.index.tsx` and `src/routes/blog.index.tsx` (store branch) — the store blog surfaces gain the slug context
+
+The two existing store blog surfaces render `BlogArchiveTheme` directly; wrapping their output in the context re-points the cards' category chips at the merchant-scoped archive without touching `BlogArchiveTheme` itself (it needs NO prop: the provider flows through ThemeChrome's fallback and its platform branch alike). In `store.$slug.blog.index.tsx`:
+
+```diff
+ import { storeBlogBasePath, storeListingHead } from "@/lib/store-blog-head";
+ import { useLang } from "@/lib/i18n";
++import { StoreSlugContext } from "@/lib/store-slug-context";
+```
+
+```diff
+       <StoreHeader
+         slug={data.merchantSlug}
+         name={merchantName}
+         menus={data.chrome?.menus ?? []}
+         themeKey={data.chrome?.themeKey ?? null}
+       />
++      {/* The cards' category chips are STORE links here: inside the
++          merchant's storefront they point at
++          `/store/<slug>/blog/category/<term>`, the merchant-scoped archive
++          (Batch B, gap 3), not the platform-wide taxonomy route. */}
++      <StoreSlugContext.Provider value={data.merchantSlug}>
+       <BlogArchiveTheme
+         …(props unchanged)…
+       />
++      </StoreSlugContext.Provider>
+```
+
+and the identical wrap (import + `value={data.merchantSlug}`) around the `return (<BlogArchiveTheme …/>)` of `blog.index.tsx`'s store branch (`StoreIndexPage`). `BlogArchiveTheme.tsx` itself is NOT edited — the earlier draft's `storeSlug` prop on it is dropped: the provider wrap is strictly weaker in surface area and produces the same chips.
+
+#### (o.3.8) `src/lib/preview-parity.contract.test.ts` — the archive case gains the production side (additions only)
+
+The suite header's stale paragraph (comment-only):
+
+```diff
+- * The `archive` template is the one case with NO live production route (the
+- * three platform taxonomy surfaces are store-less and keep the platform
+- * grid), so its preview grant set must be EXACTLY the archive body's six
+- * functional slots — the set the deferred merchant-scoped route must grant
+- * when it lands.
++ * The `archive` template's production host is the shared archive host
++ * (`ArchiveView`), which the merchant-scoped route
++ * (`/store/<slug>/blog/category/<termSlug>`) renders with the
++ * server-resolved `archive_category` composition; the three store-less
++ * taxonomy routes keep the platform grid. The preview's archive grant set
++ * must be EXACTLY the archive body's six functional slots — the set that
++ * host grants.
+```
+
+```diff
+ const SONGOSKRITI = read("lib", "themes", "songoskriti", "preview.ts");
++const ARCHIVE_VIEW = read("components", "store", "ArchiveView.tsx");
+```
+
+The archive case — the title, one comment moved, and the new equality (every existing `expect` is kept verbatim):
+
+```diff
+-  it("archive — no live production route, so the preview's grant set IS the contract", () => {
++  it("archive — the preview and the shared archive host grant the SAME six", () => {
+     const preview = grantedSlots(PREVIEW, "const archiveSlots =");
+-    // EXACTLY the archive body's six functional slots — the set the
+-    // deferred merchant-scoped route must grant when it lands.
+     const six = [
+       "blog_archive",
+       "blog_pager",
+       "blog_terms",
+       "category_header",
+       "empty_state",
+       "pagination",
+     ];
+     expect(preview).toEqual(six);
++    // The production side: the shared archive host grants exactly the same
++    // six — the merchant-scoped route renders THIS host with its
++    // server-resolved `archive_category` composition (Batch B, gap 3), so
++    // the two hosts can no longer drift.
++    expect(grantedSlots(ARCHIVE_VIEW, "const ARCHIVE_SLOTS")).toEqual(six);
+     // … and the theme's own archive body uses EXACTLY those six, so the
+     // grant set is neither wider nor narrower than the body.
+```
+
+`grantedSlots(ARCHIVE_VIEW, "const ARCHIVE_SLOTS")` parses the balanced object literal after the marker — the type annotation `Partial<Record<SectionType, ReactNode>>` contains no `{`, so the first brace is the map's own; its six `key:` entries are catalogue widgets and count as grants.
+
+#### (o.3.9) `src/lib/preview-safety.contract.test.ts` — one stale TITLE and one comment (the assertion is untouched)
+
+```diff
+-  it("archive has no live route, so the preview's grants ARE its contract", () => {
++  it("archive — the preview's grants cover the template's required slots", () => {
+     const preview = grantedSlots(PREVIEW, "const archiveSlots =");
++    // The merchant-scoped route that landed in Batch B grants the same six
++    // through the shared archive host (`preview-parity.contract.test.ts`
++    // pins the equality); this suite keeps the required-subset premise.
+     expect(
+       requiredSlots("archive").filter((slot) => !preview.includes(slot)),
+     ).toEqual([]);
+   });
+```
+
+#### (o.3.10) `.e2e/songoskriti-seven-templates.spec.ts` — one stale comment (comment-only)
+
+```diff
+-    //     node — against the platform's own outcome: a publish that advanced
+-    //     the pointer must be visible, and a refused publish must not have
+-    //     half-applied. The archive journey's route is the theme PREVIEW (its
+-    //     storefront route is the deferred merchant-scoped one), and the
+-    //     preview resolves the merchant's latest VERSION rather than the
++    //     node — against the platform's own outcome: a publish that advanced
++    //     the pointer must be visible, and a refused publish must not have
++    //     half-applied. The archive journey's route is the theme PREVIEW (the
++    //     merchant-scoped storefront route landed in Batch B, but this
++    //     journey exercises the preview host), and the preview resolves the
++    //     merchant's latest VERSION rather than the
+     //     published pointer (`src/lib/preview-sources.ts`), so the published
+     //     contract is asserted on the routes the storefront actually serves.
+```
+
+### (o.4) The design decisions this record pins before the edit
+
+1. **The store-slug channel is the EXISTING `StoreSlugContext`** (`src/lib/store-slug-context.ts`), provided by `ArchiveView` (and by the two wrapped store routes) and consumed by the chips through `useStoreSlug()`. `ThemeChrome`'s `SectionRenderer` re-provides the same slug inside the composition (it passes its own `storeSlug ?? null` at `ThemeChrome.tsx:926`), so a chip reached either by the composition tree or by the route-level fallback sees one value. `BlogArchiveTheme` needs NO new prop.
+2. **The StoreWelcome trap is avoided by construction.** `ThemeChrome` answers `storeSlug && isThemeless(ast, tokens)` (`ThemeChrome.tsx:261`) with the StoreWelcome frame. `ArchiveView` therefore passes `storeSlug` to `ThemeChrome` ONLY on the composed branch (where the body exists — never themeless), and the themeless branch never mounts ThemeChrome with a slug; a store without a published theme keeps the platform grid on this surface, exactly as `store.$slug.blog.index.tsx:41-45` already pins for the blog index. The draft plan's "forward tokens to `BlogArchiveTheme`" step is dropped — `BlogArchiveTheme` gates on `ast && tokens` and its ThemeChrome path is untouched.
+3. **The composition is resolved SERVER-SIDE.** The route's fn calls `resolveTemplateForHost` directly (with `mode: "published"`, `host: "storefront"`, the merchant as `tenant`) rather than reusing `getStoreChrome`'s variant path — that path resolves through `resolveVariantAst` alone and returns no `PipelineResolution` provenance, so it would not satisfy the gate's letter. The home-chrome merge mirrors `publishedTemplatePayload`'s rule through the same resolver on `"index"`; `storefront.server.ts` and `storefront.functions.ts` stay untouched.
+4. **The preview is NOT extended with an archive-specific query** (the draft's optional `ThemePreviewFrame.tsx` edit is dropped): preview pagination already renders through the global search-demo query, the parity contract asserts slot PRESENCE (not pager numbers), and skipping the edit removes one §7 target. The archive's own page math is proven on the production side by the new route test's render leg.
+5. **`loadTermArchive` extends, never forks.** The tenant scope is two optional parameters on the existing reader (scope + base path) with the cache key tenant-prefixed only when scoped; the global key, the global chains and the three store-less routes' behaviour are byte-identical. The stale "no per-term merchant scope" claim (`store-blog.server.ts:120`) is NOT acted on: `blog_terms` carries `merchant_id` and `article_count` (`TERM_COLUMNS`), and the store archive scopes by merchant directly.
+6. **`blog.$slug.tsx` needs no edit** — verified: the store article branch nulls the blog pack and renders no category link; `ArticleView` and `store.$slug.blog.$articleSlug.tsx` carry no `termArchivePath`/category chip either. Tag and author links stay global everywhere (no store routes exist for them), and the three store-less taxonomy routes are unchanged.
+7. **`routeTree.gen.ts` changes only through regeneration** — the `tanstackStart()` vite plugin regenerates it when the new route file exists (`node_modules/.bin/vite build`); no hand edit.
+
+### (o.5) Boundary
+
+Everything above is measured against this branch's own source at HEAD `8e144f6f`, before any edit. The four standing churn paths (`.artifacts/e2e/playwright-report/index.html`, `ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`, and the untracked `.output-snapshots/`) stay unstaged and untouched. The three pre-existing failures (`src/lib/analytics-live-shape.test.ts` ×2, `src/lib/site.server.test.ts` ×1) are not mine and remain expected reds. The doc files that still call the route deferred (`docs/04-builder/theme-runtime.md:410,417`, `report.md:445` §5.3 #5) are §7-free and are corrected in the code commit. This record is committed by explicit path BEFORE the code commit it governs.
