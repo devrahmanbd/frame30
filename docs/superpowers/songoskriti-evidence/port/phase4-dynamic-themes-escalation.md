@@ -6199,3 +6199,122 @@ The archive case — the title, one comment moved, and the new equality (every e
 ### (o.5) Boundary
 
 Everything above is measured against this branch's own source at HEAD `8e144f6f`, before any edit. The four standing churn paths (`.artifacts/e2e/playwright-report/index.html`, `ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`, and the untracked `.output-snapshots/`) stay unstaged and untouched. The three pre-existing failures (`src/lib/analytics-live-shape.test.ts` ×2, `src/lib/site.server.test.ts` ×1) are not mine and remain expected reds. The doc files that still call the route deferred (`docs/04-builder/theme-runtime.md:410,417`, `report.md:445` §5.3 #5) are §7-free and are corrected in the code commit. This record is committed by explicit path BEFORE the code commit it governs.
+
+## (o.6) Batch B — the declined-frame corrective hunk, recorded before the edit
+
+*(Append-only, dated 2026-10-23, continuing §(o) before the code commit, in the Batch A corrective-hunk form §(n.6) established: a deviation found against the applied work is written here, with its exact old → new hunk, BEFORE the hunk is applied. Both files it touches are NEW files — `src/lib/store-blog-archive.server.ts` and `src/lib/store-blog-archive.functions.ts`'s sibling route test — so §7 needs no relaxation; they are named here for the record's continuity, not because §7 demanded it.)*
+
+### (o.6.1) The finding — the staging left the WRONG hidden state for a themed store that authors no archive body
+
+§(o.2) planned the loader's composition read as `resolution.status === "resolved"` → `ast`, anything else → `ast` stays `null`. On the planned §(o.3.3) host that null rides `ArchiveView`'s themeless branch: the **naked platform grid with no ThemeChrome at all**. For a store with **no theme at all** that is correct by pin (the store blog index rule — a merchant who never published a theme keeps the platform grid, and `ThemeChrome` must never answer it with the StoreWelcome frame). For a store whose **theme IS published but authors no archive body**, it is a silent, unbranded platform page — exactly the state the plan's Decision Gate **G3** ruled out on 2026-10-22 (`docs/superpowers/plans/2026-10-22-frame30-dynamic-themes.md:373`): *"the storefront keeps the route's platform surface inside the theme's **named** frame (`data-fq-theme-state=\"declined-template\"` …)"*, and §(h.7) of the phase-3 record applied that one-insertion diff to `ThemeChrome`. The stage's grid ship keeps the platform surface but loses the frame, because `ArchiveView` never mounts `ThemeChrome` when `ast` is null.
+
+The corrective hunk keeps `ArchiveView` untouched (no second §(o.3.3) round on the shared host) and fixes the **loader**: when a theme is published and the archive resolution is `absent`, the loader still ships an `ast` — an **EMPTY-MAIN body with the home chrome merged**, so `ArchiveView` takes its composed branch and `ThemeChrome` renders the declined-template frame. `themeRendersBody` answers `false` for an empty main (`src/lib/theme-body-slot.ts`: *"no theme AST, or an empty theme main: the route's fallback renders"*), so `ThemeChrome.tsx:441-458` renders `data-fq-theme-state="declined-template"` / `data-fq-template="archive"` with the store's name and the template's display name, around the host's `fallback` (the platform grid) — with the theme's tokens on `ThemeSurface` and the home header/footer, exactly what `BlogArchiveTheme` already produces for a themed store on the blog index. The resolver's semantics are untouched: `resolveTemplateForHost` still answers `absent` (never a synthesized body); the loader turns one SECOND-CLASS null into the named first-class state. The un-themed rule stands: `tokens`/`themeKey` null ⇒ `ast` null ⇒ the naked grid (never StoreWelcome).
+
+### (o.6.2) The exact old → new diff — `src/lib/store-blog-archive.server.ts`
+
+```diff
+     const { resolveTemplateForHost } = await import("./pipeline-resolver");
+     const resolution = resolveTemplateForHost({
+       template: "archive_category",
+       variants: theme.templates,
+       tenant: chrome.merchant.id,
+       mode: "published",
+       host: "storefront",
+       tokens: theme.tokens,
+     });
+-    if (resolution.status === "resolved") {
+-      // The chrome rule the base path already applies, through the SAME
+-      // resolver: a template that publishes no header/footer borrows the
+-      // home template's, so a shopper never lands on a page without the
+-      // store's navigation or its policy links.
++    // The chrome rule the base path already applies, through the SAME
++    // resolver — ONCE, and reused for the decline below: a template that
++    // publishes no header/footer borrows the home template's, so a shopper
++    // never lands on a page without the store's navigation or its policy
++    // links.
+     const home = resolveTemplateForHost({
+       template: "index",
+       variants: theme.templates,
+       tenant: chrome.merchant.id,
+       mode: "published",
+       host: "storefront",
+     });
+     const homeAst = home.status === "resolved" ? home.ast : null;
+-      ast = {
+-        header: resolution.ast.header.length
+-          ? resolution.ast.header
+-          : (homeAst?.header ?? []),
+-        main: resolution.ast.main,
+-        footer: resolution.ast.footer.length
+-          ? resolution.ast.footer
+-          : (homeAst?.footer ?? []),
+-      };
+-    }
+-  }
++    // The NAMED decline (Decision Gate G3): a PUBLISHED theme that authors
++    // no archive body keeps the platform's grid — but inside the theme's
++    // own chrome, in the store's voice, as the DECLINED-TEMPLATE frame
++    // (`ThemeChrome` answers an empty main with
++    // `data-fq-theme-state="declined-template"`, `theme-body-slot.ts`),
++    // never a silent, unbranded grid and never the StoreWelcome panel.
++    // A store with NO theme keeps `ast` null: the naked-and-honest grid is
++    // that store's pinned blog-index rule.
++    ast = {
++      header:
++        resolution.status === "resolved" && resolution.ast.header.length
++          ? resolution.ast.header
++          : (homeAst?.header ?? []),
++      main: resolution.status === "resolved" ? resolution.ast.main : [],
++      footer:
++        resolution.status === "resolved" && resolution.ast.footer.length
++          ? resolution.ast.footer
++          : (homeAst?.footer ?? []),
++    };
++  }
+```
+
+The resolved case is byte-identical to §(o)'s applied merge; only the `absent` case changes null → the empty-main merged body.
+
+### (o.6.3) The exact old → new diffs — the route suite adds the two legs the owner's gate demands
+
+`src/routes/store.$slug.blog.category.$termSlug.test.tsx` gains, in the wiring suite, the decline pin on the loader source:
+
+```diff
+     // The client receives the resolved AST — never the theme's map.
+     expect(LOADER).not.toMatch(/return \{[^}]*templates/s);
++    // The NAMED decline (G3): a published theme WITHOUT an archive body
++    // ships an empty-main body inside the store's chrome, so the host
++    // renders the declined-template frame around the platform grid — never
++    // a silent, unbranded grid and never the StoreWelcome panel.
++    expect(LOADER).toContain(
++      'main: resolution.status === "resolved" ? resolution.ast.main : [],',
++    );
+```
+
+and in the behaviour suite, an extended `renderHost` plus the two legs the acceptance gate names (the Songoskriti published-resolution leg and the declined-frame leg). The Songoskriti leg builds the theme's OWN template map in the test and resolves through `resolveTemplateForHost` exactly as the loader does (`archive_category` variant-first, the home chrome merged under the resolved body), so the leg exercises the gap-3 contract itself, not a hand-stub:
+
+```diff
+ function renderHost(options: {
+   storeSlug?: string;
+   themed?: boolean;
++  songoskriti?: boolean;
++  declined?: boolean;
+ }): string {
++  …
++  const ast = options.songoskriti ? songoskritiAst() : (options.declined ? DECLINED_AST : (options.themed ? THEME_PAGER_AST : null));
+   …
+   return renderToStaticMarkup(
+     <ArchiveView kind="category" context={context} feed={feed} header={<h1>Eid</h1>} empty={<p>Nothing here.</p>}
+       tokens={tokensFor(options)} themeKey={...} storeSlug={...} ast={...} />
+   );
+ }
+```
+
+with:
+
+1. **the Songoskriti leg** — `songoskritiPreviewSource()` builds `index` and `archive` bodies, `resolveTemplateForHost({ template: "archive_category", mode: "published", host: "storefront", tenant })` resolves the VARIANT to the theme's archive body, the merge rule produces the shipped `ast`, and `ArchiveView` renders it with the store slug and the theme's tokens. Assertions: the composition resolves to the six archive slots; the theme's band renders **by the theme's own key** (`data-collection-header`, the `SONGOSKRITI_WIDGETS` band `SectionRenderer` resolves from the themeKey); the term's records render through the bodies (the article's own title inside the theme's `blog_archive` render, the facet's own name inside `blog_terms`); the platform's pager ALSO renders (`blog_pager`); and the store's chrome is the store's — the mount carries the theme's accent token (`--theme-accent`, Songoskriti's `#8B4513`) and the merged home footer's links are the theme's.
+2. **the declined leg** — the merged EMPTY-MAIN body (the §(o.6.2) contract) renders the DECLINED-TEMPLATE frame: `data-fq-theme-state="declined-template"` and `data-fq-template="archive"`, the naming label points at the store and the template ("Songoskriti — this theme does not design the Archive page", `templateDisplayName`), the platform grid renders INSIDE it with its article hrefs, and the tokens still apply (the mount carries the theme's accent token) — never the StoreWelcome panel, never a bare unbranded grid.
+
+### (o.6.4) Boundary of the correction
+
+Only `src/lib/store-blog-archive.server.ts` (NEW) and `src/lib/store-blog-archive.functions.ts`'s sibling route test (NEW) change. `ArchiveView` is NOT re-edited — §(o.3.3)'s host stands as recorded and staged. No tracked-but-untouched file is touched. Everything else in this correction is measured against the staged tree at `a7210575` before it is applied.
