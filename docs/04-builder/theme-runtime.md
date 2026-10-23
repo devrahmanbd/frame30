@@ -407,14 +407,18 @@ The per-template contract, as shipped:
 | `page`           | `/store/$slug/pages/$pageSlug`                                                                                                                        | `breadcrumb`, `page_content` — the merchant's own body                                                                                                                                                                                                                                                                                                                                                               | the page record, its body, its SEO                                                                  |
 | `blog` (listing) | `/store/$slug/blog`                                                                                                                                   | the platform's listing block                                                                                                                                                                                                                                                                                                                                                                                         | the articles, the paging                                                                            |
 | `blog` (article) | `/store/$slug/blog/$articleSlug`                                                                                                                      | `page_content` — the article body — plus `blog_terms`, `blog_archive`, `blog_pager`                                                                                                                                                                                                                                                                                                                                  | the article body, the related reading                                                               |
-| `archive`        | **no storefront route grants the archive slots yet** — the three routes below carry no store subject, resolve no theme and render the platform's grid | **none today** — the six slots (`category_header`, `blog_terms`, `blog_archive`, `blog_pager`, `pagination`, `empty_state`) are granted by the **deferred merchant-scoped route** (`/store/<slug>/blog/category/<slug>` and its two siblings), which does not exist yet. In the meantime the archive's composition renders in the **editor** and in the **theme preview host**, both merchant-scoped by construction | the term, the records, the facets, the paging                                                       |
+| `archive`        | `/store/$slug/blog/category/$termSlug` — the **merchant-scoped route** (Batch B, an exact one-route landing); the three routes below carry no store subject, resolve no theme and render the platform's grid | the six slots (`category_header`, `blog_terms`, `blog_archive`, `blog_pager`, `pagination`, `empty_state`) are granted by the **merchant-scoped route**, whose composition is resolved **server-side** through `resolveTemplateForHost` (`mode: "published"`, `host: "storefront"`, the `archive_category` **variant first**). A published theme that authors no archive body renders the platform grid **inside the named declined-template frame** around the home chrome; the theme preview grants the same six | the term, the records, the facets, the paging                                                       |
 
-**The archive's three routes today.** `/blog/category/$slug`,
-`/blog/tag/$slug` and `/blog/author/$slug` exist and are **store-less**: they
-carry no store slug, so they resolve **no theme** and render the **platform's
-own grid** (`BlogArchiveTheme`), not the theme's archive composition. They are
-the archive's supported **KINDS**, not the routes that grant the theme its
-slots. The grant set belongs to the deferred merchant-scoped route above.
+**The archive's routes today.** The merchant-scoped
+`/store/$slug/blog/category/$termSlug` exists (Batch B) and grants the six slots
+from a **server-resolved** composition — never a client resolve, never the
+theme's template map on the wire. The three **store-less** routes
+(`/blog/category/$slug`, `/blog/tag/$slug`, `/blog/author/$slug`) carry no
+store slug, so they resolve **no theme** and render the **platform's own grid**
+(`BlogArchiveTheme`), not the theme's archive composition — the archive's
+supported **KINDS** on the platform, not theme-granting surfaces. A term slug
+is unique **per merchant**, so the merchant-scoped route is the only one that
+can answer "this store's archive for this term".
 
 **The rules the table implies.**
 

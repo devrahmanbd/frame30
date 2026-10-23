@@ -19,6 +19,7 @@ import {
   type TermKind,
 } from "@/lib/blog-taxonomy";
 import { useLang } from "@/lib/i18n";
+import { useStoreSlug } from "@/lib/store-slug-context";
 
 export type BlogCardData = {
   slug: string;
@@ -70,6 +71,7 @@ function BlogCard({
   priority: boolean;
 }) {
   const { t, lang } = useLang();
+  const storeSlug = useStoreSlug();
   const published = formatDate(article.publishedAt, lang);
   return (
     <article className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-shadow hover:shadow-md">
@@ -94,8 +96,16 @@ function BlogCard({
       <div className="flex flex-1 flex-col gap-2 p-4">
         {article.category ? (
           <Link
-            to="/blog/category/$slug"
-            params={{ slug: article.category.slug }}
+            to={
+              storeSlug
+                ? "/store/$slug/blog/category/$termSlug"
+                : "/blog/category/$slug"
+            }
+            params={
+              storeSlug
+                ? { slug: storeSlug, termSlug: article.category.slug }
+                : { slug: article.category.slug }
+            }
             className="w-fit rounded-full bg-secondary px-2 py-1 text-[11px] font-medium text-secondary-foreground"
           >
             {article.category.name}
@@ -164,6 +174,7 @@ export function ArchiveRail({
   activeSlug?: string;
 }) {
   const { t } = useLang();
+  const storeSlug = useStoreSlug();
   if (!facets.length) return null;
   return (
     <nav
@@ -176,9 +187,17 @@ export function ArchiveRail({
           <Link
             key={`${facet.kind}:${facet.slug}`}
             to={
-              facet.kind === "tag" ? "/blog/tag/$slug" : "/blog/category/$slug"
+              facet.kind === "tag"
+                ? "/blog/tag/$slug"
+                : storeSlug
+                  ? "/store/$slug/blog/category/$termSlug"
+                  : "/blog/category/$slug"
             }
-            params={{ slug: facet.slug }}
+            params={
+              facet.kind !== "tag" && storeSlug
+                ? { slug: storeSlug, termSlug: facet.slug }
+                : { slug: facet.slug }
+            }
             aria-current={active ? "page" : undefined}
             className={`inline-flex min-h-11 items-center gap-1 rounded-full border px-3 text-sm ${
               active

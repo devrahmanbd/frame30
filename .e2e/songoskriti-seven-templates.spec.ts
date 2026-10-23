@@ -989,9 +989,10 @@ for (const journey of JOURNEYS) {
     //     spacer it inserted (56 px), so the SERVED document must carry that
     //     node — against the platform's own outcome: a publish that advanced
     //     the pointer must be visible, and a refused publish must not have
-    //     half-applied. The archive journey's route is the theme PREVIEW (its
-    //     storefront route is the deferred merchant-scoped one), and the
-    //     preview resolves the merchant's latest VERSION rather than the
+    //     half-applied. The archive journey's route is the theme PREVIEW (the
+    //     merchant-scoped storefront route landed in Batch B, but this
+    //     journey exercises the preview host), and the preview resolves the
+    //     merchant's latest VERSION rather than the
     //     published pointer (`src/lib/preview-sources.ts`), so the published
     //     contract is asserted on the routes the storefront actually serves.
     //     This block MUST run after the navigation above: before it, the page

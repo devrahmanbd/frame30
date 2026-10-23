@@ -230,11 +230,17 @@ async function decorate(db: Db, rows: ArticleRow[]): Promise<BlogCard[]> {
  * used for ordering only — the count a reader sees on an archive page is the
  * live one from that page's own count query.
  */
-async function loadFacets(db: Db): Promise<BlogListing["facets"]> {
-  const { data } = await db
+async function loadFacets(
+  db: Db,
+  merchantId?: string,
+): Promise<BlogListing["facets"]> {
+  let query = db
     .from("blog_terms")
     .select("slug, name, kind, article_count")
-    .gt("article_count", 0)
+    .gt("article_count", 0);
+  // Tenant scope: ONE store's terms, when a store surface asks.
+  if (merchantId) query = query.eq("merchant_id", merchantId);
+  const { data } = await query
     .order("article_count", { ascending: false })
     .limit(24);
   return (
@@ -315,12 +321,17 @@ async function resolveTerm(
   db: Db,
   kind: TermKind,
   slug: string,
+  merchantId?: string,
 ): Promise<TermRow | null> {
-  const { data } = await db
+  let query = db
     .from("blog_terms")
     .select(TERM_COLUMNS)
     .eq("kind", kind)
-    .eq("slug", slug)
+    .eq("slug", slug);
+  // Tenant scope: the same word in two stores resolves independently — a
+  // store surface must resolve ITS claimant, never another merchant's.
+  if (merchantId) query = query.eq("merchant_id", merchantId);
+  const { data } = await query
     .order("article_count", { ascending: false })
     .order("id", { ascending: true })
     .limit(1);
@@ -346,14 +357,21 @@ export async function loadTermArchive(
   kind: TermKind,
   slug: string,
   rawPage: unknown,
+  opts?: {
+    /** Tenant scope: resolve the term and window the listing to ONE merchant. */
+    merchantId?: string;
+    /** Base-path override — the store archive's own URL, not the global one. */
+    basePath?: (page: number) => string;
+  },
 ): Promise<TermArchive> {
   const page = normalizePage(rawPage);
-  const basePath = (p: number) => termArchivePath(kind, slug, p);
+  const basePath =
+    opts?.basePath ?? ((p: number) => termArchivePath(kind, slug, p));
   const db = await anonDb();
 
   // Resolution happens outside `renderRead` because its failure mode is a 404,
   // not a fallback — but it is still cached by the inner listing read below.
-  const term = await resolveTerm(db, kind, slug);
+  const term = await resolveTerm(db, kind, slug, opts?.merchantId);
   if (!term) throw new TermNotFound(slug);
 
   const fallback: TermArchive = {
@@ -365,7 +383,11 @@ export async function loadTermArchive(
 
   return renderRead<TermArchive>({
     name: "blog.archive",
-    key: `blog|archive|${kind}|${slug}|${page}`,
+    // Tenant-prefixed when scoped: one store's archive can never be served
+    // from another's entry — or from the global one.
+    key: opts?.merchantId
+      ? `blog|archive|${opts.merchantId}|${kind}|${slug}|${page}`
+      : `blog|archive|${kind}|${slug}|${page}`,
     fallback,
     context: { kind, page },
     load: async () => {
@@ -374,7 +396,7 @@ export async function loadTermArchive(
           .from("article_terms")
           .select("article_id", { count: "exact", head: true })
           .eq("term_id", term.id),
-        loadFacets(db),
+        loadFacets(db, opts?.merchantId),
         // One query serves both the ancestry chain and the child rail; the tree
         // is capped at depth 3 and 300 terms per kind, so this stays small.
         db
@@ -432,11 +454,17 @@ export async function loadTermArchive(
         };
       }
 
-      const { data } = await db
+      let articlesQuery = db
         .from("articles")
         .select(CARD_COLUMNS)
         .in("id", ids)
-        .eq("status", "published")
+        .eq("status", "published");
+      // Tenant scope on the one query whose rows actually render: the id
+      // window comes from this term's links, but the articles are filtered
+      // again — belt and braces on the data-authority path.
+      if (opts?.merchantId)
+        articlesQuery = articlesQuery.eq("merchant_id", opts.merchantId);
+      const { data } = await articlesQuery
         .lte("published_at", new Date().toISOString())
         .is("deleted_at", null)
         .order("published_at", { ascending: false, nullsFirst: false });

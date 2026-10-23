@@ -372,8 +372,11 @@ describe("Task 4 (a) — no blank required slot", () => {
     ]);
   });
 
-  it("archive has no live route, so the preview's grants ARE its contract", () => {
+  it("archive — the preview's grants cover the template's required slots", () => {
     const preview = grantedSlots(PREVIEW, "const archiveSlots =");
+    // The merchant-scoped route that landed in Batch B grants the same six
+    // through the shared archive host (`preview-parity.contract.test.ts`
+    // pins the equality); this suite keeps the required-subset premise.
     expect(
       requiredSlots("archive").filter((slot) => !preview.includes(slot)),
     ).toEqual([]);

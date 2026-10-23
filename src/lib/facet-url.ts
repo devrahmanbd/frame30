@@ -137,10 +137,12 @@ export function withPage(
   params: SearchParams,
   page: number,
   total: number,
+  /** Page size the listing windows at. Absent = the search default (24). */
+  limit: number = PAGE_SIZE,
 ): SearchParams {
   const last = Math.min(
-    pageCount(total),
-    Math.floor(MAX_OFFSET / PAGE_SIZE) + 1,
+    pageCount(total, limit),
+    Math.floor(MAX_OFFSET / limit) + 1,
   );
   const clamped = Math.min(Math.max(1, Math.trunc(page) || 1), last);
   return normalizeSearchParams({ ...toSearchQuery(params), page: clamped });

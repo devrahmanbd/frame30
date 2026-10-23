@@ -17,6 +17,7 @@ import type { BlogCardData } from "@/components/store/BlogList";
 import { ArchiveRail, Pager } from "@/components/store/BlogList";
 import type { Paging, TermKind } from "@/lib/blog-taxonomy";
 import { parsePickedHandles } from "@/lib/builder-ast";
+import { useStoreSlug } from "@/lib/store-slug-context";
 import type { WidgetComponent } from "./widgets";
 
 export type BlogFeed = {
@@ -133,6 +134,7 @@ function Card({
   showMeta: boolean;
   lead?: boolean;
 }) {
+  const storeSlug = useStoreSlug();
   return (
     <article className="flex flex-col overflow-hidden rounded-fq-md border border-border bg-card">
       {showCover ? (
@@ -144,8 +146,16 @@ function Card({
       <div className="flex flex-1 flex-col gap-2 p-4">
         {article.category ? (
           <Link
-            to="/blog/category/$slug"
-            params={{ slug: article.category.slug }}
+            to={
+              storeSlug
+                ? "/store/$slug/blog/category/$termSlug"
+                : "/blog/category/$slug"
+            }
+            params={
+              storeSlug
+                ? { slug: storeSlug, termSlug: article.category.slug }
+                : { slug: article.category.slug }
+            }
             className="w-fit rounded-full bg-secondary px-2 py-1 text-[11px] font-medium text-secondary-foreground"
           >
             {article.category.name}
@@ -323,6 +333,7 @@ const BlogArchiveWidget: WidgetComponent = ({ str, bool, int }) => {
 
 const BlogTermsWidget: WidgetComponent = ({ str, bool }) => {
   const feed = useBlogFeed();
+  const storeSlug = useStoreSlug();
   const facets = feed?.facets ?? [];
   const heading = str("heading");
   const showCounts = bool("showCounts");
@@ -340,9 +351,15 @@ const BlogTermsWidget: WidgetComponent = ({ str, bool }) => {
                 to={
                   facet.kind === "tag"
                     ? "/blog/tag/$slug"
-                    : "/blog/category/$slug"
+                    : storeSlug
+                      ? "/store/$slug/blog/category/$termSlug"
+                      : "/blog/category/$slug"
                 }
-                params={{ slug: facet.slug }}
+                params={
+                  facet.kind !== "tag" && storeSlug
+                    ? { slug: storeSlug, termSlug: facet.slug }
+                    : { slug: facet.slug }
+                }
                 className="inline-flex min-h-11 items-center gap-2 hover:text-primary"
               >
                 <span>{facet.name}</span>

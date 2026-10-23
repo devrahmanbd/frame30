@@ -19,6 +19,7 @@ import {
 } from "@/components/store/StorefrontError";
 import { storeBlogBasePath, storeListingHead } from "@/lib/store-blog-head";
 import { useLang } from "@/lib/i18n";
+import { StoreSlugContext } from "@/lib/store-slug-context";
 
 export const Route = createFileRoute("/store/$slug/blog/")({
   validateSearch: z.object({
@@ -95,46 +96,52 @@ function StoreBlogIndexPage() {
         menus={data.chrome?.menus ?? []}
         themeKey={data.chrome?.themeKey ?? null}
       />
-      <BlogArchiveTheme
-        feed={{
-          articles: data.listing.articles,
-          facets: data.listing.facets,
-          paging: data.listing.paging,
-          basePath: (page: number) =>
-            page > 1 ? `${basePath}?page=${page}` : basePath,
-        }}
-        ast={data.chrome?.ast ?? null}
-        tokens={data.chrome?.tokens ?? null}
-        themeKey={data.chrome?.themeKey ?? null}
-        header={
-          <header className="mb-8 border-b border-border pb-6">
-            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              {merchantName}
-            </p>
-            <h1 className="mt-1 font-bangla-display text-3xl font-semibold">
-              {t("Blog", "ব্লগ")}
-            </h1>
-            {data.listing.paging.total > 0 ? (
-              <p className="mt-2 text-xs text-muted-foreground">
-                {t(
-                  `${data.listing.paging.total} articles`,
-                  `${data.listing.paging.total}টি লেখা`,
-                )}
+      {/* The cards' category chips are STORE links here: inside the
+          merchant's storefront they point at
+          `/store/<slug>/blog/category/<term>`, the merchant-scoped archive
+          (Batch B, gap 3), not the platform-wide taxonomy route. */}
+      <StoreSlugContext.Provider value={data.merchantSlug}>
+        <BlogArchiveTheme
+          feed={{
+            articles: data.listing.articles,
+            facets: data.listing.facets,
+            paging: data.listing.paging,
+            basePath: (page: number) =>
+              page > 1 ? `${basePath}?page=${page}` : basePath,
+          }}
+          ast={data.chrome?.ast ?? null}
+          tokens={data.chrome?.tokens ?? null}
+          themeKey={data.chrome?.themeKey ?? null}
+          header={
+            <header className="mb-8 border-b border-border pb-6">
+              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                {merchantName}
               </p>
-            ) : null}
-          </header>
-        }
-        empty={
-          <p className="rounded-lg border border-dashed border-border px-4 py-12 text-center text-sm text-muted-foreground">
-            {data.listing.paging.overrun
-              ? t("That page does not exist yet.", "এই পেজটি এখনো নেই।")
-              : t(
-                  "No articles published yet.",
-                  "এখনো কোনো লেখা প্রকাশ করা হয়নি।",
-                )}
-          </p>
-        }
-      />
+              <h1 className="mt-1 font-bangla-display text-3xl font-semibold">
+                {t("Blog", "ব্লগ")}
+              </h1>
+              {data.listing.paging.total > 0 ? (
+                <p className="mt-2 text-xs text-muted-foreground">
+                  {t(
+                    `${data.listing.paging.total} articles`,
+                    `${data.listing.paging.total}টি লেখা`,
+                  )}
+                </p>
+              ) : null}
+            </header>
+          }
+          empty={
+            <p className="rounded-lg border border-dashed border-border px-4 py-12 text-center text-sm text-muted-foreground">
+              {data.listing.paging.overrun
+                ? t("That page does not exist yet.", "এই পেজটি এখনো নেই।")
+                : t(
+                    "No articles published yet.",
+                    "এখনো কোনো লেখা প্রকাশ করা হয়নি।",
+                  )}
+            </p>
+          }
+        />
+      </StoreSlugContext.Provider>
     </>
   );
 }

@@ -233,6 +233,7 @@ import { Route as ApiPublicPaymentsLiveProviderRouteImport } from './routes/api/
 import { Route as ApiPublicPaymentsMockProviderRouteImport } from './routes/api/public/payments/mock/$provider'
 import { Route as ApiPublicPaymentsPlatformProviderRouteImport } from './routes/api/public/payments/platform/$provider'
 import { Route as ApiPublicPaymentsPlatformReturnRouteImport } from './routes/api/public/payments/platform/return'
+import { Route as StoreSlugBlogCategoryTermSlugRouteImport } from './routes/store.$slug.blog.category.$termSlug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -1461,6 +1462,12 @@ const ApiPublicPaymentsPlatformReturnRoute =
     path: '/api/public/payments/platform/return',
     getParentRoute: () => rootRouteImport,
   } as any)
+const StoreSlugBlogCategoryTermSlugRoute =
+  StoreSlugBlogCategoryTermSlugRouteImport.update({
+    id: '/store/$slug/blog/category/$termSlug',
+    path: '/store/$slug/blog/category/$termSlug',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -1686,6 +1693,7 @@ export interface FileRoutesByFullPath {
   '/api/public/payments/mock/$provider': typeof ApiPublicPaymentsMockProviderRoute
   '/api/public/payments/platform/$provider': typeof ApiPublicPaymentsPlatformProviderRoute
   '/api/public/payments/platform/return': typeof ApiPublicPaymentsPlatformReturnRoute
+  '/store/$slug/blog/category/$termSlug': typeof StoreSlugBlogCategoryTermSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -1909,6 +1917,7 @@ export interface FileRoutesByTo {
   '/api/public/payments/mock/$provider': typeof ApiPublicPaymentsMockProviderRoute
   '/api/public/payments/platform/$provider': typeof ApiPublicPaymentsPlatformProviderRoute
   '/api/public/payments/platform/return': typeof ApiPublicPaymentsPlatformReturnRoute
+  '/store/$slug/blog/category/$termSlug': typeof StoreSlugBlogCategoryTermSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -2136,6 +2145,7 @@ export interface FileRoutesById {
   '/api/public/payments/mock/$provider': typeof ApiPublicPaymentsMockProviderRoute
   '/api/public/payments/platform/$provider': typeof ApiPublicPaymentsPlatformProviderRoute
   '/api/public/payments/platform/return': typeof ApiPublicPaymentsPlatformReturnRoute
+  '/store/$slug/blog/category/$termSlug': typeof StoreSlugBlogCategoryTermSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -2363,6 +2373,7 @@ export interface FileRouteTypes {
     | '/api/public/payments/mock/$provider'
     | '/api/public/payments/platform/$provider'
     | '/api/public/payments/platform/return'
+    | '/store/$slug/blog/category/$termSlug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -2586,6 +2597,7 @@ export interface FileRouteTypes {
     | '/api/public/payments/mock/$provider'
     | '/api/public/payments/platform/$provider'
     | '/api/public/payments/platform/return'
+    | '/store/$slug/blog/category/$termSlug'
   id:
     | '__root__'
     | '/'
@@ -2812,6 +2824,7 @@ export interface FileRouteTypes {
     | '/api/public/payments/mock/$provider'
     | '/api/public/payments/platform/$provider'
     | '/api/public/payments/platform/return'
+    | '/store/$slug/blog/category/$termSlug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -2925,6 +2938,7 @@ export interface RootRouteChildren {
   ApiPublicPaymentsMockProviderRoute: typeof ApiPublicPaymentsMockProviderRoute
   ApiPublicPaymentsPlatformProviderRoute: typeof ApiPublicPaymentsPlatformProviderRoute
   ApiPublicPaymentsPlatformReturnRoute: typeof ApiPublicPaymentsPlatformReturnRoute
+  StoreSlugBlogCategoryTermSlugRoute: typeof StoreSlugBlogCategoryTermSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -4497,6 +4511,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicPaymentsPlatformReturnRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/store/$slug/blog/category/$termSlug': {
+      id: '/store/$slug/blog/category/$termSlug'
+      path: '/store/$slug/blog/category/$termSlug'
+      fullPath: '/store/$slug/blog/category/$termSlug'
+      preLoaderRoute: typeof StoreSlugBlogCategoryTermSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -4942,6 +4963,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicPaymentsPlatformProviderRoute:
     ApiPublicPaymentsPlatformProviderRoute,
   ApiPublicPaymentsPlatformReturnRoute: ApiPublicPaymentsPlatformReturnRoute,
+  StoreSlugBlogCategoryTermSlugRoute: StoreSlugBlogCategoryTermSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -34,9 +34,12 @@ import {
 } from "@/lib/builder-ast";
 import { parseArchiveKind, type ArchiveContext } from "@/lib/archive-context";
 import { BlogFeedProvider, type BlogFeed } from "@/components/builder/blog";
+import { CollectionQueryProvider } from "@/components/builder/collection";
 import { ArticleGrid, Pager } from "@/components/store/BlogList";
 import { BlogArchiveTheme } from "@/components/store/BlogArchiveTheme";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
+import { StoreSlugContext } from "@/lib/store-slug-context";
+import { normalizeSearchParams } from "@/lib/storefront-search";
 
 export type ArchiveViewProps = {
   /** The requested archive kind — validated against the closed vocabulary. */
@@ -51,10 +54,27 @@ export type ArchiveViewProps = {
   empty: ReactNode;
   /** The theme's templates, when a theme IS resolved. */
   templates?: Partial<Record<TemplateKey, ThemeAst>> | null;
+  /**
+   * The `archive` composition, resolved SERVER-SIDE through
+   * `resolveTemplateForHost` (`mode: "published"`, `host: "storefront"`)
+   * by the merchant-scoped route (`/store/<slug>/blog/category/<termSlug>`).
+   * Preferred over the client-side `resolveArchiveBody(templates)` when
+   * present; the store-less routes pass neither and keep the platform grid.
+   */
+  ast?: ThemeAst | null;
   /** The theme's tokens, when a theme IS resolved. */
   tokens?: ThemeTokens | null;
   /** The merchant theme key, when a theme IS resolved. */
   themeKey?: string | null;
+  /** The store slug when this archive serves a merchant storefront. */
+  storeSlug?: string | null;
+  /**
+   * The merchant's DISPLAY name — the declined-template frame labels
+   * itself in the store's own voice (`ThemeChrome`'s
+   * `storeName ?? storeSlug`). Absent in themeless and store-less hosts,
+   * where no frame renders.
+   */
+  storeName?: string | null;
 };
 
 /**
@@ -74,19 +94,13 @@ const ARCHIVE_SLOTS: Partial<Record<SectionType, ReactNode>> = {
 /**
  * The theme's authored archive body, or null.
  *
- * The BASE key only, for now. The closed variant vocabulary DOES exist
- * (`TEMPLATE_VARIANTS` carries `archive: [category, tag, author]`,
- * `src/lib/template-variants.ts`), and `resolveVariantAst` is the one
- * resolver that honours it — but the archive's three variants are reached
- * through the **deferred merchant-scoped route**
- * (`/store/<slug>/blog/category/<slug>` and its two siblings), which does
- * not exist yet. The three store-less routes that DO exist today
- * (`/blog/category/$slug`, `/blog/tag/$slug`, `/blog/author/$slug`) carry no
- * store subject, resolve no theme and render the platform's grid, so there
- * is no variant for them to resolve. When the merchant-scoped route lands,
- * THIS function must resolve the VARIANT first and the base second — the
- * order `resolveVariantAst` already implements — or a theme's
- * `archive_category` composition would never render.
+ * The BASE key only — this client-side path serves the three store-less
+ * routes, which carry no store subject and resolve no theme. The VARIANT
+ * (`archive_category`, and its tag/author siblings when they land) is
+ * resolved SERVER-SIDE through `resolveTemplateForHost` by the
+ * merchant-scoped route and arrives here through the `ast` prop — a
+ * stored-AST host never ships the theme's template map to the client to
+ * re-resolve it.
  */
 function resolveArchiveBody(
   templates: Partial<Record<TemplateKey, ThemeAst>> | null | undefined,
@@ -115,8 +129,11 @@ export function ArchiveView({
   header,
   empty,
   templates,
+  ast: composedAst,
   tokens,
   themeKey,
+  storeSlug,
+  storeName,
 }: ArchiveViewProps) {
   // The kind vocabulary is CLOSED. An unknown kind is an explicit state —
   // never the homepage, never a listing of some other kind.
@@ -143,46 +160,77 @@ export function ArchiveView({
     );
   }
 
-  const ast = resolveArchiveBody(templates);
+  // The server-resolved composition wins (the merchant-scoped route resolves
+  // it through `resolveTemplateForHost`); the client-side resolve stays for
+  // the store-less routes' legacy `templates` path.
+  const ast = composedAst ?? resolveArchiveBody(templates);
+  // The collection query the theme's `pagination` widget reads: the
+  // ARCHIVE's own total, base path and page size, never the search demo's
+  // 24 — a pager windowed at the wrong size links past the real last page
+  // (gap 4).
+  const collectionQuery = {
+    params: normalizeSearchParams({ page: feed.paging.page }),
+    total: feed.paging.total,
+    basePath: feed.basePath(1),
+    pageSize: feed.paging.pageSize,
+  };
   if (!ast) {
     // The platform's grid — DELEGATED, not re-implemented, so the fallback
-    // is byte-identical to the grid the platform has always served.
+    // is byte-identical to the grid the platform has always served. The
+    // store-slug provider only re-points the cards' category chips at the
+    // merchant-scoped archive; no ThemeChrome here, so a themeless store
+    // keeps the grid (never the StoreWelcome frame).
     return (
       <BlogFeedProvider value={feed}>
-        <BlogArchiveTheme
-          feed={feed}
-          header={header}
-          empty={empty}
-          themeKey={themeKey ?? null}
-        />
+        <CollectionQueryProvider value={collectionQuery}>
+          <StoreSlugContext.Provider value={storeSlug ?? null}>
+            <BlogArchiveTheme
+              feed={feed}
+              header={header}
+              empty={empty}
+              themeKey={themeKey ?? null}
+            />
+          </StoreSlugContext.Provider>
+        </CollectionQueryProvider>
       </BlogFeedProvider>
     );
   }
 
   // The theme's archive composition, around the SAME records the grid
-  // would have rendered.
+  // would have rendered. `storeSlug` enters ThemeChrome only HERE — with a
+  // composed body the store is themed, so the storefront side effects
+  // (store linkBase, per-store language scope, the live-cart scope, the
+  // SectionRenderer slug context) are standard storefront behaviour.
   return (
     <BlogFeedProvider value={feed}>
-      <ThemeChrome
-        template="archive"
-        ast={ast}
-        tokens={tokens ?? null}
-        themeKey={themeKey ?? null}
-        chrome={<div className="mx-auto max-w-6xl px-4 pt-12">{header}</div>}
-        ownsPrimary
-        containerClassName="mx-auto max-w-6xl px-4 py-8"
-        contextSlots={ARCHIVE_SLOTS}
-        fallback={
-          feed.articles.length ? (
-            <>
-              <ArticleGrid articles={feed.articles} />
-              <Pager paging={feed.paging} basePath={feed.basePath} />
-            </>
-          ) : (
-            empty
-          )
-        }
-      />
+      <CollectionQueryProvider value={collectionQuery}>
+        <StoreSlugContext.Provider value={storeSlug ?? null}>
+          <ThemeChrome
+            template="archive"
+            ast={ast}
+            tokens={tokens ?? null}
+            themeKey={themeKey ?? null}
+            storeSlug={storeSlug ?? undefined}
+            storeName={storeName ?? undefined}
+            chrome={
+              <div className="mx-auto max-w-6xl px-4 pt-12">{header}</div>
+            }
+            ownsPrimary
+            containerClassName="mx-auto max-w-6xl px-4 py-8"
+            contextSlots={ARCHIVE_SLOTS}
+            fallback={
+              feed.articles.length ? (
+                <>
+                  <ArticleGrid articles={feed.articles} />
+                  <Pager paging={feed.paging} basePath={feed.basePath} />
+                </>
+              ) : (
+                empty
+              )
+            }
+          />
+        </StoreSlugContext.Provider>
+      </CollectionQueryProvider>
     </BlogFeedProvider>
   );
 }

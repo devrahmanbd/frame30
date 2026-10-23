@@ -17,6 +17,7 @@ import {
   activeFilters,
   clearFacets,
   facetHref,
+  PAGE_SIZE,
   pageCount,
   pageWindow,
   toggleFacet,
@@ -40,6 +41,8 @@ export type CollectionQuery = {
   total: number;
   /** Path the facet links point at, e.g. `/store/acme/search`. */
   basePath: string;
+  /** Page size the listing windows at. Absent = the search default (24). */
+  pageSize?: number;
   /** Supplied by the route; absent in the studio, where links are inert. */
   navigate?: (next: SearchParams) => void;
 };
@@ -537,11 +540,16 @@ const ResultToolbar: WidgetComponent = (ctx) => {
 const Pagination: WidgetComponent = (ctx) => {
   const { str, locale } = ctx;
   const { query, href, go } = useFacetLinks();
-  const last = pageCount(query.total);
+  // The listing's OWN page size, when the host supplies one (the archive
+  // windows at 12, the search at 24): the pager and the URL clamp must
+  // agree with the window that produced `total`, or page N links past the
+  // real last page.
+  const pageSize = query.pageSize ?? PAGE_SIZE;
+  const last = pageCount(query.total, pageSize);
   if (last <= 1) return null;
   const current = Math.min(query.params.page, last);
-  const prev = withPage(query.params, current - 1, query.total);
-  const next = withPage(query.params, current + 1, query.total);
+  const prev = withPage(query.params, current - 1, query.total, pageSize);
+  const next = withPage(query.params, current + 1, query.total, pageSize);
   const mode = str("mode") || "numbered";
 
   const link = (
@@ -552,14 +560,15 @@ const Pagination: WidgetComponent = (ctx) => {
   ) => (
     <a
       key={`${label}-${page}`}
-      href={href(withPage(query.params, page, query.total))}
+      href={href(withPage(query.params, page, query.total, pageSize))}
       aria-current={current2 ? "page" : undefined}
       aria-disabled={disabled ? "true" : undefined}
       onClick={
         query.navigate
           ? (e) => {
               e.preventDefault();
-              if (!disabled) go(withPage(query.params, page, query.total));
+              if (!disabled)
+                go(withPage(query.params, page, query.total, pageSize));
             }
           : undefined
       }

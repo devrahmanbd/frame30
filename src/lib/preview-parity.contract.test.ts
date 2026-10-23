@@ -23,11 +23,13 @@
  *    route-owned body slot the article's title, excerpt, cover and body
  *    flow through. The blog LISTING grants exactly the pack.
  *
- * The `archive` template is the one case with NO live production route (the
- * three platform taxonomy surfaces are store-less and keep the platform
- * grid), so its preview grant set must be EXACTLY the archive body's six
- * functional slots — the set the deferred merchant-scoped route must grant
- * when it lands.
+ * The `archive` template's production host is the shared archive host
+ * (`ArchiveView`), which the merchant-scoped route
+ * (`/store/<slug>/blog/category/<termSlug>`) renders with the
+ * server-resolved `archive_category` composition; the three store-less
+ * taxonomy routes keep the platform grid. The preview's archive grant set
+ * must be EXACTLY the archive body's six functional slots — the set that
+ * host grants.
  */
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
@@ -44,6 +46,7 @@ const PREVIEW = read("components", "store", "ThemePreviewFrame.tsx");
 const BLOG_HOST = read("components", "store", "BlogArchiveTheme.tsx");
 const PAGE_VIEW = read("components", "store", "PageView.tsx");
 const SONGOSKRITI = read("lib", "themes", "songoskriti", "preview.ts");
+const ARCHIVE_VIEW = read("components", "store", "ArchiveView.tsx");
 
 /** True when the name is a catalogue widget — i.e. a grantable slot. */
 function isSlot(name: string): boolean {
@@ -216,10 +219,8 @@ describe("the preview and the storefront grant the SAME slots", () => {
     expect(preview).toEqual(production);
   });
 
-  it("archive — no live production route, so the preview's grant set IS the contract", () => {
+  it("archive — the preview and the shared archive host grant the SAME six", () => {
     const preview = grantedSlots(PREVIEW, "const archiveSlots =");
-    // EXACTLY the archive body's six functional slots — the set the
-    // deferred merchant-scoped route must grant when it lands.
     const six = [
       "blog_archive",
       "blog_pager",
@@ -229,6 +230,11 @@ describe("the preview and the storefront grant the SAME slots", () => {
       "pagination",
     ];
     expect(preview).toEqual(six);
+    // The production side: the shared archive host grants exactly the same
+    // six — the merchant-scoped route renders THIS host with its
+    // server-resolved `archive_category` composition (Batch B, gap 3), so
+    // the two hosts can no longer drift.
+    expect(grantedSlots(ARCHIVE_VIEW, "const ARCHIVE_SLOTS")).toEqual(six);
     // … and the theme's own archive body uses EXACTLY those six, so the
     // grant set is neither wider nor narrower than the body.
     const at = SONGOSKRITI.indexOf('case "archive":');
