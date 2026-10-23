@@ -188,38 +188,56 @@ describe("songoskriti search template composition", () => {
     );
     expect(propKeys.get("category_header")).toEqual([
       "body",
+      "body_bn",
       "description",
       "description_bn",
       "heading",
+      "heading_bn",
       "homeLabel",
+      "homeLabel_bn",
       "text",
       "text_bn",
     ]);
     expect(propKeys.get("result_toolbar")).toEqual([
       "countLabel",
+      "countLabel_bn",
       "filtersLabel",
+      "filtersLabel_bn",
       "sortDefault",
       "sortLabel",
+      "sortLabel_bn",
     ]);
     expect(propKeys.get("facet_sidebar")).toEqual([
       "collapsed",
       "heading",
+      "heading_bn",
       "limit",
       "showCategories",
       "showKinds",
     ]);
-    expect(propKeys.get("filter_chips")).toEqual(["clearLabel"]);
+    expect(propKeys.get("filter_chips")).toEqual([
+      "clearLabel",
+      "clearLabel_bn",
+    ]);
     expect(propKeys.get("product_grid")).toEqual([
       "columns",
       "heading",
+      "heading_bn",
       "limit",
       "skin",
     ]);
-    expect(propKeys.get("pagination")).toEqual(["mode", "pageLabel"]);
+    expect(propKeys.get("pagination")).toEqual([
+      "mode",
+      "pageLabel",
+      "pageLabel_bn",
+    ]);
     expect(propKeys.get("empty_state")).toEqual([
       "body",
+      "body_bn",
       "clearLabel",
+      "clearLabel_bn",
       "heading",
+      "heading_bn",
       "limit",
     ]);
 

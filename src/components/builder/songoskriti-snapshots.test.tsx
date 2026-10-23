@@ -89,6 +89,7 @@ const FIXED_FOOTER_PROPS: Record<string, PropValue> = {
   paymentsHeading: "Payment methods",
   paymentsHeading_bn: "পেমেন্ট মাধ্যম",
   paymentsMarks: "bKash, Nagad, Rocket, Visa, Mastercard, Cash on Delivery",
+  paymentsMarks_bn: "বিকাশ, নগদ, রকেট, ভিসা, মাস্টারকার্ড, ক্যাশ অন ডেলিভারি",
   c1Title: "Shop",
   c1Title_bn: "কেনাকাটা",
   c1Links: [
@@ -177,11 +178,17 @@ const FIXED_LOCATOR_PROPS: Record<string, PropValue> = {
   images:
     "/ph/songoskriti/cat-women.png, /ph/songoskriti/cat-men.jpg, /ph/songoskriti/hero-festive.jpg",
   s1Name: "Uttara Flagship",
+  s1Name_bn: "উত্তরা ফ্ল্যাগশিপ",
   s1Hours: "Open 10am – 9pm daily",
+  s1Hours_bn: "প্রতিদিন সকাল ১০টা – রাত ৯টা",
   s2Name: "Gulshan Showroom",
+  s2Name_bn: "গুলশান শোরুম",
   s2Hours: "Open 10am – 9pm daily",
+  s2Hours_bn: "প্রতিদিন সকাল ১০টা – রাত ৯টা",
   s3Name: "Chattogram Store",
+  s3Name_bn: "চট্টগ্রাম স্টোর",
   s3Hours: "Open 10am – 8pm daily",
+  s3Hours_bn: "প্রতিদিন সকাল ১০টা – রাত ৮টা",
 };
 
 const FIXED_UGC_PROPS: Record<string, PropValue> = {

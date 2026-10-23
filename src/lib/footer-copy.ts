@@ -37,6 +37,14 @@ export const NEWSLETTER = {
 export const PAYMENT_MARKS =
   "bKash, Nagad, Rocket, Visa, Mastercard, Cash on Delivery";
 
+/**
+ * The বাংলা leg of the payment-marks line. Theme-authored only: the theme's
+ * `footer_sitemap` carries it as `paymentsMarks_bn` (the EN side above stays
+ * the shared constant the generic storefront fallback reads).
+ */
+export const PAYMENT_MARKS_BN =
+  "বিকাশ, নগদ, রকেট, ভিসা, মাস্টারকার্ড, ক্যাশ অন ডেলিভারি";
+
 export const COLOPHON = {
   body: "Flagships: Uttara · Gulshan · Chattogram — open 10am to 9pm.",
   body_bn: "ফ্ল্যাগশিপ: উত্তরা · গুলশান · চট্টগ্রাম — সকাল ১০টা থেকে রাত ৯টা।",

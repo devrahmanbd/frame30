@@ -113,6 +113,7 @@ export function songoskritiPreviewSource(
               // storefront would show the catalogue's default instead of the
               // theme's own title.
               heading: "New Arrivals",
+              heading_bn: "নতুন এসেছে",
               text: "New Arrivals",
               text_bn: "নতুন এসেছে",
               description:
@@ -230,11 +231,13 @@ export function songoskritiPreviewSource(
           return [
             s("blog_terms", {
               heading: "Browse the journal",
+              heading_bn: "জার্নাল দেখুন",
               style: "pills",
               showCounts: true,
             }),
             s("blog_archive", {
               heading: "From the journal",
+              heading_bn: "জার্নাল থেকে",
               layout: "magazine",
               columns: 3,
               limit: 9,
@@ -278,6 +281,7 @@ export function songoskritiPreviewSource(
               description_bn: "",
               showBreadcrumb: true,
               homeLabel: "Home",
+              homeLabel_bn: "হোম",
             }),
             s("blog_terms", {
               heading: "Browse the archive",
@@ -296,10 +300,17 @@ export function songoskritiPreviewSource(
               showMeta: true,
             }),
             s("blog_pager", { align: "center" }),
-            s("pagination", { mode: "numbered", pageLabel: "Page" }),
+            s("pagination", {
+              mode: "numbered",
+              pageLabel: "Page",
+              pageLabel_bn: "পৃষ্ঠা",
+            }),
             s("empty_state", {
               heading: "Nothing in this archive yet",
+              heading_bn: "এই আর্কাইভে এখনও কিছু নেই",
               body: "Published articles in this category, tag or author archive appear here.",
+              body_bn:
+                "এই ক্যাটাগরি, ট্যাগ বা লেখক আর্কাইভের প্রকাশিত প্রবন্ধ এখানে দেখা যাবে।",
               clearLabel: "",
               showSuggestions: false,
               limit: 4,
@@ -323,17 +334,25 @@ export function songoskritiPreviewSource(
               description_bn:
                 "প্রতিটি ফলাফলের দাম ও স্টক দোকানই নির্ধারণ করে — ফিল্টার শুধু প্রকাশিত পণ্য ফলাক করে।",
               heading: "Search the collection",
+              heading_bn: "কালেকশনে খুঁজুন",
               body: "Every result is priced and stocked by the store — filters only narrow what is already published.",
+              body_bn:
+                "প্রতিটি ফলাফলের দাম ও স্টক দোকানই নির্ধারণ করে — ফিল্টার শুধু প্রকাশিত পণ্য ফলাক করে।",
               homeLabel: "Home",
+              homeLabel_bn: "হোম",
             }),
             s("result_toolbar", {
               countLabel: "products",
+              countLabel_bn: "পণ্য",
               filtersLabel: "Filters",
+              filtersLabel_bn: "ফিল্টার",
               sortLabel: "Sort",
+              sortLabel_bn: "সাজান",
               sortDefault: "Featured",
             }),
             s("facet_sidebar", {
               heading: "Filters",
+              heading_bn: "ফিল্টার",
               limit: 12,
               collapsed: false,
               // Decision Gate **G2 (a)** — the storefront GRANTS the facet
@@ -351,18 +370,30 @@ export function songoskritiPreviewSource(
               showCategories: true,
               showKinds: true,
             }),
-            s("filter_chips", { clearLabel: "Clear all" }),
+            s("filter_chips", {
+              clearLabel: "Clear all",
+              clearLabel_bn: "সব মুছুন",
+            }),
             s("product_grid", {
               heading: "Results",
+              heading_bn: "ফলাফল",
               limit: 24,
               columns: 4,
               skin: "cards",
             }),
-            s("pagination", { mode: "numbered", pageLabel: "Page" }),
+            s("pagination", {
+              mode: "numbered",
+              pageLabel: "Page",
+              pageLabel_bn: "পৃষ্ঠা",
+            }),
             s("empty_state", {
               heading: "Nothing matches those filters",
+              heading_bn: "এই ফিল্টারে কোনো ফল মেলেনি",
               body: "Try a shorter word, or clear a filter to widen the results.",
+              body_bn:
+                "ছোট শব্দে খুঁজে দেখুন, বা একটি ফিল্টার সরিয়ে ফলাফল বাড়ান।",
               clearLabel: "Clear all filters",
+              clearLabel_bn: "সব ফিল্টার মুছুন",
               limit: 4,
             }),
           ];
@@ -418,6 +449,7 @@ export function songoskritiPreviewSource(
                   children: [
                     s("cart_summary", {
                       heading: "Order summary",
+                      heading_bn: "অর্ডার সারসংক্ষেপ",
                       parts: "subtotal,discount,shipping,vat,total",
                     }),
                   ],
@@ -440,6 +472,7 @@ export function songoskritiPreviewSource(
             s("heading", { text: "Checkout", text_bn: "চেকআউট" }),
             s("checkout_steps", {
               heading: "Checkout progress",
+              heading_bn: "চেকআউট ধাপ",
               activeStep: 2,
               // The trail's own arrangement: the step names, then the marker
               // of where the shopper is, then the links back to the completed
@@ -483,6 +516,7 @@ export function songoskritiPreviewSource(
                     }),
                     s("payment_icons", {
                       heading: "We accept",
+                      heading_bn: "আমরা পেমেন্ট গ্রহণ করি",
                       marks:
                         "bKash, Nagad, Rocket, Visa, Mastercard, Cash on delivery",
                     }),
@@ -493,6 +527,7 @@ export function songoskritiPreviewSource(
                   children: [
                     s("cart_summary", {
                       heading: "Order summary",
+                      heading_bn: "অর্ডার সারসংক্ষেপ",
                       parts: "subtotal,discount,shipping,vat,total",
                     }),
                   ],
@@ -572,11 +607,13 @@ export function songoskritiPreviewSource(
           return [
             s("blog_terms", {
               heading: "Browse the journal",
+              heading_bn: "জার্নাল দেখুন",
               style: "pills",
               showCounts: true,
             }),
             s("blog_archive", {
               heading: "From the journal",
+              heading_bn: "জার্নাল থেকে",
               layout: "magazine",
               columns: 3,
               limit: 9,
@@ -597,6 +634,7 @@ export function songoskritiPreviewSource(
             // would render the engine's synthetic sample rows.
             s("blog_archive", {
               heading: "More from the journal",
+              heading_bn: "জার্নাল থেকে আরও",
               layout: "magazine",
               columns: 3,
               limit: 3,
@@ -607,8 +645,12 @@ export function songoskritiPreviewSource(
             // The newsletter — the theme's own engagement block.
             s("newsletter", {
               heading: "From the journal, weekly",
+              heading_bn: "সাপ্তাহিক জার্নাল",
               body: "One letter a week: new stories, care notes and what is coming.",
+              body_bn:
+                "সপ্তাহে একটি চিঠি: নতুন গল্প, যত্নের পরামর্শ ও সামনে যা আসছে।",
               buttonLabel: "Subscribe",
+              buttonLabel_bn: "সাবস্ক্রাইব",
             }),
           ];
         default:

@@ -17,6 +17,7 @@ import {
   COLOPHON,
   NEWSLETTER,
   PAYMENT_MARKS,
+  PAYMENT_MARKS_BN,
   STATEMENT,
 } from "../../footer-copy";
 import { withSongoskritiDefaults } from "./skins";
@@ -31,7 +32,7 @@ export type FooterSectionBuilder = (
 export const BRAND_NAME = "Songoskriti";
 export const BRAND_NAME_BN = "সংস্কৃতি";
 
-export { COLOPHON, NEWSLETTER, PAYMENT_MARKS, STATEMENT };
+export { COLOPHON, NEWSLETTER, PAYMENT_MARKS, PAYMENT_MARKS_BN, STATEMENT };
 
 export type FallbackColumn = {
   title: string;
@@ -167,6 +168,7 @@ export function buildSongoskritiFooter(s: FooterSectionBuilder): Section[] {
       paymentsHeading: PAYMENTS_HEADING,
       paymentsHeading_bn: PAYMENTS_HEADING_BN,
       paymentsMarks: PAYMENT_MARKS,
+      paymentsMarks_bn: PAYMENT_MARKS_BN,
       c1Title: FALLBACK_COLUMNS[0]!.title,
       c1Title_bn: FALLBACK_COLUMNS[0]!.title_bn,
       c1Links: FALLBACK_COLUMNS[0]!.links,
