@@ -6448,3 +6448,24 @@ And the §(o.6.5) record's own two: `ArchiveView`'s composed-branch `ThemeChrome
 **Meter's file set:** `translationCoverage` runs ONLY over the publish input's template map (server) and the editor's live map (studio meter) — there is no separate copy table the meter counts; the uncovered set above is the complete set the gate sees.
 
 **Parity stills:** the theme's copy appears in the stills, so they WILL change again; Batch D must re-classify and re-freeze them. They are NOT re-frozen by Batch C.
+
+### (q) §(p)'s batch lands — the Batch C code commit, verification, and the report (dated 2026-10-23, after the code)
+
+**The code commit is `53206b8a`** — `themes(songoskriti): author all remaining Bengali _bn twins to clear translation publish gate` — **7 files, +107/−8**: `src/lib/themes/songoskriti/preview.ts` (search/archive/blog/cart/checkout/blog_listing/blog_article `_bn` twins + the collection category_header's declared `heading_bn`), `src/lib/themes/songoskriti/homepage.ts` (craft_story/split_feature CTA twins, finder_row o1–o7, store_locator s1–s3), `src/lib/themes/songoskriti/footer.ts` + `src/lib/footer-copy.ts` (NEW `PAYMENT_MARKS_BN`, passed as `paymentsMarks_bn` on the theme's footer menus only — passed as `paymentsMarks_bn` on the theme's footer menus only — `PAYMENT_MARKS` (EN) and `StoreFooterMenus` untouched), `src/lib/themes/songoskriti/search-template.test.ts` (the exact prop-key set pins extended with the new `_bn` keys), and `src/components/builder/songoskriti-snapshots.test.tsx` + its `__snapshots__/**.snap` (fixture pins extended; the footer fixture `FIXED_FOOTER_PROPS` gains `paymentsMarks_bn`, `FIXED_LOCATOR_PROPS` gains the s1–s3 twins). English copy is unchanged on every line the edit touched.
+
+**Measured AFTER — the gate's own functions re-run on the seeded theme source:** **270 ok / 270 (0 fallback) = 100 %** — §(p)'s planned BEFORE (207/270 = 77 %) → AFTER is landed exactly; the `theme.publish_blocked codes=translation` refusal clears the floor with zero fallback pairs remaining.
+
+**Verification, measured by running:**
+
+- `src/lib/themes/songoskriti` full suite: **31 files / 356 tests pass**; combined with the re-pinned builder files the run reports **33 files / 418 tests pass**.
+- The builder batch (`songoskriti.test`, `songoskriti-port-freeze`, `songoskriti-snapshots`, `songoskriti-templates`, `heritage-*`, `footer-locale`, `theme-locale-sinks`) and `src/lib/footer-sitemap-bitext.test.ts`: all green.
+- Adjacent: `preview-parity.contract`, `preview-safety.contract` (22), `pipeline-resolver` (20), `checkout-shell.contract`, `frame30-source-install`, `songoskriti-preview-compositions` (8) — **6 files / 92 tests pass**.
+- `tsgo --noEmit` exits 0; `eslint` over all touched paths reports 0 problems; `node scripts/doc-gate.mjs` reports **findings: 0** (4 known suppressions).
+
+**The §(p)-recorded refusals hold:** platform chrome (`PREVIEW_DISABLED_MESSAGE`, the preview marker), the `UNSUPPORTED_TEMPLATE_*` English-only contract, the 168 unauthored empty slots, the `text`/`text_bn` legacy alias, and the EN `paymentsMarks` legs were NOT touched. The two bn-locale `toMatchSnapshot` mismatches that surfaced (footer, store-locator) were updated with `-u` — the snapshots now assert the NEW Bengali copy, which §(p)'s ruling demands; that is an assertion-strengthening update, not a weakening.
+
+**The batch report** (the full 48-unique-string EN→বাংলা pair table with slot multiplicities, the refusal inventory, verification evidence, and the Batch D handoff) lives at `.superpowers/sdd/2026-10-22-frame30-dynamic-themes/batch-c-report.md` — gitignored by design, as Batches A/B's reports are.
+
+**Parity stills are NOT re-frozen by this batch** (§(p)'s declaration stands): they show stale Bengali visuals until Batch D re-classifies and re-freezes them.
+
+**Boundary:** the three churn files (`.artifacts/e2e/playwright-report/index.html`, `ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`) and the untracked `.output-snapshots/` are unstaged, unmodified and untouched; nothing pushed or deployed; no dependency added; no browser or e2e lane run.
