@@ -6318,3 +6318,85 @@ with:
 ### (o.6.4) Boundary of the correction
 
 Only `src/lib/store-blog-archive.server.ts` (NEW) and `src/lib/store-blog-archive.functions.ts`'s sibling route test (NEW) change. `ArchiveView` is NOT re-edited — §(o.3.3)'s host stands as recorded and staged. No tracked-but-untouched file is touched. Everything else in this correction is measured against the staged tree at `a7210575` before it is applied.
+
+### (o.6.5) The declined frame's label must read the STORE'S DISPLAY NAME — `storeName` threaded through `ArchiveView` (dated 2026-10-23, before the edit)
+
+*(Append-only, in the Batch A corrective-hunk form §(n.6) established, like §(o.6) before it: a deviation found against the applied work is written here, with its exact old → new hunk, BEFORE the hunk is applied.)*
+
+**What executing the §(o.6.3) legs found.** The declined leg asserted the label `"Songoskriti — this theme does not design the Archive page"`, and it FAILED — the rendered frame reads **"songoskriti — this theme…"**, the raw slug. `ThemeChrome`'s label takes `(storeName ?? storeSlug)` (`src/components/store/ThemeChrome.tsx`:450-452), and `ArchiveView` — whose only §7-prohibited host change is the staged §(o.3.3) — ships no `storeName` to it. No production storefront host passes `storeName` either (the article, collection, search, cart, checkout and account routes pass `storeSlug` only), so every declined frame in the programme so far has been speaking the slug. The §(o.6.3) leg pinned the merchant's own name — "Songoskriti", the name the theme's footers and the `StoreHeader` mount both carry (`footer.ts`'s `BRAND_NAME`, the route's `StoreHeader name={data.merchant.name}`) — because a shopper-facing `data-fq-theme-state` label should read the store the way the store shows itself, not a URL segment. Also §(o)'s owner-gate legs (§(o.6.3) case 2) are therefore themselves the authority for thread-through.
+
+**The rule's shape.** The route already holds the display name (`data.merchant.name`, next to the `storeSlug` it already passes); `ArchiveView` mounts `ThemeChrome` in exactly one place (the composed branch); `ThemeChrome` already accepts `storeName`. So the threading is two one-line propagation props, no second voice is invented anywhere.
+
+**Where the hunk lands.** `src/components/store/ArchiveView.tsx` (the SAME file §(o.3.3) already escalated — a second round on an already-escalated file §(n.6)'s precedent covers, under the owner's standing instruction; the route `store.$slug.blog.category.$termSlug.tsx` is a NEW Batch-B file and needs no relaxation) and the leg's own test file (NEW).
+
+```diff
+  export type ArchiveViewProps = {
+    ...
+    /** The store slug when this archive serves a merchant storefront. */
+    storeSlug?: string | null;
++   /**
++    * The merchant's DISPLAY name — the declined-template frame labels
++    * itself in the store's own voice (`ThemeChrome`'s
++    * `storeName ?? storeSlug`). Absent in themeless and store-less hosts,
++    * where no frame renders.
++    */
++   storeName?: string | null;
+  };
+```
+
+```diff
+  export function ArchiveView({
+    kind,
+    context,
+    feed,
+    header,
+    empty,
+    templates,
+    ast: composedAst,
+    tokens,
+    themeKey,
+    storeSlug,
++   storeName,
+  }: ArchiveViewProps) {
+```
+
+```diff
+          <ThemeChrome
+            template="archive"
+            ast={ast}
+            tokens={tokens ?? null}
+            themeKey={themeKey ?? null}
+            storeSlug={storeSlug ?? undefined}
++           storeName={storeName ?? undefined}
+```
+
+`src/routes/store.$slug.blog.category.$termSlug.tsx`:
+
+```diff
+        tokens={data.tokens}
+        themeKey={data.themeKey}
+        storeSlug={data.merchant.slug}
++       storeName={data.merchant.name}
+```
+
+`src/routes/store.$slug.blog.category.$termSlug.test.tsx` — the wiring pins that the threaded props exist (in the §(o.4.4/§(o.4) wiring suites):
+
+```diff
+    expect(ROUTE).toContain("ast={data.ast}");
+    expect(ROUTE).toContain("storeSlug={data.merchant.slug}");
++   // The declined frame's label reads the store's DISPLAY name.
++   expect(ROUTE).toContain("storeName={data.merchant.name}");
+    expect(ROUTE).toContain("<StoreHeader");
+```
+
+```diff
+    expect(HOST).toContain("storeSlug={storeSlug ?? undefined}");
++   expect(HOST).toContain("storeName={storeName ?? undefined}");
+  });
+```
+
+and `renderHost` carries an optional `storeName` the Songoskriti and declined legs pass (`storeName: "Songoskriti"`), so the declined leg's label assertion stands as §(o.6.3) wrote it. The themeless/grid branches are untouched — no `ThemeChrome` there receives `storeName` from this host, so a themeless store's shape is unchanged.
+
+### (o.6.6) Boundary of the §(o.6.5) threading
+
+`ArchiveView.tsx` (already under §(o.3.3)'s escalation), the NEW route file and the NEW route test change. Nothing else. The declined copy's own test (`ThemeChrome.declined-copy.test.tsx`) already covers `storeName` in its third case and needs no change.
