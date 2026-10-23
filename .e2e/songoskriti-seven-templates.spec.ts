@@ -26,9 +26,11 @@ import { ensureSongoskritiActive, merchantCreds } from "./helpers-songoskriti";
  *
  * **The publish is asserted by its REAL outcome, not by a wish.** The
  * platform's publish gate refuses a theme whose authored copy is more than
- * 10% untranslated (`translationGate`, `src/lib/builder-guardrails.ts:166`),
- * and the shipped Songoskriti copy is **76%** translated — so the publish is
- * currently REFUSED with a named reason. This suite asserts the platform's
+ * 10% untranslated (`translationGate`, `src/lib/builder-guardrails.ts:166`);
+ * the gate's floor is 90 % and the shipped Songoskriti copy has measured
+ * below it — the exact measured value is recorded in the evidence record
+ * (`phase4-dynamic-themes-evidence.md`), so this comment self-corrects
+ * instead of quoting a stale number. This suite asserts the platform's
  * CONTRACT in both branches: a publish that succeeds must be visible on the
  * storefront, and a publish that is refused must leave the published pointer
  * untouched AND tell the merchant why. It never converts a refusal into a
@@ -54,6 +56,13 @@ const STORE = process.env["E2E_STORE_SLUG"]?.trim() || "frame19-demo";
 const PAGE_SLUG = process.env["E2E_PAGE_SLUG"]?.trim() || "our-story";
 /** The disposable blog term on the throwaway stack. */
 const TERM_SLUG = process.env["E2E_TERM_SLUG"]?.trim() || "handloom-heritage";
+
+/**
+ * The run's own token: every marker and layer name this journey writes is
+ * UNIQUE per run, so a marker an earlier run published can never satisfy
+ * this run's assertion (the dynamic-themes lane carries the identical const).
+ */
+const RUN = Date.now().toString(36);
 
 test.setTimeout(600_000);
 
@@ -119,6 +128,55 @@ async function insertSpacer(page: Page): Promise<void> {
   await page.waitForTimeout(2_000);
 }
 
+/**
+ * Insert a widget through the REAL widget tray: the "Add" tab, the tray's
+ * own search, the catalog row. When the widget ships MORE than one preset
+ * the tray opens its own chooser instead of inserting
+ * (`src/components/builder/WidgetTray.tsx:343-351`), so a `preset` click
+ * follows — the chooser REPLACES the search list, which is why the preset is
+ * clicked without re-querying the search.
+ */
+async function insertWidget(
+  page: Page,
+  query: string,
+  rowName: string,
+  preset?: string,
+): Promise<void> {
+  // Every tray insert leaves the left panel on the "Layers" tab
+  // (`builder.tsx:2071`), so the tray is re-opened through its own tab.
+  await page.getByRole("tab", { name: "Add", exact: true }).click();
+  const search = page.getByRole("searchbox", { name: "Find a widget" });
+  await expect(search, "the widget tray's search renders").toBeVisible({
+    timeout: 30_000,
+  });
+  await search.fill(query);
+  const row = page
+    .getByRole("button", { name: new RegExp(`^${rowName}\\b`) })
+    .first();
+  await expect(row, `the tray offers the ${rowName} widget`).toBeVisible({
+    timeout: 30_000,
+  });
+  await row.click();
+  if (preset) {
+    const choice = page.getByRole("button", { name: preset, exact: true });
+    await expect(
+      choice,
+      `the tray's preset chooser offers "${preset}"`,
+    ).toBeVisible({ timeout: 30_000 });
+    await choice.click();
+  }
+  await page.waitForTimeout(2_000);
+}
+
+/**
+ * Insert a Container through the tray. A container ships four presets, so
+ * the tray opens its own chooser and the insert completes with the "As
+ * designed" preset — the catalog's default state, no preset data.
+ */
+async function insertContainer(page: Page): Promise<void> {
+  await insertWidget(page, "container", "Container", "As designed");
+}
+
 /** The outcome of the real publish path. */
 type PublishOutcome = {
   outcome: "published" | "refused";
@@ -178,12 +236,35 @@ async function publishedVersionId(page: Page): Promise<string | null> {
 type Journey = {
   /** the studio's label for the template */
   label: string;
+  /** the SECOND-level template variant the journey selects, when it needs one */
+  variant?: string;
   /** the widgets the editor MUST show for that template */
   layers: readonly string[];
+  /**
+   * the layer the journey REMOVES through the navigator's own Delete key
+   * (§(n.7.6)) — it is skipped from the kept-layers loop, because the leg
+   * asserts its absence
+   */
+  remove?: string;
+  /**
+   * a schema-generated property the journey edits on the template's OWN
+   * variant (§(n.7.4)): the layer to select, the control's exact label and
+   * the per-run value to write
+   */
+  marker?: { layer: string; label: string; value: string };
+  /**
+   * the nested-composition leg (§(n.7.5)): a marker written into a NESTED
+   * text block, and the name of the container the journey inserts, renames
+   * and then deletes through the navigator
+   */
+  nested?: { marker: string; removedName: string };
   /** the real storefront route the journey opens */
   route: string;
-  /** the assertions the storefront must satisfy */
-  storefront: (page: Page) => Promise<void>;
+  /**
+   * the assertions the storefront must satisfy — given the publish's REAL
+   * outcome, because a refusal must never read as a pass (§(n.7.3))
+   */
+  storefront: (page: Page, publish: PublishOutcome) => Promise<void>;
 };
 
 const JOURNEYS: readonly Journey[] = [
@@ -231,8 +312,15 @@ const JOURNEYS: readonly Journey[] = [
   {
     label: "Cart",
     layers: ["Heading", "Columns", "Cart lines", "Cart summary"],
+    // The nested-composition leg (§(n.7.5)): a marker written into a text
+    // block nested inside a container the journey inserts, and the name of
+    // the second container the journey inserts, renames and deletes.
+    nested: {
+      marker: `Frame30 nested — ${RUN}`,
+      removedName: `Nested to delete ${RUN}`,
+    },
     route: `/store/${STORE}/cart`,
-    storefront: async (page) => {
+    storefront: async (page, publish) => {
       await expect(
         page.getByText("Your bag").first(),
         "the theme's cart body renders its own heading",
@@ -241,6 +329,22 @@ const JOURNEYS: readonly Journey[] = [
         page.getByText("Order summary").first(),
         "the theme's cart body renders the order summary",
       ).toBeVisible({ timeout: 30_000 });
+      // The journey's NESTED edit, judged by the platform's REAL outcome
+      // (§(n.7.5)) — the exact per-run marker, never a stale run's text.
+      const nested = page.getByText(`Frame30 nested — ${RUN}`, {
+        exact: true,
+      });
+      if (publish.outcome === "published") {
+        await expect(
+          nested.first(),
+          "the nested text block's merchant-authored heading is on the storefront",
+        ).toBeVisible({ timeout: 30_000 });
+      } else {
+        expect(
+          await nested.count(),
+          "a refused publish did not half-apply: the nested marker is not on the storefront",
+        ).toBe(0);
+      }
     },
   },
   {
@@ -251,12 +355,37 @@ const JOURNEYS: readonly Journey[] = [
       "Account orders",
       "Page content",
     ],
+    // The merchant REMOVES one layer through the navigator's own Delete key
+    // (§(n.7.6)); the layer is skipped from the kept-layers loop, because
+    // the leg asserts its absence rather than its presence.
+    remove: "Account navigation",
     route: `/store/${STORE}/account`,
-    storefront: async (page) => {
+    storefront: async (page, publish) => {
       // The journey runs SIGNED IN (it opened the editor with a real
       // session), so the account surface is the DASHBOARD — the route's own
       // tabs and the shopper's own overview. The UNAUTHENTICATED state is the
       // storefront lane's case (it opens a session-less context).
+      if (publish.outcome === "published") {
+        // The merchant removed the navigation layer, and the publish
+        // advanced the pointer: the served composition must NOT render the
+        // dashboard's account navigation — while the overview panel (its own
+        // widget, `src/components/store/account-widgets.tsx:309-311`) is
+        // still there.
+        expect(
+          await page
+            .getByRole("navigation", { name: "Account sections" })
+            .count(),
+          "the merchant's removal is live: the account navigation is not rendered",
+        ).toBe(0);
+        await expect(
+          page.getByText("At a glance").first(),
+          "the dashboard's overview panel is still rendered",
+        ).toBeVisible({ timeout: 30_000 });
+        return;
+      }
+      // A refused publish never half-applies: the published seed still
+      // renders the navigation and the dashboard's own tabs — the journey's
+      // original assertions, unchanged.
       await expect(
         page.getByRole("navigation", { name: "Account sections" }),
         "the signed-in account surface renders the route's dashboard",
@@ -273,9 +402,19 @@ const JOURNEYS: readonly Journey[] = [
   },
   {
     label: "Blog",
+    variant: "blog_listing",
     layers: ["Blog topics", "Blog archive", "Blog pagination"],
+    // The variant's OWN terms rail: `blog_terms` declares "Heading
+    // (optional)" (`src/lib/builder-ast.ts:5032`), and the base blog body
+    // carries no such control — the marker is authored on the variant the
+    // storefront's blog route resolves (`src/lib/storefront.functions.ts:189`).
+    marker: {
+      layer: "Blog topics",
+      label: "Heading (optional)",
+      value: `Frame30 blog topics — ${RUN}`,
+    },
     route: `/store/${STORE}/blog`,
-    storefront: async (page) => {
+    storefront: async (page, publish) => {
       // The theme's `blog_listing` composition: the pack's own listing.
       await expect(
         page.getByText("From the journal", { exact: true }).first(),
@@ -288,6 +427,25 @@ const JOURNEYS: readonly Journey[] = [
           .count(),
         "the listing does not render the article variant's newsletter",
       ).toBe(0);
+      // The journey's own variant edit, judged by the platform's REAL
+      // outcome (§(n.7.4)): a publish that advanced the pointer must be
+      // visible, and a refused publish must not have half-applied. The text
+      // is the run's EXACT marker, so an earlier run's published edit can
+      // never satisfy this run's assertion.
+      const marker = page.getByText(`Frame30 blog topics — ${RUN}`, {
+        exact: true,
+      });
+      if (publish.outcome === "published") {
+        await expect(
+          marker.first(),
+          "the variant's merchant-authored heading is on the storefront",
+        ).toBeVisible({ timeout: 30_000 });
+      } else {
+        expect(
+          await marker.count(),
+          "a refused publish did not half-apply: the variant's marker is not on the storefront",
+        ).toBe(0);
+      }
     },
   },
   {
@@ -378,9 +536,26 @@ for (const journey of JOURNEYS) {
     await ensureSongoskritiActive(page);
 
     // 2-3. The real editor, and the template selected through its own strip.
+    //      A journey that addresses a SECOND-level variant selects it right
+    //      after the base button: the strip only offers the variant once the
+    //      base is selected (`builder.tsx:1695`).
     await openTemplate(page, journey.label);
+    if (journey.variant) {
+      const variant = page.locator(
+        `[data-template-variant="${journey.variant}"]`,
+      );
+      await expect(
+        variant,
+        `the strip offers the "${journey.variant}" variant of ${journey.label}`,
+      ).toBeVisible({ timeout: 30_000 });
+      await variant.click();
+      await page.waitForTimeout(1_500);
+    }
     const before = await layerNames(page);
     for (const layer of journey.layers) {
+      // A layer the journey REMOVES is asserted by the removal leg below, not
+      // here (§(n.7.6)): a kept-layers assertion would contradict the leg.
+      if (layer === journey.remove) continue;
       expect(
         before,
         `the ${journey.label} editor must show its own "${layer}" layer`,
@@ -423,6 +598,165 @@ for (const journey of JOURNEYS) {
       afterInsert,
     );
 
+    // 5b. The journey's OWN leg, on the surface that owns one.
+    //
+    //     The nested-composition leg (§(n.7.5)): nest a container inside the
+    //     journey's own "Columns", move it up while it is STILL the selected
+    //     node (the navigator's row carries its own Move up control, and the
+    //     cart body already renders two unnamed "Container" layers — so the
+    //     leg addresses the SELECTED row, never a name), put a text block
+    //     inside it, then insert a SECOND container, rename it through the
+    //     navigator's own rename input and delete it through its own key.
+    if (journey.nested) {
+      const nestedMarker = journey.nested.marker;
+      const removedName = journey.nested.removedName;
+      const columnsItem = page
+        .getByRole("treeitem")
+        .filter({ hasText: "Columns" })
+        .first();
+      await expect(
+        columnsItem,
+        "the composition carries its Columns layer",
+      ).toBeVisible({ timeout: 30_000 });
+      await columnsItem
+        .locator("xpath=..")
+        .getByRole("button", { name: "Add inside" })
+        .click();
+      await insertContainer(page);
+      const afterNest = await layerNames(page);
+      expect(afterNest.length, "the nest adds exactly one layer").toBe(
+        afterInsert.length + 1,
+      );
+
+      const nestedItem = page.locator(
+        '[role="treeitem"][aria-selected="true"]',
+      );
+      await expect(
+        nestedItem,
+        "the inserted container is the navigator's selected layer",
+      ).toHaveCount(1, { timeout: 30_000 });
+      const nestMoveUp = nestedItem
+        .locator("xpath=..")
+        .getByRole("button", { name: "Move up" });
+      await expect(
+        nestMoveUp,
+        "the selected container offers the navigator's own Move up control",
+      ).toBeVisible({ timeout: 30_000 });
+      await nestMoveUp.click();
+      await page.waitForTimeout(1_500);
+      const nestReordered = await layerNames(page);
+      expect(
+        nestReordered,
+        "the reorder moved the nested container inside the columns",
+      ).not.toEqual(afterNest);
+
+      // A text block INSIDE the new container: its schema-generated "Heading"
+      // control carries a per-run marker nested two levels deep.
+      await nestedItem
+        .locator("xpath=..")
+        .getByRole("button", { name: "Add inside" })
+        .click();
+      await insertWidget(page, "text block", "Text block");
+      const nestedHeading = page.getByLabel("Heading", { exact: true }).first();
+      await expect(
+        nestedHeading,
+        "the nested text block's schema-generated heading control renders",
+      ).toBeVisible({ timeout: 30_000 });
+      await nestedHeading.fill(nestedMarker);
+      await expect(
+        nestedHeading,
+        "the nested heading control holds the marker",
+      ).toHaveValue(nestedMarker);
+
+      // A SECOND container inside the columns: renamed through the
+      // navigator's own rename input, then deleted through its own Delete
+      // key — the removal must survive the save below.
+      const columnsAgain = page
+        .getByRole("treeitem")
+        .filter({ hasText: "Columns" })
+        .first();
+      await columnsAgain
+        .locator("xpath=..")
+        .getByRole("button", { name: "Add inside" })
+        .click();
+      await insertContainer(page);
+      const doomed = page.locator('[role="treeitem"][aria-selected="true"]');
+      await expect(
+        doomed,
+        "the second container is the navigator's selected layer",
+      ).toHaveCount(1, { timeout: 30_000 });
+      await doomed.dblclick();
+      const rename = page.getByLabel("Layer name", { exact: true });
+      await expect(
+        rename,
+        "the navigator opens its own rename input",
+      ).toBeVisible({ timeout: 30_000 });
+      await rename.fill(removedName);
+      await rename.press("Enter");
+      const renamedItem = page
+        .getByRole("treeitem")
+        .filter({ hasText: removedName })
+        .first();
+      await expect(
+        renamedItem,
+        "the navigator shows the container's new name",
+      ).toBeVisible({ timeout: 30_000 });
+      await renamedItem.press("Delete");
+      await page.waitForTimeout(1_500);
+      const afterDoomed = await layerNames(page);
+      expect(
+        afterDoomed,
+        "the navigator's own Delete removed the renamed container",
+      ).not.toContain(removedName);
+      expect(
+        afterDoomed,
+        "the FIRST nested container is still there",
+      ).toContain("Container");
+    }
+
+    //     The removal leg (§(n.7.6)): the merchant removes one of the
+    //     template's OWN layers through the navigator's Delete key, and the
+    //     removal must survive the save below (server truth).
+    if (journey.remove) {
+      const doomedLayer = page
+        .getByRole("treeitem")
+        .filter({ hasText: journey.remove })
+        .first();
+      await expect(
+        doomedLayer,
+        `the ${journey.label} composition carries its "${journey.remove}" layer`,
+      ).toBeVisible({ timeout: 30_000 });
+      await doomedLayer.press("Delete");
+      await page.waitForTimeout(1_500);
+      const afterRemove = await layerNames(page);
+      expect(
+        afterRemove,
+        `the navigator's own Delete removed the "${journey.remove}" layer`,
+      ).not.toContain(journey.remove);
+      for (const layer of journey.layers) {
+        if (layer === journey.remove) continue;
+        expect(
+          afterRemove,
+          `the other "${layer}" layer is untouched by the removal`,
+        ).toContain(layer);
+      }
+    }
+
+    if (journey.nested || journey.remove) {
+      // The inspector shows the SELECTED node: re-select the spacer so the
+      // shared height steps below act on the widget they always acted on.
+      const spacerAfterLeg = page
+        .getByRole("treeitem")
+        .filter({ hasText: "Spacer" })
+        .last();
+      await expect(
+        spacerAfterLeg,
+        "the inserted spacer is still in the navigator",
+      ).toBeVisible({ timeout: 30_000 });
+      await spacerAfterLeg.click();
+      await page.waitForTimeout(1_000);
+    }
+
     // 6. Change a REAL inspector property (the schema-generated control).
     const height = page.getByLabel("Height in px (8-160)").first();
     await expect(
@@ -434,6 +768,34 @@ for (const journey of JOURNEYS) {
       height,
       "the inspector control holds the edited value",
     ).toHaveValue("48");
+
+    // 6b. The variant's OWN marker (§(n.7.4)): the journey writes a per-run
+    //     value into the variant's schema-generated control — the same
+    //     inspector, the exact field label the catalogue declares.
+    if (journey.marker) {
+      const markerLayer = page
+        .getByRole("treeitem")
+        .filter({ hasText: journey.marker.layer })
+        .first();
+      await expect(
+        markerLayer,
+        `the ${journey.label} composition carries its "${journey.marker.layer}" layer`,
+      ).toBeVisible({ timeout: 30_000 });
+      await markerLayer.click();
+      await page.waitForTimeout(1_000);
+      const markerControl = page
+        .getByLabel(journey.marker.label, { exact: true })
+        .first();
+      await expect(
+        markerControl,
+        `the inspector generates the "${journey.marker.label}" control`,
+      ).toBeVisible({ timeout: 30_000 });
+      await markerControl.fill(journey.marker.value);
+      await expect(
+        markerControl,
+        "the inspector control holds the merchant's marker",
+      ).toHaveValue(journey.marker.value);
+    }
 
     // 7. Preview at desktop, tablet and mobile (the studio's own presets).
     for (const device of [
@@ -499,6 +861,87 @@ for (const journey of JOURNEYS) {
       "the edited inspector value survived the reload",
     ).toHaveValue("48");
 
+    // 8c. The journey's OWN leg survived the reload too — server truth on
+    //     the surfaces that own one. A variant journey re-selects its
+    //     variant FIRST: the reload re-clicks only the BASE template button.
+    if (journey.variant) {
+      const variant = page.locator(
+        `[data-template-variant="${journey.variant}"]`,
+      );
+      await expect(
+        variant,
+        `the strip still offers the "${journey.variant}" variant after the reload`,
+      ).toBeVisible({ timeout: 30_000 });
+      await variant.click();
+      await page.waitForTimeout(1_500);
+    }
+    if (journey.marker) {
+      const markerLayer = page
+        .getByRole("treeitem")
+        .filter({ hasText: journey.marker.layer })
+        .first();
+      await expect(
+        markerLayer,
+        `the "${journey.marker.layer}" layer survived the reload`,
+      ).toBeVisible({ timeout: 30_000 });
+      await markerLayer.click();
+      await page.waitForTimeout(1_000);
+      await expect(
+        page.getByLabel(journey.marker.label, { exact: true }).first(),
+        "the variant's marker survived the reload (server truth)",
+      ).toHaveValue(journey.marker.value);
+    }
+    if (journey.nested) {
+      expect(
+        afterReload,
+        "the deleted container did NOT survive the reload — the removal is server truth",
+      ).not.toContain(journey.nested.removedName);
+      expect(afterReload, "the nested container survived the reload").toContain(
+        "Container",
+      );
+      const nestedText = page
+        .getByRole("treeitem")
+        .filter({ hasText: "Text block" })
+        .first();
+      await expect(
+        nestedText,
+        "the nested text block survived the reload",
+      ).toBeVisible({ timeout: 30_000 });
+      await nestedText.click();
+      await page.waitForTimeout(1_000);
+      await expect(
+        page.getByLabel("Heading", { exact: true }).first(),
+        "the nested text block's marker survived the reload (server truth)",
+      ).toHaveValue(journey.nested.marker);
+    }
+    if (journey.remove) {
+      expect(
+        afterReload,
+        `the removed "${journey.remove}" layer did NOT survive the reload — the removal is server truth`,
+      ).not.toContain(journey.remove);
+      for (const layer of journey.layers) {
+        if (layer === journey.remove) continue;
+        expect(
+          afterReload,
+          `the kept "${layer}" layer survived the reload`,
+        ).toContain(layer);
+      }
+    }
+    if (journey.marker || journey.nested || journey.remove) {
+      // The inspector shows the SELECTED node: re-select the spacer so the
+      // final height edit below still acts on the widget it always did.
+      const spacerFinal = page
+        .getByRole("treeitem")
+        .filter({ hasText: "Spacer" })
+        .last();
+      await expect(
+        spacerFinal,
+        "the inserted spacer is still in the navigator",
+      ).toBeVisible({ timeout: 30_000 });
+      await spacerFinal.click();
+      await page.waitForTimeout(1_000);
+    }
+
     // 9. The real publish path. The platform enables the publish control
     //    ONLY while the document has unsaved changes (`PublishModal`:
     //    `disabled={errors.length > 0 || !hasChanges}`), so the journey makes
@@ -530,7 +973,9 @@ for (const journey of JOURNEYS) {
       ).toBe(pointerBefore);
     }
 
-    // 10. The real storefront route.
+    // 10. The real storefront route. The storefront's own assertions are
+    //     given the publish's REAL outcome (§(n.7.3)): a refusal is never
+    //     read as a pass, and a refusal is never read as a half-apply.
     await page.goto(journey.route, {
       waitUntil: "domcontentloaded",
       timeout: 120_000,
@@ -538,7 +983,7 @@ for (const journey of JOURNEYS) {
     expect(page.url(), "the storefront route answers").toContain(
       journey.route.split("?")[0]!,
     );
-    await journey.storefront(page);
+    await journey.storefront(page, publish);
 
     // 9b. The CHANGED composition on the storefront. The journey edited the
     //     spacer it inserted (56 px), so the SERVED document must carry that

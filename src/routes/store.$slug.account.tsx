@@ -38,6 +38,7 @@ import {
   accountUpsertSelfFn,
 } from "@/lib/accounts.functions";
 import { accountSlotsPending, accountStatus } from "@/lib/account-status";
+import { accountRemovedPanelsFn } from "@/lib/account-panel-survival";
 import { getStoreChrome } from "@/lib/storefront.functions";
 import { StorefrontError } from "@/components/store/StorefrontError";
 import {
@@ -62,7 +63,17 @@ export const Route = createFileRoute("/store/$slug/account")({
     const chrome = await getStoreChrome({
       data: { slug: params.slug, template: "account" },
     }).catch(() => null);
-    return { chrome };
+    return {
+      chrome,
+      // The MERCHANT's own removals: panels the theme's default composition
+      // places but the SERVED body does not. The dashboard's fallback skips
+      // them too, so a deleted panel is deleted — not re-supplied. The
+      // comparison runs server-side (the route loader also executes on the
+      // client, where `themes.server`'s node imports cannot load).
+      removedPanels: await accountRemovedPanelsFn({
+        data: { themeKey: chrome?.themeKey ?? null, ast: chrome?.ast ?? null },
+      }).catch(() => [] as readonly AccountPanelType[]),
+    };
   },
   head: ({ params }) => {
     const title = `Your account — ${params.slug}`;
@@ -114,7 +125,7 @@ const ACCOUNT_PANEL_TYPES: readonly AccountPanelType[] = [
 function AccountPage() {
   const { t, lang } = useLang();
   const { slug } = Route.useParams();
-  const { chrome } = Route.useLoaderData();
+  const { chrome, removedPanels } = Route.useLoaderData();
   const search = Route.useSearch();
   const qc = useQueryClient();
   const overviewFn = useServerFn(accountOverviewFn);
@@ -292,7 +303,9 @@ function AccountPage() {
     // The account's four PLACEABLE panels. A panel the theme's body places is
     // granted here (the panel itself reads the account provider — the route's
     // own session-scoped state — and nothing else); a panel it does not place
-    // is the dashboard's, and the dashboard's fallback skips the placed ones.
+    // is the dashboard's, and the dashboard's fallback skips the placed ones
+    // AND the merchant's removed ones (`removedPanels`), so a panel the
+    // merchant deleted from the body is granted to NOBODY and shown nowhere.
     if (placedPanels.includes("account_nav")) out.account_nav = null;
     if (placedPanels.includes("account_overview")) out.account_overview = null;
     if (placedPanels.includes("account_orders")) out.account_orders = null;
@@ -401,6 +414,9 @@ function AccountPage() {
       // The panels the THEME's body placed — the dashboard's fallback skips
       // them, so a panel is never shown twice on one page.
       placed: placedPanels,
+      // The MERCHANT's removals — the fallback skips them too, so a panel
+      // the merchant deleted from the body is shown nowhere.
+      removed: removedPanels,
     }),
     [
       slug,
@@ -419,6 +435,7 @@ function AccountPage() {
       setConsent,
       toggleWish,
       placedPanels,
+      removedPanels,
     ],
   );
 

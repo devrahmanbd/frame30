@@ -170,6 +170,11 @@ export function AccountDashboard(props: AccountDashboardProps) {
   const onTabChange = state ? state.setTab : props.onTabChange;
   /** The panels the THEME placed — the dashboard's fallback skips them. */
   const placed: readonly AccountPanelType[] = state?.placed ?? [];
+  /**
+   * The panels the MERCHANT removed — the fallback skips them too: a panel
+   * deleted from the theme's body is deleted, not re-supplied.
+   */
+  const removed: readonly AccountPanelType[] = state?.removed ?? [];
 
   /**
    * The shopper's orders in the platform's own row contract. With a provider
@@ -269,7 +274,7 @@ export function AccountDashboard(props: AccountDashboardProps) {
         </p>
       </header>
 
-      {!placed.includes("account_nav") && (
+      {!placed.includes("account_nav") && !removed.includes("account_nav") && (
         <AccountNavPanel
           slug={slug}
           tab={tab}
@@ -288,38 +293,42 @@ export function AccountDashboard(props: AccountDashboardProps) {
         ref={panelRef}
         className="space-y-10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground"
       >
-        {!placed.includes("account_overview") && (
-          <AccountOverviewPanel overview={overview} />
-        )}
+        {!placed.includes("account_overview") &&
+          !removed.includes("account_overview") && (
+            <AccountOverviewPanel overview={overview} />
+          )}
 
-        {!placed.includes("account_orders") && tab === "orders" && (
-          <AccountOrdersPanel
-            slug={slug}
-            rows={rows}
-            openOrderId={openOrderId}
-            onOpenOrder={setOpenOrderId}
-            onLoadOrder={onLoadOrder}
-            orderDetail={orderDetail}
-            orderDetailPending={orderDetailPending}
-            orderDetailError={orderDetailError}
-          />
-        )}
+        {!placed.includes("account_orders") &&
+          !removed.includes("account_orders") &&
+          tab === "orders" && (
+            <AccountOrdersPanel
+              slug={slug}
+              rows={rows}
+              openOrderId={openOrderId}
+              onOpenOrder={setOpenOrderId}
+              onLoadOrder={onLoadOrder}
+              orderDetail={orderDetail}
+              orderDetailPending={orderDetailPending}
+              orderDetailError={orderDetailError}
+            />
+          )}
 
-        {!placed.includes("account_details") && (
-          <AccountDetailsPanel
-            slug={slug}
-            tab={tab}
-            overview={overview}
-            currency={currency}
-            profileSlot={props.profileSlot}
-            onSaveAddress={onSaveAddress}
-            onDeleteAddress={onDeleteAddress}
-            onSaveProfile={onSaveProfile}
-            onSetConsent={onSetConsent}
-            onToggleWishlist={onToggleWishlist}
-            busy={busy}
-          />
-        )}
+        {!placed.includes("account_details") &&
+          !removed.includes("account_details") && (
+            <AccountDetailsPanel
+              slug={slug}
+              tab={tab}
+              overview={overview}
+              currency={currency}
+              profileSlot={props.profileSlot}
+              onSaveAddress={onSaveAddress}
+              onDeleteAddress={onDeleteAddress}
+              onSaveProfile={onSaveProfile}
+              onSetConsent={onSetConsent}
+              onToggleWishlist={onToggleWishlist}
+              busy={busy}
+            />
+          )}
       </section>
     </div>
   );

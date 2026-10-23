@@ -153,6 +153,12 @@ export type AccountDashboardState = {
    * those, so a panel is never shown twice on one page.
    */
   placed?: readonly AccountPanelType[];
+  /**
+   * The panels the MERCHANT removed from the body (the theme's DEFAULT body
+   * places them, the served body does not). The dashboard's fallback skips
+   * these too: a removed panel is absent, never re-supplied.
+   */
+  removed?: readonly AccountPanelType[];
 };
 
 const AccountDashboardCtx = createContext<AccountDashboardState | null>(null);
