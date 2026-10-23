@@ -5378,3 +5378,83 @@ Gap 8 names `.e2e/songoskriti-seven-templates.spec.ts:30`; `.e2e/songoskriti-dyn
 ### (n.6.6) Boundary of the correction
 
 The code commit still touches only: the three G1/state files of §(n.3.1)-(n.3.3), the four NEW files of §(n.2) (with the server-function addition above), the two §7 lane files (`.e2e/songoskriti-seven-templates.spec.ts`, `.e2e/songoskriti-dynamic-themes.spec.ts`), and this record. No parser, renderer, seed or published-byte file changes; the stored-AST compatibility rule is untouched. This section is committed before the code commit, by explicit path.
+
+### (n.7) The FINAL hunk forms of the Batch A lane edits — recorded before the lane edit is applied
+
+§(n.6) recorded the corrective direction. This section records the exact final forms, each measured against this branch's own source before the edit is applied. Nothing below is assumed; every locator cites the line that renders it. Committed before the code commit, by explicit path.
+
+#### (n.7.1) Gap 7 — the A→B→A draft round trip, as a new test in `.e2e/songoskriti-dynamic-themes.spec.ts`
+
+A new test inside the existing `test.describe("the dynamic themes' proof lane")` block, after the checkout test, with this exact sequence:
+
+1. `new NetworkCollector(page).attach()` + `blockExternalRequests(page, [])` (the lane's own hygiene);
+2. `ensureSongoskritiActive(page)` — the real login + real activation;
+3. `openTemplateInEditor(page, "Collection")` → `selectLayer(page, "Product rail")` → `setInspectorHeading(page, draftMarker)` where `draftMarker = \`Frame30 theme switch — ${RUN}\`` (the lane's existing `RUN` const);
+4. `saveDraft(page)` → `reloadEditorAndSelect(page, "Collection")` → `selectLayer` → `readInspectorHeading()` === marker (server truth before any switch);
+5. `setActiveTheme(page, "somvabona")` then `expect(await activeThemeKey(page)).toBe("somvabona")`; `setActiveTheme(page, "songoskriti")` then `expect(await activeThemeKey(page)).toBe("songoskriti")` — the round trip's two activations;
+6. `openTemplateInEditor(page, "Collection")` → `selectLayer(page, "Product rail")` → `readInspectorHeading()` === marker (the A→B→A round trip preserved the merchant's own draft);
+7. `expect(collector.externalResponses()).toEqual([])`.
+
+Import change in the same file: `activeThemeKey, setActiveTheme` are added to the EXISTING `./helpers-songoskriti` import (they already live there — `helpers-songoskriti.ts:35` and `:208`). Nothing else in the import block changes.
+
+Why Collection/`product_rail` (§(n.6.5) corrected the surface): Somvabona authors a Collection body containing a `product_rail` (`src/lib/themes/somvabona/preview.ts:55-69`) and authors NO Cart body (`:91`), so "Product rail" is the one editable layer both themes' Collection templates carry — the same layer label reads on both sides of the switch. `product_rail`'s schema field label is exactly `Heading` (`src/lib/builder-ast.ts:2360`), which is the `headingControl` helper's exact label. The leg proves the DRAFT round trip (the gap's claim); it deliberately does not publish — the publish contract is the seven-templates lane's and is untouched.
+
+#### (n.7.2) Gap 8 — the second stale number, comment-only
+
+`.e2e/songoskriti-dynamic-themes.spec.ts` header: the sentence "its bilingual coverage is 76 % and the gate's floor is 90 % (measured; the prior programme recorded the finding as an owner action)" is replaced with the same self-correcting wording already applied to the seven-templates header — the floor is 90 %, the shipped copy has measured below it, and the exact measured value lives in the evidence record (`phase4-dynamic-themes-evidence.md`). Comment-only; no assertion changes.
+
+#### (n.7.3) The `storefront` signature change both new legs need
+
+The seven-templates `Journey` type's `storefront` field changes from `(page: Page) => Promise<void>` to `(page: Page, publish: PublishOutcome) => Promise<void>`, and the single call site becomes `await journey.storefront(page, publish)` (the publish outcome is already in scope there). `PublishOutcome` is this file's OWN local type (`:125`) — no import is added. The five single-argument closures (Search results, Cart, Checkout, Archive, Page) remain assignable unchanged (TypeScript's fewer-parameters rule); only Blog and Account take the second argument.
+
+#### (n.7.4) The Blog journey's variant and marker (Gap 2)
+
+The Blog journey gains two fields: `variant: "blog_listing"` and `marker: { layer: "Blog topics", label: "Heading (optional)", value: \`Frame30 blog topics — ${RUN}\` }`. The leg:
+
+- right after `openTemplate(page, "Blog")`, click `page.locator('[data-template-variant="blog_listing"]')` — the strip's second-level variant button (`src/routes/_authenticated/dashboard/builder.tsx:1695`), which renders ONLY once the base is selected (`variantKeysFor("blog")` carries `blog_listing`, `src/lib/template-variants.ts:98`) — so the marker edit targets the VARIANT's own composition. The base `blog` body carries no "Heading (optional)" field; `blog_terms` declares `Heading (optional)` (`src/lib/builder-ast.ts:5032`), and the `blog_listing` variant body carries the terms rail;
+- after the shared inspector step, select the `"Blog topics"` layer and fill the exact `"Heading (optional)"` control with the marker;
+- the shared reload re-clicks only the BASE "Blog" strip button (`:473-475`), so the journey re-clicks the variant button after the reload before the post-reload read, and asserts `readInspectorHeading`-equivalent control value === marker (the value survived — server truth);
+- the 9c split: published ⇒ `getByText(marker, { exact: true }).first()` is visible; refused ⇒ its `count()` is 0 (no half-apply). Publish serializes the whole `doc.templates` (`builder.tsx:1367`), so the variant's edit travels with the publish, and the storefront route `/store/{STORE}/blog` resolves `blog_listing` (`src/lib/storefront.functions.ts:189`).
+
+The existing base assertions — `"From the journal"` visible and `"From the journal, weekly"` absent — are untouched.
+
+#### (n.7.5) The nested leg's final form (Gap 6(b)) — the sequencing deviation from §(n.6.4)
+
+§(n.6.4) ordered "Move up" AFTER the Text block insert. Measured: the navigator's row puts `Move up` as a SIBLING of the treeitem button (`src/components/builder/LayerTree.tsx:383`), addressed as `item.locator("xpath=..")`, and the cart body ALREADY renders two unnamed `"Container"` treeitems, so addressing the new container by NAME is brittle. The leg therefore moves the nested container UP while it is STILL THE SELECTED NODE — right after the insert, before the Text block is inserted inside it — via `[role="treeitem"][aria-selected="true"]` (the tray's `onAdd` selects the inserted node, `builder.tsx:2086`). The order change is asserted the way the shared step 5 asserts it: `reordered !== afterNest`, against the list captured immediately after the insert.
+
+New local helpers in the seven-templates spec:
+
+- `insertWidget(page, query, rowName, preset?)` — re-clicks the `"Add"` tab (every tray insert leaves `leftTab === "layers"`, `builder.tsx:2071`), fills the searchbox `"Find a widget"`, clicks the row `getByRole("button", { name: new RegExp("^" + rowName) })`, and — when `preset` is passed — clicks that preset in the tray's chooser. The chooser REPLACES the search list (`src/components/builder/WidgetTray.tsx:351`), so the preset click is made without re-querying the search;
+- `insertContainer(page)` — `insertWidget(page, "container", "Container", "As designed")`: `container` has four presets (`presetsFor` prepends "As designed", `src/lib/widget-metadata.ts:369`) so `pick` opens the chooser (`WidgetTray.tsx:343-347`), while `rich_text`, `columns` and `spacer` have exactly one and insert directly.
+
+The Cart journey's `nested` field carries `marker` and `removedName` (both `RUN`-suffixed). The leg, after the shared step 5:
+
+1. select `"Columns"` → click its `"Add inside"` (`LayerTree.tsx:373`, container-only, sibling of the treeitem) → `insertContainer(page)` → `afterNest = await layerNames(page)`;
+2. on `[role="treeitem"][aria-selected="true"]` click `"Move up"` → `reordered !== afterNest`;
+3. that same selected node's `"Add inside"` → `insertWidget(page, "text block", "Text block")` (one preset → direct insert) → fill the exact `"Heading"` control with the nested marker;
+4. `"Columns"` `"Add inside"` again (each click overwrites `addParent`, `builder.tsx:2015`) → `insertContainer(page)` → double-click the selected treeitem → the rename input (`aria-label="Layer name"`, `LayerTree.tsx:268-282`) → fill `removedName` → `Enter` (commits on blur) → press `Delete` on the renamed treeitem (`LayerTree.tsx:340-345`) → assert `layerNames` no longer contains `removedName` and still contains `"Container"` (the FIRST container), plus the cart's own layers;
+5. the shared Save + reload then assert (8c): `afterReload` does not contain `removedName`, still contains `"Container"`, and the journey selects `"Text block"` and asserts its exact `"Heading"` control holds the nested marker — then re-selects the Spacer so the shared height assertions run unchanged;
+6. 9c: published ⇒ the nested marker is visible on the storefront; refused ⇒ its count is 0. The existing 56 px spacer assertions are untouched.
+
+`addParent` persistence is the reason each helper re-clicks the `"Add"` tab and each `"Add inside"` click re-states the parent: the platform does not clear `addParent` after an insert (`builder.tsx` clears it only on template/slot change, `:745`), so the leg always sets it immediately before the insert that needs it.
+
+#### (n.7.6) The Account journey's removal leg (Gap 5, §(n.6.2))
+
+The Account journey gains `remove: "Account navigation"`, and the kept-layers loop SKIPS `journey.remove` — the layer is in `journey.layers`, so a naive `toContain` would assert the exact opposite of the leg. The leg runs after the shared step 5 and before the shared step 6:
+
+1. select `"Account navigation"` → press `Delete` on its treeitem → the name is gone from `layerNames(page)` while `"Account overview"`, `"Account orders"` and `"Page content"` remain;
+2. the shared Save + reload + strip re-click → assert the name is STILL gone (server truth) and the three kept layers are still listed → re-select the Spacer so the shared height assertions run unchanged.
+
+The Account journey's `storefront` becomes outcome-aware through the §(n.7.3) signature: **published** ⇒ `getByRole("navigation", { name: "Account sections" })` has `count()` 0 (the merchant removed the layer) while `getByText("At a glance")` is visible (the overview panel renders even with a blank heading, `src/components/store/account-widgets.tsx:309-311`); **refused** ⇒ the EXISTING navigation + Orders-tab assertions run verbatim (a refusal never half-applies, so the published seed's navigation is still there).
+
+#### (n.7.7) The seven-templates spec gains its own `RUN` const
+
+`const RUN = Date.now().toString(36);` after the `TERM_SLUG` const — the dynamic-themes lane already carries the identical const; every new marker and layer name is per-run, so a marker a previous run published can never satisfy this run's assertion.
+
+#### (n.7.8) The scratch probe is deleted, and its citation is corrected
+
+`src/lib/__probe.test.tsx` — whose own header says "SCRATCH PROBE — deleted after the run" — is deleted in the code commit. The shipped contract test's comment (`src/components/builder/nested-composition.contract.test.tsx:207`) cites the probe's render-phase ordering and is reworded to cite the SHIPPED `use-builder-editor.route-h1.test.tsx` pattern instead. Comment-only; the contract test's assertions are untouched.
+
+#### (n.7.9) Boundary
+
+The code commit touches: the three G1/state files and the four NEW files of §(n.2)-(n.3), the two §7 lane files (`.e2e/songoskriti-seven-templates.spec.ts`, `.e2e/songoskriti-dynamic-themes.spec.ts`), the NEW contract test's one comment, the deletion of the untracked scratch probe, and this record — exactly the §(n.6.6) boundary. No parser, renderer, seed or published-byte file changes; the stored-AST compatibility rule is untouched.
