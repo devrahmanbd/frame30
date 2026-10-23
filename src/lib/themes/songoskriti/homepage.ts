@@ -455,6 +455,19 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     // 19. WHY SONGOSKRITI — trust/service strip
     // ────────────────────────────────────────────────────────────────────
     s("trust_footer", {
+      // Lane A paired authoring (§(s.8)): the declared scalar i1–i3 titles
+      // are byte-identical to the catalogue defaults `parseSection` injects
+      // ("Fast delivery" / "Easy returns" / "Secure payment"), so no rendered
+      // copy changes — the widget prefers the `items[]` rows above whenever
+      // they are present (`songoskriti.tsx:531-547`, pinned by
+      // `songoskriti.test.tsx:252-259`). The pairs move the three gate slots
+      // from injected-fallback to authored-ok.
+      i1Title: "Fast delivery",
+      i1Title_bn: "দ্রুত ডেলিভারি",
+      i2Title: "Easy returns",
+      i2Title_bn: "সহজ রিটার্ন",
+      i3Title: "Secure payment",
+      i3Title_bn: "নিরাপদ পেমেন্ট",
       items: [
         {
           icon: "secure",

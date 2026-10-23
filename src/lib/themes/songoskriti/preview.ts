@@ -130,8 +130,21 @@ export function songoskritiPreviewSource(
                 "Jewellery:/c/jewellery",
                 "Festive:/c/festive",
               ].join(","),
+              // Lane A paired authoring (§(s.8)): EN byte-identical to the
+              // catalogue default `parseSection` injects — provenance moves
+              // from injected-fallback to authored-ok, no rendered copy
+              // changes. বাংলা twins are the platform's established terms
+              // (Batch C pair table).
+              homeLabel: "Home",
+              homeLabel_bn: "হোম",
             }),
             s("result_toolbar", {
+              countLabel: "products",
+              countLabel_bn: "পণ্য",
+              filtersLabel: "Filters",
+              filtersLabel_bn: "ফিল্টার",
+              sortLabel: "Sort",
+              sortLabel_bn: "সাজান",
               sortDefault: "Featured",
             }),
             s("product_grid", {
@@ -238,6 +251,11 @@ export function songoskritiPreviewSource(
             s("blog_archive", {
               heading: "From the journal",
               heading_bn: "জার্নাল থেকে",
+              // Lane A (§(s.8)): EN byte-identical to the injected catalogue
+              // default; বাংলা twin is the plain store sentence for an empty
+              // journal grid.
+              emptyText: "No articles yet.",
+              emptyText_bn: "এখনও কোনো প্রবন্ধ নেই।",
               layout: "magazine",
               columns: 3,
               limit: 9,
@@ -292,6 +310,9 @@ export function songoskritiPreviewSource(
             s("blog_archive", {
               heading: "Articles",
               heading_bn: "প্রবন্ধ",
+              // Lane A (§(s.8)): paired with the injected catalogue default.
+              emptyText: "No articles yet.",
+              emptyText_bn: "এখনও কোনো প্রবন্ধ নেই।",
               layout: "magazine",
               columns: 3,
               limit: 9,
@@ -304,6 +325,15 @@ export function songoskritiPreviewSource(
               mode: "numbered",
               pageLabel: "Page",
               pageLabel_bn: "পৃষ্ঠা",
+              // Lane A (§(s.8)): EN byte-identical to the injected catalogue
+              // defaults; বাংলা twins are `collection.tsx`'s own locale
+              // fallbacks (:592, :611, :634).
+              moreLabel: "Load more",
+              moreLabel_bn: "আরও দেখুন",
+              prevLabel: "Previous",
+              prevLabel_bn: "আগের",
+              nextLabel: "Next",
+              nextLabel_bn: "পরের",
             }),
             s("empty_state", {
               heading: "Nothing in this archive yet",
@@ -369,6 +399,24 @@ export function songoskritiPreviewSource(
               // sees them in the builder.
               showCategories: true,
               showKinds: true,
+              // Lane A paired authoring (§(s.8)): EN byte-identical to the
+              // injected catalogue defaults; বাংলা twins are `collection.tsx`'s
+              // own locale fallbacks for these exact fields (:163, :182, :195,
+              // :202, :242, :296) and Batch C's Filters → ফিল্টার.
+              drawerLabel: "Filters",
+              drawerLabel_bn: "ফিল্টার",
+              clearLabel: "Clear all",
+              clearLabel_bn: "সব মুছুন",
+              categoryLabel: "Category",
+              categoryLabel_bn: "ক্যাটাগরি",
+              kindLabel: "Type",
+              kindLabel_bn: "ধরন",
+              priceLabel: "Price",
+              priceLabel_bn: "দাম",
+              stockLabel: "Availability",
+              stockLabel_bn: "স্টক",
+              inStockLabel: "In stock only",
+              inStockLabel_bn: "শুধু স্টকে আছে",
             }),
             s("filter_chips", {
               clearLabel: "Clear all",
@@ -385,6 +433,14 @@ export function songoskritiPreviewSource(
               mode: "numbered",
               pageLabel: "Page",
               pageLabel_bn: "পৃষ্ঠা",
+              // Lane A (§(s.8)): EN byte-identical to the injected catalogue
+              // defaults; বাংলা twins are `collection.tsx`'s locale fallbacks.
+              moreLabel: "Load more",
+              moreLabel_bn: "আরও দেখুন",
+              prevLabel: "Previous",
+              prevLabel_bn: "আগের",
+              nextLabel: "Next",
+              nextLabel_bn: "পরের",
             }),
             s("empty_state", {
               heading: "Nothing matches those filters",
@@ -433,6 +489,13 @@ export function songoskritiPreviewSource(
                   children: [
                     s("cart_lines", {
                       heading: "",
+                      // Lane A paired authoring (§(s.8)): EN byte-identical to
+                      // the injected catalogue defaults; বাংলা twins are the
+                      // widget's own `t()` fallbacks (`cart.tsx:202`, `:271`).
+                      removeLabel: "Remove",
+                      removeLabel_bn: "সরান",
+                      emptyText: "Your cart is empty.",
+                      emptyText_bn: "আপনার কার্ট খালি।",
                       parts:
                         "title,variant,quantity,lineTotal,unitPrice,remove",
                       layout: "row",
@@ -450,6 +513,35 @@ export function songoskritiPreviewSource(
                     s("cart_summary", {
                       heading: "Order summary",
                       heading_bn: "অর্ডার সারসংক্ষেপ",
+                      // Lane A paired authoring (§(s.8)): EN byte-identical to
+                      // the injected catalogue defaults; বাংলা twins are the
+                      // widget's own `t()` fallbacks (`cart.tsx:443-575`).
+                      subtotalLabel: "Subtotal",
+                      subtotalLabel_bn: "সাবটোটাল",
+                      discountLabel: "Discount",
+                      discountLabel_bn: "ছাড়",
+                      shippingLabel: "Delivery",
+                      shippingLabel_bn: "ডেলিভারি",
+                      codLabel: "Cash on delivery fee",
+                      codLabel_bn: "ক্যাশ অন ডেলিভারি ফি",
+                      vatLabel: "VAT",
+                      vatLabel_bn: "ভ্যাট",
+                      totalLabel: "Total",
+                      totalLabel_bn: "সর্বমোট",
+                      ctaLabel: "Checkout",
+                      ctaLabel_bn: "চেকআউট",
+                      couponLabel: "Coupon code",
+                      couponLabel_bn: "কুপন কোড",
+                      couponApplyLabel: "Apply",
+                      couponApplyLabel_bn: "প্রয়োগ",
+                      emptyText: "Add something to see your total.",
+                      emptyText_bn: "মোট দেখতে পণ্য যোগ করুন।",
+                      freeShippingLabel: "Spend",
+                      freeShippingLabel_bn: "আরও",
+                      freeShippingSuffix: "more for free shipping",
+                      freeShippingSuffix_bn: "খরচ করলে ফ্রি ডেলিভারি",
+                      freeShippingDone: "Free shipping unlocked.",
+                      freeShippingDone_bn: "ফ্রি ডেলিভারি চালু হয়েছে।",
                       parts: "subtotal,discount,shipping,vat,total",
                     }),
                   ],
@@ -473,11 +565,29 @@ export function songoskritiPreviewSource(
             s("checkout_steps", {
               heading: "Checkout progress",
               heading_bn: "চেকআউট ধাপ",
+              // Lane A paired authoring (§(s.8)): `step1` is byte-identical to
+              // the catalogue default `parseSection` already injects ("Cart"),
+              // so no rendered copy changes — the pair only moves from
+              // injected-fallback to authored-ok for the publish gate's বাংলা
+              // coverage. The বাংলা twin is the widget's own fallback
+              // (`cart.tsx:670`, t(locale, "Cart", "কার্ট")).
+              step1: "Cart",
+              step1_bn: "কার্ট",
               activeStep: 2,
               // The trail's own arrangement: the step names, then the marker
               // of where the shopper is, then the links back to the completed
               // steps.
               parts: "labels,active,links",
+              // Lane A paired authoring (§(s.8)); `step1` above carries the
+              // same treatment. EN byte-identical to the injected catalogue
+              // defaults; বাংলা twins are the widget's own `t()` fallbacks
+              // (`cart.tsx:675-685`).
+              step2: "Details",
+              step2_bn: "তথ্য",
+              step3: "Payment",
+              step3_bn: "পেমেন্ট",
+              step4: "Confirmation",
+              step4_bn: "নিশ্চিতকরণ",
             }),
             // The route's OWN body comes FIRST: the customer fields and the
             // validated submission. The payment block and the order summary
@@ -512,6 +622,12 @@ export function songoskritiPreviewSource(
                     // sit, never which ones exist.
                     s("payment_methods", {
                       heading: "",
+                      // Lane A (§(s.8)): EN byte-identical to the injected
+                      // catalogue default; বাংলা twin is the platform's ONE
+                      // no-rail sentence (`payment-rail-empty.ts`,
+                      // NO_PAYMENT_RAIL.bn).
+                      emptyText: "No payment method is available right now.",
+                      emptyText_bn: "এই মুহূর্তে কোনো পেমেন্ট পদ্ধতি নেই।",
                       parts: "legend,options,groups,note",
                     }),
                     s("payment_icons", {
@@ -528,6 +644,35 @@ export function songoskritiPreviewSource(
                     s("cart_summary", {
                       heading: "Order summary",
                       heading_bn: "অর্ডার সারসংক্ষেপ",
+                      // Lane A paired authoring (§(s.8)): EN byte-identical to
+                      // the injected catalogue defaults; বাংলা twins are the
+                      // widget's own `t()` fallbacks (`cart.tsx:443-575`).
+                      subtotalLabel: "Subtotal",
+                      subtotalLabel_bn: "সাবটোটাল",
+                      discountLabel: "Discount",
+                      discountLabel_bn: "ছাড়",
+                      shippingLabel: "Delivery",
+                      shippingLabel_bn: "ডেলিভারি",
+                      codLabel: "Cash on delivery fee",
+                      codLabel_bn: "ক্যাশ অন ডেলিভারি ফি",
+                      vatLabel: "VAT",
+                      vatLabel_bn: "ভ্যাট",
+                      totalLabel: "Total",
+                      totalLabel_bn: "সর্বমোট",
+                      ctaLabel: "Checkout",
+                      ctaLabel_bn: "চেকআউট",
+                      couponLabel: "Coupon code",
+                      couponLabel_bn: "কুপন কোড",
+                      couponApplyLabel: "Apply",
+                      couponApplyLabel_bn: "প্রয়োগ",
+                      emptyText: "Add something to see your total.",
+                      emptyText_bn: "মোট দেখতে পণ্য যোগ করুন।",
+                      freeShippingLabel: "Spend",
+                      freeShippingLabel_bn: "আরও",
+                      freeShippingSuffix: "more for free shipping",
+                      freeShippingSuffix_bn: "খরচ করলে ফ্রি ডেলিভারি",
+                      freeShippingDone: "Free shipping unlocked.",
+                      freeShippingDone_bn: "ফ্রি ডেলিভারি চালু হয়েছে।",
                       parts: "subtotal,discount,shipping,vat,total",
                     }),
                   ],
@@ -614,6 +759,11 @@ export function songoskritiPreviewSource(
             s("blog_archive", {
               heading: "From the journal",
               heading_bn: "জার্নাল থেকে",
+              // Lane A (§(s.8)): EN byte-identical to the injected catalogue
+              // default; বাংলা twin is the plain store sentence for an empty
+              // journal grid.
+              emptyText: "No articles yet.",
+              emptyText_bn: "এখনও কোনো প্রবন্ধ নেই।",
               layout: "magazine",
               columns: 3,
               limit: 9,
@@ -635,6 +785,9 @@ export function songoskritiPreviewSource(
             s("blog_archive", {
               heading: "More from the journal",
               heading_bn: "জার্নাল থেকে আরও",
+              // Lane A (§(s.8)): paired with the injected catalogue default.
+              emptyText: "No articles yet.",
+              emptyText_bn: "এখনও কোনো প্রবন্ধ নেই।",
               layout: "magazine",
               columns: 3,
               limit: 3,

@@ -207,13 +207,29 @@ describe("songoskriti search template composition", () => {
       "sortLabel",
       "sortLabel_bn",
     ]);
+    // §(s.8) Lane A: the seven facet group labels + their বাংলা twins are now
+    // authored pairs (the pin GROWS to the exact new set — nothing dropped).
     expect(propKeys.get("facet_sidebar")).toEqual([
+      "categoryLabel",
+      "categoryLabel_bn",
+      "clearLabel",
+      "clearLabel_bn",
       "collapsed",
+      "drawerLabel",
+      "drawerLabel_bn",
       "heading",
       "heading_bn",
+      "inStockLabel",
+      "inStockLabel_bn",
+      "kindLabel",
+      "kindLabel_bn",
       "limit",
+      "priceLabel",
+      "priceLabel_bn",
       "showCategories",
       "showKinds",
+      "stockLabel",
+      "stockLabel_bn",
     ]);
     expect(propKeys.get("filter_chips")).toEqual([
       "clearLabel",
@@ -226,10 +242,18 @@ describe("songoskriti search template composition", () => {
       "limit",
       "skin",
     ]);
+    // §(s.8) Lane A: the load-more / prev / next labels + বাংলা twins are
+    // authored pairs (the pin GROWS to the exact new set — nothing dropped).
     expect(propKeys.get("pagination")).toEqual([
       "mode",
+      "moreLabel",
+      "moreLabel_bn",
+      "nextLabel",
+      "nextLabel_bn",
       "pageLabel",
       "pageLabel_bn",
+      "prevLabel",
+      "prevLabel_bn",
     ]);
     expect(propKeys.get("empty_state")).toEqual([
       "body",
