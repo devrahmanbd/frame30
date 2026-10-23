@@ -5458,3 +5458,26 @@ The Account journey's `storefront` becomes outcome-aware through the §(n.7.3) s
 #### (n.7.9) Boundary
 
 The code commit touches: the three G1/state files and the four NEW files of §(n.2)-(n.3), the two §7 lane files (`.e2e/songoskriti-seven-templates.spec.ts`, `.e2e/songoskriti-dynamic-themes.spec.ts`), the NEW contract test's one comment, the deletion of the untracked scratch probe, and this record — exactly the §(n.6.6) boundary. No parser, renderer, seed or published-byte file changes; the stored-AST compatibility rule is untouched.
+
+### (n.8) The Batch A code commit — named, with what changed against the plan on the record
+
+The code commit is **`f172b249`** — `feat(frame30): Batch A — the dynamic-themes gaps 2, 5, 6, 7 and 8 (record §(n)-(n.7))`, nine files, staged by explicit path. The four standing churn paths (`.artifacts/e2e/playwright-report/index.html`, `ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`, the untracked `.output-snapshots/`) were left unstaged and untouched, as §(n.3) requires.
+
+#### (n.8.1) What landed, per gap
+
+- **Gap 5** — `src/lib/account-panel-survival.ts` (the pure skip rule + the server fn), the route loader's `removedPanels`, the provider's `removed` field and the dashboard's four `!removed` fallback skips; the new `src/lib/account-panel-survival.test.ts` (12 tests); and the §(n.6.2)/§(n.7.6) browser leg in the seven-templates Account journey (Delete key → save → reload → still gone; the kept-layers loop skips the removed layer; the storefront splits on the publish's real outcome).
+- **Gap 6(a)** — `src/components/builder/nested-composition.contract.test.tsx` (the handler-level add-inside → marker → move-up → rename → delete journey over the real hook).
+- **Gap 6(b)** — the seven-templates Cart journey's nested leg of §(n.7.5), including the new `insertWidget` / `insertContainer` tray helpers and the 8c post-reload assertions.
+- **Gap 7** — `src/lib/theme-switch-roundtrip.test.ts` (the handler-level A→B→A proof, 2 tests) and the §(n.7.1) browser leg in `.e2e/songoskriti-dynamic-themes.spec.ts`.
+- **Gap 2** — the Blog journey's `blog_listing` variant + marker of §(n.7.4), with the variant re-click after the shared reload and the outcome-aware storefront split.
+- **Gap 8** — both stale-number comments corrected to the self-correcting wording (§(n.6.5), §(n.7.2)).
+
+#### (n.8.2) Deviations applied AS RECORDED, and two details the record now names
+
+- The nested leg's sequencing deviation — the container is moved up while it is STILL the selected node, before the Text block is inserted inside it, addressed through `[role="treeitem"][aria-selected="true"]` — landed exactly as §(n.7.5) recorded it before the edit. No assertion depends on a tree position or on a duplicate layer NAME.
+- Two typing details of the NEW test files, neither of which changes any assertion: `AccountDashboardProvider` is a function component whose `children` prop is required, so `account-panel-survival.test.ts` passes the child INSIDE the props object (the varargs `createElement` form does not satisfy this React-types version) and supplies the dashboard's required `status` / `tab` / `currency` props from the same state object; and `theme-switch-roundtrip.test.ts`'s `activeId` reader casts the fake-db row's `id` (`as string | undefined`), the pattern the repo's other fake-db tests already use.
+- `src/lib/__probe.test.tsx` — the scratch probe whose own header said "deleted after the run" — is deleted, and the shipped contract test's comment now cites `use-builder-editor.route-h1.test.tsx` (§(n.7.8)).
+
+#### (n.8.3) The verification that gates this commit
+
+Run on this branch, at this commit's tree: `node_modules/.bin/vitest run` over the three NEW suites plus the eight existing suites that cover the touched files — **11 files, 147 tests, all passing** (the three pre-existing failures elsewhere in the repo — `analytics-live-shape.test.ts` ×2 and `site.server.test.ts` ×1 — are not in this set and are not mine); `node_modules/.bin/tsgo --noEmit` — clean; `node_modules/.bin/eslint` over the nine touched paths — 0 errors (the two `react-refresh` warnings on `AccountDashboardContext.tsx` pre-date this change and fire on the file's existing hook exports); `node_modules/.bin/playwright test -c .e2e/playwright.config.ts --list` on both touched specs — 8 tests and 5 tests respectively, including the new theme-switch test. No docker stack and no browser lane was run in this batch; the two browser legs are Mode-B lanes and are asserted by `--list` here.
