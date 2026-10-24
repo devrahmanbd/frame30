@@ -6773,3 +6773,21 @@ The human evidence sets could not move, and did not: that is the load-bearing pa
 **(D) The fix, smallest safe correct thing — test-side only, no product edit.** Both helpers read the pointer from `builderWorkspaceFn()` (`/src/lib/themes.functions.ts:15-22` → `loadWorkspace` → `resolveTheme`), which is the surface the editor and the publish button themselves use; the DTO genuinely carries `publishedVersionId`. The `.catch(() => null)` is dropped so a throwing read fails loudly with the server's error instead of collapsing into the same `null` the defect fed on. The assertions are untouched — in fact they become meaningful for the first time: `pointerBefore`/`pointerAfter` now carry real ids. This is a strengthening, not a weakening, and no product file changes because the workspace DTO is correct as designed (the theme desk does not need the pointer; the editor does).
 
 **(E) Boundary.** Files this section plans to edit: `.e2e/songoskriti-dynamic-themes-helpers.ts`, `.e2e/songoskriti-seven-templates.spec.ts` — test files only, both §7-relaxed for this programme. The probe files (`__batche_ptrprobe.spec.ts`, `__batche_railprobe.spec.ts`) are untracked diagnostics and are deleted, never staged. No source file is edited by this section.
+
+---
+
+### (t.9) With the pointer fixed the publish-success branch runs — and its spacer selector never matched the served HTML. Recorded BEFORE the selector edit (dated 2026-10-24)
+
+**(A) The second run measured.** After §(t.8)'s helper fix, `swarm3-lanes.sh seven` (log `/tmp/opencode/e2e-auth/swarm3-seven2.log`) closed **1 passed / 7 failed** in 10.3 m, and the failure MOVED: all seven now die at `:1023`, `the edited spacer (56px) is on the storefront after the publish`. Everything before it — the seven-step editor journey, the reload, the real publish with its toast, the advanced pointer, the storefront's theme composition, the merchant marker visible and the old copy absent, the permitted interaction — passed. The publish-SUCCESS branch is therefore exercised end to end for the first time; its last assertion is what fails.
+
+**(B) The measurement that names the cause.** The published Page document was served at the moment of failure (this run's publish advanced the pointer and showed the marker). Fetching its own HTML read **four** nodes carrying `style="height:56px"` and zero carrying `height: 56px`:
+
+```
+aria-hidden="true" style="height:56px"   (×4)
+```
+
+The selector at `:1016-1018` is `div[aria-hidden="true"][style*="height: 56px"]` — it requires a SPACE after the colon. The served React SSR style attribute is serialized without one. So the locator can never match a served page, while the node it describes is plainly there: this is a stale selector in the test, not a missing composition and not a publish defect. (The editor canvas, where an earlier run may have satisfied a different form, is not the surface this assertion runs on — §(k.1) already insists the block runs after navigation.)
+
+**(C) The fix, smallest safe correct thing.** The selector accepts BOTH serializations the two renderers emit — `[style*="height: 56px"], [style*="height:56px"]` — so the assertion still requires a 56 px spacer node and still requires it to be visible/absent according to the publish's real outcome. No threshold, assertion or branch is weakened; the pair is strictly more precise than a loose `[style*="height"]`.
+
+**(D) Boundary.** One test file edited: `.e2e/songoskriti-seven-templates.spec.ts` (`:1016-1018`). No product file. No skip is touched.
