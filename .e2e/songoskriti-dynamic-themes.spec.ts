@@ -118,10 +118,10 @@ type Surface = {
   compositionCopy: string;
   /**
    * The copy the journey's edit REPLACES. The checkout's own summary title and
-   * the cart's summary title (cleared below) are the surfaces where "the old
-   * text is not on the storefront" is a real assertion; the account's edited
-   * heading was deliberately blank, so its old value is the journey's own
-   * intermediate marker.
+   * the cart's summary title (replaced by the marker below) are the surfaces
+   * where "the old text is not on the storefront" is a real assertion; the
+   * account's edited heading was deliberately blank, so its old value is the
+   * journey's own intermediate marker.
    */
   replacedCopy?: string;
   /** a second property edit the surface needs before the save */
@@ -141,23 +141,25 @@ const RUN = Date.now().toString(36);
 
 const CART: Surface = {
   template: "Cart",
-  layer: "Cart lines",
+  layer: "Cart summary",
   route: `/store/${DYNAMIC_STORE}/cart`,
-  draftMarker: `Frame30 cart lines — draft ${RUN}`,
-  liveMarker: `Frame30 cart lines — published ${RUN}`,
+  draftMarker: `Frame30 cart summary — draft ${RUN}`,
+  liveMarker: `Frame30 cart summary — published ${RUN}`,
   // The theme's own page heading. The platform's cart fallback says "Your
   // Bag" (a different casing), so this exact copy proves the THEME's
   // composition is live and not the route's fallback.
   compositionCopy: "Your bag",
-  // The journey's cart_lines marker is the body's <h1> claimant, so the
-  // summary's own title must be cleared: two claimants is the platform's
-  // blocking lint error, and a proof lane must not manufacture its own
-  // refusal. The cleared title is also the "old text" the publish replaces.
+  // The marker lives on the SUMMARY's own bilingual heading, not on
+  // `cart_lines.heading`. Two heading claimants in one body is the platform's
+  // blocking lint error (`builder-ast.ts:8734-8760`), and the theme's
+  // `cart_lines` heading is deliberately blank for that reason. Moving the
+  // marker onto `cart_lines` would force the summary title blank; clearing its
+  // EN side alone leaves a bn-only pair (blocking, `builder-ast.ts:8901-8912`)
+  // and the schema-routed inspector offers no বাংলা control to clear it
+  // (record §(t.1)). Editing the summary's own authored heading keeps the
+  // single claimant AND a complete `ok` pair — the lane never manufactures a
+  // refusal. The edited title is the "old text" the publish replaces.
   replacedCopy: "Order summary",
-  beforeSave: async (page) => {
-    await selectLayer(page, "Cart summary");
-    await setInspectorHeading(page, "");
-  },
   needsCartLine: true,
   interaction: async (page) => {
     const quote = await changeCartQuantity(page);

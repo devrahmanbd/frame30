@@ -11,10 +11,12 @@ import { join } from "node:path";
 import {
   SHORTCUTS,
   detectPlatform,
+  dispatchStudioShortcut,
   formatShortcut,
   isTypingTarget,
   matchShortcut,
   shortcutsByGroup,
+  type ShortcutId,
 } from "@/lib/builder-shortcuts";
 import {
   CLIPBOARD_LIMITS,
@@ -111,6 +113,148 @@ describe("Phase 1.4 — shortcut registry", () => {
     expect(isTypingTarget({ tagName: "DIV" } as unknown as EventTarget)).toBe(
       false,
     );
+  });
+});
+
+/* Batch E2 (defect 1) — the navigator double-delete.
+ *
+ * A focused layer row handles Delete/Backspace itself: `preventDefault()` +
+ * `onDelete(node.id)` (`LayerTree.tsx:340-345`). The route's `window`
+ * listener re-dispatched the same key from a `runShortcut` closure holding
+ * the PRE-event selection snapshot, so the just-deleted node's sibling was
+ * removed too — one keypress, two nodes. The fix is the pure dispatcher
+ * below (`dispatchStudioShortcut`): an inner surface that claimed the key
+ * (`defaultPrevented`) stands the window map down.
+ */
+describe("Batch E2 — the navigator's double-delete", () => {
+  type FakeEvent = {
+    key: string;
+    metaKey?: boolean;
+    target?: unknown;
+    defaultPrevented: boolean;
+    prevented: boolean;
+    preventDefault: () => void;
+  };
+
+  function keyEvent(key: string, extra: Partial<FakeEvent> = {}): FakeEvent {
+    const event: FakeEvent = {
+      key,
+      defaultPrevented: false,
+      prevented: false,
+      preventDefault() {
+        this.prevented = true;
+        this.defaultPrevented = true;
+      },
+      ...extra,
+    };
+    return event;
+  }
+
+  /** The window dispatcher the route wires to `window` keydown. */
+  function windowDispatch(
+    event: FakeEvent,
+    run: (id: ShortcutId) => boolean,
+  ): boolean {
+    return dispatchStudioShortcut(
+      {
+        key: event.key,
+        ...(event.metaKey ? { metaKey: true } : {}),
+        target: event.target,
+        defaultPrevented: event.defaultPrevented,
+        preventDefault: () => event.preventDefault(),
+      },
+      run,
+    );
+  }
+
+  it("one Delete removes exactly one node; the second Delete removes the next", () => {
+    // The canvas and the navigator's selection. `focus` is the layer row with
+    // keyboard focus; the tree's own handler runs first (React's root
+    // container is inside `window`, so the window listener sees its
+    // preventDefault via bubbling).
+    let nodes = ["a", "b"];
+    let selection = ["a", "b"];
+    let focus = "a";
+
+    const press = (key: string) => {
+      const event = keyEvent(key);
+      // The window listener's `runShortcut` closure captured the selection
+      // BEFORE this event (builder.tsx re-subscribes on render, but the
+      // keydown runs synchronously before React re-renders) — the stale
+      // snapshot is the double-delete's mechanism.
+      const staleSelection = [...selection];
+      // LayerTree.tsx:340-345 — the focused row's own branch.
+      event.preventDefault();
+      nodes = nodes.filter((id) => id !== focus);
+      selection = selection.filter((id) => id !== focus);
+      // builder.tsx:997-1009 — the window listener, dispatching with that
+      // stale snapshot.
+      windowDispatch(event, (id) => {
+        if (id !== "delete") return false;
+        if (!staleSelection.length) return false;
+        nodes = nodes.filter((node) => !staleSelection.includes(node));
+        selection = [];
+        return true;
+      });
+    };
+
+    press("Delete");
+    expect(nodes, "the first Delete removes exactly one node").toEqual(["b"]);
+    focus = "b";
+    press("Delete");
+    expect(nodes, "the second Delete removes the next node").toEqual([]);
+  });
+
+  it("still dispatches when no inner surface claimed the key", () => {
+    const event = keyEvent("Delete");
+    const ran: string[] = [];
+    const handled = windowDispatch(event, (id) => {
+      ran.push(id);
+      return true;
+    });
+    expect(handled, "the window map handles a bare Delete").toBe(true);
+    expect(ran, "exactly one dispatch").toEqual(["delete"]);
+    expect(event.prevented, "the native binding is swallowed").toBe(true);
+  });
+
+  it("stands down for Backspace and ⌘D too when the tree claimed the key", () => {
+    for (const event of [
+      keyEvent("Backspace"),
+      keyEvent("d", { metaKey: true }),
+    ]) {
+      const ran: string[] = [];
+      event.preventDefault(); // the row's branch claimed it (LayerTree :340-348)
+      const handled = windowDispatch(event, (id) => {
+        ran.push(id);
+        return true;
+      });
+      expect(handled, event.key).toBe(false);
+      expect(ran, event.key).toEqual([]);
+    }
+  });
+
+  it("never hijacks typing, claimed or not", () => {
+    for (const defaultPrevented of [false, true]) {
+      const ran: string[] = [];
+      const handled = windowDispatch(
+        keyEvent("Delete", {
+          target: { tagName: "INPUT" },
+          defaultPrevented,
+        }),
+        (id) => {
+          ran.push(id);
+          return true;
+        },
+      );
+      expect(handled, String(defaultPrevented)).toBe(false);
+      expect(ran, String(defaultPrevented)).toEqual([]);
+    }
+  });
+
+  it("the studio route delegates its window keydown to the pure dispatcher", () => {
+    // The guard lives in one place; this pin stops the route from silently
+    // re-inlining a dispatcher that ignores `defaultPrevented`.
+    expect(STUDIO).toContain("dispatchStudioShortcut(event, runShortcut)");
   });
 });
 

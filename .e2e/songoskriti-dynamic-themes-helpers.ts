@@ -116,6 +116,34 @@ export async function readInspectorHeading(page: Page): Promise<string> {
   return headingControl(page).inputValue();
 }
 
+/**
+ * Write the বাংলা side of the inspector's heading field. The bilingual field
+ * is two tabs over one prop (`SectionInspector.tsx:108-122`): the English tab
+ * is the default, and the বাংলা tab must be selected before its control is
+ * the active one. Clearing BOTH tabs is how a journey expresses "no heading"
+ * — a bn-only pair is the platform's blocking lint error
+ * (`builder-ast.ts:8901-8912`), the `empty` state is exempt.
+ */
+export async function setInspectorHeadingBn(
+  page: Page,
+  value: string,
+): Promise<void> {
+  const tabs = page.getByRole("tablist", { name: "Heading", exact: true });
+  await expect(
+    tabs,
+    "the inspector renders the heading field's language tabs",
+  ).toBeVisible({ timeout: 30_000 });
+  await tabs.getByRole("tab", { name: "বাংলা", exact: true }).click();
+  // The active tab's control is marked `lang="bn"` (`SectionInspector.tsx:79`),
+  // which identifies it unambiguously among the section's fields.
+  const control = page.locator('input[lang="bn"], textarea[lang="bn"]').first();
+  await control.fill(value);
+  await expect(
+    control,
+    "the inspector's বাংলা heading control holds the edited value",
+  ).toHaveValue(value);
+}
+
 /** Save the draft through the toolbar's own Save button. */
 export async function saveDraft(page: Page): Promise<void> {
   await page.getByRole("toolbar").getByRole("button", { name: "Save" }).click();

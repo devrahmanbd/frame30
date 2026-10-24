@@ -225,6 +225,45 @@ function specificity(spec: ShortcutSpec): number {
   );
 }
 
+/**
+ * The event shape the studio's window dispatcher reads. `defaultPrevented` is
+ * the DOM's own "an inner surface already handled this key" signal — the
+ * navigator's layer rows set it before acting on the focused node
+ * (`LayerTree.tsx:340-345`).
+ */
+export type DispatchKeyEvent = KeyEventLike & {
+  target?: unknown;
+  defaultPrevented?: boolean;
+  preventDefault: () => void;
+};
+
+/**
+ * Batch E2 (defect 1) — the studio keyboard map's dispatch decision as a pure
+ * function, mirroring `handleStudioKeyDown` (`StudioBuilder.tsx:616-627`).
+ *
+ * The navigator's double-delete: a focused layer row handles Delete/Backspace
+ * (and ⌘D / ⌘↑↓) itself — `preventDefault()` + its own action — while the
+ * route's `window` listener re-dispatches the same key from a `runShortcut`
+ * closure that still holds the PRE-event selection snapshot, removing the
+ * just-deleted node's sibling(s) in the same keypress. An inner surface that
+ * claimed the key must be the only handler that runs, so `defaultPrevented`
+ * is the FIRST guard; the typing guard and the match follow exactly as the
+ * window listener always did, and the native binding is swallowed only when
+ * `run` actually did the work (⌘C with nothing selected still copies).
+ */
+export function dispatchStudioShortcut(
+  event: DispatchKeyEvent,
+  run: (id: ShortcutId) => boolean,
+): boolean {
+  if (event.defaultPrevented) return false;
+  if (isTypingTarget(event.target as EventTarget | null)) return false;
+  const id = matchShortcut(event);
+  if (!id) return false;
+  const handled = run(id);
+  if (handled) event.preventDefault();
+  return handled;
+}
+
 /** True when the event originated in a field where typing must not be hijacked. */
 export function isTypingTarget(target: EventTarget | null): boolean {
   const element = target as (HTMLElement & { tagName?: string }) | null;

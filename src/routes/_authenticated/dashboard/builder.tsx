@@ -84,9 +84,8 @@ import {
 import {
   SHORTCUTS,
   detectPlatform,
+  dispatchStudioShortcut,
   formatShortcut,
-  isTypingTarget,
-  matchShortcut,
   type Platform,
   type ShortcutId,
 } from "@/lib/builder-shortcuts";
@@ -993,16 +992,15 @@ function BuilderStudio() {
     ],
   );
 
-  // Studio keyboard map. Typing inside a field or inline text is never hijacked.
+  // Studio keyboard map. Typing inside a field or inline text is never
+  // hijacked, and a key an inner surface already handled (the navigator's
+  // layer rows delete/duplicate the focused node and preventDefault) is
+  // never dispatched a second time — the window closure holds a pre-event
+  // selection snapshot, so a second dispatch removed the sibling too
+  // (the navigator double-delete, Batch E2 defect 1).
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
-      if (isTypingTarget(event.target)) return;
-      const id = matchShortcut(event);
-      if (!id) return;
-      const handled = runShortcut(id);
-      // Only swallow the native binding when we actually did something, so
-      // ⌘C with nothing selected still copies the browser's own selection.
-      if (handled) event.preventDefault();
+      dispatchStudioShortcut(event, runShortcut);
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
