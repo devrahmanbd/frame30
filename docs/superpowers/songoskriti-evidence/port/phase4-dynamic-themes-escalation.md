@@ -6730,3 +6730,27 @@ The human evidence sets could not move, and did not: that is the load-bearing pa
 **(G) Deviation from §(r) restated and now justified in evidence.** ONE freeze run instead of Batch D's two: with §(t.5)B at CHANGED=0 and (C) at 65/65 pixel-identical, a second freeze would have had no pixel to move; the single run re-encoded 11 byte-stale baselines and was followed by an independent verify run carrying legs 1-3 above.
 
 **(H) No source file is edited by this section.** Record-only commit by explicit path, taken before the stills commit so the grade cannot be retro-fitted to what is being staged.
+
+---
+
+### (t.7) The checkout payment-rail skip — measured live, the stated environmental reason is FALSE, both skip sites convert; planned edits recorded BEFORE they are made (dated 2026-10-24)
+
+**(A) The measurement, through shipped code paths only.** A temporary untracked probe (`.e2e/__batche_railprobe.spec.ts`, deleted before the closing gates and never staged) drove the real storefront against app pid 809597 and measured the lane's own quantity — `input[name="fq-payment-method"]` — plus the platform's own empty-state text, in both states:
+
+| Scenario | `railCount` | rail value(s) | empty state visible | cause |
+|---|---|---|---|---|
+| Lane path: `ensureCartHasLine` → `/store/frame19-demo/checkout` (what `songoskriti-dynamic-themes.spec.ts:282` does before the `:214` interaction) | **1** | `cod` | **0** | a successful `quoteCart` filled `cart.methods` with `["cod"]` |
+| Empty cart, no seed — what `songoskriti-storefront-surfaces.spec.ts:419` does | **0** | — | **1** | `useLiveCart` early-returns on zero lines, never quotes, `methods` stays `[]` |
+
+**(B) The mechanism, read end to end.** `merchant_settings.cod_enabled = t` for the lane store (§(t.4) seed read) → `availableMethods` (`src/lib/payment-rails.ts:323`) always yields `cod` when `codEnabled` is true, and `onlineEnabled`/`configured` only gate the ONLINE rails. `pricing.server.ts:119` calls the RPC `storefront_payment_methods`, which is **declared in `supabase/schema.fingerprint.json` (66 functions) but has no migration defining it and is ABSENT from the throwaway DB** (0 procs; `provider_credentials` has 0 rows for this merchant) — the RPC error is ignored by design (`liveRails ?? []`), so `configured = []`, which removes online rails but NOT `cod`. The theme's `payment_methods` widget (`src/lib/themes/songoskriti/commerce-presentations.tsx:396-411`) renders `cart.methods` and falls back to its own bilingual empty state exactly when `cart.methods.length === 0` — which `useLiveCart` (`src/components/builder/CartContext.tsx:139-167`) leaves untouched whenever the cart has no lines (the early return at `:157-161`). **A rail exists; an empty cart merely prevents the quote that would reveal it.**
+
+**(C) Verdict on each skip site.** The skip's stated reason is "the disposable store offers no payment rail, so the checkout's permitted interaction cannot be proven". Under (A)+(B) that is **false**: the store offers `cod`, proven by rendering it. The standing rule is that the skip may stay ONLY while the environmental reason holds — it does not hold at either site:
+
+- `.e2e/songoskriti-dynamic-themes.spec.ts:214-217` — the lane seeds a cart line at `:282` before this interaction, so `paymentRailCount` returns 1 and the guard's condition is already false: the test presently passes as a pass-through. **Conversion: delete the `test.skip` guard** so the rail is hard-asserted — `choosePaymentRail` immediately asserts `offered > 0` ("the composed checkout renders the rails the server offered", `helpers:425-428`) and then that the selection survives the server's re-quote. Strictly stronger than the guarded form; nothing is weakened.
+- `.e2e/songoskriti-storefront-surfaces.spec.ts:419-422` — this site never seeds a cart, so `railCount` is genuinely 0 and the guard currently fires with a reason that misdescribes the cause. **Conversion: seed the cart with the file's own shipped `ensureCartHasLine` (already imported at `:8` and already used at `:287` and `:455`, i.e. the file's established pattern), then delete the `test.skip` guard** — the same `choosePaymentRail` assertion chain then runs. Adding the precondition the other two permitted-interaction tests in this file already take is a strengthening, not a weakening.
+
+**(D) Not in scope of this section: the missing RPC.** Its absence is an environment/schema-fingerprint drift that costs the store only its ONLINE rails (`configured = []`), never `cod`; nothing in the four lanes reads online rails. Recorded as a concern rather than fixed — creating it would mean adding a migration, i.e. a schema change outside this batch's mandate.
+
+**(E) Probe fidelity note (so the raw log is not misread later).** The probe's `cartLinesInStorage: 0` field and its direct `quoteCart` "Cart is empty" error are artifacts of the probe reading `parsed.lines` off a store that is a **bare `CartLine[]` array** (`src/lib/cart.ts:11-19`, keyed `framique.cart.<slug>`), not of an empty cart. The authoritative signals in (A) are the rail count and the empty-state visibility: scenario 1 rendered a rail with NO empty state, which is only possible if `cart.methods` was filled by a successful quote.
+
+**(F) No file other than this record is edited by this section.** Record-only commit by explicit path, taken BEFORE either lane edit per the record-before-edit rule; continuing the §-numbering after §(t.6).
