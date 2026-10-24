@@ -6698,3 +6698,35 @@ Publish itself would accept `_bn`-only source ((s.6): `publishVersion` lints the
 **(E) Zero-churn check design restated.** The verify run after the freeze uses the SAME verify mode (`PORT_CAPTURE_OUT=after`, no update), so the frozen `reference/` and the machine baselines are read-only during it; `git status` clean on both is the churn proof for the baselines, and byte-identity of `after/` between run 1 and the verify run (two independent live renders, no shared cache) is the churn proof for the render. Planned deviation from §(r), already declared in §(t.4): ONE freeze run instead of Batch D's two, on the grounds that (B) leaves nothing to re-classify between them.
 
 **(F) No file is edited by this section.** It is a record-only commit, staged by explicit path (this file alone), taken BEFORE the freeze so the classification cannot be retro-fitted to the freeze's outcome.
+
+---
+
+### (t.6) The freeze graded against §(t.5)D, and the verify pass's zero-churn proof — measured, including one correction to (t.5)'s byte-count reasoning (dated 2026-10-24)
+
+**(A) Freeze run.** `swarm3-parity.sh freeze` (`--update-snapshots=all`, no `PORT_CAPTURE_OUT`): **66 passed / 1 skipped / 0 failed** in 9.5 m — same shape as run 1, the one skip again `chrome-mobile-drawer-375-bn`.
+
+**(B) Grade of the freeze diff vs the §(t.5)D prediction.**
+
+| §(t.5)D predicted | Measured | Verdict |
+|---|---|---|
+| (i) the stale machine baselines rewritten | **11** files under `.e2e/songoskriti-port-parity.spec.ts-snapshots/` changed | right KIND; count corrected in (D) below |
+| (ii) `reference-manifest.json` regenerated, metadata-only | changed; **136 diff lines = 134 `freezeSha` + 2 `generatedAt`**, no still entry altered | **exact** |
+| (iii) nothing under `reference/` or `after/` moves | **0** changes under `reference/`, **0** under `after/` | **exact** — the substantive claim |
+
+The human evidence sets could not move, and did not: that is the load-bearing part of the prediction and it held.
+
+**(C) The freeze had ZERO pixel work to do — measured, not inferred.** Post-freeze pixel classification of all 65 machine baselines against `reference/` at the lane's own thresholds (`maxDiffPixelRatio 0.02`, `threshold 0.2`): **65/65 pixel-identical, 0 genuine pixel differences, 0 size changes.** Combined with §(t.5)B (run 1's `after/` = `reference/`, CHANGED=0), every one of the three evidence sets — `after/`, `reference/`, machine baselines — now renders the same pixels from the current tree.
+
+**(D) Correction to §(t.5)D(i)'s "26": byte-difference vs `reference/` over-counts staleness.** Before the freeze, **26** of 65 machine baselines were byte-different from `reference/`, but the freeze only re-encoded **11**, and after the freeze **55** machine baselines are still byte-different from `reference/` while being pixel-identical to it (C). The reconciliation: the machine-baseline encoder and the human-still encoder are deterministic but not byte-identical to each other, so a baseline can differ from `reference/` in bytes with zero pixel difference — such a file reproduces byte-for-byte on regeneration and therefore does NOT change in the freeze. **True staleness (a file the freeze had to rewrite) = 11, not 26.** The 26 figure in (t.5)D(i) conflated encoder-level byte difference with actual drift; the pixel measure (C) is the correct instrument and it reads 0. §(t.5)D's conclusion — refresh them with one `--update-snapshots=all` run — was right, and the run is now proven unnecessary on pixel grounds and complete on byte grounds.
+
+**(E) Verify run — the zero-churn proof, all three legs.** `swarm3-parity.sh verify` (`PORT_CAPTURE_OUT=after`, NO update): **66 passed / 1 skipped / 0 failed** in 8.5 m.
+
+1. **Baselines untouched by the verify run:** 0 machine baselines and 0 `reference/` files modified in its window (newest baseline mtime `02:42:30` = the freeze's; the verify log closed `02:59:36`) — a run with no `--update-snapshots` wrote nothing into the frozen evidence.
+2. **`reference/` clean in `git status`** after both runs.
+3. **`after/` byte-identical across two independent live renders: 65/65 md5-identical** (run 1 at `02:30` vs verify at `02:59`, no shared capture cache). This is the churn proof for the render itself.
+
+**(F) One file that is NOT churn-stable, named honestly: `reference-manifest.json` rewrites on every parity run.** Its `generatedAt` in the working tree is `2026-10-24T00:59:35.941Z` = the verify run's end (`02:59:35` local), not the freeze's — the spec writes the manifest at the end of whichever parity run executes. Its substantive content is stable: one distinct `freezeSha` across all 67 sites, `5f8f348b28e1` (the §(t.5) record commit, which was HEAD for both runs), and no still entry differing. So the manifest's `generatedAt` is per-run provenance, not drift; it is committed alongside the baselines in the stills commit and its timestamp is stated here rather than left to be discovered. **`reference/` and the machine baselines are the churn-sensitive evidence; both proved stable.**
+
+**(G) Deviation from §(r) restated and now justified in evidence.** ONE freeze run instead of Batch D's two: with §(t.5)B at CHANGED=0 and (C) at 65/65 pixel-identical, a second freeze would have had no pixel to move; the single run re-encoded 11 byte-stale baselines and was followed by an independent verify run carrying legs 1-3 above.
+
+**(H) No source file is edited by this section.** Record-only commit by explicit path, taken before the stills commit so the grade cannot be retro-fitted to what is being staged.
