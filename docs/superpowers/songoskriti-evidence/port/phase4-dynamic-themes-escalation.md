@@ -6754,3 +6754,22 @@ The human evidence sets could not move, and did not: that is the load-bearing pa
 **(E) Probe fidelity note (so the raw log is not misread later).** The probe's `cartLinesInStorage: 0` field and its direct `quoteCart` "Cart is empty" error are artifacts of the probe reading `parsed.lines` off a store that is a **bare `CartLine[]` array** (`src/lib/cart.ts:11-19`, keyed `framique.cart.<slug>`), not of an empty cart. The authoritative signals in (A) are the rail count and the empty-state visibility: scenario 1 rendered a rail with NO empty state, which is only possible if `cart.methods` was filled by a successful quote.
 
 **(F) No file other than this record is edited by this section.** Record-only commit by explicit path, taken BEFORE either lane edit per the record-before-edit rule; continuing the §-numbering after §(t.6).
+
+---
+
+### (t.8) The publish-success branch's blocker — the lane reads a field the workspace DTO NEVER carried; the pointer exists on the editor's own workspace. Recorded BEFORE the helper edit (dated 2026-10-24)
+
+**(A) What the run measured.** `swarm3-lanes.sh seven` (run at 05:30-05:45, log `/tmp/opencode/e2e-auth/swarm3-lane-seven.log`) closed **1 passed / 7 failed**, and every one of the seven failed at the SAME line — `songoskriti-seven-templates.spec.ts:976`, `expect(pointerAfter).not.toBe(pointerBefore)` with `Expected: not null`. All seven publishes had SUCCEEDED (the toast read "Published to your storefront"); the branch died on its own pointer read, not on the platform. That is the first time this tree has executed the publish-success branch at all, and it exposes the branch's defect precisely.
+
+**(B) The probe, live, through shipped code paths** (temporary untracked `.e2e/__batche_ptrprobe.spec.ts`, never staged, deleted with the rail probe before the closing gates). It asks both candidate surfaces the same question:
+
+| Surface | What it returned |
+|---|---|
+| `themesWorkspaceFn().installed[0]` (what both lane helpers read) | keys are `id, key, name, author, description, version, tags, screenshotUrl, isActive, autoUpdate, favourite, installedAt, updateAvailable` — **no key matching `/publish/i` anywhere in the row** (the recursive candidate walk found none) |
+| `builderWorkspaceFn().theme` (the editor's own workspace, `src/lib/themes.server.ts:97` `ThemeSummary`) | `publishedVersionId: "3a34fdec-8771-4d2e-974f-7e0e8cdf6b06"` — non-null, with `id, name, isActive, publishedVersionId, sourceKey, sourceVersion, sourceInstallId` as its keys |
+
+**(C) Root cause — a test-side type lie, not a platform defect.** `loadThemesWorkspace` → `toInstalled` (`src/lib/themes/appearance.server.ts:141-164`) never maps `row.published_version_id` onto `InstalledTheme` (`src/lib/themes/appearance.ts:13-30`); the column is SELECTed (`:138-139`) but only used server-side (`resolvePublishedVersionId`). Both lane helpers (`songoskriti-dynamic-themes-helpers.ts:238-258`, `songoskriti-seven-templates.spec.ts:219-234`) cast the workspace response to a shape with `publishedVersionId` and then `?.`-default it to `null` — so the read is always `null`, and `.catch(() => null)` would have hidden a throw the same way. The pointer itself is healthy: the probe reads `3a34fdec-…`, which is the version Swarm 1b published at 23:03 (§(t.4)).
+
+**(D) The fix, smallest safe correct thing — test-side only, no product edit.** Both helpers read the pointer from `builderWorkspaceFn()` (`/src/lib/themes.functions.ts:15-22` → `loadWorkspace` → `resolveTheme`), which is the surface the editor and the publish button themselves use; the DTO genuinely carries `publishedVersionId`. The `.catch(() => null)` is dropped so a throwing read fails loudly with the server's error instead of collapsing into the same `null` the defect fed on. The assertions are untouched — in fact they become meaningful for the first time: `pointerBefore`/`pointerAfter` now carry real ids. This is a strengthening, not a weakening, and no product file changes because the workspace DTO is correct as designed (the theme desk does not need the pointer; the editor does).
+
+**(E) Boundary.** Files this section plans to edit: `.e2e/songoskriti-dynamic-themes-helpers.ts`, `.e2e/songoskriti-seven-templates.spec.ts` — test files only, both §7-relaxed for this programme. The probe files (`__batche_ptrprobe.spec.ts`, `__batche_railprobe.spec.ts`) are untracked diagnostics and are deleted, never staged. No source file is edited by this section.
