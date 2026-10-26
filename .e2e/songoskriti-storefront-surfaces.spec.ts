@@ -6,7 +6,6 @@ import {
   changeCartQuantity,
   choosePaymentRail,
   ensureCartHasLine,
-  paymentRailCount,
   switchAccountTab,
 } from "./songoskriti-dynamic-themes-helpers";
 
@@ -415,11 +414,12 @@ test.describe("the storefront surfaces", () => {
   test("the composed checkout's payment rail can be chosen and the selection sticks", async ({
     page,
   }) => {
+    // A REAL line first — the checkout only quotes (and so only reveals the
+    // store's rails) when the cart has a line; `cod` is offered whenever
+    // `cod_enabled` is set, which the seed does (§(t.7)). This is the same
+    // precondition the cart case below already takes.
+    await ensureCartHasLine(page);
     await open(page, `/store/${DYNAMIC_STORE}/checkout`);
-    test.skip(
-      (await paymentRailCount(page)) === 0,
-      "the disposable store offers no payment rail, so the checkout's permitted interaction cannot be proven",
-    );
     const chosen = await choosePaymentRail(page);
     expect(chosen, "the chosen rail is one of the server's own").not.toBe("");
     await expect(

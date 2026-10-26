@@ -18,7 +18,6 @@ import {
   holdsRealSession,
   openStorefront,
   openTemplateInEditor,
-  paymentRailCount,
   publishedVersionId,
   readInspectorHeading,
   reloadEditorAndSelect,
@@ -208,13 +207,12 @@ const CHECKOUT: Surface = {
   replacedCopy: "Order summary",
   needsCartLine: true,
   interaction: async (page) => {
-    // The platform decides which rails a store can take; a store that offers
-    // none cannot prove this interaction, and the lane says so rather than
-    // pretending it passed.
-    test.skip(
-      (await paymentRailCount(page)) === 0,
-      "the disposable store offers no payment rail, so the checkout's permitted interaction cannot be proven",
-    );
+    // The platform decides which rails a store can take. The lane has already
+    // put a REAL line in the cart (`needsCartLine`), so the quote has run and
+    // the store's `cod` rail is offered (§(t.7)); `choosePaymentRail` asserts
+    // the composed checkout renders at least one server-offered rail. The old
+    // guard skipped when the count was 0 — a state this lane cannot reach,
+    // because an empty cart (not an absent rail) is what hides `cod`.
     const rail = await choosePaymentRail(page);
     expect(rail, "the chosen rail is one of the server's own").not.toBe("");
   },

@@ -232,29 +232,24 @@ export async function attemptPublish(page: Page): Promise<PublishOutcome> {
 }
 
 /**
- * The published pointer's version id — server truth, read through the app's
- * own themes workspace (the same read the shipped journey uses).
+ * The published pointer's version id — server truth, read through the
+ * editor's OWN workspace (`BuilderWorkspace.theme.publishedVersionId`,
+ * `src/lib/themes.server.ts:97`), which is the surface the publish control's
+ * own state comes from. The theme-desk DTO (`themesWorkspaceFn().installed`)
+ * does NOT carry the pointer (§(t.8)); reading it there returned `null` on
+ * both sides of a successful publish. A throwing read is deliberately NOT
+ * caught: it must fail loudly instead of collapsing to the same `null`.
  */
 export async function publishedVersionId(page: Page): Promise<string | null> {
-  return page
-    .evaluate(async () => {
-      const fns =
-        (await import("/src/lib/themes/appearance.functions.ts")) as unknown as {
-          themesWorkspaceFn: () => Promise<{
-            installed?:
-              | {
-                  key?: string | null;
-                  publishedVersionId?: string | null;
-                }[]
-              | null;
-          }>;
-        };
-      const workspace = await fns.themesWorkspaceFn();
-      const rows = workspace?.installed ?? [];
-      const row = rows.find((entry) => entry.key === "songoskriti") ?? rows[0];
-      return row?.publishedVersionId ?? null;
-    })
-    .catch(() => null);
+  return page.evaluate(async () => {
+    const fns = (await import("/src/lib/themes.functions.ts")) as unknown as {
+      builderWorkspaceFn: () => Promise<{
+        theme?: { publishedVersionId?: string | null } | null;
+      }>;
+    };
+    const workspace = await fns.builderWorkspaceFn();
+    return workspace?.theme?.publishedVersionId ?? null;
+  });
 }
 
 /* --------------------------------------------------------------- the storefront */
@@ -421,11 +416,22 @@ export async function paymentRailCount(page: Page): Promise<number> {
  */
 export async function choosePaymentRail(page: Page): Promise<string> {
   const rails = page.locator('input[name="fq-payment-method"]');
-  const offered = await rails.count();
-  expect(
-    offered,
-    "the composed checkout renders the rails the server offered",
-  ).toBeGreaterThan(0);
+  // The composed checkout renders its ZERO-rails empty state BOTH in the
+  // settled no-rails case AND in the pre-quote window: the widget's
+  // `methods.length` guard is first and `cart.pending` is never checked
+  // (`commerce-presentations.tsx:396-411`), so the SSR HTML (methods: [])
+  // offers zero rails until the first client quote lands (~1-2 s, measured
+  // §(t.12)B). Judge the SETTLED page, never mid-flight DOM: poll for the
+  // server's rails across the quote's own flight window — a settled
+  // no-rails state still fails the same assertion, just after waiting.
+  await expect
+    .poll(async () => await rails.count(), {
+      message:
+        "the composed checkout renders the rails the server offered (after the quote settles)",
+      timeout: 30_000,
+    })
+    .toBeGreaterThan(0);
+
   let target = rails.first();
   for (const rail of await rails.all()) {
     if (!(await rail.isChecked())) {

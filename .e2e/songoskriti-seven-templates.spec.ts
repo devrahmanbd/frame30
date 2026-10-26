@@ -215,22 +215,23 @@ async function attemptPublish(page: Page): Promise<PublishOutcome> {
   return { outcome: type === "error" ? "refused" : "published", message };
 }
 
-/** The published pointer's version id — server truth, read through the app. */
+/**
+ * The published pointer's version id — server truth, read through the
+ * editor's OWN workspace (`BuilderWorkspace.theme.publishedVersionId`,
+ * `src/lib/themes.server.ts:97`). The theme-desk DTO does not carry the
+ * pointer (§(t.8)), so the earlier read returned `null` on both sides of a
+ * successful publish. A throwing read is deliberately NOT caught.
+ */
 async function publishedVersionId(page: Page): Promise<string | null> {
-  return page
-    .evaluate(async () => {
-      const fns =
-        (await import("/src/lib/themes/appearance.functions.ts")) as unknown as {
-          themesWorkspaceFn: () => Promise<{
-            installed?: { publishedVersionId?: string | null }[] | null;
-          }>;
-        };
-      const workspace = await fns.themesWorkspaceFn();
-      const row = (workspace?.installed ?? [])[0] as
-        { publishedVersionId?: string | null } | undefined;
-      return row?.publishedVersionId ?? null;
-    })
-    .catch(() => null);
+  return page.evaluate(async () => {
+    const fns = (await import("/src/lib/themes.functions.ts")) as unknown as {
+      builderWorkspaceFn: () => Promise<{
+        theme?: { publishedVersionId?: string | null } | null;
+      }>;
+    };
+    const workspace = await fns.builderWorkspaceFn();
+    return workspace?.theme?.publishedVersionId ?? null;
+  });
 }
 
 type Journey = {
@@ -990,6 +991,49 @@ for (const journey of JOURNEYS) {
     // 10. The real storefront route. The storefront's own assertions are
     //     given the publish's REAL outcome (§(n.7.3)): a refusal is never
     //     read as a pass, and a refusal is never read as a half-apply.
+    //
+    //     The theme-PREVIEW host resolves the merchant's PUBLISHED artifact
+    //     only for a visitor who "carries a session"
+    //     (`src/routes/theme-preview.$key.tsx:44-45`), and its optional-auth
+    //     read is the app's own Bearer mechanism (`themePreviewInstalledFn`,
+    //     `:65-79`) — which a browser DOCUMENT request never carries: the
+    //     loader runs in-process during SSR and a document request sends
+    //     cookies, not an Authorization header, so the preview served the
+    //     built-in SOURCE whatever the merchant published (measured:
+    //     §(t.10)D — the published v113 archive carries three size=56
+    //     spacers while the preview rendered none). The journey's REAL
+    //     session therefore rides along the same way the app's own client
+    //     attaches it (`src/integrations/supabase/auth-attacher.ts`), for
+    //     the preview route only: the preview then serves the SAME published
+    //     pointer the storefront serves (D3/SWITCHOVER-4), and the 56 px
+    //     requirement and outcome gating below are unchanged.
+    if (journey.route.startsWith("/theme-preview/")) {
+      const accessToken = await page.evaluate(() => {
+        for (let i = 0; i < localStorage.length; i += 1) {
+          const key = localStorage.key(i);
+          if (!key?.startsWith("sb-") || !key.endsWith("-auth-token")) {
+            continue;
+          }
+          try {
+            const parsed = JSON.parse(localStorage.getItem(key) ?? "") as {
+              access_token?: string;
+            };
+            if (parsed.access_token) return parsed.access_token;
+          } catch {
+            // a malformed entry is not the session; keep looking
+          }
+        }
+        return null;
+      });
+      if (!accessToken) {
+        throw new Error(
+          "the signed-in journey's session exposes its access token",
+        );
+      }
+      await page.context().setExtraHTTPHeaders({
+        Authorization: `Bearer ${accessToken}`,
+      });
+    }
     await page.goto(journey.route, {
       waitUntil: "domcontentloaded",
       timeout: 120_000,
@@ -1013,7 +1057,11 @@ for (const journey of JOURNEYS) {
     //     is still the editor canvas, whose own copy of the spacer would make
     //     a refusal look half-applied (recorded as §(k.1)).
     const editedSpacer = page.locator(
-      'div[aria-hidden="true"][style*="height: 56px"]',
+      // The served SSR document serializes inline styles WITHOUT a space
+      // after the colon (`height:56px`); the editor canvas emits `height:
+      // 56px`. Accept both (measured: §(t.9)B) — the 56 px requirement is
+      // unchanged.
+      'div[aria-hidden="true"][style*="height: 56px"], div[aria-hidden="true"][style*="height:56px"]',
     );
     if (publish.outcome === "published") {
       await expect(
