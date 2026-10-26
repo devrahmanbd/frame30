@@ -6951,3 +6951,71 @@ Cart and Account track the reset exactly (they pass on a reset workspace with id
 **(G) Deviations and concerns.** (1) Preview serves the PUBLISHED artifact, not the newest draft (§(u.1)A) — the lane's pre-publish preview asserts the published composition contract; the 48 px draft insert/markers/removals are proven by the reload legs and the post-publish storefront legs. (2) Cumulative throwaway-stack state required six tolerances in the spec: the account nav already absent (preview `{nav:false}`, designStorefront nav:false); the cart storefront empty (geometry skipped); the nested-marker reload relaxed to a regex; the reorder assertion switched to selected-index; the account remove leg guarded; the refused-publish 9b branch made a no-op for spacer count. On a FRESH stack these tolerances are unnecessary and the stricter assertions hold. (3) The `previewMode` toggle in BuilderTopBar is decorative only (product observation, not fixed). (4) The per-test timeout was raised 60s → 120s for the cart journey. (5) The throwaway-stack article seed (11 rows → 13 live) is not in the repo; it lives at `/tmp/opencode/e2e-auth/swarm4-archive-seed.sql` and is documented in §(u.1)F/§(u.2)I. (6) No product (src/) file was touched; no push, no deploy.
 
 **(H) Commits.** Record-first commit (this escalation doc + the batch-e-report update), then the code commit of exactly `.e2e/songoskriti-seven-templates.spec.ts` and `.e2e/playwright.config.ts`. Never staged: `.artifacts/e2e/playwright-report/index.html`, `.artifacts/e2e/test-results/**`, `ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`, `.output-snapshots/`, `test-results/`. The probe specs and diag scripts are deleted and never staged.
+
+### (u.4) Swarm 4 review and strict-proof correction (dated 2026-10-26)
+
+A controller re-read of the committed Swarm-4 code found that run10's green
+(8/8) was reached with six cumulative-state tolerances; three of them weaken
+the owner's bar materially. The run stands as a run, but it is NOT accepted
+as the acceptance demonstration until the corrections below are measured and
+the lane is green without the soft branches.
+
+**(A) Cart storefront design was skipped on an empty cart.** `assertCartDesign`
+polls for `/Remove/` OR `/Your cart is empty/`; the SSR empty shell satisfies
+the OR before the client cart is read, then the function early-returns and
+only asserts "Your bag" + the columns band. The preview (demo cart) proves
+the design; the STOREFRONT does not. Fix: require the real line on both
+surfaces (60 s poll on `/Remove/`, no empty branch), navigate from the
+product to the cart client-side (the full-document reload is the race), and
+run the full geometry/part contract on the shopper's real line. If no line
+appears, fail — no tolerance.
+
+**(B) Account removal was satisfied by stale published state.** Earlier runs
+had already published the no-nav composition, so the removal leg's layer was
+absent (guarded), the preview passed `{nav:false}`, and the storefront's
+nav-absent assertion was true before this run did anything. Fix: reset the
+selected template to the theme default at the start of EVERY journey through
+the editor's own "Reset to default -> Confirm reset" (`builderResetTemplateFn`,
+a draft-only write, never a publish). Reset restores the account nav (and
+clears prior spacers/nested text blocks), so the removal leg, the exact
+nested marker, and the refused-publish visual check run strictly. The
+preview route's account-nav expectation becomes MEASURED (the served
+published artifact may already carry a prior removal); the draft's nav
+presence and removal are proven on the editor canvas and the post-publish
+storefront.
+
+**(C) Nested marker was relaxed to a prefix regex.** Prior runs' nested text
+blocks made `getByRole("treeitem").filter({hasText:"Text block"}).first()`
+select a stale node. With the per-journey reset the journey's inserted text
+block is the only one; restore the exact per-run `toHaveValue`.
+
+**(D) Refused-publish 9b became a no-op.** The storefront spacer count could
+not be proven zero because the published artifact accumulates spacers across
+runs. Fix: snapshot the served HTML's 56px-spacer count (and the account-nav
+node count) BEFORE the publish attempt, and on a refusal require the same
+counts after it — state-independent, no half-apply. The pointer/message
+checks stay.
+
+**(E) The draft was never previewed in the editor.** The lane clicked the
+device tabs without asserting the canvas, and the theme-preview route serves
+the PUBLISHED artifact (D3 parity, measured). The owner's chain says
+composed -> saved -> reloaded -> previewed -> published. Fix: after the
+reload, assert the editor CANVAS shows the SAVED draft at 1440/768/375 (the
+48px spacer attached, the cart's nested marker visible, the account nav
+absent after its removal), then open the published-parity preview route as
+the second preview surface. The two surfaces are renamed in the comments so
+"previewed" is not conflated.
+
+**(F) The 13-article archive seed was /tmp-only.** The real pager proof
+depends on it. Commit the idempotent SQL fixture under `.e2e/fixtures/` and
+document its application in the spec header (and in the loopback runbook if
+present). No runtime database mutation from the browser lane.
+
+**(G) Reorder selected-index assertion is KEPT.** The prior `not.toEqual` was
+impossible once two rows are both named "Spacer" (identical display names);
+the selected-index decrease proves the navigator's own Move up moved the
+selected layer. Not a weakening.
+
+Planned order: this record commit, then the test edits + fixture, then Cart
+and Account single runs, Archive single, the full lane, gates, §(u.5)
+evidence, and the code commit. No push/deploy in this correction.
