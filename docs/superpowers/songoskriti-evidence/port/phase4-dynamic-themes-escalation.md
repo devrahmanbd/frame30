@@ -7019,3 +7019,79 @@ selected layer. Not a weakening.
 Planned order: this record commit, then the test edits + fixture, then Cart
 and Account single runs, Archive single, the full lane, gates, §(u.5)
 evidence, and the code commit. No push/deploy in this correction.
+
+### (u.5) Strict-proof corrections measured; the desktop-56 defect and the archive empty-state false acceptance (dated 2026-10-26)
+
+**(A) The §(u.4) corrections are implemented and the lane is STRICTLY green.**
+Measured, not asserted: every journey now starts with the editor's own
+armed "Reset to default -> Confirm reset" (draft-only; published pointer
+untouched); the cart storefront requires the shopper's REAL quoted line (no
+empty-state branch) and runs the full geometry/part contract; the nested
+marker is the exact per-run value; the account nav is present after reset,
+removed by this run, and measured on the preview/storefront; the refused
+publish re-reads the served HTML and requires the same 56 px-spacer and
+account-nav counts; the editor canvas renders the saved draft at 1440/768/375;
+the archive seed is committed at `.e2e/fixtures/songoskriti-archive-seed.sql`
+and documented in `docs/15-e2e/loopback-auth-setup.md` step 2b.
+
+Singles on the throwaway stack: Cart **1.3m**, Account **1.0m**, Archive
+**50.4s**, all pass (`strict-cart-run3.log`, `strict-account-run1.log`,
+`strict-archive-run1.log`). Full lane: **8/8, 6.6m** — Search 53.8s, Cart
+1.2m, Account 54.5s, Blog 52.0s, Checkout 51.9s, Archive 47.8s, Page 50.3s,
+taxonomy 9.4s (`strict-lane-run1.log`). Gates: `tsgo --noEmit` 0;
+`eslint` 0; `node scripts/doc-gate.mjs` 0; contracts 43/43; the 7 theme
+suites 162/162.
+
+**(B) The eighth cumulative-state defect: the final 56 px edit was a MOBILE
+override.** The §(u.4)E canvas loop ends on the 375 px preset; the final
+inspector fill therefore wrote the mobile-scoped height, and the published
+DESKTOP artifact stayed 48 px. Run10's "56 px on the storefront" green was a
+PRIOR RUN's desktop spacer, not this run's edit — the exact false positive
+the re-read was meant to remove. The first strict Cart run proved it:
+`curl /store/frame19-demo/cart` served exactly `height:48px`, zero 56 px,
+while the inspector showed 56. Fix: return the studio to 1440 px after the
+draft-preview loop, fill 56 on desktop, commit with blur, and assert the
+desktop CANVAS renders 56 BEFORE the publish opens. After the fix, the
+served cart carries exactly one `height:56px`, zero 48 px, and this run's
+own nested marker. No assertion was weakened.
+
+**(C) Archive empty state — the prior acceptance was WRONG.** §(u.2)A
+correction 2 asserted "Nothing in this archive yet" as a theme marker on the
+13-article page and called it "an authored layer, not only on an empty
+feed." The theme's own comment (`preview.ts:277-278`) defines it as "what an
+empty archive shows," and the Search host already grants its empty state
+only when the result set is empty. Both archive hosts granted it
+unconditionally (`ArchiveView.tsx` `ARCHIVE_SLOTS`; `ThemePreviewFrame.tsx`
+`archiveSlots`), so the published 13-article page AND its page 2 both showed
+the contradictory panel (`/tmp/opencode/e2e-auth/depth-evidence/
+archive-page1.png`, `archive-page2.png`). Correction (recorded before the
+edit): grant `empty_state` in both hosts ONLY when `feed.articles.length
+=== 0` (the preview against its demo feed), and make the lane assert the
+panel ABSENT on the preview and on both published pages instead of present.
+The editor's authored layer remains; the storefront renders it only when
+empty. This is a product fix (src/) plus a test correction, never a
+weakening.
+
+**(D) Residual concern, recorded not silently redesigned: the magazine
+layout is a five-card editorial front page.** The theme's blog/archive
+`blog_archive` uses `layout: "magazine"`, and the renderer explicitly renders
+the lead + `rest.slice(0, 4)` (`src/components/builder/blog.tsx:280-310`).
+The platform's archive feed page 1 has 12 rows (page 2 = 1); only 5 render,
+so seven are not reachable through the pager. §(u.1)F's "page 1 = 12" is the
+PLATFORM FEED's page size, not a rendered-card count; §(u.2)A's "four slot
+markers" conflated the empty panel with the listing. The lane proves the
+platform's real total (13), the pager, and page 2's oldest article; it does
+not claim 12 rendered cards. Changing the magazine layout/limit is a design
+decision for the owner, outside this strict-proof correction.
+
+**(E) Boundary.** The correction touches
+`.e2e/songoskriti-seven-templates.spec.ts`,
+`.e2e/fixtures/songoskriti-archive-seed.sql` (new),
+`docs/15-e2e/loopback-auth-setup.md` (step 2b),
+`src/components/store/ArchiveView.tsx` and
+`src/components/store/ThemePreviewFrame.tsx` (the conditional empty grant).
+Screenshots live under `/tmp/opencode/e2e-auth/depth-evidence/` and are not
+staged. The temporary evidence spec `.e2e/_depth-evidence.spec.ts` is
+deleted before the code commit. No push/deploy in this correction; the
+archive fix is followed by the Archive single, the full lane, and the gates,
+all recorded in §(u.6).
