@@ -206,20 +206,101 @@ earlier on its rail precondition.
    platform refuses at 63 % vs the 90 % floor (§2.7). A green dynamic lane on
    the throwaway stack after the owner closes the translation gap (or rules a
    source-installed official theme exempt) is the acceptance evidence this
-   programme could not produce.
+   programme could not produce. **CLOSED 2026-10-26 — see §4: the owner ruled
+   translate-the-copy (then Lane A paired authoring), the live publish
+   document cleared at 100 %, publish succeeded, and the storefront served the
+   published composition.**
 2. **The auth-throttle flake.** The surfaces lane logs in through the real
    form in every test (11 logins per run); the platform's login lock makes the
    last case intermittently flaky. Session reuse across tests would fix it but
-   changes helper semantics; left as a **reported flake**.
+   changes helper semantics; left as a **reported flake**. **Measured
+   2026-10-26 (§(t.14)B): the limiter is 10 sign-ins / 300 s per email+IP
+   (`rate-limit.server.ts:77`); the 11-leg file now runs as two halves with
+   the window emptied between them — 11/11 green, no code or assertion
+   change.**
 3. **The route comment's stale line numbers.** The search route's comment
    cites `widget-data.functions.ts:43-74` (pre-fix numbering; the
    `createServerFn` now sits at `:69`). Correcting it means a third commit
    cycle on a §7-pinned file for a doc nit — **deferred**.
-4. **The remote CI run is UNVERIFIED-FROM-HERE.** Nothing is pushed:
-   `origin/frame30` and `origin/main` still sit at `109e2d3d`. Every gate CI
-   runs was run locally (§2.6); no claim of a green remote run is made.
-5. **Carried from the prior programme, and unchanged here:** the
-   merchant-scoped archive route is still deferred (§5.3 #5 of `report.md`);
-   the distinctness gate's expectation table is still Songoskriti's (D3 stands
-   in substance — the gate's _machinery_ was re-verified across the new
+4. **The remote CI run is UNVERIFIED-FROM-HERE.** At this record's freeze
+   nothing was pushed (`origin/frame30` and `origin/main` then sat at
+   `109e2d3d`, later at the shipped programme tip `e695b497`). Every gate CI
+   runs was run locally (§2.6); no claim of a green remote run is made. The
+   acceptance push triggers the pipeline; a trigger is not a receipt.
+5. **The merchant-scoped archive route — CLOSED for the category route
+   (2026-10-26).** Batch B landed
+   `/store/$slug/blog/category/$termSlug` (published resolver, archive
+   context, named declined frame, `ARCHIVE_SLOTS` equality — §4.2). The
+   distinctness gate's expectation table is still Songoskriti's (D3 stands in
+   substance — the gate's _machinery_ was re-verified across the new
    compositions in §2.3).
+
+---
+
+## 4. The stricter acceptance gate — demonstration evidence (2026-10-23 → 2026-10-26)
+
+The post-ship audit (`audit-acceptance.md`) found eight gaps (C1 SATISFIED;
+C2–C5 PARTIAL). Five batches closed them; the full narrative and the
+per-gap table are in `report.md` §9, and every edit is recorded append-only in
+`phase4-dynamic-themes-escalation.md` §(n)–§(t.14). The evidence in brief:
+
+### 4.1 The publish floor — measured on the live document
+
+- Before: **440 rows / 270 ok / 59 fallback / 111 empty = 82 %** against the
+  90 % floor; refusal verbatim `বাংলা translation coverage is 82% — publishing
+  needs at least 90%.` Batch C's source-map 100 % was a different denominator
+  (`parseSection` injects catalog EN as `_meta.fallback` into the document the
+  guard walks) — recorded and corrected (§(s)).
+- The owner ruled translate-the-copy, then **Lane A paired authoring** when
+  the platform's own lint refused `_bn`-only slots: **57/57 paired twins**,
+  the EN side byte-identical to the injected catalog default (verified 57/57
+  against `SECTION_CATALOG`). Two remaining fallbacks were draft-only
+  `rich_text` artifacts, not theme copy.
+- After: **438 rows / 327 ok / 0 fallback / 111 empty = 327/327 = 100 %**.
+  Publish **SUCCESS**: `"Published to your storefront"`, HTTP 200
+  `versionId 242604f3-…`, version 31 `published`; the later hygiene publish
+  advanced the pointer `da60188d… → a0ef824a…` with `theme.published` events
+  and the marker observed **live by curl**.
+
+### 4.2 The lanes on final bytes (throwaway stack)
+
+| lane | result |
+| ---- | ------ |
+| `songoskriti-seven-templates` — seven templates, editor → save → reload → **publish-success** → storefront | **8/8** |
+| `songoskriti-dynamic-themes` | **5/5** (checkout rail skip converted) |
+| `levelb-theme-switch-serve` A→B→A | **2/2** |
+| checkout solo | **1/1** |
+| `songoskriti-storefront-surfaces` | **11/11** (6/6 + 5/5; signin limiter spaced, no assertion weakened) |
+| `songoskriti-port-parity` | **66/1/0**, zero-churn ×2; freeze moved 11 machine baselines + manifest only |
+
+New coverage landed by the demonstration: the archive route
+`/store/$slug/blog/category/$termSlug` (route suite 10/10, the declined frame
+named, the pager supplied storefront-side), the account-panel survival rule
+(12 tests + browser leg), the nested add-inside contract + Cart journey, and
+the theme-switch A→B→A proof at the DB seam.
+
+### 4.3 Defects found and fixed
+
+- **Double-delete** — one Delete removed the focused node *and* `selectedIds`;
+  fixed at the window dispatcher (`dispatchStudioShortcut`, `defaultPrevented`
+  guard), 5-test handler pin with a measured RED-proof (2/22 fail without the
+  guard).
+- **Cart heading lint** — the lane left a bn-only pair; the marker moved to
+  the bilingual heading; the lint rule untouched.
+- **Payment-rail skip** — measured false (COD exists; the widget renders its
+  pending window as the empty state); both sites converted to hard assertions
+  with a quote-settle wait.
+
+### 4.4 Gates and the review verdict
+
+Full suite **635 files / 8 998 tests pass**, only the three known pre-existing
+environment failures (`analytics-live-shape` ×2, `site.server` ×1);
+`tsgo --noEmit` exit 0; `eslint` 0 on touched paths; `doc-gate` 0 findings.
+The independent final review (`review-final-2.md`) audited `e695b497..HEAD`
+(44 commits / 110 files) and returned **PASS_WITH_CONCERNS, no blockers**:
+no forbidden path committed, no test weakened, record append-only with
+record-before-code ordering, **C1–C5 all SATISFIED**. Carried concerns (the
+widget's pending flash, Lane A's EN-ownership maintenance note, the
+publish-confirm dirty window, the toast ignoring `applied: false`, the missing
+বাংলা control on the schema-routed inspector, lane-hygiene and login-spacing
+constraints, the remote CI receipt) are listed in `report.md` §9.4.
