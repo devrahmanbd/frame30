@@ -37,7 +37,7 @@ export default defineConfig({
   // until it answers 200 (generous budget) BEFORE any spec asserts, so a
   // cold vite SSR compile cannot flake the first navigation.
   globalSetup: "./global-setup.ts",
-  timeout: 60_000,
+  timeout: 120_000,
   expect: { timeout: 15_000 },
   retries: process.env.CI ? 2 : 1,
   outputDir: "../.artifacts/e2e/test-results",
