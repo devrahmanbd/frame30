@@ -7095,3 +7095,173 @@ staged. The temporary evidence spec `.e2e/_depth-evidence.spec.ts` is
 deleted before the code commit. No push/deploy in this correction; the
 archive fix is followed by the Archive single, the full lane, and the gates,
 all recorded in §(u.6).
+
+### (u.6) Post-fix proof: the blank-page root cause, the publish-window race, the archive SSR strip, and one clean 8/8 (dated 2026-10-27)
+
+**(A) The run-4 flake was real, and it had a product cause.** Run 4
+(`strict-lane-run4.log`) ended `7 passed, 1 flaky`: Cart failed at
+`assertCartDesign` because the storefront body never contained the shopper's
+line, while the same run's preview-leg screenshot (recorded by the prior
+session; the artifact was later overwritten by a passing run) showed the
+fully rendered cart with three lines and the run's nested marker. The
+published cart was fine;
+the storefront document was blank after its client modules loaded. The log
+also carried `Internal error: step id not found: fixture@3766` at the Cart
+attempt. A later run with the CSP fix but before the publish-window fix
+(`full-lane-noncefix.log`) reproduced the same internal line
+(`fixture@2232`) on a DIFFERENT failed attempt (Account, publish confirm
+disabled), then passed on retry.
+
+**(B) Root cause 1 — the per-request CSP nonce was a shared module store.**
+`src/server.ts` cleared the module store and minted a new nonce per request,
+but concurrent SSR documents could interleave between the mint and the
+header, so a document's inline `window.$_TSR` bootstrap could carry another
+request's nonce. Chrome then blocks the bootstrap under `script-src
+'nonce-…'`, TanStack throws "Expected to find bootstrap data on
+window.$_TSR", and React unmounts to a blank body — exactly the observed
+blank cart. The prior session's 12-way concurrent probe over 120 documents
+recorded `bad=110` (CSP nonce vs script nonce, missing bootstrap or multiple
+nonces) in `src/lib/ssr-nonce.server.ts`; that pre-fix log was not retained,
+so the number is cited as the recorded measurement, not re-quoted from a log
+here. The fix mints the nonce once per request, writes it to
+the request (`x-csp-nonce`), and resolves `currentNonce()` through the
+request's own async context (`src/lib/ssr-nonce.ts`,
+`src/lib/ssr-nonce.server.ts`); the module store remains the no-request
+fallback. `withSecurityHeaders` now prefers the request header. Post-fix
+probe, same script and load: `runs=120 bad=0`; the mismatch-replay probe
+printed `captured null` (no mismatched document to replay). The unit pins
+are `src/lib/ssr-nonce.test.ts` 4/4 and the new request-header case in
+`src/lib/platform-shell-csp.test.ts` (6/6 in the file).
+
+**(C) Root cause 2 — the publish modal's dirty window was consumed by the
+autosave.** The lane read the served storefront HTML AFTER its final 56 px
+edit. The 3 s autosave then saved the draft, the modal's `hasChanges`
+became false, and its confirm stayed `disabled` — the Account failure in
+`full-lane-noncefix.log` ("the publish modal's confirm is enabled", 33
+disabled polls). The fix moves both pre-publish server reads BEFORE the
+final edit, blurs the inspector (Tab), waits 1 s — below the 3 s debounce —
+and asserts the 56 px node on the desktop canvas before opening the modal.
+The edit is still local and dirty when the modal opens, so the publish
+carries it.
+
+**(D) The internal error is Playwright's failure-path attachment race, not
+our harness.** `Internal error: step id not found: fixture@…` is emitted by
+`dispatcher._onAttach` when an attachment arrives with a step id the
+dispatcher has already deleted. Playwright attaches the failure video from
+`ArtifactsRecorder` while the context's fixture-teardown step is the current
+parent (`testInfo.attachments.push` resolves `_parentStep().stepId`), and the
+attach can be processed after that fixture step's end on a failed attempt.
+The spec and helpers define NO `test.step`, NO `test.extend`, and NO custom
+fixtures; the line appears only on failed attempts (run 4 Cart, noncefix
+Account) and never in a passing attempt. It is cosmetic to the result but
+must not be called a clean run when present. We did not disable video,
+traces or screenshots: the only accepted mitigation is not failing, and the
+clean run below has zero occurrences of the line.
+
+**(E) Final lane — 8/8, zero retries, zero internal errors, 5.7 m.**
+Command (fresh app process started from current source with
+`DISABLE_HMR=true`, throwaway env, after all source edits):
+
+```
+E2E_BASE_URL=http://localhost:3020 E2E_NO_WEBSERVER=1 \
+E2E_MERCHANT_EMAIL=e2e-merchant@example.invalid \
+E2E_MERCHANT_PASSWORD='<throwaway>' \
+node_modules/.bin/playwright test -c .e2e/playwright.config.ts \
+  songoskriti-seven-templates --reporter=list
+```
+
+Output (`strict-lane-run6.log`): Search 49.1s; Cart 1.1m; Account 44.9s;
+Blog 45.5s; Checkout 44.4s; Archive 39.7s; Page 42.3s; taxonomy 5.5s —
+`8 passed (5.7m)`, exit 0. No `retry`, no `flaky`, no
+`Internal error: step id not found`. The Cart design contract ran on the
+shopper's REAL quoted line this time (no empty-state branch), and Account
+measured the served nav state and asserted the matching design.
+
+**(F) Archive SSR — the loader strips the authored panel, not just the DOM.**
+The host's conditional grant hides the widget, but the theme authors
+`empty_state` as an ordinary section, so the resolved AST was still
+serialized in the document and the DOM strip alone left the string in the
+payload. `loadStoreBlogArchive` now strips the authored section(s) once the
+feed size is known (`src/lib/store-blog-archive.server.ts`, helper
+`src/lib/archive-ast.ts`), recursively; `ArchiveView` and
+`ThemePreviewFrame` also strip the rendered body and grant `empty_state`
+only when the feed is empty. The empty feed keeps the theme's panel. The
+route test pins the loader call and the rendered absence (10/10).
+
+Served-HTML check on the real merchant route after recreating the app from
+current source:
+
+```
+GET /store/frame19-demo/blog/category/handloom-heritage?page=1 -> 200, 91131 bytes,
+  "Nothing in this archive yet" = 0, "13 articles" = 1, page=2 link = 2
+GET /store/frame19-demo/blog/category/handloom-heritage?page=2 -> 200, 84558 bytes,
+  "Nothing in this archive yet" = 0, "The Jamdani Weavers of Sonargaon" = 2,
+  "13 articles" = 1, page=2 link = 2
+```
+
+Page 2 is the seeded oldest article, and neither page carries the empty
+panel in its serialized HTML. The page-1/page-2 screenshots were recaptured
+against this process (`/tmp/opencode/e2e-auth/depth-evidence/
+archive-page1.png`, `archive-page2.png`); the browser check reported
+`empty_state=0` on both and did not stage the images.
+
+**(G) Gates (exact).** `node_modules/.bin/tsgo --noEmit` exit 0.
+`node_modules/.bin/eslint` on the 12 touched source/spec/test files exit 0
+with 0 errors and 3 pre-existing warnings in `ThemePreviewFrame.tsx`
+(react-refresh at 161; two exhaustive-deps at 432 and 613).
+`node scripts/doc-gate.mjs` exit 0, `findings: 0`, 24 documents, 4
+suppressions (all pre-existing negative references). Contracts:
+`preview-parity.contract.test.ts` 11 + `builder-authoring.contract.test.ts`
+22 + the archive route suite 10 = **43/43**. The first contracts run was
+**42/43**: `preview-parity` still asserted six UNCONDITIONAL archive slots
+and failed on the now-conditional `empty_state`. The contract was corrected
+to assert the real invariant — five always-granted slots on BOTH hosts, the
+sixth granted by BOTH only when `feed.articles.length === 0` — and the
+authored body still uses all six; it is not a weakened assertion. Theme
+suites: the canonical seven files **162/162**; adding
+`songoskriti-asset-paths.test.ts` (4) gives 166/166. New unit suites:
+`archive-ast` 2/2, `ssr-nonce` 4/4, `platform-shell-csp` 6/6.
+
+**(H) Residual concerns, recorded not hidden.** (1) The magazine archive
+layout renders five cards on page 1 while the platform feed holds twelve —
+the pager is real, but seven page-1 records are not reachable through the
+rendered cards; that is a theme design decision, not this fix. (2) The
+preview route serves the CURRENT PUBLISHED artifact, not the newest draft;
+the draft is proven by the reload, canvas and post-publish storefront legs.
+(3) The throwaway stack carries cumulative merchant state; the per-journey
+reset made the assertions state-independent for the edited nodes, but the
+published artifact's account-nav count still depends on the last publish
+(the design contract measures it, and the published branch asserts the
+removal). (4) The CSP nonce fix changes a platform-wide header/SSR seam;
+its probes are loopback-only, and live verification is the deploy gate.
+(5) The Playwright internal attachment line remains possible on a future
+FAILED attempt; it is documented here so a future run does not mistake it
+for the cause of a failure.
+
+**(I) Boundary.** This correction touches
+`.e2e/songoskriti-seven-templates.spec.ts`,
+`.e2e/fixtures/songoskriti-archive-seed.sql` (new),
+`docs/15-e2e/loopback-auth-setup.md` (step 2b),
+`src/components/store/ArchiveView.tsx`,
+`src/components/store/ThemePreviewFrame.tsx`, `src/lib/archive-ast.ts`
+(new), `src/lib/archive-ast.test.ts` (new),
+`src/lib/store-blog-archive.server.ts`, `src/server.ts`,
+`src/lib/ssr-nonce.ts`, `src/lib/ssr-nonce.server.ts` (new),
+`src/lib/ssr-nonce.test.ts` (new), `src/lib/platform-shell-csp.test.ts`,
+`src/lib/preview-parity.contract.test.ts`, and
+`src/routes/store.$slug.blog.category.$termSlug.test.tsx`. Never staged:
+`.artifacts/`, `.output-snapshots/`, `test-results/`,
+`ops/routing/canary-weights.conf`, `ops/routing/upstream.conf`. The
+temporary `.e2e/_depth-evidence.spec.ts` is absent and no
+`[archive-host-debug]` log remains. No push/deploy in this record; the
+deployment verification follows separately.
+
+**(J) Correction to §(u.5)(A)'s scope sentence.** "Measured on the
+preview/storefront" there must not be read as this run's DRAFT removal being
+visible before publish. The reset is draft-only; the preview and storefront
+legs measure the SERVED PUBLISHED artifact's `account_nav` state and assert
+the matching design shape. The draft's nav presence after the reset and its
+removal by this run are measured in the editor navigator/canvas, and the
+post-publish storefront asserts the removal only when the publish's REAL
+outcome advanced the pointer. The §(u.6)(E) clean run is the first lane in
+which that distinction is encoded without a cumulative-state skip.
