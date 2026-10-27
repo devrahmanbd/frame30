@@ -307,8 +307,9 @@ constraints, the remote CI receipt) are listed in `report.md` §9.4.
 
 ## 5. Deployment and live verification (2026-10-27)
 
-The corrected release was pushed with `origin/frame30` = `origin/main` =
-`9b91f18a` and deployed only through `ops/deploy-from-git.sh`, inside the host
+The corrected release was deployed from `9b91f18a`, then the tip of
+`origin/frame30` and `origin/main`; the post-deploy documentation commits now
+sit above it. Deployment used only `ops/deploy-from-git.sh`, inside the host
 network namespace:
 
 ```
