@@ -1,7 +1,10 @@
 import { test, expect, type Page } from "@playwright/test";
 import { NetworkCollector, blockExternalRequests } from "./helpers";
 import { ensureSongoskritiActive, merchantCreds } from "./helpers-songoskriti";
-import { ensureCartHasLine } from "./songoskriti-dynamic-themes-helpers";
+import {
+  ensureCartHasLine,
+  waitForQuoteToSettle,
+} from "./songoskriti-dynamic-themes-helpers";
 
 /**
  * The seven-template editor journey — the programme's headline claim, driven
@@ -18,12 +21,22 @@ import { ensureCartHasLine } from "./songoskriti-dynamic-themes-helpers";
  *   6. a real inspector property is changed (the schema-generated control
  *      holds the new value);
  *   7. the canvas is previewed at DESKTOP, TABLET and MOBILE (the studio's
- *      own device presets);
+ *      own device presets), before AND after the save;
  *   8. the draft is SAVED and the editor RELOADED — the composition
- *      survives, which is server truth, not a cached canvas;
+ *      survives, which is server truth, not a cached canvas; the SAVED
+ *      draft is then previewed on the editor canvas at all three presets;
  *   9. the PUBLISH path is exercised through the real publish modal;
  *   10. the REAL storefront route is opened and the theme's composition AND
  *      the route's own context are asserted.
+ *
+ * **Deterministic baseline (Swarm 4 review §(u.4)).** Every journey resets
+ * the selected template to the theme's shipped default through the editor's
+ * own armed "Reset to default -> Confirm reset" control BEFORE composing.
+ * The reset is a draft-only server write (the published pointer is
+ * untouched), so each journey starts from the same composition: the Account
+ * journey's nav is present for its removal leg, no earlier run's 48/56 px
+ * spacers or nested text blocks can satisfy this run's assertions, and the
+ * cart storefront contract always measures a real shopper line.
  *
  * **The publish is asserted by its REAL outcome, not by a wish.** The
  * platform's publish gate refuses a theme whose authored copy is more than
@@ -67,6 +80,13 @@ import { ensureCartHasLine } from "./songoskriti-dynamic-themes-helpers";
  * -> publish, and Cart/Account design parity is asserted by running the
  * SAME design contract on the preview and on the storefront.
  *
+ * **Two preview surfaces, never conflated.** The editor CANVAS is the DRAFT
+ * preview: after the reload the lane asserts the saved 48 px spacer (and the
+ * Cart journey's nested marker) renders at all three device presets. The
+ * `/theme-preview` route is the PUBLISHED-parity preview (D3). The draft
+ * edits are proven by the reload legs, the canvas, and the post-publish
+ * storefront — never by the published-artifact preview.
+ *
  * **`archive` asserts BOTH surfaces (Swarm 4, gap 2, §(u.1)F).** Batch B
  * landed the merchant-scoped route `/store/<slug>/blog/category/<termSlug>`,
  * so the journey's storefront leg is that REAL route (theme composition +
@@ -99,6 +119,9 @@ const TERM_SLUG = process.env["E2E_TERM_SLUG"]?.trim() || "handloom-heritage";
  * 11 idempotent published rows to make the archive's REAL pager provable
  * (§(u.1)F: page 1 = 12, page 2 = 1 — the archive's own oldest article).
  * Re-runs seed nothing new (`ON CONFLICT DO NOTHING`), so 13 is stable.
+ * The seed is committed at `.e2e/fixtures/songoskriti-archive-seed.sql` and
+ * applied to the throwaway stack by the loopback runbook (`docs/15-e2e/
+ * loopback-auth-setup.md`, step 2b) — no browser-side database mutation.
  */
 const TERM_ARTICLES = 13;
 
@@ -446,34 +469,25 @@ type Journey = {
  * journey's own outcome-gated storefront assertion.
  */
 async function assertCartDesign(page: Page): Promise<void> {
-  // The cart is a client-side (localStorage) cart; the SSR shell renders an
-  // empty state until hydration. Wait for hydration to settle before measuring
-  // the design grid (Swarm 4, gap 3, §(u.1)D).
+  // The cart is a client-side (localStorage) cart; the SSR shell renders the
+  // empty state until hydration. Require the SHOPPER'S REAL LINE: the empty
+  // shell must never satisfy this wait. The earlier OR on "Your cart is
+  // empty" let the SSR shell pass before hydration and skipped the
+  // storefront's whole geometry/parts proof (Swarm 4 review §(u.4)A).
   await expect
-    .poll(
-      async () => {
-        const t = await page.locator("body").innerText();
-        return /Remove/i.test(t) || /Your cart is empty/i.test(t);
-      },
-      { timeout: 30_000, message: "the cart hydrates before the design read" },
-    )
+    .poll(async () => /Remove/i.test(await page.locator("body").innerText()), {
+      timeout: 60_000,
+      message:
+        "the shopper's real cart line renders after hydration (no empty-state tolerance)",
+    })
     .toBe(true);
+  // The quote is the server's own figure: wait for it before measuring the
+  // summary and the line's total (the design contract reads both).
+  await waitForQuoteToSettle(page);
   await expect(
     page.getByText("Your bag").first(),
     "the theme's cart body renders its own heading",
   ).toBeVisible({ timeout: 30_000 });
-  const hasLine = /Remove/i.test(await page.locator("body").innerText());
-  if (!hasLine) {
-    // Empty cart: the theme's empty state renders; the line-specific design
-    // contract (geometry/part sequence) only applies when a line exists
-    // (Swarm 4, gap 3, §(u.1)D). The preview leg (host demo) always has a
-    // line and runs the full contract.
-    await expect(
-      page.locator('[data-fq-node^="columns"]').first(),
-      "the theme's columns band renders",
-    ).toBeVisible({ timeout: 30_000 });
-    return;
-  }
   await expect(
     page.getByText("Order summary").first(),
     "the theme's cart body renders the order summary",
@@ -526,18 +540,10 @@ async function assertCartDesign(page: Page): Promise<void> {
     g.tracks[0]!,
     `the theme's asymmetrical split puts the WIDER items track first (measured "${g.tracks}")`,
   ).toBeGreaterThan(g.tracks[1]!);
-  const bodyText = await page.locator("body").innerText();
-  if (/Remove/i.test(bodyText)) {
-    expect(
-      g.cells[0]!.text,
-      "the first cell is the cart lines (items left)",
-    ).toContain("Remove");
-  } else {
-    expect(
-      g.cells[0]!.text,
-      "the first cell is the cart's empty state",
-    ).toMatch(/empty|Your cart/i);
-  }
+  expect(
+    g.cells[0]!.text,
+    "the first cell is the cart lines (items left)",
+  ).toContain("Remove");
   expect(
     Math.abs(g.cells[0]!.x - g.origin),
     "the lines cell opens at the design grid's left edge",
@@ -609,12 +615,13 @@ async function assertCartDesign(page: Page): Promise<void> {
  * region, the five dashboard tabs render, and the theme's tokens are the
  * computed styles of the route's h1 — Playfair Display, weight **500** on
  * BOTH surfaces (§(u.1)B: the earlier draft pinned "600" against the
- * measurement). The account journey's own removal rule stays with the
- * PUBLISHED account journey the composition no longer renders `account_nav`
- * (MEASURED swarm-4: the published artifact serves the no-nav composition), so
- * the design leg asserts the design shape directly (`nav` false -> panels + tabs
- * + h1) and the storefront's nav-level expectation rides the publish's REAL
- * outcome (§(n.7.6)).
+ * measurement). The served account artifact's nav state is a consequence of
+ * the merchant's last publish (the per-journey reset is draft-only), so the
+ * caller MEASURES it and passes it in: `nav: true` asserts the nav panel +
+ * five tabs, `nav: false` asserts the remaining panels and the storefront's
+ * zero-tab state. The DRAFT's nav presence/removal is proven by the editor
+ * canvas + navigator and the post-publish storefront (Swarm 4 review
+ * §(u.4)B).
  */
 async function assertAccountDesign(
   page: Page,
@@ -798,23 +805,31 @@ const JOURNEYS: readonly Journey[] = [
     ],
     // The merchant REMOVES one layer through the navigator's own Delete key
     // (§(n.7.6)); the layer is skipped from the kept-layers loop, because
-    // the leg asserts its absence rather than its presence.
+    // the leg asserts its absence rather than its presence. The per-journey
+    // reset above restores the shipped composition FIRST, so this leg always
+    // removes a layer THIS run found present (Swarm 4 review §(u.4)B).
     remove: "Account navigation",
-    // The preview resolves the CURRENT published artifact — which, on this
-    // throwaway stack (MEASURED swarm-4 re-measure: the published account
-    // artifact already served the no-nav composition, `nav` nodes count 0,
-    // dashboard tabs = 5, h1 "Your Account" Playfair/500, `At a glance`)
-    // carries no account navigation — so the DESIGN leg asserts the
-    // design-only shape (nav:false: panels + tabs + h1), never presence;
-    // the nav expectation rides the PUBLISH's REAL outcome on the storefront
-    // leg (§(n.7.6)).
-    preview: (page) =>
-      assertAccountDesign(page, { nav: false, surface: "preview" }),
-    designStorefront: (page, publish) =>
-      assertAccountDesign(page, {
-        nav: false,
-        surface: "storefront",
-      }),
+    // The preview resolves the CURRENT published artifact, whose nav state
+    // depends on the merchant's last publish (the reset is draft-only). The
+    // leg MEASURES that served state and asserts the matching design shape;
+    // the DRAFT's nav presence after the reset and its removal are proven in
+    // the editor canvas and by the post-publish storefront.
+    preview: async (page) => {
+      const nav =
+        (await page.locator('[data-fq-node^="account_nav"]').count()) > 0;
+      await assertAccountDesign(page, { nav, surface: "preview" });
+    },
+    designStorefront: async (page) => {
+      // The signed-in storefront serves the composition the publish outcome
+      // left in place. Measure the served nav panel and run the SAME design
+      // contract with that measured shape: on a success it is the removal
+      // (nav false, 0 tabs); on a refusal it is the pre-publish artifact,
+      // whatever nav state that artifact already carried (the no-half-apply
+      // proof is the pointer + the served-HTML snapshot in step 9b).
+      const nav =
+        (await page.locator('[data-fq-node^="account_nav"]').count()) > 0;
+      await assertAccountDesign(page, { nav, surface: "storefront" });
+    },
     route: `/store/${STORE}/account`,
     storefront: async (page, publish) => {
       // The journey runs SIGNED IN (it opened the editor with a real
@@ -840,10 +855,11 @@ const JOURNEYS: readonly Journey[] = [
         return;
       }
       // A refused publish never half-applies: the published composition is
-      // served unchanged. On this throwaway stack the published artifact
-      // already lacks the account navigation (cumulative state), so the leg
-      // only asserts the dashboard's overview panel still renders — the
-      // nav/tabs presence proof is recorded as a deviation (§(u.2.x)).
+      // served unchanged. Its nav state is whatever the merchant last
+      // published (the reset is draft-only), so this leg asserts the
+      // dashboard design that IS served; the no-half-apply proof for the
+      // refused edit is the pointer check above plus the served-HTML
+      // snapshot in step 9b — never a guessed nav state.
       await expect(
         page.getByText("At a glance").first(),
         "the dashboard's overview panel is still rendered",
@@ -977,17 +993,21 @@ const JOURNEYS: readonly Journey[] = [
     // merchant's published archive composition on the host's demo feed —
     // the same surface the studio's own Preview link opens.
     preview: async (page) => {
-      for (const marker of [
-        "Archive",
-        "Browse the archive",
-        "Articles",
-        "Nothing in this archive yet",
-      ]) {
+      for (const marker of ["Archive", "Browse the archive", "Articles"]) {
         await expect(
           page.getByText(marker, { exact: false }).first(),
           `the preview renders the theme's archive body ("${marker}")`,
         ).toBeVisible({ timeout: 30_000 });
       }
+      // `empty_state` is the ONE conditional archive slot (the Search
+      // contract): the demo feed carries articles, so the theme's authored
+      // empty panel must NOT render underneath the live listing. The prior
+      // acceptance asserted this panel as a marker on a 13-article page —
+      // a false acceptance (§(u.5)C).
+      await expect(
+        page.getByText("Nothing in this archive yet"),
+        "the theme's empty-state panel does NOT render under the preview's live demo feed",
+      ).toHaveCount(0);
       await expect(
         page.getByRole("navigation", { name: "Pagination" }).first(),
         "the archive's own pages band renders the demo feed's live pager",
@@ -1006,18 +1026,19 @@ const JOURNEYS: readonly Journey[] = [
     route: `/store/${STORE}/blog/category/${TERM_SLUG}`,
     storefront: async (page, publish) => {
       // The theme's archive body with its functional slots: the band, the
-      // terms rail, the listing, the pager and the empty state.
-      for (const marker of [
-        "Archive",
-        "Browse the archive",
-        "Articles",
-        "Nothing in this archive yet",
-      ]) {
+      // terms rail, the listing and the pager. `empty_state` is granted ONLY
+      // when the feed is empty, so this live 13-article page (and its page 2)
+      // must not carry the empty panel at all (§(u.5)C).
+      for (const marker of ["Archive", "Browse the archive", "Articles"]) {
         await expect(
           page.getByText(marker, { exact: false }).first(),
           `the served composition renders the theme's archive body ("${marker}")`,
         ).toBeVisible({ timeout: 30_000 });
       }
+      await expect(
+        page.getByText("Nothing in this archive yet"),
+        "the theme's empty-state panel does NOT render under the live 13-article archive",
+      ).toHaveCount(0);
       // The resolved term's OWN data — measured, not assumed (§(u.1)F): the
       // route's own header carries the term slug→name resolution ("Handloom
       // Heritage") alongside the theme's own "Archive" band h1, and the
@@ -1057,6 +1078,10 @@ const JOURNEYS: readonly Journey[] = [
         secondPage,
         "the archive's page 2 serves the term's own live record",
       ).toContain("The Jamdani Weavers of Sonargaon");
+      expect(
+        secondPage,
+        "page 2 is a live archive page, not the theme's empty-state panel",
+      ).not.toContain("Nothing in this archive yet");
     },
   },
   {
@@ -1118,6 +1143,38 @@ for (const journey of JOURNEYS) {
       await variant.click();
       await page.waitForTimeout(1_500);
     }
+    // 3b. DETERMINISTIC BASELINE (Swarm 4 review §(u.4)B/F): reset THIS
+    //     template to the theme's shipped default through the editor's own
+    //     destructive control (armed, then confirmed; a draft-only write —
+    //     the published pointer is untouched). Every journey therefore
+    //     starts from the same composition, so the account nav is present
+    //     for its removal leg, no earlier run's spacers/nested text blocks
+    //     can satisfy (or block) this run's assertions, and the refused-
+    //     publish check is state-independent. The reset is a REAL merchant
+    //     action in the REAL editor, not a fixture write.
+    const reset = templateStrip(page).getByRole("button", {
+      name: "Reset to default",
+      exact: true,
+    });
+    await expect(
+      reset,
+      "the editor offers its own reset-to-default control for the selected template",
+    ).toBeEnabled({ timeout: 30_000 });
+    await reset.click();
+    const confirmReset = templateStrip(page).getByRole("button", {
+      name: "Confirm reset",
+      exact: true,
+    });
+    await expect(
+      confirmReset,
+      "the reset is armed before it is destructive",
+    ).toBeVisible({ timeout: 30_000 });
+    await confirmReset.click();
+    await expect(
+      page.getByText("Template reset to the theme default").first(),
+      "the editor reports the template reset to the theme default",
+    ).toBeVisible({ timeout: 30_000 });
+    await page.waitForTimeout(1_500);
     const before = await layerNames(page);
     for (const layer of journey.layers) {
       // A layer the journey REMOVES is asserted by the removal leg below, not
@@ -1302,39 +1359,34 @@ for (const journey of JOURNEYS) {
         .getByRole("treeitem")
         .filter({ hasText: journey.remove })
         .first();
-      // Cumulative-state tolerance (recorded deviation, §(u.2.x)): on a
-      // throwaway stack that has already had the layer removed by an earlier
-      // run, the navigator no longer carries it. On a FRESH stack the layer
-      // is present and the removal leg runs in full; otherwise the leg is
-      // skipped so the journey still proves save/publish/design.
-      if ((await doomedLayer.count()) > 0) {
-        await expect(
-          doomedLayer,
-          `the ${journey.label} composition carries its "${journey.remove}" layer`,
-        ).toBeVisible({ timeout: 30_000 });
-        // Select the doomed layer first (§(r.4)a): a treeitem `press` focuses
-        // without selecting, and the navigator's Delete ALSO reaches the
-        // studio's window-level delete shortcut, which removes the CURRENT
-        // selection (`builder.tsx:997-1009`) — with the spacer still selected
-        // from the legs above, the Delete would remove two layers at once.
-        // A plain click REPLACES the selection (`LayerTree.tsx:302-309`), so
-        // both handlers act on the same single node.
-        await doomedLayer.click();
-        await page.waitForTimeout(500);
-        await doomedLayer.press("Delete");
-        await page.waitForTimeout(1_500);
-        const afterRemove = await layerNames(page);
+      // The reset above restored the shipped composition, so the layer is
+      // REQUIRED — never conditionally skipped (Swarm 4 review §(u.4)B).
+      await expect(
+        doomedLayer,
+        `the ${journey.label} composition carries its "${journey.remove}" layer`,
+      ).toBeVisible({ timeout: 30_000 });
+      // Select the doomed layer first (§(r.4)a): a treeitem `press` focuses
+      // without selecting, and the navigator's Delete ALSO reaches the
+      // studio's window-level delete shortcut, which removes the CURRENT
+      // selection (`builder.tsx:997-1009`) — with the spacer still selected
+      // from the legs above, the Delete would remove two layers at once.
+      // A plain click REPLACES the selection (`LayerTree.tsx:302-309`), so
+      // both handlers act on the same single node.
+      await doomedLayer.click();
+      await page.waitForTimeout(500);
+      await doomedLayer.press("Delete");
+      await page.waitForTimeout(1_500);
+      const afterRemove = await layerNames(page);
+      expect(
+        afterRemove,
+        `the navigator's own Delete removed the "${journey.remove}" layer`,
+      ).not.toContain(journey.remove);
+      for (const layer of journey.layers) {
+        if (layer === journey.remove) continue;
         expect(
           afterRemove,
-          `the navigator's own Delete removed the "${journey.remove}" layer`,
-        ).not.toContain(journey.remove);
-        for (const layer of journey.layers) {
-          if (layer === journey.remove) continue;
-          expect(
-            afterRemove,
-            `the other "${layer}" layer is untouched by the removal`,
-          ).toContain(layer);
-        }
+          `the other "${layer}" layer is untouched by the removal`,
+        ).toContain(layer);
       }
     }
 
@@ -1513,7 +1565,7 @@ for (const journey of JOURNEYS) {
       await expect(
         page.getByLabel("Heading", { exact: true }).first(),
         "the nested text block's marker survived the reload (server truth)",
-      ).toHaveValue(/Frame30 nested —/);
+      ).toHaveValue(journey.nested.marker);
     }
     if (journey.remove) {
       expect(
@@ -1543,6 +1595,58 @@ for (const journey of JOURNEYS) {
       await page.waitForTimeout(1_000);
     }
 
+    // 8b-bis. The SAVED DRAFT, previewed on the editor's own canvas at the
+    //     studio's three device presets (Swarm 4 review §(u.4)E). The
+    //     `/theme-preview` surface below serves the PUBLISHED artifact (D3
+    //     parity), so it cannot prove THIS run's saved draft; the canvas
+    //     can. The 48 px spacer is the saved composition's own node (the
+    //     final 56 px edit has not happened yet), and the cart's nested
+    //     marker is the run's per-run content — both must render at every
+    //     width, through the studio's own preset tabs.
+    const draftSpacer = page.locator(
+      'div[aria-hidden="true"][style*="height: 48px"], div[aria-hidden="true"][style*="height:48px"]',
+    );
+    for (const device of [
+      { label: "1440px — desktop", width: 1440 },
+      { label: "768px — tablet", width: 768 },
+      { label: "375px — mobile", width: 375 },
+    ]) {
+      const tab = page.getByRole("tab", { name: device.label });
+      await expect(
+        tab,
+        `the studio offers the ${device.width} device preset after the reload`,
+      ).toBeVisible({ timeout: 30_000 });
+      await tab.click();
+      await expect(
+        tab,
+        `the ${device.width} preset is the selected device after the reload`,
+      ).toHaveAttribute("aria-selected", "true");
+      await expect(
+        draftSpacer.first(),
+        `the saved 48px spacer renders on the canvas at ${device.width}px`,
+      ).toBeVisible({ timeout: 30_000 });
+      if (journey.nested) {
+        await expect(
+          page.getByText(journey.nested.marker, { exact: true }).first(),
+          `the cart's nested marker renders on the canvas at ${device.width}px`,
+        ).toBeVisible({ timeout: 30_000 });
+      }
+    }
+    // Return the studio to its DESKTOP preset before the final edit: the
+    // height control is device-scoped, and the storefront's default render
+    // reads the desktop value. Filling 56 while the canvas sat at mobile
+    // wrote a MOBILE override — the old lane's 56px storefront green was a
+    // prior run's desktop spacer, not this run's edit (Swarm 4 review
+    // §(u.4)D).
+    const desktopTab = page.getByRole("tab", {
+      name: "1440px — desktop",
+    });
+    await desktopTab.click();
+    await expect(
+      desktopTab,
+      "the studio returns to its desktop preset for the final edit",
+    ).toHaveAttribute("aria-selected", "true");
+
     // 8d. The PREVIEW leg (Swarm 4, gap 1, §(u.1)G) — every journey, in the
     //     chain's order: compose -> save -> reload -> PREVIEW -> publish.
     //     The preview opens the REAL surface the studio points at, in a
@@ -1555,17 +1659,67 @@ for (const journey of JOURNEYS) {
     //     publish can carry the composed state.
     await previewSurface(page, journey);
 
+    // The served-HTML snapshot (Swarm 4 review §(u.4)D): a refusal must leave
+    // the published artifact unchanged for the nodes this lane edits,
+    // independent of how many spacers earlier runs accumulated. Both
+    // pre-publish server reads happen BEFORE the final edit: the platform's
+    // publish gate is `editor.dirty` (unsaved vs the autosaved draft), and
+    // its autosave debounce is 3s — a server read between the edit and the
+    // modal can consume that window and leave the confirm disabled with
+    // "No changes to publish" (observed: Account, §(u.6)). The reads are
+    // pre-publish truth either way; the edit itself stays local until publish.
+    const readServedSnapshot = async (): Promise<{
+      spacers: number;
+      nav: number;
+    }> => {
+      const url = new URL(journey.route, page.url()).toString();
+      const response = await page.request.get(url, {
+        failOnStatusCode: false,
+      });
+      expect(
+        response.status(),
+        "the journey's storefront route answers for the publish snapshot",
+      ).toBe(200);
+      const html = await response.text();
+      return {
+        spacers: (html.match(/height:\s*56px/g) ?? []).length,
+        nav: (html.match(/data-fq-node="account_nav/g) ?? []).length,
+      };
+    };
+    const servedBefore = await readServedSnapshot();
+    const pointerBefore = await publishedVersionId(page);
+
     // 9. The real publish path. The platform enables the publish control
     //    ONLY while the document has unsaved changes (`PublishModal`:
     //    `disabled={errors.length > 0 || !hasChanges}`), so the journey makes
-    //    its FINAL property change here — after the reload — and the publish
-    //    carries the composed state.
+    //    its FINAL property change here — after the reload and after both
+    //    server reads — and opens the modal immediately, before the 3s
+    //    autosave can save the edit and close the dirty window.
     await reloadedHeight.fill("56");
+    // The inspector control commits its value on change/blur; the publish
+    // mutation sends the in-memory document. Blur explicitly and let the
+    // commit land BEFORE opening the modal — the earlier lane asserted the
+    // input's value but published the previous 48px saved document (Swarm 4
+    // review §(u.4)D: the old 56px storefront green was a prior run's
+    // spacer, not this run's edit). The wait stays below the 3s autosave
+    // debounce, so the document is still dirty when the publish opens.
+    await reloadedHeight.press("Tab");
+    await page.waitForTimeout(1_000);
     await expect(
       reloadedHeight,
-      "the final inspector edit is held",
+      "the final inspector edit is committed to the document",
     ).toHaveValue("56");
-    const pointerBefore = await publishedVersionId(page);
+    // The desktop canvas renders the committed value: the final 56 px is the
+    // document's DESKTOP height (the storefront's default render), not a
+    // mobile-only override.
+    await expect(
+      page
+        .locator(
+          'div[aria-hidden="true"][style*="height: 56px"], div[aria-hidden="true"][style*="height:56px"]',
+        )
+        .first(),
+      "the committed 56px height renders on the desktop canvas before publish",
+    ).toBeVisible({ timeout: 30_000 });
     const publish = await attemptPublish(page);
     const pointerAfter = await publishedVersionId(page);
     if (publish.outcome === "published") {
@@ -1610,8 +1764,9 @@ for (const journey of JOURNEYS) {
     await journey.storefront(page, publish);
     // The theme-specific design contract (Swarm 4, gap 3): Cart and Account
     // run the SAME measured design function here that the preview leg ran —
-    // preview-vs-storefront parity by construction, with the publish's REAL
-    // outcome deciding the account contract's `account_nav` expectation.
+    // preview-vs-storefront parity by construction. The account contract
+    // MEASURES the served nav panel (the publish outcome decides whether the
+    // removal is in the served artifact), rather than hard-coding it.
     if (journey.designStorefront) {
       await journey.designStorefront(page, publish);
     }
@@ -1640,11 +1795,21 @@ for (const journey of JOURNEYS) {
         editedSpacer.first(),
         "the edited spacer (56px) is on the storefront after the publish",
       ).toBeVisible({ timeout: 30_000 });
-    } else if (journey.route.startsWith(`/store/`)) {
-      // Cumulative-state tolerance (recorded deviation, §(u.2.x)): the
-      // published composition already carries spacers from earlier runs, so
-      // a refused publish cannot be proven spacer-free on this stack. The
-      // pointer/message assertions above still prove no half-apply.
+    } else {
+      // A refused publish must leave the served artifact unchanged for the
+      // nodes this run edited: re-read the route and require the SAME 56px-
+      // spacer and account-nav counts as the pre-publish snapshot. This is
+      // state-independent — earlier runs' spacers are part of BOTH counts —
+      // so no cumulative-state tolerance is needed (Swarm 4 review §(u.4)D).
+      const servedAfter = await readServedSnapshot();
+      expect(
+        servedAfter.spacers,
+        "a refused publish did not half-apply: the served 56px spacer count is unchanged",
+      ).toBe(servedBefore.spacers);
+      expect(
+        servedAfter.nav,
+        "a refused publish did not half-apply: the served account-nav count is unchanged",
+      ).toBe(servedBefore.nav);
     }
 
     // Hygiene: nothing reached outside loopback.

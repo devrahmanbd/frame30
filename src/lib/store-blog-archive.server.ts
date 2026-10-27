@@ -21,6 +21,7 @@ import { publicClient } from "./pricing.server";
 import type { ThemeAst, ThemeTokens } from "./builder-ast";
 import type { PermalinkSettings } from "./permalink";
 import type { TermArchive } from "./blog-index.server";
+import { stripArchiveEmptyState } from "./archive-ast";
 
 export async function loadStoreBlogArchive(
   slug: string,
@@ -113,6 +114,15 @@ export async function loadStoreBlogArchive(
     // same-named category, never an empty-but-200 archive.
     if (error instanceof TermNotFound) return null;
     throw error;
+  }
+
+  // The empty-state panel is an authored section, so the host's conditional
+  // grant alone cannot remove it from the DATA the document serializes. Strip
+  // it here, once the feed's real size is known, so the served HTML (not just
+  // the rendered DOM) carries no contradictory "Nothing in this archive yet"
+  // on a live archive. An empty feed keeps the theme's panel.
+  if (ast && archive.articles.length > 0) {
+    ast = { ...ast, main: stripArchiveEmptyState(ast.main) };
   }
 
   const { permalinkSettingsFor } = await import("./permalink.server");

@@ -308,7 +308,11 @@ export function withSecurityHeaders(
   // Without it the browser blocks sign-in with a CSP violation (seen live
   // 2026-09-19: connect to .../auth/v1/token blocked by "connect-src 'self'").
   const connectOrigins = cspConnectOrigins();
-  const nonce = getCurrentNonce() || newNonce();
+  // The request's own nonce is authoritative: another concurrent document may
+  // have overwritten the module store between this document's SSR and this
+  // header. The store remains the fallback for direct unit-test calls.
+  const requestNonce = request.headers.get("x-csp-nonce")?.trim();
+  const nonce = requestNonce || getCurrentNonce() || newNonce();
   setCurrentNonce(nonce);
   headers.set(
     "content-security-policy",
@@ -1031,8 +1035,11 @@ export default {
 
       // Generate nonce BEFORE SSR so TanStack Router can inject it into <script> tags.
       // Unconditional (live 2026-09-28): every document needs the nonce or
-      // hydration/bootstrap scripts are CSP-blocked. Clear first so a prior
-      // request's value can never leak into this document's scripts/header.
+      // hydration/bootstrap scripts are CSP-blocked. The request carries it
+      // (`x-csp-nonce`), so `currentNonce()` resolves THIS document's value
+      // through the request context even while another request is rendering —
+      // the module-level store is only a no-request fallback. Clearing it
+      // first keeps a prior request's value out of non-request calls.
       setCurrentNonce("");
       const nonce = newNonce();
       // Make nonce available to getRouter() during SSR via module-level store

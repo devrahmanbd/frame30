@@ -27,9 +27,10 @@
  * (`ArchiveView`), which the merchant-scoped route
  * (`/store/<slug>/blog/category/<termSlug>`) renders with the
  * server-resolved `archive_category` composition; the three store-less
- * taxonomy routes keep the platform grid. The preview's archive grant set
- * must be EXACTLY the archive body's six functional slots — the set that
- * host grants.
+ * taxonomy routes keep the platform grid. Both hosts grant the archive
+ * body's five ALWAYS slots, and both grant `empty_state` ONLY when the feed
+ * is empty — the same conditional rule Search uses. A live listing must
+ * never carry the theme's authored empty panel underneath it (§(u.5)C).
  */
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
@@ -219,24 +220,34 @@ describe("the preview and the storefront grant the SAME slots", () => {
     expect(preview).toEqual(production);
   });
 
-  it("archive — the preview and the shared archive host grant the SAME six", () => {
-    const preview = grantedSlots(PREVIEW, "const archiveSlots =");
-    const six = [
+  it("archive — the preview and the shared archive host gate the SAME six slots", () => {
+    const always = [
       "blog_archive",
       "blog_pager",
       "blog_terms",
       "category_header",
-      "empty_state",
       "pagination",
     ];
-    expect(preview).toEqual(six);
-    // The production side: the shared archive host grants exactly the same
-    // six — the merchant-scoped route renders THIS host with its
-    // server-resolved `archive_category` composition (Batch B, gap 3), so
-    // the two hosts can no longer drift.
-    expect(grantedSlots(ARCHIVE_VIEW, "const ARCHIVE_SLOTS")).toEqual(six);
-    // … and the theme's own archive body uses EXACTLY those six, so the
-    // grant set is neither wider nor narrower than the body.
+    // The production host's UNCONDITIONAL grant is exactly those five; the
+    // sixth is added by a separate map gated on the feed's real size.
+    expect(grantedSlots(ARCHIVE_VIEW, "const ARCHIVE_SLOTS")).toEqual(always);
+    const preview = grantedSlots(PREVIEW, "const archiveSlots =");
+    expect(preview).toEqual([...always, "empty_state"].sort());
+    // … and BOTH hosts gate the sixth on the SAME condition: an empty feed.
+    const previewBlock = block(PREVIEW, "const archiveSlots =");
+    expect(previewBlock).toMatch(
+      /previewFeed\.articles\.length === 0 \? \{ empty_state: null \} : \{\}/,
+    );
+    const archiveBlock = block(
+      ARCHIVE_VIEW,
+      "const archiveSlots: Partial<Record<SectionType, ReactNode>> =",
+    );
+    expect(archiveBlock).toMatch(
+      /feed\.articles\.length === 0 \? \{ empty_state: null \} : \{\}/,
+    );
+    // The theme's own archive body still authors EXACTLY those six, so the
+    // grant set is neither wider nor narrower than the body; the host's
+    // conditional grant is what hides the empty panel on a live archive.
     const at = SONGOSKRITI.indexOf('case "archive":');
     expect(at, "the theme must author an archive body").toBeGreaterThanOrEqual(
       0,
@@ -250,7 +261,7 @@ describe("the preview and the storefront grant the SAME slots", () => {
     ]
       .filter((name) => isSlot(name))
       .sort();
-    expect(used).toEqual(six);
+    expect(used).toEqual([...always, "empty_state"].sort());
   });
 });
 

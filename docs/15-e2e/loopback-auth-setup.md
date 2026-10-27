@@ -79,6 +79,24 @@ defines `is_platform_admin` before `platform_admins` exists. The
 `migration/` pipeline above is the sanctioned fresh-db path per
 `migration/README.md`.)
 
+### 2b. Archive pager fixture (the seven-template lane)
+
+The Archive journey proves the platform's REAL 12-per-page pager on the
+merchant category route. The demo term carries only two published articles,
+so both pagers legitimately render no page 2; the committed, idempotent
+fixture adds 11 live rows (→ 13 total; page 2 is the term's own oldest
+article). Apply it to the throwaway stack before running
+`.e2e/songoskriti-seven-templates.spec.ts`:
+
+```bash
+$PX < .e2e/fixtures/songoskriti-archive-seed.sql
+# → INSERT 0 11; a re-run is a no-op (ON CONFLICT DO NOTHING)
+```
+
+The fixture targets ONLY the throwaway demo merchant
+(`11111111-1111-4111-8111-111111111111`) and the `handloom-heritage` term.
+Never apply it to the configured/production database.
+
 ## 3. App (test-only env override, no committed files changed)
 
 Shell env beats `.env.local` under Vite (verified: served bundle contains

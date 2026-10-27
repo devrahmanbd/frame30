@@ -80,6 +80,26 @@ describe("platform-shell CSP — medium/high documents must carry a nonce (live 
     expect(getCurrentNonce()).toBe(headerNonce);
   });
 
+  it("request's own nonce wins over a stale concurrent module-store value", async () => {
+    // Reproduces the 2026-10-26 hydration race shape at the header/meta
+    // layer: another document overwrote the module store before this
+    // document's headers were built. The request's own nonce must win.
+    setCurrentNonce("nonce-from-a-concurrent-document");
+    const req = new Request("http://localhost:3000/", {
+      headers: { "x-csp-nonce": "this-documents-nonce" },
+    });
+    const res = withSecurityHeaders(req, docResponse(HTML), "medium");
+    const csp = res.headers.get("content-security-policy") ?? "";
+    const headerNonce = csp.match(/'nonce-([^']+)'/)?.[1];
+    const body = await readBody(res.body);
+    const metaNonce = body.match(
+      /<meta name="csp-nonce" content="([^"]+)"/,
+    )?.[1];
+    expect(headerNonce).toBe("this-documents-nonce");
+    expect(metaNonce).toBe("this-documents-nonce");
+    expect(getCurrentNonce()).toBe("this-documents-nonce");
+  });
+
   it("buildCsp includes the nonce whenever one is supplied, regardless of tier", () => {
     for (const tier of ["low", "lower_medium", "medium", "high"] as const) {
       const csp = buildCsp("n123", {}, tier);

@@ -33,6 +33,7 @@ import {
   type ThemeTokens,
 } from "@/lib/builder-ast";
 import { parseArchiveKind, type ArchiveContext } from "@/lib/archive-context";
+import { stripArchiveEmptyState } from "@/lib/archive-ast";
 import { BlogFeedProvider, type BlogFeed } from "@/components/builder/blog";
 import { CollectionQueryProvider } from "@/components/builder/collection";
 import { ArticleGrid, Pager } from "@/components/store/BlogList";
@@ -78,9 +79,12 @@ export type ArchiveViewProps = {
 };
 
 /**
- * The archive's functional slots — the six the archive body is built from.
- * The grant set is EXACTLY those six, so the preview host and this host
- * agree and a slot the body does not use is never granted.
+ * The archive's ALWAYS-granted functional slots. The theme's body is built
+ * from these five plus `empty_state`, which is the ONE conditional grant:
+ * the theme's authored empty panel must render only when the feed is empty,
+ * exactly as Search grants its empty state (`store.$slug.search.tsx`). A
+ * live listing must never carry "Nothing in this archive yet" underneath it
+ * (Swarm 4 review §(u.5)).
  */
 const ARCHIVE_SLOTS: Partial<Record<SectionType, ReactNode>> = {
   category_header: null,
@@ -88,7 +92,6 @@ const ARCHIVE_SLOTS: Partial<Record<SectionType, ReactNode>> = {
   blog_archive: null,
   blog_pager: null,
   pagination: null,
-  empty_state: null,
 };
 
 /**
@@ -164,6 +167,13 @@ export function ArchiveView({
   // it through `resolveTemplateForHost`); the client-side resolve stays for
   // the store-less routes' legacy `templates` path.
   const ast = composedAst ?? resolveArchiveBody(templates);
+  // The empty state's context grant is only half the contract: the theme
+  // authors `empty_state` as an ordinary section, so the live body is
+  // stripped of it below while this grant is also withheld.
+  const archiveSlots: Partial<Record<SectionType, ReactNode>> = {
+    ...ARCHIVE_SLOTS,
+    ...(feed.articles.length === 0 ? { empty_state: null } : {}),
+  };
   // The collection query the theme's `pagination` widget reads: the
   // ARCHIVE's own total, base path and page size, never the search demo's
   // 24 — a pager windowed at the wrong size links past the real last page
@@ -201,13 +211,17 @@ export function ArchiveView({
   // composed body the store is themed, so the storefront side effects
   // (store linkBase, per-store language scope, the live-cart scope, the
   // SectionRenderer slug context) are standard storefront behaviour.
+  const renderAst =
+    feed.articles.length === 0
+      ? ast
+      : { ...ast, main: stripArchiveEmptyState(ast.main) };
   return (
     <BlogFeedProvider value={feed}>
       <CollectionQueryProvider value={collectionQuery}>
         <StoreSlugContext.Provider value={storeSlug ?? null}>
           <ThemeChrome
             template="archive"
-            ast={ast}
+            ast={renderAst}
             tokens={tokens ?? null}
             themeKey={themeKey ?? null}
             storeSlug={storeSlug ?? undefined}
@@ -217,7 +231,7 @@ export function ArchiveView({
             }
             ownsPrimary
             containerClassName="mx-auto max-w-6xl px-4 py-8"
-            contextSlots={ARCHIVE_SLOTS}
+            contextSlots={archiveSlots}
             fallback={
               feed.articles.length ? (
                 <>

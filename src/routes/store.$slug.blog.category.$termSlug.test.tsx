@@ -103,6 +103,11 @@ describe("store category archive route — the platform keeps every authority", 
     expect(LOADER).toContain(
       'main: resolution.status === "resolved" ? resolution.ast.main : [],',
     );
+    // A live archive's serialized AST is stripped of the authored empty
+    // panel (the DOM strip alone left the string in the payload; measured
+    // §(u.6)). An empty feed keeps it.
+    expect(LOADER).toContain("stripArchiveEmptyState(ast.main)");
+    expect(LOADER).toContain("archive.articles.length > 0");
   });
 
   it("windows the listing through the tenant-scoped reader, 404 on an unknown term", () => {
@@ -304,6 +309,10 @@ describe("the archive host — storefront pager and store-scoped chips", () => {
     // category band marks it — the themeKey's widget map rendered the band,
     // not a platform-generic widget.
     expect(html).toContain("data-collection-header");
+    // The live feed has rows: the host strips the theme's authored empty
+    // panel, so "Nothing in this archive yet" never sits under the listing
+    // (Swarm 4 §(u.5)C).
+    expect(html).not.toContain("Nothing in this archive yet");
     // The resolved body is EXACTLY the six functional slots the host
     // grants — the preview/storefront parity, taken from the SAME
     // resolution the render just used.

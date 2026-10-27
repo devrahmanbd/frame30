@@ -42,6 +42,7 @@ import { SectionRenderer } from "@/components/builder/SectionRenderer";
 import { WidgetDataProvider } from "@/components/builder/WidgetDataContext";
 import { CartProvider } from "@/components/builder/CartContext";
 import { BlogFeedProvider } from "@/components/builder/blog";
+import { stripArchiveEmptyState } from "@/lib/archive-ast";
 import {
   CollectionQueryProvider,
   groupFacetRows,
@@ -1079,26 +1080,6 @@ export function ThemePreviewFrame({
         }
       : undefined;
 
-  // The archive template's functional slots (Decision D1'). The content
-  // archive is a LISTING page: the platform's own `category_header` grant,
-  // the blog pack (terms / listing / pager) and the paging + empty state.
-  //
-  // The grant set is EXACTLY the archive body's six slots — the same set
-  // the deferred merchant-scoped route must grant when it lands. A grant
-  // the body does not use would be a permission the theme never asked for,
-  // and a slot the body DOES use that is not granted renders nothing.
-  const archiveSlots =
-    baseTemplate === "archive"
-      ? {
-          category_header: null,
-          blog_terms: null,
-          blog_archive: null,
-          blog_pager: null,
-          pagination: null,
-          empty_state: null,
-        }
-      : undefined;
-
   // The preview has no CMS page record: `page_content` is a CONTEXT widget
   // (`src/components/builder/widgets.tsx:1617`), so the host must hand it a
   // node. Without one the fixed page template renders chrome with an empty
@@ -1153,6 +1134,30 @@ export function ThemePreviewFrame({
   // byte-for-byte.
   const previewCart = useMemo(() => songoskritiPreviewCart(), []);
   const previewFeed = useMemo(() => songoskritiPreviewFeed(), []);
+  // The archive template's functional slots (Decision D1'). The content
+  // archive is a LISTING page: the platform's own `category_header` grant,
+  // the blog pack (terms / listing / pager) and the paging. `empty_state` is
+  // the ONE conditional grant, mirroring the merchant host and Search: the
+  // demo feed carries articles, so the theme's "Nothing in this archive
+  // yet" panel must not render underneath the listing (Swarm 4 §(u.5)).
+  const archiveSlots =
+    baseTemplate === "archive"
+      ? {
+          category_header: null,
+          blog_terms: null,
+          blog_archive: null,
+          blog_pager: null,
+          pagination: null,
+          ...(previewFeed.articles.length === 0 ? { empty_state: null } : {}),
+        }
+      : undefined;
+  // The theme authors `empty_state` as an ordinary archive section, so the
+  // context grant alone is not enough: strip the authored panel from the
+  // rendered body while the demo feed has articles (Swarm 4 §(u.5)).
+  const previewMain =
+    baseTemplate === "archive" && previewFeed.articles.length > 0
+      ? stripArchiveEmptyState(focusedMain)
+      : focusedMain;
   /**
    * The preview's rail SELECTION — LOCAL state, not the cart's inert
    * no-op.
@@ -1296,9 +1301,9 @@ export function ThemePreviewFrame({
                     themeKey={blueprintKey}
                   />
                   {paymentDemoMarker}
-                  {focusedMain.length > 0 ? (
+                  {previewMain.length > 0 ? (
                     <main className="space-y-12 sm:space-y-16 pb-16">
-                      {focusedMain.map((section) => (
+                      {previewMain.map((section) => (
                         <SectionRenderer
                           key={section.id}
                           section={section}
@@ -1373,9 +1378,9 @@ export function ThemePreviewFrame({
                         themeName={themeName}
                         status={mockOrder}
                       />
-                    ) : focusedMain.length > 0 ? (
+                    ) : previewMain.length > 0 ? (
                       <main className="space-y-12 sm:space-y-16 pb-16 [&>[data-fq-node^='announcement_bar']]:!mt-0 [&>[data-fq-node^='announcement_bar']+*]:!mt-0">
-                        {focusedMain.map((section) => (
+                        {previewMain.map((section) => (
                           <SectionRenderer
                             key={section.id}
                             section={section}
