@@ -1,7 +1,7 @@
 # Songoskriti — template genericity & the asset-inventory gap: consolidated report
 
-**Date:** 2026-10-22 · **Repo:** `/opt/frame28` · **Branch:** `frame30` · **Deployed:** `109e2d3d` — the last deploy this report ran and verified (a docs-only commit above the phase-3 code at `be96b320`); everything since — this programme and this docs batch — ships on the next push + `ops/deploy-from-git.sh` from a pushed ref (§3.7)
-**Current as of:** 2026-10-22 — the Frame30 core CMS upgrade programme has shipped (phase 3, `182c37b5` → `be96b320`), **and the dynamic-themes programme has shipped in full behind it** (`109e2d3d` → the tip of this docs batch; §2.2, §3.6–§3.7). §2, §3, §5, §6, §7 and §8 carry phase 3's decisions, evidence and rulings **and the dynamic-themes programme's**. The phases before phase 3 are unchanged.
+**Date:** 2026-10-27 · **Repo:** `/opt/frame28` · **Branch:** `frame30` · **Deployed:** `9b91f18a` — the frame30 deploy on 2026-10-27, verified live (§9.5). The post-deploy docs commit sits above the deployed marker; it changes documentation only.
+**Current as of:** 2026-10-27 — the Frame30 core CMS upgrade programme has shipped (phase 3, `182c37b5` → `be96b320`), **and the dynamic-themes programme has shipped, been demonstrated and been deployed** (`109e2d3d` → `9b91f18a`; §2.2, §3.6–§3.7, §9). §2, §3, §5, §6, §7 and §8 carry phase 3's decisions, evidence and rulings **and the dynamic-themes programme's**. The phases before phase 3 are unchanged.
 **Purpose:** one self-contained document for an expert review — the problem as found, every implementation question that was asked and the answer it received, what has since shipped and been verified, and the questions that remain open.
 
 ---
@@ -659,7 +659,7 @@ _Prepared for expert review. Every claim above is traceable to a file:line or a 
 
 ## 9. The stricter acceptance gate — the demonstration (2026-10-23 → 2026-10-26)
 
-After the programme shipped at `e695b497` (= `origin/frame30` = `origin/main` = the live marker), a stricter read of the five acceptance conditions was audited read-only in `.superpowers/sdd/2026-10-22-frame30-dynamic-themes/audit-acceptance.md`: **C1 SATISFIED**, **C2–C5 PARTIAL**, with **eight numbered gaps**. This section reports how each gap was closed, with the proof produced on the throwaway stack. Every edit is recorded append-only in the phase-4 escalation record **before** the code it governs (§(n) → §(t.14)); commits are local on `frame30` at the time of writing.
+After the programme shipped at `e695b497` (= `origin/frame30` = `origin/main` = the live marker at that time), a stricter read of the five acceptance conditions was audited read-only in `.superpowers/sdd/2026-10-22-frame30-dynamic-themes/audit-acceptance.md`: **C1 SATISFIED**, **C2–C5 PARTIAL**, with **eight numbered gaps**. This section reports how each gap was closed, with the proof produced on the throwaway stack. Every edit is recorded append-only in the phase-4 escalation record **before** the code it governs (§(n) → §(u.6)); the corrected release is pushed on `frame30` and `main` and deployed at `9b91f18a` (§9.5).
 
 ### 9.1 The eight gaps, closed with the proof
 
@@ -695,4 +695,43 @@ The first translation pass (Batch C) proved its twin coverage on the **source ma
 
 The final independent review (`review-final-2.md`) audited the full diff `e695b497..HEAD` (44 commits / 110 files, +5 768/−371) and returned **PASS_WITH_CONCERNS, no blockers**: no forbidden path in any commit; no test weakened (2 rail skips **converted to assertions**, the 4 `!creds` skips pre-date the diff, 2 exact-key pins grown with all keys kept, no test file deleted, gate files untouched); the record append-only at hunk level (numstat 1 832/0) with record-before-code ordering confirmed; **C1–C5 all SATISFIED**. Local gates: full suite **635 files / 8 998 tests pass** with only the three known pre-existing environment failures; `tsgo --noEmit` exit 0; `eslint` 0 on every touched path; `doc-gate` 0 findings.
 
-Carried as **recorded concerns, not blockers**: the payment widget's pending-state flash (§(t.12C)); the 57 Lane-A slots now own their EN pair, so a future theme-update path needs an explicit diff path; the publish-confirm dirty-window quirk and the activation toast ignoring `applied: false`; the schema-routed inspector's missing বাংলা control; runs of ≥11 real logins must split/space; lane families sharing one merchant workspace need the reset+republish hygiene; the remote CI run remains **UNVERIFIED-FROM-HERE** until the push's pipeline receipt is read. Push and deploy follow this section (`ops/deploy-from-git.sh` from the git checkout, inside the host netns).
+Carried as **recorded concerns, not blockers**: the payment widget's pending-state flash (§(t.12C)); the 57 Lane-A slots now own their EN pair, so a future theme-update path needs an explicit diff path; the publish-confirm dirty-window quirk and the activation toast ignoring `applied: false`; the schema-routed inspector's missing বাংলা control; runs of ≥11 real logins must split/space; lane families sharing one merchant workspace need the reset+republish hygiene; the remote CI run remains **UNVERIFIED-FROM-HERE** until the push's pipeline receipt is read.
+
+### 9.5 The deployment, verified live (2026-10-27)
+
+The release was pushed (`origin/frame30` = `origin/main` = `9b91f18a`) and deployed only through the sanctioned path:
+
+```
+nsenter -t 1 -n bash -c 'cd /opt/frame28 && ops/deploy-from-git.sh frame30 root'
+```
+
+The script rebuilt `.output` from the pushed source, stamped the bundle marker, restarted `framique.service`, re-ran the platform/store contract checks, and ended:
+
+```
+DEPLOY OK: frame30 live (9b91f18a717c0ec5fd25a2877dda66bbf0672763)
+```
+
+The same run printed `READY OK (post-restart): http://127.0.0.1:3200/api/healthz?type=readiness -> 200`, `VERIFY OK: live bundle marker 9b91f18a… == deployed SHA`, and `/store/akira -> 404` by design (full log `/tmp/opencode/deploy-frame30-9b91f18a.log`). On the host, `.output/DEPLOYED_SHA` reads `9b91f18a717c0ec5fd25a2877dda66bbf0672763` and `framique.service` is active (MainPID `2268978`).
+
+Live checks at 2026-10-27T06:21Z (`/tmp/opencode/postdeploy-live-verify.log`):
+
+| check | measured |
+| ----- | -------- |
+| readiness, production loopback | `GET /api/healthz?type=readiness` → **200** |
+| 12 theme preview keys (`index collection product search cart checkout blog blog_article blog_listing archive page account`) | **12/12 → 200** on both `127.0.0.1:3200` and `https://framique.qubickle.com`; every document carried exactly **one** `csp-nonce` meta and **one** distinct script nonce |
+| nonce stress under concurrency | 60 documents / 12 concurrent → **`runs=60 bad=0`** (`/tmp/opencode/live-nonce-probe.log`) |
+| storefront routes on `flamelancer.com` | `/`, `/cart`, `/blog`, `/account`, `/blog/demo-master-weavers` → **200** |
+
+**Where the archive fix is proven live.** Main production's database carries the `akira` store (Atelier/Supershop), not a Songoskriti store; there is no production merchant archive route to measure, and `/store/akira` is **404 by design**. The archive fix was therefore measured on a second instance of the **same deployed `.output` artifact**, started from `/opt/frame28` against the throwaway e2e database, with readiness **200** and all 12 preview keys **200**. The merchant route then served:
+
+```
+GET /store/frame19-demo/blog/category/handloom-heritage?page=1 -> 200, 98639 bytes,
+  "Nothing in this archive yet" = 0, "13 articles" = 1, page=2 href anchors = 4
+GET /store/frame19-demo/blog/category/handloom-heritage?page=2 -> 200, 92066 bytes,
+  "Nothing in this archive yet" = 0, "13 articles" = 1,
+  "The Jamdani Weavers of Sonargaon" (the seeded oldest article) = 4
+```
+
+`/store/frame19-demo` and its `/blog`, `/cart`, `/account` routes answered **200**; the trailing-slash form answered **307** to the canonical no-slash path. This proves the shipped artifact's archive SSR path — not production merchant data — and the instance was stopped after the evidence was captured.
+
+**Recorded residual, not hidden:** `HEAD` on an HTML-rendering route returns **500** while `GET` returns 200 (`HEAD /`, `/blog`, `/account`, `/theme-preview/songoskriti` → 500; `/cart` → 307 before rendering). `withSecurityHeaders` dereferences `response.body!` to inject the CSP-nonce meta, and a HEAD response has no body. The current `pipeThrough` line dates to `da8396c2` (2026-09-18), whose predecessor also dereferenced `response.body!` (`getReader`), so this predates the frame30 release and is not caused by the nonce fix. It is recorded as an open residual rather than folded into this release: the browser lane and all product paths use GET, and fixing it would require a new code commit, a fresh gate run and a redeploy.

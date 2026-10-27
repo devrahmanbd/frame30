@@ -304,3 +304,78 @@ widget's pending flash, Lane A's EN-ownership maintenance note, the
 publish-confirm dirty window, the toast ignoring `applied: false`, the missing
 বাংলা control on the schema-routed inspector, lane-hygiene and login-spacing
 constraints, the remote CI receipt) are listed in `report.md` §9.4.
+
+## 5. Deployment and live verification (2026-10-27)
+
+The corrected release was pushed with `origin/frame30` = `origin/main` =
+`9b91f18a` and deployed only through `ops/deploy-from-git.sh`, inside the host
+network namespace:
+
+```
+nsenter -t 1 -n bash -c 'cd /opt/frame28 && ops/deploy-from-git.sh frame30 root'
+```
+
+The script rebuilt `.output` from the pushed source, stamped the bundle
+marker, restarted `framique.service`, re-ran the platform/store contract
+checks, and ended:
+
+```
+DEPLOY OK: frame30 live (9b91f18a717c0ec5fd25a2877dda66bbf0672763)
+```
+
+It also printed `READY OK (post-restart):
+http://127.0.0.1:3200/api/healthz?type=readiness -> 200` and
+`VERIFY OK: live bundle marker 9b91f18a… == deployed SHA`
+(`/tmp/opencode/deploy-frame30-9b91f18a.log`). `.output/DEPLOYED_SHA` on the
+host matches the same SHA, and the service is active.
+
+### 5.1 The live surface
+
+Measured at 2026-10-27T06:21Z (`/tmp/opencode/postdeploy-live-verify.log`):
+
+- Readiness on the production loopback: **200**.
+- All **12** theme preview keys (`index collection product search cart checkout
+  blog blog_article blog_listing archive page account`): **200 on both** the
+  production loopback and `https://framique.qubickle.com`; each document
+  carried exactly one `csp-nonce` meta and one distinct script nonce.
+- Nonce stress under concurrency: **`runs=60 bad=0`**
+  (`/tmp/opencode/live-nonce-probe.log`).
+- Storefront routes on `flamelancer.com`: `/`, `/cart`, `/blog`, `/account`,
+  `/blog/demo-master-weavers` → **200**.
+- The platform/store contract remains as designed: `/store/akira` → **404**
+  (main production carries the `akira` Atelier/Supershop store, not a
+  Songoskriti store).
+
+### 5.2 The archive route on the deployed artifact
+
+Main production has no Songoskriti merchant, so there is no production
+archive route to measure. The archive fix was proved on a second instance of
+the **same deployed `.output` artifact** started from `/opt/frame28` against
+the throwaway e2e database. That instance answered readiness **200**, all 12
+previews **200**, and:
+
+```
+GET /store/frame19-demo/blog/category/handloom-heritage?page=1 -> 200, 98639 bytes,
+  "Nothing in this archive yet" = 0, "13 articles" = 1, page=2 href anchors = 4
+GET /store/frame19-demo/blog/category/handloom-heritage?page=2 -> 200, 92066 bytes,
+  "Nothing in this archive yet" = 0, "13 articles" = 1,
+  "The Jamdani Weavers of Sonargaon" (the seeded oldest article) = 4
+```
+
+`/store/frame19-demo` and its `/blog`, `/cart`, `/account` routes answered
+**200**; the trailing-slash form answered **307** to the canonical no-slash
+path. The instance was stopped after the evidence was captured. This is
+evidence about the shipped artifact, not a claim about production merchant
+data.
+
+### 5.3 Residual: HEAD on HTML routes returns 500
+
+`HEAD /`, `/blog`, `/account` and `/theme-preview/songoskriti` return **500**
+on the live instance while their GETs return 200 (`/cart` answers 307 before
+rendering). `withSecurityHeaders` dereferences `response.body!` to inject the
+CSP-nonce meta; a HEAD response has no body. The current `pipeThrough` line
+dates to `da8396c2` (2026-09-18), whose predecessor also dereferenced
+`response.body!` via `getReader`; the failure therefore predates this release
+and is not caused by the per-request nonce fix. It is recorded here as an open
+residual. No product path or browser-lane assertion uses HEAD; fixing it would
+require a new code commit, a fresh gate run and a redeploy.
