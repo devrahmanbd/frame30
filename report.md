@@ -699,7 +699,7 @@ Carried as **recorded concerns, not blockers**: the payment widget's pending-sta
 
 ### 9.5 The deployment, verified live (2026-10-27)
 
-The release was deployed from `9b91f18a`, then the tip of `origin/frame30` and `origin/main`; the post-deploy documentation commits now sit above it. Deployment used only the sanctioned path:
+The release was deployed from `9b91f18a`, which was then the tip of `origin/frame30` and `origin/main`; the post-deploy documentation commits now sit above it. Deployment used only the sanctioned path:
 
 ```
 nsenter -t 1 -n bash -c 'cd /opt/frame28 && ops/deploy-from-git.sh frame30 root'
