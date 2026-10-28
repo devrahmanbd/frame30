@@ -718,7 +718,7 @@ Live checks at 2026-10-27T06:21Z (`/tmp/opencode/postdeploy-live-verify.log`):
 | check | measured |
 | ----- | -------- |
 | readiness, production loopback | `GET /api/healthz?type=readiness` → **200** |
-| 12 theme preview keys (`index collection product search cart checkout blog blog_article blog_listing archive page account`) | **12/12 → 200** on both `127.0.0.1:3200` and `https://framique.qubickle.com`; every document carried exactly **one** `csp-nonce` meta and **one** distinct script nonce |
+| 12 theme preview keys (`index collection product search cart checkout blog blog_article blog_listing archive page account`) | **12/12 → 200** on both `127.0.0.1:3200` and `https://framique.qubickle.com`; every document carried one server-injected `name="csp-nonce"` meta (plus TanStack's `property="csp-nonce"` mirror, same value) and **one** distinct script nonce, all equal to the CSP header nonce |
 | nonce stress under concurrency | 60 documents / 12 concurrent → **`runs=60 bad=0`** (`/tmp/opencode/live-nonce-probe.log`) |
 | storefront routes on `flamelancer.com` | `/`, `/cart`, `/blog`, `/account`, `/blog/demo-master-weavers` → **200** |
 
