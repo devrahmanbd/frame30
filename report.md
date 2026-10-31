@@ -256,7 +256,11 @@ fresh bring-up.
 - The CI script applies it (chain glob widened to `migration/002[0-9]_*.sql`).
 - `.e2e/fixtures/songoskriti-archive-seed.sql` now seeds the rows the lane actually renders: the
   `handloom-heritage` term, its 13 linked articles (11 pager seeds + 2 legacy, including the page-2 lead
-  "The Jamdani Weavers of Sonargaon"), and the merchant's own `our-story` CMS page.
+  "The Jamdani Weavers of Sonargaon"), and the merchant's own `our-story` CMS page. The pager windows by
+  `article_terms.created_at`, so the links now pin it (the Sonargaon link is the oldest) to make the
+  page-2 window deterministic instead of tie-order dependent.
+- **Validated end-to-end:** run11 = **8/8** on a throwaway stack, `SEED_GAP 0`, seed rows and schema
+  assertions verified (§5).
 
 **Honesty note on production:** `ops/deploy-from-git.sh` does **not** run migrations, so deploying this
 branch does **not** by itself repair production's `blog_terms`. Production is repaired only when
@@ -282,7 +286,7 @@ Every gate below was run on the working tree at baseline `630e80be` + this wave'
 | Announcement/footer/migration retarget proofs | targeted `vitest run`                    | **20/20, 21/21, 20/20** |
 | Seven-templates lane — run7 (dev server + dev DB) | `.e2e/songoskriti-seven-templates.spec.ts` | **8/8** (after retirement; **not** a fresh stack — see §2.10) |
 | New migration typecheck/review       | `migration/0027_blog_terms_taxonomy_columns.sql` | reviewed; additive + `if not exists` guarded |
-| Seven-templates lane — fresh bring-up | `scripts/e2e-seven-templates-ci.sh` | **pending** — §5 (CI run details to be filled in) |
+| Seven-templates lane — fresh bring-up | `scripts/e2e-seven-templates-ci.sh` | **8/8** (run11, throwaway stack, 5.2m, `WRAPPER_EXIT=0`; run10 was 7/8 before the pager-`created_at` fix — §5) |
 | Live-visual (3 widths + home 1280) | `verify:live-visual` vs deployed              | **15/15 preview keys, 6/6 surfaces PASS** |
 | Production preview host           | HTTP probe                                     | `/`, `/blog`, `/theme-preview/songoskriti` all **200**; nonce coherent across CSP header + `name=`/`property=` metas + inline script |
 
@@ -328,16 +332,48 @@ Every gate below was run on the working tree at baseline `630e80be` + this wave'
 
 ---
 
-## 5. CI run details — to be filled in
+## 5. CI run details
 
-The provider run for the `e2e-seven-templates` lane (GitHub / CircleCI run URL, status, timings, and
-the fresh-stack `PROD_PARITY_GAP` / `MIGRATION_GAP` / `SEED_GAP` counts) will be recorded here once the
-first run on `frame30` completes. Placeholder for now.
+The lane was validated end-to-end on throwaway stacks with `scripts/e2e-seven-templates-ci.sh`
+(`E2E_DB_PORT=55442 E2E_LOOPBACK_RELAY=1`), which is the same command the `e2e-seven-templates` job
+runs. Three consecutive runs bracket the `blog_terms` fix (§2.10):
 
 | Run | Trigger | Result | Notes |
 | --- | ------- | ------ | ----- |
-| —   | —       | pending | adds `migration/0027_blog_terms_taxonomy_columns.sql` + expanded seed (§2.10) |
+| run 9  | local, pre-fix | **5/8** (5.2m) | the three storefront 404s — root cause §2.10 |
+| run 10 | local, with `0027` + full seed | **7/8** (5.3m) | `SEED_GAP 0`; 13-article archive verified; only Archive's page-2 assertion failed (the pager windows by `article_terms.created_at`, not `published_at`) |
+| run 11 | local, with pinned link `created_at` | **8/8** (5.2m) | `WRAPPER_EXIT=0`; `PROD_PARITY_GAP 291` (production-only deps, tolerated by design), `MIGRATION_GAP 79`, `SEED_GAP 0`; schema assertions + seed rows verified |
 
-**Also pending (production):** `bun run db:migrate` against the deployed DB to apply
-`0027_blog_terms_taxonomy_columns.sql` and repair production's broken blog taxonomy (§2.10); the
-deploy script does not run migrations.
+Run 11, verbatim from `/tmp/opencode/ci-final11.log`:
+
+```
+production-schema parity applied — 291 statement(s) tolerated
+migration chain applied — 79 statement(s) skipped (legacy gap)
+schema assertions passed
+seed applied — 0 statement(s) skipped (latent seed gap)
+seed rows verified (theme, products, blog term, store page, 13-article archive)
+✓ 1  … the editor journey: Search results (53.3s)
+✓ 2  … the editor journey: Cart (53.8s)
+✓ 3  … the editor journey: Account (37.7s)
+✓ 4  … the editor journey: Blog (37.8s)
+✓ 5  … the editor journey: Checkout (37.4s)
+✓ 6  … the editor journey: Archive (34.0s)
+✓ 7  … the editor journey: Page (35.4s)
+✓ 8  … the store-less platform taxonomy route keeps the platform's grid (3.7s)
+8 passed (5.2m)
+WRAPPER_EXIT=0
+```
+
+The 291 tolerated production-parity statements are the known, by-design failures: `GRANT`/`POLICY`
+statements that reference production-only types, relations and functions (`app_role`, `user_roles`,
+`bookings`, `cms_posts`, `support_tickets`, `tenant_domains`, `touch_updated_at()`, ...). They are
+counted and printed, never silent, and the relations the lane actually reads are materialized and then
+hard-asserted (§2.9). The `builder_template_seo.title` warning still appears in the log but is
+fail-soft (`render_read.server.ts` catches it) and never 404s.
+
+**Provider run:** the CI provider's `e2e-seven-templates` job on `frame30` has not been observed yet;
+add its URL/status here once it runs. The local run above is the same command that job executes.
+
+**Still pending (production):** `bun run db:migrate` against the deployed DB to apply
+`migration/0027_blog_terms_taxonomy_columns.sql` and repair production's broken blog taxonomy (§2.10);
+`ops/deploy-from-git.sh` does not run migrations.
