@@ -1,0 +1,12 @@
+[e2e warm-up] SSR ready: http://localhost:3020/theme-preview/songoskriti answered 200 after 1 attempt(s)
+Running 8 tests using 1 worker
+  ✓  1 [chromium] › .e2e/songoskriti-seven-templates.spec.ts:1119:3 › the editor journey: Search results (1.4m)
+  ✓  2 [chromium] › .e2e/songoskriti-seven-templates.spec.ts:1119:3 › the editor journey: Cart (1.3m)
+  ✓  3 [chromium] › .e2e/songoskriti-seven-templates.spec.ts:1119:3 › the editor journey: Account (55.6s)
+  ✓  4 [chromium] › .e2e/songoskriti-seven-templates.spec.ts:1119:3 › the editor journey: Blog (53.3s)
+  ✓  5 [chromium] › .e2e/songoskriti-seven-templates.spec.ts:1119:3 › the editor journey: Checkout (50.0s)
+  ✓  6 [chromium] › .e2e/songoskriti-seven-templates.spec.ts:1119:3 › the editor journey: Archive (47.8s)
+  ✓  7 [chromium] › .e2e/songoskriti-seven-templates.spec.ts:1119:3 › the editor journey: Page (49.2s)
+  ✓  8 [chromium] › .e2e/songoskriti-seven-templates.spec.ts:1820:1 › the store-less platform taxonomy route keeps the platform's grid (the merchant's own archive route is the LANDED /store route) (6.8s)
+  Slow test file: [chromium] › .e2e/songoskriti-seven-templates.spec.ts (7.1m)
+  8 passed (7.6m)

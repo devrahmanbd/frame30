@@ -1,0 +1,16 @@
+[e2e warm-up] SSR ready: http://localhost:3020/theme-preview/songoskriti answered 200 after 1 attempt(s)
+
+Running 8 tests using 1 worker
+
+  ✓  1 [chromium] › .e2e/songoskriti-seven-templates.spec.ts:1119:3 › the editor journey: Search results (49.1s)
+  ✓  2 [chromium] › .e2e/songoskriti-seven-templates.spec.ts:1119:3 › the editor journey: Cart (1.1m)
+  ✓  3 [chromium] › .e2e/songoskriti-seven-templates.spec.ts:1119:3 › the editor journey: Account (44.9s)
+  ✓  4 [chromium] › .e2e/songoskriti-seven-templates.spec.ts:1119:3 › the editor journey: Blog (45.5s)
+  ✓  5 [chromium] › .e2e/songoskriti-seven-templates.spec.ts:1119:3 › the editor journey: Checkout (44.4s)
+  ✓  6 [chromium] › .e2e/songoskriti-seven-templates.spec.ts:1119:3 › the editor journey: Archive (39.7s)
+  ✓  7 [chromium] › .e2e/songoskriti-seven-templates.spec.ts:1119:3 › the editor journey: Page (42.3s)
+  ✓  8 [chromium] › .e2e/songoskriti-seven-templates.spec.ts:1820:1 › the store-less platform taxonomy route keeps the platform's grid (the merchant's own archive route is the LANDED /store route) (5.5s)
+
+  Slow test file: [chromium] › .e2e/songoskriti-seven-templates.spec.ts (5.6m)
+  Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
+  8 passed (5.7m)

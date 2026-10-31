@@ -1,0 +1,7 @@
+[e2e warm-up] SSR ready: http://localhost:3020/theme-preview/songoskriti answered 200 after 1 attempt(s)
+
+Running 1 test using 1 worker
+
+  ✓  1 [chromium] › .e2e/songoskriti-seven-templates.spec.ts:1119:3 › the editor journey: Cart (1.8m)
+
+  1 passed (1.8m)

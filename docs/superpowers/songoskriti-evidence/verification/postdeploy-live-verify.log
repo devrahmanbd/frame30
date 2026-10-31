@@ -1,0 +1,80 @@
+=== 2026-10-27T06:21:31Z post-deploy verification ===
+HEAD: 9b91f18a717c0ec5fd25a2877dda66bbf0672763
+DEPLOYED_SHA: 9b91f18a717c0ec5fd25a2877dda66bbf0672763
+service: active MainPID=2268978
+
+--- readiness (production netns 3200) ---
+GET /api/healthz?type=readiness -> 200
+
+--- 12 theme preview keys: production loopback + HTTPS ---
+index        loopback=200 metas=1 distinct-script-nonces=1 | https=200 metas=1 distinct-script-nonces=1
+collection   loopback=200 metas=1 distinct-script-nonces=1 | https=200 metas=1 distinct-script-nonces=1
+product      loopback=200 metas=1 distinct-script-nonces=1 | https=200 metas=1 distinct-script-nonces=1
+search       loopback=200 metas=1 distinct-script-nonces=1 | https=200 metas=1 distinct-script-nonces=1
+cart         loopback=200 metas=1 distinct-script-nonces=1 | https=200 metas=1 distinct-script-nonces=1
+checkout     loopback=200 metas=1 distinct-script-nonces=1 | https=200 metas=1 distinct-script-nonces=1
+blog         loopback=200 metas=1 distinct-script-nonces=1 | https=200 metas=1 distinct-script-nonces=1
+blog_article loopback=200 metas=1 distinct-script-nonces=1 | https=200 metas=1 distinct-script-nonces=1
+blog_listing loopback=200 metas=1 distinct-script-nonces=1 | https=200 metas=1 distinct-script-nonces=1
+archive      loopback=200 metas=1 distinct-script-nonces=1 | https=200 metas=1 distinct-script-nonces=1
+page         loopback=200 metas=1 distinct-script-nonces=1 | https=200 metas=1 distinct-script-nonces=1
+account      loopback=200 metas=1 distinct-script-nonces=1 | https=200 metas=1 distinct-script-nonces=1
+
+--- production storefront routes (HTTPS) ---
+/                            -> 200
+/cart                        -> 200
+/blog                        -> 200
+/account                     -> 200
+/blog/demo-master-weavers    -> 200
+
+--- residual: HEAD on live preview ---
+HEAD https://framique.qubickle.com/theme-preview/songoskriti -> 500
+
+--- deployed-artifact instance 3210 (throwaway e2e DB) ---
+/opt/frame28
+readiness -> 200
+preview index        -> 200
+preview collection   -> 200
+preview product      -> 200
+preview search       -> 200
+preview cart         -> 200
+preview checkout     -> 200
+preview blog         -> 200
+preview blog_article -> 200
+preview blog_listing -> 200
+preview archive      -> 200
+preview page         -> 200
+preview account      -> 200
+store frame19-demo /        -> 307
+store frame19-demo /blog    -> 200
+store frame19-demo /cart    -> 200
+store frame19-demo /account -> 200
+archive page=1 -> 200 bytes=98639 empty=0 "13 articles"=1 oldest=0 page2-link=6
+archive page=2 -> 200 bytes=92066 empty=0 "13 articles"=1 oldest=4 page2-link=6
+--- 3210 store home redirect detail ---
+HTTP/1.1 200 
+cache-control: public, max-age=0, s-maxage=60, stale-while-revalidate=300
+content-security-policy: default-src 'self'; script-src 'self' 'nonce-hUSZRI3cZR8eHZWk4uD_zQ' 'strict-dynamic'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data: blob:; connect-src 'self' http://127.0.0.1:58000 ws://127.0.0.1:58000; frame-src 'self' https://www.youtube.com https://player.vimeo.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'
+content-type: text/html; charset=utf-8
+permissions-policy: camera=(), microphone=(), geolocation=(), payment=()
+referrer-policy: strict-origin-when-cross-origin
+vary: accept-language, host
+x-content-type-options: nosniff
+x-framique-cohort-tier: 3
+x-framique-slot: blue
+x-framique-target-slot: blue
+Date: Tue, 27 Oct 2026 06:21:44 GMT
+followed -> 200 final=http://127.0.0.1:3210/store/frame19-demo
+store frame19-demo /        -> 307
+store frame19-demo /blog    -> 200
+store frame19-demo /cart    -> 200
+store frame19-demo /account -> 200
+--- clarified: trailing slash is the redirect ---
+/store/frame19-demo       -> 200
+/store/frame19-demo/      -> 307 location=/store/frame19-demo
+/store/frame19-demo/ (follow) -> 200
+--- residual diagnosis: HEAD 500 ---
+GET  /theme-preview/songoskriti -> 200
+HEAD /theme-preview/songoskriti -> 500
+176:    body = response.body!.pipeThrough(
+introduced: da8396c2 2026-09-18 fix(env1): rewrite CSP-nonce meta injector as TransformStream, unhanging all SSR
