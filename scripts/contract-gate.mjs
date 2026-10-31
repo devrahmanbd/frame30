@@ -299,7 +299,13 @@ const testFiles = MANIFEST.filter((e) => e.kind !== "fixture").map(
   (e) => e.file,
 );
 console.log(`\nrunning ${testFiles.length} contract suites…\n`);
-const result = spawnSync("bunx", ["vitest", "run", ...testFiles], {
+// CI has bunx; a machine without Bun must still be able to run the gate, so
+// fall back to npx, which executes the same node_modules/vitest binary.
+const have = (bin) =>
+  spawnSync(bin, ["--version"], { stdio: "ignore" }).status === 0;
+const runner = have("bunx") ? "bunx" : "npx";
+console.log(`vitest runner: ${runner}`);
+const result = spawnSync(runner, ["vitest", "run", ...testFiles], {
   stdio: "inherit",
   cwd: ROOT,
 });

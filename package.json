@@ -62,7 +62,8 @@
     "obs:verify": "node scripts/observability-verify.mjs",
     "obs:verify:alert": "node scripts/observability-verify.mjs --test-alert",
     "err:verify": "node scripts/error-tracking-verify.mjs",
-    "err:verify:send": "node scripts/error-tracking-verify.mjs --send"
+    "err:verify:send": "node scripts/error-tracking-verify.mjs --send",
+    "verify:live-visual": "node scripts/verify-live-visual.mjs"
   },
   "browserslist": [
     "last 2 Chrome versions",

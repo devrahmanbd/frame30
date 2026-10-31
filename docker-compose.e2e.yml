@@ -8,7 +8,11 @@
 # - Separate compose project (`e2e-supabase`), own bridge network + volumes.
 #   Never attaches to the `framique` production network/volumes.
 # - Every published port binds 127.0.0.1 explicitly (db 55432, auth 59999,
-#   rest 53000, kong 58000). Nothing is reachable off-box.
+#   rest 53000, kong 58000). Nothing is reachable off-box. Each host port is
+#   overridable (`E2E_DB_HOST_PORT` / `E2E_AUTH_HOST_PORT` /
+#   `E2E_REST_HOST_PORT` / `E2E_KONG_HOST_PORT`) so a machine that already
+#   publishes one of the defaults can still stand the stack up; the defaults
+#   above are unchanged.
 # - Secrets come from an UNSAVED env file OUTSIDE the repo, e.g.
 #   /tmp/opencode/e2e-auth/.e2e.env (fresh throwaway JWT/postgres secrets).
 #   This file contains NO secrets — only ${VAR} references.
@@ -65,7 +69,10 @@ services:
     volumes:
       - e2e-db-data:/var/lib/postgresql/data
     networks: [e2e]
-    ports: ["127.0.0.1:55432:5432"]
+    # Host port is overridable (`E2E_DB_PORT`) so a box that already
+    # publishes the default (e.g. another local Postgres) can still run
+    # this throwaway stack. Loopback only, unchanged default.
+    ports: ["127.0.0.1:${E2E_DB_PORT:-55432}:5432"]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -h 127.0.0.1"]
       interval: 10s
@@ -171,7 +178,9 @@ services:
     volumes:
       - /tmp/opencode/e2e-auth/kong.yml:/home/kong/kong.yml:ro
     networks: [e2e]
-    ports: ["127.0.0.1:58000:8000"]
+    # Overridable for the same reason as the db port (a stray local
+    # listener can hold the default). Loopback only, unchanged default.
+    ports: ["127.0.0.1:${E2E_KONG_PORT:-58000}:8000"]
     healthcheck:
       test: ["CMD-SHELL", "kong health"]
       interval: 15s

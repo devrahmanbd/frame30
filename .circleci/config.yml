@@ -351,6 +351,54 @@ jobs:
             VITE_SUPABASE_PUBLISHABLE_KEY: "ci-placeholder-publishable-key"
             AUTH_HASH_SALT: "ci-placeholder-salt"
 
+  # The seven-template editor journey on a self-contained throwaway stack.
+  # BLOCKING from day one (owner decision D2): this job is in `gates` with a
+  # `requires: build` edge, so a red run blocks the workflow. The script is
+  # the executable runbook (docs/15-e2e/loopback-auth-setup.md): it starts
+  # docker-compose.e2e.yml, applies the sanctioned migration chain, creates a
+  # real GoTrue merchant, seeds the demo catalogue, applies the archive pager
+  # fixture, runs the lane with --retries=0, then `down -v` in a trap.
+  # Machine executor (NOT setup_remote_docker): the app and the stack must
+  # share 127.0.0.1. All secrets are generated in-job and never persisted.
+  e2e-seven-templates:
+    machine:
+      image: ubuntu-2204:current
+      docker_layer_caching: false
+    resource_class: large
+    steps:
+      - checkout
+      # Explicit Bun install instead of the node orb: this job runs on the
+      # machine executor (the orb's Docker-oriented package step is not the
+      # right fit here). Same pinned version + frozen lockfile as setup-bun.
+      - run:
+          name: Install Bun 1.3.14
+          command: |
+            curl -fsSL https://bun.sh/install | bash -s "bun-v1.3.14"
+            echo 'export PATH="$HOME/.bun/bin:$PATH"' >> "$BASH_ENV"
+            export PATH="$HOME/.bun/bin:$PATH"
+            bun --version
+      - run:
+          name: Install dependencies (frozen lockfile)
+          command: bun install --frozen-lockfile
+      - run:
+          name: Docker Compose v2 present (fail-closed)
+          command: docker compose version
+      - run:
+          name: Install Playwright Chromium
+          command: bunx playwright install --with-deps chromium
+      - run:
+          name: Seven-template lane (throwaway loopback stack)
+          command: bash scripts/e2e-seven-templates-ci.sh
+          no_output_timeout: 30m
+      - store_artifacts:
+          path: .artifacts/e2e/playwright-report
+          destination: e2e-seven-templates/report
+          when: always
+      - store_artifacts:
+          path: test-results
+          destination: e2e-seven-templates/test-results
+          when: always
+
 workflows:
   version: 2
   gates:
@@ -378,6 +426,11 @@ workflows:
       # the NOT-wired comment on the job). No approval hold anywhere in this
       # pipeline (mirrors e2e-critical/e2e-security: requires build only).
       - e2e-levelb-production:
+          requires:
+            - build
+      # BLOCKING from day one: the real seven-template editor journey on a
+      # throwaway stack. A red here is a real red (--retries=0 in the script).
+      - e2e-seven-templates:
           requires:
             - build
       - plugin-storefront-gate
