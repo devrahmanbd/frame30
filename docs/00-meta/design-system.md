@@ -134,8 +134,8 @@ Adapted from the design-taste/hallmark/frontend-design practices — **every pag
 7. Consistent radius/space/elevation from tokens — no bespoke values.
 8. Dark mode exists for admin; official storefront themes declare their own
    coverage — Songoskriti is light-only (`dark: null` in
-   `src/lib/themes/songoskriti/tokens.ts:27`), Somvabona ships a designed dark
-   set (`src/lib/themes/somvabona/tokens.ts:32`).
+   `src/lib/themes/songoskriti/tokens.ts:27`). A community theme may ship a
+   designed dark set.
 9. Mobile layout is designed, not a CSS afterthought.
 10. Accessibility auto-checks (axe) run in CI on every page snapshot.
 

@@ -311,7 +311,7 @@ row) and non-widening updates pass untouched.
 
 ### 3.3 Official catalogue (source model, separate path)
 
-- Official themes: exactly `songoskriti`, `somvabona`
+- Official themes: exactly `songoskriti`
   (`OFFICIAL_THEME_KEYS`, `src/lib/themes/builtin-themes.ts:15`;
   UI-order mirror at `src/lib/themes/appearance.ts:71`).
 - Official plugins: exactly `product-reviews`, `store-analytics`,

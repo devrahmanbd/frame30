@@ -54,8 +54,7 @@ Two cross-cutting systems every primitive runs through:
   `:4671` product grid, `:4699` product rail, `:6557` testimonials,
   `:6878` urgency rail). Theme defaults merge **under** authored props
   (`withThemeWidgetDefaults` `:873-890`;
-  `src/lib/themes/songoskriti/skins.ts:52-57,109-119`,
-  `src/lib/themes/somvabona/skins.ts:40-52,96-125`). Merchant skin assets
+  `src/lib/themes/songoskriti/skins.ts:52-57,109-119`). Merchant skin assets
   load conditionally (`skinKeyForAssetName`, `combineThemeCss`,
   `filterSkinCss` in `src/lib/themes/assets.ts:196-312`).
 - **Tokens (the only styling channel).** `ThemeTokens`
@@ -64,8 +63,7 @@ Two cross-cutting systems every primitive runs through:
   styling channel, `--fq-*` primitives locked —
   `docs/04-builder/theme-runtime.md:32-36`); skin sheets stay token-only
   (`var(--theme-*)`, `color-mix` washes), gated per theme by test
-  (`src/lib/themes/songoskriti/skins.test.ts:182`,
-  `src/lib/themes/somvabona/skins.test.ts:167`); full author flow in
+  (`src/lib/themes/songoskriti/skins.test.ts:182`); full author flow in
   `creation.md` §2.1, §4–§5.
 
 Theme-affecting props beyond the eight (`atmosphere` on `hero`,

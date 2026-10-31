@@ -13,17 +13,12 @@ semantics live in the [SDK contracts](sdk-contracts.md) note.
 
 ## 1. Theme submissions
 
-Run both commands from the repository root. The first exercises the
-shipped themes (wiring, skins, preview, widget resolution, and studio
-twin parity); the second exercises the third-party scaffold that
-mirrors those gates.
+Run the command from the repository root. It exercises the shipped theme
+(wiring, skins, preview, widget resolution) and the studio twin parity
+gates.
 
 ```bash
-npx vitest run src/lib/themes/songoskriti src/lib/themes/somvabona src/lib/studio/catalog.test.ts
-```
-
-```bash
-npx vitest run examples/starter-theme/starter-theme.test.ts
+npx vitest run src/lib/themes/songoskriti src/lib/studio/catalog.test.ts
 ```
 
 Gate entry points, one per suite:
@@ -34,16 +29,11 @@ Gate entry points, one per suite:
 | Songoskriti skins          | `stays token-driven` test                  | `src/lib/themes/songoskriti/skins.test.ts:182`    |
 | Songoskriti preview        | `describe("songoskritiPreviewSource")`     | `src/lib/themes/songoskriti/preview.test.ts:12`   |
 | Songoskriti widget audit   | `describe("songoskriti widget gap audit")` | `src/lib/themes/songoskriti/widgets.test.ts:11`   |
-| Somvabona scaffold         | `describe("somvabona scaffold")`           | `src/lib/themes/somvabona/wiring.test.ts:8`       |
-| Somvabona skins            | `describe("SOMVABONA_WIDGET_DEFAULTS")`    | `src/lib/themes/somvabona/skins.test.ts:35`       |
-| Somvabona skins token gate | `is token-driven` test                     | `src/lib/themes/somvabona/skins.test.ts:166`      |
 | Studio twin parity         | `describe("studio twin parity")`           | `src/lib/studio/catalog.test.ts:837`              |
-| Starter theme (5 gates)    | `locks brand tokens` test                  | `examples/starter-theme/starter-theme.test.ts:44` |
 
-Expected green output at HEAD: 8 files and 491 tests pass on the
-first command; 5 tests pass on the second. Any failure is a
-rejection, not a judgment call: point the author at the failing
-suite and the corresponding section of the
+Expected green output at HEAD: the command exits 0 with every test
+passing. Any failure is a rejection, not a judgment call: point the
+author at the failing suite and the corresponding section of the
 [theme authoring guide](../developers/themes.md).
 
 Theme-specific red lines:

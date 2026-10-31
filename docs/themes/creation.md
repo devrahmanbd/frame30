@@ -39,7 +39,7 @@ for catalogue review.
 | --- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1   | Layout               | `header` / `main` / `footer` slot arrays on every template; responsive `bp` overrides per section                                                                                                          | `src/lib/builder-ast.ts:523`, `src/lib/builder-ast.ts:412`                                                                                                 |
 | 2   | Design system        | Full `ThemeTokens` set incl. light + designed `dark` set, `globals`, font pairing                                                                                                                          | `src/lib/builder-ast.ts:7144`, `src/lib/theme-globals.ts:32-48`                                                                                            |
-| 3   | Homepage             | `index` template with hero, merchandising, trust and footer composition                                                                                                                                    | `src/lib/themes/songoskriti/homepage.ts:23`, `src/lib/themes/somvabona/homepage.ts:22`                                                                     |
+| 3   | Homepage             | `index` template with hero, merchandising, trust and footer composition                                                                                                                                    | `src/lib/themes/songoskriti/homepage.ts:23`                                                                     |
 | 4   | Product pages        | `product` template: media, price, variant/size, buy box, delivery, reviews/Q&A, related                                                                                                                    | `src/lib/themes/songoskriti/preview.ts` (`product` case), `src/lib/builder-ast.ts` PDP widgets                                                             |
 | 5   | Collection pages     | `collection` template: category header, facets, toolbar, grid, pagination, empty state                                                                                                                     | `src/lib/themes/songoskriti/preview.ts` (`collection` case), `src/lib/builder-ast.ts` listing widgets                                                      |
 | 6   | Posts / blog         | `blog` template: `blog_terms` + `blog_archive` + `blog_pager` + newsletter                                                                                                                                 | `src/lib/themes/songoskriti/preview.ts` (`blog` case), per-theme article CSS in `skins.css`                                                                |
@@ -99,41 +99,41 @@ export const DEFAULT_TOKENS: ThemeTokens = {
 };
 ```
 
-Designed dark sets are plain objects on `tokens.dark`, e.g. Somvabona
-(`src/lib/themes/somvabona/tokens.ts:32-37`) — the reference dark set.
-Songoskriti is light-only (`dark: null`). Globals are the merchant-editable
+A designed dark set is a plain object on `tokens.dark` (`{ brand, accent,
+surface, ink }`). The shipped Songoskriti theme is light-only (`dark:
+null`); the type still supports a dark set for community themes. Globals are the merchant-editable
 palette: `DEFAULT_GLOBALS` (`src/lib/theme-globals.ts:32-48`) seeds four
 colors + two fonts; bindings are stored as `var(--fq-g-<id>)`
 (`src/lib/theme-globals.ts:50-63`).
 
 `ThemeTokens` carries 19 required keys plus 2 optional ones (`timezone`,
-`allowCustomerTimezone`) (`src/lib/builder-ast.ts:7089`). The two
-shipped themes lock the values below — copy one column verbatim as the
+`allowCustomerTimezone`) (`src/lib/builder-ast.ts:7089`). The shipped
+theme locks the values below — copy the column verbatim as the
 starting point, then change brand/accent/surface/ink plus layout knobs:
 
-| Token             | Songoskriti (`src/lib/themes/songoskriti/tokens.ts:9`) | Somvabona (`src/lib/themes/somvabona/tokens.ts:14`)                                          |
-| ----------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
-| `brand`           | `#1a1a1a`                                              | `#7C2A1A`                                                                                    |
-| `accent`          | `#8B4513`                                              | `#B95A38`                                                                                    |
-| `surface`         | `#faf9f7`                                              | `#FBF6EE`                                                                                    |
-| `ink`             | `#1a1a1a`                                              | `#2E2620`                                                                                    |
-| `radius`          | `0px` (sharp, fashion-editorial)                       | `4px`                                                                                        |
-| `fontDisplay`     | `Playfair Display`                                     | `Playfair Display` (campaign headlines only)                                                 |
-| `fontBody`        | `Inter`                                                | `Inter`                                                                                      |
-| `container`       | `1320px`                                               | `1320px`                                                                                     |
-| `density`         | `comfortable`                                          | `comfortable`                                                                                |
-| `typeScale`       | `default`                                              | `default`                                                                                    |
-| `spaceUnit`       | `16px`                                                 | `16px`                                                                                       |
-| `shadow`          | `soft`                                                 | `soft`                                                                                       |
-| `motion`          | `subtle`                                               | `subtle`                                                                                     |
-| `digits`          | `latin`                                                | `latin`                                                                                      |
-| `locale`          | `en`                                                   | `en`                                                                                         |
-| `currencyDisplay` | `symbol`                                               | `symbol`                                                                                     |
-| `fontPairing`     | `editorial-serif`                                      | `editorial-serif`                                                                            |
-| `dark`            | `null` (light-only)                                    | `{ brand, accent, surface, ink }` (designed set, `src/lib/themes/somvabona/tokens.ts:32-37`) |
-| `globals`         | `DEFAULT_GLOBALS`                                      | `DEFAULT_GLOBALS`                                                                            |
+| Token             | Songoskriti (`src/lib/themes/songoskriti/tokens.ts:9`) |
+| ----------------- | ------------------------------------------------------ |
+| `brand`           | `#1a1a1a`                                              |
+| `accent`          | `#8B4513`                                              |
+| `surface`         | `#faf9f7`                                              |
+| `ink`             | `#1a1a1a`                                              |
+| `radius`          | `0px` (sharp, fashion-editorial)                       |
+| `fontDisplay`     | `Playfair Display`                                     |
+| `fontBody`        | `Inter`                                                |
+| `container`       | `1320px`                                               |
+| `density`         | `comfortable`                                          |
+| `typeScale`       | `default`                                              |
+| `spaceUnit`       | `16px`                                                 |
+| `shadow`          | `soft`                                                 |
+| `motion`          | `subtle`                                               |
+| `digits`          | `latin`                                                |
+| `locale`          | `en`                                                   |
+| `currencyDisplay` | `symbol`                                               |
+| `fontPairing`     | `editorial-serif`                                      |
+| `dark`            | `null` (light-only)                                    |
+| `globals`         | `DEFAULT_GLOBALS`                                      |
 
-Both themes keep bilingual EN/BN inline props on every user-facing string
+The shipped theme keeps bilingual EN/BN inline props on every user-facing string
 and a BDT-first money display (symbol, Latin digits). How published tokens
 reach the storefront as CSS variables is runtime theory — see [the builder
 token reference](../04-builder/README.md).
@@ -269,8 +269,8 @@ group | html | array | menu` (`src/lib/builder-ast.ts:611-628`).
 ### 2.4 Theme anatomy (what shipped themes actually contain)
 
 A theme is a folder under `src/lib/themes/<key>/` — no preset table; the
-shared registry layer is optional (§14). The shipped themes (Songoskriti,
-Somvabona) each contain:
+shared registry layer is optional (§14). The shipped theme (Songoskriti)
+contains:
 
 - `tokens.ts` — the `ThemeTokens` override (brand/accent/surface/ink plus
   layout knobs and an optional designed `dark` set).
@@ -316,13 +316,7 @@ always win):
   `split_feature`, `collection_story`, `product_rail`, `craft_story`,
   `ugc_gallery`, `testimonials`, `split_feature`, `trust_footer`,
   `store_locator`.
-- Somvabona: `buildHomepageMain()` (`src/lib/themes/somvabona/homepage.ts:22`)
-  wrapped in `withSomvabonaWidgetDefaults()` (`src/lib/themes/somvabona/skins.ts:113`).
-  Ships a 12-section homepage on 11 distinct types (the urgency rail
-  doubles): `announcement_bar`, `hero_carousel`, `trust_marquee`,
-  `circle_categories`, `price_buckets`, `urgency_rail` × 2, `occasion_matrix`,
-  `recently_viewed` (after the matrix), `store_locator`, `craft_story`,
-  `testimonials`.
+
 
 Pattern rules for new themes: first section owns the H1 claim (a
 `hero_carousel` up front, matching the full composition lists in [the
@@ -414,10 +408,9 @@ the merchant's record is never lost, and the theme never has to reproduce it.
 ### Step 1 — Tokens
 
 Start from `DEFAULT_TOKENS` and override brand/accent/surface/ink plus
-layout knobs. Copy an existing tokens file, e.g. Songoskriti
-(`src/lib/themes/songoskriti/tokens.ts:9-29`) or Somvabona
-(`src/lib/themes/somvabona/tokens.ts:14-34`, with the reference designed
-`dark` set at `:32-37`). Songoskriti is light-only (`dark: null`).
+layout knobs. Copy the shipped tokens file
+(`src/lib/themes/songoskriti/tokens.ts:9-29`); it is light-only
+(`dark: null`), and a community theme can add a designed dark set.
 
 ### Step 2 — Templates
 
@@ -644,7 +637,7 @@ state machine behind it.
 - Responsive: `hidden: ["mobile"]` and `bp: { tablet: {...}, mobile: {...} }`
   on any section (`src/lib/builder-ast.ts:412-417`); per-device layers only
   accept responsive-flagged fields (see the per-device reference on the
-  shipped homepages: Songoskriti MOST LOVED, Somvabona recently-viewed).
+  shipped homepage: Songoskriti MOST LOVED).
 - Containers only: `children` is accepted solely on catalogue entries
   flagged `container: true` (`src/lib/builder-ast.ts:311-314`); trees cap
   at `MAX_TREE_DEPTH`/`MAX_NODES_PER_TEMPLATE` (`:303-304`).
@@ -659,22 +652,21 @@ select field in the style panel via `SKIN_FIELD`
 the documented default. Unknown or empty values resolve to the widget
 default — never a crash, never empty.
 
-| Widget          | Core vocab (first = core default) | Songoskriti default | Somvabona default |
-| --------------- | --------------------------------- | ------------------- | ----------------- |
-| `product_rail`  | `editorial`, `compact`, `minimal` | `editorial`         | `compact`         |
-| `hero_carousel` | `split`, `fullbleed`, `minimal`   | `split`             | `fullbleed`       |
-| `testimonials`  | `carousel`, `wall`, `single`      | `wall`              | `carousel`        |
-| `product_grid`  | `cards`, `rows`                   | `cards`             | `rows`            |
-| `urgency_rail`  | `editorial`, `compact`, `minimal` | — (core default)    | `compact`         |
+| Widget          | Core vocab (first = core default) | Songoskriti default |
+| --------------- | --------------------------------- | ------------------- |
+| `product_rail`  | `editorial`, `compact`, `minimal` | `editorial`         |
+| `hero_carousel` | `split`, `fullbleed`, `minimal`   | `split`             |
+| `testimonials`  | `carousel`, `wall`, `single`      | `wall`              |
+| `product_grid`  | `cards`, `rows`                   | `cards`             |
+| `urgency_rail`  | `editorial`, `compact`, `minimal` | — (core default)    |
 
 Theme-side sets: `SONGOSKRITI_SKIN_SETS`
 (`src/lib/themes/songoskriti/skins.ts:35`), `SONGOSKRITI_WIDGET_DEFAULTS`
-(`src/lib/themes/songoskriti/skins.ts:52`), `SOMVABONA_WIDGET_DEFAULTS`
-(`src/lib/themes/somvabona/skins.ts:40`). Wire them with
-`withSongoskritiDefaults()` (`src/lib/themes/songoskriti/skins.ts:109`) or
-`withSomvabonaWidgetDefaults()` (`src/lib/themes/somvabona/skins.ts:113`):
+(`src/lib/themes/songoskriti/skins.ts:52`). Wire them with
+`withSongoskritiDefaults()` (`src/lib/themes/songoskriti/skins.ts:109`):
 defaults merge **under** authored props, so an explicit `skin` in the
-inspector always wins. Skin values are style keys, never copy, so they
+inspector always wins. A community theme ships its own defaults with the
+same merge rule. Skin values are style keys, never copy, so they
 carry no `_bn` twins (bilingual props are declared per widget in
 `BITEXT_FIELDS`, `src/lib/builder-ast.ts:5883`).
 
@@ -684,19 +676,14 @@ Theme skin stylesheets are token-only: every value reads `var(--theme-*)`,
 keyed off the renderer's `[data-widget]` + `[data-skin]` attributes.
 Washes use `color-mix()` over theme tokens, so a merchant re-tint re-skins
 every rule automatically; motion rules collapse under
-`prefers-reduced-motion`. See `src/lib/themes/songoskriti/skins.css` and
-`src/lib/themes/somvabona/skins.css`. Per-theme article treatment lives at
-the tail of each sheet — the active theme owns article styles with no
-scoping attribute: Songoskriti editorial serif with a brand rule
-(`src/lib/themes/songoskriti/skins.css:413-432`), Somvabona compact with
-accent links (`src/lib/themes/somvabona/skins.css:276-293`). Both stay
-token-only (`var(--theme-*)`), so a merchant re-tint re-skins article
-headlines, body rhythm, and links automatically. The gate is enforced per
-theme by
-test: `stays token-driven: theme vars only, no hex literals` in
-`src/lib/themes/songoskriti/skins.test.ts:182`, and `is token-driven: no
-hex literals or raw colour utilities` in
-`src/lib/themes/somvabona/skins.test.ts:166`.
+`prefers-reduced-motion`. See `src/lib/themes/songoskriti/skins.css`.
+Per-theme article treatment lives at the tail of the sheet — the active
+theme owns article styles with no scoping attribute: Songoskriti editorial
+serif with a brand rule (`src/lib/themes/songoskriti/skins.css:413-432`).
+It stays token-only (`var(--theme-*)`), so a merchant re-tint re-skins
+article headlines, body rhythm, and links automatically. The gate is
+enforced per theme by `stays token-driven: theme vars only, no hex
+literals` in `src/lib/themes/songoskriti/skins.test.ts:182`.
 
 ## 5. Forms + auth pages
 
@@ -1065,8 +1052,7 @@ Theme previews render through a theme-agnostic engine: the theme only
 implements the `PreviewThemeSource` port, and the registry wires it in.
 
 - Implement `songoskritiPreviewSource()` in
-  `src/lib/themes/songoskriti/preview.ts` (Somvabona mirrors it in
-  `src/lib/themes/somvabona/preview.ts`): `{ key, themeName, author,
+  `src/lib/themes/songoskriti/preview.ts`: `{ key, themeName, author,
 tokens, header, footer, main }`, where `main(template, s)` returns the
   authored demo body per template key or `null` for templates the theme
   does not author. The port type lives in
@@ -1183,7 +1169,7 @@ A theme **calls** engine widgets; it never **forks** them. Concretely:
    and demo data. A theme name, slogan, copyright line or flagship list
    hardcoded in a shared renderer prints on every theme that uses the
    section (incident 2026-09-27: Songoskriti's footer statement rendered on
-   Somvabona's page). Brand copy lives in theme builders and section props.
+   another theme's page). Brand copy lives in theme builders and section props.
 3. **No cross-theme imports.** Nothing under `src/lib/themes/<A>/` imports
    from `src/lib/themes/<B>/`; shared chrome holds no theme-name branches
    (use the per-key config port pattern). Enforced by

@@ -22,9 +22,8 @@ one line below; open the guide for the full contract.
   pinning code claims with `file:line`, labeling prose-only claims,
   language and secret rules, link and spelling style, and the
   review checklist.
-- [Starter theme](../../examples/starter-theme/) — minimal
-  working theme with a 5-test gate suite mirroring the shipped
-  theme contracts; copy this folder to start.
+- [Shipped theme](../../src/lib/themes/songoskriti/) — the official
+  Songoskriti source, a working reference for the theme contracts.
 - [Starter plugin](../../examples/starter-plugin/) — valid
   manifest, one widget, and a 36-test suite mirroring the real
   validation gates; run its tests before adapting it.

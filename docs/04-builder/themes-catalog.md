@@ -4,9 +4,9 @@
 > Canonical contract: `docs/04-builder/README.md` (Tokens + Skins tables,
 > homepage composition, history map). §§1–5 below specify 11 unbuilt
 > `framique/*` themes (airviva, sona, mithai, …) — kept as history only.
-> HEAD ships **two** themes: `songoskriti`
-> (`src/lib/themes/songoskriti/tokens.ts:9`) and `somvabona`
-> (`src/lib/themes/somvabona/tokens.ts:14`).
+> HEAD ships **one** theme: `songoskriti`
+> (`src/lib/themes/songoskriti/tokens.ts:9`). Somvabona was retired
+> 2026-10-28.
 
 Status: **Deprecated (historical)** · Superseded by `04-builder/README.md`
 (Tokens/Skins tables carry the built values; planning-only catalog copy was
@@ -28,17 +28,14 @@ the builder brand editor (design-system §3.3); contrast is re-verified at publi
 
 ## §0. HEAD reality (the only buildable claims in this file's area)
 
-- Two themes ship: `songoskriti` (sharp `0px` fashion-editorial,
-  light-only `dark: null`) and `somvabona` (`4px`, designed dark set) —
-  `src/lib/themes/songoskriti/tokens.ts:9`,
-  `src/lib/themes/somvabona/tokens.ts:14` (dark set at `:32`).
+- One theme ships: `songoskriti` (sharp `0px` fashion-editorial,
+  light-only `dark: null`) — `src/lib/themes/songoskriti/tokens.ts:9`.
 - Base presentation layer is one layer: tokens (`ThemeTokens`,
   `src/lib/builder-ast.ts:6629`) + closed skin vocabularies
   (`WIDGET_SKINS`, `src/lib/builder-ast.ts:738`; defaults at `:756`;
   unknown/empty coerces via `resolveSkin`, `src/lib/builder-ast.ts:777`).
   Theme defaults merge **under** authored props
   (`src/lib/themes/songoskriti/skins.ts:109`,
-  `src/lib/themes/somvabona/skins.ts:113`,
   core merge at `src/lib/builder-ast.ts:873`).
 - Per-widget look differences belong to the registry
   (`src/lib/theme-presentations.ts:35`), never to new tokens or skins.
@@ -314,9 +311,8 @@ Clean, fast, big numbers; the shelf beats the story.
 ## 5. Verification matrix (historical — all 11 pass)
 
 > Historical: no 11-theme matrix was ever run — the themes were never built.
-> The gates that ARE enforced at HEAD: token-only skin stylesheets per theme
-> (`src/lib/themes/songoskriti/skins.test.ts:182`,
-> `src/lib/themes/somvabona/skins.test.ts:166`), reduced-motion collapse,
+> The gates that ARE enforced at HEAD: token-only skin stylesheets
+> (`src/lib/themes/songoskriti/skins.test.ts:182`), reduced-motion collapse,
 > bilingual EN/BN inline props, and the lifecycle/chrome contract suites
 > (`src/lib/builder-lifecycle.contract.test.tsx:35`,
 > `src/lib/builder-chrome.contract.test.tsx:79`).

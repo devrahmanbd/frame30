@@ -78,14 +78,12 @@ HEAD. Do not cite them as behavior.
       (`{ [widgetType]: { surface?, ink?, radius?, density?, reveal? } }`) merged **under** section-level
       props, so a theme can restyle any widget without touching its renderer.
       **(planned — HEAD instead uses per-theme skin defaults, e.g.
-      `src/lib/themes/songoskriti/skins.ts:52` and
-      `src/lib/themes/somvabona/skins.ts:40`, merged under authored props at
+      `src/lib/themes/songoskriti/skins.ts:52`, merged under authored props at
       `src/lib/builder-ast.ts:873`)**
 - [ ] Per-theme visual pass: each preset sets colour/spacing/motion + `themeStyleOverrides` so the
       same widget looks native in Bazaar, Atelier, Circuit and Rupaboti.
-      **(planned — HEAD ships two themes: `songoskriti`
-      (`src/lib/themes/songoskriti/tokens.ts:9`) and `somvabona`
-      (`src/lib/themes/somvabona/tokens.ts:14`))**
+      **(planned — HEAD ships one theme: `songoskriti`
+      (`src/lib/themes/songoskriti/tokens.ts:9`))**
 - [!] A widget that renders differently based on anything other than tokens/props fails review.
   **(contract — enforced by the no-`themeKey`-branch gate
   (`src/lib/definition-of-done.test.ts:102`); Class B community widgets are

@@ -34,11 +34,9 @@ Getting Started (this page)
 
 ## Copy a starter, run its tests
 
-Two runnable starters mirror the real validation gates. Copy one before
+One runnable starter mirrors the real validation gates. Copy it before
 writing anything from scratch.
 
-- Theme: `examples/starter-theme/` — tokens, skins, homepage, preview,
-  plus a 5-test gate suite (see [Theme guide](themes.md#copy-the-starter-theme-first)).
 - Plugin: `examples/starter-plugin/` — valid manifest
   (`examples/starter-plugin/manifest.json:1-32`), one widget whose entry
   string is the single source of truth
