@@ -190,7 +190,7 @@ async function favouriteKeys(
 
 /** Installed list + catalogue, with install/active/favourite flags resolved.
  *
- * B2 catalogue semantics: official entries (Songoskriti, Somvabona) come
+ * B2 catalogue semantics: official entries (Songoskriti) come
  * from internally-built artifacts when the build lane has run — with a
  * bundled fallback (deploy-time-built, checksummed rows, display only) when
  * it hasn't — and every other registry row lists as community. Registry rows
@@ -295,7 +295,7 @@ async function requireRow(
 
 /* ----------------- Frame30 — official catalogue + install (source model)
  *
- * Official themes (Songoskriti, Somvabona) are source-owned: the catalogue
+ * Official themes (Songoskriti) are source-owned: the catalogue
  * section reads display metadata from the single built-in registry
  * (`./builtin-themes`, trusted source modules) — never from build-lane
  * bytes or a checked-in bundle. Installs initialize the merchant's theme
@@ -380,7 +380,7 @@ export async function installOfficialTheme(
  * Add a catalogue theme to the installed list (idempotent per key).
  *
  * Community keys resolve from the `theme_registry` rows; official keys
- * (`songoskriti`, `somvabona`) resolve from the built-in source registry —
+ * (`songoskriti`) resolve from the built-in source registry —
  * the merchant's records are initialized from the registered source
  * definition either way. No ZIP is constructed on this path (uploads use
  * the upload lane, custom packages use `installPackage`).

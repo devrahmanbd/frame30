@@ -62,7 +62,7 @@ describe("songoskriti presentation claims — storefront graph (builtin-themes)"
     },
   );
 
-  it.each(["somvabona", "no-such-theme"])(
+  it.each(["acme-pack", "no-such-theme"])(
     "foreign theme %s misses all claims and returns the generic fallback",
     (theme) => {
       for (const key of SONGOSKRITI_PRESENTATION_CLAIMS) {
@@ -85,7 +85,7 @@ describe("songoskriti presentation claims — storefront graph (builtin-themes)"
     );
   });
 
-  it.each(["somvabona", "no-such-theme"])(
+  it.each(["acme-pack", "no-such-theme"])(
     "foreign theme %s misses songoskriti's mega_menu",
     (theme) => {
       expect(resolveThemePresentation(theme, "mega_menu", undefined)).not.toBe(

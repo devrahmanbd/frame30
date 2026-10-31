@@ -24,7 +24,7 @@ import {
 } from "./songoskriti";
 import { MERCH_WIDGETS } from "./merch";
 import { SectionRenderer } from "./SectionRenderer";
-import { SOMVABONA_WIDGETS } from "./somvabona";
+import { EVERYDAY_WIDGETS } from "./everyday";
 import { APPAREL_WIDGETS } from "./apparel";
 import type { WidgetRow } from "@/lib/widget-data";
 import {
@@ -602,7 +602,7 @@ describe("lane B renderer paths", () => {
   });
 
   it("urgency_rail renders a countdown when endsAt is set", () => {
-    const html = render(SOMVABONA_WIDGETS["urgency_rail"], {
+    const html = render(EVERYDAY_WIDGETS["urgency_rail"], {
       ...newSection("urgency_rail"),
       props: {
         heading: "Sale",
@@ -615,7 +615,7 @@ describe("lane B renderer paths", () => {
   });
 
   it("urgency_rail omits the countdown when endsAt is unset", () => {
-    const html = render(SOMVABONA_WIDGETS["urgency_rail"], {
+    const html = render(EVERYDAY_WIDGETS["urgency_rail"], {
       ...newSection("urgency_rail"),
       props: { heading: "Sale", limit: 4, endsAt: "", endsLabel: "" },
     });

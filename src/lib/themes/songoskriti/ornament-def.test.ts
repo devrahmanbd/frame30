@@ -110,7 +110,7 @@ describe("songoskriti ornament — registered def (productive path)", () => {
     if (!song.ok) throw new Error("expected songoskriti tray result");
     expect(song.entries.map((e) => e.id)).toContain(ID);
 
-    const som = themeTrayEntries("somvabona", { registry });
+    const som = themeTrayEntries("acme-pack", { registry });
     expect(som.entries.map((e) => e.id)).not.toContain(ID);
 
     const none = themeTrayEntries("no-such-theme", { registry });

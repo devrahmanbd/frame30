@@ -8,7 +8,6 @@ import {
   registerStaticPreviewSource,
 } from "./preview-sources";
 import { songoskritiPreviewSource } from "./themes/songoskriti/preview";
-import { somvabonaPreviewSource } from "./themes/somvabona/preview";
 import {
   resolveThemePreview,
   validateThemePreviewSearch,
@@ -19,12 +18,10 @@ import {
   settingsWithVariationKey,
 } from "./theme-variations";
 import { SONGOSKRITI_VARIATIONS } from "./themes/songoskriti/variations";
-import { SOMVABONA_TOKENS } from "./themes/somvabona/tokens";
 
 // O2: static theme sources are build-time-only — this test file is a
 // build-time context, so it wires the factories explicitly.
 registerStaticPreviewSource("songoskriti", songoskritiPreviewSource);
-registerStaticPreviewSource("somvabona", somvabonaPreviewSource);
 
 describe("preview ?variation= param", () => {
   it("accepts slug-shaped keys and drops the rest", () => {
@@ -74,9 +71,6 @@ describe("resolveThemePreview with variation", () => {
     const preset = resolveThemePreview("songoskriti")!;
     expect(preset.variation).toBeNull();
     expect(preset.templates.index!.main.length).toBeGreaterThan(0);
-    const somvabona = resolveThemePreview("somvabona")!;
-    expect(somvabona.variation).toBeNull();
-    expect(somvabona.tokens).toEqual(SOMVABONA_TOKENS);
   });
 
   it("unknown theme still resolves null", () => {

@@ -1,5 +1,5 @@
 /**
- * PROOF lane TEST 4 — same footer data → two theme presentations via the
+ * PROOF lane TEST 4 — same footer data → two presentations (shipped theme + synthetic fixture) through the
  * registry.
  *
  * `FooterData` is the merchant-owned payload (one object renders under
@@ -32,9 +32,9 @@ import {
   SongoskritiFooterProofPresentation,
 } from "./songoskriti/footer-proof-presentation";
 import {
-  SomvabonaFooterProof,
-  SomvabonaFooterProofPresentation,
-} from "./somvabona/footer-proof-presentation";
+  ForeignFooterProof,
+  ForeignFooterProofPresentation,
+} from "./__fixtures__/foreign-presentations.fixture";
 
 const LABEL = "Footer menu";
 
@@ -178,9 +178,9 @@ beforeEach(() => {
     SongoskritiFooterProofPresentation,
   );
   registerThemePresentation(
-    "somvabona",
+    "acme-pack",
     "footer_sitemap",
-    SomvabonaFooterProofPresentation,
+    ForeignFooterProofPresentation,
   );
 });
 
@@ -190,10 +190,10 @@ describe("same footer data, two theme presentations", () => {
       "songoskriti",
       "footer_sitemap",
     );
-    const somvabona = resolveThemePresentation("somvabona", "footer_sitemap");
+    const foreign = resolveThemePresentation("acme-pack", "footer_sitemap");
     expect(songoskriti).toBe(SongoskritiFooterProofPresentation);
-    expect(somvabona).toBe(SomvabonaFooterProofPresentation);
-    expect(songoskriti).not.toBe(somvabona);
+    expect(foreign).toBe(ForeignFooterProofPresentation);
+    expect(songoskriti).not.toBe(foreign);
   });
 
   it("renders different markup with identical data (pure FooterData in)", () => {
@@ -203,21 +203,21 @@ describe("same footer data, two theme presentations", () => {
     const songoskriti = renderToStaticMarkup(
       <SongoskritiFooterProof data={data} label={LABEL} />,
     );
-    const somvabona = renderToStaticMarkup(
-      <SomvabonaFooterProof data={data} label={LABEL} />,
+    const foreign = renderToStaticMarkup(
+      <ForeignFooterProof data={data} label={LABEL} />,
     );
 
     // Structurally distinct presentations per theme.
     expect(songoskriti).toContain(
       'data-footer-presentation="songoskriti-proof"',
     );
-    expect(somvabona).toContain('data-footer-presentation="somvabona-proof"');
+    expect(foreign).toContain('data-footer-presentation="acme-pack-proof"');
     expect(songoskriti).toContain("grid");
-    expect(somvabona).not.toContain("grid max-w-6xl gap-12");
-    expect(songoskriti).not.toBe(somvabona);
+    expect(foreign).not.toContain("grid max-w-6xl gap-12");
+    expect(songoskriti).not.toBe(foreign);
     // Identical content: same columns, labels, hrefs, affordances.
     expectPureContent(songoskriti);
-    expectPureContent(somvabona);
+    expectPureContent(foreign);
     // Neither render mutates the shared data object.
     expect(JSON.stringify(data)).toBe(before);
   });
@@ -230,19 +230,19 @@ describe("same footer data, two theme presentations", () => {
       resolveThemePresentation("songoskriti", "footer_sitemap")!,
       section,
     );
-    const somvabona = renderDirect(
-      resolveThemePresentation("somvabona", "footer_sitemap")!,
+    const foreign = renderDirect(
+      resolveThemePresentation("acme-pack", "footer_sitemap")!,
       section,
     );
 
     expect(songoskriti).toContain(
       'data-footer-presentation="songoskriti-proof"',
     );
-    expect(somvabona).toContain('data-footer-presentation="somvabona-proof"');
-    expect(songoskriti).not.toBe(somvabona);
+    expect(foreign).toContain('data-footer-presentation="acme-pack-proof"');
+    expect(songoskriti).not.toBe(foreign);
     // Both adapters derive the same merchant data: identical labels/hrefs.
     expectSectionContent(songoskriti);
-    expectSectionContent(somvabona);
+    expectSectionContent(foreign);
     expect(JSON.stringify(section)).toBe(before);
   });
 
@@ -251,15 +251,15 @@ describe("same footer data, two theme presentations", () => {
     const before = JSON.stringify(section);
 
     const songoskriti = renderEngine(section, "songoskriti");
-    const somvabona = renderEngine(section, "somvabona");
+    const foreign = renderEngine(section, "acme-pack");
 
     expect(songoskriti).toContain(
       'data-footer-presentation="songoskriti-proof"',
     );
-    expect(somvabona).toContain('data-footer-presentation="somvabona-proof"');
-    expect(songoskriti).not.toBe(somvabona);
+    expect(foreign).toContain('data-footer-presentation="acme-pack-proof"');
+    expect(songoskriti).not.toBe(foreign);
     expectSectionContent(songoskriti);
-    expectSectionContent(somvabona);
+    expectSectionContent(foreign);
     expect(JSON.stringify(section)).toBe(before);
   });
 });
@@ -273,12 +273,12 @@ describe("R3 canonical footer presentation path", () => {
     // the canonical presentation keeps the pair on both themes.
     const Duplicate: WidgetComponent = () => null;
     registerThemePresentation("songoskriti", "footer_sitemap", Duplicate);
-    registerThemePresentation("somvabona", "footer_sitemap", Duplicate);
+    registerThemePresentation("acme-pack", "footer_sitemap", Duplicate);
     expect(resolveThemePresentation("songoskriti", "footer_sitemap")).toBe(
       SongoskritiFooterProofPresentation,
     );
-    expect(resolveThemePresentation("somvabona", "footer_sitemap")).toBe(
-      SomvabonaFooterProofPresentation,
+    expect(resolveThemePresentation("acme-pack", "footer_sitemap")).toBe(
+      ForeignFooterProofPresentation,
     );
   });
 
@@ -288,8 +288,8 @@ describe("R3 canonical footer presentation path", () => {
     const songoskriti = renderToStaticMarkup(
       <SongoskritiFooterProof data={data} label={LABEL} />,
     );
-    const somvabona = renderToStaticMarkup(
-      <SomvabonaFooterProof data={data} label={LABEL} />,
+    const foreign = renderToStaticMarkup(
+      <ForeignFooterProof data={data} label={LABEL} />,
     );
 
     // Heritage grid: one <section> per column inside the grid wrapper.
@@ -302,13 +302,13 @@ describe("R3 canonical footer presentation path", () => {
     expect(songoskriti).toContain("grid");
     // Everyday stack: columns are list rows inside stacked <ul> groups,
     // never grid sections.
-    expect(somvabona).toContain('data-footer-presentation="somvabona-proof"');
-    expect(somvabona).toContain("<ul");
-    expect(somvabona).not.toContain("<section");
-    expect(somvabona).not.toContain("grid max-w-6xl gap-12");
+    expect(foreign).toContain('data-footer-presentation="acme-pack-proof"');
+    expect(foreign).toContain("<ul");
+    expect(foreign).not.toContain("<section");
+    expect(foreign).not.toContain("grid max-w-6xl gap-12");
     // Markers never leak across themes.
-    expect(songoskriti).not.toContain("somvabona-proof");
-    expect(somvabona).not.toContain("songoskriti-proof");
+    expect(songoskriti).not.toContain("acme-pack-proof");
+    expect(foreign).not.toContain("songoskriti-proof");
   });
 
   it("propagates one global section edit to every theme template", () => {
@@ -331,14 +331,14 @@ describe("R3 canonical footer presentation path", () => {
       resolveThemePresentation("songoskriti", "footer_sitemap")!,
       edited,
     );
-    const somvabona = renderDirect(
-      resolveThemePresentation("somvabona", "footer_sitemap")!,
+    const foreign = renderDirect(
+      resolveThemePresentation("acme-pack", "footer_sitemap")!,
       edited,
     );
 
     // The global update lands everywhere: new column, new link, and the
     // appended Pages column from the picked slugs.
-    for (const html of [songoskriti, somvabona]) {
+    for (const html of [songoskriti, foreign]) {
       expect(html).toContain("Sale");
       expect(html).toContain('href="/c/clearance"');
       expect(html).toContain("Pages");
@@ -351,8 +351,8 @@ describe("R3 canonical footer presentation path", () => {
     expect(songoskriti).toContain(
       'data-footer-presentation="songoskriti-proof"',
     );
-    expect(somvabona).toContain('data-footer-presentation="somvabona-proof"');
-    expect(songoskriti).not.toBe(somvabona);
+    expect(foreign).toContain('data-footer-presentation="acme-pack-proof"');
+    expect(songoskriti).not.toBe(foreign);
   });
 
   it("defaults the mobile accordion to collapsed and renders every column", () => {
@@ -365,11 +365,11 @@ describe("R3 canonical footer presentation path", () => {
     const collapsedSongoskriti = renderToStaticMarkup(
       <SongoskritiFooterProof data={data} label={LABEL} />,
     );
-    const collapsedSomvabona = renderToStaticMarkup(
-      <SomvabonaFooterProof data={data} label={LABEL} />,
+    const collapsedForeign = renderToStaticMarkup(
+      <ForeignFooterProof data={data} label={LABEL} />,
     );
     expectPureContent(collapsedSongoskriti);
-    expectPureContent(collapsedSomvabona);
+    expectPureContent(collapsedForeign);
 
     const expanded: typeof data = {
       ...data,
@@ -382,8 +382,8 @@ describe("R3 canonical footer presentation path", () => {
     ).toBe(collapsedSongoskriti);
     expect(
       renderToStaticMarkup(
-        <SomvabonaFooterProof data={expanded} label={LABEL} />,
+        <ForeignFooterProof data={expanded} label={LABEL} />,
       ),
-    ).toBe(collapsedSomvabona);
+    ).toBe(collapsedForeign);
   });
 });

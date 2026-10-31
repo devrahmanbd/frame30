@@ -177,7 +177,12 @@ describe("per-template persistence isolation", () => {
       string,
       unknown
     >;
-    const b = registryPackage("somvabona").templates as Record<string, unknown>;
+    // Synthetic second map (one theme ships): a distinct index body and no
+    // archive, so the two maps are genuinely different.
+    const b = JSON.parse(JSON.stringify(a)) as Record<string, unknown>;
+    delete b["archive"];
+    (b["index"] as { main: { id: string }[] }).main[0]!.id =
+      "synthetic-theme-b-body";
     // The two maps are genuinely different documents …
     expect(bytes(a.index)).not.toBe(bytes(b.index));
     // … and a commit for theme A carries A's body, a commit for theme B

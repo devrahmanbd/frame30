@@ -1,5 +1,5 @@
 /**
- * Somvabona widget pack contracts — TDD for the five new widgets.
+ * Everyday widget pack contracts — TDD for the five new widgets.
  *
  * Per-widget: builder catalog entry, studio def, controls parity, SSR
  * render (populated + bilingual), and fail-closed cases (no data renders
@@ -15,7 +15,7 @@ import {
   type SectionType,
 } from "@/lib/builder-ast";
 import { WIDGET_BY_KEY } from "@/lib/studio/catalog";
-import { SOMVABONA_WIDGETS } from "./somvabona";
+import { EVERYDAY_WIDGETS } from "./everyday";
 import {
   WIDGET_COMPONENTS,
   widgetReader,
@@ -92,11 +92,11 @@ const ROWS: WidgetRow[] = [
   },
 ];
 
-describe("somvabona pack wiring", () => {
+describe("everyday pack wiring", () => {
   for (const type of PACK) {
     it(`${type} has a builder entry and renderer`, () => {
       expect(catalogEntry(type)).toBeDefined();
-      expect(SOMVABONA_WIDGETS[type]).toBeDefined();
+      expect(EVERYDAY_WIDGETS[type]).toBeDefined();
       expect(typeof WIDGET_COMPONENTS[type]).toBe("function");
     });
 
@@ -119,7 +119,7 @@ describe("somvabona pack wiring", () => {
 });
 
 describe("trust_marquee", () => {
-  const Cmp = () => SOMVABONA_WIDGETS["trust_marquee"];
+  const Cmp = () => EVERYDAY_WIDGETS["trust_marquee"];
 
   it("renders null on the storefront for items: [], never throws", () => {
     const section = { ...newSection("trust_marquee"), props: { items: [] } };
@@ -155,7 +155,7 @@ describe("trust_marquee", () => {
 });
 
 describe("price_buckets", () => {
-  const Cmp = () => SOMVABONA_WIDGETS["price_buckets"];
+  const Cmp = () => EVERYDAY_WIDGETS["price_buckets"];
 
   it("renders null on the storefront for buckets: []", () => {
     const section = { ...newSection("price_buckets"), props: { buckets: [] } };
@@ -213,7 +213,7 @@ describe("price_buckets", () => {
 });
 
 describe("occasion_matrix", () => {
-  const Cmp = () => SOMVABONA_WIDGETS["occasion_matrix"];
+  const Cmp = () => EVERYDAY_WIDGETS["occasion_matrix"];
 
   it("renders null on the storefront when empty", () => {
     const section = {
@@ -245,7 +245,7 @@ describe("occasion_matrix", () => {
 });
 
 describe("urgency_rail", () => {
-  const Cmp = () => SOMVABONA_WIDGETS["urgency_rail"];
+  const Cmp = () => EVERYDAY_WIDGETS["urgency_rail"];
 
   it("renders null for an empty rail, skeleton while pending", () => {
     const section = newSection("urgency_rail");
@@ -280,7 +280,7 @@ describe("urgency_rail", () => {
 });
 
 describe("rating_stars", () => {
-  const Cmp = () => SOMVABONA_WIDGETS["rating_stars"];
+  const Cmp = () => EVERYDAY_WIDGETS["rating_stars"];
 
   it("renders nothing with no aggregate (never fake 4.8s)", () => {
     const section = { ...newSection("rating_stars"), props: {} };

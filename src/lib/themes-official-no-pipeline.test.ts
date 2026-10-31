@@ -3,8 +3,8 @@
  *
  * The `package-install.server` module is armed to throw on import: if any
  * official-theme path ever loads the custom ZIP installer again, every
- * test here fails at the import boundary. Songoskriti and Somvabona must
- * still install, replay, and render source rows. Custom-upload coverage
+ * test here fails at the import boundary. Songoskriti must still install,
+ * replay, and render source rows. Custom-upload coverage
  * stays in its own unmocked suite (`themes-install-catalog.test.ts`).
  */
 import { describe, expect, it, vi, beforeEach } from "vitest";
@@ -60,7 +60,7 @@ describe("Frame30 official installs without the ZIP pipeline", () => {
       /must not load during official installs/,
     );
   });
-  for (const key of ["songoskriti", "somvabona"] as const) {
+  for (const key of ["songoskriti"] as const) {
     it(`${key} installs from source with the pipeline module blocked`, async () => {
       const db = installDb();
       const out = await installOfficialTheme(

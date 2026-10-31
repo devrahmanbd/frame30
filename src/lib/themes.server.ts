@@ -48,7 +48,6 @@ import {
 } from "./theme-variations";
 import { previewSourceFor } from "./preview-sources";
 import { SONGOSKRITI_WIDGET_DEFAULTS } from "./themes/songoskriti/skins";
-import { SOMVABONA_WIDGET_DEFAULTS } from "./themes/somvabona/skins";
 import { PRESET_API_RANGE, checkApiCompatibility } from "./registry-version";
 import { translationGate } from "./builder-guardrails";
 import { translationCoverage } from "./translation-coverage";
@@ -1903,7 +1902,6 @@ type WidgetDefaults = Partial<Record<SectionType, Record<string, PropValue>>>;
 
 const VARIATION_BASE_DEFAULTS: Record<string, WidgetDefaults> = {
   songoskriti: SONGOSKRITI_WIDGET_DEFAULTS,
-  somvabona: SOMVABONA_WIDGET_DEFAULTS,
 };
 
 /**

@@ -34,8 +34,10 @@ import {
   type SectionType,
   type TemplateKey,
 } from "../../builder-ast";
-import { genericDemoMain } from "../../theme-preview-nav";
-import { somvabonaPreviewSource } from "../somvabona/preview";
+import {
+  genericDemoMain,
+  type PreviewThemeSource,
+} from "../../theme-preview-nav";
 import {
   SONOSKRITI_TEMPLATE_EXPECTATIONS,
   checkSongoskritiTemplateDistinctness,
@@ -52,6 +54,24 @@ function plainBuilder(): SectionBuilder {
     type,
     props: { ...props },
   });
+}
+
+/**
+ * Minimal synthetic source for the theme-agnostic property: it authors ONE
+ * surface (`index`) and declines every other template, so the engine's
+ * generic body is the only body those templates can have.
+ */
+function syntheticThemeSource(): PreviewThemeSource {
+  return {
+    key: "synthetic-theme",
+    themeName: "Synthetic",
+    author: "test",
+    tokens: songoskritiPreviewSource().tokens,
+    header: () => [],
+    footer: () => [],
+    main: (template, s) =>
+      template === "index" ? [s("hero_carousel")] : null,
+  };
 }
 
 /** The theme's own shipped body for one template. */
@@ -203,11 +223,11 @@ describe("the distinctness gate, re-run for the dynamic compositions", () => {
   });
 
   it("rejects the engine's generic body for every template a theme does not author", () => {
-    const source = somvabonaPreviewSource();
+    const source = syntheticThemeSource();
 
-    // The PROPERTY, not the other theme's inventory: a template the theme
-    // does not author has NO theme-owned body — the engine synthesises its
-    // generic demo body — and the gate rejects that body.
+    // The PROPERTY, not a theme's inventory: a template the theme does not
+    // author has NO theme-owned body — the engine synthesises its generic
+    // demo body — and the gate rejects that body.
     let unAuthored = 0;
     for (const key of TEMPLATE_KEYS) {
       const main = source.main(key, plainBuilder());

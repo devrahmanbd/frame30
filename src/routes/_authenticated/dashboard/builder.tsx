@@ -151,7 +151,6 @@ import {
   type EditorTemplateKey,
 } from "@/lib/template-variants";
 import { SONGOSKRITI_VARIATIONS } from "@/lib/themes/songoskriti/variations";
-import { SOMVABONA_VARIATIONS } from "@/lib/themes/somvabona/variations";
 
 /**
  * Merchant-pickable looks per theme (Track T), keyed by installed theme key.
@@ -160,7 +159,6 @@ import { SOMVABONA_VARIATIONS } from "@/lib/themes/somvabona/variations";
  */
 const VARIATIONS_BY_THEME_KEY: Record<string, ThemeVariation[]> = {
   songoskriti: SONGOSKRITI_VARIATIONS,
-  somvabona: SOMVABONA_VARIATIONS,
 };
 
 export const Route = createFileRoute("/_authenticated/dashboard/builder")({

@@ -104,13 +104,13 @@ describe("T4.3 themes — community widget install→persist→render→switch",
       <SectionRenderer section={node} themeKey="songoskriti" locale="en" />,
     );
     const somva = renderToStaticMarkup(
-      <SectionRenderer section={node} themeKey="somvabona" locale="en" />,
+      <SectionRenderer section={node} themeKey="acme-pack" locale="en" />,
     );
     // Either a real render or the unavailable placeholder — never a throw,
     // and never one theme's brand inside the other's tree.
     expect(typeof songo).toBe("string");
     expect(typeof somva).toBe("string");
-    expect(songo).not.toContain("somvabona");
+    expect(songo).not.toContain("acme-pack");
     expect(somva).not.toContain("songoskriti");
   });
 
@@ -133,9 +133,9 @@ describe("T4.3 themes — community widget install→persist→render→switch",
 });
 
 describe("T4.3 themes — A/B: same product_grid data, two presentations", () => {
-  it("resolves the same key to different renderers by theme key", () => {
+  it("resolves the same key to the theme renderer and a generic foreign fallback", () => {
     const songo = resolveWidgetComponent("songoskriti", "product_grid");
-    const somva = resolveWidgetComponent("somvabona", "product_grid");
+    const somva = resolveWidgetComponent("acme-pack", "product_grid");
     expect(songo).toBe(SONGOSKRITI_WIDGETS.product_grid);
     expect(somva).toBe(GENERIC_WIDGETS.product_grid);
     expect(somva).not.toBe(songo);
@@ -147,7 +147,7 @@ describe("T4.3 themes — A/B: same product_grid data, two presentations", () =>
     const section = gridSection();
     const before = JSON.stringify(section);
     const songo = renderUnderTheme(section, "songoskriti");
-    const somva = renderUnderTheme(section, "somvabona");
+    const somva = renderUnderTheme(section, "acme-pack");
     expect(songo.length).toBeGreaterThan(0);
     expect(somva.length).toBeGreaterThan(0);
     expect(songo).not.toBe(somva);
@@ -158,7 +158,7 @@ describe("T4.3 themes — A/B: same product_grid data, two presentations", () =>
   it("keeps identical data content under both presentations", () => {
     const section = gridSection();
     const songo = renderUnderTheme(section, "songoskriti");
-    const somva = renderUnderTheme(section, "somvabona");
+    const somva = renderUnderTheme(section, "acme-pack");
     for (const html of [songo, somva]) {
       expect(html).toContain("T4.3 collection");
       for (const row of ROWS) {
@@ -175,13 +175,13 @@ describe("T4.3 themes — A/B: same product_grid data, two presentations", () =>
       "utf8",
     );
     expect(renderer).not.toContain("songoskriti");
-    expect(renderer).not.toContain("somvabona");
+    expect(renderer).not.toContain("acme-pack");
     const registry = readFileSync(
       "src/components/builder/theme-widgets.ts",
       "utf8",
     );
     expect(registry).toContain("songoskriti");
-    expect(registry).toContain("somvabona");
+    expect(registry).not.toContain("acme-pack");
   });
 });
 

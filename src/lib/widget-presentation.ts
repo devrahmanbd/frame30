@@ -81,7 +81,6 @@ export const OFFICIAL_PLUGIN_IDS_DEFAULT: readonly string[] = [
  */
 export const OFFICIAL_THEME_KEYS_DEFAULT: readonly string[] = [
   "songoskriti",
-  "somvabona",
 ];
 
 /**

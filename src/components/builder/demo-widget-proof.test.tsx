@@ -5,12 +5,12 @@
  * `product_rail` is the simplest real widget covering the proof's
  * title+price+image shape through the shared `ProductCard` data semantics.
  * `resolveWidgetComponent("songoskriti", "product_rail")` returns the
- * songoskriti editorial rail while `resolveWidgetComponent("somvabona",
- * "product_rail")` returns the generic rail (somvabona adds no override, so
+ * songoskriti editorial rail while `resolveWidgetComponent("acme-pack",
+ * "product_rail")` returns the generic rail (a foreign key adds no override, so
  * the generic fallback IS its presentation — never brand leak). That is the
  * exact function `SectionRenderer` calls, so rendering the SAME `Section`
  * object plus the SAME `WidgetDataProvider` bundle under
- * `themeKey="songoskriti"` vs `themeKey="somvabona"` is the same path the
+ * `themeKey="songoskriti"` vs `themeKey="acme-pack"` is the same path the
  * editor and the storefront resolve. A fixture `DemoProductWidget` would
  * distort the proof (a new type has no two-theme resolution history), so per
  * the task preference it was NOT created.
@@ -95,7 +95,7 @@ function renderUnderTheme(
 describe("T2.2 two-theme proof: same widget data, two presentations", () => {
   it("resolves the same key to different renderers by theme key", () => {
     const songo = resolveWidgetComponent("songoskriti", "product_rail");
-    const somva = resolveWidgetComponent("somvabona", "product_rail");
+    const somva = resolveWidgetComponent("acme-pack", "product_rail");
     expect(songo).toBe(SONGOSKRITI_WIDGETS.product_rail);
     expect(somva).toBe(GENERIC_WIDGETS.product_rail);
     // The violation this proof ends: both themes must NOT share one brand.
@@ -108,7 +108,7 @@ describe("T2.2 two-theme proof: same widget data, two presentations", () => {
     const section = demoSection();
     const before = JSON.stringify(section);
     const songo = renderUnderTheme(section, "songoskriti");
-    const somva = renderUnderTheme(section, "somvabona");
+    const somva = renderUnderTheme(section, "acme-pack");
 
     expect(songo.length).toBeGreaterThan(0);
     expect(somva.length).toBeGreaterThan(0);
@@ -117,7 +117,7 @@ describe("T2.2 two-theme proof: same widget data, two presentations", () => {
     // Songoskriti-only: docked header row + luxury bordered surface.
     expect(songo).toContain("justify-between");
     expect(songo).toContain("border-[var(--theme-border)]");
-    // Somvabona (generic) only: shared Rail with overlay nav + badge hooks.
+    // A foreign theme (generic) only: shared Rail with overlay nav + badge hooks.
     expect(somva).toContain('data-part="rail-nav"');
     expect(somva).toContain("bg-background/90");
     // Cross-absence: neither presentation leaks the other's structure.
@@ -137,7 +137,7 @@ describe("T2.2 two-theme proof: same widget data, two presentations", () => {
   it("keeps identical data content (title + price + image + promise)", () => {
     const section = demoSection();
     const songo = renderUnderTheme(section, "songoskriti");
-    const somva = renderUnderTheme(section, "somvabona");
+    const somva = renderUnderTheme(section, "acme-pack");
 
     expect(songo).toContain("Demo collection");
     expect(somva).toContain("Demo collection");
@@ -160,7 +160,7 @@ describe("T2.2 two-theme proof: same widget data, two presentations", () => {
   });
 
   it("emits the data-widget/data-skin pair on both theme keys", () => {
-    for (const themeKey of ["songoskriti", "somvabona"]) {
+    for (const themeKey of ["songoskriti", "acme-pack"]) {
       const html = renderUnderTheme(demoSection(), themeKey);
       expect(html).toContain('data-widget="product_rail"');
       expect(html).toContain('data-skin="editorial"');
@@ -181,7 +181,7 @@ describe("T2.2 two-theme proof: same widget data, two presentations", () => {
     );
     // The renderer forwards the key opaquely — it never names a theme.
     expect(renderer).not.toContain("songoskriti");
-    expect(renderer).not.toContain("somvabona");
+    expect(renderer).not.toContain("acme-pack");
 
     // No widget or primitive in the rail path reads the theme key or
     // compares against a theme literal.
@@ -196,7 +196,7 @@ describe("T2.2 two-theme proof: same widget data, two presentations", () => {
       expect(src, `${file} branches on songoskriti`).not.toContain(
         '"songoskriti"',
       );
-      expect(src, `${file} branches on somvabona`).not.toContain('"somvabona"');
+      expect(src, `${file} branches on acme-pack`).not.toContain('"acme-pack"');
     }
   });
 });

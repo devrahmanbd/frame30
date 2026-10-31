@@ -304,10 +304,9 @@ describe("catalogue honesty (no-fabrication rule)", () => {
 });
 
 describe("B2 catalogue sections (Official / Community / Upload)", () => {
-  it("names exactly the two built themes — no third vapor theme", () => {
-    expect([...OFFICIAL_THEME_KEYS]).toEqual(["songoskriti", "somvabona"]);
+  it("names exactly the one built theme — no vapor theme", () => {
+    expect([...OFFICIAL_THEME_KEYS]).toEqual(["songoskriti"]);
     expect(isOfficialThemeKey("songoskriti")).toBe(true);
-    expect(isOfficialThemeKey("somvabona")).toBe(true);
     expect(isOfficialThemeKey("vapor")).toBe(false);
     expect(isOfficialThemeKey("classic")).toBe(false);
     expect(isOfficialThemeKey("")).toBe(false);
@@ -316,25 +315,21 @@ describe("B2 catalogue sections (Official / Community / Upload)", () => {
   it("pins official artifacts as official:<key>", () => {
     expect(officialPinFor("songoskriti")).toBe("official:songoskriti");
     expect(
-      officialArtifactRef("somvabona", "1.0.0", "ab".repeat(32)),
+      officialArtifactRef("songoskriti", "1.1.0", "ab".repeat(32)),
     ).toMatchObject({
-      version: "1.0.0",
-      fileName: "somvabona.zip",
-      pinned: "official:somvabona",
+      version: "1.1.0",
+      fileName: "songoskriti.zip",
+      pinned: "official:songoskriti",
     });
   });
 
   it("splits official first (curated order) then community", () => {
     const themes = [
       cat({ key: "acme-pack", provenance: "community" }),
-      cat({ key: "somvabona", provenance: "official" }),
       cat({ key: "songoskriti", provenance: "official" }),
     ];
     const sections = sectionCatalogue(themes);
-    expect(sections.official.map((t) => t.key)).toEqual([
-      "songoskriti",
-      "somvabona",
-    ]);
+    expect(sections.official.map((t) => t.key)).toEqual(["songoskriti"]);
     expect(sections.community.map((t) => t.key)).toEqual(["acme-pack"]);
   });
 
@@ -376,26 +371,26 @@ describe("gallery keys (installed authoritative, K2)", () => {
   it("lists installed only when merchant context present (no source fallback)", () => {
     // K2: installed array present → installed ONLY; catalogue/source fails closed.
     expect(
-      galleryKeys(["songoskriti", "somvabona"], [{ key: "acme-pack" }]),
+      galleryKeys(["songoskriti", "classic"], [{ key: "acme-pack" }]),
     ).toEqual(["acme-pack"]);
     // Legacy: no merchant context (null/undefined installed) lists catalogue.
-    expect(galleryKeys(["songoskriti", "somvabona"], null)).toEqual([
+    expect(galleryKeys(["songoskriti", "classic"], null)).toEqual([
       "songoskriti",
-      "somvabona",
+      "classic",
     ]);
-    expect(galleryKeys(["songoskriti", "somvabona"], undefined)).toEqual([
+    expect(galleryKeys(["songoskriti", "classic"], undefined)).toEqual([
       "songoskriti",
-      "somvabona",
+      "classic",
     ]);
   });
 
   it("accepts bare slugs and keyed rows in the installed list, without duplicating", () => {
     expect(
       galleryKeys(
-        ["songoskriti", { key: "somvabona" }],
-        ["songoskriti", { key: "somvabona" }, { key: "acme-pack" }],
+        ["songoskriti", { key: "classic" }],
+        ["songoskriti", { key: "classic" }, { key: "acme-pack" }],
       ),
-    ).toEqual(["songoskriti", "somvabona", "acme-pack"]);
+    ).toEqual(["songoskriti", "classic", "acme-pack"]);
   });
 
   it("removal disappears from the list (uninstalled rows are simply not passed)", () => {

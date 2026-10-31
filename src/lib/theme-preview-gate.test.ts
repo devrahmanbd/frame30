@@ -42,7 +42,7 @@ describe("isThemePreviewHostAllowed", () => {
 describe("isBlockedThemePreview", () => {
   it("denies guest preview on a merchant host (the reported hole)", () => {
     expect(
-      isBlockedThemePreview("flamelancer.com", "/theme-preview/somvabona"),
+      isBlockedThemePreview("flamelancer.com", "/theme-preview/songoskriti"),
     ).toBe(true);
     expect(
       isBlockedThemePreview("microscrop.shop", "/theme-preview/songoskriti"),
@@ -53,7 +53,7 @@ describe("isBlockedThemePreview", () => {
     expect(
       isBlockedThemePreview(
         "flamelancer.com",
-        "/theme-preview/somvabona?template=product",
+        "/theme-preview/songoskriti?template=product",
       ),
     ).toBe(true);
   });
@@ -62,7 +62,7 @@ describe("isBlockedThemePreview", () => {
     expect(
       isBlockedThemePreview(
         "framique.qubickle.com",
-        "/theme-preview/somvabona",
+        "/theme-preview/songoskriti",
       ),
     ).toBe(false);
   });

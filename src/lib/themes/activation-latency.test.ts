@@ -73,13 +73,11 @@ const { persistedVariationKeyFromSettings } =
   await import("../theme-variations");
 const { registerStaticPreviewSource } = await import("../preview-sources");
 const { songoskritiPreviewSource } = await import("./songoskriti/preview");
-const { somvabonaPreviewSource } = await import("./somvabona/preview");
 
 // O2: static theme sources are build-time-only — this test file is a
 // build-time context, so it wires the factories explicitly (live-variation
 // resolution reads the registered table).
 registerStaticPreviewSource("songoskriti", songoskritiPreviewSource);
-registerStaticPreviewSource("somvabona", somvabonaPreviewSource);
 const { invalidate } = await import("../cache.server");
 const { tenantCachePrefix } = await import("../storefront-cache");
 

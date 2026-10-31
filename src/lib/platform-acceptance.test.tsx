@@ -1,8 +1,9 @@
 /**
- * R6 — FINAL ACCEPTANCE: two themes, one merchant payload, theme switch + full flow.
+ * R6 — FINAL ACCEPTANCE: one merchant payload, theme vs generic fallback + full flow.
  *
- * Theme A = songoskriti (heritage/luxury chrome), Theme B = somvabona
- * (everyday chrome). The SAME page AST, product rows, dashboard menu tree,
+ * Theme A = songoskriti (the one official theme, heritage/luxury chrome);
+ * Theme B = a community key with no registered presentation, so every
+ * surface takes the generic fallback. The SAME page AST, product rows, dashboard menu tree,
  * announcement section, footer section and community (plugin_block) install
  * render under both keys via SSR (`renderToStaticMarkup` — no browser
  * tooling in this env; assertions run on rendered HTML strings).
@@ -11,7 +12,7 @@
  *  1. builder → save → reload → publish → storefront (pure/SSR contracts:
  *     newSection → parseAst serialise → parseAst reload (byte-stable) →
  *     lintTemplate gate → parseTemplates/resolveTemplate → SectionRenderer
- *     storefront under BOTH themes).
+ *     storefront under both the theme and the generic fallback).
  *  2. Theme A → Theme B switch: identical content/functionality with
  *     different presentation per surface —
  *     header, announcement, widgets (product_grid), footer, menu, community.
@@ -77,6 +78,7 @@ import {
 import { SectionRenderer } from "@/components/builder/SectionRenderer";
 import { WidgetDataProvider } from "@/components/builder/WidgetDataContext";
 import {
+  WIDGET_COMPONENTS,
   widgetReader,
   type WidgetComponent,
   type WidgetCtx,
@@ -90,28 +92,16 @@ import {
   resolveHeaderShell,
 } from "@/components/store/StoreHeader";
 import {
+  SongoskritiDesktopNav,
   SongoskritiHeaderPresentation,
   SongoskritiHeaderShell,
-} from "./themes/songoskriti/header-presentation";
-import {
-  SomvabonaHeaderPresentation,
-  SomvabonaHeaderShell,
-} from "./themes/somvabona/header-presentation";
-import {
-  SongoskritiDesktopNav,
   SongoskritiMobileDrawer,
 } from "./themes/songoskriti/header-presentation";
-import {
-  SomvabonaDesktopNav,
-  SomvabonaMobileDrawer,
-} from "./themes/somvabona/header-presentation";
 import { SongoskritiAnnouncementPresentation } from "./themes/songoskriti/announcement-presentation";
-import { SomvabonaAnnouncementPresentation } from "./themes/somvabona/announcement-presentation";
 import { SongoskritiFooterProofPresentation } from "./themes/songoskriti/footer-proof-presentation";
-import { SomvabonaFooterProofPresentation } from "./themes/somvabona/footer-proof-presentation";
 
 const THEME_A = "songoskriti";
-const THEME_B = "somvabona";
+const THEME_B = "community-theme";
 
 /* ── Shared merchant payload (ONE object per surface, both themes) ── */
 
@@ -308,7 +298,9 @@ function renderPresentation(
   locale: "en" | "bn" = "en",
   data?: WidgetCtx["data"],
 ): string {
-  const Cmp = resolveThemePresentation(themeKey, widgetType)!;
+  const Cmp =
+    resolveThemePresentation(themeKey, widgetType) ??
+    WIDGET_COMPONENTS[widgetType];
   return renderToStaticMarkup(
     createElement(
       Cmp as (p: WidgetCtx) => React.ReactElement,
@@ -407,26 +399,15 @@ beforeEach(() => {
     "mega_menu",
     SongoskritiHeaderPresentation,
   );
-  registerThemePresentation(THEME_B, "mega_menu", SomvabonaHeaderPresentation);
   registerThemePresentation(
     THEME_A,
     "announcement_bar",
     SongoskritiAnnouncementPresentation,
   );
   registerThemePresentation(
-    THEME_B,
-    "announcement_bar",
-    SomvabonaAnnouncementPresentation,
-  );
-  registerThemePresentation(
     THEME_A,
     "footer_sitemap",
     SongoskritiFooterProofPresentation,
-  );
-  registerThemePresentation(
-    THEME_B,
-    "footer_sitemap",
-    SomvabonaFooterProofPresentation,
   );
 });
 
@@ -537,11 +518,11 @@ describe("R6 acceptance — builder → save → reload → publish → storefro
     }
     // Theme chrome differs per theme on the same page.
     expect(htmlA).toContain('data-announcement-presentation="songoskriti"');
-    expect(htmlB).toContain('data-announcement-presentation="somvabona"');
+    expect(htmlB).not.toContain('data-announcement-presentation="songoskriti"');
     expect(htmlA).toContain('data-footer-presentation="songoskriti-proof"');
-    expect(htmlB).toContain('data-footer-presentation="somvabona-proof"');
+    expect(htmlB).not.toContain('data-footer-presentation="songoskriti-proof"');
     expect(htmlA).toContain('data-header-presentation="songoskriti"');
-    expect(htmlB).toContain('data-header-presentation="somvabona"');
+    expect(htmlB).not.toContain('data-header-presentation="songoskriti"');
     expect(htmlA).not.toBe(htmlB);
   });
 });
@@ -551,33 +532,32 @@ describe("R6 acceptance — builder → save → reload → publish → storefro
 describe("R6 acceptance — switch: header", () => {
   it("resolves distinct shells per theme with generic fallback", () => {
     expect(resolveHeaderShell(THEME_A)).toBe(SongoskritiHeaderShell);
-    expect(resolveHeaderShell(THEME_B)).toBe(SomvabonaHeaderShell);
+    expect(resolveHeaderShell(THEME_B)).toBe(GenericHeaderShell);
     expect(resolveHeaderShell("mystery-theme")).toBe(GenericHeaderShell);
     expect(resolveHeaderShell(null)).toBe(GenericHeaderShell);
   });
 
   it("same menu + same header state: identical content, different presentation", () => {
     const htmlA = renderShell(SongoskritiHeaderShell, THEME_A);
-    const htmlB = renderShell(SomvabonaHeaderShell, THEME_B);
+    const htmlB = renderShell(GenericHeaderShell, THEME_B);
 
-    // Presentation differs: per-theme shell markers, never crossed.
+    // Presentation differs: theme shell vs the generic fallback, never crossed.
     expect(htmlA).toContain('data-header-shell="songoskriti"');
-    expect(htmlB).toContain('data-header-shell="somvabona"');
-    expect(htmlA).not.toContain('data-header-shell="somvabona"');
+    expect(htmlB).toContain('data-header-shell="generic"');
+    expect(htmlA).not.toContain('data-header-shell="generic"');
     expect(htmlB).not.toContain('data-header-shell="songoskriti"');
     expect(htmlA).not.toBe(htmlB);
-    // Desktop geometry differs: luxury mega panel vs compact dropdown.
+    // Desktop geometry: the theme's luxury mega panel is absent from the
+    // generic fallback, which uses the shared dropdown.
     expect(htmlA).toContain('data-mega="songoskriti"');
     expect(htmlA).toContain("grid-cols-4");
-    expect(htmlB).toContain('data-drop="somvabona"');
-    expect(htmlB).toContain("min-w-52");
     expect(htmlA).not.toContain("data-drop");
     expect(htmlB).not.toContain("data-mega");
-    // Mobile geometry differs: accordion buttons vs native disclosures.
+    // Mobile geometry: the theme's accordion drawer is absent from the
+    // generic fallback.
     expect(htmlA).toContain('data-nav="songoskriti-drawer"');
     expect(htmlA).toContain('aria-expanded="true"');
-    expect(htmlB).toContain('data-nav="somvabona-drawer"');
-    expect(htmlB).toContain("<details");
+    expect(htmlB).not.toContain('data-nav="songoskriti-drawer"');
 
     // Content identical: same labels, same rebased hrefs, same landmark.
     for (const html of [htmlA, htmlB]) {
@@ -610,15 +590,13 @@ describe("R6 acceptance — switch: announcement", () => {
     const htmlA = renderPresentation(THEME_A, "announcement_bar", section);
     const htmlB = renderPresentation(THEME_B, "announcement_bar", section);
 
-    // Presentation differs: heritage centered serif bar vs everyday strip.
+    // Presentation differs: heritage centered serif bar vs the generic
+    // neutral bar (no registered theme presentation).
     expect(htmlA).toContain('data-announcement-presentation="songoskriti"');
-    expect(htmlB).toContain('data-announcement-presentation="somvabona"');
-    expect(htmlA).toContain("<div");
-    expect(htmlB).toContain("<section");
+    expect(htmlB).not.toContain("data-announcement-presentation");
     expect(htmlA).toContain("font-serif");
     expect(htmlA).toContain("uppercase");
-    expect(htmlB).toContain("font-sans");
-    expect(htmlB).toContain("text-left");
+    expect(htmlB).not.toContain("font-serif");
     expect(htmlA).not.toBe(htmlB);
 
     // Content identical: same message, same link, same region label.
@@ -683,7 +661,7 @@ describe("R6 acceptance — switch: widgets (product_grid)", () => {
     expect(htmlA).not.toBe(htmlB);
     expect(htmlA).toContain("font-serif");
     // No cross-brand leak.
-    expect(htmlA).not.toContain("somvabona");
+    expect(htmlA).not.toContain("acme-pack");
     expect(htmlB).not.toContain("songoskriti");
 
     // Data identical: same heading, same products, same images.
@@ -706,14 +684,13 @@ describe("R6 acceptance — switch: footer", () => {
     const htmlA = renderPresentation(THEME_A, "footer_sitemap", section);
     const htmlB = renderPresentation(THEME_B, "footer_sitemap", section);
 
-    // Presentation differs: heritage grid sections vs everyday stacked list.
+    // Presentation differs: the theme's heritage proof vs the generic
+    // sitemap (no registered theme presentation).
     expect(htmlA).toContain('data-footer-presentation="songoskriti-proof"');
-    expect(htmlB).toContain('data-footer-presentation="somvabona-proof"');
+    expect(htmlB).not.toContain("data-footer-presentation");
     expect(htmlA).toContain("<section");
-    expect(htmlB).not.toContain("<section");
     expect(htmlB).toContain("<ul");
     expect(htmlA).not.toBe(htmlB);
-    expect(htmlA).not.toContain("somvabona-proof");
     expect(htmlB).not.toContain("songoskriti-proof");
 
     // Content identical: same columns, labels, hrefs, nav label.
@@ -730,9 +707,12 @@ describe("R6 acceptance — switch: footer", () => {
       for (const href of ["/c/new-in", "/c/best-sellers", "/pages/contact"]) {
         expect(html).toContain(`href="${href}"`);
       }
-      expect(html).toContain('aria-label="Footer menu"');
       expect(html).toContain("<p");
     }
+    // The theme's own nav landmark is part of its presentation; the generic
+    // fallback renders the shared sitemap without it.
+    expect(htmlA).toContain('aria-label="Footer menu"');
+    expect(htmlB).not.toContain('aria-label="Footer menu"');
     expect(JSON.stringify(section)).toBe(before);
   });
 
@@ -759,14 +739,18 @@ describe("R6 acceptance — switch: footer", () => {
 });
 
 describe("R6 acceptance — switch: menu", () => {
-  it("same canonical menu: identical links/labels/hrefs, different nav markup", () => {
+  it("same canonical menu: identical links/labels/hrefs in the theme's desktop and drawer nav", () => {
     const desktopA = renderToStaticMarkup(
       <SongoskritiDesktopNav items={CANONICAL_MENU} base="/store/demo" />,
     );
-    const desktopB = renderToStaticMarkup(
-      <SomvabonaDesktopNav items={CANONICAL_MENU} base="/store/demo" />,
+    const drawerA = renderToStaticMarkup(
+      <SongoskritiMobileDrawer
+        items={CANONICAL_MENU}
+        base="/store/demo"
+        defaultExpandedId="shop"
+      />,
     );
-    for (const html of [desktopA, desktopB]) {
+    for (const html of [desktopA, drawerA]) {
       expect(html).toContain(">Shop<");
       expect(html).toContain(">Sarees<");
       expect(html).toContain(">Jamdani<");
@@ -778,34 +762,9 @@ describe("R6 acceptance — switch: menu", () => {
     }
     expect(desktopA).toContain('data-nav="songoskriti-desktop"');
     expect(desktopA).toContain('data-mega="songoskriti"');
-    expect(desktopB).toContain('data-nav="somvabona-desktop"');
-    expect(desktopB).toContain('data-drop="somvabona"');
-    expect(desktopA).not.toBe(desktopB);
-
-    const drawerA = renderToStaticMarkup(
-      <SongoskritiMobileDrawer
-        items={CANONICAL_MENU}
-        base="/store/demo"
-        defaultExpandedId="shop"
-      />,
-    );
-    const drawerB = renderToStaticMarkup(
-      <SomvabonaMobileDrawer
-        items={CANONICAL_MENU}
-        base="/store/demo"
-        defaultExpandedId="shop"
-      />,
-    );
-    for (const html of [drawerA, drawerB]) {
-      expect(html).toContain(">Shop<");
-      expect(html).toContain(">Jamdani<");
-      expect(html).toContain('href="/store/demo/c/jamdani"');
-    }
     expect(drawerA).toContain('data-nav="songoskriti-drawer"');
     expect(drawerA).toContain('aria-expanded="true"');
-    expect(drawerB).toContain('data-nav="somvabona-drawer"');
-    expect(drawerB).toContain("<details");
-    expect(drawerA).not.toBe(drawerB);
+    expect(desktopA).not.toBe(drawerA);
   });
 });
 
@@ -822,7 +781,7 @@ describe("R6 acceptance — switch: community widget", () => {
     expect(htmlA).toBe(htmlB);
     // Never one theme's brand inside the other's tree.
     expect(htmlA).not.toContain("songoskriti");
-    expect(htmlA).not.toContain("somvabona");
+    expect(htmlA).not.toContain("acme-pack");
     expect(JSON.stringify(section)).toBe(before);
   });
 

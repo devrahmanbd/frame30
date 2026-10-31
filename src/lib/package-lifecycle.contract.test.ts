@@ -341,13 +341,20 @@ describe("LIFECYCLE official theme: source install → console activate/delete",
     // 3. Delete through the ADMIN fn: activate a spare line first (active
     // rows are refused), then the source row is gone and its ledger line
     // retires by install-id link (never a slug sweep).
-    const spare = await installOfficialTheme(
+    // One official theme ships, so the spare line is a custom package:
+    // the admin delete path is theme-kind agnostic.
+    const spare = await installPackage(
       db.asClient(),
       MERCHANT_A,
-      "somvabona",
+      {
+        kind: "theme",
+        fileName: "lifecycle-official-spare.zip",
+        bytes: themeZip(strictTheme("lifecycle-official-spare", "1.0.0")),
+        idempotencyKey: key(),
+      },
       ACTOR,
     );
-    await activateTheme(db.asClient(), MERCHANT_A, spare.id, ACTOR);
+    await activateTheme(db.asClient(), MERCHANT_A, spare.packageId, ACTOR);
     const deleted = await deleteTheme(db.asClient(), MERCHANT_A, v1.id, ACTOR);
     expect(deleted.id).toBe(v1.id);
     expect(db.rows("store_themes").find((r) => r.id === v1.id)).toBeUndefined();
@@ -356,7 +363,9 @@ describe("LIFECYCLE official theme: source install → console activate/delete",
       db.rows("theme_audit").filter((a) => a.action === "theme.deleted"),
     ).toHaveLength(1);
     // Spare line untouched.
-    expect(db.rows("store_themes").map((r) => r.id)).toEqual([spare.id]);
+    expect(db.rows("store_themes").map((r) => r.id)).toEqual([
+      spare.packageId,
+    ]);
   });
 });
 

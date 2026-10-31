@@ -127,7 +127,7 @@ describe("DoD 5 — ≥70% shared registry, no theme-exclusive renderer branches
     // behavior per theme). The `typeof themeKey === "string"` null-guard and
     // opaque forwarding to `themeTrayEntries` are the allowed shapes — misses
     // degrade to an empty theme section with data preserved elsewhere.
-    expect(traySrc).not.toMatch(/songoskriti|somvabona/i);
+    expect(traySrc).not.toMatch(/songoskriti/i);
     expect(traySrc).not.toMatch(/(?<!typeof )themeKey\s*===?\s*["'`]/);
 
     // Vertical modules must stay a minority of the registry.
@@ -163,7 +163,7 @@ describe("DoD 5 — ≥70% shared registry, no theme-exclusive renderer branches
           /switch\s*\([^)]*themeKey/,
         );
         expect(src, `${file} names a theme`).not.toMatch(
-          /songoskriti|somvabona/i,
+          /songoskriti/i,
         );
         continue;
       }
@@ -185,7 +185,7 @@ describe("DoD 5 — ≥70% shared registry, no theme-exclusive renderer branches
           /switch\s*\([^)]*themeKey/,
         );
         expect(src, `${file} names a theme`).not.toMatch(
-          /songoskriti|somvabona/i,
+          /songoskriti/i,
         );
         expect(src, `${file} forwards opaquely`).toMatch(/themeTrayEntries\(/);
         continue;
@@ -199,7 +199,7 @@ describe("DoD 5 — ≥70% shared registry, no theme-exclusive renderer branches
           /switch\s*\([^)]*themeKey/,
         );
         expect(src, `${file} names a theme`).not.toMatch(
-          /songoskriti|somvabona/i,
+          /songoskriti/i,
         );
         continue;
       }

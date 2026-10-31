@@ -10,7 +10,6 @@ import { CHROME_WIDGETS } from "./chrome";
 import { widgetReader, type WidgetCtx } from "./widgets";
 import type { Locale } from "@/lib/bitext";
 import { parseLinkList } from "./chrome";
-import { FALLBACK_COLUMNS as SOMVABONA_COLUMNS } from "@/lib/themes/somvabona/chrome";
 import { FALLBACK_COLUMNS as SONGOSKRITI_COLUMNS } from "@/lib/themes/songoskriti/footer";
 
 function ctxForLocale(section: Section, locale: Locale): WidgetCtx {
@@ -92,7 +91,6 @@ describe("footer_sitemap locale parity", () => {
   });
 
   it.each([
-    ["somvabona", SOMVABONA_COLUMNS],
     ["songoskriti", SONGOSKRITI_COLUMNS],
   ])(
     "%s fallback columns author links_bn with identical hrefs",

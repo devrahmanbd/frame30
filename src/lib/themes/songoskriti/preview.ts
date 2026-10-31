@@ -21,7 +21,7 @@ import { SONGOSKRITI_WIDGETS } from "../../../components/builder/songoskriti";
 import "./ornament-presentation";
 // Universal-body activation (theme = dress, widget = body): the generic
 // presentation registers the ornament's neutral body for EVERY active theme,
-// so a foreign-theme cold load (somvabona etc.) renders a complete widget
+// so a foreign-theme cold load (any non-owning theme) renders a complete widget
 // instead of the unavailable placeholder. Mirrors the editor carrier in
 // songoskriti.tsx; must not share the owner component's owning-theme fate.
 import "./ornament-generic-presentation";

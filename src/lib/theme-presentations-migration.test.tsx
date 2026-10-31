@@ -10,9 +10,9 @@
  * - `setVersionedPresentationAvailability` models an owning theme
  *   disabled/unavailable: resolution misses, compat reports `unavailable`,
  *   migration preserves props; re-enabling recovers byte-identically.
- * - The two theme-owned dressings prove the switch end to end: the same
- *   authored props render under each owner with its own markup, and the
- *   legacy `headline` key migrates to `title`.
+ * - The Songoskriti dressing and a synthetic foreign dressing prove the
+ *   switch end to end: the same authored props render under each owner
+ *   with its own markup, and the legacy `headline` key migrates to `title`.
  */
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createElement } from "react";
@@ -37,8 +37,26 @@ import {
   SONGOSKRITI_HERO_DRESSING,
   SONGOSKRITI_REVIEWS_DRESSING,
 } from "./themes/songoskriti/dressed-hero-dressings";
-import { SomvabonaDressedHeroPresentation } from "./themes/somvabona/dressed-hero-presentation";
-import { SOMVABONA_HERO_DRESSING } from "./themes/somvabona/dressed-hero-dressings";
+import type { VersionedPresentationEntry } from "./theme-presentations";
+
+/**
+ * Synthetic foreign-theme dressing (test fixture only — NOT a shipped
+ * theme). The live catalogue ships Songoskriti alone; this wildcard
+ * dressing keeps the cross-owner switch property provable without a
+ * second real theme.
+ */
+const ForeignDressedHeroPresentation: WidgetComponent = ({ section }) => (
+  <section data-dressing="acme-hero">
+    {String(section.props.title ?? "")}
+  </section>
+);
+
+const FOREIGN_HERO_DRESSING: VersionedPresentationEntry = {
+  owner: "acme-pack",
+  widgetId: "builtin:hero",
+  versionRange: "*",
+  component: ForeignDressedHeroPresentation,
+};
 
 const OWNER_A = "switch-alpha";
 const OWNER_B = "switch-beta";
@@ -430,7 +448,7 @@ describe("theme-owned switch end to end", () => {
     // re-registers the theme-owned descriptors (first-wins, idempotent).
     registerVersionedPresentation(SONGOSKRITI_HERO_DRESSING);
     registerVersionedPresentation(SONGOSKRITI_REVIEWS_DRESSING);
-    registerVersionedPresentation(SOMVABONA_HERO_DRESSING);
+    registerVersionedPresentation(FOREIGN_HERO_DRESSING);
   });
 
   it("the same authored props render under each owner with its own markup", () => {
@@ -443,17 +461,17 @@ describe("theme-owned switch end to end", () => {
       })!,
       section,
     );
-    const somvabona = renderDirect(
-      resolveVersionedPresentation("somvabona", "builtin:hero", {
+    const foreign = renderDirect(
+      resolveVersionedPresentation("acme-pack", "builtin:hero", {
         widgetVersion: "9.9.9",
       })!,
       section,
     );
     expect(songoskriti).toContain('data-dressing="songoskriti-hero"');
-    expect(somvabona).toContain('data-dressing="somvabona-hero"');
-    expect(songoskriti).not.toBe(somvabona);
+    expect(foreign).toContain('data-dressing="acme-hero"');
+    expect(songoskriti).not.toBe(foreign);
     expect(songoskriti).toContain("Heritage");
-    expect(somvabona).toContain("Heritage");
+    expect(foreign).toContain("Heritage");
     expect(JSON.stringify(section)).toBe(before);
   });
 
@@ -482,19 +500,19 @@ describe("theme-owned switch end to end", () => {
     expect(renderDirect(SongoskritiDressedHeroPresentation, section)).toContain(
       "Legacy title",
     );
-    expect(renderDirect(SomvabonaDressedHeroPresentation, section)).toContain(
+    expect(renderDirect(ForeignDressedHeroPresentation, section)).toContain(
       "Legacy title",
     );
   });
 
   it("foreign owners never resolve the songoskriti dressing", () => {
     expect(
-      resolveVersionedPresentation("somvabona", "plugin:acme/reviews", {
+      resolveVersionedPresentation("acme-pack", "plugin:acme/reviews", {
         widgetVersion: "1.2.0",
       }),
     ).toBeUndefined();
     expect(
-      checkVersionedCompatibility("somvabona", "plugin:acme/reviews", {
+      checkVersionedCompatibility("acme-pack", "plugin:acme/reviews", {
         widgetVersion: "1.2.0",
       }),
     ).toEqual({ compatible: false, reason: "unknown" });

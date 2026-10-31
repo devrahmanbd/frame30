@@ -58,6 +58,30 @@ function clone<T>(value: T): T {
 }
 
 /** Set the `text` prop of the first `heading` section in a template body. */
+/**
+ * Synthetic second package (test fixture): Songoskriti's seed minus the
+ * Cart body, with a distinct Collection heading. The live catalogue ships
+ * one theme, but the round-trip handler must still keep two maps separate.
+ */
+function packageB() {
+  const pkgA = registryPackage("songoskriti");
+  const templates = clone(pkgA.templates) as unknown as Record<string, unknown>;
+  delete templates["cart"];
+  const collection = templates["collection"] as
+    | { main: Section[] }
+    | undefined;
+  collection?.main.unshift({
+    id: "synthetic-b-heading",
+    type: "heading",
+    props: { text: "New in" },
+  } as Section);
+  return {
+    templates: templates as unknown as typeof pkgA.templates,
+    tokens: { ...pkgA.tokens, brand: "#7C2A1A" },
+    version: "1.0.0",
+  };
+}
+
 function setHeading(
   templates: Record<string, unknown>,
   key: string,
@@ -87,7 +111,7 @@ function headingText(
 describe("the theme-switch round trip — A → B → A over the real handlers", () => {
   it("keeps each theme's own draft, and never resets it to the seed", async () => {
     const pkgA = registryPackage("songoskriti");
-    const pkgB = registryPackage("somvabona");
+    const pkgB = packageB();
     const seedA = pkgA.templates as unknown as Record<string, unknown>;
     const seedB = pkgB.templates as unknown as Record<string, unknown>;
     expect(headingText(seedA, "cart"), "A authors a Cart heading").toBe(
@@ -137,10 +161,10 @@ describe("the theme-switch round trip — A → B → A over the real handlers",
           {
             id: THEME_B,
             merchant_id: MERCHANT,
-            name: "Somvabona",
+            name: "Acme Pack",
             is_active: false,
             created_at: "2026-01-02T00:00:00.000Z",
-            source_listing_slug: "somvabona",
+            source_listing_slug: "acme-pack",
             published_version_id: VERSION_B,
           },
         ],
@@ -378,7 +402,7 @@ describe("the theme-switch round trip — A → B → A over the real handlers",
       clone(registryPackage("songoskriti").templates),
     ) as unknown as Record<string, unknown>;
     const b = parseTemplates(
-      clone(registryPackage("somvabona").templates),
+      clone(packageB().templates),
     ) as unknown as Record<string, unknown>;
     expect(JSON.stringify(a)).not.toBe(JSON.stringify(b));
     expect(a["cart"]).toBeDefined();

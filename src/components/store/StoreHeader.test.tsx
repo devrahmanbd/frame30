@@ -63,10 +63,6 @@ import {
   SongoskritiHeaderPresentation,
   SongoskritiHeaderShell,
 } from "@/lib/themes/songoskriti/header-presentation";
-import {
-  SomvabonaHeaderPresentation,
-  SomvabonaHeaderShell,
-} from "@/lib/themes/somvabona/header-presentation";
 import type { StoreMenuSwap } from "./StoreHeader";
 import { themeChromeFor } from "./theme-chrome";
 import {
@@ -75,15 +71,10 @@ import {
   resolveThemePresentation,
 } from "@/lib/theme-presentations";
 import { SongoskritiAnnouncementPresentation } from "@/lib/themes/songoskriti/announcement-presentation";
-import { SomvabonaAnnouncementPresentation } from "@/lib/themes/somvabona/announcement-presentation";
 import {
   SongoskritiDesktopNav,
   SongoskritiMobileDrawer,
 } from "@/lib/themes/songoskriti/header-presentation";
-import {
-  SomvabonaDesktopNav,
-  SomvabonaMobileDrawer,
-} from "@/lib/themes/somvabona/header-presentation";
 import { resolveWidgetComponent } from "@/components/builder/theme-widgets";
 import {
   clearMenuRenderers,
@@ -932,7 +923,7 @@ describe("theme-owned nav modes (HEADER OWNERSHIP — canonical row model, per-t
   ];
 
   it("desktops render nested children with rebased hrefs", () => {
-    for (const Desktop of [SongoskritiDesktopNav, SomvabonaDesktopNav]) {
+    for (const Desktop of [SongoskritiDesktopNav]) {
       const html = renderToStaticMarkup(
         <Desktop items={canonicalItems} base="/store/demo" />,
       );
@@ -947,7 +938,7 @@ describe("theme-owned nav modes (HEADER OWNERSHIP — canonical row model, per-t
   });
 
   it("desktops render বাংলা labels, badge and the promo ref", () => {
-    for (const Desktop of [SongoskritiDesktopNav, SomvabonaDesktopNav]) {
+    for (const Desktop of [SongoskritiDesktopNav]) {
       const html = renderToStaticMarkup(
         <Desktop items={canonicalItems} base="/store/demo" locale="bn" />,
       );
@@ -963,7 +954,6 @@ describe("theme-owned nav modes (HEADER OWNERSHIP — canonical row model, per-t
 
   it("desktops render nothing for an empty menu", () => {
     expect(renderToStaticMarkup(<SongoskritiDesktopNav items={[]} />)).toBe("");
-    expect(renderToStaticMarkup(<SomvabonaDesktopNav items={[]} />)).toBe("");
   });
 
   it("songoskriti drawer hides nested children and the promo until expanded", () => {
@@ -994,30 +984,6 @@ describe("theme-owned nav modes (HEADER OWNERSHIP — canonical row model, per-t
     expect(html).toContain('aria-expanded="true"');
   });
 
-  it("somvabona drawer pins the open panel through the disclosure attribute", () => {
-    const collapsed = renderToStaticMarkup(
-      <SomvabonaMobileDrawer items={canonicalItems} base="/store/demo" />,
-    );
-    expect(collapsed).toContain(">Shop<");
-    expect(collapsed).toContain(">About<");
-    expect(collapsed).toContain("<details");
-    expect(collapsed).not.toMatch(/<details[^>]*open/);
-    const open = renderToStaticMarkup(
-      <SomvabonaMobileDrawer
-        items={canonicalItems}
-        base="/store/demo"
-        defaultExpandedId="shop"
-      />,
-    );
-    expect(open).toMatch(/<details[^>]*open/);
-    expect(open).toContain(">Sarees<");
-    expect(open).toContain(">Jamdani<");
-    expect(open).toContain('href="/store/demo/c/jamdani"');
-    expect(open).toContain("New");
-    expect(open).toContain('src="/ph/promo.jpg"');
-    expect(open).toContain(">Festive<");
-  });
-
   it("drawers render বাংলা labels and promo titles", () => {
     const songo = renderToStaticMarkup(
       <SongoskritiMobileDrawer
@@ -1027,15 +993,7 @@ describe("theme-owned nav modes (HEADER OWNERSHIP — canonical row model, per-t
         defaultExpandedId="shop"
       />,
     );
-    const somva = renderToStaticMarkup(
-      <SomvabonaMobileDrawer
-        items={canonicalItems}
-        base="/store/demo"
-        locale="bn"
-        defaultExpandedId="shop"
-      />,
-    );
-    for (const html of [songo, somva]) {
+    for (const html of [songo]) {
       expect(html).toContain("কেনাকাটা");
       expect(html).toContain("শাড়ি");
       expect(html).toContain("জামদানি");
@@ -1047,62 +1005,8 @@ describe("theme-owned nav modes (HEADER OWNERSHIP — canonical row model, per-t
     expect(renderToStaticMarkup(<SongoskritiMobileDrawer items={[]} />)).toBe(
       "",
     );
-    expect(renderToStaticMarkup(<SomvabonaMobileDrawer items={[]} />)).toBe("");
   });
 
-  it("same menu renders two markups with identical links, labels and hrefs", () => {
-    const songoDesktop = renderToStaticMarkup(
-      <SongoskritiDesktopNav items={canonicalItems} base="/store/demo" />,
-    );
-    const somvaDesktop = renderToStaticMarkup(
-      <SomvabonaDesktopNav items={canonicalItems} base="/store/demo" />,
-    );
-    // Same links/labels/hrefs in both.
-    for (const html of [songoDesktop, somvaDesktop]) {
-      expect(html).toContain(">Shop<");
-      expect(html).toContain(">Sarees<");
-      expect(html).toContain(">Jamdani<");
-      expect(html).toContain('href="/store/demo/c/shop"');
-      expect(html).toContain('href="/store/demo/c/jamdani"');
-      expect(html).toContain('href="/store/demo/pages/about"');
-    }
-    // Structurally distinct: luxury mega panel vs compact dropdown column.
-    expect(songoDesktop).toContain('data-nav="songoskriti-desktop"');
-    expect(songoDesktop).toContain('data-mega="songoskriti"');
-    expect(songoDesktop).toContain("grid-cols-4");
-    expect(somvaDesktop).toContain('data-nav="somvabona-desktop"');
-    expect(somvaDesktop).toContain('data-drop="somvabona"');
-    expect(somvaDesktop).toContain("min-w-52");
-    expect(somvaDesktop).not.toContain("data-mega");
-    expect(songoDesktop).not.toContain("data-drop");
-    expect(songoDesktop).not.toBe(somvaDesktop);
-    const songoDrawer = renderToStaticMarkup(
-      <SongoskritiMobileDrawer
-        items={canonicalItems}
-        base="/store/demo"
-        defaultExpandedId="shop"
-      />,
-    );
-    const somvaDrawer = renderToStaticMarkup(
-      <SomvabonaMobileDrawer
-        items={canonicalItems}
-        base="/store/demo"
-        defaultExpandedId="shop"
-      />,
-    );
-    for (const html of [songoDrawer, somvaDrawer]) {
-      expect(html).toContain(">Shop<");
-      expect(html).toContain(">Jamdani<");
-      expect(html).toContain('href="/store/demo/c/jamdani"');
-    }
-    // Structurally distinct drawers: accordion buttons vs disclosures.
-    expect(songoDrawer).toContain('data-nav="songoskriti-drawer"');
-    expect(songoDrawer).toContain('aria-expanded="true"');
-    expect(somvaDrawer).toContain('data-nav="somvabona-drawer"');
-    expect(somvaDrawer).toContain("<details");
-    expect(somvaDrawer).not.toContain("aria-expanded");
-    expect(songoDrawer).not.toBe(somvaDrawer);
-  });
 });
 
 describe("header presentations — theme-owned canonical modes (HEADER DE-THEMING)", () => {
@@ -1154,58 +1058,38 @@ describe("header presentations — theme-owned canonical modes (HEADER DE-THEMIN
     return renderToStaticMarkup(Presentation(proofCtx(section, locale)));
   }
 
-  it("both themes claim mega_menu with distinct components", () => {
+  it("the theme claims mega_menu with its own component", () => {
     expect(resolveThemePresentation("songoskriti", "mega_menu")).toBe(
       SongoskritiHeaderPresentation,
     );
-    expect(resolveThemePresentation("somvabona", "mega_menu")).toBe(
-      SomvabonaHeaderPresentation,
-    );
-    expect(SongoskritiHeaderPresentation).not.toBe(SomvabonaHeaderPresentation);
   });
 
-  it("same section data renders distinct header markup with identical content", () => {
+  it("same section data renders the theme header markup with identical content", () => {
     const songo = renderPresentation("songoskriti");
-    const somva = renderPresentation("somvabona");
-    // Same canonical content in both.
-    for (const html of [songo, somva]) {
-      expect(html).toContain("Women");
-      expect(html).toContain("Men");
-      expect(html).toContain('href="/c/women"');
-      expect(html).toContain('href="/c/men"');
-      expect(html).toContain('aria-label="Shop"');
-    }
-    // Distinct presentations: per-theme markers and chrome differ.
+    expect(songo).toContain("Women");
+    expect(songo).toContain("Men");
+    expect(songo).toContain('href="/c/women"');
+    expect(songo).toContain('href="/c/men"');
+    expect(songo).toContain('aria-label="Shop"');
     expect(songo).toContain('data-header-presentation="songoskriti"');
-    expect(somva).toContain('data-header-presentation="somvabona"');
-    expect(songo).not.toContain('data-header-presentation="somvabona"');
-    expect(somva).not.toContain('data-header-presentation="songoskriti"');
-    expect(songo).not.toBe(somva);
   });
 
-  it("theme-owned nav renders through both presentations (desktop + drawer)", () => {
+  it("theme-owned nav renders through the presentation (desktop + drawer)", () => {
     const songo = renderPresentation("songoskriti");
-    const somva = renderPresentation("somvabona");
-    for (const html of [songo, somva]) {
-      // Desktop nav over the canonical items…
-      expect(html).toContain('href="/c/women"');
-      expect(html).toContain('href="/c/men"');
-      // …and the mobile drawer carries the same items under the same
-      // section label. (Nested promo tiles live one level down the
-      // theme-owned navs and are pinned by the nav-modes suite; flat live
-      // rows carry no children, so neither mode opens a panel here.)
-      expect(html.match(/aria-label="Shop"/g)?.length).toBe(2);
-    }
-    // Per-theme nav structures prove the theme-owned modes rendered
-    // (flat rows have no children, so no accordion/disclosure exists
-    // here — the expanded/collapsed behavior is pinned by the
-    // nav-modes suite).
+    // Desktop nav over the canonical items…
+    expect(songo).toContain('href="/c/women"');
+    expect(songo).toContain('href="/c/men"');
+    // …and the mobile drawer carries the same items under the same section
+    // label. (Nested promo tiles live one level down the theme-owned navs
+    // and are pinned by the nav-modes suite; flat live rows carry no
+    // children, so neither mode opens a panel here.)
+    expect(songo.match(/aria-label="Shop"/g)?.length).toBe(2);
+    // Theme nav structures prove the theme-owned modes rendered (flat rows
+    // have no children, so no accordion/disclosure exists here — the
+    // expanded/collapsed behavior is pinned by the nav-modes suite).
     expect(songo).toContain('data-nav="songoskriti-desktop"');
     expect(songo).toContain('data-nav="songoskriti-drawer"');
     expect(songo).toContain("block flex-1 py-5");
-    expect(somva).toContain('data-nav="somvabona-desktop"');
-    expect(somva).toContain('data-nav="somvabona-drawer"');
-    expect(somva).toContain("flex-1 items-center");
   });
 
   it("engine composes presentations over resolveWidgetComponent; unknown themes passthrough byte-identical", () => {
@@ -1213,12 +1097,7 @@ describe("header presentations — theme-owned canonical modes (HEADER DE-THEMIN
     const songo = renderToStaticMarkup(
       <SectionRenderer section={section} themeKey="songoskriti" locale="en" />,
     );
-    const somva = renderToStaticMarkup(
-      <SectionRenderer section={section} themeKey="somvabona" locale="en" />,
-    );
     expect(songo).toContain('data-header-presentation="songoskriti"');
-    expect(somva).toContain('data-header-presentation="somvabona"');
-    expect(songo).not.toBe(somva);
     // Unregistered pairs passthrough byte-identical: the unknown theme
     // resolves to the existing resolution, never another theme's brand.
     const existing = resolveWidgetComponent("mystery-theme", section.type);
@@ -1327,57 +1206,38 @@ describe("header theme presentation runtime (R1 — same menu + state → distin
     return renderToStaticMarkup(ui);
   }
 
-  it("resolves distinct shells per theme through the existing registry with generic fallback", () => {
+  it("resolves the theme shell through the existing registry with generic fallback", () => {
     expect(resolveHeaderShell("songoskriti")).toBe(SongoskritiHeaderShell);
-    expect(resolveHeaderShell("somvabona")).toBe(SomvabonaHeaderShell);
-    expect(SongoskritiHeaderShell).not.toBe(SomvabonaHeaderShell);
     // Unknown / missing themes never leak another theme's presentation.
     expect(resolveHeaderShell("mystery-theme")).toBe(GenericHeaderShell);
     expect(resolveHeaderShell(null)).toBe(GenericHeaderShell);
     expect(resolveHeaderShell(undefined)).toBe(GenericHeaderShell);
   });
 
-  it("same menu + same header state renders materially different markup with identical content", () => {
+  it("same menu + same header state renders theme markup with identical content", () => {
     const songo = renderShell(SongoskritiHeaderShell, {
       themeKey: "songoskriti",
     });
-    const somva = renderShell(SomvabonaHeaderShell, {
-      themeKey: "somvabona",
-    });
-    // Per-theme shell markers, never crossed.
+    // Per-theme shell marker.
     expect(songo).toContain('data-header-shell="songoskriti"');
-    expect(somva).toContain('data-header-shell="somvabona"');
-    expect(songo).not.toContain('data-header-shell="somvabona"');
-    expect(somva).not.toContain('data-header-shell="songoskriti"');
-    expect(songo).not.toBe(somva);
-    // Identical content: same labels, same rebased hrefs, same landmark.
-    for (const html of [songo, somva]) {
-      expect(html).toContain(">Shop<");
-      expect(html).toContain(">Sarees<");
-      expect(html).toContain(">Jamdani<");
-      expect(html).toContain(">About<");
-      expect(html).toContain('href="/store/demo/c/shop"');
-      expect(html).toContain('href="/store/demo/c/sarees"');
-      expect(html).toContain('href="/store/demo/c/jamdani"');
-      expect(html).toContain('href="/store/demo/pages/about"');
-      expect(html).toContain('aria-label="Store menu"');
-    }
-    // Structurally distinct desktop: mega panel vs compact dropdown.
+    // Content: labels, rebased hrefs, landmark.
+    expect(songo).toContain(">Shop<");
+    expect(songo).toContain(">Sarees<");
+    expect(songo).toContain(">Jamdani<");
+    expect(songo).toContain(">About<");
+    expect(songo).toContain('href="/store/demo/c/shop"');
+    expect(songo).toContain('href="/store/demo/c/sarees"');
+    expect(songo).toContain('href="/store/demo/c/jamdani"');
+    expect(songo).toContain('href="/store/demo/pages/about"');
+    expect(songo).toContain('aria-label="Store menu"');
+    // Structurally distinct desktop: mega panel.
     expect(songo).toContain('data-mega="songoskriti"');
     expect(songo).toContain("grid-cols-4");
-    expect(somva).toContain('data-drop="somvabona"');
-    expect(somva).toContain("min-w-52");
     expect(songo).not.toContain("data-drop");
-    expect(somva).not.toContain("data-mega");
-    // Structurally distinct mobile: accordion buttons vs disclosures.
+    // Mobile: accordion buttons, not disclosures.
     expect(songo).toContain('data-nav="songoskriti-drawer"');
     expect(songo).toContain('aria-expanded="true"');
     expect(songo).not.toContain("<details");
-    expect(somva).toContain('data-nav="somvabona-drawer"');
-    expect(somva).toContain("<details");
-    // The disclosure drawer carries no accordion state (the header
-    // hamburger toggle above it still owns its own aria-expanded).
-    expect(somva).not.toMatch(/<details[^>]*aria-expanded/);
   });
 
   it("covers the language switch plus localized labels in both locales", () => {
@@ -1386,77 +1246,57 @@ describe("header theme presentation runtime (R1 — same menu + state → distin
         themeKey: "songoskriti",
         locale,
       });
-      const somva = renderShell(SomvabonaHeaderShell, {
-        themeKey: "somvabona",
-        locale,
-      });
-      // The switch itself renders in both shells (announcement vs icons).
-      for (const html of [songo, somva]) {
-        expect(html).toContain("EN");
-        expect(html).toContain("বাং");
-        expect(html).toContain('aria-pressed="true"');
-      }
+      // The switch itself renders.
+      expect(songo).toContain("EN");
+      expect(songo).toContain("বাং");
+      expect(songo).toContain('aria-pressed="true"');
       // Dashboard rows render as-authored in every locale, never blank.
-      for (const html of [songo, somva]) {
-        expect(html).toContain(">Shop<");
-        expect(html).toContain(">Jamdani<");
-      }
+      expect(songo).toContain(">Shop<");
+      expect(songo).toContain(">Jamdani<");
     }
     const songoBn = renderShell(SongoskritiHeaderShell, {
       themeKey: "songoskriti",
       locale: "bn",
     });
-    const somvaBn = renderShell(SomvabonaHeaderShell, {
-      themeKey: "somvabona",
-      locale: "bn",
-    });
-    // Localised nav landmark in both shells.
+    // Localised nav landmark.
     expect(songoBn).toContain('aria-label="স্টোর মেনু"');
-    expect(somvaBn).toContain('aria-label="স্টোর মেনু"');
-    // Luxury announcement copy localises; the everyday shell ships none.
+    // Luxury announcement copy localises.
     expect(songoBn).toContain(
       "৫০০০ টাকার উপরে অর্ডারে সারা দেশে ফ্রি ডেলিভারি",
     );
-    expect(somvaBn).not.toContain("EASY 7-DAY EXCHANGE");
   });
 
-  it("covers sticky state plus cart/account/search controls per theme", () => {
-    for (const Shell of [SongoskritiHeaderShell, SomvabonaHeaderShell]) {
-      const themeKey =
-        Shell === SongoskritiHeaderShell ? "songoskriti" : "somvabona";
-      const expanded = renderShell(Shell, { themeKey, scrolled: false });
-      const stuck = renderShell(Shell, { themeKey, scrolled: true });
-      // Sticky shrink: full chrome at rest, compact + shadow when stuck.
-      expect(expanded).toContain("h-[72px]");
-      expect(stuck).toContain("h-[64px]");
-      expect(stuck).toContain("shadow-sm");
-      expect(expanded).not.toContain("shadow-sm");
-      // Drawer offset follows the compact state.
-      expect(expanded).toContain("top:108px");
-      expect(stuck).toContain("top:64px");
-      // Controls: live counts in accessible labels with badges.
-      for (const html of [expanded, stuck]) {
-        expect(html).toContain('aria-label="Wishlist, 2"');
-        expect(html).toContain('aria-label="Cart, 3"');
-        expect(html).toMatch(/>2</);
-        expect(html).toMatch(/>3</);
-        expect(html).toContain('data-link-to="/store/$slug/search"');
-        expect(html).toContain('data-link-to="/store/$slug/account"');
-        expect(html).toContain('data-link-to="/store/$slug/cart"');
-      }
-      // Custom hosts link at the root instead of under the store path.
-      const customHtml = renderShell(Shell, { themeKey, custom: true });
-      expect(customHtml).toContain('data-link-to="/search"');
-      expect(customHtml).toContain('data-link-to="/account"');
-      expect(customHtml).toContain('data-link-to="/cart"');
-      expect(customHtml).toContain('href="/c/shop"');
+  it("covers sticky state plus cart/account/search controls", () => {
+    const Shell = SongoskritiHeaderShell;
+    const themeKey = "songoskriti";
+    const expanded = renderShell(Shell, { themeKey, scrolled: false });
+    const stuck = renderShell(Shell, { themeKey, scrolled: true });
+    // Sticky shrink: full chrome at rest, compact + shadow when stuck.
+    expect(expanded).toContain("h-[72px]");
+    expect(stuck).toContain("h-[64px]");
+    expect(stuck).toContain("shadow-sm");
+    expect(expanded).not.toContain("shadow-sm");
+    // Drawer offset follows the compact state.
+    expect(expanded).toContain("top:108px");
+    expect(stuck).toContain("top:64px");
+    // Controls: live counts in accessible labels with badges.
+    for (const html of [expanded, stuck]) {
+      expect(html).toContain('aria-label="Wishlist, 2"');
+      expect(html).toContain('aria-label="Cart, 3"');
+      expect(html).toMatch(/>2</);
+      expect(html).toMatch(/>3</);
+      expect(html).toContain('data-link-to="/store/$slug/search"');
+      expect(html).toContain('data-link-to="/store/$slug/account"');
+      expect(html).toContain('data-link-to="/store/$slug/cart"');
     }
-    // Luxury announcement collapses on scroll; everyday chrome has none.
-    const songoStuck = renderShell(SongoskritiHeaderShell, {
-      themeKey: "songoskriti",
-      scrolled: true,
-    });
-    expect(songoStuck).toContain("h-0 opacity-0");
+    // Custom hosts link at the root instead of under the store path.
+    const customHtml = renderShell(Shell, { themeKey, custom: true });
+    expect(customHtml).toContain('data-link-to="/search"');
+    expect(customHtml).toContain('data-link-to="/account"');
+    expect(customHtml).toContain('data-link-to="/cart"');
+    expect(customHtml).toContain('href="/c/shop"');
+    // Luxury announcement collapses on scroll.
+    expect(stuck).toContain("h-0 opacity-0");
   });
 
   it("StoreHeader delegates end-to-end: shell marker follows the theme key", () => {
@@ -1467,20 +1307,10 @@ describe("header theme presentation runtime (R1 — same menu + state → distin
       themeKey: "songoskriti",
       menus,
     });
-    const somva = renderHeader({
-      slug: "demo",
-      name: "Demo",
-      themeKey: "somvabona",
-      menus,
-    });
     expect(songo).toContain('data-header-shell="songoskriti"');
-    expect(somva).toContain('data-header-shell="somvabona"');
-    expect(songo).not.toBe(somva);
-    for (const html of [songo, somva]) {
-      expect(html).toContain(">Shop<");
-      expect(html).toContain(">Jamdani<");
-      expect(html).toContain("/store/demo/c/jamdani");
-    }
+    expect(songo).toContain(">Shop<");
+    expect(songo).toContain(">Jamdani<");
+    expect(songo).toContain("/store/demo/c/jamdani");
     // Unknown themes keep the generic shell with the text wordmark.
     const mystery = renderHeader({
       slug: "demo",
@@ -1491,7 +1321,6 @@ describe("header theme presentation runtime (R1 — same menu + state → distin
     expect(mystery).toContain('data-header-shell="generic"');
     expect(mystery).toContain("Demo");
     expect(mystery).not.toContain('data-header-shell="songoskriti"');
-    expect(mystery).not.toContain('data-header-shell="somvabona"');
   });
 });
 
@@ -1554,11 +1383,6 @@ describe("header announcement via theme-owned presentations (R1b)", () => {
         "mega_menu",
         SongoskritiHeaderPresentation,
       );
-      registerThemePresentation(
-        "somvabona",
-        "mega_menu",
-        SomvabonaHeaderPresentation,
-      );
     }
   });
 
@@ -1570,50 +1394,28 @@ describe("header announcement via theme-owned presentations (R1b)", () => {
       SongoskritiHeaderPresentation,
     );
     registerThemePresentation(
-      "somvabona",
-      "mega_menu",
-      SomvabonaHeaderPresentation,
-    );
-    registerThemePresentation(
       "songoskriti",
       "announcement_bar",
       SongoskritiAnnouncementPresentation,
     );
-    registerThemePresentation(
-      "somvabona",
-      "announcement_bar",
-      SomvabonaAnnouncementPresentation,
-    );
     try {
       const songo = barHtml("songoskriti");
-      const somva = barHtml("somvabona");
       // Same header-chrome data in, theme-owned chrome out.
-      for (const html of [songo, somva]) {
-        expect(html).toContain(chrome().announcement.center);
-        expect(html).toContain('aria-label="Announcement"');
-      }
+      expect(songo).toContain(chrome().announcement.center);
+      expect(songo).toContain('aria-label="Announcement"');
       expect(songo).toContain('data-announcement-presentation="songoskriti"');
-      expect(somva).toContain('data-announcement-presentation="somvabona"');
-      expect(songo).not.toBe(somva);
-      // Heritage bar vs everyday strip stay structurally distinct.
+      // Heritage bar chrome.
       expect(songo).toContain("font-serif");
-      expect(somva).toContain("font-sans");
-      // bn twins resolve through the shared headless state in both themes.
+      // bn twins resolve through the shared headless state.
       const songoBn = barHtml("songoskriti", { locale: "bn" });
-      const somvaBn = barHtml("somvabona", { locale: "bn" });
-      for (const html of [songoBn, somvaBn]) {
-        expect(html).toContain(chrome().announcement.center_bn);
-        expect(html).toContain('aria-label="ঘোষণা"');
-      }
-      // Scrolled collapse is generic behavior around either presentation.
+      expect(songoBn).toContain(chrome().announcement.center_bn);
+      expect(songoBn).toContain('aria-label="ঘোষণা"');
+      // Scrolled collapse is generic behavior around the presentation.
       expect(barHtml("songoskriti", { scrolled: true })).toContain(
         "h-0 opacity-0",
       );
-      expect(barHtml("somvabona", { scrolled: true })).toContain(
-        "h-0 opacity-0",
-      );
       // Null chrome renders nothing for every theme.
-      for (const themeKey of ["songoskriti", "somvabona", null]) {
+      for (const themeKey of ["songoskriti", null]) {
         expect(
           renderToStaticMarkup(
             <HeaderAnnouncementBar
@@ -1632,15 +1434,10 @@ describe("header announcement via theme-owned presentations (R1b)", () => {
         "mega_menu",
         SongoskritiHeaderPresentation,
       );
-      registerThemePresentation(
-        "somvabona",
-        "mega_menu",
-        SomvabonaHeaderPresentation,
-      );
     }
   });
 
-  it("songoskriti shell owns its announcement slot; somvabona ships none", () => {
+  it("songoskriti shell owns its announcement slot", () => {
     clearThemePresentations();
     registerThemePresentation(
       "songoskriti",
@@ -1648,19 +1445,9 @@ describe("header announcement via theme-owned presentations (R1b)", () => {
       SongoskritiHeaderPresentation,
     );
     registerThemePresentation(
-      "somvabona",
-      "mega_menu",
-      SomvabonaHeaderPresentation,
-    );
-    registerThemePresentation(
       "songoskriti",
       "announcement_bar",
       SongoskritiAnnouncementPresentation,
-    );
-    registerThemePresentation(
-      "somvabona",
-      "announcement_bar",
-      SomvabonaAnnouncementPresentation,
     );
     try {
       const menus = {
@@ -1673,35 +1460,18 @@ describe("header announcement via theme-owned presentations (R1b)", () => {
         themeKey: "songoskriti",
         menus,
       });
-      const somva = renderHeader({
-        slug: "demo",
-        name: "Demo",
-        themeKey: "somvabona",
-        menus,
-      });
       expect(songo).toContain('data-header-shell="songoskriti"');
       expect(songo).toContain('data-announcement-presentation="songoskriti"');
       expect(songo).toContain(chrome().announcement.center);
-      expect(somva).toContain('data-header-shell="somvabona"');
-      // Everyday shell ships no header announcement (null chrome).
-      expect(somva).not.toContain("data-announcement-presentation");
-      expect(somva).not.toContain(chrome().announcement.center);
-      // Both shells keep the language switch (songoskriti via icons now).
-      for (const html of [songo, somva]) {
-        expect(html).toContain("EN");
-        expect(html).toContain("বাং");
-      }
+      // The shell keeps the language switch (songoskriti via icons now).
+      expect(songo).toContain("EN");
+      expect(songo).toContain("বাং");
     } finally {
       clearThemePresentations();
       registerThemePresentation(
         "songoskriti",
         "mega_menu",
         SongoskritiHeaderPresentation,
-      );
-      registerThemePresentation(
-        "somvabona",
-        "mega_menu",
-        SomvabonaHeaderPresentation,
       );
     }
   });

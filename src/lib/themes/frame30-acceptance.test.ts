@@ -18,7 +18,7 @@ const exists = (f: string) => fs.existsSync(f);
 describe("frame30 acceptance", () => {
   it("1: official themes work from source without generating or installing ZIPs", async () => {
     const { registryPackage } = await import("../themes.server");
-    for (const key of ["songoskriti", "somvabona"]) {
+    for (const key of ["songoskriti"]) {
       const pkg = registryPackage(key);
       expect(pkg.version).toBeTruthy();
       expect(Object.keys(pkg.templates).length).toBeGreaterThan(0);
@@ -27,7 +27,7 @@ describe("frame30 acceptance", () => {
   it("3: official image URLs resolve source-form in preview rendering", async () => {
     const { registryPackage } = await import("../themes.server");
     const { findPackageRefs } = await import("../theme-asset-url");
-    for (const key of ["songoskriti", "somvabona"]) {
+    for (const key of ["songoskriti"]) {
       const pkg = registryPackage(key);
       const blob = JSON.stringify(pkg.templates);
       expect(blob).toContain(`/ph/${key}/`);

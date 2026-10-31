@@ -1,7 +1,7 @@
 /**
  * Frame30 — official catalogue semantics (Official / Community).
  *
- * Official entries (Songoskriti, Somvabona) come from the single built-in
+ * Official entries (Songoskriti) come from the single built-in
  * source registry — no build lane, no provider seam, no checked-in bundle.
  * Official Install initializes the merchant's records from the registered
  * source definition (same row-creation as catalogue installs, with the
@@ -108,14 +108,10 @@ describe("Frame30 official catalogue shape", () => {
     const workspace = await loadThemesWorkspace(db.asClient(), MERCHANT);
     expect(workspace.catalogue.map((t) => t.key)).toEqual([
       "songoskriti",
-      "somvabona",
       "acme-pack",
     ]);
     const sections = sectionCatalogue(workspace.catalogue);
-    expect(sections.official.map((t) => t.key)).toEqual([
-      "songoskriti",
-      "somvabona",
-    ]);
+    expect(sections.official.map((t) => t.key)).toEqual(["songoskriti"]);
     expect(sections.community.map((t) => t.key)).toEqual(["acme-pack"]);
     const songo = sections.official[0]!;
     expect(songo).toMatchObject({
@@ -129,12 +125,12 @@ describe("Frame30 official catalogue shape", () => {
     // No third official theme, no duplicate Install targets.
     expect(
       workspace.catalogue.filter((t) => t.provenance === "official"),
-    ).toHaveLength(2);
+    ).toHaveLength(1);
   });
 
   it("names exactly the built-in registry keys (no vapor)", async () => {
     const entries = await listOfficialCatalog();
-    expect(entries.map((e) => e.key)).toEqual(["songoskriti", "somvabona"]);
+    expect(entries.map((e) => e.key)).toEqual(["songoskriti"]);
     for (const entry of entries) {
       expect(entry.artifact.pinned).toBe(`official:${entry.key}`);
     }
@@ -146,14 +142,11 @@ describe("Frame30 official catalogue shape", () => {
     const db = workspaceDb();
     const workspace = await loadThemesWorkspace(db.asClient(), MERCHANT);
     const sections = sectionCatalogue(workspace.catalogue);
-    expect(sections.official.map((t) => t.key)).toEqual([
-      "songoskriti",
-      "somvabona",
-    ]);
+    expect(sections.official.map((t) => t.key)).toEqual(["songoskriti"]);
     for (const entry of sections.official) {
       expect(entry).toMatchObject({
         provenance: "official",
-        version: entry.key === "songoskriti" ? "1.1.0" : "1.0.0",
+        version: "1.1.0",
       });
     }
     expect(sections.community.map((t) => t.key)).toEqual(["acme-pack"]);
@@ -240,7 +233,7 @@ describe("Frame30 official install initializes from source", () => {
     const out = await installCatalogTheme(
       db.asClient(),
       MERCHANT,
-      "somvabona",
+      "songoskriti",
       ACTOR,
     );
     expect(out.alreadyInstalled).toBe(false);
@@ -248,22 +241,22 @@ describe("Frame30 official install initializes from source", () => {
     const installs = db.rows("marketplace_installs");
     expect(installs).toHaveLength(1);
     expect(installs[0]).toMatchObject({
-      listing_slug: "somvabona",
-      artifact_pinned: "official:somvabona",
+      listing_slug: "songoskriti",
+      artifact_pinned: "official:songoskriti",
     });
   });
 
-  it("somvabona installs with source row shapes, never pipeline shapes", async () => {
+  it("official installs with source row shapes, never pipeline shapes", async () => {
     const db = installDb();
-    await installOfficialTheme(db.asClient(), MERCHANT, "somvabona", ACTOR);
+    await installOfficialTheme(db.asClient(), MERCHANT, "songoskriti", ACTOR);
     // Source init: published v1 labeled by key — not a draft pipeline row.
     const versions = db.rows("theme_versions");
     expect(versions).toHaveLength(1);
     expect(versions[0]).toMatchObject({
       status: "published",
-      label: "somvabona",
+      label: "songoskriti",
     });
-    expect(JSON.stringify(versions[0])).toContain("/ph/somvabona/");
+    expect(JSON.stringify(versions[0])).toContain("/ph/songoskriti/");
     // No pipeline columns: no checksums, no blobs, no package audit action.
     for (const row of [...versions, ...db.rows("marketplace_installs")]) {
       expect("artifact_checksum" in row).toBe(false);

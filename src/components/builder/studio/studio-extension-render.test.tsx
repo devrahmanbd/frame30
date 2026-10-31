@@ -507,7 +507,7 @@ describe("studio extension twins — render parity per lane", () => {
       const node = twin(ID, { kicker: "Kept" }, reg);
       const foreign = renderStudio(node, [], {
         registry: reg,
-        themeKey: "somvabona",
+        themeKey: "acme-pack",
         editing: true,
       });
       expect(foreign).toContain('data-synthetic-body="yes"');

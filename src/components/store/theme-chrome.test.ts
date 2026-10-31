@@ -49,7 +49,7 @@ describe("themeChromeFor", () => {
     // chrome even with a foreign theme installed, and dressed renamed
     // lookalikes via substring. Key-driven resolution ends both: only the
     // exact theme key earns the lockup.
-    expect(themeChromeFor("somvabona")).toBeNull();
+    expect(themeChromeFor("acme-pack")).toBeNull();
     expect(themeChromeFor("demo")).toBeNull();
     expect(themeChromeFor("songoskriti-2")).toBeNull();
     expect(themeChromeFor("Songoskriti")).toBeNull();
@@ -83,7 +83,7 @@ describe("theme-chrome de-theming (HEADER DE-THEMING lane)", () => {
     // (`DEFAULT_HEADER_CHROME_KEY`), never as a literal or a branch here.
     // Brand asset paths likewise live only in the neutral copy module.
     const src = CHROME_SRC();
-    expect(src).not.toMatch(/songoskriti|somvabona/i);
+    expect(src).not.toMatch(/songoskriti|acme-pack/i);
     expect(src).not.toMatch(/\/ph\//);
     // Key-driven lookup only: no equality branch against a theme string.
     // (The `themeKey == null` null-guard is the null contract, not a

@@ -6,8 +6,8 @@ import {
 } from "./builtin-themes";
 
 describe("builtin-themes single authority", () => {
-  it("names exactly songoskriti + somvabona", () => {
-    expect([...OFFICIAL_THEME_KEYS]).toEqual(["songoskriti", "somvabona"]);
+  it("names exactly songoskriti", () => {
+    expect([...OFFICIAL_THEME_KEYS]).toEqual(["songoskriti"]);
   });
   it("resolves source modules without ZIP or JSON", () => {
     for (const key of OFFICIAL_THEME_KEYS) {

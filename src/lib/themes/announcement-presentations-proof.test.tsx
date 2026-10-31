@@ -1,5 +1,5 @@
 /**
- * PROOF lane TEST 3 — same announcement data → two theme presentations.
+ * PROOF lane TEST 3 — same announcement data → two presentations (the shipped theme and a synthetic foreign fixture).
  *
  * The shared `AnnouncementBar` surface owns the message contract; each
  * theme owns chrome around it through the per-widget presentation
@@ -27,15 +27,15 @@ import {
   type WidgetCtx,
 } from "@/components/builder/widgets";
 import { SongoskritiAnnouncementPresentation } from "./songoskriti/announcement-presentation";
-import { SomvabonaAnnouncementPresentation } from "./somvabona/announcement-presentation";
+import { ForeignAnnouncementPresentation } from "./__fixtures__/foreign-presentations.fixture";
 import { announcementItemsOf } from "@/components/store/AnnouncementBar";
 
 const SONGOSKRITI_SRC = readFileSync(
   join(__dirname, "songoskriti/announcement-presentation.tsx"),
   "utf8",
 );
-const SOMVABONA_SRC = readFileSync(
-  join(__dirname, "somvabona/announcement-presentation.tsx"),
+const FOREIGN_SRC = readFileSync(
+  join(__dirname, "__fixtures__/foreign-presentations.fixture.tsx"),
   "utf8",
 );
 
@@ -128,22 +128,22 @@ beforeEach(() => {
     SongoskritiAnnouncementPresentation,
   );
   registerThemePresentation(
-    "somvabona",
+    "acme-pack",
     "announcement_bar",
-    SomvabonaAnnouncementPresentation,
+    ForeignAnnouncementPresentation,
   );
 });
 
-describe("same announcement data, two theme presentations", () => {
+describe("same announcement data, two presentations", () => {
   it("resolves distinct presentations per theme through the registry", () => {
     const songoskriti = resolveThemePresentation(
       "songoskriti",
       "announcement_bar",
     );
-    const somvabona = resolveThemePresentation("somvabona", "announcement_bar");
+    const foreign = resolveThemePresentation("acme-pack", "announcement_bar");
     expect(songoskriti).toBe(SongoskritiAnnouncementPresentation);
-    expect(somvabona).toBe(SomvabonaAnnouncementPresentation);
-    expect(songoskriti).not.toBe(somvabona);
+    expect(foreign).toBe(ForeignAnnouncementPresentation);
+    expect(songoskriti).not.toBe(foreign);
   });
 
   it("renders different markup with identical data, labels and links (direct)", () => {
@@ -154,8 +154,8 @@ describe("same announcement data, two theme presentations", () => {
       resolveThemePresentation("songoskriti", "announcement_bar")!,
       section,
     );
-    const somvabona = renderDirect(
-      resolveThemePresentation("somvabona", "announcement_bar")!,
+    const foreign = renderDirect(
+      resolveThemePresentation("acme-pack", "announcement_bar")!,
       section,
     );
 
@@ -163,12 +163,12 @@ describe("same announcement data, two theme presentations", () => {
     expect(songoskriti).toContain(
       'data-announcement-presentation="songoskriti"',
     );
-    expect(somvabona).toContain('data-announcement-presentation="somvabona"');
+    expect(foreign).toContain('data-announcement-presentation="acme-pack"');
     expect(songoskriti).toContain("<div");
-    expect(somvabona).toContain("<section");
-    expect(songoskriti).not.toBe(somvabona);
+    expect(foreign).toContain("<section");
+    expect(songoskriti).not.toBe(foreign);
     // Identical content: same message, same link, same region label.
-    for (const html of [songoskriti, somvabona]) {
+    for (const html of [songoskriti, foreign]) {
       expect(html).toContain(MESSAGE_EN);
       expect(html).toContain(LINK_HREF);
       expect(html).toContain('aria-label="Announcement"');
@@ -184,14 +184,14 @@ describe("same announcement data, two theme presentations", () => {
       section,
       "bn",
     );
-    const somvabona = renderDirect(
-      resolveThemePresentation("somvabona", "announcement_bar")!,
+    const foreign = renderDirect(
+      resolveThemePresentation("acme-pack", "announcement_bar")!,
       section,
       "bn",
     );
 
-    expect(songoskriti).not.toBe(somvabona);
-    for (const html of [songoskriti, somvabona]) {
+    expect(songoskriti).not.toBe(foreign);
+    for (const html of [songoskriti, foreign]) {
       expect(html).toContain(MESSAGE_BN);
       expect(html).toContain('aria-label="ঘোষণা"');
     }
@@ -203,13 +203,13 @@ describe("same announcement data, two theme presentations", () => {
       resolveThemePresentation("songoskriti", "announcement_bar")!,
       section,
     );
-    const somvabona = renderDirect(
-      resolveThemePresentation("somvabona", "announcement_bar")!,
+    const foreign = renderDirect(
+      resolveThemePresentation("acme-pack", "announcement_bar")!,
       section,
     );
 
-    expect(songoskriti).not.toBe(somvabona);
-    for (const html of [songoskriti, somvabona]) {
+    expect(songoskriti).not.toBe(foreign);
+    for (const html of [songoskriti, foreign]) {
       expect(html).toContain(MESSAGE_EN);
       expect(html).toContain(LINK_HREF);
     }
@@ -220,15 +220,15 @@ describe("same announcement data, two theme presentations", () => {
     const before = JSON.stringify(section);
 
     const songoskriti = renderEngine(section, "songoskriti");
-    const somvabona = renderEngine(section, "somvabona");
+    const foreign = renderEngine(section, "acme-pack");
 
     expect(songoskriti).toContain(
       'data-announcement-presentation="songoskriti"',
     );
-    expect(somvabona).toContain('data-announcement-presentation="somvabona"');
-    expect(songoskriti).not.toBe(somvabona);
+    expect(foreign).toContain('data-announcement-presentation="acme-pack"');
+    expect(songoskriti).not.toBe(foreign);
     expect(songoskriti).toContain(MESSAGE_EN);
-    expect(somvabona).toContain(MESSAGE_EN);
+    expect(foreign).toContain(MESSAGE_EN);
     expect(JSON.stringify(section)).toBe(before);
   });
 });
@@ -242,7 +242,7 @@ describe("theme-owned inner presentation (R2 — beyond the wrapper)", () => {
   it("owns typography/alignment/mobile layout per theme, not the platform default", () => {
     const section = proofSection();
     const songoskriti = themedHtml("songoskriti", section);
-    const somvabona = themedHtml("somvabona", section);
+    const foreign = themedHtml("acme-pack", section);
 
     // Heritage bar: centered uppercase serif line, truncated on small screens.
     expect(songoskriti).toContain("font-serif");
@@ -251,16 +251,16 @@ describe("theme-owned inner presentation (R2 — beyond the wrapper)", () => {
     expect(songoskriti).toContain("text-center");
     expect(songoskriti).toContain("truncate");
     // Everyday strip: left-aligned wrapping sans line with a marker dot.
-    expect(somvabona).toContain("font-sans");
-    expect(somvabona).toContain("text-left");
-    expect(somvabona).toContain("whitespace-normal");
-    expect(somvabona).not.toContain("truncate");
-    expect(somvabona).toContain("rounded-full");
-    expect(somvabona).toContain("border-dashed");
+    expect(foreign).toContain("font-sans");
+    expect(foreign).toContain("text-left");
+    expect(foreign).toContain("whitespace-normal");
+    expect(foreign).not.toContain("truncate");
+    expect(foreign).toContain("rounded-full");
+    expect(foreign).toContain("border-dashed");
     // Neither inherits the platform default presentation's tone backgrounds
     // (token `bg-*` fills); flex centering itself is a legitimate per-theme
     // layout choice, so only the tone signatures are asserted here.
-    for (const html of [songoskriti, somvabona]) {
+    for (const html of [songoskriti, foreign]) {
       expect(html).not.toContain("bg-primary");
       expect(html).not.toContain("bg-muted");
       expect(html).not.toContain("bg-foreground");
@@ -301,7 +301,7 @@ describe("dismissal behavior preserved per theme", () => {
     for (const locale of ["en", "bn"] as const) {
       const expected =
         locale === "bn" ? "ঘোষণা বন্ধ করুন" : "Dismiss announcement";
-      for (const themeKey of ["songoskriti", "somvabona"]) {
+      for (const themeKey of ["songoskriti", "acme-pack"]) {
         const Cmp = resolveThemePresentation(themeKey, "announcement_bar")!;
         const html = renderDirect(Cmp, dismissibleSection(true), locale);
         expect(html, `${themeKey}/${locale}`).toContain(
@@ -313,7 +313,7 @@ describe("dismissal behavior preserved per theme", () => {
   });
 
   it("renders no close affordance unless dismissible", () => {
-    for (const themeKey of ["songoskriti", "somvabona"]) {
+    for (const themeKey of ["songoskriti", "acme-pack"]) {
       const Cmp = resolveThemePresentation(themeKey, "announcement_bar")!;
       const html = renderDirect(Cmp, dismissibleSection(false));
       expect(html, themeKey).not.toContain("Dismiss announcement");
@@ -325,7 +325,7 @@ describe("dismissal behavior preserved per theme", () => {
 describe("reduced motion honored per theme", () => {
   it("ships no marquee loop or CSS animation in either presentation", () => {
     const section = proofSection();
-    for (const themeKey of ["songoskriti", "somvabona"]) {
+    for (const themeKey of ["songoskriti", "acme-pack"]) {
       const Cmp = resolveThemePresentation(themeKey, "announcement_bar")!;
       const html = renderDirect(Cmp, section);
       expect(html, themeKey).not.toContain("marquee");
@@ -333,7 +333,7 @@ describe("reduced motion honored per theme", () => {
     }
     for (const [name, src] of [
       ["songoskriti", SONGOSKRITI_SRC],
-      ["somvabona", SOMVABONA_SRC],
+      ["acme-pack", FOREIGN_SRC],
     ] as const) {
       expect(src, name).not.toMatch(/animate-/);
       expect(src.toLowerCase(), name).not.toContain("marquee");
@@ -343,7 +343,7 @@ describe("reduced motion honored per theme", () => {
   it("both presentations consume the shared reduced-motion-gated state", () => {
     for (const [name, src] of [
       ["songoskriti", SONGOSKRITI_SRC],
-      ["somvabona", SOMVABONA_SRC],
+      ["acme-pack", FOREIGN_SRC],
     ] as const) {
       expect(src, name).toContain("useAnnouncementState");
       expect(src, name).toContain("motion-safe:");
@@ -356,7 +356,7 @@ describe("reduced motion honored per theme", () => {
 
   it("multi-message steppers keep every message reachable without motion", () => {
     const section = proofSection();
-    for (const themeKey of ["songoskriti", "somvabona"]) {
+    for (const themeKey of ["songoskriti", "acme-pack"]) {
       const Cmp = resolveThemePresentation(themeKey, "announcement_bar")!;
       const html = renderDirect(Cmp, section);
       expect(html, themeKey).toContain('aria-label="Previous announcement"');

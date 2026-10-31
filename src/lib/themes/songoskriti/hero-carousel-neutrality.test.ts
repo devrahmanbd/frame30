@@ -7,7 +7,7 @@
  *
  * hero_carousel is a shared key with neutral rendering in every graph: the
  * songoskriti theme owns NO override for it (not in SONGOSKRITI_WIDGETS),
- * so keyed resolution (songoskriti / somvabona / unknown) and unkeyed
+ * so keyed resolution (songoskriti / foreign / unknown) and unkeyed
  * editor/studio resolution all land on the generic Heritage HeroCarousel
  * (HERITAGE_WIDGETS["hero_carousel"], heritage.tsx:1404).
  */
@@ -42,8 +42,8 @@ describe("songoskriti hero_carousel neutrality (HP-HERO-CAROUSEL)", () => {
     expect(themed).toBe(HERITAGE_WIDGETS[KEY]);
   });
 
-  it("keyed somvabona resolves to the generic renderer — SOMVABONA_WIDGETS does not override our key", () => {
-    expect(resolveWidgetComponent("somvabona", KEY)).toBe(GENERIC_WIDGETS[KEY]);
+  it("keyed foreign resolves to the generic renderer — EVERYDAY_WIDGETS does not override our key", () => {
+    expect(resolveWidgetComponent("acme-pack", KEY)).toBe(GENERIC_WIDGETS[KEY]);
   });
 
   it("keyed unknown theme resolves to the generic renderer", () => {
@@ -59,12 +59,12 @@ describe("songoskriti hero_carousel neutrality (HP-HERO-CAROUSEL)", () => {
 
   it("all resolutions are the same component reference — neutral in every graph", () => {
     const songoskriti = resolveWidgetComponent("songoskriti", KEY);
-    const somvabona = resolveWidgetComponent("somvabona", KEY);
+    const foreign = resolveWidgetComponent("acme-pack", KEY);
     const unknown = resolveWidgetComponent("no-such-theme", KEY);
     const unkeyed = resolveWidgetComponent(null, KEY);
     expect(songoskriti).toBeDefined();
-    expect(songoskriti).toBe(somvabona);
-    expect(somvabona).toBe(unknown);
+    expect(songoskriti).toBe(foreign);
+    expect(foreign).toBe(unknown);
     expect(unknown).toBe(unkeyed);
   });
 });

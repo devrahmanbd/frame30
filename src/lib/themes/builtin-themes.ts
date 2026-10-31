@@ -1,8 +1,8 @@
 /**
  * Frame30 — single authoritative built-in registry for official themes.
  *
- * Songoskriti + Somvabona are source-owned: first-party code in this repo,
- * rendered through their trusted source modules. This map is the ONLY place
+ * Songoskriti is the one official theme: first-party code in this repo,
+ * rendered through its trusted source module. This map is the ONLY place
  * that names official themes for identity. Catalogues, preview fallbacks,
  * and install paths resolve official identity through `isOfficialThemeKey`
  * / `getBuiltinTheme` — never through bundle JSON keys, `theme-export`
@@ -10,9 +10,8 @@
  */
 import type { PreviewThemeSource } from "../theme-preview-nav";
 import { songoskritiPreviewSource } from "./songoskriti/preview";
-import { somvabonaPreviewSource } from "./somvabona/preview";
 
-export const OFFICIAL_THEME_KEYS = ["songoskriti", "somvabona"] as const;
+export const OFFICIAL_THEME_KEYS = ["songoskriti"] as const;
 
 export type BuiltinThemeKey = (typeof OFFICIAL_THEME_KEYS)[number];
 
@@ -23,7 +22,6 @@ export type BuiltinThemeEntry = {
 
 const ENTRIES: Record<BuiltinThemeKey, BuiltinThemeEntry> = {
   songoskriti: { key: "songoskriti", source: songoskritiPreviewSource },
-  somvabona: { key: "somvabona", source: somvabonaPreviewSource },
 };
 
 export function isOfficialThemeKey(key: string): key is BuiltinThemeKey {
@@ -69,16 +67,6 @@ const META: Record<BuiltinThemeKey, BuiltinThemeMeta> = {
     summaryBn: "অফিসিয়াল ফ্রামিক হেরিটেজ থিম।",
     category: "general",
     version: "1.1.0",
-  },
-  somvabona: {
-    key: "somvabona",
-    nameEn: "Somvabona",
-    nameBn: "সম্ভাবনা",
-    summaryEn:
-      "Official Framique everyday theme: cotton, essentials and budget craft.",
-    summaryBn: "অফিসিয়াল ফ্রামিক দৈনন্দিন থিম।",
-    category: "general",
-    version: "1.0.0",
   },
 };
 

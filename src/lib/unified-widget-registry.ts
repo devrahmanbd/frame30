@@ -118,7 +118,7 @@ import { CART_WIDGETS } from "../components/builder/cart";
 import { ACCOUNT_WIDGETS } from "../components/builder/account";
 import { APPAREL_WIDGETS } from "../components/builder/apparel";
 import { HERITAGE_WIDGETS } from "../components/builder/heritage";
-import { SOMVABONA_WIDGETS } from "../components/builder/somvabona";
+import { EVERYDAY_WIDGETS } from "../components/builder/everyday";
 import { BASIC_WIDGETS } from "../components/builder/basics";
 import { BLOG_WIDGETS } from "../components/builder/blog";
 import { CIRCUIT_WIDGETS } from "../components/builder/electronics";
@@ -1002,7 +1002,7 @@ const PACK_MAPS: Array<Record<string, unknown>> = [
   ACCOUNT_WIDGETS as Record<string, unknown>,
   APPAREL_WIDGETS as Record<string, unknown>,
   HERITAGE_WIDGETS as Record<string, unknown>,
-  SOMVABONA_WIDGETS as Record<string, unknown>,
+  EVERYDAY_WIDGETS as Record<string, unknown>,
   BASIC_WIDGETS as Record<string, unknown>,
   BLOG_WIDGETS as Record<string, unknown>,
   CIRCUIT_WIDGETS as Record<string, unknown>,
@@ -1432,7 +1432,6 @@ export const GLOBAL_SINGLETON_NAMESPACES: readonly string[] = ["theme"];
  */
 export const GLOBAL_SINGLETON_THEME_OWNERS: readonly string[] = [
   "songoskriti",
-  "somvabona",
 ];
 
 /** Owner segment of a `theme:<owner>/...` id, else `""`. Never throws. */

@@ -47,7 +47,7 @@ import { BASIC_WIDGETS } from "./basics";
 import { BLOG_WIDGETS } from "./blog";
 import { HERITAGE_WIDGETS } from "./heritage";
 import { SONGOSKRITI_WIDGETS } from "./songoskriti";
-import { SOMVABONA_WIDGETS } from "./somvabona";
+import { EVERYDAY_WIDGETS } from "./everyday";
 import {
   ProductCard,
   ProductCardSkeleton,
@@ -1110,8 +1110,8 @@ const BASE_WIDGETS: Partial<Record<SectionType, WidgetComponent>> = {
   ...APPAREL_WIDGETS,
   // Phase 9 — Heritage (clothing).
   ...HERITAGE_WIDGETS,
-  // Somvabona everyday-ethnic pack (spec 2026-09-25 §3).
-  ...SOMVABONA_WIDGETS,
+  // Everyday-ethnic pack (theme-neutral, spec 2026-09-25 §3).
+  ...EVERYDAY_WIDGETS,
 
   container: Container,
   columns: Container,

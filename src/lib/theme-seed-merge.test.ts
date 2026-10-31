@@ -200,11 +200,11 @@ describe("the seed merge — the merchant's own work", () => {
 
 describe("the seed merge — two themes are never mixed", () => {
   it("does not merge a DIFFERENT theme's draft into the install", async () => {
-    // The merchant's active theme was installed from `somvabona`; the
+    // The merchant's active theme was installed from `acme-pack`; the
     // install is for `songoskriti`. The two themes' bodies must never end
     // up in one version.
     const db = installDb({
-      sourceKey: "somvabona",
+      sourceKey: "acme-pack",
       draft: {
         index: body("hero_carousel"),
         archive_category: body("blog_archive"),
@@ -275,10 +275,10 @@ describe("the seed merge — two themes are never mixed", () => {
           {
             id: OTHER_THEME_ID,
             merchant_id: MERCHANT,
-            name: "Somvabona",
+            name: "Acme Pack",
             is_active: false,
             created_at: "2026-01-01T00:00:00.000Z",
-            source_listing_slug: "somvabona",
+            source_listing_slug: "acme-pack",
           },
         ],
         theme_drafts: [

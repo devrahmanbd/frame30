@@ -49,10 +49,10 @@ export type CatalogTheme = {
   active: boolean;
   favourite: boolean;
   /**
-   * B2 — catalogue provenance. `official` = Framique-built (Songoskriti,
-   * Somvabona) installed through the normal `installPackage` pipeline
-   * against the internally-built artifact; `community` = registry / third
-   * party. The catalogue renders them as separate sections.
+   * B2 — catalogue provenance. `official` = Framique-built (Songoskriti)
+   * installed through the normal `installPackage` pipeline against the
+   * internally-built artifact; `community` = registry / third party. The
+   * catalogue renders them as separate sections.
    */
   provenance: ThemeProvenance;
 };
@@ -61,14 +61,14 @@ export type CatalogTheme = {
  *
  * Official / Community / Upload model (proposal
  * `official-packages-builtin-model`): the catalogue has an Official
- * section (exactly the two built themes — no third vapor theme exists),
- * a Community section, and an Upload Theme entry. Official entries carry
+ * section (the one built theme — no vapor theme exists), a Community
+ * section, and an Upload Theme entry. Official entries carry
  * an artifact ref (checksum + `official:<key>` pin); the bytes behind
  * the ref stay server-side and are never downloadable.
  */
 
-/** Framique-built themes. Exactly these two — no OceanBlue source exists. */
-export const OFFICIAL_THEME_KEYS = ["songoskriti", "somvabona"] as const;
+/** Framique-built themes. Exactly this one — no OceanBlue source exists. */
+export const OFFICIAL_THEME_KEYS = ["songoskriti"] as const;
 
 export type OfficialThemeKey = (typeof OFFICIAL_THEME_KEYS)[number];
 
@@ -120,10 +120,10 @@ export type CatalogSections = {
 
 /**
  * Split a catalogue into its Official / Community sections. Official
- * entries come first in `OFFICIAL_THEME_KEYS` order (Songoskriti, then
- * Somvabona); community keeps catalogue order. Either section may be
- * empty — an empty official section renders the graceful "not built yet"
- * empty-state, never a hole in the screen.
+ * entries come first in `OFFICIAL_THEME_KEYS` order (Songoskriti only);
+ * community keeps catalogue order. Either section may be empty — an empty
+ * official section renders the graceful "not built yet" empty-state,
+ * never a hole in the screen.
  */
 export function sectionCatalogue(themes: CatalogTheme[]): CatalogSections {
   const official = themes

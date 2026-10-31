@@ -120,7 +120,7 @@ describe("resolvePresentation — native-builtin", () => {
     const props = { heading: "Sale", limit: 4 };
     const result = resolvePresentation({
       widgetId: "builtin:hero",
-      themeKey: "somvabona",
+      themeKey: "acme-pack",
       registry: reg,
       props,
     });
@@ -205,7 +205,7 @@ describe("resolvePresentation — official source-backed", () => {
     ]);
     const result = resolvePresentation({
       widgetId: "plugin:product-reviews/summary",
-      themeKey: "somvabona",
+      themeKey: "acme-pack",
       registry: reg,
       props: { limit: 6 },
     });
@@ -376,7 +376,7 @@ describe("resolvePresentation — themeable plugin (Class B)", () => {
   it("falls back to the sandboxed island when the theme is undressed", () => {
     const result = resolvePresentation({
       widgetId: "plugin:acme/faq",
-      themeKey: "somvabona",
+      themeKey: "acme-pack",
       registry: themeableReg(),
       installedPlugins: [themeableInstall()],
       publicData: { heading: "Declared" },
@@ -448,7 +448,7 @@ describe("resolvePresentation — theme-owned", () => {
     const props = { title: "Find craft" };
     const result = resolvePresentation({
       widgetId: "theme:songoskriti/finder",
-      themeKey: "somvabona",
+      themeKey: "acme-pack",
       registry: ownedReg(),
       props,
     });
@@ -486,7 +486,7 @@ describe("resolvePresentation — theme-owned", () => {
     };
     // No generic registered under a non-owning theme: recoverable fallback
     // (existing fail-closed behavior preserved).
-    const before = resolvePresentation({ ...base, themeKey: "somvabona" });
+    const before = resolvePresentation({ ...base, themeKey: "acme-pack" });
     if (!before.ok || before.mode !== "theme-owned") {
       throw new Error("expected theme-owned fallback");
     }
@@ -496,7 +496,7 @@ describe("resolvePresentation — theme-owned", () => {
     registerGenericPresentation("theme:songoskriti/finder", Generic);
     try {
       // Universal body wins under any non-owning theme (known or unknown).
-      for (const themeKey of ["somvabona", "no-such-theme"]) {
+      for (const themeKey of ["acme-pack", "no-such-theme"]) {
         const generic = resolvePresentation({ ...base, themeKey });
         expect(generic.ok).toBe(true);
         if (!generic.ok || generic.mode !== "theme-owned") {
@@ -531,10 +531,10 @@ describe("resolvePresentation — fail-closed across owners", () => {
         renderer: "custom",
         themes: ["songoskriti"],
       }),
-      widgetDef("theme:somvabona/buckets", {
+      widgetDef("theme:acme-pack/buckets", {
         namespace: "theme",
         renderer: "custom",
-        themes: ["somvabona"],
+        themes: ["acme-pack"],
       }),
       widgetDef("builtin:hero", { namespace: "builtin" }),
     ]);
@@ -542,7 +542,7 @@ describe("resolvePresentation — fail-closed across owners", () => {
 
   it("unknown ids miss under every theme with no def attached", () => {
     const reg = twoThemeReg();
-    for (const themeKey of ["songoskriti", "somvabona", "no-such-theme"]) {
+    for (const themeKey of ["songoskriti", "acme-pack", "no-such-theme"]) {
       const result = resolvePresentation({
         widgetId: "builtin:ghost",
         themeKey,
@@ -603,7 +603,7 @@ describe("resolvePresentation — fail-closed across owners", () => {
     const reg = twoThemeReg();
     const crossed = resolvePresentation({
       widgetId: "theme:songoskriti/finder",
-      themeKey: "somvabona",
+      themeKey: "acme-pack",
       registry: reg,
     });
     if (!crossed.ok || crossed.mode !== "theme-owned") {
@@ -616,7 +616,7 @@ describe("resolvePresentation — fail-closed across owners", () => {
     expect(crossed.placeholder).toBe(true);
 
     const unknownKey = resolvePresentation({
-      widgetId: "theme:somvabona/nope",
+      widgetId: "theme:acme-pack/nope",
       themeKey: "songoskriti",
       registry: reg,
     });
@@ -676,7 +676,7 @@ describe("themeTrayEntries", () => {
       widgetDef("theme:songoskriti/story", {
         namespace: "theme",
         renderer: "custom",
-        themes: ["songoskriti", "somvabona"],
+        themes: ["songoskriti", "acme-pack"],
       }),
       widgetDef("builtin:hero", { namespace: "builtin" }),
     ]);
@@ -696,7 +696,7 @@ describe("themeTrayEntries", () => {
   });
 
   it("lists shared defs under the other claiming theme", () => {
-    const out = themeTrayEntries("somvabona", { registry: trayReg() });
+    const out = themeTrayEntries("acme-pack", { registry: trayReg() });
     if (!out.ok) throw new Error("expected tray entries");
     expect(out.entries.map((e) => e.id)).toEqual(["theme:songoskriti/story"]);
   });
@@ -752,7 +752,7 @@ describe("themeTrayEntries", () => {
 
     const missing = themeTrayEntries("songoskriti", {
       registry: reg,
-      installedThemes: [{ key: "somvabona" }],
+      installedThemes: [{ key: "acme-pack" }],
     });
     expect(missing).toEqual({
       ok: false,
@@ -857,7 +857,7 @@ describe("checkThemeCompatibility", () => {
 
   it("flags foreign theme-owned widgets before activation", () => {
     const report = checkThemeCompatibility(
-      "somvabona",
+      "acme-pack",
       ["theme:songoskriti/finder", "builtin:hero"],
       { registry: gateReg() },
     );
@@ -941,7 +941,7 @@ describe("ownerScopeOf — delegates to ownerForWidgetKey", () => {
       "studio:hero",
       "plugin:acme/reviews",
       "theme:songoskriti/finder",
-      "theme:somvabona/a/b/c",
+      "theme:acme-pack/a/b/c",
       "plugin:acme/ spaced ",
       `theme:${"x".repeat(80)}/w`,
     ];

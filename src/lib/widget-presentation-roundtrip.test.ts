@@ -126,7 +126,7 @@ describe("widget-presentation roundtrip — theme switching", () => {
     });
     const underFallback = resolvePresentation({
       widgetId: node,
-      themeKey: "somvabona",
+      themeKey: "acme-pack",
       registry: reg,
       themeOverrides: { songoskriti: ["builtin:hero"] },
     });
@@ -163,7 +163,7 @@ describe("widget-presentation roundtrip — theme switching", () => {
       { heading: "Pinned" },
       { version: "1.0.0" },
     );
-    for (const themeKey of ["songoskriti", "somvabona"]) {
+    for (const themeKey of ["songoskriti", "acme-pack"]) {
       const result = resolvePresentation({
         widgetId: node,
         themeKey,
@@ -193,7 +193,7 @@ describe("widget-presentation roundtrip — theme switching", () => {
 
     const away = resolvePresentation({
       widgetId: node,
-      themeKey: "somvabona",
+      themeKey: "acme-pack",
       registry: reg,
     });
     if (!away.ok || away.mode !== "theme-owned") {
@@ -234,7 +234,7 @@ describe("widget-presentation roundtrip — theme switching", () => {
     });
     const second = resolvePresentation({
       widgetId: "plugin:product-reviews/summary",
-      themeKey: "somvabona",
+      themeKey: "acme-pack",
       registry: reg,
       props,
     });
@@ -273,7 +273,7 @@ describe("widget-presentation roundtrip — theme switching", () => {
     });
     const island = resolvePresentation({
       widgetId: "plugin:acme/faq",
-      themeKey: "somvabona",
+      themeKey: "acme-pack",
       registry: reg,
       installedPlugins: [themeablePlugin()],
       publicData: data,

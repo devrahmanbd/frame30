@@ -14,7 +14,6 @@ import {
 } from "./template-variants";
 import { registerStaticPreviewSource } from "./preview-sources";
 import { songoskritiPreviewSource } from "./themes/songoskriti/preview";
-import { somvabonaPreviewSource } from "./themes/somvabona/preview";
 import {
   applyDemoFocus,
   parsePreviewSearchQuery,
@@ -45,7 +44,6 @@ function authored(preset: ThemePreviewPreset, key: TemplateKey): ThemeAst {
 // build-time context, so it wires the factories explicitly (legacy
 // null/undefined cases resolve from the registered table).
 registerStaticPreviewSource("songoskriti", songoskritiPreviewSource);
-registerStaticPreviewSource("somvabona", somvabonaPreviewSource);
 
 describe("previewTemplateForHref", () => {
   it("maps collection permalinks to the collection template", () => {
@@ -127,9 +125,9 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
   });
 
   it("resolves registered themes generically, without engine hardcoding", () => {
-    const preset = resolveThemePreview("somvabona")!;
-    expect(preset.key).toBe("somvabona");
-    expect(preset.tokens.brand).toBe("#7C2A1A");
+    const preset = resolveThemePreview("songoskriti")!;
+    expect(preset.key).toBe("songoskriti");
+    expect(preset.tokens.brand).toBe("#1a1a1a");
     for (const key of Object.keys(
       preset.templates,
     ) as (keyof typeof preset.templates)[]) {
@@ -419,58 +417,6 @@ describe("demo focus (slug-aware collection preview)", () => {
     const out = applyDemoFocus(authored(preset, "product").main, focus);
     const media = flattenSections(out).find((s) => s.type === "product_media")!;
     expect(media.props).toMatchObject({ ...before.props });
-  });
-});
-
-describe("resolveThemePreview (somvabona)", () => {
-  it("resolves the somvabona key with its tokens and 12-section homepage", () => {
-    const preset = resolveThemePreview("somvabona");
-    expect(preset).not.toBeNull();
-    expect(preset!.key).toBe("somvabona");
-    expect(preset!.tokens.brand).toBe("#7C2A1A");
-    expect(authored(preset!, "index").main.map((s) => s.type)).toEqual([
-      "announcement_bar",
-      "hero_carousel",
-      "trust_marquee",
-      "circle_categories",
-      "price_buckets",
-      "urgency_rail",
-      "urgency_rail",
-      "occasion_matrix",
-      "recently_viewed",
-      "store_locator",
-      "craft_story",
-      "testimonials",
-    ]);
-    expect(authored(preset!, "index").header.map((s) => s.type)).toEqual([
-      "mega_menu",
-    ]);
-    expect(authored(preset!, "index").footer.length).toBeGreaterThan(0);
-  });
-
-  it("authors demo content for the templates somvabona authors — and ABSENT for the rest", () => {
-    const preset = resolveThemePreview("somvabona")!;
-    // The map is PARTIAL: a template the theme does not author is ABSENT —
-    // the engine no longer synthesises a generic body for it (the plan's
-    // **D4**), and the preview host renders its explicit "not supported by
-    // this theme" panel for an absent key.
-    for (const key of ["index", "collection", "product"] as const) {
-      const ast = authored(preset, key);
-      expect(ast.header.length, `${key} header`).toBeGreaterThan(0);
-      expect(ast.main.length, `${key} main`).toBeGreaterThan(0);
-      expect(ast.footer.length, `${key} footer`).toBeGreaterThan(0);
-    }
-    // … and the templates somvabona does NOT author are absent — never a
-    // synthesised body.
-    for (const key of TEMPLATE_KEYS) {
-      if (key === "index" || key === "collection" || key === "product")
-        continue;
-      expect(preset.templates[key], `${key} must be absent`).toBeUndefined();
-    }
-    const ids = (Object.values(preset.templates) as ThemeAst[]).flatMap((t) =>
-      [...t.header, ...t.main, ...t.footer].map((s) => s.id),
-    );
-    expect(new Set(ids).size).toBe(ids.length);
   });
 });
 

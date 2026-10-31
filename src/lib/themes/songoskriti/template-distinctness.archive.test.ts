@@ -254,8 +254,9 @@ describe("the distinctness gate covers the archive key", () => {
     // The theme-agnostic property (the gate's own last suite, re-run for the
     // new key): a template the theme does not author has no theme-owned body
     // — the engine synthesises the generic demo body for it — and the gate
-    // must reject that body. Somvabona does not author an archive today, so
-    // the loop must reach the archive and reject its fall-through body.
+    // must reject that body. The empty expectation table below models a
+    // theme that does not author an archive, so the loop must reach the
+    // archive and reject its fall-through body.
     const source = songoskritiPreviewSource();
     const authored = source.main("archive", plainBuilder());
     expect(

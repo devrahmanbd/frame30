@@ -30,7 +30,7 @@ import "@/lib/themes/builtin-themes";
 
 const ID = "theme:songoskriti/ornament";
 const OWNER = "songoskriti";
-const FOREIGN = "somvabona";
+const FOREIGN = "acme-pack";
 
 function ornamentNode(props: Record<string, unknown> = {}): Section {
   return {
@@ -75,7 +75,10 @@ describe("songoskriti ornament — universal body under foreign themes", () => {
     // theme-claimed defs append for claiming themes. The studio editor tray
     // (`resolveExtensionTrayEntries`) lists the ornament under every theme.
     const registry = buildTrayRegistry([]);
-    const foreign = themeTrayEntries(FOREIGN, { registry });
+    const foreign = themeTrayEntries(FOREIGN, {
+      registry,
+      installedThemes: [{ key: FOREIGN, enabled: true }],
+    });
     expect(foreign.ok).toBe(true);
     if (!foreign.ok) throw new Error("expected foreign tray result");
     expect(foreign.entries.map((e) => e.id)).not.toContain(ID);

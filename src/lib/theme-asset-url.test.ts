@@ -21,11 +21,11 @@ describe("theme-asset-url boundary", () => {
     expect(isPackageRef("/ph/songoskriti/hero-festive.jpg")).toBe(false);
   });
   it("strips stray prefixes instead of stacking them", () => {
-    expect(toSourceUrl("/ph/songoskriti/cat-women.png", "somvabona")).toBe(
-      "/ph/somvabona/cat-women.png",
+    expect(toSourceUrl("/ph/songoskriti/cat-women.png", "acme-pack")).toBe(
+      "/ph/acme-pack/cat-women.png",
     );
     expect(toPackageRef("assets/cat-women.png")).toBe("assets/cat-women.png");
-    expect(isSourceUrl(toSourceUrl("cat-women.png", "somvabona"))).toBe(true);
+    expect(isSourceUrl(toSourceUrl("cat-women.png", "acme-pack"))).toBe(true);
   });
   it("findPackageRefs reports bare assets/ refs and ignores source URLs", () => {
     expect(
@@ -35,7 +35,7 @@ describe("theme-asset-url boundary", () => {
         nested: { deep: "assets/cat-women.png" },
       }),
     ).toEqual(["assets/hero-festive.jpg", "assets/cat-women.png"]);
-    expect(findPackageRefs({ hero: "/ph/somvabona/x.png" })).toEqual([]);
+    expect(findPackageRefs({ hero: "/ph/acme-pack/x.png" })).toEqual([]);
     expect(findPackageRefs(null)).toEqual([]);
   });
 });

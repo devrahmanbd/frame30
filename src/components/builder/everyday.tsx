@@ -1,5 +1,5 @@
 /**
- * Somvabona (everyday-ethnic) homepage widgets.
+ * Everyday-ethnic homepage widgets (theme-neutral).
  *
  * The five new widgets from spec §3 (2026-09-25): trust_marquee,
  * price_buckets, occasion_matrix, urgency_rail, rating_stars. Reused
@@ -462,7 +462,7 @@ const RatingStars: WidgetComponent = ({ section, int, locale, editing }) => {
 
 /* ------------------------------------------------------ exports */
 
-export const SOMVABONA_WIDGETS: Record<
+export const EVERYDAY_WIDGETS: Record<
   Extract<
     SectionType,
     | "trust_marquee"

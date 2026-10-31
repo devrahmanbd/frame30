@@ -35,8 +35,10 @@ import {
   type SectionType,
   type TemplateKey,
 } from "../../builder-ast";
-import { genericDemoMain } from "../../theme-preview-nav";
-import { somvabonaPreviewSource } from "../somvabona/preview";
+import {
+  genericDemoMain,
+  type PreviewThemeSource,
+} from "../../theme-preview-nav";
 import {
   SONOSKRITI_APPROVED_EXCEPTIONS,
   SONOSKRITI_DISTINCTNESS_RULES,
@@ -578,16 +580,34 @@ describe("songoskriti template distinctness gate", () => {
   });
 });
 
+/**
+ * Minimal synthetic source for the theme-agnostic property: it authors ONE
+ * surface (`index`) and declines every other template, so the engine's
+ * generic body is the only body those templates can have.
+ */
+function syntheticThemeSource(): PreviewThemeSource {
+  return {
+    key: "synthetic-theme",
+    themeName: "Synthetic",
+    author: "test",
+    tokens: songoskritiPreviewSource().tokens,
+    header: () => [],
+    footer: () => [],
+    main: (template, s) =>
+      template === "index" ? [s("hero_carousel")] : null,
+  };
+}
+
 describe("the distinctness gate is theme-agnostic", () => {
   it("rejects the engine's generic body for every template a theme does not author", () => {
-    const source = somvabonaPreviewSource();
+    const source = syntheticThemeSource();
 
-    // The PROPERTY, not the other theme's inventory: a template the theme
-    // does not author has NO theme-owned body — the engine synthesises its
-    // generic demo body (`assemblePreviewTemplates`,
+    // The PROPERTY, not a theme's inventory: a template the theme does not
+    // author has NO theme-owned body — the engine synthesises its generic
+    // demo body (`assemblePreviewTemplates`,
     // `src/lib/theme-preview-nav.ts:400`) — and the gate rejects that body.
-    // (The suite deliberately does NOT pin Somvabona's current inventory: the
-    // day it authors a fourth surface the assertion must still hold.)
+    // (The suite deliberately does NOT pin the synthetic source's inventory:
+    // the day it authors a second surface the assertion must still hold.)
     let unAuthored = 0;
     for (const key of TEMPLATE_KEYS) {
       const main = source.main(key, plainBuilder());
@@ -609,7 +629,7 @@ describe("the distinctness gate is theme-agnostic", () => {
       ).toEqual(["heading", "rich_text"]);
 
       // ... and the gate REJECTS it. Songoskriti's expectations are NOT
-      // applied to Somvabona — Decision **D3** scopes the table to
+      // applied to the synthetic theme — Decision **D3** scopes the table to
       // Songoskriti — so the gate runs here on the MACHINERY alone.
       const issues = checkTemplateDistinctness(
         key,

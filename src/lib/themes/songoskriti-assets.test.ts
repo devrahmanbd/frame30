@@ -409,7 +409,7 @@ describe("songoskriti asset gate", () => {
     const { world } = cleanWorld();
     writeFileSync(
       join(world.scanRoots[1].path, "demo-catalog.ts"),
-      'image: "/ph/songoskriti/cat-women.png",\nother: "/ph/somvabona/cat-men.jpg",',
+      'image: "/ph/songoskriti/cat-women.png",\nother: "/ph/acme-pack/cat-men.jpg",',
     );
     expect(codes(checkSongoskritiAssets(world))).toEqual([]);
   });
@@ -422,7 +422,7 @@ describe("songoskriti asset gate", () => {
 
   it("flags a cross-theme reference in an owned root", () => {
     const { world } = cleanWorld();
-    ownedSource(world, 'other: "/ph/somvabona/cat-men.jpg",');
+    ownedSource(world, 'other: "/ph/acme-pack/cat-men.jpg",');
     expect(codes(checkSongoskritiAssets(world))).toEqual(["url.cross_theme"]);
   });
 

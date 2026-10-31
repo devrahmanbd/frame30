@@ -6,8 +6,9 @@
  * the store's header, its footer, the theme's design tokens and the theme's
  * widget presentations all disappeared — on `/search`, `/cart`, `/checkout`,
  * `/account`, `/page` and `/blog` for every theme that declines that
- * template. The official built-in `somvabona` authors only three of the ten
- * templates (`src/lib/themes/somvabona/preview.test.ts:50-64`).
+ * template. A published map may author only some templates: Songoskriti
+ * authors all ten, so this suite reproduces the declining shape with a
+ * synthetic map that keeps only the home template.
  *
  * **The rule this suite pins.** An `absent` template means an empty BODY,
  * never "no theme": the route's own platform surface renders INSIDE the
@@ -30,7 +31,7 @@ vi.mock("@tanstack/react-router", async (importOriginal) => {
     ...actual,
     useNavigate: () => () => undefined,
     useRouterState: () => ({
-      location: { pathname: "/store/somvabona/search" },
+      location: { pathname: "/store/songoskriti/search" },
     }),
     Link: ({
       to,
@@ -56,8 +57,7 @@ vi.mock("@tanstack/react-router", async (importOriginal) => {
 
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { publishedTemplatePayload } from "@/lib/storefront.server";
-import { somvabonaPreviewSource } from "@/lib/themes/somvabona/preview";
-import { somvabonaTokensFor } from "@/lib/themes/somvabona/variations";
+import { songoskritiPreviewSource } from "@/lib/themes/songoskriti/preview";
 import type {
   Section,
   SectionBuilder,
@@ -77,18 +77,22 @@ function build(): SectionBuilder {
 }
 
 /**
- * The published map of a theme that authors ONLY the home template — the
- * `somvabona` shape (`src/lib/themes/somvabona/preview.ts:52-95`: every
- * template but `index`, `collection` and `product` is absent).
+ * The published map of a theme that authors ONLY the home template. The
+ * theme key is Songoskriti (so its header presentation resolves), but the
+ * map itself deliberately drops every other template to reproduce the
+ * declining shape the engine must tolerate.
  */
 function decliningThemeMap(): ThemeTemplates {
-  const source = somvabonaPreviewSource();
   const s = build();
   return {
     index: {
-      header: source.header("index", s),
-      main: source.main("index", s) ?? [],
-      footer: source.footer("index", s),
+      header: [s("mega_menu", {})],
+      main: [s("heading", { text: "Home" })],
+      footer: [
+        s("footer_sitemap", {
+          items: [{ title: "Shop", links: "New in|/c/new-in" }],
+        }),
+      ],
     },
   };
 }
@@ -132,15 +136,15 @@ describe("F1 — a theme that declines a template still renders the store's chro
       template: "search",
       tenant: "merchant-1",
     });
-    const tokens = somvabonaTokensFor(undefined);
+    const tokens = songoskritiPreviewSource().tokens;
     const markup = renderToStaticMarkup(
       createElement(ThemeChrome, {
         template: "search",
         ast: payload.ast,
         tokens,
-        themeKey: "somvabona",
-        storeSlug: "somvabona",
-        storeName: "Somvabona",
+        themeKey: "songoskriti",
+        storeSlug: "songoskriti",
+        storeName: "Songoskriti",
         fallback: createElement("div", null, "PLATFORM-SEARCH-LISTING"),
       }),
     );
@@ -149,7 +153,7 @@ describe("F1 — a theme that declines a template still renders the store's chro
     expect(markup).toContain('data-fq-node="mega_menu-0"');
     // 2. The theme's WIDGET PRESENTATION renders — the theme's own nav
     //    markup, not the platform's generic mega menu.
-    expect(markup).toContain('data-header-presentation="somvabona"');
+    expect(markup).toContain('data-header-presentation="songoskriti"');
     // 3. The theme's DESIGN TOKENS render — the token stylesheet is inlined
     //    and the brand colour reaches the surface.
     expect(markup).toContain("--theme-brand");
@@ -206,13 +210,13 @@ describe("F1 — a theme that declines a template still renders the store's chro
         ast: null,
         tokens: null,
         themeKey: null,
-        storeSlug: "somvabona",
-        storeName: "Somvabona",
+        storeSlug: "songoskriti",
+        storeName: "Songoskriti",
         fallback: createElement("div", null, "PLATFORM-SEARCH-LISTING"),
       }),
     );
     expect(broken).not.toContain('data-fq-node="mega_menu-0"');
-    expect(broken).not.toContain('data-header-presentation="somvabona"');
+    expect(broken).not.toContain('data-header-presentation="songoskriti"');
     expect(broken).not.toContain("--theme-brand");
 
     // …and the FIXED payload restores all three.
@@ -226,15 +230,15 @@ describe("F1 — a theme that declines a template still renders the store's chro
       createElement(ThemeChrome, {
         template: "search",
         ast: payload.ast,
-        tokens: somvabonaTokensFor(undefined),
-        themeKey: "somvabona",
-        storeSlug: "somvabona",
-        storeName: "Somvabona",
+        tokens: songoskritiPreviewSource().tokens,
+        themeKey: "songoskriti",
+        storeSlug: "songoskriti",
+        storeName: "Songoskriti",
         fallback: createElement("div", null, "PLATFORM-SEARCH-LISTING"),
       }),
     );
     expect(fixed).toContain('data-fq-node="mega_menu-0"');
-    expect(fixed).toContain('data-header-presentation="somvabona"');
+    expect(fixed).toContain('data-header-presentation="songoskriti"');
     expect(fixed).toContain("--theme-brand");
   });
 

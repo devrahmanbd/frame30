@@ -188,7 +188,7 @@ describe("songoskriti ornament — presentation resolution", () => {
 
   it("resolves the universal generic body under a foreign theme, holding no renderer", () => {
     const props = { eyebrow: "Heritage" };
-    for (const themeKey of ["somvabona", "no-such-theme"]) {
+    for (const themeKey of ["acme-pack", "no-such-theme"]) {
       const result = resolvePresentation({
         widgetId: SONGOSKRITI_ORNAMENT_ID,
         themeKey,
@@ -294,14 +294,14 @@ describe("songoskriti ornament — native theme-owned render", () => {
   it("renders the universal generic body under a foreign theme (no placeholder, no dress)", () => {
     const node = ornamentNode({ eyebrow: "Heritage" });
     const editing = renderEngine(node, {
-      themeKey: "somvabona",
+      themeKey: "acme-pack",
       editing: true,
     });
     expect(editing).toContain('data-ornament="generic"');
     expect(editing).toContain("Heritage");
     expect(editing).not.toContain("Widget preview unavailable");
     expect(editing).not.toContain('data-ornament="songoskriti"');
-    const storefront = renderEngine(node, { themeKey: "somvabona" });
+    const storefront = renderEngine(node, { themeKey: "acme-pack" });
     expect(storefront).toContain('data-ornament="generic"');
     expect(storefront).toContain("Heritage");
     expect(storefront).not.toContain('data-ornament="songoskriti"');
