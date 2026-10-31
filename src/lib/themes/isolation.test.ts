@@ -4,14 +4,13 @@
  * (a) No prod file under `src/lib/themes/<A>/` may import from
  *     `src/lib/themes/<B>/` (tests may cross-reference, so `*.test.*`
  *     files are excluded from the walk).
- * (b) The somvabona catalog is its own object, not the songoskriti alias,
- *     and shares no product titles with it. The heritage-silk marker scan
- *     stays owned by `src/lib/somvabona-catalog.test.ts` (not duplicated
- *     here); this guard only pins identity + title disjointness.
+ * (b) The songoskriti catalog is its own object, not the marketplace alias.
+ *     The heritage-silk marker scan stays owned by the Songoskriti asset
+ *     suites (not duplicated here); this guard only pins identity + content.
  * (c) Shared chrome holds zero per-theme literals: neither
  *     `src/components/store/StoreHeader.tsx` nor
- *     `src/components/builder/chrome.tsx` may mention `songoskriti` /
- *     `somvabona` in any casing. The key-driven registration inside
+ *     `src/components/builder/chrome.tsx` may mention `songoskriti` in any
+ *     casing. The key-driven registration inside
  *     `src/components/store/theme-chrome.ts` (and the Task 2 lookup in
  *     `src/components/store/theme-chrome.ts`) is config, not theme code,
  *     so those files are deliberately NOT scanned. Theme-owned fallback
@@ -21,9 +20,8 @@
  *     ThemePreviewFrame / theme-preview-nav suites — run, not duplicated.
  * (e) No shared renderer/store file may carry an UNGATED brand-asset
  *     literal: every prod file under `src/components/store/` or
- *     `src/components/builder/` that mentions `/ph/songoskriti` or
- *     `/ph/somvabona` must also contain a theme-key gate marker
- *     (`isSongoskriti` / `isSomvabona` / `themeKey ===`), so the
+ *     `src/components/builder/` that mentions `/ph/songoskriti` must also
+ *     contain a theme-key gate marker (`isSongoskriti` / `themeKey ===`), so the
  *     CollectionView-hero / ProductView-craft-story class (brand art
  *     rendered for foreign themes) trips this guard before it ships.
  *     Theme-owned data (`src/lib/themes/<theme>/`, demo catalogs) is
@@ -90,9 +88,9 @@ function themesTarget(
 describe("theme isolation", () => {
   const themes = themeDirs();
 
-  it("finds at least the songoskriti + somvabona theme dirs", () => {
+  it("finds the songoskriti theme dir and no retired theme dirs", () => {
     expect(themes).toContain("songoskriti");
-    expect(themes).toContain("somvabona");
+    expect(themes).not.toContain("somvabona");
   });
 
   it("walks prod files in every theme dir", () => {
@@ -119,14 +117,11 @@ describe("theme isolation", () => {
     expect(offenders).toEqual([]);
   });
 
-  it("somvabona catalog is its own object with disjoint titles", () => {
-    expect(DEMO_CATALOGS.somvabona).not.toBe(DEMO_CATALOGS.songoskriti);
-    const songoskritiTitles = new Set(
-      DEMO_CATALOGS.songoskriti.products.map((p) => p.title),
-    );
-    for (const product of DEMO_CATALOGS.somvabona.products) {
-      expect(songoskritiTitles.has(product.title)).toBe(false);
-    }
+  it("songoskriti catalog is its own object, not the marketplace alias", () => {
+    expect(DEMO_CATALOGS.songoskriti).not.toBe(DEMO_CATALOGS.marketplace);
+    expect(DEMO_CATALOGS.songoskriti.products.length).toBeGreaterThan(0);
+    const titles = new Set(DEMO_CATALOGS.songoskriti.products.map((p) => p.title));
+    expect(titles.size).toBe(DEMO_CATALOGS.songoskriti.products.length);
   });
 
   it("shared chrome holds zero per-theme literals", () => {
@@ -137,7 +132,7 @@ describe("theme isolation", () => {
     const offenders: string[] = [];
     for (const rel of chromeFiles) {
       const src = readFileSync(join(ROOT, rel), "utf8");
-      const hits = src.match(/songoskriti|somvabona/gi) ?? [];
+      const hits = src.match(/songoskriti/gi) ?? [];
       if (hits.length > 0) offenders.push(`${rel}: ${hits.length} hit(s)`);
     }
     expect(offenders).toEqual([]);
@@ -145,8 +140,8 @@ describe("theme isolation", () => {
 
   it("shared renderers hold no ungated brand-asset literals", () => {
     const sharedDirs = ["src/components/store", "src/components/builder"];
-    const assetRe = /\/ph\/(songoskriti|somvabona)/;
-    const gateRe = /isSongoskriti|isSomvabona|themeKey ===/;
+    const assetRe = /\/ph\/(songoskriti)/;
+    const gateRe = /isSongoskriti|themeKey ===/;
     const offenders: string[] = [];
     for (const dir of sharedDirs) {
       const files = walk(join(ROOT, dir)).filter(

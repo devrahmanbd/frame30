@@ -31,16 +31,16 @@ const THEME_ONLY_KEYS = (
 );
 
 describe("theme widget registry", () => {
-  it("registers one entry per theme (preview-sources.ts style)", () => {
+  it("registers the one official theme source (preview-sources.ts style)", () => {
     expect(themeWidgetKeys()).toContain("songoskriti");
-    expect(themeWidgetKeys()).toContain("somvabona");
+    expect(themeWidgetKeys()).toEqual(["songoskriti"]);
   });
 
-  it("two themes resolve the same key to different renderers by theme key", () => {
+  it("the official theme resolves its override while a foreign key stays generic", () => {
     expect(OVERRIDDEN_KEYS.length).toBeGreaterThan(0);
     for (const key of OVERRIDDEN_KEYS) {
       const themed = resolveWidgetComponent("songoskriti", key);
-      const generic = resolveWidgetComponent("somvabona", key);
+      const generic = resolveWidgetComponent("acme-pack", key);
       expect(themed).toBe(
         SONGOSKRITI_WIDGETS[key as keyof typeof SONGOSKRITI_WIDGETS],
       );
@@ -57,7 +57,7 @@ describe("theme widget registry", () => {
     expect(resolveWidgetComponent("no-such-theme", "newsletter")).toBe(
       GENERIC_WIDGETS.newsletter,
     );
-    expect(resolveWidgetComponent("somvabona", "newsletter")).toBe(
+    expect(resolveWidgetComponent("acme-pack", "newsletter")).toBe(
       GENERIC_WIDGETS.newsletter,
     );
     expect(resolveWidgetComponent(null, "newsletter")).toBe(
@@ -73,7 +73,7 @@ describe("theme widget registry", () => {
       );
       // No generic renderer exists and no brand may leak: other themes
       // get nothing, so the section renders the unavailable placeholder.
-      expect(resolveWidgetComponent("somvabona", key)).toBeUndefined();
+      expect(resolveWidgetComponent("acme-pack", key)).toBeUndefined();
     }
   });
 
@@ -115,7 +115,7 @@ describe("theme widget registry", () => {
     expect(resolveWidgetComponent("songoskriti", "global_ref")).toBe(
       GENERIC_WIDGETS.global_ref,
     );
-    expect(resolveWidgetComponent("somvabona", "global_ref")).toBe(
+    expect(resolveWidgetComponent("acme-pack", "global_ref")).toBe(
       GENERIC_WIDGETS.global_ref,
     );
   });
@@ -125,7 +125,7 @@ describe("installed package discovery (SWITCHOVER-3)", () => {
   it("unions installed slugs after source keys, sources intact and first", () => {
     const keys = themeWidgetKeys(["acme-pack"]);
     expect(keys[0]).toBe("songoskriti");
-    expect(keys[1]).toBe("somvabona");
+    expect(keys[1]).toBe("acme-pack");
     expect(keys).toContain("acme-pack");
     // Source keys survive as installed refs without duplicating.
     expect(themeWidgetKeys(["songoskriti", "acme-pack"])).toEqual(keys);
@@ -137,7 +137,7 @@ describe("installed package discovery (SWITCHOVER-3)", () => {
     expect(themeWidgetKeys()).not.toContain("acme-pack");
     expect(themeWidgetKeys([])).not.toContain("acme-pack");
     expect(themeWidgetKeys()).toContain("songoskriti");
-    expect(themeWidgetKeys()).toContain("somvabona");
+    expect(themeWidgetKeys()).not.toContain("somvabona");
   });
 
   it("installed-only keys resolve generic widgets, never brand", () => {

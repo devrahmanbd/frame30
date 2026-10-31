@@ -155,7 +155,7 @@ describe("CollectionView header-fallback de-theming (HEADER DE-THEMING lane)", (
     expect(src).not.toContain("SONGOSKRITI_MEGA_MENU");
   });
 
-  it("prod preview entries activate both header presentations for live rendering", async () => {
+  it("prod preview entries activate the header presentation for live rendering", async () => {
     // This file never imports a header-presentation module directly, so a
     // defined resolution here proves the prod import graph reaches
     // registration: preview-sources → theme preview entries →
@@ -169,8 +169,8 @@ describe("CollectionView header-fallback de-theming (HEADER DE-THEMING lane)", (
       "songoskriti mega_menu must be registered via the prod graph",
     ).toBeDefined();
     expect(
-      resolveThemePresentation("somvabona", "mega_menu"),
-      "somvabona mega_menu must be registered via the prod graph",
-    ).toBeDefined();
+      resolveThemePresentation("acme-pack", "mega_menu"),
+      "a foreign key must NOT inherit the theme presentation",
+    ).toBeUndefined();
   });
 });

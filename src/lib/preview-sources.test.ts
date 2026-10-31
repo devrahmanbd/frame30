@@ -12,13 +12,11 @@ import {
   registerStaticPreviewSource,
 } from "./preview-sources";
 import { songoskritiPreviewSource } from "./themes/songoskriti/preview";
-import { somvabonaPreviewSource } from "./themes/somvabona/preview";
 
 // O2: static theme sources are build-time-only — this test file is a
 // build-time context, so it wires the factories explicitly. Production
 // runtime resolves merchant previews from installed artifacts instead.
 registerStaticPreviewSource("songoskriti", songoskritiPreviewSource);
-registerStaticPreviewSource("somvabona", somvabonaPreviewSource);
 
 describe("preview-sources registry", () => {
   it("registers keys without the engine naming themes", () => {
@@ -77,7 +75,7 @@ describe("installed package discovery (SWITCHOVER-3)", () => {
     expect(previewSourceKeys([])).toEqual([]);
     // Legacy: no merchant context still lists the registered build-time floor.
     expect(previewSourceKeys()).toContain("songoskriti");
-    expect(previewSourceKeys(null)).toContain("somvabona");
+    expect(previewSourceKeys(null)).toContain("songoskriti");
   });
 
   it("installed versions resolve to their artifact content", () => {

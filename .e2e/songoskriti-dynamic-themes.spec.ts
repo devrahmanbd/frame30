@@ -363,64 +363,10 @@ test.describe("the dynamic themes' proof lane", () => {
     await runJourney(page, CHECKOUT);
   });
 
-  test("the theme switch: A → B → A preserves the merchant's own draft (server truth)", async ({
-    page,
-  }) => {
-    // The gap-7 round trip (§(n.7.1)): a draft authored on Songoskriti must
-    // still be Songoskriti's AFTER another theme is activated and the first
-    // one is re-activated. The surface is Collection's "Product rail" — the
-    // one editable layer BOTH themes author (Somvabona authors no Cart body,
-    // `src/lib/themes/somvabona/preview.ts:91`), with the catalogue's own
-    // schema-generated `Heading` control
-    // (`src/lib/builder-ast.ts:2360`). The leg proves the DRAFT round trip;
-    // it never publishes, so no publish gate can mask the result.
-    const collector = new NetworkCollector(page).attach();
-    await blockExternalRequests(page, []);
-    const marker = `Frame30 theme switch — ${RUN}`;
-
-    // 1. A REAL session, and Songoskriti active (the shipped helper).
-    await ensureSongoskritiActive(page);
-
-    // 2-3. The real editor, Collection selected, the marker written through
-    //      the schema-generated control.
-    await openTemplateInEditor(page, "Collection");
-    await selectLayer(page, "Product rail");
-    await setInspectorHeading(page, marker);
-
-    // 4. Save, then RELOAD: the edited value survived — server truth before
-    //    any theme is switched.
-    await saveDraft(page);
-    await reloadEditorAndSelect(page, "Collection");
-    await selectLayer(page, "Product rail");
-    expect(
-      await readInspectorHeading(page),
-      "the edited value survived the reload (server truth)",
-    ).toBe(marker);
-
-    // 5. The round trip itself: activate the OTHER theme, then come back.
-    await setActiveTheme(page, "somvabona");
-    expect(
-      await activeThemeKey(page),
-      "the other theme is now the merchant's active theme",
-    ).toBe("somvabona");
-    await setActiveTheme(page, "songoskriti");
-    expect(
-      await activeThemeKey(page),
-      "the merchant's own theme is active again",
-    ).toBe("songoskriti");
-
-    // 6. The SAME layer, after the round trip: the merchant's own draft is
-    //    still theirs — not the other theme's, not the seed's.
-    await openTemplateInEditor(page, "Collection");
-    await selectLayer(page, "Product rail");
-    expect(
-      await readInspectorHeading(page),
-      "the A → B → A theme switch preserved the merchant's own draft",
-    ).toBe(marker);
-
-    // Hygiene: nothing reached outside loopback.
-    expect(collector.externalResponses()).toEqual([]);
-  });
+  // Retired 2026-10-28: the A → B → A UI leg required a second official
+  // theme. The same property is pinned at library level in
+  // src/lib/theme-switch-roundtrip.test.ts over a synthetic second package
+  // (the live catalogue ships Songoskriti only).
 });
 
 test("no session is ever faked: the lane injects no credential and signs in through the real form", async ({

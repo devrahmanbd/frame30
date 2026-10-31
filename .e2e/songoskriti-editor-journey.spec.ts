@@ -24,7 +24,8 @@ import {
  *  9. reload the editor doc → [data-ornament="songoskriti"] persists with the
  *     stamp (canonicalization re-validation passed)
  * 10. "Preview changes" → [data-ornament="songoskriti"] renders with the stamp
- * 11. setActiveTheme("somvabona") → reopen the doc: tray row PRESENT (count 1 —
+ * 11. (retired 2026-10-28) foreign-theme leg — see the inline note.
+ *     Original: setActiveTheme(foreign) → reopen the doc: tray row PRESENT (count 1 —
  *     the widget is universal and insertable under every theme) + the saved
  *     instance re-renders as the universal generic body
  *     ([data-ornament="generic"]) carrying the stamp; no "Widget preview
@@ -245,56 +246,10 @@ test("songoskriti editor journey: tray → schema → save → reload → switch
     eyebrow,
   );
 
-  // 11. Switch to a foreign theme (somvabona). Theme = dress, widget = body:
-  //    the ornament row stays insertable under every theme, and the saved
-  //    instance re-renders as the universal generic body ([data-ornament=
-  //    "generic"]) with the stamp — not the owner dress, and not the retired
-  //    "Widget preview unavailable" placeholder.
-  await setActiveTheme(page, "somvabona");
-  await page.goto(editorUrl, {
-    waitUntil: "domcontentloaded",
-    timeout: COLD_GOTO_TIMEOUT,
-  });
-  // Same explicit selection as step 3 — never a blind `.nth(1)` (that lands
-  // on "SEO" and unmounts the tray, making tray assertions pass for the
-  // wrong reason; Task 9 review finding).
-  await elementsTab.click();
-  await expect(
-    page.locator('button:has-text("Songoskriti ornament")'),
-    "ornament row stays insertable under the foreign theme (universal widget)",
-  ).toHaveCount(1);
-  const genericCanvas = page.locator('[data-ornament="generic"]').first();
-  await expect(
-    genericCanvas,
-    "saved instance re-renders as the universal generic body under somvabona",
-  ).toBeVisible({ timeout: COLD_GOTO_TIMEOUT });
-  await expect(
-    genericCanvas,
-    "generic body carries the edited eyebrow stamp",
-  ).toContainText(eyebrow);
-  await expect(
-    page.getByText("Widget preview unavailable", { exact: true }),
-    "recoverable-fallback placeholder is retired for registered components",
-  ).toHaveCount(0);
-  await expect(
-    page.locator('[data-ornament="songoskriti"]'),
-    "no owner dress under the foreign theme",
-  ).toHaveCount(0);
-
-  // 12. Switch back to songoskriti: the owner dress returns with the eyebrow.
-  await setActiveTheme(page, "songoskriti");
-  await page.reload({
-    waitUntil: "domcontentloaded",
-    timeout: COLD_GOTO_TIMEOUT,
-  });
-  const restored = page.locator('[data-ornament="songoskriti"]').first();
-  await expect(
-    restored,
-    "ornament full render returns under songoskriti",
-  ).toBeVisible({ timeout: 120_000 });
-  await expect(restored, "eyebrow survives the theme round-trip").toContainText(
-    eyebrow,
-  );
+  // 11-12 retired 2026-10-28: the foreign-theme ornament leg required a
+  // second official theme. The owner dress and the edit persistence above
+  // are the live e2e proof; the universal-body property is pinned at
+  // library level (src/lib/themes/songoskriti/ornament-*.test.*).
 
   // 13. Hygiene: nothing reached outside loopback during the flow.
   expect(collector.externalResponses()).toEqual([]);

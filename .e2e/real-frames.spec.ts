@@ -7,8 +7,8 @@ import { NetworkCollector, blockExternalRequests } from "./helpers";
  * Real-frame sandbox spec (frame30 adversarial lane, follow-up to
  * theme-preview-security.spec.ts lanes 1–2).
  *
- * Verified context: the official preview themes (`songoskriti`,
- * `somvabona` — the only keys `resolveThemePreview` serves unauthenticated)
+ * Verified context: the official preview theme (`songoskriti` — the only
+ * key `resolveThemePreview` serves unauthenticated)
  * author ZERO `video` / `html` / `plugin_block` sections across every
  * template (`TEMPLATE_KEYS` in src/lib/builder-ast.ts) and every variation
  * (tokens-only overlays). No other unauthenticated surface renders these
@@ -18,7 +18,7 @@ import { NetworkCollector, blockExternalRequests } from "./helpers";
  * enforce that boundary).
  *
  * This spec therefore:
- *  1. Censuses the real surface (both themes × all 9 templates × index
+ *  1. Censuses the real surface (the theme × all 9 templates × index
  *     variations): classifies every iframe found and asserts per-type
  *     sandbox shape on REAL frames. Zero frames ⇒ measurements recorded,
  *     violations still fail.
@@ -59,7 +59,7 @@ import { NetworkCollector, blockExternalRequests } from "./helpers";
  * three real frames and assert their per-type shape with no spec change.
  */
 
-const THEMES = ["songoskriti", "somvabona"] as const;
+const THEMES = ["songoskriti"] as const;
 const TEMPLATES = [
   "index",
   "product",
@@ -74,7 +74,6 @@ const TEMPLATES = [
 ] as const;
 const INDEX_VARIATIONS: Record<(typeof THEMES)[number], string[]> = {
   songoskriti: ["minimal", "festive"],
-  somvabona: ["minimal", "editorial"],
 };
 
 // Exact renderer sandbox tokens (must match the sources pinned above).
@@ -205,8 +204,6 @@ test("1 — census: classify every iframe on all unauthenticated preview surface
     for (const rel of [
       "src/lib/themes/songoskriti/preview.ts",
       "src/lib/themes/songoskriti/homepage.ts",
-      "src/lib/themes/somvabona/preview.ts",
-      "src/lib/themes/somvabona/homepage.ts",
     ]) {
       const src = readFileSync(srcPath(rel), "utf8");
       const hits = (src.match(/\(\s*"(video|html|plugin_block)"\s*,/g) ?? [])

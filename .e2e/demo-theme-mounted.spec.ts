@@ -892,7 +892,7 @@ test("presentation resolution covers the demo theme-owned and Class B widgets (u
   // install settings — never the bundle.
   const bare = resolvePresentation({
     widgetId: "plugin:acme/reviews",
-    themeKey: "somvabona",
+    themeKey: "acme-pack",
     registry,
     installedPlugins: installed,
   });
