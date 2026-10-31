@@ -262,9 +262,27 @@ fresh bring-up.
 - **Validated end-to-end:** run11 = **8/8** on a throwaway stack, `SEED_GAP 0`, seed rows and schema
   assertions verified (§5).
 
-**Honesty note on production:** `ops/deploy-from-git.sh` does **not** run migrations, so deploying this
-branch does **not** by itself repair production's `blog_terms`. Production is repaired only when
-someone runs `bun run db:migrate` against it — a deliberate, recorded follow-up (§5).
+**Production has been repaired (applied 2026-10-31).** `ops/deploy-from-git.sh` does **not** run
+migrations, so the fix was applied manually as the single file — not a blanket `db:migrate`, which would
+also try the e2e-only `migration/e2e-schema-parity*.sql`. One wrinkle worth recording: `public.blog_terms`
+is owned by `supabase_admin`, and the documented operator role `postgres` is not its owner and is not a
+superuser, so the apply failed with `must be owner of table blog_terms` and rolled back cleanly. The same
+file was then run as the owning role:
+
+```
+docker exec -i framique-supabase-db psql -U supabase_admin -d postgres -v ON_ERROR_STOP=1 -q \
+  < migration/0027_blog_terms_taxonomy_columns.sql        # exit 0
+```
+
+Verified after apply: 16 columns (5 → 16, the exact `TERM_COLUMNS` shape), `blog_terms_article_count_idx`
+present, `blog_terms_parent_id_fkey` present, row count still **0**, and PostgREST
+`?select=article_count` moved **400 (`42703`) → 200**, as did the full 14-column select (`200`, `[]`).
+The ledger row was recorded with checksum `b4eb61a1…b5744` (§5).
+
+**What this does and does not fix live:** the schema error is gone, so `/blog/category/...` no longer
+fails on the read. It still returns **404** because production has **0 `blog_terms` rows** — a content
+gap, deliberately out of scope here (no production seeding, D3, §2.3). The 404 is now a truthful
+"this term does not exist" rather than a masked `42703`.
 
 Strict SQL validation remains `bun run db:migrate` / `schema:check` against a real DB (§9.5). The drift
 itself — ~120 unreproducible relations — is a **residual**, documented, not fixed here (§9.5 #1).
@@ -288,6 +306,7 @@ Every gate below was run on the working tree at baseline `630e80be` + this wave'
 | New migration typecheck/review       | `migration/0027_blog_terms_taxonomy_columns.sql` | reviewed; additive + `if not exists` guarded |
 | Seven-templates lane — fresh bring-up | `scripts/e2e-seven-templates-ci.sh` | **8/8** (run11, throwaway stack, 5.2m, `WRAPPER_EXIT=0`; run10 was 7/8 before the pager-`created_at` fix — §5) |
 | Live-visual (3 widths + home 1280) | `verify:live-visual` vs deployed              | **15/15 preview keys, 6/6 surfaces PASS** |
+| Production `blog_terms` schema apply | `0027` as `supabase_admin`, single file        | **exit 0**; 5 → **16 columns**, index + FK present, 0 rows untouched, PostgREST `400` → **200** (§5) |
 | Production preview host           | HTTP probe                                     | `/`, `/blog`, `/theme-preview/songoskriti` all **200**; nonce coherent across CSP header + `name=`/`property=` metas + inline script |
 
 - **Lint note:** ESLint was run by a helper that reported typecheck + doc-gate clean first; ESLint
@@ -320,11 +339,12 @@ Every gate below was run on the working tree at baseline `630e80be` + this wave'
 4. **Lint under contention** (§3): re-run `npx eslint .` on a quiet tree before merge.
 5. **`main` drift** (§2.7): rebase onto current `origin/main` before pushing `frame30`.
 6. **`blog_terms` schema gap (pre-existing; FIXED this wave — §2.10):** the app reads a 14-column
-   `blog_terms`, the repo chain created 8, and production has 5 — so the term can never resolve and
-   every category/tag archive 404s, **production included**. Fixed by
-   `migration/0027_blog_terms_taxonomy_columns.sql` + the extended archive/page seed. **Follow-up:**
-   production is repaired only when `bun run db:migrate` is run against it (the deploy script does not
-   migrate) — see §5.
+   `blog_terms`, the repo chain created 8, and production had 5 — so the term could never resolve and
+   every category/tag archive 404'd, **production included**. Fixed by
+   `migration/0027_blog_terms_taxonomy_columns.sql` + the extended archive/page seed, and **applied to
+   production** on 2026-10-31 as the owning role (`supabase_admin`; `postgres` is not the table owner).
+   PostgREST now answers **200** for the full `TERM_COLUMNS` shape; the remaining `/blog/category/...`
+   404 is a content gap (0 term rows), not a schema error — see §5.
 7. **`/store/cloudman-store*` 404s** on the preview host (§2.3): pre-existing, unrelated to this
    wave — that merchant has no `store_themes` rows.
 8. **Decisions still open for you:** D1 coverage level (§2.1), five-gate executable reference
@@ -374,6 +394,32 @@ fail-soft (`render_read.server.ts` catches it) and never 404s.
 **Provider run:** the CI provider's `e2e-seven-templates` job on `frame30` has not been observed yet;
 add its URL/status here once it runs. The local run above is the same command that job executes.
 
-**Still pending (production):** `bun run db:migrate` against the deployed DB to apply
-`migration/0027_blog_terms_taxonomy_columns.sql` and repair production's broken blog taxonomy (§2.10);
-`ops/deploy-from-git.sh` does not run migrations.
+**Production apply (done 2026-10-31).** `migration/0027_blog_terms_taxonomy_columns.sql` was applied to the
+deployed database as a single file, not via a blanket `bun run db:migrate` (that discovery also picks up
+the e2e-only `migration/e2e-schema-parity*.sql`). The operator role `postgres` is **not** the owner of
+`public.blog_terms` (`supabase_admin` is, and `postgres` is not a superuser), so the first attempt failed
+with `ERROR: must be owner of table blog_terms` and rolled back cleanly — production was left untouched.
+Re-running the identical file as the owning role succeeded:
+
+```
+docker exec -i framique-supabase-db psql -U supabase_admin -d postgres -v ON_ERROR_STOP=1 -q \
+  < migration/0027_blog_terms_taxonomy_columns.sql
+PSQL_EXIT=0
+```
+
+| Check | Before | After |
+| ----- | ------ | ----- |
+| `blog_terms` columns (`information_schema`) | 5 | **16** (`TERM_COLUMNS` shape complete) |
+| Index `blog_terms_article_count_idx` | absent | **present** |
+| FK `blog_terms_parent_id_fkey` | absent | **present** |
+| `count(*)` rows | 0 | 0 (no data touched) |
+| PostgREST `?select=article_count` | **400** (`42703`) | **200** |
+| PostgREST full 14-column select | **400** (`42703`) | **200**, `[]` |
+| Ledger `schema_migration_files` | 3 rows | 4 rows (0027, checksum `b4eb61a1…b5744`) |
+| `https://framique.qubickle.com/blog` | 200 | 200 |
+| `https://framique.qubickle.com/blog/category/handloom-heritage` | 404 | **404 — content gap, not schema** |
+
+That last row is the honest outcome and should not be read as an unfinished fix: the read path no longer
+errors (the full `TERM_COLUMNS` select returns `200`), but production has **zero** `blog_terms` rows, so
+`resolveTerm` correctly finds nothing and the route answers a genuine 404. Seeding production taxonomy is
+a content decision, deliberately excluded here (D3, §2.3). Nothing was seeded.
