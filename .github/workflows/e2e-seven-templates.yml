@@ -29,7 +29,10 @@ permissions:
 jobs:
   seven-templates:
     name: seven-template editor journey
-    runs-on: ubuntu-latest
+    # Pinned, not `ubuntu-latest`: `latest` moved to Ubuntu 26.04, which
+    # Playwright 1.56 refuses ("does not support chromium on
+    # ubuntu26.04-x64") — the browser install fails before the lane starts.
+    runs-on: ubuntu-24.04
     # Bring-up pulls the Supabase images on a cold runner and the lane itself
     # is ~5 minutes of browser work; 60 leaves room for both without letting a
     # wedged stack burn an hour of minutes.
