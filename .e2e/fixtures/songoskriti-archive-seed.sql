@@ -6,10 +6,11 @@
 -- `/store/<slug>/blog/category/<termSlug>` renders BOTH pages of the
 -- platform's real pager (12-per-page): page 1 = 12 rows, page 2 = the
 -- term's own oldest article, "The Jamdani Weavers of Sonargaon"
--- (published 2026-10-20). The 11 idempotent rows below insert with a
--- REDUCED published_at one hour apart starting at 2026-10-25 03:00, so
--- every new row sits strictly AFTER the existing 2026-10-22 row — the
--- 12/1 page split holds by ordering, not by mutation of the legacy rows.
+-- (published 2026-10-20). The pager windows by article_terms.created_at desc
+-- and only re-orders the served page by published_at, so the split is pinned
+-- through the links' created_at (below), not the articles' published_at: the
+-- Sonargaon link carries the OLDEST created_at and is therefore the single
+-- row page 2 serves.
 --
 -- Deterministic ids: `aaaaaaaa-0004-4000-8000-` + fixed 12-hex suffix
 -- (`…000000000cb1` … `…000000000cbb`). `ON CONFLICT DO NOTHING` makes a
@@ -136,8 +137,8 @@ on conflict (id) do nothing;
 
 -- Wire every new row to the seeded term. The unique (article_id, term_id)
 -- pk makes a rerun a no-op.
-insert into article_terms (merchant_id, article_id, term_id)
-select a.merchant_id, a.id, t.id
+insert into article_terms (merchant_id, article_id, term_id, created_at)
+select a.merchant_id, a.id, t.id, timestamptz '2026-10-26 00:00:00+00'
   from articles a
   join blog_terms t
     on t.slug = 'handloom-heritage' and t.merchant_id = a.merchant_id
@@ -146,8 +147,15 @@ select a.merchant_id, a.id, t.id
 on conflict do nothing;
 
 -- Wire the two legacy articles to the term too, so the term carries all 13.
-insert into article_terms (merchant_id, article_id, term_id)
-select a.merchant_id, a.id, t.id
+-- created_at is the pager's window key (the listing windows by
+-- article_terms.created_at desc, then orders the served page by published_at),
+-- so the term's OLDEST link must be the Sonargaon article: it is the 13th (and
+-- last) position, i.e. the single row page 2 serves. Every other link is newer.
+insert into article_terms (merchant_id, article_id, term_id, created_at)
+select a.merchant_id, a.id, t.id,
+       case when a.slug = 'the-jamdani-weavers-of-sonargaon'
+            then timestamptz '2026-10-19 00:00:00+00'
+            else timestamptz '2026-10-26 00:00:00+00' end
   from articles a
   join blog_terms t
     on t.slug = 'handloom-heritage' and t.merchant_id = a.merchant_id
