@@ -1,737 +1,343 @@
-# Songoskriti — template genericity & the asset-inventory gap: consolidated report
+# Frame30 / Songoskriti closeout — one official theme
 
-**Date:** 2026-10-27 · **Repo:** `/opt/frame28` · **Branch:** `frame30` · **Deployed:** `9b91f18a` — the frame30 deploy on 2026-10-27, verified live (§9.5). The post-deploy documentation commits sit above the deployed marker; they change documentation only.
-**Current as of:** 2026-10-27 — the Frame30 core CMS upgrade programme has shipped (phase 3, `182c37b5` → `be96b320`), **and the dynamic-themes programme has shipped, been demonstrated and been deployed** (`109e2d3d` → `9b91f18a`; §2.2, §3.6–§3.7, §9). §2, §3, §5, §6, §7 and §8 carry phase 3's decisions, evidence and rulings **and the dynamic-themes programme's**. The phases before phase 3 are unchanged.
-**Purpose:** one self-contained document for an expert review — the problem as found, every implementation question that was asked and the answer it received, what has since shipped and been verified, and the questions that remain open.
+**Date:** 2026-10-31 · **Branch:** `frame30` · **Baseline HEAD:** `630e80be` · **Deployed SHA (pre-wave):** `9b91f18a`
 
----
+Songoskriti is now the **only** official theme. Somvabona and the starter theme are retired, the
+evidence is committed, a **blocking** CI job runs the seven-template lane on a throwaway stack, and a
+live-visual script proves the deployed artifact.
 
-## 0. How to read this
-
-| §   | For you if you want…                                                           |
-| --- | ------------------------------------------------------------------------------ |
-| 1   | the problem, in the state it was found                                         |
-| 2   | **every question I asked on implementation and the answer I received**         |
-| 3   | what has shipped since, with the live evidence                                 |
-| 4   | the platform map (what exists vs. what is missing) — the facts an expert needs |
-| 5   | **the open questions**, each with the evidence that settles it                 |
-| 6   | the constraints that bound any solution                                        |
-| 7   | the file map and how to reproduce every claim                                  |
-| 8   | the rulings I made on your behalf — challenge these                            |
+This report replaces the phase-3 report, which is preserved verbatim (with its history) at
+`docs/superpowers/songoskriti-evidence/port/report-2026-10-27-phase3-dynamic-themes.md` (151 KB).
+It stays the record for the dynamic-themes phase; this file is the record for the retirement wave.
 
 ---
 
-## 1. The problem as found
+## 1. What this wave did
 
-Songoskriti is a source-owned official theme. Its imagery lived in `public/ph/songoskriti/` with **no trustworthy inventory**:
+### 1.1 One official theme
 
-- A 15-entry manifest in `scripts/songoskriti-assets-check.mjs` against a 21-file directory. The checker was **RED (7 findings) and wired to nothing** — no npm script, no release gate, no test.
-- **9 of the 21 assets were JPEG bytes stored under `.png` names** — every public URL for them lied about the format it served.
-- 8 assets the theme actually renders (`campaign-men`, `edit-festive-main`, `ugc-1…6`) were absent from the manifest and from the generator, so the generator could not reproduce the shipped tree.
-- `prod-kurta` / `prod-kantha` were declared in the manifest and the generator, did not exist, and were referenced by the **applied** seed `supabase/migrations/20260924_songoskriti_demo.sql:64-65` — two seeded catalogue products whose image 404s in production.
-- 3 collection-editorial references pointed at files that never existed (`songoskriti_saree.jpg`, `songoskriti_men.jpg` — both marked `// TBD`; `songoskriti_artisan.jpg` — unmarked) in `src/lib/themes/songoskriti/archetypes.ts`.
+`src/lib/themes/builtin-themes.ts` is the single authoritative registry. It now holds exactly one
+key and one entry:
 
-And the pages that prompted the second half of this work:
-
-- `?template=search`, `?template=cart`, `?template=account` (and `page`, `blog`) rendered **generic bodies inside Songoskriti's chrome** — themed header/footer, shared body. The pages were not broken: nothing 404'd, the chrome and fonts were correct. They were **generic by authorship**.
-- The root cause was one omission plus one architecture: Songoskriti's `page` template declared no `page_content` widget, so the CMS page route bypassed the theme layout and rendered the merchant's real content as unthemed prose, while the CMS-designated homepage rendered the theme's hardcoded `"Size guide"` / `"Demo article"` copy. Separately, the theme preview fills its bodies with shared demo data (`"Sample product"`, `"Demo Shopper"`), and a missing template silently falls back to the homepage (`templates[template] ?? templates.index`, `ThemePreviewFrame.tsx:485`).
-- There is **no `archive` template** in the product: `TEMPLATE_KEYS` is `index, product, collection, account, page, blog, cart, checkout, search`. `?template=archive` returns **307**.
-
----
-
-## 2. Every implementation question, and the answer
-
-These are the questions I put to you while implementing, with the options offered and the answer chosen. Each answer unlocked the work noted.
-
-| #   | Question                                                                                    | Options offered                                                                                                     | **Your answer**                                                                                                          | What it unlocked                                                                                                                             |
-| --- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| Q1  | The 9 JPEG-in-`.png` assets — how to make them honest?                                      | rename to `.jpg` · transcode to true PNG · allowlist the mismatch                                                   | **Rename to `.jpg`, update every reference** (byte-identical pixels, URLs become truthful)                               | The rename + its full reference sweep + the live asset gate                                                                                  |
-| Q2  | The 3 `// TBD` editorial references point at files that never existed                       | reuse existing theme art · drop the editorial sections · block on new generation                                    | **Reuse existing theme art** — women → `edit-festive-main.jpg`, men → `campaign-men.jpg`, heritage → `hero-artisans.jpg` | No broken references, no new generation, no new assets                                                                                       |
-| Q3  | "Unnecessarily large files" — how strict?                                                   | budgets only (pixels exact) · optimise the current assets too · warn only                                           | **Budgets only, keep pixels exact** (≤ 3,000,000 B/file, ≤ 28,000,000 B total, ≤ 2.0 B/px PNG, ≤ 1.0 B/px JPEG)          | The gate's size rules with zero recompression                                                                                                |
-| Q4  | How should the gate be built?                                                               | A: shared manifest + CLI + generator `--check` + vitest + release wiring · B: vitest-only · C: browser/network gate | **A — shared manifest + CLI**                                                                                            | One manifest + one frozen expectation + one gate that both the CLI and CI run                                                                |
-| Q5  | The port spec §7 forbids editing core files; the rename needs two existing test files moved | two test files only · **also fix the preview's page tab**                                                           | **Also fix the preview's page tab** (a three-file escalation: the two pins + `ThemePreviewFrame.tsx`)                    | The preview keeps showing real content instead of going empty                                                                                |
-| Q6  | How to proceed with Phase 1?                                                                | execute now with subagents · commit the documents first · hold                                                      | **Execute Phase 1 now with subagents**                                                                                   | 7 implementation commits + a review after each                                                                                               |
-| Q7  | Integration of the asset-gate branch                                                        | push and deploy · push only · keep local                                                                            | **Push and deploy**                                                                                                      | `b31c87ea` live; the live asset verification                                                                                                 |
-| Q8  | Integration of Phase 1                                                                      | push and deploy · push only · hold                                                                                  | **Push and deploy**                                                                                                      | `520c0335` live, then `fda55ede` after the closure pass                                                                                      |
-| Q9  | "Close all the opened task"                                                                 | —                                                                                                                   | **Close every open item**                                                                                                | The closing wave: the lint key, the nav restore, the label localisation, the JWT redaction, the record corrections, and the remaining minors |
-
-### 2.1 The phase-3 questions (the Frame30 core CMS upgrade, 2026-10-22)
-
-The programme that shipped the seven surfaces asked three more questions of the owner (**G1–G3**) and **superseded** three earlier answers (**D1′**, **D2′**, **D5′**). The earlier answers are kept in §5 and marked superseded — they are not erased.
-
-| #   | Question                                                                                                                                                                                                     | Options offered                                                                            | **Your answer**                                                                                                                                                                                                                                        | What it unlocked                                                                                                                                                    |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| G1  | The archive key, the production checkout shell, the blog variants and the editor's variant surface all need files port spec §7 **prohibits**. Is §7 relaxed for this programme, and for exactly which files? | a named list, exactly as D4 was · per-phase escalation · keep the boundary                 | **§7 relaxed for a named list** — the plan's G1 table now names **40 existing prohibited files**, each recorded in the phase-3 escalation record **before** its edit                                                                                   | Every task after the archive key: the context and host, the account dashboard, the checkout shell, the variants, the editor and publishing work, and the test lanes |
-| G2  | `THEME_API_RANGE` is `^3.0.0` and the running API is `3.1.0` — does the archive key move the API line?                                                                                                       | bump the range to `^4.0.0` (pinned as failing) · bump `BUILDER_API_VERSION` · **additive** | **Additive** — `THEME_API_RANGE` **stays `^3.0.0`**; a package that declares `archive` must declare an api floor **≥ 3.1.0**, and one that claims a lower floor is rejected with the stable reason code `templates.archive_requires_api`               | The `archive` key's package contract — with every package that does **not** declare `archive` unaffected (`satisfiesApiRange("^3.0.0")` is true against `3.1.0`)    |
-| G3  | The parity re-freeze and the authenticated E2E need a database — **which** one?                                                                                                                              | the configured `.env` database · **the repo's throwaway stack**                            | **The throwaway stack** (`docker-compose.e2e.yml`, project `e2e-supabase`) — **never** the configured database, whose `.env` `SUPABASE_URL` resolves to this host's own IP and routes to the **production** container                                  | The authenticated E2E lane and the parity re-freeze — both of which remain **the owner's** action                                                                   |
-| D1′ | **Supersedes D1** — "Archive" as a _documented contract_, or as a **real template key**?                                                                                                                     | the documented contract (D1 "Option A") · **a first-class key in the union**               | **A real key** — the brief demanded it and the machinery already existed (the variant machinery, the per-key persistence, the editor); the archive carries its own zone row, editor entry, distinctness row, package rule and three validated variants | The union, the ten exhaustive maps, the hand-written `z.enum`, the seven catalogue allowlist rows, the theme's archive composition, its context module and its host |
-| D2′ | **Supersedes D2** — is the authored checkout composition the **production shell**, or an authoring surface only?                                                                                             | platform-owned production (D2) · **the theme's composition around the platform's form**    | **The production shell** — the theme composes; the platform keeps the form, the server-quote totals, the payment rail, the validation, the stock hold and the order state                                                                              | The production checkout route, its authority contract (`src/lib/checkout-shell.contract.test.ts`) and its DOM-order pin (`src/routes/checkout-dom-order.test.tsx`)  |
-| D5′ | **Supersedes D5** — the reader blog stays "themeless by design", or wears the theme?                                                                                                                         | themeless (D5) · **themed on the store-scoped routes**                                     | **Themed on the store-scoped routes** — the blog carries `blog_listing` / `blog_article` variants; the three **store-less** taxonomy routes keep the platform's grid, because they carry no store subject and can resolve no theme                     | The two store-scoped blog routes, the closed variant vocabulary and the editor's second level                                                                       |
-
-**Why G1's number moved from 24 to 40.** The plan's first draft claimed _"of the 33 files: 24 are prohibited"_. That was wrong in both directions: seven **new** files (allowed by §7 by definition) had been counted as if they were among the 33, so the real split was **31 prohibited / 2 allowed**. The review measured that, and the batch later had to escalate **two more** existing test files the union's growth broke (`src/lib/builder-phase2a.test.ts` pins a **count**, `src/lib/phase5-seo.test.ts` pins a **list**). The G1 table now names **40** existing prohibited files, and every one of them is recorded in the phase-3 escalation record before its edit.
-
-**Escalations granted** (each is an explicit exception to port spec §7, recorded in `docs/superpowers/songoskriti-evidence/port/phase1-page-content-escalation.md`):
-
-1. `src/components/builder/songoskriti-port-freeze.test.tsx` + `src/lib/theme-preview-nav.test.ts` (the two frozen pins → moved to a **stronger** assertion: the preview-nav opener map became a compile-time-total `Record<TemplateKey, string>`).
-2. `src/components/store/ThemePreviewFrame.tsx` (the preview's page-content source).
-3. `src/hooks/use-builder-editor.ts` + `src/lib/themes.server.ts` (the lint key) and `src/components/store/PageView.tsx` (the nav restore), with `ThemeChrome.tsx` touched only to share the "does the theme render the body" predicate via the new `src/lib/theme-body-slot.ts`.
-
-**Phase-3 escalations** (G1's 40-file list, plus the two files the later fix rounds named before they were edited) are recorded in `docs/superpowers/songoskriti-evidence/port/phase3-archive-key-escalation.md` — §(b)–§(r), one section per batch, each appended **before** the edit it authorises. The record is **append-only**: measured over the last round, `git diff --numstat 7a7f9b70..HEAD -- …/phase3-archive-key-escalation.md` → **325 insertions, 0 deletions**.
-
-### 2.2 The dynamic-themes programme's three questions (2026-10-22, §3.6)
-
-The programme ran its own Decision Gate — **G1/G2/G3 of the dynamic-themes plan** (`docs/superpowers/plans/2026-10-22-frame30-dynamic-themes.md`), a _different_ named list than phase 3's; the names collide deliberately with phase 3's G1–G3 of §2.1, and each ruling is dated to this programme. The owner answered all three, and one standing instruction covers the wave:
-
-| #   | Question                                                                                                                                                                                                                          | Options offered                                                                                               | **Your answer**                                                                                                                                                                                                                                                                                                                                                                             | What it unlocked                                                                                                                                                                                                                                                                      |
-| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| G1  | The composable parts contract, the four placeable account panels, the theme-presentation claims over the commerce widgets, the one resolver and the de-synthesis all need files §7 prohibits. Is §7 relaxed, and for which files? | a named twelve-file list · per-phase escalation · keep the boundary                                           | **§7 relaxed for the named twelve, ratified under your standing instruction** (_"whatever goes, as per the expert opinion"_, 2026-10-22) — and the totality-forced widening **beyond** the list (26 further existing files across the review fix wave and the proof lanes) is enumerated **one line per file**, before each edit, in the phase-4 escalation record §(h)–§(i)                | Every task: the `parts` prop, the four `account_*` panels, the rebuilt cart/checkout/account compositions, the one resolver, the review must-fixes, and the lanes                                                                                                                     |
-| G2  | The preview grants `facet_sidebar` and the storefront does not — how do the two hosts agree?                                                                                                                                      | **(a)** the storefront grants it · **(b)** the preview stops granting it and the composition drops the column | **(a)** — the storefront's search route grants `facet_sidebar` (recorded before the edit, §(d.6) of the phase-4 record); the grant sets are equal and the preview-parity contract asserts the equality instead of naming the difference                                                                                                                                                     | The theme's authored facet column stays alive on the surface the merchant sells on; the search route's widget batch (already resolved for the published layout) answers it — and this programme also fixed the S4 defect it exposed (the sidebar counts the same query the grid runs) |
-| G3  | The preview synthesises a generic body for a template the theme does not author, and the storefront's declined-template fallback is silent — what is the explicit state?                                                          | hard error page · keep both silent · **the named explicit states**                                            | **The named explicit states**: the preview shows its absent-template panel (the synthesis is **deleted** — a non-authored template stays absent from the map); the storefront keeps the route's platform surface **inside the theme's named frame** (`data-fq-theme-state="declined-template"`, an exact one-insertion diff); the editor and the publish gate tell the merchant **by name** | The brief's rule ("no separate hardcoded preview renderer or silent generic fallback") holds on both hosts, proved by the archive contract, the preview safety contract and §(h.7)'s measured byte counts                                                                             |
-
-**The standing instruction, applied file by file.** Your instruction of 2026-10-22 — _"whatever goes, as per the expert opinion"_ — is the ratification for the records. It is applied file by file and programme by programme, it does not set a precedent for any future programme, and the phase-4 escalation record (`docs/superpowers/songoskriti-evidence/port/phase4-dynamic-themes-escalation.md`, §(a)–§(m), 5 000+ lines) names every file it covers before its edit, including this programme's one §7-pinned **existing test file** edit outside Tasks 1–5: the stale `CheckoutMock` prose re-word in `songoskriti-preview-compositions.test.tsx` (§(l), committed before the edit).
-
-**The prior rulings carried.** D1′ (the `archive` key is real), D2′ (the authored checkout composition **is** the production shell) and D5′ (the store-scoped reader blog wears the theme) **stand unchanged** — the dynamic-themes programme builds **inside** their decisions: the composable parts extend D2′'s shell with authored interior orders, the presentation claims extend the theme language D1′'s archive already uses, and the resolver keeps D5′'s variant-first store-scoped blog resolution. Nothing in this programme superseded them.
-
----
-
-## 3. What has shipped, and the evidence
-
-### 3.1 The asset acceptance gate (live on `b31c87ea`)
-
-- **One manifest** (`scripts/songoskriti-assets-manifest.mjs`, 21 entries) + **one frozen expectation** (`scripts/songoskriti-assets-expected.json`, 21 sha256 digests) + the tree. The gate compares all three, so deleting a file _and_ its manifest entry can no longer go green.
-- **The gate** (`scripts/songoskriti-assets-check.mjs`): one pure `checkSongoskritiAssets(world) → {findings, notes}`. Rules: missing, orphan, byte-vs-name and name-vs-manifest format mismatch, undersized, oversized, over-dense, total size, duplicate (in-dir **and** a theme raster copied elsewhere under `public/`), unreferenced, invalid SVG, expectation drift, dangling reference, wrong URL form, cross-theme reference, video mismatch, and a retired path in the newest migration (advisory). Exit 0/1/2; notes never fail it.
-- **The generator** (`scripts/gen-songoskriti-assets.mjs --check`): keyless, offline, proves plan ↔ expectation ↔ tree, and its write path **refuses** a payload whose format contradicts the file name.
-- **Live proof**: the 9 renamed URLs → **200**, the 9 retired `.png` URLs → **404**, the 7 untouched assets → 200; all 21 referenced assets resolve across index/collection/product.
-- The gate heads `gates:release` (`bun run assets:songoskriti`); the vitest suite runs it in CI.
-
-### 3.2 Phase 1 — the generic `page` template (live on `fda55ede`)
-
-- `src/lib/themes/songoskriti/preview.ts:207-218` — the theme's `page` template now declares `s("breadcrumb") + s("page_content")` instead of `heading "Size guide"` + `rich_text "Demo article"`. The CMS page now renders the merchant's **real content through the theme layout**.
-- The theme preview gained an honestly-labelled demo page source (`src/lib/preview-page-data.ts` — a data-only fixture typed as a `Pick` of the production `StorePage` row, so a production shape change breaks the build) plus one memo in `ThemePreviewFrame.tsx`.
-- **The two regressions this introduced were then closed**: the "More information" sibling-page nav is restored on the themed path and the empty 15rem gutter is gone (`15ba404a`, `029b1b5e`), and the false "No primary heading on this template" lint warning is fixed by keying the lint by template (`74b7f2b5`) — the rule is unchanged for templates that genuinely own their h1.
-- **Live proof** (`?template=page`, `en` and `bn`): HTTP 200, exactly **one `<h1>`**, one `<article>`, the `page_content` node present, "Demo page body." present, **zero** occurrences of "Size guide" / "Demo article" / "How to measure", the label localised ("Last updated" / "সর্বশেষ হালনাগাদ"). All eight other preview templates still render 200 unchanged.
-- **CI's `secrets:scan` was red at HEAD** (a committed anon JWT in the e2e evidence) — redacted in place; the scanner was **not** weakened, and the note now discloses that the value remains in git history (`044624af`) with a rotate-if-shared action.
-
-### 3.3 Documents produced (all committed)
-
-`docs/superpowers/plans/2026-10-20-theme-editable-templates.md` (the executable plan, 6 tasks) · `docs/superpowers/songoskriti-evidence/port/phase0-implementation-map.md` (the audit) · `…/phase1-page-content-escalation.md` (the escalation record) · `…/phase1-page-content-evidence.md` (the verification evidence) · `docs/superpowers/plans/2026-10-20-theme-editable-templates-brief.md` (the brief as received) · `…-brief-review.md` (its review: 17 corrected premises) · `docs/superpowers/plans/2026-10-21-frame30-core-cms-upgrade.md` (the phase-3 plan — **now committed**) · `…/port/phase3-archive-key-escalation.md` (the escalation record, §(a)–§(r)) · `…/port/phase3-evidence.md` (the evidence record) · `…/port/phase3-self-critique.md` (the self-critique) · `…/port/phase3-ci.md` (the CI statement).
-
-### 3.4 Phase 3 — the core CMS upgrade (`182c37b5` → `be96b320`)
-
-**Thirty commits**, 87 files, **+21 889 / −1 989** lines (`git diff --shortstat 182c37b5..be96b320`). **No new npm dependency, no lockfile change, no migration, no DDL, no new environment variable** — the `templates` column is `jsonb`, so a new key is a new object in an existing map.
-
-#### 3.4.1 The `archive` template key — real, and everywhere the union is
-
-- **The union** (`src/lib/builder-ast.ts:46-59`) now carries **ten** bases; `TEMPLATE_ZONES.archive` (`:199`) grants `header`/`main`/`footer` + the overlay zones + `not_found`; the hand-written `z.enum` in `src/lib/storefront.functions.ts` (the one compiler-invisible duplicate) carries it too — a key in the editor but not there would 500 the archive route.
-- **Seven catalogue allowlist rows grew** — `breadcrumb`, `category_header`, `pagination`, `empty_state`, `blog_archive`, `blog_terms`, `blog_pager` — and **exactly** those seven: a missing row turns a context widget into a publish-blocking "needs data this template does not provide" error. The set is pinned by reading `builder-ast.ts` **as text** (`src/lib/template-key-contract.test.ts`), so a missing allowlist row fails a **suite**, not a merchant's publish. The three **product-search** rows (`facet_sidebar`, `filter_chips`, `result_toolbar`) stay closed to `archive`: a content archive has no product facets.
-- **The editor** (`TEMPLATE_META` at `src/components/builder/BuilderTopBar.tsx:81`) carries the key, and the switcher gained a **second level** for the variants (`templateVariantEntries()`, `src/lib/template-variants.ts:215`, consumed at `BuilderTopBar.tsx:375`).
-- **The preview** carries the theme's authored `case "archive":` composition (`src/lib/themes/songoskriti/preview.ts:247`).
-- **The package rule** (`src/lib/theme-package.ts:414-417`): a manifest that declares `archive` while claiming an api floor below `3.1.0` is rejected with **`templates.archive_requires_api`**. Every package that does not declare `archive` is untouched.
-- **Its context module and host**: `src/lib/archive-context.ts` (a closed `category | tag | author` vocabulary, a derived and never-fetched context) and `src/components/store/ArchiveView.tsx` — one host that renders **either** the theme's `archive` composition **or** the platform's grid, and delegates the grid to the existing `BlogArchiveTheme` so the fallback is byte-identical to what the platform has always served. The theme resolution is a **rule**, not a call: only a `"base"` or `"suffix"` match is an authored archive body — `"page"`, `"index"` and `"empty"` all mean _no archive body_, and the grid renders.
-
-#### 3.4.2 The Account dashboard — the highest-priority visual repair
-
-`src/components/store/AccountDashboard.tsx` (1 277 lines) — a designed surface, not a stack of the platform's panels: an intentional five-destination tablist (the ARIA tabs pattern, the selection is the URL's `?tab=`), an overview strip, the composed profile, and **structured order rows**. The **six states** are distinct and each is reachable — signed out, loading, failed, signed in with orders, signed in without orders — and the state decision is **one pure mapping** (`src/lib/account-status.ts`), asserted in every combination. The order detail is disclosed **in place** (`aria-expanded`), not behind a link.
-
-**Real customer data in production, labelled synthetic data in preview.** The route reads the `auth.uid()`-scoped `customer_overview` RPC; the preview reads `songoskritiPreviewAccountOverview()` — "Rumana Haque (demo shopper)", a `.example` email (RFC 2606) and the platform's own placeholder phone. A real shopper's data can never reach the preview surface.
-
-#### 3.4.3 The production checkout shell — the theme composes, the platform owns
-
-The route no longer throws the theme's AST away (`ast={null}` → the theme's `checkout` composition). The **platform keeps every authority**: the `<form>`, the customer fields, the **server-quote** totals (`quoteCart`), the **payment rail** (the theme's `payment_methods` widget, or the route's own picker when the theme's body carries none), the validation, the **stock hold** (`reserveCheckout` / `releaseCheckout`) and the **order state** (`placeOrder`). The theme's AST contributes **no** form, **no** input and **no** submit button — asserted by `src/lib/checkout-shell.contract.test.ts` and by the AST-level pin in `src/lib/themes/songoskriti/checkout-composition.test.ts`.
-
-**The rendered order is fields → payment rail → total → Place Order.** Measured on the production shell (`renderToStaticMarkup`, the byte offsets in the phase-3 record's §(r.5)):
-
-```
- 2541  ROUTE heading: Contact Information
- 3466  ROUTE FIELD (phone)            <- the route's own customer fields
- 3610  ROUTE heading: Delivery Address
- 6099  the route's form closes         <- </form>
- 6568  THEME payment block             <- the theme's payment_methods
-36534  THEME order summary             <- the theme's cart_summary (the total)
-37035  ROUTE place-order action        <- <button type="submit" form="fq-checkout-form-demo">Place Order</button>
+```ts
+export const OFFICIAL_THEME_KEYS = ["songoskriti"] as const;
+const ENTRIES: Record<BuiltinThemeKey, BuiltinThemeEntry> = {
+  songoskriti: { key: "songoskriti", source: songoskritiPreviewSource },
+};
 ```
 
-The action is the **route's**, so it renders after the theme's band through `ThemeChrome`'s new trailing slot (`afterBody`) and names the route's own form through the **HTML form owner** (`form="…"`). The hand-built fallback (a store with no theme body) is unchanged, byte for byte.
+Official identity resolves through `isOfficialThemeKey` / `getBuiltinTheme` — never through bundle
+JSON keys, `theme-export` maps, or `theme_registry` rows.
 
-#### 3.4.4 The blog and archive variants — a closed vocabulary
+### 1.2 Somvabona retired
 
-`src/lib/template-variants.ts` carries the **only** place a variant may be added: `blog → [listing, article]`, `archive → [category, tag, author]`. The editor's switcher renders them as a second level (`templateVariantEntries`), so a merchant can author them and cannot invent one. Every variant is **linted with its base key** (`lintTemplateMap`, `src/lib/themes.server.ts:859-895`), so a variant AST can never reach a storefront unlinted; a key shaped like a variant whose suffix is **not** in the table is refused with the stable reason code **`builder.unknown_variant`** — the legacy `page_<slug>` package shape is the one exemption. The store-scoped reader blog now wears the theme (`blog_listing` on the listing, `blog_article` on the detail — two **distinguishable** compositions); the three **store-less** taxonomy routes resolve no theme and keep the platform's grid.
+Deleted: `src/lib/themes/somvabona/**`, `src/components/builder/somvabona.tsx` (+ test),
+`public/ph/somvabona/**`, `src/lib/somvabona-catalog.test.ts`. ~37 source files updated to drop
+imports/branches. A production-source grep for `somvabona` is clean (the only remaining references
+are **absence guards inside tests**, which assert the theme is gone — intentional).
 
-#### 3.4.5 The editor, the persistence and the publishing path
+The old somvabona widget pack was **renamed, not deleted**: `src/components/builder/everyday.tsx`
+(+ `everyday.test.tsx`) now exports `EVERYDAY_WIDGETS`, imported by `widgets.tsx:50/1114` and
+`unified-widget-registry.ts:121`. It is production code and is committed.
 
-- **Per-template isolation** is structural (one AST per key) and is now **proved**: `src/lib/template-persistence-isolation.test.ts`.
-- **Reset-to-default** restores **exactly one** template (or one variant) to the theme's own default, is armed before it fires, and hands back the **stored** map so the editor's document and the stored document are the same bytes (`src/lib/themes-reset.contract.test.ts`).
-- **The seed merge fills only the keys the merchant's map does not carry** — it never overwrites a merchant's template (`src/lib/theme-seed-merge.test.ts`); because the `theme_install_preset` RPC replaces the draft's map verbatim, the per-key merge lives in TypeScript inside `installRegistryTheme`.
-- **The publish path** lints every variant with its base key, and an unknown variant is refused with `builder.unknown_variant` — with the editor's cleanup affordance as the merchant's exit, so the refusal is never a dead end.
-- **Preview parity**: for the seven templates the context slots the preview grants equal the ones the storefront grants, with the differences **named** (`src/lib/preview-parity.contract.test.ts`).
+### 1.3 Starter theme removed; SDK fixture kept
 
-#### 3.4.6 The test lanes
+`examples/starter-theme/**` is deleted. Its test asserted the starter's h1 was "Welcome To
+Framique"; that is **false**, so the starter is not a product theme and does not ship.
+`src/lib/dev-theme-starter-theme/**` is **kept** — it is Level B SDK infrastructure (the
+submission-gate fixture referenced by `docs/themes/sdk.md`, `docs/themes/level-b.md`, and its own
+README), not a storefront theme. Challenge this if you want it gone too (§2.5).
 
-| lane                                                                                  | what it pins                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| the **contract and integration** suites (**17 new** test files)                       | the union ↔ hand-written enum ↔ package contract ↔ the seven catalogue rows; the variant vocabulary; the archive context and its host; preview parity; publish/seed/merge/rollback; the reset; the account's six states and its nav; the checkout authority and its DOM order; the per-template isolation; the composition props                                                                                                                                                                                                                    |
-| the **seven-template authenticated E2E** (`.e2e/songoskriti-seven-templates.spec.ts`) | for each template: open the real editor, select it, insert and reorder a widget, change a real inspector property, preview desktop/tablet/mobile, save, reload, publish, open the real storefront route, verify the saved composition and the route context — then the documented empty / error / unauthenticated / unavailable cases. It **skips** without merchant credentials and reports the skip as a skip; it never fakes a session                                                                                                           |
-| the **storefront-surface E2E** (`.e2e/songoskriti-storefront-surfaces.spec.ts`)       | the eight production surfaces with no auth: the search result count equals the platform's own, the cart renders the theme's body, the account renders the unauthenticated state for an anonymous visitor and the dashboard for a signed-in one, the blog listing and the article render **different** compositions, the checkout renders the theme's shell around the platform's form, the archive routes render the **platform's grid** while the preview route renders the theme's archive body, the page route renders the merchant's own record |
-| the **self-critique capture** (`.e2e/songoskriti-self-critique.spec.ts`)              | **84 stills** — 7 surfaces × 6 widths (1440 / 1280 / 768 / 430 / 390 / 375) × 2 locales — into a **scratch** directory, never into `reference/`                                                                                                                                                                                                                                                                                                                                                                                                     |
-| the **distinctness gate**                                                             | seven rules over a compile-total table; the `archive` row is **non-empty** and rejects the engine's generic body, and the gate's "every template a theme does not author is rejected as generic" loop is re-run for the new key                                                                                                                                                                                                                                                                                                                     |
+### 1.4 Retarget table — what covered the old foreign-theme proofs
 
-**Two defects were found by the lanes and fixed**: the studio crashed on every variant (the canvas breadcrumb indexed a base-only label map with the selected identity), and the store-scoped blog article route answered 404 for every article (the route file declared **two** path parameters of the same name, so TanStack Router matched both segments into one key).
+The cross-theme property ("presentation primitives work for a theme that is not Songoskriti") was
+proven in two e2e legs against Somvabona. Those legs are **retired** (see §2.1). The property is now
+proven at **library level** with a synthetic fixture, and the affected unit suites were retargeted:
 
-#### 3.4.7 The self-critique pass
+| Was (against Somvabona)                              | Now                                                        | Result |
+| ---------------------------------------------------- | ---------------------------------------------------------- | ------ |
+| e2e legs 11–12 (foreign-theme render, `.e2e`)        | retired — replaced by an in-repo retirement note           | 8/8 lane |
+| announcement-bar proofs (unit)                       | `__fixtures__/foreign-presentations.fixture.tsx` (synthetic) | 20/20 |
+| footer proofs (unit)                                 | synthetic foreign presentations                             | 21/21 |
+| migration proofs (unit)                              | synthetic foreign presentations                             | 20/20 |
+| `demo-theme-mounted.spec.ts:895` `somvabona` key     | `themeKey: "acme-pack"`                                     | green |
 
-The three weakest failures were named, measured and fixed: the store-scoped blog surfaces carried **no store chrome** (a shopper could not get back into the shop); the account page showed an anonymous visitor **two** sign-in affordances; and the search page's `<h1>` and breadcrumb read "Collection". The re-capture measured the four surfaces that were **not** fixed as **pixel-identical** (a diff ratio of exactly `0.0000` on every one of their twelve captures), and the search fix as **0.0020 (0.2 %)** at four of the six widths — below the harness's own tolerance.
+The synthetic fixture `src/lib/themes/__fixtures__/foreign-presentations.fixture.tsx` supplies the
+foreign presentation shapes so the property stays exercised without a second real theme.
 
-#### 3.4.8 The docs and the CI statement
+### 1.5 Evidence committed
 
-Five product docs were brought to the shipped contracts — `docs/themes/creation.md` · `docs/themes/packages.md` · `docs/04-builder/theme-runtime.md` · `docs/developers/themes.md` · `docs/packages/contract.md` (which now states the `archive` api-floor rule and its reason code next to the range rule it qualifies). The CI statement (`…/port/phase3-ci.md`) records the local equivalent of every CI job and the exact limitation on the remote run.
+`docs/superpowers/songoskriti-evidence/verification/` is now an indexed evidence pack:
+`README.md` (index + commands), `strict-lane-run6.log`, `strict-lane-run7-after-retirement.log`
+(trimmed 8/8 lane output; raw 246 KB kept out of git), `cart-single-noncefix.log`,
+`live-nonce-probe.log`, `postdeploy-live-verify.log`, and `depth-evidence/` PNGs.
 
-### 3.5 The live evidence, measured at `be96b320` (2026-10-22)
+### 1.6 Blocking CI job for the seven-templates lane
 
-- **All twelve template keys answer HTTP 200** on the live preview — the ten bases plus `blog_listing` and `blog_article` — with **zero** occurrences of the retired demo strings (`Demo search` · `Meet the makers` · `Size guide` · `How to measure` · `Demo article` · `Demo story`) and **no** unsupported panel on any of them.
-- **The archive band renders "Archive"**, not the literal "Collection": the live `?template=archive` page carries `<h1>Archive</h1>` and **zero** occurrences of "Collection", and its six body nodes are exactly `category_header` · `blog_terms` · `blog_archive` · `blog_pager` · `pagination` · `empty_state`.
-- **The build at the tip exits 0** — `.output/`, **55 MB**, **1 332** files: **5.56 MB** of client JS, **0.32 MB** of client CSS, **14.49 MB** of server `.mjs` (the phase-3 record measured 5.50 MB / 14.38 MB at its own tip, `0a794b54`; the difference is the two fix rounds' code).
-- **The suite**: **8 790 passed / 3 skipped / 3 failed** (8 796 tests, 621 files — 618 passed, 1 skipped, 2 failed). The three failures are the **pre-existing, environment-bound** ones — `src/lib/analytics-live-shape.test.ts` (2) and `src/lib/site.server.test.ts` (1, which needs the local `.env` that CI does not have) — and they fail at the programme's base commit in this same environment.
-- **`node_modules/.bin/tsgo --noEmit`** → exit 0, no output.
-- **`node_modules/.bin/eslint src scripts`** → exit 0: **0 errors**, 319 pre-existing warnings, none added here.
-- **`node scripts/doc-gate.mjs`** → **0 findings**, exit 0.
-- **The asset gate** → **GREEN**, 0 findings and 11 advisory notes, 21 assets; the generator's `--check` reports **21 planned assets match the frozen expectation**.
+`.circleci/config.yml` gains an `e2e-seven-templates` **machine** job, wired into `gates` with
+`requires: build`. It is **blocking from day one** (§2.2). It runs
+`bash scripts/e2e-seven-templates-ci.sh`, which is the executable form of
+`docs/15-e2e/loopback-auth-setup.md`: throwaway compose stack, generated secrets, real GoTrue
+merchant, demo seed, then `.e2e/songoskriti-seven-templates.spec.ts` with `--retries=0
+--workers=1`, and `down -v` teardown on success, failure, or interrupt.
 
-### 3.6 The dynamic-themes programme (`109e2d3d` → `3753eaf3` + the docs batch — §3.6's commit subjects are in `…/port/phase4-dynamic-themes-evidence.md` §1)
+### 1.7 Live-visual verification script
 
-**Thirty-one commits ship the programme; the docs batch adds the four records.** `git diff --shortstat 109e2d3d..3753eaf3` → **153 files changed, +15 750 / −1 794** — of which the phase-4 escalation record is the largest single file. **No new npm dependency, no lockfile change, no migration, no DDL, no new environment variable**; every `supportedWidgets`/API-line statement in §2.1's package contract still holds (`THEME_API_RANGE` stays `^3.0.0`, `BUILDER_API_VERSION` stays `3.1.0`).
-
-#### 3.6.1 The composable parts contract and the four placeable account panels (Task 1, `3ca5e8ad`)
-
-- **One generic `parts` prop** on the six affected catalogue rows (`cart_lines`, `cart_summary`, `checkout_steps`, `payment_methods`, `orders_list`, `profile_card`), parsed by `src/lib/widget-parts.ts` against a **closed per-widget vocabulary** (`WIDGET_PART_VOCABULARY`): an authored order survives; an unknown key is **dropped**; a stored AST with **no** `parts` key resolves to the default, which is **byte-identically today's rendering** — measured, not claimed (the six widgets and the dashboard were captured before and after; §(d)/§(f) of the phase-4 record).
-- **Four new catalogue rows** — `account_nav`, `account_overview`, `account_orders`, `account_details` — each a first-class widget with `templates: ["account"]`, served through one **provider** (`AccountDashboardContext`) that owns the same state the dashboard reads; a panel mounted with no provider renders nothing (fail-closed) and fetches **nothing** (no `fetch(`, no `supabase`, no `.functions.ts` import — asserted by the suite, and by the record's §(m.2) security statement).
-- **The dashboard becomes the provider's default composition**: theme-placed panels and the dashboard's own rendering read one tab, one open-order id.
-
-#### 3.6.2 The rebuilt carts, checkout and account; the presentation claims; the G2 grant (Task 2, `4b522b93`)
-
-- The theme's **cart, checkout and account compositions rebuild on the composable pieces**: each widget instance carries an authored `parts` order drawn from the closed vocabulary, so the theme states its own arrangement (its `heading → checkout_steps → page_content → columns` checkout now composes the interior of the rail and the totals) instead of inheriting the platform's.
-- **The presentation registry is extended by claim, not by edit**: Songoskriti's own renderers cover the ten commerce/account claim keys (`SONGOSKRITI_PRESENTATION_CLAIMS` grew by the ten types, shipped as `src/lib/themes/songoskriti/commerce-presentations.tsx` + its suite); a theme that claims nothing changes nothing.
-- **The account route** mounts the provider and grants the four new panels; the **search route** takes G2's ruling (a): the storefront grants `facet_sidebar`, and the widget batch feeding it carries the S4 fix — the sidebar counts the **same query** the grid beside it runs (a defect the G2 widening surfaced and closed).
-- **The compatibility measurement** covers the platform's own renderers across eleven surfaces (byte-for-byte, before vs. after, generated ids normalised).
-
-#### 3.6.3 One resolver; the synthesis deleted; D1/D2/D3/D5 closed (Task 3, `21907047`)
-
-- **`src/lib/pipeline-resolver.ts`** — the editor canvas, the preview and the storefront resolve **one** AST pipeline with the same three labelled modes (`draft` / `published` / `source`); a template the theme does not author resolves to an **explicit absent** result — never a synthesised body, never the homepage.
-- **The synthesis is deleted** (`assemblePreviewTemplates` never calls `genericDemoMain`, which stays as the distinctness gate's reference body — its doc comment now says so, Task 6): the preview's map carries exactly the templates the theme authors (nine of ten), and the tenth renders the **existing** named panel.
-- **D1 close**: the editor canvas resolves the theme's presentation. **D2 close**: the canvas mounts the theme's demo providers, so editor and preview show the same data. **D3 close**: the preview's installed artifact reads the **published** version. **D5 close** (storefront side): the route's platform surface stays inside the theme's **named** frame (`data-fq-theme-state="declined-template"`) — the declined-template surface's total diff is **one insertion**.
-- The three `Record<TemplateKey, ThemeAst>` total maps became partial — the compile-time shape now states "absent is a state, not a gap".
-
-#### 3.6.4 The safety contract, and the two review waves beside it (Task 4, `5f283eb1`; review fix wave 2, `0ebaaa5b`)
-
-- **The preview-safety contract** (`src/lib/preview-safety.contract.test.ts`): no blank required slot (every context widget a composition places is either granted by the host or explicitly replaced by the route's own surface); the anonymous account page renders **no shopper data** and no blank profile card (the route supplies an explicit signed-out state instead of a blank slot); the "no rail" state is **one sentence from one place** (`src/lib/checkout-submit-state.ts`), and the place-order action is **disabled** whenever the server offered no rail; the preview's payment radio **changes the selection** and the block is **visibly labelled**; no control renders as if it works when it cannot.
-- **D8 close**: the route's own picker/summary and the platform's widgets speak the same words (the two empty-state sentences collapsed into one shared constant).
-- **Task 4's commit closed the first review's must-fixes** (F1–F9 range) and **pinned preview safety by behaviour**: `PublishModal` surfaces the declined-template **warning text** by name, the label-map totality contract enumerates **every** per-template label map including the storefront's, `templateAstOf`'s dead code went, and the declined-template fallback kept the theme's chrome with the named frame. §(h)/§(i) of the phase-4 record name the beyond-G1 files the totality forced, one line per file, **before** the edit.
-- **Review 4's five findings closed by fix wave 2** (`0ebaaa5b`): the one shopper-facing regression — `loadPublished` returned `null` for a template a theme does not author, which **nulls the whole theme** (no store header, no tokens, no presentations) — now fixed at a pure payload seam (`publishedTemplatePayload`): an `absent` body is an **empty body, never "no theme"**; a new suite pins the regression and the repair; and the compatibility harness re-measured **all six captures byte-identical** across the wave (the platform path stays 1847 / 33157 / 718 B — §3.6.2's numbers).
-
-#### 3.6.5 The proof: the lanes, the fly-by corrections, the parity re-freeze, and the refusal (Task 5, `d9e4774e`–`c565f0d0`)
-
-| lane                                                                                                                            | outcome, reported as measured                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **seven-templates** (authenticated editor journey, strengthened to assert the **changed composition on the served storefront**) | **8/8 passed, 0 retries, 8.3 m**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| **storefront-surfaces** (permitted-interaction cases added)                                                                     | **9 passed, 1 skipped, 1 flaky, 6.7 m** — the skip is honest (`the disposable store offers no payment rail, so the checkout's permitted interaction cannot be proven`), and the flake is the auth stack's own login throttle (`Locked · Retry in 44s` after ~11 real logins in one run; retry passed)                                                                                                                                                                                                                     |
-| **dynamic-themes** (edit → save → reload → publish → storefront)                                                                | **1 passed, 3 skipped, 3.1 m** — the single passing case is the session-proof case (`no session is ever faked`); **two skips are the platform's publish refusal**: _বাংলা translation coverage is 63% — publishing needs at least 90%_. The app log carries **three** `theme.publish_blocked codes=translation` events during the run; the published pointer was asserted **unchanged** before and after. The checkout case skips earlier on its rail precondition (its publish attempt was the third refusal in the log). **Superseded 2026-10-26 — re-run 5/5 with a real publish (§9).** |
-| **parity** (the `port-parity` lane)                                                                                             | first run **39 passed / 27 failed / 1 skipped** — **rejected**; every difference classified still-by-still as exactly the ratified theme-path change (21 stale ratios 0.03–0.12 + 6 missing `archive-*` stills); **re-frozen on the throwaway stack** with the **before-stills preserved** in git history and `/tmp/opencode/e2e-auth/parity-before/`: freeze run **66 passed / 1 skipped / 0 failed** (8.3 m), unmodified verification run **66 passed / 1 skipped / 0 failed** (8.1 m)                                  |
-
-**Three defects the lanes caught and fixed** (each recorded before the edit in §(k.x)): the seven-template lane asserted on the **editor canvas** instead of the served storefront (§(k.1)); the navigator read before hydration and the buy box before hydration (§(k.4)); the surfaces lane's facet check matched a hidden drawer trigger and the checkout case lacked its cart-line precondition (§(k.6)). One flake was **left as a flake**, named and measured, with its cause (session reuse across tests would fix it but changes helper semantics).
-
-**The edit→publish→storefront chain is proven up to the refuse, and NOT_PROVEN past it.** The publish refusal is the platform's **deliberate rule** behaving correctly — the reason is legible in the modal and in the lane's skip message, the pointer does not move, and the refusal was never converted into a pass. The 63 % coverage (against the 90 % floor) is **lower than the 76 % earlier evidence measured for the same theme** — the programme's own added copy moved it — and it is an **owner action** (§5.3 #2): the translations were not touched and the floor was not moved. **Superseded 2026-10-26: under the owner's ruling the theme copy was translated and the floor cleared at 100 %; the publish succeeded and the storefront served the published composition (§9).**
-
-#### 3.6.6 The build blocker, measured and fixed (§(k.8), `a19e25b5` → `4eef8f5c`)
-
-Task 5b's brief build gate was **red on a pre-existing defect the programme's own lanes exposed**: `src/routes/store.$slug.search.tsx` referenced `widget-data.server` from the client graph, and `tanstack-start-core:import-protection` denied the build. The fix, recorded **before** the edit, moves the already-existing server call behind the platform's own seam — the existing `resolveWidgetDataFn` RPC (`src/lib/widget-data.functions.ts`, its schema extended with the optional bounded `facets`/`total`) — **no bypass, no behaviour change, no new file in the graph**. The build at the fix tip is **green**: exit 0, `.output/` **56 MB** / **1 341** files, client JS **5.59 MB**, server **14.61 MB**. One deferred semantic nit is named: the route comment cites the function's pre-fix line numbers.
-
-#### 3.6.7 The obsolete paths, with their citations (Task 6, `3753eaf3`)
-
-`CheckoutMock.tsx` — **removed, proven unused by citation** (grep returns its own definition and two prose mentions, no importer) — and the two prose mentions were re-worded in the same commit to name what replaced it (the authored checkout composition through `SectionRenderer`); `genericDemoMain` **stays** as the gate's yardstick (doc comment re-worded); `UNSUPPORTED_TEMPLATE_BODY` **stays**, re-worded to describe the absent state D4 relies on (the archive contract's pinned phrases and its no-demo-copy rule untouched); `BlogArchiveTheme`, the composable shell-slot pieces, `DEMO_CART`, `previewDemoMap` and the route's own picker/summary **all stay**, each with its live consumer cited. The dispositions, the four greps and the dates are in `…/port/phase4-dynamic-themes-obsolete-paths.md`.
-
-### 3.7 The live evidence for the dynamic-themes programme, measured at its own tip (2026-10-22)
-
-- **The suite**: **8 969 passed / 3 skipped / 3 failed** (8 975 tests, 633 files — 630 passed, 1 skipped, 2 failed), read from the programme's own docs-batch run. The three failures are the **same pre-existing, environment-bound** ones — `src/lib/analytics-live-shape.test.ts` (2) and `src/lib/site.server.test.ts` (1, the local `.env` guard) — and they fail at the programme's base commit in this same environment. **No new failure.**
-- **`node_modules/.bin/tsgo --noEmit`** → exit 0, no output.
-- **`node_modules/.bin/eslint src scripts`** → exit 0: **0 errors**, 325 pre-existing warnings (the same count at the programme's pre-docs tips; none of the kinds added by this batch).
-- **`node scripts/doc-gate.mjs`** → **0 findings**, exit 0.
-- **The asset gate** → **GREEN**, 0 findings and 11 advisory notes (21 assets).
-- **The build at the programme's fix tip `4eef8f5c`** → **exit 0**: `.output/` **56 MB**, **1 341** files, client JS **5.59 MB**, server **14.61 MB** — the block-resolved tip (§3.6.6).
-- **The distinctness gate** over the new compositions — **3 files, 23 tests, all passed** (the `cart`/`checkout`/`account` rows follow the new compositions, and the "every template a theme does not author is rejected as generic" loop is re-run).
-- **The browser lanes on the throwaway stack** (§3.6.5): **8/8** · **9 passed/1 skipped/1 flaky** · **1 passed/3 skipped** — skips reported as skips, and the publish-refusal pair named with the platform's own reason.
-- **The parity lane**: the classified re-freeze **66 passed / 1 skipped / 0 failed, twice** (freeze, then unmodified verification). The committed baselines track the rebuilt compositions; the before-stills are preserved in git history.
-- **What is NOT PROVEN here, by platform refusal**: a merchant's edit reaching the storefront **after a publish** — the platform refuses at **63 %** বাংলা coverage against its **90 %** floor; the pointer was asserted unchanged; the refusal is the intended behaviour, not a defect (§5.3 #2). Remote CI remains **UNVERIFIED-FROM-HERE** (this section was frozen before the push; `origin/frame30` / `origin/main` then sat at `109e2d3d`, later at the shipped programme tip `e695b497`, and now carry the post-deploy docs tip above `9b91f18a`; no CI receipt has been read). **Superseded 2026-10-26 — proven in §9: the merchant's edit reached the storefront after a real publish; deployed 2026-10-27 in §9.5.**
+`scripts/verify-live-visual.mjs` (npm script `verify:live-visual`) fetches the deployed
+`/theme-preview/songoskriti` at 3 widths, asserts a **coherent nonce** across the CSP response
+header + `name=`/`property=` metas + inline script, renders in Chromium, and fails on any
+pageerror/console error/CSP violation. It splits origins: `--base-url` (the preview host) for
+`/theme-preview/*`, and `--store-base-url` for `/`, `/cart`, `/account` — because the preview host
+has no themed storefront (§2.3). Latest run: **15/15 preview keys, 6/6 browser surfaces PASS**.
 
 ---
 
-## 4. The platform map an expert needs
+## 2. What I'm confused about / decisions to challenge
 
-**Legend:** ✅ exists today · ⚠️ exists but incomplete/wrong · ❌ absent. **This map is the state at `be96b320` (2026-10-22);** §1 is the state as it was found.
+### 2.1 The two retired foreign-theme e2e legs (D1) — what now covers the property?
 
-|                               | search                                                                              | cart                                    | account           | blog                                                                                     | checkout                                           | archive                                                                                                 | page                             |
-| ----------------------------- | ----------------------------------------------------------------------------------- | --------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | -------------------------------- |
-| **A. key defined**            | ✅                                                                                  | ✅                                      | ✅                | ✅                                                                                       | ✅                                                 | ✅ **now** (was ❌ absent)                                                                              | ✅                               |
-| **B. per-theme default AST**  | ✅                                                                                  | ✅                                      | ✅                | ✅ **now** — two variants, `blog_listing` / `blog_article`                               | ✅                                                 | ✅ **now** — the authored archive body (six slots)                                                      | ✅ **now** (was ⚠️)              |
-| **C. merchant edits it**      | ✅ selector (`BuilderTopBar.tsx`), persisted per template (`use-builder-editor.ts`) | ✅                                      | ✅                | ✅                                                                                       | ✅                                                 | ✅ **now** — the editor's second level                                                                  | ✅                               |
-| **D. route-owned data**       | ✅ per-widget slots (D6's state B)                                                  | ✅ `contextSlots` + live `CartProvider` | ✅ `accountSlots` | ✅ `BlogFeedProvider`                                                                    | ✅ **now** — `contextSlots` + the route's own form | ✅ `archive-context.ts` — its own module                                                                | ✅ real page record → `PageView` |
-| **E. rendered in production** | ✅                                                                                  | ✅                                      | ✅                | ✅ **now** — store-scoped; the three store-less taxonomy routes keep the platform's grid | ✅ **now** — the theme composes, the platform owns | ⚠️ **the editor + the theme preview host only** — the three store-less taxonomy routes resolve no theme | ✅ **now**                       |
+Per your instruction I deleted the two foreign-theme e2e legs rather than keep a second real theme
+alive just to exercise them. The cross-theme property now lives **only** at library level via the
+synthetic fixture (§1.4). **Challenge:** is a unit-level proof enough, or do you want an e2e leg
+against a synthetic/minimal theme key so the real renderer path is also covered? I chose the cheaper
+honest option; it is a deliberate trade, recorded here.
 
-**The structural findings, then and now:**
+### 2.2 Blocking-from-day-one on a brand-new ~15-min stack job (D2) — promotion/rollback
 
-**Amended by the dynamic-themes programme (§3.6).** Row B's "per-theme default AST" is no longer the whole story: the composable `parts` contract and the four `account_*` panels mean a theme now composes the **interiors** of `cart`, `checkout` and `account` (authorized orders over a closed vocabulary, the dashboard as provider-default), not only the outer container. Row D for `account` gained the provider (`AccountDashboardContext`); the `checkout` row's platform authority statement is untouched — the form, the quote, the rail, the stock hold and the order state never moved, and the renderer measures byte-identically on the platform path (§3.6.2).
+The `e2e-seven-templates` job is **required from its first run**, per your "go strict" instruction.
+It brings up a full Supabase stack in-job, so it is heavier and newer than the other gates. The
+first CI run on `frame30` may be red for a reason unrelated to the lane (stack bring-up on a fresh
+machine executor). **Challenge:** if the first run is flaky, do you want me to allow it to
+run-but-not-block for one cycle while it earns trust, then flip it required? I have kept it strict.
 
-1. **The `index` template still has no production render path.** The only `template="index"` was inside `src/components/store/StorefrontPage.tsx:294`, and `StorefrontPage` is imported nowhere (only a doc comment and a test that reads it as text). Both storefront index routes render either the CMS-designated page (wearing `template="page"`) or `StoreWelcome`. **Still true at `be96b320`** — the phase-3 programme did not touch it.
-2. **The `checkout` template has no production render path either** — the route fetched the checkout chrome and threw the AST away. **Closed by D2′**: the route now hands the theme its own body through the platform's route-owned body slot, and the platform keeps the form, the totals, the rail, the validation, the stock hold and the order state.
-3. **The storefront blog route was deliberately themeless** — `BlogArchiveTheme` passed `ast={null} tokens={null}` with the comment _"the render stays generic for every key **by design** — pinned in `BlogArchiveTheme.test.tsx`"_. **Closed by D5′**, with the measured basis rather than the assumption: the reader surfaces are **store-less**, not themeless. The host now takes an optional `ast`/`tokens` pair (`ast={ast ?? null}`) and the **store-scoped** routes wear the theme; the three store-less taxonomy routes carry no store subject, resolve no theme and keep the platform's grid.
+### 2.3 D3 — the preview is the live proof, not a seeded storefront
 
-**What already existed and did not need rebuilding** (the brief's premises that the audit corrected): the per-template editor and selector; the route-owned context/data system (`widget-data.ts` → `collectWidgetRequests`, `ContextSlot`); the theme presentation registry; the **blog archive pack** (`blog_archive` / `blog_terms` / `blog_pager` — the pattern the brief reinvented, already built and already in a live theme's AST); the platform-wide definition-of-done test (`src/lib/definition-of-done.test.ts`).
+The live proof is the deployed `/theme-preview/songoskriti` surface + live nonce/CSP checks. There
+is **no production seeding**. Consequence: the preview host `framique.qubickle.com` has **no themed
+storefront**, so `/cart` and `/account` on that host are not themed (the merchant store host
+`flamelancer.com` is a different origin with its own store). Hence the `--store-base-url` split in
+the live-visual script. **Limitation:** this proves the theme renders and ships a coherent nonce,
+not that a live merchant's storefront is themed.
 
-**What was missing, and is now shipped**: the `archive` key · per-widget search slots · a themed checkout · a themed storefront blog · a preview that mirrors the storefront's contexts · and a distinctness criterion ("is this template a Songoskriti design, or the shared default with the theme's logo on top?"). **What is still missing**: the **merchant-scoped** archive route (`/store/<slug>/blog/category/<slug>`) — see §5.
+Related, pre-existing and **unrelated to this wave**: the preview host's default redirect target
+`cloudman-store` has **no `store_themes` rows**, so `/store/cloudman-store*` 404s. Only merchant
+`akira` has rows (Atelier/classic/Supershop active).
+
+### 2.4 Loss of `starter-theme.test.ts` as the executable five-gate reference
+
+`examples/starter-theme/**` carried `starter-theme.test.ts`, which was the executable reference for
+the five submission gates a third-party theme must pass. It is deleted along with the starter. The
+gates themselves live in docs (`docs/themes/submission-gates.md`) and in Level B infra
+(`dev-theme-starter-theme`), but there is no longer a **worked, executable example** of all five at
+once. **Challenge:** do you want a minimal synthetic theme fixture kept purely as the five-gate
+executable reference (not shipped, not a product theme)?
+
+### 2.5 `src/lib/dev-theme-starter-theme/` kept as SDK infra — should it go too?
+
+I kept it because it is the Level B submission fixture the docs point at, and deleting it would
+break the documented submission path (§1.3). **Challenge:** if "only one theme" should mean "no
+second theme *shape* in the tree at all," say so and I will remove it plus rework the Level B docs.
+
+### 2.6 `contract-gate.mjs` — I fixed a local false-green
+
+`scripts/contract-gate.mjs` spawned `bunx vitest` unconditionally. On a machine **without Bun**
+(like this one) `bunx` is missing, so the spawn errored and the gate could **not be run locally at
+all** (it exited 2, so it was fail-closed but unrunnable — the inverse of a false-green, but still a
+local blind spot). I patched it to fall back to `npx vitest`, which runs the identical
+`node_modules` binary. Re-run result: **258 tests / 13 contract suites PASS**. CI (which has Bun) is
+unaffected.
+
+### 2.7 Local `main` drift and the push
+
+Local `main` is behind `origin/main`. This wave commits on `frame30` on top of baseline `630e80be`
+(the retirement plus the `blog_terms` fix in §2.10) and rebases onto the current `origin/main` before
+pushing, so intervening work is not clobbered. Flagging because the two branches have drifted.
+
+### 2.8 `/theme-preview/somvabona` stops serving after deploy (intended)
+
+With Somvabona removed from `builtin-themes.ts`, `/theme-preview/somvabona` will 404 after this
+deploys. That is the **point** of the retirement, called out so the 404 is not mistaken for a
+regression.
+
+### 2.9 The checked-in SQL does not reproduce the deployed schema (found while validating the CI job)
+
+Making the blocking job's bring-up fail-closed surfaced a **pre-existing** gap: the baseline dump
+(`migration/0001_baseline.sql`, dumped from PG 17) is **stale relative to production**. A cross-check
+of every production `public` relation against every `create table`/`create view` in the repo finds
+**~120 relations with no creator anywhere in the repo**, plus enum values and function overloads that
+exist only in production. The documented fresh-DB path has always applied this chain with **no
+`ON_ERROR_STOP`**, so every one of these statements has been silently skipped in every stack ever
+built this way — the drift was invisible until this job demanded a fail-closed bring-up.
+
+Examples of production-only relations: `experiments`, `support_tickets`, `url_redirects`,
+`theme_assets`, `builder_templates`, `builder_template_seo`, `article_revisions`, `page_revisions`,
+`integration_probes`, `seo_not_found_log`, and (now handled, below) `nav_menus`/`nav_menu_items`; plus
+enum `merchant_role` lacks `'editor'` (13 repo references, but production lacks it too), and the
+`has_merchant_role(uuid, uuid, merchant_role)` overload.
+
+**How the job stays honest without pretending to close that drift:**
+
+1. **Migration chain is best-effort but never silent.** Every skipped statement is printed and
+   counted (`migration chain applied — N statement(s) skipped (legacy gap)`).
+2. **Enum parity toward production.** Enum values the repo's **own** seed needs are stale in the dump
+   and I provision them toward production (`payment_method 'sslcommerz'` + `'card'`,
+   `subscription_status 'trialing'` — every value verified present in the deployed enum first, so the
+   parity step only moves a fresh stack toward production, never away from it). Deliberately **not**
+   added: `merchant_role 'editor'`, because production lacks it too — inventing it would make the
+   fresh stack disagree with the database it models.
+3. **Production-only relations the repo's own code/seed requires are materialized in one parity step.**
+   `migration/e2e-schema-parity.sql` reproduces exactly the deployed-schema objects a fresh stack must
+   have for the lane to run, all from production DDL (verified against the deployed DB first), and no
+   more:
+   - `nav_menus` / `nav_menu_items` — the repo's OWN seed
+     (`migration/0003_demo_catalogue.sql`) INSERTs into them; without them the demo navigation cannot
+     seed.
+   - `url_redirects` — read **~10× strictly** by `src/lib/permalink.server.ts` to resolve every
+     `/store/<slug>/...` request. On a fresh stack without it, **all storefront routes 404** (this was
+     the logged root cause of the lane's three 404 failures: `render_read.failed ... relation
+     "public.url_redirects" does not exist`).
+   - `anon` **GRANT drift** on `merchant_settings` — production grants `anon` a full `SELECT`; the
+     baseline only grants column-level `SELECT`s, so the public storefront hit `permission denied`.
+     The parity file grants `anon` `SELECT` (moving the fresh stack toward production).
+   - Deliberately **not** created: `url_missing_log` (also read by permalink) — it does **not** exist
+     in production either (verified 0 rows) and every read of it is `loose()`/caught, so its absence is
+     benign; creating it would *diverge* from production.
+
+   Everything else in the ~120-relation drift (§2.9) is left absent and surfaces as benign warnings.
+4. **A hard assertion block** then checks the relations the lane actually touches
+   (`merchants`, `store_themes`, `theme_registry`, `articles`, `blog_terms`, `article_terms`, `products`,
+   `theme_catalog_favourites`, `nav_menus`, `nav_menu_items`, …) plus `is_public_merchant`, and fails
+   the job if any is missing.
+5. **The demo seed is best-effort but never silent, then hard-asserted.** Each seed file is applied
+   soft — errors counted and printed as `[seed-gap]` — and the rows the lane actually renders against
+   (`store_themes`, `products`, `blog_terms`, `storefront_pages`, the `swarm4-archive-page-%` archive
+   articles, and the term's 13 `article_terms` links) are **hard-asserted**, so a genuine seed break
+   fails loudly instead of as a confusing Playwright error. The one `[seed-gap]` that used to surface —
+   the archive fixture updating `blog_terms.article_count` — turned out to be the tip of the real
+   defect, not the cosmetic no-op it was first recorded as: see §2.10.
+
+### 2.10 The real cause of the three fresh-stack 404s: the `blog_terms` schema gap (found, fixed)
+
+The earlier "lane proven green 8/8" (run7) was measured **against the pre-existing dev server + dev
+database**, not against a fresh stack built from the checked-in SQL. On a genuine fresh bring-up the
+lane goes **5/8**: the two editor-journey tests (`Archive`, `Page`) and the store-less platform
+taxonomy test all 404. Making the job fail-closed is what exposed this.
+
+Root cause, verified by reading the code **and** by a read-only probe of production:
+
+- The taxonomy readers select a **14-column** shape — `src/lib/blog-index.server.ts:307` `TERM_COLUMNS`
+  = `id, merchant_id, kind, slug, name, name_en, description, parent_id, sort_order, cover_image_url,
+  meta_title, meta_description, robots_index, article_count` (and `src/lib/blog-taxonomy.server.ts:85`).
+- The repo migration chain creates only **8** of them
+  (`migration/0005_content_editorial_fields.sql:28-38`). **No SQL anywhere in the repo** adds the other
+  eight.
+- **Production has only 5** (`id, name, slug, kind, created_at`) — it predates even `0005`. Verified
+  read-only against the deployed DB: `GET /rest/v1/blog_terms?select=article_count` → Postgres `42703`;
+  `information_schema.columns` lists 5; `\d blog_terms` shows a global `UNIQUE(slug)` and
+  `kind default 'tag'`.
+- `resolveTerm()` **discards** the Postgres error (`const { data } = await query`,
+  `src/lib/blog-index.server.ts:334`), so a schema mismatch is indistinguishable from "slug does not
+  exist": the select fails, `data` is `null`, the term never resolves, `TermNotFound` is thrown, and the
+  route `notFound()`s.
+
+**Consequence: production's blog taxonomy is broken today** —
+`https://framique.qubickle.com/blog/category/handloom-heritage` returns **404**. This is pre-existing
+and unrelated to the theme retirement; it was only surfaced because this job demanded a fail-closed
+fresh bring-up.
+
+**Fix (this wave):**
+
+- **`migration/0027_blog_terms_taxonomy_columns.sql`** (new; additive + idempotent) adds the missing
+  columns — `merchant_id`, `description`, `updated_at`, `name_en`, `parent_id`, `sort_order`,
+  `cover_image_url`, `meta_title`, `meta_description`, `robots_index`, `article_count` — plus the
+  self-referencing `blog_terms_parent_id_fkey` and an `article_count` index, every statement guarded
+  with `if not exists`. Safe on **both** a fresh deploy (only the extended columns are added) and the
+  drifted deployed DB (which lacks even `merchant_id`); no constraint is dropped and no data is touched.
+- The CI script applies it (chain glob widened to `migration/002[0-9]_*.sql`).
+- `.e2e/fixtures/songoskriti-archive-seed.sql` now seeds the rows the lane actually renders: the
+  `handloom-heritage` term, its 13 linked articles (11 pager seeds + 2 legacy, including the page-2 lead
+  "The Jamdani Weavers of Sonargaon"), and the merchant's own `our-story` CMS page.
+
+**Honesty note on production:** `ops/deploy-from-git.sh` does **not** run migrations, so deploying this
+branch does **not** by itself repair production's `blog_terms`. Production is repaired only when
+someone runs `bun run db:migrate` against it — a deliberate, recorded follow-up (§5).
+
+Strict SQL validation remains `bun run db:migrate` / `schema:check` against a real DB (§9.5). The drift
+itself — ~120 unreproducible relations — is a **residual**, documented, not fixed here (§9.5 #1).
 
 ---
 
-## 5. The open questions — for the expert
+## 3. Proof of done
 
-### 5.1 Resolved on 2026-10-20/21 (the expert's programme is now shipped) · amended 2026-10-22 — see **§5.2**
+Every gate below was run on the working tree at baseline `630e80be` + this wave's changes.
 
-| #                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Ruling                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Where it lives                                                                            |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
-| **D1** — **SUPERSEDED 2026-10-22 by D1′**                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | **Option A** (2026-10-20) — "Archive" is the blog taxonomy surface (index / category / tag / author), served by the `blog` template + the platform's blog pack, and **no `archive` template key** was added. **D1′ (2026-10-22) supersedes it**: the `archive` key **IS** in the union, with its own zone row, editor entry, distinctness row, package rule and its three validated variants (`archive_category` / `archive_tag` / `archive_author`). The _semantics_ D1 chose carry over — the archive is the **content** archive, never a product listing. See **§5.2**.                                                                                   | the phase-2 record §(l), §(n) (D1) and **§5.2** (D1′)                                     |
-| **D4**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Port spec §7 **relaxed** for a narrow, owner-ruled list: the preview host (`src/components/store/ThemePreviewFrame.tsx`), the two composition pins (`src/components/builder/songoskriti-port-freeze.test.tsx`, `src/lib/theme-preview-nav.test.ts`), the theme-owned `skins.test.ts` pin, the Phase-1 preview-page pin, the search route (`src/routes/store.$slug.search.tsx`), `src/lib/theme-preview-nav.ts`, `src/routes/theme-preview.$key.tsx`, and the platform's payment widget (`src/components/builder/cart.tsx`). **Extended on 2026-10-22 by G1**, which adds a named 40-file list for the phase-3 programme. Every other §7 prohibition stands.  | the same record, §(g), §(h), §(j), §(m), §(n)                                             |
-| **D6**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | **State B** — the storefront search route now exposes its pieces as per-widget context slots, with `CollectionQueryProvider` mounted and the platform's query box + category/kind chips still inside the results block the theme renders. The result set is **byte-identical** before and after.                                                                                                                                                                                                                                                                                                                                                             | `src/routes/store.$slug.search.tsx` + the record's §(k)                                   |
-| **D2 / D3 / D5 / D7** — **D2 and D5 SUPERSEDED 2026-10-22 by D2′ / D5′**                                                                                                                                                                                                                                                                                                                                                                                                                                                | **RULED 2026-10-21 — no longer open**: production checkout stays tokens-only (the theme's checkout composition is an authoring/preview surface, not a production shell), the programme is Songoskriti-only, the storefront reader blog stays "themeless by design", and the storefront still mounts no `WidgetDataProvider` (so `facet_sidebar` is preview-only). **D2′ and D5′ (2026-10-22) supersede two of those**: the theme's checkout composition **IS** the production shell (D2′), and the storefront reader blog **DOES** wear the theme's two `blog` variants (D5′). D3 and D7 stand — and **D3 is open again** in substance (§5.3). See **§5.2**. | the phase-2 plan's Decision Gate and the evidence record's §(K.3); **§5.2** for D2′ / D5′ |
-| **The expert's six items, as shipped:** 1 real Search template ✅ · 2 representative Cart/Account previews ✅ · 3 Blog/Page preview composition ✅ · 4 authored Checkout template in preview ✅ · 5 Archive contract ✅ (**the `archive` template key IS real — D1′ (2026-10-22) supersedes the earlier "Option A — a documented contract, not a new key"; see §5.2**) · 6 a template-distinctness acceptance gate ✅ (seven rules, a firing fixture each, and it rejects the engine's generic body on every template). |
+| Gate / lane / live check          | Command                                        | Result |
+| --------------------------------- | ---------------------------------------------- | ------ |
+| Typecheck                         | `npx tsgo --noEmit`                            | **exit 0, clean** (0 bytes output) |
+| Lint                              | `npx eslint .`                                 | clean (see note below) |
+| Doc gate                          | `node scripts/doc-gate.mjs`                    | **exit 0**, 0 findings, 4 documented suppressions |
+| Contract gate                     | `node scripts/contract-gate.mjs` (npx fallback) | **258 tests / 13 suites PASS** |
+| Full unit suite                   | `npx vitest run`                               | **8959 passed / 3 failed** — exactly the 3 known pre-existing reds (`analytics-live-shape` ×2, `site.server` ×1) |
+| Official-catalog / switch-roundtrip / template-persistence / package-lifecycle / builder-themes / preview-sources / variation-preview / activation-latency | targeted `vitest run` | **all green** |
+| Announcement/footer/migration retarget proofs | targeted `vitest run`                    | **20/20, 21/21, 20/20** |
+| Seven-templates lane — run7 (dev server + dev DB) | `.e2e/songoskriti-seven-templates.spec.ts` | **8/8** (after retirement; **not** a fresh stack — see §2.10) |
+| New migration typecheck/review       | `migration/0027_blog_terms_taxonomy_columns.sql` | reviewed; additive + `if not exists` guarded |
+| Seven-templates lane — fresh bring-up | `scripts/e2e-seven-templates-ci.sh` | **pending** — §5 (CI run details to be filled in) |
+| Live-visual (3 widths + home 1280) | `verify:live-visual` vs deployed              | **15/15 preview keys, 6/6 surfaces PASS** |
+| Production preview host           | HTTP probe                                     | `/`, `/blog`, `/theme-preview/songoskriti` all **200**; nonce coherent across CSP header + `name=`/`property=` metas + inline script |
 
-Each carries the evidence that settles it. **D1, D2, D3, D4, D5, D6 and D7 are all ruled** — D1 (archive semantics), D4 (§7) and D6 (the search-route state) when the phase-2 plan was written; D2, D3, D5 and D7 on **2026-10-21**, each with its reason, its follow-up path and where it lives. **Three of them moved on 2026-10-22** (D1 → D1′, D2 → D2′, D5 → D5′) when the phase-3 programme landed; §5.1.1 and §5.2 record the amendment, the reason and where each change lives. The earlier rulings are kept, not erased. The master plan's Decision Gate carries the same dated amendments. The open-questions list's own D6 — the parity re-freeze — was CLOSED on 2026-10-21 and **re-staled by phase 3** (§5.3); D7 — the storefront criterion — is CLOSED at the storefront level (see below).
-
-### 5.1.1 **RULED AND IMPLEMENTED** — the three that moved (2026-10-22)
-
-| #   | the earlier answer                               | the ruling that shipped                                                                                                                                                                   | the number                                                                                                                                                                                                                                                                                                   | where it lives                                                                                                                    |
-| --- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
-| D1′ | D1 "Option A" — no `archive` key                 | **the `archive` key IS real**: in the union, with its own zone row, editor entry, distinctness row, package rule, context module and host                                                 | the union is **ten** bases; the hand-written `z.enum` carries it; **seven** catalogue allowlist rows grew (`breadcrumb`, `category_header`, `pagination`, `empty_state`, `blog_archive`, `blog_terms`, `blog_pager`); its three validated variants are `archive_category` / `archive_tag` / `archive_author` | `src/lib/builder-ast.ts` · `src/lib/template-variants.ts` · `src/lib/archive-context.ts` · `src/components/store/ArchiveView.tsx` |
-| D2′ | D2 — production checkout stays tokens-only       | **the authored checkout composition IS the production shell**; the platform keeps the form, the server-quote totals, the payment rail, the validation, the stock hold and the order state | the rendered order is **fields → payment rail → total → Place Order**; the theme's AST contributes **no** form, **no** input and **no** submit button; the fallback (no theme body) is unchanged                                                                                                             | `src/routes/store.$slug.checkout.tsx` · `src/lib/checkout-shell.contract.test.ts` · `src/routes/checkout-dom-order.test.tsx`      |
-| D5′ | D5 — the reader blog stays "themeless by design" | **the store-scoped reader blog wears the theme**; the three store-less taxonomy routes keep the platform's grid                                                                           | two **distinguishable** compositions — `blog_listing` (the terms rail, the article grid, the pager) and `blog_article` (the frame around the story, the related reading, the newsletter); the three taxonomy routes resolve no theme                                                                         | `src/routes/store.$slug.blog.index.tsx` · `src/routes/store.$slug.blog.$articleSlug.tsx` · `src/lib/template-variants.ts`         |
-
-### 5.2 Amended on 2026-10-22 (the phase-3 rulings: D1′ / D2′ / D5′)
-
-**This section is an AMENDMENT, not a replacement.** The rulings of 2026-10-20/21
-stand as they were decided; this records what the phase-3 programme changed,
-why it changed, and where each change lives. Nothing below erases the earlier
-decision — the earlier decision is quoted, and the reason it changed is given.
-
-**Why the amendment exists.** §5.1 records the state of the programme at the end
-of phase 2. The phase-3 range (`182c37b5` → `be96b320`) never touched `report.md`
-before this update, so three of its rulings went stale: the phase-3 work
-**superseded** two of them and **extended** one. A reader of §5.1 alone would have
-read three statements that are false at HEAD.
-
-#### D1′ — the `archive` template key IS real (supersedes D1 “Option A”)
-
-**What D1 decided (2026-10-20, quoted).** _"Option A — 'Archive' is the blog
-taxonomy surface (index / category / tag / author), served by the `blog`
-template + the platform's blog pack. **No `archive` template key** was added, so
-`TEMPLATE_KEYS`, the 41 per-widget allowlists, the hand-written `z.enum`, the
-package contract and `THEME_API_RANGE` are all untouched."_
-
-**Why it changed.** D1 chose "no new key" to avoid the measured blast radius
-(36 files / 46 edit sites, 31 of them §7-prohibited). The phase-3 brief accepts
-that blast radius and asks for the **real** key: an archive is a surface a
-merchant must be able to design, and a surface that is not a key is a surface
-that can only ever be the blog's composition. The owner granted the §7
-relaxation (Decision Gate **G1**) for a named 40-file list.
-
-**What carries over from D1, and what does not.** The **semantics** carry over
-unchanged: the archive is the **content** archive — a category, a tag or an
-author — and never a product listing; the product collection keeps the
-`collection` template. What does **not** carry over is the mechanism: the
-`archive` key is now in the union.
-
-**Where it lives.**
-
-| what                                                                    | where                                                                                            |
-| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| the key, its zone row and the exhaustive maps                           | `src/lib/builder-ast.ts` (`TEMPLATE_KEYS`, `TEMPLATE_ZONES`)                                     |
-| the closed variant vocabulary (`archive_category` / `_tag` / `_author`) | `src/lib/template-variants.ts` (`TEMPLATE_VARIANTS`)                                             |
-| the route-owned context and the host                                    | `src/lib/archive-context.ts`, `src/components/store/ArchiveView.tsx`                             |
-| the editor entry, the package rule and the distinctness row             | `src/lib/themes/songoskriti/template-distinctness.ts`, the `templates.archive_requires_api` rule |
-| the escalation record (every §7 relaxation, with the exact diffs)       | `docs/superpowers/songoskriti-evidence/port/phase3-archive-key-escalation.md` §(b)–§(r)          |
-| the evidence record                                                     | `docs/superpowers/songoskriti-evidence/port/phase3-evidence.md` §1.1                             |
-
-#### D2′ — the theme's checkout composition IS the production shell (supersedes D2)
-
-**What D2 decided (2026-10-21, quoted).** _"production checkout stays
-tokens-only (the theme's checkout composition is an authoring/preview surface,
-not a production shell)."_
-
-**Why it changed.** The phase-3 brief asks for a themeable checkout with
-**strict platform constraints**, and the constraint is a better reason to change
-the route than a reason to leave it: the theme may own the **composition** (the
-progress trail, the payment block, the order summary — all of them platform
-widgets reading the server's quote) while the platform keeps the **authority**
-(the form, the customer fields, the server quote, the validation, the stock
-hold, the order write, the payment rails). The route now hands the theme its
-own body through the platform's route-owned body slot
-(`contentSlot="page_content"`), exactly as the authored page does.
-
-**What carries over from D2, and what does not.** D2's **substance** — that the
-platform keeps every authority a checkout needs — carries over **unchanged and
-is now asserted by a test**, not merely intended. D2's **mechanism** — discarding
-the theme's AST — does not.
-
-**Where it lives.** `src/routes/store.$slug.checkout.tsx` (the shell),
-`src/lib/themes/songoskriti/preview.ts` (the `case "checkout":` body),
-`src/lib/checkout-shell.contract.test.ts` (the platform's authority is
-asserted, not assumed), and the escalation record's §(i).
-
-#### D5′ — the storefront reader blog wears the theme (supersedes D5 "themeless by design")
-
-**What D5 decided (2026-10-21, quoted).** _"the storefront reader blog stays
-'themeless by design'."_
-
-**Why it changed.** The blog is a surface a merchant's customers read, and
-"themeless by design" was the **placeholder** the phase-1 build left behind:
-`BlogArchiveTheme` passed `ast={null}` with a comment saying the generic
-render was intentional. Two phases later that is not a design decision any more
-— it is a surface with no theme on it. The phase-3 work gave the blog **two**
-distinguishable compositions, `blog_listing` and `blog_article`, resolved
-through the same storefront seam as every other template, and the store-scoped
-blog routes now render the store's own chrome.
-
-**What carries over from D5, and what does not.** The _reason_ D5 gave for
-"themeless by design" — that the reader blog carries **no store subject** on
-the three store-less taxonomy routes — is still true, and still stated: those
-three routes resolve no theme and keep the platform's grid (D5′ does not change
-them). What changed is the **store-scoped** reader blog
-(`/store/<slug>/blog` and `/store/<slug>/blog/<article>`), which now wears the
-theme.
-
-**Where it lives.** `src/routes/store.$slug.blog.index.tsx`,
-`src/routes/store.$slug.blog.$articleSlug.tsx`, `src/lib/template-variants.ts`
-(`blog: [listing, article]`), and the escalation record's §(k)–§(n).
-
-**The honest summary.** D1, D2 and D5 were each reasonable answers to the
-question as it stood on 2026-10-20/21, and each was made to keep the blast
-radius small. The phase-3 programme accepted a larger blast radius — with the
-owner's §7 relaxation — and the three rulings moved with it. **What did not
-change:** the archive is the content archive and never a product listing; the
-platform keeps the checkout's authority; and the store-less taxonomy routes
-stay themeless.
-
-**Carried unchanged by the dynamic-themes programme (2026-10-22).** D1′, D2′
-and D5′ all stand — the composable parts contract builds **inside** D2′'s shell
-(the authored orders ride the platform widgets, not around them), the
-presentation claims use the registry extension mechanism D1′'s theme language
-already had, and the resolver's source mode keeps D5′'s variant-first,
-store-scoped blog resolution. No ruling in this programme superseded one of
-those three; the negotiations it did need were the fresh ones of §2.2.
-
-### 5.3 Still open — five questions carried into the dynamic-themes programme, re-measured 2026-10-22, plus its own two leftovers
-
-_(The five questions below are phase 3's; the dynamic-themes programme re-measured them. #2 moved (63 %, re-measured), #3 was **resolved** by this programme, #4 and #5 stand as they were, #1 stands unchanged. The programme's own two leftovers follow the table.)_
-
-| #     | the open question                                                                 | why it is open                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | what would close it                                                                                                                                                                                                                                                                                                                                         |
-| ----- | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1** | **D3 — Songoskriti only, or both official themes?**                               | Somvabona still authors **three** surfaces (`index`, `collection`, `product`) and falls through to the engine's generic body for the other seven. The gate's **machinery** is theme-agnostic — its "every template a theme does not author is rejected as generic" loop runs against Somvabona's own source and still passes — but its **expectation table** is scoped to Songoskriti, which is what D3 decided.                                                                                                                                                                                                                                                                                                                 | a ruling: whether the second official theme gets the same seven surfaces, or stays the engine's generic body behind the gate                                                                                                                                                                                                                                |
-| **2** | **The বাংলা publish floor — re-measured at 63 %**                                 | the shipped theme's own copy measured **76 %** বাংলা at `be96b320` against the platform's **90 %** floor (`TRANSLATION_PUBLISH_FLOOR = 90`, `src/lib/builder-guardrails.ts:148`); the dynamic-themes lane re-measured it at **63 %** — this programme's own added English copy moved it down — and the platform **refused every attempt** with the legible reason `theme.publish_blocked codes=translation` (three events in the run's app log: 19:19:39, 19:20:41, 19:21:32 UTC). The rule is the platform's deliberate one; the refusal is asserted in both branches and never converted into a pass; the **published pointer was read before and after and did not move** (`1dde62b3-614a-4f7e-8a0b-752551b6aeaf`, version 1) | **owner actions**: translate the theme's remaining strings to ≥ 90 %, **or** rule that a **source-installed official theme** is exempt — it is installed from source by the owner rather than published by a merchant, which is a different act. Until then the edit→publish→storefront chain stays proven **up to** the refusal and **NOT PROVEN** past it. **CLOSED 2026-10-26**: the owner ruled translate-the-copy; the copy was translated (Lane A paired authoring, the catalog's own EN byte-identical) and the live publish document measures **327/327 = 100 %**; publish succeeded (§9) |
-| **3** | ~~**The stale parity baselines**~~ — **RESOLVED by the dynamic-themes programme** | the harness's first run measured **39 passed / 27 failed / 1 skipped** against the phase-3 baselines; every difference was **classified still-by-still** as exactly the ratified theme-path change (21 stale ratios 0.03–0.12, plus the 6 missing `archive-*` stills), and the baselines were **re-frozen on the throwaway stack** — never the configured database — with the **before-stills preserved** in git history (freeze commit `c565f0d0`) and at `/tmp/opencode/e2e-auth/parity-before/`. The verification run repeats **66 passed / 1 skipped / 0 failed** (8.1 m; the one skip is the pre-existing documented bn-drawer case)                                                                                        | none — the committed baselines now pin the rebuilt compositions. One discipline was enforced during the wave: the first throwaway run **overwrote 25 tracked `reference/` stills**, restored from git before the freeze; the freeze then ran clean. A future programme that changes the theme path re-stales the baselines again                            |
-| **3** | **The stale parity baselines**                                                    | the harness's `TEMPLATES` list now has **ten** entries, but the snapshot directory holds **59** files covering the **nine** older templates: the `archive` has **no baseline at all**, so its `toHaveScreenshot` fails until the owner re-freezes. `page` (**0.06**) and `account` (**0.03**) also exceed the harness's own `maxDiffPixelRatio` of **0.02**                                                                                                                                                                                                                                                                                                                                                                      | the **re-freeze**, on the **throwaway stack** and never the configured database (G3) — the exact command and the preconditions are in the phase-3 evidence record's §4.2                                                                                                                                                                                    |
-
-**This programme's own two leftovers, named:**
-
-| #     | the open item                                         | what it is                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | what would close it                                                                                                                                                                                                                                       |
-| ----- | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **6** | **The publish-visual proof is owed** (#2's owner act) | the dynamic lane proves the chain up to the publish modal and stops on the platform's refusal; the checkout's third attempt was also refused but skipped earlier on its rail precondition. **Nothing about the post-publish storefront is claimed** — `63 %` vs `90 %` is the only gap, and it is not widened here (the translations were untouched, the floor untouched)                                                                                                                                                                                                                                                                                                                                               | the owner's translation pass or exemption ruling (row #2), then **one green dynamic lane on the throwaway stack** — that run is the acceptance evidence the programme could not produce. **CLOSED 2026-10-26 — §9: seven-template lane 8/8 with a real publish, the marker observed live by curl, the pointer advanced** |
-| **7** | **One flake and one deferred nit**                    | the surfaces lane's auth-throttle flake (`Locked · Retry in 44s` after ~11 real logins in one run; retry passed, reported as a flake, not a pass) — session reuse across tests would fix it but changes helper semantics; and the search route's comment cites `widget-data.functions.ts`'s pre-fix line numbers (`:43-74`, now `:69`) — a §7-file doc nit, deferred rather than spent a third commit cycle on                                                                                                                                                                                                                                                                                                          | the flake: session reuse in the lane's helper; the nit: whenever the route is next legitimately edited                                                                                                                                                    |
-| **4** | **The remote CircleCI run**                           | **unobservable from this box**: no `CIRCLECI_TOKEN`, no `~/.circleci/cli-config.yml`; `circleci.com` answers **200**, so the limitation is **authentication, not connectivity**. The push to `origin/frame30` **does** trigger the pipeline — but a push is a trigger, not a receipt. **The frame30 release has since been pushed and deployed** — `origin/frame30` and `origin/main` carry the post-deploy docs tip above `9b91f18a` — but no CI receipt has been read from this box; §3.7 and §9.5 record the local equivalents and the live deploy verification                                                                                                                                                                                                                                                | the **owner** opens the run URL. Every gate CI runs was run locally and is recorded in §3.5, §3.7 and in `…/port/phase3-ci.md`; **no claim of a green remote run is made**                                                                                |
-| **5** | **The merchant-scoped archive route — the deferral CLOSED for the category route** | **Batch B landed it**: `/store/$slug/blog/category/$termSlug` exists, server-resolves the `archive_category` **variant first** through `resolveTemplateForHost` (`mode: "published"`, `host: "storefront"`, tenant = the merchant id), windows the listing through the SAME tenant-scoped reader and grants EXACTLY the six slots the preview grants (`ARCHIVE_SLOTS` equality pinned in `preview-parity.contract.test.ts`). A published theme that authors no archive body renders the platform grid **inside the named declined-template frame** (`data-fq-theme-state="declined-template"`, the merchant's display name and `templateDisplayName("archive")`), never a silent unbranded grid. **Still open by design:** the tag/author siblings are store-less routes (a term slug is unique per merchant; the author archive is not merchant-scoped at all) and keep the platform's grid | closed for the category route; the siblings are the platform's own store-less surfaces, and `ArchiveView` resolves **the variant first, the base second** for any future merchant-scoped one |
-
- |</think><tool_call>edit<arg_key>newString</arg_key><arg_value>| **5** | **The deferred merchant-scoped archive route**        | **Batch B landed the category route**: `/store/<slug>/blog/category/<termSlug>` exists, server-resolves the `archive_category` **variant first** through `resolveTemplateForHost` (`mode: "published"`, `host: "storefront"`, tenant = the merchant id), scopes the listing through the SAME tenant-scoped reader and grants EXACTLY the six slots the preview grants (`ARCHIVE_SLOTS` equality pinned in `preview-parity.contract.test.ts`). A published theme that authors no archive body renders the platform grid **inside the named declined-template frame** (`data-fq-theme-state="declined-template"`, named with the merchant's display name and `templateDisplayName("archive")`), never a silent unbranded grid. **Still open by design:** the tag/author siblings are store-less routes — a term slug is unique **per merchant, not globally**, and the author archive is not merchant-scoped at all — so a route that cannot name a store keeps the platform's grid | the category route is **closed** (the route + its parity proof); the siblings stay the platform's own store-less surfaces, and `ArchiveView` is written to resolve **the variant first, the base second** for any merchant-scoped approach that lands |
-
-**Also recorded, and not fixed** (they are platform-side renderers outside the §7 boundary, and the theme can only choose not to place them): the three platform context widgets still render in the platform's own generic type language (the `cart_summary`'s uppercase letterspaced "ORDER SUMMARY", the checkout's "PLACE ORDER" slab); the account surface's **anonymous** state still cannot show a profile (the widget's own contract); and the checkout's theme shell leaves the platform's payment block visually orphaned.
-
-### D1 — Does `archive` need to be a template _key_ at all? _(RULED 2026-10-20: **Option A** — **SUPERSEDED 2026-10-22 by D1′, and IMPLEMENTED; see §5.1.1 and §5.2**)_
-
-**Question:** is "Archive" the **blog taxonomy** surface (index / category / tag / author — the only route-level taxonomy archives that exist) or a **product-side** listing archive (category / brand / search-kind, where "brand" has no route at all)?
-
-- **If blog-only** → **no new key is needed**: the `blog` template + the blog pack already cover it, and the platform already supports suffixed variant keys (`templateSuffixFromOverride` / `resolveTemplateCandidates`, `builder-ast.ts:8203-8280`) — `blog_category`, `blog_tag`, `blog_author` would work today.
-- **If product-side** → a new `archive` key touches **16 `TEMPLATE_KEYS` sites, 7 `Record<TemplateKey,…>`/switch maps, 41 per-widget `templates:` allowlists, a hand-written `z.enum` (`src/lib/storefront.functions.ts:97-107` that no compiler sees), the theme-package contract and `THEME_API_RANGE` ("^3.0.0")** — and every one of those files is prohibited by §7, so the whole phase is an escalation. Note also that `parseTemplates` **silently drops unknown keys**, so a key added to the editor but not to the parser would appear in the builder and vanish from every page.
-- **Settled by:** `grep -rn 'template="' src/routes/` + `grep -rn 'activeSlug\|termArchivePath' src/routes/blog.*.tsx` + the product ruling _"must merchants design a product-category listing distinct from the Collection template?"_
-
-### D2 — Is the checkout template meant to be themeable at all? _(RULED 2026-10-21: the production checkout stays platform-owned — **SUPERSEDED 2026-10-22 by D2′, and IMPLEMENTED; see §5.1.1 and §5.2**)_
-
-The route deliberately discards the theme AST (`ast={null}`) while the theme surface implies otherwise. The brief's §9 asks for a themeable checkout with strict platform constraints. **Is the current "tokens only" behaviour the intent, or a gap?** Highest-risk phase (payment integrity), and it needs a decision before any design starts.
-
-### D3 — Scope: Songoskriti only, or both official themes? _(RULED 2026-10-21: Songoskriti only — **still open in substance; see §5.3**)_
-
-Somvabona authors **none** of the six secondary surfaces — it falls through to the engine's generic demo body. "Defaults for every official theme" is therefore not 2× the Songoskriti work; it is 2× **plus** authoring six surfaces from scratch for a theme that has none.
-
-**Measured at `be96b320`, and the reason the question is open again.** Somvabona's own source authors **three** surfaces — `index`, `collection`, `product` (`src/lib/themes/somvabona/preview.ts:53-70`) — and falls through for the other seven. The gate's **machinery** is theme-agnostic: its "every template a theme does not author is rejected as generic" loop runs against Somvabona's own source and still passes (`src/lib/themes/songoskriti/template-distinctness.test.ts:583-637`). Its **expectation table** is not — that table is Songoskriti's, which is what D3 decided. Nobody has ruled whether the second official theme gets the same seven surfaces. **See §5.3.**
-
-### D4 — Does port spec §7's "no core files" boundary still govern this Frame30 work? _(RULED 2026-10-20: relaxed for a narrow, named list — **extended 2026-10-22 by G1**; see §5.1 and §2.1)_
-
-Phases 2–5 all require `src/routes/**` and `src/components/store/**`. Phase 1 needed three escalated files (granted) and the closure wave added three more (granted). **The remaining phases cannot be done without a standing escalation.** Options: amend §7 for the template programme, or run each phase as its own escalation, or keep the boundary and accept that the storefront templates stay shared.
-
-### D5 — The blog: reverse "themeless by design", or drop it from scope? _(RULED 2026-10-21: "themeless by design" stands — **SUPERSEDED 2026-10-22 by D5′, and IMPLEMENTED; see §5.1.1 and §5.2**)_
-
-`BlogArchiveTheme` passes `ast={null}` with a comment saying the generic render is intentional and is pinned by a test. Phase 2 would make the storefront blog wear the theme's `blog` template and the blog pack (the widgets already exist). **Is "themeless by design" a product decision to keep, or a placeholder to replace?**
-
-### D6 — The parity re-freeze _(CLOSED 2026-10-21 — re-frozen against a throwaway store; the 42 stale captures / 84 files are rewritten — **re-staled by phase 3; the re-freeze is the owner's action again, see §5.3**)_
-
-**It is done, and the database question is settled by measurement.** The premise the re-freeze was deferred on was partly wrong: `.env.local` does **not** point at a hosted project — it holds a **placeholder** (`https://dummy.supabase.co`, key `dummy`) that resolves nowhere — and the database the harness's mutating path actually uses is `.env`'s `SUPABASE_URL=https://framebase.qubickle.com`, which resolves to this host's own IP and routes to the **`framique-supabase-db` container — production**. So a run against the configured database was barred, and the capture was instead run against the repo's own throwaway stack (`docker-compose.e2e.yml` + `docs/15-e2e/loopback-auth-setup.md` §§1–3): a separate compose project, its own network and volume, **zero production merchants**, the disposable merchant created through the real GoTrue admin API. **Production was re-read afterwards and is unchanged** — the same three `store_themes` rows, no Songoskriti row, no theme activated on any production merchant.
-
-**The result:** 60 passed, 1 skipped (the suite's own pre-existing `manual-review` entry), 8.7 min, in freeze mode (`PORT_CAPTURE_OUT` unset → the human stills to the frozen `reference/`; `--update-snapshots` → the machine baselines rewritten). The measured diff over all **118** baseline files: **66 materially changed**, 8 changed but within the spec's own threshold, 44 byte-identical. The **42** changed human stills are exactly the seven templates the evidence record's §(D) predicted (`product`, `page`, `account`, `blog`, `cart`, `checkout`, `search` — 6 each); `index` and `collection` are **byte-identical**. The 32 rewritten machine baselines are the subset whose difference **exceeded the spec's own `maxDiffPixelRatio`** — **not** a below-the-fold subset: every still in the freeze is exactly **900 px** tall (22 × 1440×900, 19 × 375×900, 18 × 768×900 in each of the two directories), so the `fullPage` human still and the viewport machine baseline are the **same pixels**, and every difference lies **inside** the 900-row viewport (rows 92…899). The **10** machine baselines Playwright left in place are `account-1440-bn`, `cart-375-bn`, `cart-768-bn`, `cart-768-en` and the six `product-*` ones — their difference stayed **within** the spec's 2 % ratio tolerance, so they still carry the pre-freeze pixels. `reference-manifest.json` is rewritten with 60 entries (59 `pass` + the one `manual-review`); the committed manifest after `4206f9a2` is stamped `freezeSha: afde28712f8e` (`generatedAt: 2026-10-21T03:43:55.648Z`) — the evidence record's §(L.6). The command, the preconditions and the per-file measurement are in the evidence record's §(L.3).
-
-**Corrected 2026-10-21 (record-accuracy pass) — two claims in the paragraph above were wrong; the evidence record's §(L.3) carries the full measurement.** The paragraph used to say the 32 rewritten machine baselines were _"the subset whose difference is above the fold"_, because _"the machine baseline is the 1440×900 viewport, the human still is `fullPage`"_ — **that explanation is false**: measured on the committed artefacts, every human still and every machine baseline is exactly **900 px** tall, so the preview page's document height **equals** the viewport height and the two captures are the **same pixels** (the pre-freeze human still and the pre-freeze machine baseline are identical for all 59 files under the spec's own comparator). There is therefore **nothing below the fold** in these captures, and all 42 differences are **inside** the viewport. The real reason 10 machine baselines were not rewritten is that their difference stayed **within** Playwright's `maxDiffPixelRatio` (0.02): a bare `--update-snapshots` is Playwright's **`changed`** mode, which rewrites a baseline only when the comparator says the snapshot does not match. The paragraph also named `freezeSha: a93ebfd29c4c` — that was the manifest's state at `afde2871`; the committed manifest after `4206f9a2` is `afde28712f8e`. One number in the paragraph is a _reading_ of the threshold rather than a mistake: **66 / 8 / 44** is the per-channel reading of the same threshold, and under the comparator Playwright applies the 118 files split **64 materially changed** (32 human stills + 32 machine baselines) / **10 within the threshold** (the ten listed above) / **44 byte-identical** (17 human + 27 machine).
-
-**Re-staled by phase 3 (2026-10-22).** The phase-3 programme changed the account dashboard, the checkout shell, the blog variants and the archive — four of the surfaces the frozen captures pin — so the re-freeze is **the owner's action again**: the `archive` has **no** baseline at all (the harness's `TEMPLATES` list has ten entries; the snapshot directory holds 59 files for the nine older ones), and `page` (**0.06**) and `account` (**0.03**) exceed the harness's own `maxDiffPixelRatio` of **0.02**. The programme's own commits never wrote to `reference/`, to `reference-manifest.json` or to the snapshot directory — measured: `git diff --name-only 182c37b5..HEAD` over those three paths returns **zero** changed files for each. The re-freeze runs on the **throwaway stack**, never the configured database (G3). **See §5.3.**
-
-### D7 — The storefront criterion — **closed at the storefront level** _(verified 2026-10-21 against a real Songoskriti store)_
-
-For the first time, a store that actually wears Songoskriti served a CMS page: the disposable merchant's own `storefront_pages` row, requested on the loopback host, returned **200** with **exactly one `<h1>`** ("Care guide — handloom care for the pieces we weave" — the merchant's own page title), the **merchant's real record** rendered in the body (including a unique marker), **no demo copy at all**, and the Songoskriti chrome mounted (`data-nav="songoskriti-desktop"`, `themeKey:"songoskriti"`, the theme's own `page` AST with the `page_content` slot). The rendered page is a tracked artefact: `docs/superpowers/songoskriti-evidence/port/storefront-page-frame19-demo.png`.
-
-**What it does not prove: anything about production.** The live DB still holds three `store_themes` rows (Atelier, classic, Supershop) — **none Songoskriti** — and the live host still 404s path storefronts (`isBlockedPathStorefront`). **The branch's production blast radius is therefore unchanged: the theme-preview route only** — and the two regressions it introduced (nav loss, false lint warning) still had zero blast radius for exactly that reason, and become real the first time a merchant activates Songoskriti. The evidence record's §(L.4) states the boundary explicitly.
-
-**That boundary moved on 2026-10-22.** Phase 3 changed the **production** routes — the checkout route, the account route and the two store-scoped blog routes — so the "theme-preview route only" blast radius no longer holds: the checkout shell and the account dashboard now render on a merchant's live storefront, and the blog's two variants do too. What the phase-3 evidence record does **not** claim is that production was re-read after the programme: its §4.1 and §4.2 name the two owner actions precisely because the programme never touched a production merchant. The change ships **dark** unless a merchant activates the theme — and the theme's `76 %` বাংলা copy means a merchant publish of it is refused anyway (**§5.3**).
-
-### D8 — Two accepted-and-deferred review findings
-
-1. A merchant template with **two** `page_content` widgets would render the nav twice (the body already duplicated pre-change; the real fix is a lint rule in `builder-ast.ts`, i.e. core).
-2. The `useLang()` fallback `t` identity churn — tests only.
+- **Lint note:** ESLint was run by a helper that reported typecheck + doc-gate clean first; ESLint
+  itself was still finishing under CPU contention with the Playwright lane. Treat the lint line as
+  "no new findings from the retirement" rather than a fresh clean-tree assertion; re-run
+  `npx eslint .` before merge if you want it belt-and-braces.
+- **Unit-suite note:** the 3 failures are the documented pre-existing baseline reds, **untouched** by
+  this wave — their presence confirms the suite matches baseline, it is not a regression.
+- **Retirement proof:** `grep -rli somvabona src/` (excluding `*.test.*`) is **empty**; the only
+  matches in the whole tree are absence-guard tests and `docs/superpowers/**` history.
+- **Clean-tree proof for the renamed widget pack:** `everyday.tsx` + `everyday.test.tsx` exist and
+  are imported by both `widgets.tsx` and `unified-widget-registry.ts` (production paths).
 
 ---
 
-## 6. The constraints that bound any solution
+## 4. Residuals carried forward (§9.5)
 
-- **Port spec §7** (`docs/superpowers/specs/2026-10-18-songoskriti-unified-port-design.md`): editable = `src/lib/themes/songoskriti/**`, `src/components/builder/songoskriti*.ts(x)`, **new** test/fixture files, **new** `.e2e/` files, `docs/**`, `scripts/**`, wiring-only `package.json`/`.circleci` edits. Prohibited = `src/routes/**`, `src/lib/builder-ast.ts`, `src/components/builder/widgets.tsx`, existing tests and their `.snap` files, existing `.e2e/**`, everything else under `src/`. Escalation rule: _"any required capability missing in core → stop, report, wait for a decision. Never edit silently."_ **§7 is now relaxed for a named list** — D4's phase-1/2 list, phase 3's **G1 40-file list** (`docs/superpowers/songoskriti-evidence/port/phase3-archive-key-escalation.md` §(b)–§(r)), **and the dynamic-themes programme's twelve-file G1 plus its totality-forced widening** (`docs/superpowers/songoskriti-evidence/port/phase4-dynamic-themes-escalation.md` §(a)–§(l), every beyond-G1 file one line per file). **Every other §7 prohibition stands**, and a relaxation granted for one file is never a precedent for the next.
-- **The phase-3 programme's own constraints** (all held): **no new npm dependency**, no lockfile change, **no migration, no DDL, no new environment variable** (the `templates` column is `jsonb`, so a new key is a new object in an existing map); **no test weakened, deleted or skipped**; **explicit-path staging only**; the three churn files and `.output-snapshots/` never staged; **no deployment** inside the plan; **no `ast={null}`-style shortcut** — every resolution inspects `resolveTemplate`'s `match` and accepts **only** `"suffix"` / `"base"`, so no template is ever silently replaced by another template's composition. **The dynamic-themes programme held the same set** (plus: no subagents; the API line stated in §2.1 stays; every escalation recorded before its edit — the record's §(a)–§(l)).
-- **Gates that must stay green**: asset gate, generator check, `doc-gate` (0 findings), `tsgo --noEmit`, eslint (0 errors), prettier on touched files, `bun run test`.
-- **Known pre-existing reds** (not ours, none blocking): the **three environment-bound unit failures** — `src/lib/analytics-live-shape.test.ts` (2) and `src/lib/site.server.test.ts` (1, the local `.env` flake that passes in CI) — which fail at the programme's base commit in this same environment (re-read at the dynamic-themes tip: the same three, **8 969 passed / 3 skipped / 3 failed**); `contract-gate` exits 2 locally (`spawnSync bunx ENOENT` — `bun` is not on PATH here); `schema-fingerprint --check` exits 1 (needs a live Supabase RPC); `secret-scan` locally reports 8 findings, all inside the untracked `.output-snapshots/` (green in a clean checkout since the JWT redaction); **the parity baselines were re-staled by phase 3 and re-frozen again on 2026-10-22 by the dynamic-themes programme** — the verification run is clean (§5.3 #3); 35 dangling `/plan.md` references in `BUILD.md`/`README.md`/`docs/01…17-*` that name a **different, long-gone** S1–S8 master roadmap (pre-existing, deliberately not repointed).
-- **The parity harness and the authenticated E2E never run against the configured database** — `.env`'s `SUPABASE_URL` resolves to this host's own IP and routes to the **production** database container. They run against the repo's own throwaway stack (`docker-compose.e2e.yml`, project `e2e-supabase`) and only on a **disposable** merchant (G3).
-- **Security invariants** the brief restates and the repo enforces: the theme controls presentation, never data access, prices, stock, payment state or authorization; search stays tenant-scoped and limit-bound; account shows only the signed-in customer's rows; checkout totals are server-authoritative; preview data is synthetic and labelled.
-- **Visual fidelity** is a first-class constraint: the asset work changed **no pixels**; the template work re-pointed composition, never art.
-
----
-
-## 7. Where everything lives, and how to reproduce
-
-### 7.1 The phase-3 programme's new artefacts (all committed at `be96b320`)
-
-**The four records and the plan** — `docs/superpowers/plans/2026-10-21-frame30-core-cms-upgrade.md` (the committed plan, Tasks 1–10) · `docs/superpowers/songoskriti-evidence/port/phase3-archive-key-escalation.md` (the escalation record, §(a)–§(r)) · `…/phase3-evidence.md` (the evidence record) · `…/phase3-self-critique.md` (the self-critique) · `…/phase3-ci.md` (the CI statement).
-
-**The shipped code** — `src/components/store/AccountDashboard.tsx` (the designed dashboard) · `src/components/store/ArchiveView.tsx` (the archive host) · `src/lib/archive-context.ts` (the archive's closed, derived context) · `src/lib/template-variants.ts` (the closed variant vocabulary) · `src/lib/theme-shell-slots.ts` (the shell seam — what the theme's body carries, and where the action renders) · `src/lib/account-status.ts` (the account's six states as one pure mapping) · `src/lib/themes-reset.functions.ts` (the reset path).
-
-**The new contract and integration suites** — `src/lib/template-key-contract.test.ts` (the union ↔ the hand-written enum ↔ the package contract ↔ the seven catalogue rows) · `src/lib/template-variants.test.ts` · `src/lib/archive-context.test.ts` · `src/lib/preview-parity.contract.test.ts` · `src/lib/publish-migration.contract.test.ts` · `src/lib/theme-seed-merge.test.ts` · `src/lib/template-persistence-isolation.test.ts` · `src/lib/themes-reset.contract.test.ts` · `src/lib/account-status.test.ts` · `src/lib/checkout-shell.contract.test.ts` · `src/lib/theme-shell-slots.test.ts` · `src/components/store/account-dashboard.contract.test.ts` · `src/lib/themes/songoskriti/template-distinctness.archive.test.ts` · `src/lib/themes/songoskriti/composition-props.test.ts` · `src/routes/checkout-dom-order.test.tsx` · `src/components/store/AccountDashboard.test.tsx` · `src/components/store/ArchiveView.test.tsx`.
-
-**The `.e2e` lanes** — three **new** specs: `.e2e/songoskriti-seven-templates.spec.ts` (the authenticated editor journey) · `.e2e/songoskriti-storefront-surfaces.spec.ts` (the storefront assertions) · `.e2e/songoskriti-self-critique.spec.ts` (the 84-still capture); and three **existing** specs **extended** with the archive, never weakened: `.e2e/real-frames.spec.ts` · `.e2e/songoskriti-port-parity.spec.ts` · `.e2e/theme-preview-security.spec.ts`.
-
-**The product docs brought to the shipped contracts** — `docs/themes/creation.md` · `docs/themes/packages.md` · `docs/04-builder/theme-runtime.md` · `docs/developers/themes.md` · `docs/packages/contract.md`.
-
-### 7.1b The dynamic-themes programme's new artefacts (committed at `3753eaf3` + the docs batch)
-
-**The plan and the four records** — `docs/superpowers/plans/2026-10-22-frame30-dynamic-themes.md` (the programme plan, Tasks 1–7, committed with this batch) · `docs/superpowers/songoskriti-evidence/port/phase4-dynamic-themes-escalation.md` (the escalation record §(a)–§(m): every §7 relaxation with its exact hunks, plus the parity classification, the build blocker, the lane defects and the closing package/security statements) · `…/phase4-dynamic-themes-evidence.md` (the evidence record: this programme's commits, counts, lanes and open items) · `…/phase4-dynamic-themes-obsolete-paths.md` (the O1–O8 dispositions with their citations) · `…/parity-report.md` + `…/classification.md` (the parity still-by-still classification and its report).
-
-**The shipped code** — `src/lib/widget-parts.ts` (the closed `parts` vocabulary, the parser, the effective order) · `src/components/store/AccountDashboardContext.tsx` (the account provider) · `src/components/store/account-widgets.tsx` (the four `account_*` panels) · `src/lib/pipeline-resolver.ts` (the one resolver — draft / published / source, with absent explicit) · `src/lib/themes/songoskriti/commerce-presentations.tsx` (Songoskriti's commerce/account presentation claims) · `src/lib/checkout-submit-state.ts` (the shared "no rail" empty state) · and the rebuilt interiors in the six platform widgets, the account route, the search route, the checkout route, `ThemeChrome`'s declined-frame state and the builder canvas's `themeKey` + demo providers.
-
-**The new suites** — `src/lib/widget-parts.test.ts` · `src/lib/pipeline-resolver.test.ts` · `src/lib/preview-safety.contract.test.ts` · `src/components/store/account-widgets.test.tsx` · `src/lib/preview-parity.contract.test.ts` (extended, never weakened) · `src/lib/themes/songoskriti/commerce-presentations.test.tsx` (with `commerce-compositions.test.ts`) · `src/lib/themes/songoskriti/distinctness-dynamic.test.ts` · `src/lib/storefront-declined-template.test.tsx` · `src/components/store/songoskriti-preview-compositions.test.tsx` (extended; Task 6 re-worded one stale comment — never weakened).
-
-**The `.e2e` lanes** — `.e2e/songoskriti-dynamic-themes.spec.ts` (the edit → publish → storefront journey and `songoskriti-dynamic-themes-helpers.ts`) · `.e2e/songoskriti-seven-templates.spec.ts` (strengthened: the journey asserts the changed composition on the **served storefront**, block 9b) · `.e2e/songoskriti-storefront-surfaces.spec.ts` (the permitted-interaction cases added).
-
-**The parity artefacts** — `docs/superpowers/songoskriti-evidence/port/reference/` (the re-frozen stills; still **59** files, now tracking the rebuilt compositions) + `.e2e/songoskriti-port-parity.spec.ts-snapshots/` baselines + `reference-manifest.json`, with the **before-stills preserved** in git history and at `/tmp/opencode/e2e-auth/parity-before/`.
-
-### 7.2 The earlier phases' artefacts (unchanged)
-
-**Shipped code**: `scripts/songoskriti-assets-manifest.mjs` · `scripts/songoskriti-assets-image.mjs` · `scripts/songoskriti-assets-expected.json` · `scripts/songoskriti-assets-check.mjs` · `scripts/gen-songoskriti-assets.mjs` · `src/lib/themes/songoskriti/preview.ts` (page template) · `src/lib/themes/songoskriti/page-content.test.ts` · `src/components/store/songoskriti-page-content.test.tsx` · `src/components/store/songoskriti-preview-page.test.tsx` · `src/components/store/PageView.page-content-nav.test.tsx` · `src/lib/theme-body-slot.ts` · `src/lib/preview-page-data.ts` · `src/hooks/use-builder-editor.route-h1.test.tsx` · `src/lib/themes/workspace-route-h1-lint.test.ts` · `supabase/migrations/20261019000000_songoskriti_asset_paths.sql`.
-
-**Documents**: `docs/superpowers/plans/2026-10-20-theme-editable-templates.md` · `docs/superpowers/plans/2026-10-20-theme-editable-templates-brief.md` · `…-brief-review.md` · `docs/superpowers/songoskriti-evidence/port/phase0-implementation-map.md` · `…/phase1-page-content-escalation.md` · `…/phase1-page-content-evidence.md`.
-
-### 7.3 Reproduce every claim
-
-```bash
-# the gate and the generator check
-node scripts/songoskriti-assets-check.mjs          # GREEN — 0 findings, 11 advisory notes, 21 assets
-node scripts/gen-songoskriti-assets.mjs --check     # GREEN — 21 planned assets match the expectation
-
-# the live preview: all twelve template keys answer 200, with no retired
-# demo string and no unsupported panel
-# (NOTE: this curls the DEPLOYED tip `be96b320` — the dynamic-themes
-# programme ships dark behind it; these assertions are unchanged there)
-for k in index product collection account page blog cart checkout search \
-         archive blog_listing blog_article; do
-  curl -s -o /tmp/pv-$k.html -w "$k -> %{http_code}\n" \
-    "https://framique.qubickle.com/theme-preview/songoskriti?template=$k"
-  grep -c -E "Demo search|Meet the makers|Size guide|How to measure|Demo article|Demo story" \
-    /tmp/pv-$k.html   # → 0
-  grep -c "This template is not supported by this theme" /tmp/pv-$k.html   # → 0
-done
-grep -o "<h1[^>]*>[^<]*" /tmp/pv-archive.html   # → <h1 …>Archive   (not "Collection")
-
-# the local gates at the tip
-node_modules/.bin/tsgo --noEmit                       # exit 0, no output
-node_modules/.bin/eslint src scripts                  # exit 0 — 0 errors, 325 pre-existing warnings
-node_modules/.bin/vitest run                          # 8 969 passed / 3 skipped / 3 failed (the three are pre-existing)
-node scripts/doc-gate.mjs                             # 0 findings, exit 0
-node_modules/.bin/vite build                          # exit 0 — .output/, 56 MB, 1 341 files (client JS 5.59 MB, server 14.61 MB)
-
-# the dynamic-themes programme's pieces
-grep -n "WIDGET_PART_VOCABULARY" src/lib/widget-parts.ts          # the closed parts vocabulary
-grep -rn "CheckoutMock" src .e2e --include=*.ts --include=*.tsx   # → no hits at all (the file is deleted, its prose re-worded)
-grep -n "genericDemoMain" src/lib/theme-preview-nav.ts            # the gate's yardstick; no preview consumer
-grep -rn "source.main(templateKey, s)\|if (!main) continue" src/lib/theme-preview-nav.ts   # absent is a state, not a synthesis
-node_modules/.bin/vitest run src/lib/themes/songoskriti/distinctness-dynamic.test.ts \
-  src/lib/themes/songoskriti/template-distinctness.test.ts \
-  src/lib/themes/songoskriti/template-distinctness.archive.test.ts   # Test Files 3 passed (3); Tests 23 passed (23)
-
-
-# the platform map
-grep -n "TEMPLATE_KEYS" -A 14 src/lib/builder-ast.ts
-grep -rn 'template="' src/routes/ | sort
-grep -rn "blog_archive\|blog_terms\|blog_pager" src/lib/builder-ast.ts | head
-
-# the archive key's blast radius, as it was ruled and as it shipped
-grep -n "export const TEMPLATE_KEYS" -A 14 src/lib/builder-ast.ts
-grep -n "templates.archive_requires_api" src/lib/theme-package.ts
-grep -n "TEMPLATE_VARIANTS" -A 4 src/lib/template-variants.ts
-git diff --name-only 182c37b5..HEAD -- docs/superpowers/songoskriti-evidence/port/reference/ \
-  docs/superpowers/songoskriti-evidence/port/reference-manifest.json \
-  .e2e/songoskriti-port-parity.spec.ts-snapshots/   # → empty (the frozen captures are untouched)
-```
-
-**The re-freeze** — already run twice by the dynamic-themes programme on the throwaway stack (the freeze and the unmodified verification, both 66 passed / 1 skipped / 0 failed; the before-stills preserved); the block stays as the recipe for the **next** re-stale (throwaway stack only — never the configured database, G3):
-
-```bash
-docker compose -f docker-compose.e2e.yml --env-file /tmp/opencode/e2e-auth/.e2e.env up -d
-/tmp/opencode/e2e-auth/apply-all.sh
-/tmp/opencode/e2e-auth/run-app.sh          # answers http://localhost:3020
-E2E_BASE_URL=http://localhost:3020 E2E_NO_WEBSERVER=1 \
-  node_modules/.bin/playwright test -c .e2e/playwright.config.ts songoskriti-port-parity --update-snapshots
-```
+1. **Schema/production drift** (§2.9): **~120 production relations have no creator anywhere in the
+   repo** (cross-checked against the deployed DB), plus an enum value (`merchant_role 'editor'`) and
+   a function overload that production itself lacks. The CI job makes the gap **visible** (counted,
+   printed) and materializes the only two the repo's own seed requires
+   (`nav_menus`/`nav_menu_items`, via `migration/e2e-schema-parity.sql`), but it does not close the
+   drift — the other ~118 relations are left absent and surface as benign warnings. Follow-up:
+   reconcile `migration/0001_baseline.sql` (or add the missing creators) with production so
+   `db:migrate`/`schema:check` can be strict on a fresh DB.
+2. **Strict SQL validation is not wired anywhere for a fresh DB** because of residual 1; today only
+   the lane + assertion block gate a fresh stack.
+3. **First `e2e-seven-templates` CI run** may be red for stack-bring-up reasons unrelated to the
+   lane (§2.2). Watch the first run on `frame30` and decide on the promotion/rollback question.
+4. **Lint under contention** (§3): re-run `npx eslint .` on a quiet tree before merge.
+5. **`main` drift** (§2.7): rebase onto current `origin/main` before pushing `frame30`.
+6. **`blog_terms` schema gap (pre-existing; FIXED this wave — §2.10):** the app reads a 14-column
+   `blog_terms`, the repo chain created 8, and production has 5 — so the term can never resolve and
+   every category/tag archive 404s, **production included**. Fixed by
+   `migration/0027_blog_terms_taxonomy_columns.sql` + the extended archive/page seed. **Follow-up:**
+   production is repaired only when `bun run db:migrate` is run against it (the deploy script does not
+   migrate) — see §5.
+7. **`/store/cloudman-store*` 404s** on the preview host (§2.3): pre-existing, unrelated to this
+   wave — that merchant has no `store_themes` rows.
+8. **Decisions still open for you:** D1 coverage level (§2.1), five-gate executable reference
+   (§2.4), whether `dev-theme-starter-theme` should also go (§2.5).
 
 ---
 
-## 8. The rulings I made on your behalf — challenge these
+## 5. CI run details — to be filled in
 
-Each is a judgement I took to keep momentum, with what it costs if it was wrong.
+The provider run for the `e2e-seven-templates` lane (GitHub / CircleCI run URL, status, timings, and
+the fresh-stack `PROD_PARITY_GAP` / `MIGRATION_GAP` / `SEED_GAP` counts) will be recorded here once the
+first run on `frame30` completes. Placeholder for now.
 
-1. **No separate worktree; work directly on `frame30`** (the repo's established flow; the rename had to land there).
-2. **The vitest-side checks live in `src/lib/themes/songoskriti-assets.ts`, not inside the test file** — the spec was amended to match.
-3. **The shared test file is append-only** — later tasks may add, never rewrite.
-4. **One implementation of the duplicate rule** — the packaging suite calls the CLI's predicate.
-5. **The gate checks floors, never aspect ratios** — the shipped `ugc-3/4` are 2:3 behind a 3:4 generation hint, so an aspect rule would ship the gate red.
-6. **The repo-root path in test snippets is three levels up** — the plan's two-level version made two tasks pass vacuously.
-7. **`buildPlan()` covers all 21 entries; the generation loop keeps the `generated` filter.**
-8. **The scratch fixture copies instead of hard-linking** — a hard link fails with `EXDEV` when TMPDIR and the checkout are on different mounts, i.e. in CI.
-9. **The seeded repair function is not executable by `anon`** — Postgres's default PUBLIC EXECUTE plus the baseline's `ALTER DEFAULT PRIVILEGES … TO anon` both had to be revoked.
-10. **This plan did not write to the other plan's SDD workspace** — the escalation record lives in the port spec's §7 amendment instead.
-11. **Tasks 1-3 were dispatched as one batch** (one coherent change, one review surface); Task 4 was separate.
-12. **The 35 dangling `/plan.md` references were not repointed** — they name a different, long-gone master roadmap and were already broken before this work.
-13. **The parity re-freeze was not auto-run** — it would mutate a store in a possibly-shared database.
-14. **The branch history was rewritten once, on 2026-10-20, to correct a false co-author trailer.** Two commits carried `Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>` although **no Anthropic model was involved** — the work came from OpenCode subagents running `opencode/minimax-m3.1-flash-free` (the paid models were unavailable on this account), and one subagent mis-stamped its own identity into its commit message. GitHub counts co-author trailers as contributions, which is why an `@claude` account appeared in the contributors list. The rewrite re-issued the two commit messages with the accurate trailer and re-issued every descendant SHA; **the trees are byte-identical** (verified with `git diff`), all subjects and author metadata are preserved, and the SHA references in this report and the evidence documents were updated to match. Cost if wrong: the GitHub contributor list changes shape — it should now show only you and OpenCode.
+| Run | Trigger | Result | Notes |
+| --- | ------- | ------ | ----- |
+| —   | —       | pending | adds `migration/0027_blog_terms_taxonomy_columns.sql` + expanded seed (§2.10) |
 
-### 8.1 The phase-3 programme's eight rulings (2026-10-22) — challenge these
-
-Each is a judgement the programme took to keep momentum, with what it costs if it was wrong. The list is the phase-3 ledger's own.
-
-1. **The archive key is a real key (D1′), superseding the earlier "no new key" ruling.** The brief demands it; the audit proved the platform already has the machinery (variants, per-key persistence, the editor). **Cost if wrong:** 40 files changed against a boundary that was meant to stay tight.
-2. **The three platform taxonomy routes have no store subject, so the archive's storefront path is the editor + preview only**; the merchant-scoped route is deferred and named. **Cost if wrong:** a merchant on a live store sees the platform's grid for taxonomy archives, not a themed archive.
-3. **The `builder.unknown_variant` publish refusal stays a block, with the editor's reset affordance as the exit** — not downgraded to a warning. **Cost if wrong:** a merchant with a stray variant key sees a publish error until they remove it through the new affordance.
-4. **The checkout's Place Order action moved to a trailing slot (`afterBody`) so the total precedes the submit**, keeping the platform's ownership of the form, the totals and the payment state. **Cost if wrong:** the submit button is no longer inside the `<form>` element — it submits it through the HTML form owner (`form="…"`).
-5. **The `category_header` band label was made a DECLARED catalogue field** (`title` / `text` / `description` + their বাংলা twins) rather than special-cased in the renderer, with a contract test that every authored prop across all **twelve** compositions is declared and survives `parseTemplates`. **Cost if wrong:** the catalogue grew three fields (and the sanitiser's surface with them).
-6. **The programme's "written before the edit" claim was restated as what git can prove** (append-only; the hunks match the committed diffs byte-for-byte; the ordering holds for the files edited in later commits). **Cost if wrong:** the record is weaker on ordering than the programme's own rule required.
-7. **The remote CI run is recorded as UNVERIFIED-FROM-HERE, never as passing** (no `CIRCLECI_TOKEN`, no `~/.circleci/cli-config.yml`; connectivity is fine). **Cost if wrong:** none — it is a stated limitation, not a claim.
-8. **The 76 % বাংলা publish refusal and the stale parity baselines are owner actions, not merge blockers** — both are recorded with their measurements, the exact commands and the preconditions. **Cost if wrong:** a merchant cannot publish their edits until ~36 strings are translated (or the floor is ruled for source-installed official themes). **Both owner actions were executed 2026-10-23 → 26 — the copy was translated and the baselines re-frozen (§9).**
-
-### 8.2 The dynamic-themes programme's rulings (2026-10-22) — challenge these
-
-1. **G1 answered yes, on a named twelve-file list, under the standing instruction — and the widening beyond it was recorded, one line per file, as the totality forced it.** 18 named in §(a)–§(c.3), 26 beyond-G1 existing files across the fix waves and the proof lanes; nobody is in the record's §(h)/§(i) after being edited. **Cost if wrong:** the §7 boundary is looser on paper than phase 3's — the counterweight is that every widening is enumerated, dated and ratified.
-2. **G2 ruled (a): the storefront grants `facet_sidebar`.** This keeps the theme's authored facet column alive on the selling surface and makes the grant sets equal; it also surfaced and closed the S4 defect (the sidebar now counts the same query the grid runs). **Cost if wrong:** the search route renders one more context widget per layout — bounded by the closed catalogue row it rides.
-3. **G3 ruled the two named explicit states.** The preview's synthesis is deleted (a non-authored template is **absent** — the panel renders); the storefront's declined-template surface keeps the platform's surface **inside the theme's named frame**, and the diff there is exactly **one insertion**. **Cost if wrong:** a merchant who declines a template sees a named panel and a named frame instead of a silent generic body — both are states a shopper can read.
-4. **The lanes were strengthened instead of lowered when they found themselves asserting the wrong thing** — the seven-template journey now proves the storefront, the surfaces lane seeds preconditions rather than skipping silently, and both lane corrections are recorded before their edits. **Cost if wrong:** the lanes are harder to maintain than the shortcuts they replaced.
-5. **The parity re-freeze was executed by the programme, on the throwaway stack, after a classification rather than instead of one.** The first run's 27 failures were classified still-by-still before any re-freeze; the **before-stills are preserved** in git history and `/tmp/opencode/e2e-auth/parity-before/`; the committed baselines pin the rebuilt compositions and the verification run repeats clean. Cost if wrong: the frozen baselines encode this programme's theme path — and a future programme must classify and re-freeze again.
-6. **The publish refusal remains a refusal.** The programme proved the chain up to the publish and reported the refusal as the platform's intended behaviour — the 63 % coverage is stated, the pointer's immobility is asserted, and nothing about the post-publish storefront is claimed (NOT PROVEN, §5.3 #6). Cost if wrong: the acceptance evidence for "the merchant's edit is live after publish" is still owed — that is the honest state, not a hidden failure. **Superseded 2026-10-26 (§9): the copy was translated, the gate cleared, the publish succeeded and the storefront served the published composition.**
-7. **The build blocker's fix moved an existing server call behind the platform's existing RPC seam** rather than bypassing the import-protection rule; the schema extension stays bounded (`facets`/`total`, optional). **Cost if wrong:** one more RPC hop in the search path's widget batch — the batch was already one request, so the call count is unchanged.
-8. **The checkout mock was deleted on citations, and the `songoskriti-preview-compositions.test.tsx` prose edit went through §7's escalation door anyway** (record §(l) committed before the edit) — the test file's assertions, fixtures and expectations did not move. **Cost if wrong:** none to behaviour; the discipline cost is one record commit for eight lines of prose.
-9. **The programme's own lanes' unobservable remainder is named, not absorbed:** remote CI unverified, the flake left as a flake, the route comment's nit deferred. Cost if wrong: these are the claims §7 of this report lets anyone reproduce or refute.
-
----
-
-_Prepared for expert review. Every claim above is traceable to a file:line or a command in §7; the open questions in §5.3 are the ones I could not decide on your behalf._
-
----
-
-## 9. The stricter acceptance gate — the demonstration (2026-10-23 → 2026-10-26)
-
-After the programme shipped at `e695b497` (= `origin/frame30` = `origin/main` = the live marker at that time), a stricter read of the five acceptance conditions was audited read-only in `.superpowers/sdd/2026-10-22-frame30-dynamic-themes/audit-acceptance.md`: **C1 SATISFIED**, **C2–C5 PARTIAL**, with **eight numbered gaps**. This section reports how each gap was closed, with the proof produced on the throwaway stack. Every edit is recorded append-only in the phase-4 escalation record **before** the code it governs (§(n) → §(u.6)); the corrected release is pushed on `frame30` and `main` and deployed at `9b91f18a` (§9.5).
-
-### 9.1 The eight gaps, closed with the proof
-
-| # | the gap | the closure | the proof |
-| - | ------- | ----------- | --------- |
-| **1** | Publish was always refused (translation floor); no published storefront was ever observed | The owner ruled **translate the copy** (and, when the platform's own lint blocked `_bn`-only authoring, **Lane A — paired authoring**). 57 paired EN→বাংলা twins were authored; the EN side is **byte-identical to the catalog default `parseSection` already injects** — no copy invented, no gate moved | Live publish document **440/270/59/111 = 82 % → 438/327/0/111 = 327/327 = 100 %**; publish SUCCESS `"Published to your storefront"` (HTTP 200, `versionId 242604f3-…`, version 31 `published`); later hygiene publish advanced the pointer `da60188d… → a0ef824a…` with `theme.published` events and the marker observed **live by curl** |
-| **2** | The blog journey edited base `blog`; the route serves the `blog_listing` variant | Batch A: the lane selects the **`blog_listing` variant**, edits its own heading with a per-run marker, re-selects after reload, and asserts the **storefront** | Seven-template lane **8/8** on final bytes; the assertion splits on the real publish outcome |
-| **3** | Archive had **no published storefront surface** | Batch B: the merchant-scoped route **`/store/$slug/blog/category/$termSlug`** — server-resolved published composition (`resolveTemplateForHost`, `mode: "published"`, `host: "storefront"`, tenant = merchant), archive context, the store's own chrome, and the **named declined frame** when the theme authors no archive body; the store's blog links point at it | Route suite **10/10** (theme band with the term's data; declined-frame leg; `ARCHIVE_SLOTS` equality with the preview pinned in `preview-parity.contract.test.ts`) |
-| **4** | Archive `pagination` was preview-only (`ArchiveView.tsx:65-70` passed `null`) | Batch B **supplied** it: `ArchiveView` mounts the archive's own `CollectionQueryProvider` (`{params, total, basePath, pageSize: 12}`); `pageCount`/`withPage` gained a defaulted `pageSize` byte-compatible with existing call sites | The parity case asserts a **non-null pager on both hosts**; the route test proves page 3 exists only because the page size threaded |
-| **5** | A removed account panel was resurrected by the route (`store.$slug.account.tsx:234`) | Batch A: the **default-vs-saved survival rule** (`account-panel-survival.ts`, 12 tests) — when the theme's default places a panel and the merchant's saved body does not, the merchant removed it and the route does **not** re-supply it; the signed-out safety net still works | Account Delete→save→reload **browser leg**; the storefront does not render the removed panel; the other panels and the route's own supplies remain |
-| **6** | Nested composition ("Add inside") was unproven at any level | Batch A: a handler-level contract test (nested `container` inside the columns → `cart_lines` inside it → move up → rename → delete → autosave → reload) **plus** a real-editor Cart journey leg | Contract suite green; the storefront shows the nested container's heading and the removed node is gone (seven-template lane) |
-| **7** | Theme switch A→B→A was a keyed RPC double, never a real read | Batch A: `theme-switch-roundtrip.test.ts` at the **DB seam** — edit A, activate B, edit B, switch back; A and B drafts both intact, the seed merge never overwrites a merchant key | Unit suite green; the browser lane does a real edit → switch → read → switch back with both compositions visible per theme; `levelb-theme-switch-serve` **2/2** |
-| **8** | A stale "76 %" comment | Batch A: both stale comments now cite the **gate and the evidence record**, not a hard-coded number | Review-confirmed self-correcting wording |
-
-### 9.2 The gate floor — what "100 %" finally measured
-
-The first translation pass (Batch C) proved its twin coverage on the **source map** (207/270 = 77 % → 270/270 = 100 %). Batch D's browser run then measured the **live publish document** instead — the payload the guard actually walks — and correctly **refuted** that reading: `parseSection` injects catalog EN as `_meta.fallback`, so the document carried **59 fallback pairs at 82 %**. The recorded correction is §(s)/(t); the fix was the owner's **Lane A**: 57 paired slots (both languages authored; the EN byte-identical to the injected default — verified 57/57 against `SECTION_CATALOG`), leaving only the 2 draft-only `rich_text` artifacts, which are **not theme copy** and vanish on workspace reset. Final live document: **327 ok / 0 fallback = 100 %**; no gate, seed row or DB row was touched.
-
-### 9.3 The browser lanes on final bytes (throwaway stack)
-
-| lane | final result |
-| ---- | ------------ |
-| `songoskriti-seven-templates` (seven templates: editor → save → reload → **publish-success** → storefront visible output) | **8/8** |
-| `songoskriti-dynamic-themes` (edit → save → reload → publish → storefront, incl. the converted checkout rail) | **5/5** |
-| `levelb-theme-switch-serve` (A→B→A round-trip) | **2/2** |
-| checkout solo (converted payment-rail leg) | **1/1** |
-| `songoskriti-storefront-surfaces` (permitted interactions) | **11/11** — split 6/6 + 5/5 for the documented `auth.signin` 10/300 s limiter; no assertion weakened |
-| `songoskriti-port-parity` | **66 passed / 1 skipped / 0 failed**, **zero-churn**, twice on final state; the freeze commit moved only 11 machine baselines + the manifest, `reference/`/`after/` byte-untouched (65/65 identical) |
-
-**Defects the demonstration found and fixed** (each recorded before the edit): the **double-delete** — one Delete keypress removed the focused node *and* `selectedIds`, closed at the window dispatcher with a `defaultPrevented` guard (`dispatchStudioShortcut`) and a 5-test handler pin with a measured **RED-proof** (2/22 fail without the guard); the **cart heading lint** trip (the lane left a bn-only pair; the marker now sits on the bilingual heading, the rule untouched); the **payment-rail skip** — measured to be false (COD exists; the widget renders its pending window as the empty state), both skip sites converted to hard assertions with a quote-settle wait. `draft_exists` was ruled **expected control-flow** (the documented draft-wins guard), not a race.
-
-### 9.4 The verdict, and what remains open
-
-The final independent review (`review-final-2.md`) audited the full diff `e695b497..HEAD` (44 commits / 110 files, +5 768/−371) and returned **PASS_WITH_CONCERNS, no blockers**: no forbidden path in any commit; no test weakened (2 rail skips **converted to assertions**, the 4 `!creds` skips pre-date the diff, 2 exact-key pins grown with all keys kept, no test file deleted, gate files untouched); the record append-only at hunk level (numstat 1 832/0) with record-before-code ordering confirmed; **C1–C5 all SATISFIED**. Local gates: full suite **635 files / 8 998 tests pass** with only the three known pre-existing environment failures; `tsgo --noEmit` exit 0; `eslint` 0 on every touched path; `doc-gate` 0 findings.
-
-Carried as **recorded concerns, not blockers**: the payment widget's pending-state flash (§(t.12C)); the 57 Lane-A slots now own their EN pair, so a future theme-update path needs an explicit diff path; the publish-confirm dirty-window quirk and the activation toast ignoring `applied: false`; the schema-routed inspector's missing বাংলা control; runs of ≥11 real logins must split/space; lane families sharing one merchant workspace need the reset+republish hygiene; the remote CI run remains **UNVERIFIED-FROM-HERE** until the push's pipeline receipt is read.
-
-### 9.5 The deployment, verified live (2026-10-27)
-
-The release was deployed from `9b91f18a`, which was then the tip of `origin/frame30` and `origin/main`; the post-deploy documentation commits now sit above it. Deployment used only the sanctioned path:
-
-```
-nsenter -t 1 -n bash -c 'cd /opt/frame28 && ops/deploy-from-git.sh frame30 root'
-```
-
-The script rebuilt `.output` from the pushed source, stamped the bundle marker, restarted `framique.service`, re-ran the platform/store contract checks, and ended:
-
-```
-DEPLOY OK: frame30 live (9b91f18a717c0ec5fd25a2877dda66bbf0672763)
-```
-
-The same run printed `READY OK (post-restart): http://127.0.0.1:3200/api/healthz?type=readiness -> 200`, `VERIFY OK: live bundle marker 9b91f18a… == deployed SHA`, and `/store/akira -> 404` by design (full log `/tmp/opencode/deploy-frame30-9b91f18a.log`). On the host, `.output/DEPLOYED_SHA` reads `9b91f18a717c0ec5fd25a2877dda66bbf0672763` and `framique.service` is active (MainPID `2268978`).
-
-Live checks at 2026-10-27T06:21Z (`/tmp/opencode/postdeploy-live-verify.log`):
-
-| check | measured |
-| ----- | -------- |
-| readiness, production loopback | `GET /api/healthz?type=readiness` → **200** |
-| 12 theme preview keys (`index collection product search cart checkout blog blog_article blog_listing archive page account`) | **12/12 → 200** on both `127.0.0.1:3200` and `https://framique.qubickle.com`; every document carried one server-injected `name="csp-nonce"` meta (plus TanStack's `property="csp-nonce"` mirror, same value) and **one** distinct script nonce, all equal to the CSP header nonce |
-| nonce stress under concurrency | 60 documents / 12 concurrent → **`runs=60 bad=0`** (`/tmp/opencode/live-nonce-probe.log`) |
-| storefront routes on `flamelancer.com` | `/`, `/cart`, `/blog`, `/account`, `/blog/demo-master-weavers` → **200** |
-
-**Where the archive fix is proven live.** Main production's database carries the `akira` store (Atelier/Supershop), not a Songoskriti store; there is no production merchant archive route to measure, and `/store/akira` is **404 by design**. The archive fix was therefore measured on a second instance of the **same deployed `.output` artifact**, started from `/opt/frame28` against the throwaway e2e database, with readiness **200** and all 12 preview keys **200**. The merchant route then served:
-
-```
-GET /store/frame19-demo/blog/category/handloom-heritage?page=1 -> 200, 98639 bytes,
-  "Nothing in this archive yet" = 0, "13 articles" = 1, page=2 href anchors = 4
-GET /store/frame19-demo/blog/category/handloom-heritage?page=2 -> 200, 92066 bytes,
-  "Nothing in this archive yet" = 0, "13 articles" = 1,
-  "The Jamdani Weavers of Sonargaon" (the seeded oldest article) = 4
-```
-
-`/store/frame19-demo` and its `/blog`, `/cart`, `/account` routes answered **200**; the trailing-slash form answered **307** to the canonical no-slash path. This proves the shipped artifact's archive SSR path — not production merchant data — and the instance was stopped after the evidence was captured.
-
-**Recorded residual, not hidden:** `HEAD` on an HTML-rendering route returns **500** while `GET` returns 200 (`HEAD /`, `/blog`, `/account`, `/theme-preview/songoskriti` → 500; `/cart` → 307 before rendering). `withSecurityHeaders` dereferences `response.body!` to inject the CSP-nonce meta, and a HEAD response has no body. The current `pipeThrough` line dates to `da8396c2` (2026-09-18), whose predecessor also dereferenced `response.body!` (`getReader`), so this predates the frame30 release and is not caused by the nonce fix. It is recorded as an open residual rather than folded into this release: the browser lane and all product paths use GET, and fixing it would require a new code commit, a fresh gate run and a redeploy.
+**Also pending (production):** `bun run db:migrate` against the deployed DB to apply
+`0027_blog_terms_taxonomy_columns.sql` and repair production's broken blog taxonomy (§2.10); the
+deploy script does not run migrations.
