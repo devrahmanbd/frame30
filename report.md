@@ -1,6 +1,6 @@
 # Frame30 / Songoskriti closeout — one official theme
 
-**Date:** 2026-10-31 · **Branch:** `frame30` · **Baseline HEAD:** `630e80be` · **Deployed SHA (pre-wave):** `9b91f18a`
+**Date:** 2026-10-31 · **Branch:** `frame30` · **Baseline HEAD:** `630e80be` · **Deployed SHA:** `64172796` (was `9b91f18a` pre-wave)
 
 Songoskriti is now the **only** official theme. Somvabona and the starter theme are retired, the
 evidence is committed, a **blocking** CI job runs the seven-template lane on a throwaway stack, and a
@@ -308,6 +308,7 @@ Every gate below was run on the working tree at baseline `630e80be` + this wave'
 | Live-visual (3 widths + home 1280) | `verify:live-visual` vs deployed              | **15/15 preview keys, 6/6 surfaces PASS** |
 | Production `blog_terms` schema apply | `0027` as `supabase_admin`, single file        | **exit 0**; 5 → **16 columns**, index + FK present, 0 rows untouched, PostgREST `400` → **200** (§5) |
 | Production preview host           | HTTP probe                                     | `/`, `/blog`, `/theme-preview/songoskriti` all **200**; nonce coherent across CSP header + `name=`/`property=` metas + inline script |
+| Deployment                        | `ops/deploy-from-git.sh frame30 root`          | **live at `64172796`**; marker == SHA, readiness 200, every contract check passes, live-visual 15/15 + 6/6 (§6) |
 
 - **Lint note:** ESLint was run by a helper that reported typecheck + doc-gate clean first; ESLint
   itself was still finishing under CPU contention with the Playwright lane. Treat the lint line as
@@ -347,8 +348,16 @@ Every gate below was run on the working tree at baseline `630e80be` + this wave'
    404 is a content gap (0 term rows), not a schema error — see §5.
 7. **`/store/cloudman-store*` 404s** on the preview host (§2.3): pre-existing, unrelated to this
    wave — that merchant has no `store_themes` rows.
-8. **Decisions still open for you:** D1 coverage level (§2.1), five-gate executable reference
-   (§2.4), whether `dev-theme-starter-theme` should also go (§2.5).
+8. **`ops/deploy-from-git.sh` can abort a healthy deploy on a transient TLS error** (§6): `check()` runs
+   `curl` under `set -euo pipefail`, so a single `curl` 35 on the `microscrop.shop` unmapped-host branch
+   ends the script with a nonzero status *after* activation and *without* entering `rollback`. The
+   custom-domain loop directly above it is retry-wrapped for exactly this reason; that branch is not.
+   Suggested follow-up: apply the same bounded retry there (or capture the code without letting `set -e`
+   see the failure). Observed once, on the 2026-10-31 deploy; the deploy itself was live and every check
+   passed on re-run.
+9. **Decisions still open for you:** D1 coverage level (§2.1), five-gate executable reference
+   (§2.4), whether `dev-theme-starter-theme` should also go (§2.5), and whether to take the deploy-script
+   retry fix in residual 8 now or in a separate ops change.
 
 ---
 
@@ -423,3 +432,43 @@ That last row is the honest outcome and should not be read as an unfinished fix:
 errors (the full `TERM_COLUMNS` select returns `200`), but production has **zero** `blog_terms` rows, so
 `resolveTerm` correctly finds nothing and the route answers a genuine 404. Seeding production taxonomy is
 a content decision, deliberately excluded here (D3, §2.3). Nothing was seeded.
+
+---
+
+## 6. Deployment (2026-10-31)
+
+Deployed with the sanctioned path, from the pushed branch — never from the live tree:
+
+```
+bash ops/deploy-from-git.sh frame30 root        # origin/frame30 = 64172796
+```
+
+Build ran in the ephemeral worktree `/tmp/opencode/deploy-frame30`; the live `.output/` was snapshotted
+to `.output-snapshots/snap_20261031T121930Z_6417279` before rsync; `framique.service` restarted and passed
+readiness on the first poll.
+
+| Deploy assertion | Result |
+| ---------------- | ------ |
+| bundle marker `.output/DEPLOYED_SHA` | **`64172796b9a7be0c32c08c2c74b72905f7f035ec`** == deployed SHA |
+| readiness `127.0.0.1:3200/api/healthz?type=readiness` | **200** |
+| `framique.service` | **active** |
+| `/` , `/blog` , `/theme-preview/songoskriti` , `/api/public/ph/x` | **200 / 200 / 200 / 200** |
+| `/store/*` path-storefront gate (6 slugs + 8 deep routes) | all as expected (404, and `flame-fashion-bd` → **301** primary) |
+| `flamelancer.com` `/` + `/cart` | **200** (attempt 1), cert identity covers the host (8/8 samples) |
+| `microscrop.shop` unmapped-host gate | **404** (3/3) |
+| Live-visual `verify:live-visual` | **15/15 preview keys, 6/6 browser surfaces, exit 0** |
+
+**One wrinkle, recorded because it matters:** `ops/deploy-from-git.sh` exited **35**, not 0, *after* the
+new artifact was live and ready. `microscrop.shop`'s DNS is alive again, so the script took the direct
+`check "https://microscrop.shop/" "404"` branch — and `check()` runs `curl` inside `set -euo pipefail`, so
+a one-off TLS connect error (`curl` 35) killed the script instead of recording a retry. Consequence: the
+script never printed `DEPLOY OK` and never ran the final `/api/public/ph/x` assertion, but it also never
+entered `rollback` — the deploy stayed live and correct. Every check the script skipped was re-run
+manually and passes (table above). Notably the custom-domain loop above it *is* retry-wrapped in raw curl
+for exactly this reason; the `microscrop.shop` branch is the one that is not. Flagged as a follow-up
+(§4), not fixed under this wave.
+
+**Live-visual detail worth stating exactly:** the gate prints `nonce=missing`, which refers only to the
+optional `x-csp-nonce` response header (not emitted). The actual nonce contract passes: one CSP header
+nonce, one `meta[name="csp-nonce"]`, one `meta[property="csp-nonce"]` and exactly one distinct script
+nonce, all identical (`nonce-VwCVC0umpDS6Oroo5Z3fBQ` on the sampled document).
