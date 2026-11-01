@@ -111,6 +111,12 @@ const PAGE_SLUG = process.env["E2E_PAGE_SLUG"]?.trim() || "our-story";
 /** The disposable blog term on the throwaway stack. */
 const TERM_SLUG = process.env["E2E_TERM_SLUG"]?.trim() || "handloom-heritage";
 /**
+ * A LIVE published article on the throwaway stack (the archive seed's first
+ * row), used by the Blog article journey's real storefront route.
+ */
+const ARTICLE_SLUG =
+  process.env["E2E_ARTICLE_SLUG"]?.trim() || "swarm4-archive-page-1";
+/**
  * That term's seeded LIVE published count (the archive-leg article count the
  * route renders, "13 articles"). The stack ships 2 published articles for
  * the term, and BOTH pagers legitimately render nothing below 13 (the
@@ -383,6 +389,11 @@ async function previewSurface(page: Page, journey: Journey): Promise<void> {
 type Journey = {
   /** the studio's label for the template */
   label: string;
+  /**
+   * the BASE template button to open when it differs from `label` (a variant
+   * journey opens its base first, then selects the variant)
+   */
+  openLabel?: string;
   /** the SECOND-level template variant the journey selects, when it needs one */
   variant?: string;
   /** the widgets the editor MUST show for that template */
@@ -938,9 +949,98 @@ const JOURNEYS: readonly Journey[] = [
     },
   },
   {
+    label: "Blog article",
+    openLabel: "Blog",
+    template: "blog_article",
+    variant: "blog_article",
+    layers: ["Page content", "Blog archive", "Newsletter signup"],
+    // Deeper nested editing on the article FRAME (Swarm 4 follow-up): the
+    // article composition authors no `Columns`, so the leg supplies its own
+    // container at the composition root and nests the per-run marker inside
+    // it — the same nested proof Cart proves on the theme's shipped Columns.
+    nested: {
+      marker: `Frame30 article nested — ${RUN}`,
+      removedName: `Article nested to delete ${RUN}`,
+    },
+    // The variant's OWN newsletter heading: `newsletter` declares a
+    // "Heading" control (`src/lib/builder-ast.ts:1494`), and the article
+    // body is the only place the theme authors that block.
+    marker: {
+      layer: "Newsletter signup",
+      label: "Heading",
+      value: `Frame30 article newsletter — ${RUN}`,
+    },
+    preview: async (page) => {
+      // The article FRAME: the related-content rail and the newsletter ...
+      await expect(
+        page.getByText("More from the journal", { exact: true }).first(),
+        "the theme's blog article frame renders its related-content rail in the preview",
+      ).toBeVisible({ timeout: 30_000 });
+      await expect(
+        page.getByText("From the journal, weekly", { exact: true }).first(),
+        "the theme's blog article frame renders its newsletter in the preview",
+      ).toBeVisible({ timeout: 30_000 });
+      // ... and NOT the listing's terms rail (the two variants are told
+      // apart by their section sets — `src/lib/themes/songoskriti/preview.ts`
+      // documents the split).
+      expect(
+        await page.getByText("Browse the journal", { exact: true }).count(),
+        "the article frame does not render the listing's terms rail",
+      ).toBe(0);
+    },
+    route: `/store/${STORE}/blog/${ARTICLE_SLUG}`,
+    storefront: async (page, publish) => {
+      // The theme's article frame around the platform's OWN article body:
+      // the route-owned `page_content` slot carries the seeded article.
+      await expect(
+        page.getByText("More from the journal", { exact: true }).first(),
+        "the theme's article frame renders its related-content rail on the storefront",
+      ).toBeVisible({ timeout: 30_000 });
+      await expect(
+        page
+          .getByRole("heading", { name: "Swarm4 Archive Seed 1", exact: true })
+          .first(),
+        "the platform's own article title renders inside the theme's frame",
+      ).toBeVisible({ timeout: 30_000 });
+      const newsletter = page.getByText(`Frame30 article newsletter — ${RUN}`, {
+        exact: true,
+      });
+      const nested = page.getByText(`Frame30 article nested — ${RUN}`, {
+        exact: true,
+      });
+      if (publish.outcome === "published") {
+        await expect(
+          newsletter.first(),
+          "the variant's merchant-authored newsletter heading is on the storefront",
+        ).toBeVisible({ timeout: 30_000 });
+        await expect(
+          nested.first(),
+          "the nested text block's merchant-authored heading is on the article storefront",
+        ).toBeVisible({ timeout: 30_000 });
+      } else {
+        expect(
+          await newsletter.count(),
+          "a refused publish did not half-apply: the newsletter marker is not on the article storefront",
+        ).toBe(0);
+        expect(
+          await nested.count(),
+          "a refused publish did not half-apply: the nested marker is not on the article storefront",
+        ).toBe(0);
+      }
+    },
+  },
+  {
     label: "Checkout",
     template: "checkout",
     layers: ["Heading", "Checkout steps", "Payment methods", "Cart summary"],
+    // Deeper nested editing on the checkout composition (Swarm 4
+    // follow-up): the theme ships a `Columns` layer here too, so the nested
+    // leg runs on the merchant's real Columns — the same proof Cart carries,
+    // on the surface where a broken nest costs a sale.
+    nested: {
+      marker: `Frame30 checkout nested — ${RUN}`,
+      removedName: `Checkout nested to delete ${RUN}`,
+    },
     preview: async (page) => {
       // The preview serves the theme's shell on the host's demo order
       // (measured §(u.1)G): the progress trail and the payment block. The
@@ -956,7 +1056,7 @@ const JOURNEYS: readonly Journey[] = [
       ).toBeVisible({ timeout: 30_000 });
     },
     route: `/store/${STORE}/checkout`,
-    storefront: async (page) => {
+    storefront: async (page, publish) => {
       // The theme's SHELL around the platform's own primitives: the
       // progress trail, the payment block …
       await expect(
@@ -976,6 +1076,22 @@ const JOURNEYS: readonly Journey[] = [
         page.getByRole("button", { name: /Place Order/i }).first(),
         "the platform's own place-order action is still the platform's",
       ).toBeVisible({ timeout: 30_000 });
+      // The journey's NESTED edit, judged by the platform's REAL outcome —
+      // the exact per-run marker, never a stale run's text.
+      const nested = page.getByText(`Frame30 checkout nested — ${RUN}`, {
+        exact: true,
+      });
+      if (publish.outcome === "published") {
+        await expect(
+          nested.first(),
+          "the nested text block's merchant-authored heading is on the checkout storefront",
+        ).toBeVisible({ timeout: 30_000 });
+      } else {
+        expect(
+          await nested.count(),
+          "a refused publish did not half-apply: the checkout nested marker is not on the storefront",
+        ).toBe(0);
+      }
     },
   },
   {
@@ -1131,7 +1247,7 @@ for (const journey of JOURNEYS) {
     //      A journey that addresses a SECOND-level variant selects it right
     //      after the base button: the strip only offers the variant once the
     //      base is selected (`builder.tsx:1695`).
-    await openTemplate(page, journey.label);
+    await openTemplate(page, journey.openLabel ?? journey.label);
     if (journey.variant) {
       const variant = page.locator(
         `[data-template-variant="${journey.variant}"]`,
@@ -1247,23 +1363,68 @@ for (const journey of JOURNEYS) {
     if (journey.nested) {
       const nestedMarker = journey.nested.marker;
       const removedName = journey.nested.removedName;
+      // The parent container: the theme's OWN "Columns" when it authors one
+      // (Cart, Checkout), otherwise a container this journey inserts at the
+      // composition root (the blog-article frame authors no Columns). A text
+      // block can only be nested inside a container, so the generalised leg
+      // supplies the container instead of skipping the deeper proof for
+      // templates the theme did not ship one on — the assertion set is the
+      // same on both parents.
       const columnsItem = page
         .getByRole("treeitem")
         .filter({ hasText: "Columns" })
         .first();
-      await expect(
-        columnsItem,
-        "the composition carries its Columns layer",
-      ).toBeVisible({ timeout: 30_000 });
-      await columnsItem
+      const hasColumns = (await columnsItem.count()) > 0;
+      let parentItem = columnsItem;
+      let parentLayers = 0;
+      let parentName = "Columns";
+      if (hasColumns) {
+        await expect(
+          columnsItem,
+          "the composition carries its Columns layer",
+        ).toBeVisible({ timeout: 30_000 });
+      } else {
+        // No "Add inside" parent is armed here, so the tray inserts at the
+        // composition root; the new container is the selected node. It is
+        // renamed straight away so the second insert below addresses THIS
+        // container, never the nested one (or another run's).
+        await insertContainer(page);
+        parentLayers = 1;
+        parentName = `Nested parent ${RUN}`;
+        const insertedParent = page.locator(
+          '[role="treeitem"][aria-selected="true"]',
+        );
+        await expect(
+          insertedParent,
+          "the journey's own container is the navigator's selected layer",
+        ).toHaveCount(1, { timeout: 30_000 });
+        await insertedParent.dblclick();
+        const parentRename = page.getByLabel("Layer name", { exact: true });
+        await expect(
+          parentRename,
+          "the navigator opens its own rename input for the journey's container",
+        ).toBeVisible({ timeout: 30_000 });
+        await parentRename.fill(parentName);
+        await parentRename.press("Enter");
+        parentItem = page
+          .getByRole("treeitem")
+          .filter({ hasText: parentName })
+          .first();
+        await expect(
+          parentItem,
+          "the navigator shows the journey's own container name",
+        ).toBeVisible({ timeout: 30_000 });
+      }
+      await parentItem
         .locator("xpath=..")
         .getByRole("button", { name: "Add inside" })
         .click();
       await insertContainer(page);
       const afterNest = await layerNames(page);
-      expect(afterNest.length, "the nest adds exactly one layer").toBe(
-        afterInsert.length + 1,
-      );
+      expect(
+        afterNest.length,
+        "the nest adds exactly one layer inside the journey's parent",
+      ).toBe(afterInsert.length + 1 + parentLayers);
 
       const nestedItem = page.locator(
         '[role="treeitem"][aria-selected="true"]',
@@ -1272,6 +1433,35 @@ for (const journey of JOURNEYS) {
         nestedItem,
         "the inserted container is the navigator's selected layer",
       ).toHaveCount(1, { timeout: 30_000 });
+
+      // The reorder needs a SIBLING INSIDE THE PARENT. `nudge` is a
+      // within-parent move (`src/lib/builder-tree.ts:230-244`): at index 0 of
+      // a single-child parent it is a documented no-op (`builder-tree.test.ts`
+      // — "nudge a -1" returns the tree unchanged). The theme's own Columns
+      // already holds two children, so the swap is real there; a container
+      // this journey inserted at the root is a first child, so the leg gives
+      // it a named sibling first and the assertion still measures a REAL
+      // reorder instead of asserting a no-op as if it were one.
+      if (!hasColumns) {
+        await nestedItem.dblclick();
+        const siblingRename = page.getByLabel("Layer name", { exact: true });
+        await expect(
+          siblingRename,
+          "the navigator opens its own rename input for the nested container",
+        ).toBeVisible({ timeout: 30_000 });
+        await siblingRename.fill(`Nested sibling ${RUN}`);
+        await siblingRename.press("Enter");
+        await parentItem
+          .locator("xpath=..")
+          .getByRole("button", { name: "Add inside" })
+          .click();
+        await insertContainer(page);
+        await expect(
+          page.locator('[role="treeitem"][aria-selected="true"]'),
+          "the sibling container is the navigator's selected layer",
+        ).toHaveCount(1, { timeout: 30_000 });
+      }
+
       const nestMoveUp = nestedItem
         .locator("xpath=..")
         .getByRole("button", { name: "Move up" });
@@ -1305,14 +1495,10 @@ for (const journey of JOURNEYS) {
         "the nested heading control holds the marker",
       ).toHaveValue(nestedMarker);
 
-      // A SECOND container inside the columns: renamed through the
+      // A SECOND container inside the journey's parent: renamed through the
       // navigator's own rename input, then deleted through its own Delete
       // key — the removal must survive the save below.
-      const columnsAgain = page
-        .getByRole("treeitem")
-        .filter({ hasText: "Columns" })
-        .first();
-      await columnsAgain
+      await parentItem
         .locator("xpath=..")
         .getByRole("button", { name: "Add inside" })
         .click();
@@ -1479,7 +1665,10 @@ for (const journey of JOURNEYS) {
       "the editor reopens after the reload",
     ).toBeVisible({ timeout: 120_000 });
     await templateStrip(page)
-      .getByRole("button", { name: journey.label, exact: true })
+      .getByRole("button", {
+        name: journey.openLabel ?? journey.label,
+        exact: true,
+      })
       .click();
     await page.waitForTimeout(1_500);
     // A variant journey re-selects its variant BEFORE the comparison
