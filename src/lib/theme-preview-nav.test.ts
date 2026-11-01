@@ -569,6 +569,55 @@ describe("resolveThemePreview installed packages (SWITCHOVER-4)", () => {
       resolveThemePreview("acme-pack", "nope", [ARTIFACT])!.tokens.surface,
     ).toBe("#112233");
   });
+
+  // The studio's preview surface (`?template=blog_article`) resolves the
+  // merchant's INSTALLED artifact, not the built-in source. `registryPackage`
+  // merges the theme's variant bodies into the same `templates` record the
+  // install publishes, so the preview must expose them as variants — otherwise
+  // the article template falls back to the base `blog` body and the studio
+  // previews the LISTING while the storefront serves the article frame.
+  describe("installed artifact variant bodies", () => {
+    const WITH_VARIANTS = {
+      ...ARTIFACT,
+      templates: {
+        ...ARTIFACT.templates,
+        blog: {
+          header: [],
+          main: [{ id: "b1", type: "blog_terms", props: {} }],
+          footer: [],
+        },
+        blog_article: {
+          header: [],
+          main: [
+            { id: "a1", type: "page_content", props: {} },
+            { id: "a2", type: "newsletter", props: { heading: "Weekly" } },
+          ],
+          footer: [],
+        },
+      },
+    };
+
+    it("resolves the artifact's OWN variant main, not its base body", () => {
+      const preset = resolveThemePreview("acme-pack", undefined, [
+        WITH_VARIANTS,
+      ])!;
+      expect(Object.keys(preset.variants).sort()).toEqual(["blog_article"]);
+      expect(preset.variants.blog_article!.main.map((s) => s.type)).toEqual([
+        "page_content",
+        "newsletter",
+      ]);
+      // The variant is distinguishable from the base it would otherwise fall
+      // back to — the property the studio's preview leg asserts.
+      expect(preset.variants.blog_article!.main.map((s) => s.type)).not.toEqual(
+        authored(preset, "blog").main.map((s) => s.type),
+      );
+    });
+
+    it("keeps the variant map EMPTY when the artifact published none", () => {
+      const preset = resolveThemePreview("acme-pack", undefined, [ARTIFACT])!;
+      expect(preset.variants).toEqual({});
+    });
+  });
 });
 
 describe("preview search query round-trip", () => {

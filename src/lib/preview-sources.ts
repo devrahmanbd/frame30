@@ -20,7 +20,9 @@ import {
   parseTokens,
   templateOf,
   type TemplateKey,
+  type ThemeAst,
 } from "./builder-ast";
+import type { TemplateVariantKey } from "./template-variants";
 import {
   applyVariationTokens,
   variationForKey,
@@ -115,6 +117,15 @@ function installedPreviewSource(
   const base = parseTokens(artifact.tokens);
   const variation = variationForKey(variations, variationKey);
   const templates = parseTemplates(artifact.templates);
+  // The installed map carries the theme's BASE bodies and its authored
+  // VARIANT bodies in the same record — `registryPackage` merges
+  // `preview.variants` into `templates`, and `parseTemplates` persists
+  // variant keys as-is. `assemblePreviewTemplates` walks the base keys only,
+  // so the variants have to reach the preset through `variantMain`; without
+  // it an installed theme's preview had no variant map and
+  // `?template=blog_article` fell back to the base `blog` body — the studio
+  // previewed the LISTING while the storefront served the article frame.
+  const variantBodies = templates as Record<string, ThemeAst | undefined>;
   const themeName =
     typeof artifact.themeName === "string" && artifact.themeName.trim()
       ? artifact.themeName.trim().slice(0, 80)
@@ -142,6 +153,12 @@ function installedPreviewSource(
       });
       if (resolution.status !== "resolved") return null;
       return resolution.ast.main.length ? resolution.ast.main : null;
+    },
+    /** The artifact's OWN variant body, when it published one. */
+    variantMain: (variant: TemplateVariantKey) => {
+      const ast = variantBodies[variant];
+      if (!ast || !ast.main.length) return null;
+      return ast.main;
     },
   };
 }
