@@ -202,30 +202,63 @@ export async function loadStoreBlogIndex(
           .eq("id", merchantId)
           .maybeSingle();
         merchant = (m as { name: string; slug: string } | null) ?? null;
-        // Live schema stores term strings (no term_id/is_primary): first
-        // category-kind term per article. Best-effort — a missing chip never
-        // blocks the card.
+        // Canonical taxonomy: `article_terms` links to `blog_terms` by
+        // `term_id`, and the term's own display name is the chip. Best-effort —
+        // a missing chip never blocks the card.
         try {
           const { data: links } = await db
             .from("article_terms")
-            .select("article_id, term, kind")
+            .select("article_id, term_id, is_primary")
             .in(
               "article_id",
               rows.map((r) => r.id),
             );
+          const termIds = [
+            ...new Set(
+              ((links ?? []) as { term_id: string | null }[])
+                .map((l) => l.term_id)
+                .filter((id): id is string => Boolean(id)),
+            ),
+          ];
+          const { data: terms } = termIds.length
+            ? await db
+                .from("blog_terms")
+                .select("id, slug, name, kind")
+                .in("id", termIds)
+            : {
+                data: [] as {
+                  id: string;
+                  slug: string;
+                  name: string;
+                  kind: string;
+                }[],
+              };
+          const termById = new Map(
+            (
+              (terms ?? []) as {
+                id: string;
+                slug: string;
+                name: string;
+                kind: string;
+              }[]
+            ).map((t) => [t.id, t]),
+          );
+          // Prefer the article's PRIMARY category link; fall back to the
+          // first category-kind link so a card still carries a chip when the
+          // legacy rows predate `is_primary`.
           for (const l of (links ?? []) as {
             article_id: string;
-            term: string;
-            kind: string;
+            term_id: string;
+            is_primary: boolean;
           }[]) {
+            const term = termById.get(l.term_id);
             if (
-              l.kind === "category" &&
-              l.term &&
-              !categoryByArticle.has(l.article_id)
+              term?.kind === "category" &&
+              (l.is_primary || !categoryByArticle.has(l.article_id))
             ) {
               categoryByArticle.set(l.article_id, {
-                slug: l.term,
-                name: l.term,
+                slug: term.slug,
+                name: term.name,
               });
             }
           }
@@ -295,34 +328,39 @@ export async function loadStoreArticle(
         .eq("id", merchantId)
         .limit(1)
         .maybeSingle();
+      // Canonical taxonomy: the article's own term links, resolved to the
+      // merchant's `blog_terms` rows. Best-effort — a missing category never
+      // blocks the article.
       const { data: links } = await database
         .from("article_terms")
-        .select("term, kind")
+        .select("term_id")
+        .eq("merchant_id", merchantId)
         .eq("article_id", row["id"])
         .limit(12)
         .then(
           (r: { data: unknown; error: unknown }) =>
             (r.error ? { data: [] } : r) as {
-              data: { term: string; kind: string }[] | null;
+              data: { term_id: string }[] | null;
             },
         );
-      const termIds: string[] = [];
+      const termIds = ((links ?? []) as { term_id: string }[]).map(
+        (l) => l.term_id,
+      );
       let category: { slug: string; name: string } | null = null;
-      for (const l of (links ?? []) as { term: string; kind: string }[]) {
-        if (l.kind === "category" && !category && l.term) {
-          category = { slug: l.term, name: l.term };
-          termIds.push(l.term);
-        }
-      }
-      if (category) {
-        // Prefer the canonical display name when the shared term exists.
+      if (termIds.length) {
         try {
           const { data: terms } = await database
             .from("blog_terms")
-            .select("slug, name")
-            .eq("slug", category.slug)
-            .limit(1);
-          const found = ((terms ?? []) as { slug: string; name: string }[])[0];
+            .select("id, slug, name, kind")
+            .in("id", termIds);
+          const found = (
+            (terms ?? []) as {
+              id: string;
+              slug: string;
+              name: string;
+              kind: string;
+            }[]
+          ).find((t) => t.kind === "category");
           if (found) category = { slug: found.slug, name: found.name };
         } catch {
           // best-effort only
