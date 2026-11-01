@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
-import { catalogEntry, type Breakpoint, type Section } from "@/lib/builder-ast";
+import {
+  catalogEntry,
+  MAX_NODE_NAME,
+  NODE_NAME_PROP,
+  type Breakpoint,
+  type Section,
+} from "@/lib/builder-ast";
 import { isContainer, outline, type DropPosition } from "@/lib/builder-tree";
 import { useLang } from "@/lib/i18n";
 import { linkedBlockId } from "@/lib/global-blocks";
-
-/** Phase 1.6: merchant-authored node name, shown instead of the widget label. */
-export const NODE_NAME_PROP = "__name";
 
 export function nodeLabel(node: Section, fallback: string): string {
   const custom = node.props[NODE_NAME_PROP];
@@ -271,7 +274,10 @@ export function LayerTree({
                   defaultValue={nodeLabel(node, entry?.label ?? node.type)}
                   aria-label={t("Layer name", "লেয়ারের নাম")}
                   onBlur={(event) => {
-                    onRename(node.id, event.currentTarget.value.slice(0, 60));
+                    onRename(
+                      node.id,
+                      event.currentTarget.value.slice(0, MAX_NODE_NAME),
+                    );
                     setRenaming(null);
                   }}
                   onKeyDown={(event) => {

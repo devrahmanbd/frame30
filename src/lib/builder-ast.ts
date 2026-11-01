@@ -419,6 +419,18 @@ export const MAX_ARRAY_ROWS = 24;
 export const MAX_TREE_DEPTH = 6;
 export const MAX_NODES_PER_TEMPLATE = 300;
 
+/**
+ * Reserved prop key holding the merchant's own name for a layer, written by the
+ * navigator's rename control (`LayerTree`) and read back as the layer label.
+ *
+ * It is not a catalog field, so `parseSection` preserves it explicitly — the
+ * same reason the advanced-tab props are preserved below. Without that the name
+ * survives only in the open editor session and is dropped by the next save.
+ */
+export const NODE_NAME_PROP = "__name";
+/** Max length of a merchant-authored layer name, matching the rename input. */
+export const MAX_NODE_NAME = 60;
+
 export type Section = {
   id: string;
   type: SectionType;
@@ -7993,6 +8005,17 @@ function parseSection(node: unknown, ctx: ParseCtx): Section | null {
     if (value === undefined) continue;
     const coerced = coerceProp(field, value);
     if (coerced !== null) props[field.key] = coerced;
+  }
+
+  // The merchant's own layer name (navigator rename, `LayerTree`) is not a
+  // catalog field either, and it is the only label the merchant authored — so
+  // it travels with the node through parse instead of dropping on every save.
+  // Bounded exactly like the rename input, and an empty name is dropped the
+  // same way `renameNode` drops it, so a cleared name falls back to the widget
+  // label rather than becoming an empty custom label.
+  const rawName = (source as Record<string, unknown>)[NODE_NAME_PROP];
+  if (typeof rawName === "string" && rawName.trim()) {
+    props[NODE_NAME_PROP] = rawName.trim().slice(0, MAX_NODE_NAME);
   }
 
   const hidden = Array.isArray(raw.hidden)

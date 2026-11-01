@@ -44,7 +44,7 @@ import { buildTrayRegistry } from "@/lib/unified-widget-registry";
 import { activeDevThemeWidgetDefs } from "@/lib/dev-theme-widgets";
 import { SupportedViewportGate } from "@/components/builder/SupportedViewportGate";
 import { pluginListFn } from "@/lib/plugins.functions";
-import { LayerTree, NODE_NAME_PROP } from "@/components/builder/LayerTree";
+import { LayerTree } from "@/components/builder/LayerTree";
 import { SectionInspector } from "@/components/builder/SectionInspector";
 import { TokenEditor } from "@/components/builder/TokenEditor";
 import { VersionTimeline } from "@/components/builder/VersionTimeline";
@@ -117,6 +117,8 @@ import { TranslationMeter } from "@/components/builder/TranslationMeter";
 import { CustomCodeEditor } from "@/components/builder/CustomCodeEditor";
 import {
   BREAKPOINTS,
+  MAX_NODE_NAME,
+  NODE_NAME_PROP,
   SLOTS,
   TEMPLATE_KEYS,
   catalogEntry,
@@ -1139,7 +1141,8 @@ function BuilderStudio() {
     (id: string, name: string) => {
       editor.updateNode(template, slot, id, (node) => {
         const props = { ...node.props };
-        if (name.trim()) props[NODE_NAME_PROP] = name.trim();
+        if (name.trim())
+          props[NODE_NAME_PROP] = name.trim().slice(0, MAX_NODE_NAME);
         else delete props[NODE_NAME_PROP];
         return { ...node, props };
       });
