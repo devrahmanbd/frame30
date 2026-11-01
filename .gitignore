@@ -2,7 +2,10 @@ node_modules/
 .nitro/
 .vinxi/
 .output/
+.output-snapshots/
 .tanstack/
+test-results/
+playwright-report/
 *.log
 .DS_Store
 .env
