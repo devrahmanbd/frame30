@@ -263,10 +263,10 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                   )}
                 </div>
                 <div className="mt-4 space-y-1">
-                  <h2 className="text-[12px] font-medium leading-relaxed text-foreground tracking-wide line-clamp-1 font-sans">
+                  <p className="text-[13px] sm:text-[14px] font-medium leading-snug text-foreground tracking-wide line-clamp-2 font-serif">
                     {p.title}
-                  </h2>
-                  <p className="money text-[12px] font-medium tracking-wide text-foreground/70 font-sans">
+                  </p>
+                  <p className="money text-[13px] font-medium tracking-wide text-foreground/80 font-sans mt-0.5">
                     {fmtMinor(min, merchant.currency_code)}
                   </p>
                 </div>

@@ -194,7 +194,7 @@ export function songoskritiPreviewSource(
                   ...s("container", {}),
                   children: [
                     s("breadcrumb", { homeLabel: "Home" }),
-                    s("product_meta", {}),
+                    s("product_meta", { heading: "" }),
                     s("price_block", {}),
                     s("add_to_cart", {}),
                   ],
