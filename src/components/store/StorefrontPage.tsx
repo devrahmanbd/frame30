@@ -292,6 +292,7 @@ export function StorefrontPage({ data }: { data: StorefrontPayload }) {
       <CustomCodeSurface code={customCode} />
       <ThemeChrome
         template="index"
+        containerClassName="w-full"
         ast={ast}
         tokens={tokens}
         storeSlug={slug}

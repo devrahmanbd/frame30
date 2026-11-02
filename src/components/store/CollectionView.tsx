@@ -430,6 +430,7 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
     <PluginLayer plugins={installedPlugins}>
       <ThemeChrome
         template="collection"
+        containerClassName="mx-auto max-w-[var(--fq-container,1440px)] px-4 py-8 sm:px-6 lg:px-10"
         ast={dynamicAst}
         tokens={tokens}
         storeSlug={slug}

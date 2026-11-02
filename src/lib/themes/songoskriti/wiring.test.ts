@@ -28,11 +28,11 @@ describe("songoskriti wiring", () => {
     ]);
   });
 
-  it("homepage builds 11 curated sections, every type resolvable in the catalog", () => {
+  it("homepage builds 21 curated sections, every type resolvable in the catalog", () => {
     const s = (type: string, props = {}) =>
       ({ id: type, type, props }) as never;
     const sections = buildHomepageMain(s as never);
-    expect(sections).toHaveLength(11);
+    expect(sections).toHaveLength(21);
     for (const section of sections) {
       expect(
         catalogEntry(section.type),
@@ -46,9 +46,19 @@ describe("songoskriti wiring", () => {
       "craft_story",
       "product_rail",
       "split_feature",
+      "product_rail",
+      "recently_viewed",
+      "finder_row",
+      "split_feature",
+      "product_rail",
+      "product_rail",
+      "split_feature",
       "collection_story",
       "product_rail",
+      "craft_story",
       "ugc_gallery",
+      "testimonials",
+      "split_feature",
       "trust_footer",
       "store_locator",
     ]);

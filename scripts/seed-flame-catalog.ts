@@ -45,7 +45,8 @@ const PRODUCT_IMAGE_MAP: Record<string, string> = {
   "hand-carved-brass-incense-burner": "/ph/songoskriti/cat-living.png",
   "taaga-bohemian-hand-embroidered-kurti": "/ph/songoskriti/cat-women.png",
   "taaga-man-relaxed-linen-mandarin-shirt": "/ph/songoskriti/prod-panjabi.png",
-  "aarong-earth-sandalwood-turmeric-handmade-soap": "/ph/songoskriti/hero-artisans.jpg",
+  "aarong-earth-sandalwood-turmeric-handmade-soap":
+    "/ph/songoskriti/hero-artisans.jpg",
   "aarong-earth-wild-rose-ubtan-radiance-kit": "/ph/songoskriti/cat-living.png",
 };
 
@@ -81,7 +82,8 @@ const COLLECTIONS_TO_SEED = [
   {
     slug: "sarees",
     name: "Signature Sarees",
-    description: "Authentic Dhakai Jamdani, Tangail Taant, Mirpur Katan, and hand-painted pure silk sarees.",
+    description:
+      "Authentic Dhakai Jamdani, Tangail Taant, Mirpur Katan, and hand-painted pure silk sarees.",
     products: [
       "dhakai-jamdani-silk-saree",
       "tangail-taant-cotton-saree",
@@ -92,7 +94,8 @@ const COLLECTIONS_TO_SEED = [
   {
     slug: "men",
     name: "Men's Collection",
-    description: "Handspun khadi kurtas, pure silk embroidered panjabis, and festive kotis.",
+    description:
+      "Handspun khadi kurtas, pure silk embroidered panjabis, and festive kotis.",
     products: [
       "pure-silk-embroidered-panjabi",
       "comilla-handspun-khadi-kurta",
@@ -105,7 +108,8 @@ const COLLECTIONS_TO_SEED = [
   {
     slug: "panjabi",
     name: "Fine Panjabis",
-    description: "Heritage handloom panjabis crafted from pure silk, tussar, and fine cotton.",
+    description:
+      "Heritage handloom panjabis crafted from pure silk, tussar, and fine cotton.",
     products: [
       "pure-silk-embroidered-panjabi",
       "comilla-handspun-khadi-kurta",
@@ -116,13 +120,15 @@ const COLLECTIONS_TO_SEED = [
   {
     slug: "kids",
     name: "Kids & Children",
-    description: "Delicately embroidered festive ghagra cholis and traditional attire.",
+    description:
+      "Delicately embroidered festive ghagra cholis and traditional attire.",
     products: ["girls-embroidered-silk-ghagra-choli"],
   },
   {
     slug: "festive",
     name: "Festive Collection",
-    description: "Rich hues, metallic zari, and joyous silhouettes crafted for celebratory moments.",
+    description:
+      "Rich hues, metallic zari, and joyous silhouettes crafted for celebratory moments.",
     products: [
       "dhakai-jamdani-silk-saree",
       "mirpur-katan-silk-saree",
@@ -135,7 +141,8 @@ const COLLECTIONS_TO_SEED = [
   {
     slug: "wedding",
     name: "Wedding & Bridal",
-    description: "Opulent bridal Jamdani, pure Katan silks, and regal ceremonial ensembles.",
+    description:
+      "Opulent bridal Jamdani, pure Katan silks, and regal ceremonial ensembles.",
     products: [
       "dhakai-jamdani-silk-saree",
       "mirpur-katan-silk-saree",
@@ -147,7 +154,8 @@ const COLLECTIONS_TO_SEED = [
   {
     slug: "heritage",
     name: "Heritage Handloom",
-    description: "Centuries-old weaving techniques preserved by master artisans across Bengal.",
+    description:
+      "Centuries-old weaving techniques preserved by master artisans across Bengal.",
     products: [
       "dhakai-jamdani-silk-saree",
       "tangail-taant-cotton-saree",
@@ -158,13 +166,15 @@ const COLLECTIONS_TO_SEED = [
   {
     slug: "jewellery",
     name: "Handcrafted Jewellery",
-    description: "Hand-engraved filigree, brass accents, and artisanal ornaments.",
+    description:
+      "Hand-engraved filigree, brass accents, and artisanal ornaments.",
     products: ["brass-filigree-chandbali-earrings"],
   },
   {
     slug: "living",
     name: "Living & Home Decor",
-    description: "Terracotta dining sets, brass incense burners, and hand-stitched Nakshi Kantha.",
+    description:
+      "Terracotta dining sets, brass incense burners, and hand-stitched Nakshi Kantha.",
     products: [
       "handcrafted-nakshi-kantha-quilt",
       "handcrafted-terracotta-dining-set",
@@ -172,9 +182,22 @@ const COLLECTIONS_TO_SEED = [
     ],
   },
   {
+    slug: "everyday",
+    name: "Everyday Heritage",
+    description:
+      "Breathable cottons, light handloom weaves, and everyday elegance.",
+    products: [
+      "tangail-taant-cotton-saree",
+      "casual-cotton-summer-fotua",
+      "taaga-man-relaxed-linen-mandarin-shirt",
+      "fine-poplin-formal-pajama",
+    ],
+  },
+  {
     slug: "jamdani",
     name: "Dhakai Jamdani",
-    description: "UNESCO-recognized fine muslin weaves with geometric floral motifs.",
+    description:
+      "UNESCO-recognized fine muslin weaves with geometric floral motifs.",
     products: ["dhakai-jamdani-silk-saree"],
   },
 ];
@@ -214,9 +237,13 @@ for (const col of COLLECTIONS_TO_SEED) {
       continue;
     }
     collectionId = created.id;
-    console.log(`Created collection ${col.name} (${col.slug}) -> ${collectionId}`);
+    console.log(
+      `Created collection ${col.name} (${col.slug}) -> ${collectionId}`,
+    );
   } else {
-    console.log(`Collection ${col.name} (${col.slug}) already exists -> ${collectionId}`);
+    console.log(
+      `Collection ${col.name} (${col.slug}) already exists -> ${collectionId}`,
+    );
   }
 
   // Map products
@@ -227,7 +254,7 @@ for (const col of COLLECTIONS_TO_SEED) {
       .from("collection_products")
       .upsert(
         { collection_id: collectionId, product_id: pId },
-        { onConflict: "collection_id,product_id" }
+        { onConflict: "collection_id,product_id" },
       );
     if (linkErr) {
       console.warn(`Error linking ${pSlug} to ${col.slug}:`, linkErr.message);
@@ -280,7 +307,9 @@ const { data: maxV } = await db
 const nextVersionNum = ((maxV?.version as number) || 5) + 1;
 const now = new Date().toISOString();
 
-console.log(`Publishing version v${nextVersionNum} for theme ${activeTheme.id}...`);
+console.log(
+  `Publishing version v${nextVersionNum} for theme ${activeTheme.id}...`,
+);
 
 const { data: newVersion, error: insertErr } = await db
   .from("theme_versions")
@@ -317,5 +346,7 @@ if (updateThemeErr) {
   process.exit(1);
 }
 
-console.log(`Theme updated successfully to version v${nextVersionNum} (${newVersion.id})!`);
+console.log(
+  `Theme updated successfully to version v${nextVersionNum} (${newVersion.id})!`,
+);
 console.log("=== Seed script complete ===");

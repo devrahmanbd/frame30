@@ -123,8 +123,8 @@ describe("factory output carries theme defaults", () => {
   it("homepage product rails and hero ship their skins", () => {
     const sections = buildHomepageMain(stub);
     const rails = sections.filter((s) => s.type === "product_rail");
-    // Three collection rails (signature sarees, new arrivals, complete the look) — all default skins.
-    expect(rails).toHaveLength(3);
+    // Six collection rails (signature sarees, new arrivals, most loved, shop panjabi, everyday heritage, complete the look) — all default skins.
+    expect(rails).toHaveLength(6);
     for (const rail of rails) expect(rail.props.skin).toBe("editorial");
     // Authored overrides win over defaults: fullbleed hero.
     const hero = sections.find((s) => s.type === "hero_carousel")!;

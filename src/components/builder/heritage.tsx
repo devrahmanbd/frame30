@@ -311,8 +311,7 @@ function HeroSkinSlide({
       role="group"
       aria-roledescription="slide"
       aria-label={slideLabel}
-      className="fq-enter-fade relative flex items-end justify-center overflow-hidden -mt-[68px]"
-      style={{ height: "100vh" }}
+      className="fq-enter-fade relative flex items-end justify-center overflow-hidden h-[calc(100vh-108px)] min-h-[580px] sm:min-h-[680px]"
     >
       {/* Full-bleed background image */}
       <div className="absolute inset-0">{art}</div>
@@ -484,7 +483,7 @@ const HeroCarousel: WidgetComponent = ({
         if (delta < 0) next();
         else prev();
       }}
-      className={`relative overflow-hidden bg-background ${skin === "fullbleed" ? "-mt-[68px]" : ""}`}
+      className="relative overflow-hidden bg-background"
     >
       {atmosphere !== "none" && skin === "split" && (
         <div

@@ -116,7 +116,9 @@ export function PriceBlock({
       <p className="mt-1 text-sm text-muted-foreground">
         VAT included. Delivery calculated at checkout.
       </p>
-      <ScarcityBadge stock={Number(variant?.stock_quantity ?? 0)} />
+      <div className="self-start">
+        <ScarcityBadge stock={Number(variant?.stock_quantity ?? 0)} />
+      </div>
     </div>
   );
 }
@@ -497,10 +499,9 @@ export function ProductView({ data }: { data: ProductPayload }) {
     variant?.price_amount_minor_int,
   ]);
 
-  const hasPriceBlock =
-    flattenAst(ast ?? { header: [], main: [], footer: [] }).some(
-      (s) => s.type === "price_block",
-    );
+  const hasPriceBlock = flattenAst(
+    ast ?? { header: [], main: [], footer: [] },
+  ).some((s) => s.type === "price_block");
 
   const media = <ProductGallery product={product} />;
 
@@ -598,6 +599,7 @@ export function ProductView({ data }: { data: ProductPayload }) {
       <PluginLayer plugins={installedPlugins}>
         <ThemeChrome
           template="product"
+          containerClassName="mx-auto max-w-[var(--fq-container,1440px)] px-4 py-8 sm:px-6 lg:px-10"
           storeSlug={merchant.slug}
           themeKey={themeKey ?? null}
           merchantId={merchant.id}

@@ -79,9 +79,19 @@ const TEMPLATE_MAIN: Record<string, string[]> = {
     "craft_story",
     "product_rail",
     "split_feature",
+    "product_rail",
+    "recently_viewed",
+    "finder_row",
+    "split_feature",
+    "product_rail",
+    "product_rail",
+    "split_feature",
     "collection_story",
     "product_rail",
+    "craft_story",
     "ugc_gallery",
+    "testimonials",
+    "split_feature",
     "trust_footer",
     "store_locator",
   ],
@@ -143,7 +153,7 @@ const TEMPLATE_MAIN: Record<string, string[]> = {
 };
 
 describe("Task 3 — freeze: homepage composition", () => {
-  it("homepage composition is frozen: 11 sections / 9 distinct types", () => {
+  it("homepage composition is frozen: 21 sections / 12 distinct types", () => {
     const sections = buildSongoskritiHomepage(stubBuilder<never>());
     expect(sections.map((x) => x.type)).toEqual([
       "hero_carousel",
@@ -152,13 +162,23 @@ describe("Task 3 — freeze: homepage composition", () => {
       "craft_story",
       "product_rail",
       "split_feature",
+      "product_rail",
+      "recently_viewed",
+      "finder_row",
+      "split_feature",
+      "product_rail",
+      "product_rail",
+      "split_feature",
       "collection_story",
       "product_rail",
+      "craft_story",
       "ugc_gallery",
+      "testimonials",
+      "split_feature",
       "trust_footer",
       "store_locator",
     ]);
-    expect(new Set(sections.map((x) => x.type)).size).toBe(9);
+    expect(new Set(sections.map((x) => x.type)).size).toBe(12);
   });
 });
 

@@ -411,7 +411,7 @@ export function ThemeChrome({
         )}
       <main className={containerClassName}>
         {themed ? (
-          <div className="space-y-8">
+          <div className={template === "index" ? "w-full" : "space-y-8"}>
             {themed.main.map((section) => (
               <SectionRenderer
                 key={section.id}
