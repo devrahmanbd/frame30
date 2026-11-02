@@ -898,3 +898,50 @@ Build ran in the ephemeral worktree `/tmp/opencode/deploy-frame30` in 2.17s; liv
 6. **Cross-tenant archive isolation (`flamelancer.com/blog/category/heritage`):**
    - Dual-mode host resolution in `src/routes/blog.category.$slug.tsx` and `src/routes/blog.tag.$slug.tsx`.
    - Returns HTTP 200, 2 Flame Fashion BD articles, zero Akira articles or bylines.
+
+### 6.3 Fourth wave storefront audit & editorial art direction (2026-11-03)
+
+Live storefront audit of Songoskriti on `https://flamelancer.com/` (merchant: Flame Fashion BD) across desktop (1440×900) and mobile (390×844) viewports using Chrome DevTools MCP. Refined the existing implementation to eliminate AI repetitiveness, fake social proof, and broken navigation while establishing authentic Bangladeshi heritage art direction.
+
+| SHA        | Subject                                                                                               |
+| ---------- | ----------------------------------------------------------------------------------------------------- |
+| `6310723f` | `fix(storefront): editorial songoskriti art direction, real product images, single PDP h1, collections`|
+| `34646fb9` | `fix(flame): map products to verified high-res songoskriti asset files`                               |
+| `4ea1d3ed` | `fix(store): refine collection card typography and suppress redundant PDP heading`                    |
+
+Deployed with the sanctioned path:
+
+```bash
+ops/deploy-from-git.sh frame30 root        # origin/frame30 = 4ea1d3ed
+```
+
+| Deploy assertion                                                | Result                                                                   |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| bundle marker `.output/DEPLOYED_SHA`                            | **`4ea1d3ede785f203b9a86f9d013a77b1e8b435fe`** == deployed SHA           |
+| readiness `127.0.0.1:3200/api/healthz?type=readiness`           | **200**                                                                  |
+| `framique.service`                                              | **active**                                                               |
+| `flamelancer.com` `/` + `/c/women` + `/p/*`                     | **200 / 200 / 200**                                                      |
+| Script exit code & marker                                       | **`exit 0`**, **`DEPLOY OK: frame30 live (4ea1d3ed...)`**                |
+
+**Resolved & Live Verified Issues:**
+
+1. **Editorial Homepage Art Direction & Curation (`flamelancer.com/`):**
+   - Streamlined from 21 bloated, repetitive sections down to 11 curated editorial sections:
+     `hero_carousel` (2 slides) → `department_grid` (6 distinct category tiles) → `product_rail` ("Signature Sarees") → `craft_story` ("The Human Hand Behind the Loom") → `product_rail` ("New Arrivals") → `split_feature` ("The Festive Edit") → `collection_story` ("From the Loom to Legacy") → `product_rail` ("Complete the Look") → `ugc_gallery` (curated Bengali lifestyle lookbook) → `trust_footer` → `store_locator`.
+   - Eliminated fabricated social proof (fake reviews by "Nusrat Rahman", fake ratings), redundant campaign banners, and generic filler copy.
+2. **Infinite Pulsing Skeletons on Collection Pages (`flamelancer.com/c/women`, `/c/new-in`):**
+   - In `SongoskritiProductGrid`, fall back to host `productSlot` when `data.rows` is undefined on collection pages, ensuring products render immediately instead of pulsing indefinitely.
+3. **Broken Navigation & Missing Collection Slugs:**
+   - Seeded all 11 missing category collections (`women`, `sarees`, `men`, `panjabi`, `kids`, `festive`, `wedding`, `heritage`, `jewellery`, `living`, `jamdani`) with real product associations in `collection_products`. Navigating to `/c/women`, `/c/sarees`, `/c/men`, `/c/panjabi` returns HTTP 200 with real products.
+4. **Product Page Double `<h1>` & Static Saree Title on All PDPs:**
+   - Evaluated `hasPriceBlock` across nested container columns so `ProductView` sets `ownsPrimary = true`.
+   - Moved `heading` below `columns` in `preview.ts` so product pages lead with `columns` (`product_media` + `buy_box`).
+   - Suppressed redundant `product_meta` heading (`{ heading: "" }`), eliminating "Product details" stacked above the title.
+   - Non-saree PDPs (e.g. `/p/pure-silk-embroidered-panjabi`) now correctly display only their own title and authentic photography.
+5. **Authentic Product Photography:**
+   - Assigned high-resolution editorial assets from the verified 21-image manifest in `/ph/songoskriti/` to all 20 products in the Flame Fashion BD catalog.
+6. **Collection Card Typography Fix:**
+   - Changed card heading from `<h2>` (which was matched by `.fq-theme-scope h2` and clamped to 44px) to `<p className="font-serif line-clamp-2">`, rendering full 2-line product titles and crisp BDT prices.
+7. **Cross-Device Inspection:**
+   - Captured full visual verification at 1440×900 desktop and 390×844 mobile viewports using Chrome DevTools MCP. Responsive layouts, grids, touch targets, and commerce flows are fully operational.
+
