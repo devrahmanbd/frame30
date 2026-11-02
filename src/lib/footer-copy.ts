@@ -16,9 +16,9 @@
 export const STATEMENT = {
   heading: "Woven in Bangladesh, worn everywhere",
   heading_bn: "বাংলাদেশে বোনা, পরা হয় সর্বত্র",
-  body: "Songoskriti keeps Tangail, Jamdani and Nakshi Kantha weaving alive through fair artisan partnerships.",
+  body: "Keeping traditional handloom and artisanal craft alive through fair artisan partnerships.",
   body_bn:
-    "ন্যায্য তাঁতি অংশীদারিত্বে টাঙ্গাইল, জামদানি ও নকশি কাঁথার বুনন বাঁচিয়ে রাখে সংস্কৃতি।",
+    "ন্যায্য কারিগর অংশীদারিত্বে ঐতিহ্যবাহী বুনন ও কারুশিল্প বাঁচিয়ে রাখা।",
 } as const;
 
 export const NEWSLETTER = {
@@ -46,6 +46,6 @@ export const PAYMENT_MARKS_BN =
   "বিকাশ, নগদ, রকেট, ভিসা, মাস্টারকার্ড, ক্যাশ অন ডেলিভারি";
 
 export const COLOPHON = {
-  body: "Flagships: Uttara · Gulshan · Chattogram — open 10am to 9pm.",
-  body_bn: "ফ্ল্যাগশিপ: উত্তরা · গুলশান · চট্টগ্রাম — সকাল ১০টা থেকে রাত ৯টা।",
+  body: "Support & customer care — open Saturday to Thursday, 10am to 9pm.",
+  body_bn: "সহায়তা ও গ্রাহক সেবা — শনিবার থেকে বৃহস্পতিবার, সকাল ১০টা থেকে রাত ৯টা।",
 } as const;

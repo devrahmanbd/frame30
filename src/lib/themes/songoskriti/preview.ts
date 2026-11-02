@@ -208,9 +208,9 @@ export function songoskritiPreviewSource(
             s("rich_text", {
               heading: "Details",
               heading_bn: "বিবরণ",
-              body: "Sample product page — prices and stock are sample data, and ordering is disabled in the preview.",
+              body: "Handcrafted with premium materials, traditional techniques, and enduring attention to detail.",
               body_bn:
-                "নমুনা পণ্যের পাতা — দাম ও স্টক নমুনা তথ্য, আর প্রিভিউতে অর্ডার বন্ধ আছে।",
+                "প্রিমিয়াম উপাদান, ঐতিহ্যবাহী কৌশল এবং দীর্ঘস্থায়ী যত্নে হস্তনির্মিত।",
             }),
             rail(
               s,

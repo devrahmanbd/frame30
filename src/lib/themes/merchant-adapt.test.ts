@@ -119,4 +119,85 @@ describe("adaptThemeTemplatesForMerchant", () => {
     expect(main).toHaveLength(1);
     expect(main[0].type).toBe("container");
   });
+
+  it("prunes ordering is disabled disclaimer from product template", () => {
+    const templates: ThemeTemplates = {
+      product: {
+        header: [],
+        main: [
+          {
+            id: "notice-1",
+            type: "rich_text",
+            props: {
+              body: "Sample product page — prices and stock are sample data, and ordering is disabled in the preview.",
+            },
+          },
+        ],
+        footer: [],
+      },
+    };
+
+    const adapted = adaptThemeTemplatesForMerchant(templates, {
+      name: "Flame Fashion BD",
+    });
+
+    const main = adapted.product?.main as any[];
+    expect(main).toHaveLength(0);
+  });
+
+  it("prunes flagship colophon rich_text when merchant has no locations", () => {
+    const templates: ThemeTemplates = {
+      product: {
+        header: [],
+        main: [],
+        footer: [
+          {
+            id: "colophon-1",
+            type: "rich_text",
+            props: {
+              body: "Flagships: Uttara · Gulshan · Chattogram — open 10am to 9pm.",
+              body_bn: "ফ্ল্যাগশিপ: উত্তরা · গুলশান · চট্টগ্রাম — সকাল ১০টা থেকে রাত ৯টা।",
+            },
+          },
+        ],
+      },
+    };
+
+    const adapted = adaptThemeTemplatesForMerchant(templates, {
+      name: "Flame Fashion BD",
+      locations: null,
+    });
+
+    const footer = adapted.product?.footer as any[];
+    expect(footer).toHaveLength(0);
+  });
+
+  it("formats flagship colophon when merchant has locations configured", () => {
+    const templates: ThemeTemplates = {
+      index: {
+        header: [],
+        main: [],
+        footer: [
+          {
+            id: "colophon-1",
+            type: "rich_text",
+            props: {
+              body: "Flagships: Uttara · Gulshan · Chattogram — open 10am to 9pm.",
+              body_bn: "ফ্ল্যাগশিপ: উত্তরা · গুলশান · চট্টগ্রাম — সকাল ১০টা থেকে রাত ৯টা।",
+            },
+          },
+        ],
+      },
+    };
+
+    const adapted = adaptThemeTemplatesForMerchant(templates, {
+      name: "Flame Fashion BD",
+      locations: [{ name: "Dhanmondi" }, { name: "Banani" }],
+    });
+
+    const footer = adapted.index?.footer as any[];
+    expect(footer).toHaveLength(1);
+    expect(footer[0].props.body).toBe("Stores: Dhanmondi · Banani");
+    expect(footer[0].props.body_bn).toBe("শাখা: Dhanmondi · Banani");
+  });
 });

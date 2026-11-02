@@ -26,6 +26,12 @@ function adaptText(
     s.includes("+880 96 1234 5678") ||
     s.includes("Flagship") ||
     s.includes("ফ্ল্যাগশিপ") ||
+    s.includes("Uttara") ||
+    s.includes("উত্তরা") ||
+    s.includes("Gulshan") ||
+    s.includes("গুলশান") ||
+    s.includes("Chattogram") ||
+    s.includes("চট্টগ্রাম") ||
     s.includes("Support: 10AM - 9PM") ||
     s.includes("সাপোর্ট: সকাল ১০টা - রাত ৯টা")
   ) {
@@ -60,17 +66,23 @@ function adaptText(
         continue;
       }
 
-      // Flagships
+      // Flagships / store locations
       if (
-        line.includes("Uttara Flagship") ||
-        line.includes("Gulshan Flagship") ||
-        line.includes("Chattogram Flagship") ||
-        line.includes("উত্তরা ফ্ল্যাগশিপ") ||
-        line.includes("গুলশান ফ্ল্যাগশিপ") ||
-        line.includes("চট্টগ্রাম ফ্ল্যাগশিপ")
+        line.includes("Flagship") ||
+        line.includes("ফ্ল্যাগশিপ") ||
+        line.includes("Uttara") ||
+        line.includes("উত্তরা") ||
+        line.includes("Gulshan") ||
+        line.includes("গুলশান") ||
+        line.includes("Chattogram") ||
+        line.includes("চট্টগ্রাম")
       ) {
         if (merchant.locations && merchant.locations.length > 0) {
-          filteredLines.push(line);
+          filteredLines.push(
+            isBn
+              ? `শাখা: ${merchant.locations.map((l) => l.name).join(" · ")}`
+              : `Stores: ${merchant.locations.map((l) => l.name).join(" · ")}`,
+          );
         }
         continue;
       }
@@ -129,9 +141,21 @@ function adaptSection(
     const body = section.props?.body;
     if (
       typeof body === "string" &&
-      body.includes("Sample product page — prices and stock are sample data")
+      (body.includes("Sample product page — prices and stock are sample data") ||
+        body.includes("ordering is disabled in the preview"))
     ) {
       return null;
+    }
+  }
+
+  // Drop empty rich_text colophons when unconfigured
+  if (section.type === "rich_text") {
+    const body = section.props?.body;
+    if (typeof body === "string") {
+      const adapted = adaptText(body, merchant, false);
+      if (!adapted.trim()) {
+        return null;
+      }
     }
   }
 

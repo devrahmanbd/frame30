@@ -1,6 +1,6 @@
 import type { IncomingMessage, Server, ServerResponse } from "node:http";
 import { createServer } from "node:http";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { EgressError, fetchWithEgressGuard } from "./egress-fetch";
 import type { EgressTransport, PinnedTransportInit } from "./egress-fetch";
 import { isAllowedHooksUrl } from "./plugin-manifest";
@@ -571,6 +571,17 @@ describe("pinned transport (socket-level DNS pinning)", () => {
     ok: true as const,
     url: new URL(raw),
   });
+  let canBind127002 = false;
+  beforeAll(async () => {
+    try {
+      const probe = await startOn("127.0.0.2", () => {});
+      await probe.close();
+      canBind127002 = true;
+    } catch {
+      canBind127002 = false;
+    }
+  });
+
   async function startOn(
     host: string,
     handler: (req: IncomingMessage, res: ServerResponse) => void,
@@ -581,7 +592,13 @@ describe("pinned transport (socket-level DNS pinning)", () => {
       n += 1;
       handler(req, res);
     });
-    await new Promise<void>((resolve) => server.listen(0, host, resolve));
+    await new Promise<void>((resolve, reject) => {
+      server.once("error", reject);
+      server.listen(0, host, () => {
+        server.removeListener("error", reject);
+        resolve();
+      });
+    });
     const addr = server.address();
     const port = typeof addr === "object" && addr !== null ? addr.port : 0;
     const started: Started = {
@@ -597,7 +614,11 @@ describe("pinned transport (socket-level DNS pinning)", () => {
     return started;
   }
 
-  it("connects to the pinned IP even when DNS says otherwise", async () => {
+  it("connects to the pinned IP even when DNS says otherwise", async (ctx) => {
+    if (!canBind127002) {
+      ctx.skip();
+      return;
+    }
     const { pinnedTransport } = await import("./egress-fetch");
     const decoy = await startOn("127.0.0.1", (_req, res) => {
       res.writeHead(200, { "content-type": "text/plain" });
@@ -623,7 +644,11 @@ describe("pinned transport (socket-level DNS pinning)", () => {
     expect(decoy.hits()).toBe(0);
   });
 
-  it("fetchWithEgressGuard uses the pinned transport for real local servers", async () => {
+  it("fetchWithEgressGuard uses the pinned transport for real local servers", async (ctx) => {
+    if (!canBind127002) {
+      ctx.skip();
+      return;
+    }
     const real = await startOn("127.0.0.2", (_req, res) => {
       res.writeHead(200, { "content-type": "application/json" });
       res.end("{}");

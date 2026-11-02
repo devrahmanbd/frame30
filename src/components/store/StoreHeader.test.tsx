@@ -1369,7 +1369,7 @@ describe("header announcement via theme-owned presentations (R1b)", () => {
       expect(html).toContain('aria-live="polite"');
       // Neutral fallback tokens only — no theme presentation marker.
       expect(html).not.toContain("data-announcement-presentation");
-      expect(html).toContain("bg-primary");
+      expect(html).toContain("bg-foreground");
       const bn = barHtml("songoskriti", { locale: "bn" });
       expect(bn).toContain(chrome().announcement.center_bn);
       expect(bn).not.toContain(chrome().announcement.center);
