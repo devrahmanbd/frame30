@@ -118,4 +118,22 @@ describe("the merchant's layer name survives parse", () => {
     });
     expect(ast.main[0]!.props).not.toHaveProperty(NODE_NAME_PROP);
   });
+
+  it("preserves global block placement identity (__gbId and __gbRev) through parse", () => {
+    const ast = parseAst({
+      main: [
+        {
+          id: "gb-placement-1",
+          type: "container",
+          props: {
+            __gbId: "block_footer_social",
+            __gbRev: 3,
+          },
+        },
+      ],
+    });
+    const placement = ast.main[0]!;
+    expect(placement.props["__gbId"]).toBe("block_footer_social");
+    expect(placement.props["__gbRev"]).toBe(3);
+  });
 });

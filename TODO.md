@@ -6,6 +6,30 @@
 
 ---
 
+## 🔴 ACTIVE PUNCHLIST — WordPress-Parity CMS & Storefront Production Alignment (Nov 2026)
+
+### P0 — Cross-Merchant Tenant Isolation & Integrity
+- [x] **P0 — Cross-Merchant Blog Archive Leak**: `flamelancer.com/blog/category/heritage` & tags (`blog.category.$slug.tsx` & `blog.tag.$slug.tsx`) resolve host tenant via `resolveStorefrontHostFn` and pass merchant slug to `storeBlogArchiveFn`. Verified live: scoped to Flame Fashion BD, Akira articles/bylines absent.
+- [ ] **P0 — Server SSR HEAD Request Crash**: `src/server.ts` line 340 throws `TypeError: Cannot read properties of null (reading 'pipeThrough')` when `response.body` is null (e.g. `curl -I` HEAD requests). Fix: check `if (nonce && response.body)`.
+- [ ] **P0 — Risk Tier UUID Validation in Ingress**: `src/server.ts` passes tenant slug instead of merchant UUID to `resolveRequestTier`, causing `invalid input syntax for type uuid` errors in Postgres. Fix: resolve slug to UUID via `merchantIdForSlug`.
+
+### P1 — Visual Polish, Storefront Theming & Chrome
+- [x] **P1 — Store Homepage Connected to Merchant Root**: Mounted Songoskriti 21-section themed index on `flamelancer.com/`; `StoreWelcome` frame retired from merchant apex.
+- [x] **P1 — Blog Header and Footer on Custom Domains**: Mounted `StoreHeader` on `flamelancer.com/blog` and `/blog/:slug`.
+- [ ] **P1 — Internal Notice Exposed to Shoppers**: In `src/components/store/ThemeChrome.tsx:449`, `<p className="fq-declined-template__label ...">... does not design the ... page</p>` visible on customer-facing storefronts. Fix: add `sr-only` class to hide visibly from shoppers while preserving DOM node for accessibility and tests.
+- [x] **P1 — Checkout Visual Consistency**: Aligned gutters on `flamelancer.com/checkout` using `max-w-[var(--fq-container,1280px)]`.
+- [x] **P1 — Merchant-Specific Branding**: Neutralized demo branding (`care@songoskriti.com`, flagships, ordering disclaimers) on Flame Fashion BD via adapted theme publication.
+
+### P2 — Consistency & Technical Debt
+- [ ] **P2 — Archive Announcement Bar Tone**: Announcement bar on taxonomy archives renders in default `"brand"` (blue) rather than `"ink"` (black). Fix: set default `tone = "ink"` in `AnnouncementBar.tsx` and `chrome.tsx`.
+- [x] **P2 — Archive Facet Grouping**: Facet rail groups `Categories` and `Tags` into distinct semantic subheadings.
+- [ ] **P1 — Template Publishing Reliability**: Write contract tests in `src/lib/template-publishing.contract.test.ts` to prove successful publication, versioning, draft persistence, and rollback across all 10 templates (`index`, `product`, `collection`, `account`, `page`, `blog`, `cart`, `checkout`, `search`, `archive`) individually and simultaneously.
+- [ ] **P2 — Missing Database RPC & RLS**: Create migration `0031_risk_signals_rpc.sql` for `public.get_merchant_risk_signals(uuid)` to stop 457 errors in `framique.service` logs; apply `blog_terms_tenant_write` policy to production database.
+- [ ] **P2 — Global Block AST Preservation**: Preserve `__gbId` and `__gbRev` placement props during `parseSection` in `src/lib/builder-ast.ts` so saved global blocks retain links.
+- [ ] **P2 — LayerTree Move Controls State**: Disable "Move up" and "Move down" buttons in `src/components/builder/LayerTree.tsx` when the item cannot move within its parent container.
+
+---
+
 ## ✅ FINAL PRIORITY LIST (Sept 18, 2026 — the single ordered backlog; detail lives in the sections below)
 
 ### P0 — Security first (blocks everything else)

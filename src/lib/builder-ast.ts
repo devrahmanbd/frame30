@@ -8018,6 +8018,17 @@ function parseSection(node: unknown, ctx: ParseCtx): Section | null {
     props[NODE_NAME_PROP] = rawName.trim().slice(0, MAX_NODE_NAME);
   }
 
+  // Preserve global block placement identity (__gbId / __gbRev) so linked
+  // placements do not lose their block link on save/parse.
+  const rawGbId = (source as Record<string, unknown>)["__gbId"];
+  if (typeof rawGbId === "string" && rawGbId.trim()) {
+    props["__gbId"] = rawGbId.trim().slice(0, 100);
+  }
+  const rawGbRev = (source as Record<string, unknown>)["__gbRev"];
+  if (typeof rawGbRev === "number" && Number.isFinite(rawGbRev)) {
+    props["__gbRev"] = rawGbRev;
+  }
+
   const hidden = Array.isArray(raw.hidden)
     ? raw.hidden.filter((b): b is Breakpoint =>
         (BREAKPOINTS as readonly string[]).includes(b as string),

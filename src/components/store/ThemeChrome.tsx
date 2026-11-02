@@ -446,7 +446,7 @@ export function ThemeChrome({
             data-fq-template={template}
             className="fq-declined-template"
           >
-            <p className="fq-declined-template__label mb-4 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+            <p className="fq-declined-template__label sr-only mb-4 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
               {(storeName ?? storeSlug)
                 ? `${storeName ?? storeSlug} — this theme does not design the ${templateDisplayName(template)} page`
                 : `This theme does not design the ${templateDisplayName(template)} page`}

@@ -99,6 +99,16 @@ export function LayerTree({
   const [renaming, setRenaming] = useState<string | null>(null);
 
   const rows = useMemo(() => outline(sections), [sections]);
+  const childrenCountByParent = useMemo(() => {
+    const map = new Map<string | null, number>();
+    map.set(null, sections.length);
+    for (const r of rows) {
+      if (r.node.children?.length) {
+        map.set(r.node.id, r.node.children.length);
+      }
+    }
+    return map;
+  }, [rows, sections]);
   const needle = (filter ?? "").trim().toLowerCase();
   const matches = useMemo(() => {
     if (!needle) return null;
@@ -209,6 +219,9 @@ export function LayerTree({
         const selected = selectedIds.includes(node.id);
         const active = hint?.id === node.id ? hint.position : null;
         const entry = catalogEntry(node.type);
+        const siblingsCount = childrenCountByParent.get(row.parentId) ?? 0;
+        const canMoveUp = row.index > 0;
+        const canMoveDown = row.index < siblingsCount - 1;
         return (
           <div
             key={node.id}
@@ -389,16 +402,18 @@ export function LayerTree({
               <button
                 type="button"
                 aria-label={t("Move up", "উপরে")}
+                disabled={!canMoveUp}
                 onClick={() => onNudge(node.id, -1)}
-                className="shrink-0 rounded-fq-md px-1 text-xs"
+                className="shrink-0 rounded-fq-md px-1 text-xs disabled:opacity-30 disabled:pointer-events-none"
               >
                 ↑
               </button>
               <button
                 type="button"
                 aria-label={t("Move down", "নিচে")}
+                disabled={!canMoveDown}
                 onClick={() => onNudge(node.id, 1)}
-                className="shrink-0 rounded-fq-md px-1 text-xs"
+                className="shrink-0 rounded-fq-md px-1 text-xs disabled:opacity-30 disabled:pointer-events-none"
               >
                 ↓
               </button>

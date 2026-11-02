@@ -180,7 +180,7 @@ function AnnouncementBar({ str, bool, int, section, locale, link }: WidgetCtx) {
       motion={announcementMotionOf(str("motion")) ?? "rotating"}
       align={announcementAlignOf(str("align")) ?? "center"}
       size={announcementSizeOf(str("size")) ?? "md"}
-      tone={announcementToneOf(str("tone")) ?? "brand"}
+      tone={announcementToneOf(str("tone")) ?? "ink"}
       link={link}
       storageKey={`fq-announcement:${section.id}`}
     />

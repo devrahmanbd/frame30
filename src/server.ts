@@ -337,7 +337,7 @@ export function withSecurityHeaders(
   // fired. TransformStream applies backpressure per chunk and keeps pumping
   // whether or not the transform enqueues output.
   let body = response.body;
-  if (nonce) {
+  if (nonce && response.body) {
     const metaTag = `<meta name="csp-nonce" content="${nonce}">`;
     const encoder = new TextEncoder();
     const decoder = new TextDecoder();
@@ -950,11 +950,26 @@ export default {
       const canaryDecision = await resolveTenantCanaryRoute(request).catch(
         () => undefined,
       );
-      const merchantId =
+      let merchantId =
         canaryDecision?.tenantId &&
         canaryDecision.tenantId !== "manual-override"
           ? canaryDecision.tenantId
           : undefined;
+
+      if (
+        merchantId &&
+        !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+          merchantId,
+        )
+      ) {
+        const { merchantIdForSlug } = await import(
+          "./lib/storefront-host.server"
+        );
+        const resolvedId = await merchantIdForSlug(merchantId).catch(() => null);
+        if (resolvedId) {
+          merchantId = resolvedId;
+        }
+      }
 
       // Multi-Tier Ingress Rate Limiting: Tenant Isolation vs System Ingress
       const isStaticAsset =
