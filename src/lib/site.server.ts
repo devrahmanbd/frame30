@@ -8,13 +8,11 @@ export function publicClient() {
   const url =
     process.env["SUPABASE_URL"] ||
     process.env["VITE_SUPABASE_URL"] ||
-    (import.meta as unknown as { env?: Record<string, string> }).env
-      ?.VITE_SUPABASE_URL;
+    import.meta.env.VITE_SUPABASE_URL;
   const key =
     process.env["SUPABASE_PUBLISHABLE_KEY"] ||
     process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ||
-    (import.meta as unknown as { env?: Record<string, string> }).env
-      ?.VITE_SUPABASE_PUBLISHABLE_KEY;
+    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
   if (!url || !key) {
     const missing = [
       ...(!url ? ["SUPABASE_URL"] : []),

@@ -28,12 +28,13 @@ const { loadFunnel, loadCohorts, loadTraffic, loadPipelineHealth } =
 const MERCHANT = "77777777-7777-7777-7777-777777777777";
 
 function warehouseDb() {
+  const day = new Date().toISOString().slice(0, 10);
   return fakeDb({
     tables: {
       analytics_daily: [
         {
           merchant_id: MERCHANT,
-          day: "2026-09-20",
+          day,
           pageviews: 100,
           unique_visitors: 80,
           sessions: 90,
@@ -44,7 +45,7 @@ function warehouseDb() {
       analytics_geo_daily: [
         {
           merchant_id: MERCHANT,
-          day: "2026-09-20",
+          day,
           country_code: "BD",
           unique_visitors: 80,
           revenue_minor_int: 250000,
