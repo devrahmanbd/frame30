@@ -192,7 +192,7 @@ print_post_deploy_lines() {
 
 check() { # $1 url $2 expected
   local code
-  code=$(curl -s -o /dev/null -w "%{http_code}" "$1")
+  code=$(curl -s -o /dev/null -w "%{http_code}" "$1" 2>/dev/null) || code="000"
   if [ "$code" != "$2" ]; then echo "VERIFY FAIL: $1 -> $code (want $2)"; fail=1;
   else echo "VERIFY OK: $1 -> $code"; fi
 }
@@ -208,7 +208,7 @@ run_contract_checks() {
   PRIMARY_HOST=$(docker exec framique-supabase-db psql -U postgres -tAc "SELECT hostname FROM public.merchant_domains WHERE status='active' AND is_primary LIMIT 1" | tr -d '[:space:]')
   for slug in akira flame-fashion-bd nonexistent-store-xyz Akira; do
     if [ "$slug" = "flame-fashion-bd" ] && [ -n "$PRIMARY_HOST" ]; then
-      loc=$(curl -s -o /dev/null -w "%{http_code} %{redirect_url}" "https://framique.qubickle.com/store/flame-fashion-bd")
+      loc=$(curl -s -o /dev/null -w "%{http_code} %{redirect_url}" "https://framique.qubickle.com/store/flame-fashion-bd" 2>/dev/null) || loc="000"
       if [ "$loc" = "301 https://$PRIMARY_HOST/" ]; then echo "VERIFY OK: /store/flame-fashion-bd -> 301 primary";
       else echo "VERIFY FAIL: /store/flame-fashion-bd -> $loc (want 301 https://$PRIMARY_HOST/)"; fail=1; fi
     else

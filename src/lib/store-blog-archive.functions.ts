@@ -15,6 +15,8 @@ const archiveSchema = z.object({
   slug: z.string().min(1).max(80),
   termSlug: z.string().min(1).max(120),
   page: z.number().int().min(1).max(500).optional(),
+  kind: z.enum(["category", "tag"]).default("category"),
+  surface: z.enum(["store", "host"]).default("store"),
 });
 
 /** IP-keyed subject for the public bucket. Hashed upstream; never logged raw. */
@@ -31,5 +33,11 @@ export const storeBlogArchiveFn = createServerFn({ method: "GET" })
     await enforceRateLimit("blog.read", await readerSubject());
     const { loadStoreBlogArchive } =
       await import("./store-blog-archive.server");
-    return loadStoreBlogArchive(data.slug, data.termSlug, data.page ?? 1);
+    return loadStoreBlogArchive(
+      data.slug,
+      data.termSlug,
+      data.page ?? 1,
+      data.kind,
+      data.surface,
+    );
   });

@@ -23,6 +23,7 @@ import { blogIndexFn } from "@/lib/blog-taxonomy.functions";
 import { archiveHead, blogIndexPath, listingJsonLd } from "@/lib/blog-taxonomy";
 import { useLang } from "@/lib/i18n";
 import { BlogArchiveTheme } from "@/components/store/BlogArchiveTheme";
+import { StoreHeader } from "@/components/store/StoreHeader";
 import { blogSearchFn } from "@/lib/blog-reader.functions";
 import {
   resolveStorefrontHostFn,
@@ -266,6 +267,12 @@ function StoreBlogIndexPage({
     // storefront they point at `/store/<slug>/blog/category/<term>`, the
     // merchant-scoped archive (Batch B, gap 3), not the platform-wide route.
     <StoreSlugContext.Provider value={data.merchantSlug}>
+      <StoreHeader
+        slug={data.merchantSlug}
+        name={merchantName}
+        menus={data.chrome?.menus ?? []}
+        themeKey={data.chrome?.themeKey ?? null}
+      />
       <BlogArchiveTheme
         feed={{
           articles: data.listing.articles,

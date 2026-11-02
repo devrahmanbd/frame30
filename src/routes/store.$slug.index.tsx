@@ -4,6 +4,7 @@ import { createServerFn, useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import type { Json } from "@/integrations/supabase/types";
 import { StoreHomepage } from "@/components/store/StoreHomepage";
+import { StorefrontPage } from "@/components/store/StorefrontPage";
 import { StoreWelcome } from "@/components/store/StoreWelcome";
 import { PluginLayer } from "@/components/store/PluginLayer";
 import {
@@ -461,6 +462,9 @@ function StorefrontHome() {
   if (data.homepage) {
     return <StoreHomepage home={data.homepage} slug={slug} />;
   }
+  if (hasAuthoredIndex(data.ast)) {
+    return <StorefrontPage data={data} />;
+  }
   // No designated homepage: every store shows the welcome plate instead
   // of the theme index. Footer plugin widgets mount here too — themeless
   // stores get their chat bubble on this very page.
@@ -473,5 +477,15 @@ function StorefrontHome() {
         tokens={data.tokens}
       />
     </PluginLayer>
+  );
+}
+
+function hasAuthoredIndex(ast: unknown): boolean {
+  if (!ast || typeof ast !== "object") return false;
+  const a = ast as { header?: unknown[]; main?: unknown[]; footer?: unknown[] };
+  return Boolean(
+    (Array.isArray(a.header) && a.header.length > 0) ||
+      (Array.isArray(a.main) && a.main.length > 0) ||
+      (Array.isArray(a.footer) && a.footer.length > 0),
   );
 }

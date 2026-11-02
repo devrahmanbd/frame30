@@ -146,7 +146,7 @@ function CheckoutPage() {
             themeKey={themeKey ?? null}
           />
         }
-        containerClassName=""
+        containerClassName="mx-auto w-full max-w-[var(--fq-container,1280px)] px-4 pb-24 sm:px-6 lg:px-8"
       />
     </PluginLayer>
   );
@@ -244,7 +244,7 @@ export function CheckoutShell({
       // shopper meets the button after the rail and the total.
       afterBody={
         shellControls.submitAfterBody ? (
-          <div className="mx-auto max-w-5xl px-4 pb-10 pt-2 lg:px-8">
+          <div className="w-full pb-10 pt-2">
             <CheckoutSubmit state={submit} formId={formId} />
           </div>
         ) : null
@@ -711,13 +711,13 @@ function CheckoutBody({
     // the total they are paying.
     if (!showSummary) {
       return (
-        <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="w-full py-4">
           {form}
         </div>
       );
     }
     return (
-      <div className="mx-auto grid max-w-5xl gap-8 px-4 py-8 lg:grid-cols-[1.2fr_1fr]">
+      <div className="grid w-full gap-8 py-4 lg:grid-cols-[1.2fr_1fr]">
         <section>{form}</section>
         <aside className="h-fit rounded-fq-lg border border-border bg-card p-4 lg:sticky lg:top-24">
           {summaryPanel}
@@ -727,7 +727,7 @@ function CheckoutBody({
   }
 
   return (
-    <div className="mx-auto grid max-w-5xl gap-8 px-4 py-8 lg:grid-cols-[1.2fr_1fr]">
+    <div className="grid w-full gap-8 py-8 lg:grid-cols-[1.2fr_1fr]">
       <section>
         <h1 className="font-bangla-display text-2xl font-bold">
           {t("Checkout", "চেকআউট")}

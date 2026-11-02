@@ -436,6 +436,7 @@ export function HeaderAnnouncementBar({
         dismissible={false}
         rotateMs={0}
         motion="static"
+        tone="ink"
         link={rebase}
         storageKey={storageKey}
       />

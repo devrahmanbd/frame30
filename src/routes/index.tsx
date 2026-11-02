@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PublicShell } from "@/components/public/PublicShell";
 import { StoreHomepage } from "@/components/store/StoreHomepage";
+import { StorefrontPage } from "@/components/store/StorefrontPage";
 import { StoreWelcome } from "@/components/store/StoreWelcome";
 import { PluginLayer } from "@/components/store/PluginLayer";
 import { getLanding } from "@/lib/landing.functions";
@@ -169,6 +170,16 @@ export const Route = createFileRoute("/")({
   component: PlatformHome,
 });
 
+function hasAuthoredIndex(ast: unknown): boolean {
+  if (!ast || typeof ast !== "object") return false;
+  const a = ast as { header?: unknown[]; main?: unknown[]; footer?: unknown[] };
+  return Boolean(
+    (Array.isArray(a.header) && a.header.length > 0) ||
+      (Array.isArray(a.main) && a.main.length > 0) ||
+      (Array.isArray(a.footer) && a.footer.length > 0),
+  );
+}
+
 function PlatformHome() {
   const data = Route.useLoaderData();
 
@@ -182,6 +193,9 @@ function PlatformHome() {
           slug={data.host.merchantSlug}
         />
       );
+    }
+    if (hasAuthoredIndex(data.storefront.ast)) {
+      return <StorefrontPage data={data.storefront} />;
     }
     // Themeless custom host: welcome fallback still carries the plugin layer
     // so footer mounts (chat bubbles etc.) render without a theme — same

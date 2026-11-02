@@ -19,6 +19,7 @@ import {
 } from "@/lib/store-blog.functions";
 import { BlogFeedProvider, type BlogFeed } from "@/components/builder/blog";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
+import { StoreHeader } from "@/components/store/StoreHeader";
 import { storeArticleHead } from "@/lib/store-blog-head";
 import { articleJsonLd, articleOutline } from "@/lib/blog-reader";
 import { breadcrumbJsonLd, termArchivePath, paging } from "@/lib/blog-taxonomy";
@@ -340,26 +341,34 @@ function StoreArticlePage({
     </>
   );
   return (
-    <BlogFeedProvider value={relatedFeed(data.related, article.slug, "/blog")}>
-      <ThemeChrome
-        template="blog"
-        ast={data.chrome?.ast ?? null}
-        tokens={data.chrome?.tokens ?? null}
+    <>
+      <StoreHeader
+        slug={data.merchantSlug}
+        name={merchantName}
+        menus={data.chrome?.menus ?? []}
         themeKey={data.chrome?.themeKey ?? null}
-        contentSlot="page_content"
-        contextSlots={{
-          // The route-owned body slot: the article.
-          page_content: body,
-          // The blog pack: the terms rail, the listing and the pager.
-          blog_terms: null,
-          blog_archive: null,
-          blog_pager: null,
-        }}
-        ownsPrimary
-        containerClassName="mx-auto max-w-6xl px-4 py-8"
-        fallback={body}
       />
-    </BlogFeedProvider>
+      <BlogFeedProvider value={relatedFeed(data.related, article.slug, "/blog")}>
+        <ThemeChrome
+          template="blog"
+          ast={data.chrome?.ast ?? null}
+          tokens={data.chrome?.tokens ?? null}
+          themeKey={data.chrome?.themeKey ?? null}
+          contentSlot="page_content"
+          contextSlots={{
+            // The route-owned body slot: the article.
+            page_content: body,
+            // The blog pack: the terms rail, the listing and the pager.
+            blog_terms: null,
+            blog_archive: null,
+            blog_pager: null,
+          }}
+          ownsPrimary
+          containerClassName="mx-auto max-w-6xl px-4 py-8"
+          fallback={body}
+        />
+      </BlogFeedProvider>
+    </>
   );
 }
 

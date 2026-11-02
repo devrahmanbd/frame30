@@ -27,6 +27,8 @@ export async function loadStoreBlogArchive(
   slug: string,
   termSlug: string,
   page: number,
+  kind: "category" | "tag" = "category",
+  surface: "store" | "host" = "store",
 ): Promise<{
   merchant: { id: string; name: string; slug: string };
   origin: string | null;
@@ -54,14 +56,24 @@ export async function loadStoreBlogArchive(
   if (theme) {
     tokens = theme.tokens;
     const { resolveTemplateForHost } = await import("./pipeline-resolver");
-    const resolution = resolveTemplateForHost({
-      template: "archive_category",
-      variants: theme.templates,
-      tenant: chrome.merchant.id,
-      mode: "published",
-      host: "storefront",
-      tokens: theme.tokens,
-    });
+    const resolution =
+      kind === "category"
+        ? resolveTemplateForHost({
+            template: "archive_category",
+            variants: theme.templates,
+            tenant: chrome.merchant.id,
+            mode: "published",
+            host: "storefront",
+            tokens: theme.tokens,
+          })
+        : resolveTemplateForHost({
+            template: `archive_${kind}`,
+            variants: theme.templates,
+            tenant: chrome.merchant.id,
+            mode: "published",
+            host: "storefront",
+            tokens: theme.tokens,
+          });
     // The chrome rule the base path already applies, through the SAME
     // resolver — resolved ONCE and reused for the decline below: a template
     // that publishes no header/footer borrows the home template's, so a
@@ -98,17 +110,26 @@ export async function loadStoreBlogArchive(
 
   // The archive's own URLs — the loader's prev/next, the feed and the head
   // all derive from this one base.
-  const basePath = `/store/${slug}/blog/category/${termSlug}`;
+  const basePath =
+    surface === "store"
+      ? `/store/${slug}/blog/${kind}/${termSlug}`
+      : `/blog/${kind}/${termSlug}`;
   const archiveBase = (p: number) =>
     p > 1 ? `${basePath}?page=${p}` : basePath;
 
   const { loadTermArchive, TermNotFound } = await import("./blog-index.server");
   let archive: TermArchive;
   try {
-    archive = await loadTermArchive("category", termSlug, page, {
-      merchantId: chrome.merchant.id,
-      basePath: archiveBase,
-    });
+    archive =
+      kind === "category"
+        ? await loadTermArchive("category", termSlug, page, {
+            merchantId: chrome.merchant.id,
+            basePath: archiveBase,
+          })
+        : await loadTermArchive(kind, termSlug, page, {
+            merchantId: chrome.merchant.id,
+            basePath: archiveBase,
+          });
   } catch (error) {
     // An unknown term for THIS store is a 404 — never another store's
     // same-named category, never an empty-but-200 archive.

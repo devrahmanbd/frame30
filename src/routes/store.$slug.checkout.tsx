@@ -259,7 +259,7 @@ function CheckoutPage() {
             themeKey={themeKey ?? null}
           />
         }
-        containerClassName="bg-muted/10 min-h-screen pb-24"
+        containerClassName="mx-auto w-full max-w-[var(--fq-container,1280px)] px-4 pb-24 sm:px-6 lg:px-8"
       />
     </PluginLayer>
   );
@@ -374,7 +374,7 @@ export function CheckoutShell({
       // shopper meets the button after the rail and the total.
       afterBody={
         shellControls.submitAfterBody ? (
-          <div className="mx-auto max-w-[var(--fq-container,1280px)] px-4 pb-10 pt-2 sm:px-6 lg:px-8">
+          <div className="w-full pb-10 pt-2">
             <CheckoutSubmit state={submit} formId={formId} />
           </div>
         ) : null
@@ -1042,14 +1042,14 @@ function CheckoutBody({
     // the total they are paying.
     if (!showSummary) {
       return (
-        <div className="mx-auto max-w-[var(--fq-container,1280px)] px-4 py-8 sm:px-6 lg:px-8">
+        <div className="w-full py-4">
           {pendingBanner}
           {form}
         </div>
       );
     }
     return (
-      <div className="mx-auto grid max-w-[var(--fq-container,1280px)] gap-12 px-4 py-8 lg:grid-cols-[1.5fr_1fr] lg:gap-16 sm:px-6 lg:px-8">
+      <div className="grid w-full gap-12 py-4 lg:grid-cols-[1.5fr_1fr] lg:gap-16">
         <section className="order-2 lg:order-1 pt-4">
           {pendingBanner}
           {form}
@@ -1061,7 +1061,7 @@ function CheckoutBody({
   }
 
   return (
-    <div className="mx-auto grid max-w-[var(--fq-container,1280px)] gap-12 px-4 py-8 lg:grid-cols-[1.5fr_1fr] lg:gap-16 sm:px-6 lg:px-8">
+    <div className="grid w-full gap-12 py-8 lg:grid-cols-[1.5fr_1fr] lg:gap-16">
       <section className="order-2 lg:order-1 pt-4">
         {pendingBanner}
         <nav className="mb-10 flex items-center gap-3 text-[11px] font-bold fq-caps tracking-widest text-muted-foreground">

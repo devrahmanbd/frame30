@@ -176,40 +176,69 @@ export function ArchiveRail({
   const { t } = useLang();
   const storeSlug = useStoreSlug();
   if (!facets.length) return null;
+
+  const categories = facets.filter((f) => f.kind === "category");
+  const tags = facets.filter((f) => f.kind === "tag");
+  const hasBoth = categories.length > 0 && tags.length > 0;
+
+  const renderGroup = (
+    items: typeof facets,
+    label: string,
+    showLabel: boolean,
+  ) => (
+    <div className="space-y-2">
+      {showLabel ? (
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          {label}
+        </h3>
+      ) : null}
+      <div className="flex flex-wrap gap-2">
+        {items.map((facet) => {
+          const active = facet.slug === activeSlug;
+          return (
+            <Link
+              key={`${facet.kind}:${facet.slug}`}
+              to={
+                facet.kind === "tag"
+                  ? storeSlug
+                    ? "/store/$slug/blog/tag/$termSlug"
+                    : "/blog/tag/$slug"
+                  : storeSlug
+                    ? "/store/$slug/blog/category/$termSlug"
+                    : "/blog/category/$slug"
+              }
+              params={
+                storeSlug
+                  ? { slug: storeSlug, termSlug: facet.slug }
+                  : { slug: facet.slug }
+              }
+              aria-current={active ? "page" : undefined}
+              className={`inline-flex min-h-11 items-center gap-1 rounded-full border px-3 text-sm ${
+                active
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <span>{facet.name}</span>
+              <span className="text-[11px] opacity-70">{facet.count}</span>
+            </Link>
+          );
+        })}
+      </div>
+    </div>
+  );
+
   return (
     <nav
       aria-label={t("Browse by topic", "বিষয় অনুযায়ী দেখুন")}
-      className="mb-8 flex flex-wrap gap-2"
+      className="mb-8 space-y-4"
     >
-      {facets.map((facet) => {
-        const active = facet.slug === activeSlug;
-        return (
-          <Link
-            key={`${facet.kind}:${facet.slug}`}
-            to={
-              facet.kind === "tag"
-                ? "/blog/tag/$slug"
-                : storeSlug
-                  ? "/store/$slug/blog/category/$termSlug"
-                  : "/blog/category/$slug"
-            }
-            params={
-              facet.kind !== "tag" && storeSlug
-                ? { slug: storeSlug, termSlug: facet.slug }
-                : { slug: facet.slug }
-            }
-            aria-current={active ? "page" : undefined}
-            className={`inline-flex min-h-11 items-center gap-1 rounded-full border px-3 text-sm ${
-              active
-                ? "border-primary bg-primary/10 text-primary"
-                : "border-border text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <span>{facet.name}</span>
-            <span className="text-[11px] opacity-70">{facet.count}</span>
-          </Link>
-        );
-      })}
+      {categories.length > 0
+        ? renderGroup(categories, t("Categories", "ক্যাটাগরি"), hasBoth)
+        : null}
+      {tags.length > 0
+        ? renderGroup(tags, t("Tags", "ট্যাগ"), hasBoth)
+        : null}
     </nav>
   );
 }

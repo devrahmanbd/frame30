@@ -23,6 +23,10 @@ import {
 import { useLang } from "@/lib/i18n";
 import { archiveContextFrom } from "@/lib/archive-context";
 import { ArchiveView } from "@/components/store/ArchiveView";
+import { resolveStorefrontHostFn } from "@/lib/storefront.functions";
+import { storeBlogArchiveFn } from "@/lib/store-blog-archive.functions";
+import { storeArticleCanonical } from "@/lib/store-blog-head";
+import { StoreTermArchiveView } from "@/components/store/StoreTermArchiveView";
 
 export const Route = createFileRoute("/blog/category/$slug")({
   validateSearch: z.object({
@@ -30,11 +34,30 @@ export const Route = createFileRoute("/blog/category/$slug")({
   }),
   loaderDeps: ({ search }) => ({ page: search.page ?? 1 }),
   loader: async ({ params, deps }) => {
+    let host: Awaited<ReturnType<typeof resolveStorefrontHostFn>> = null;
+    try {
+      host = await resolveStorefrontHostFn();
+    } catch {
+      host = null;
+    }
+    if (host) {
+      const store = await storeBlogArchiveFn({
+        data: {
+          slug: host.merchantSlug,
+          termSlug: params.slug,
+          kind: "category",
+          surface: "host",
+          page: deps.page,
+        },
+      });
+      if (!store) throw notFound();
+      return { kind: "store" as const, ...store };
+    }
     const data = await blogArchiveFn({
       data: { kind: "category", slug: params.slug, page: deps.page },
     });
     if (!data) throw notFound();
-    return data;
+    return { kind: "global" as const, ...data };
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
@@ -42,6 +65,64 @@ export const Route = createFileRoute("/blog/category/$slug")({
         meta: [
           { title: "Category not found — Framique" },
           { name: "robots", content: "noindex" },
+        ],
+      };
+    }
+    if (loaderData.kind === "store") {
+      const { archive, merchant, origin, settings, basePath } = loaderData;
+      const { term, paging } = archive;
+      const { meta, links } = archiveHead({
+        origin,
+        basePath,
+        titleEn: term.meta_title ?? term.name_en ?? term.name,
+        description:
+          term.meta_description ??
+          term.description ??
+          `${term.name} — ${merchant.name}`,
+        paging,
+        indexable: term.robots_index !== false,
+        imageUrl: term.cover_image_url ?? null,
+        siteName: merchant.name,
+      });
+      const start = paging.from;
+      const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        name: term.name,
+        description: term.description ?? undefined,
+        url: origin
+          ? `${origin}${basePath}${paging.page > 1 ? `?page=${paging.page}` : ""}`
+          : basePath,
+        mainEntity: {
+          "@type": "ItemList",
+          numberOfItems: paging.total,
+          itemListElement: archive.articles.map((article, index) => ({
+            "@type": "ListItem",
+            position: start + index + 1,
+            url: storeArticleCanonical(origin, settings, {
+              slug: article.slug,
+              publishedAt: article.publishedAt,
+              categorySlug: article.category?.slug ?? null,
+            }),
+            name: article.title,
+          })),
+        },
+      };
+      return {
+        meta,
+        links,
+        scripts: [
+          { type: "application/ld+json", children: JSON.stringify(jsonLd) },
+          {
+            type: "application/ld+json",
+            children: JSON.stringify(
+              breadcrumbJsonLd(origin, [
+                { name: merchant.name, path: "/" },
+                { name: "Blog", path: "/blog" },
+                { name: term.name, path: basePath },
+              ]),
+            ),
+          },
         ],
       };
     }
@@ -111,6 +192,9 @@ function MissingArchive() {
 
 function CategoryArchive() {
   const data = Route.useLoaderData();
+  if (data.kind === "store") {
+    return <StoreTermArchiveView data={data} kind="category" surface="host" />;
+  }
   const { t, lang } = useLang();
   const { term } = data;
   const heading = lang === "bn" ? term.name : term.name_en || term.name;

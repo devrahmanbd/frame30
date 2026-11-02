@@ -353,6 +353,7 @@ describe("starter engines (genuine GSAP/ScrollTrigger + Three.js)", () => {
       (d) => d.name === "three",
     )!;
     expect(pin.version).toBe(THREE_PIN);
+    // @ts-expect-error — three type definitions are not bundled
     const three = (await import("three")) as Record<string, unknown>;
     for (const key of ["Scene", "PerspectiveCamera", "WebGLRenderer"]) {
       expect(typeof three[key], `three.${key}`).toBe("function");

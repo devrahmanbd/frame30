@@ -18,6 +18,7 @@ import { catalogMeta } from "./catalog-meta";
 import { builtinThemeMeta, getBuiltinTheme } from "./builtin-themes";
 import type { PackageFile } from "../package-zip";
 import { inventoryExternalUrls } from "../package-review";
+import { adaptThemeTemplatesForMerchant } from "./merchant-adapt";
 import {
   isNewerVersion,
   MAX_THEME_UPLOAD_BYTES,
@@ -463,6 +464,32 @@ export async function installCatalogTheme(
     );
   const themeId = (data as { id: string }).id;
 
+  let adaptedTemplates = pkg.templates;
+  try {
+    const { data: merchantRow } = await db
+      .from("merchants")
+      .select("name")
+      .eq("id", merchantId)
+      .maybeSingle();
+
+    const { data: settingsRow } = await db
+      .from("merchant_settings")
+      .select("support_email, support_phone")
+      .eq("merchant_id", merchantId)
+      .maybeSingle();
+
+    adaptedTemplates = adaptThemeTemplatesForMerchant(
+      pkg.templates as never,
+      {
+        name: merchantRow?.name || entry.nameEn,
+        supportEmail: settingsRow?.support_email,
+        supportPhone: settingsRow?.support_phone,
+      },
+    );
+  } catch {
+    // Non-throwing fallback to pkg.templates
+  }
+
   const { data: version, error: versionError } = await db
     .from("theme_versions")
     .insert({
@@ -472,7 +499,7 @@ export async function installCatalogTheme(
       status: "published",
       published_at: new Date().toISOString(),
       label: key,
-      templates: pkg.templates as never,
+      templates: adaptedTemplates as never,
       tokens: pkg.tokens as never,
       source_registry_key: key,
       source_registry_version: pkg.version,
@@ -494,7 +521,7 @@ export async function installCatalogTheme(
     merchant_id: merchantId,
     theme_id: themeId,
     revision: 1,
-    templates: pkg.templates as never,
+    templates: adaptedTemplates as never,
     tokens: pkg.tokens as never,
     updated_by: actorId ?? null,
   });
