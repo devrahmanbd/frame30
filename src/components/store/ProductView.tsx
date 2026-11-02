@@ -18,6 +18,7 @@ import type { getStoreProduct } from "@/lib/storefront.functions";
 import type { ResponsiveImage } from "@/lib/image-transform";
 import { WishlistHeart } from "@/components/builder/primitives/ProductCard";
 import { ChevronDown } from "lucide-react";
+import { flattenAst } from "@/lib/builder-ast";
 
 export type ProductPayload = Exclude<
   Awaited<ReturnType<typeof getStoreProduct>>,
@@ -497,7 +498,9 @@ export function ProductView({ data }: { data: ProductPayload }) {
   ]);
 
   const hasPriceBlock =
-    ast?.main?.some((s) => s.type === "price_block") ?? false;
+    flattenAst(ast ?? { header: [], main: [], footer: [] }).some(
+      (s) => s.type === "price_block",
+    );
 
   const media = <ProductGallery product={product} />;
 

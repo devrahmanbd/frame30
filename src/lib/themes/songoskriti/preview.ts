@@ -174,10 +174,6 @@ export function songoskritiPreviewSource(
           // (page_content is page/blog-only and would mismatch here, so
           // details stay a rich_text like before the columns rebuild).
           return [
-            s("heading", {
-              text: "Dhakai Jamdani Heritage Saree",
-              text_bn: "ঢাকাই জামদানি হেরিটেজ শাড়ি",
-            }),
             {
               ...s("columns", {
                 columns: 2,
@@ -205,6 +201,11 @@ export function songoskritiPreviewSource(
                 },
               ],
             },
+            s("heading", {
+              level: "h2",
+              text: "Product Details & Craft",
+              text_bn: "পণ্যের বিবরণ ও কারুশিল্প",
+            }),
             s("rich_text", {
               heading: "Details",
               heading_bn: "বিবরণ",

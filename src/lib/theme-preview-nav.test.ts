@@ -100,19 +100,9 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
       "craft_story",
       "product_rail",
       "split_feature",
-      "product_rail",
-      "recently_viewed",
-      "finder_row",
-      "split_feature",
-      "product_rail",
-      "product_rail",
-      "split_feature",
       "collection_story",
       "product_rail",
-      "craft_story",
       "ugc_gallery",
-      "testimonials",
-      "split_feature",
       "trust_footer",
       "store_locator",
     ]);
@@ -145,7 +135,7 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
   // the closed vocabulary's own map.
   const FIRST_SECTION: Record<TemplateKey, string> = {
     index: "hero_carousel",
-    product: "heading",
+    product: "columns",
     collection: "category_header",
     account: "account_nav",
     page: "breadcrumb",

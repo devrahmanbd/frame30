@@ -79,23 +79,13 @@ const TEMPLATE_MAIN: Record<string, string[]> = {
     "craft_story",
     "product_rail",
     "split_feature",
-    "product_rail",
-    "recently_viewed",
-    "finder_row",
-    "split_feature",
-    "product_rail",
-    "product_rail",
-    "split_feature",
     "collection_story",
     "product_rail",
-    "craft_story",
     "ugc_gallery",
-    "testimonials",
-    "split_feature",
     "trust_footer",
     "store_locator",
   ],
-  product: ["heading", "columns", "rich_text", "product_rail"],
+  product: ["columns", "heading", "rich_text", "product_rail"],
   collection: [
     "category_header",
     "result_toolbar",
@@ -153,7 +143,7 @@ const TEMPLATE_MAIN: Record<string, string[]> = {
 };
 
 describe("Task 3 — freeze: homepage composition", () => {
-  it("homepage composition is frozen: 21 sections / 12 distinct types", () => {
+  it("homepage composition is frozen: 11 sections / 9 distinct types", () => {
     const sections = buildSongoskritiHomepage(stubBuilder<never>());
     expect(sections.map((x) => x.type)).toEqual([
       "hero_carousel",
@@ -162,23 +152,13 @@ describe("Task 3 — freeze: homepage composition", () => {
       "craft_story",
       "product_rail",
       "split_feature",
-      "product_rail",
-      "recently_viewed",
-      "finder_row",
-      "split_feature",
-      "product_rail",
-      "product_rail",
-      "split_feature",
       "collection_story",
       "product_rail",
-      "craft_story",
       "ugc_gallery",
-      "testimonials",
-      "split_feature",
       "trust_footer",
       "store_locator",
     ]);
-    expect(new Set(sections.map((x) => x.type)).size).toBe(12);
+    expect(new Set(sections.map((x) => x.type)).size).toBe(9);
   });
 });
 
@@ -251,15 +231,22 @@ describe("Task 3 — freeze: chrome + singleton static pins", () => {
   });
 
   it("recently_viewed singleton static pin", () => {
-    const home = buildSongoskritiHomepage(stubBuilder<never>());
-    const section = home.find((s) => s.type === "recently_viewed")!;
+    const section = {
+      ...newSection("recently_viewed" as SectionType),
+      props: {},
+    };
     const html = render(WIDGET_COMPONENTS["recently_viewed"], section, "en");
     expect(html).toBe("");
   });
 
   it("finder_row singleton static pin", () => {
-    const home = buildSongoskritiHomepage(stubBuilder<never>());
-    const section = home.find((s) => s.type === "finder_row")!;
+    const section = {
+      ...newSection("finder_row" as SectionType),
+      props: {
+        heading: "Shop by occasion",
+        body: "Pick a moment",
+      },
+    };
     const html = render(SONGOSKRITI_WIDGETS["finder_row"], section, "en");
     expect(html).toContain("lg:col-span-5");
   });
@@ -279,8 +266,17 @@ describe("Task 3 — freeze: chrome + singleton static pins", () => {
   });
 
   it("testimonials singleton static pin", () => {
-    const home = buildSongoskritiHomepage(stubBuilder<never>());
-    const section = home.find((s) => s.type === "testimonials")!;
+    const section = {
+      ...newSection("testimonials" as SectionType),
+      props: {
+        testimonials: [
+          {
+            quote: "Beautiful handloom quality.",
+            author: "Customer",
+          },
+        ],
+      },
+    };
     const html = render(SONGOSKRITI_WIDGETS["testimonials"], section, "en");
     expect(html).toContain('aria-label="Testimonials"');
   });

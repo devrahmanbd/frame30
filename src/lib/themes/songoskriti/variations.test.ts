@@ -95,9 +95,6 @@ describe("songoskriti variation preview render", () => {
     expect(home.find((x) => x.type === "hero_carousel")!.props.skin).toBe(
       "fullbleed",
     );
-    expect(home.find((x) => x.type === "testimonials")!.props.skin).toBe(
-      "carousel",
-    );
     // Unauthored rails take the variation skin.
     for (const rail of home.filter((x) => x.type === "product_rail")) {
       expect(rail.props.skin).toBe("minimal");

@@ -905,14 +905,18 @@ const SongoskritiProductRail: WidgetComponent = (ctx) => {
 
 const SongoskritiProductGrid: WidgetComponent = (ctx) => {
   const { str, data, locale, Heading, productSlot, template } = ctx;
-  // The search route hands the theme ONE opaque block (`productSlot`,
-  // `store.$slug.search.tsx:559`) — the platform's executed and priced
-  // results. On the search template that block IS the result set, so it
-  // wins. Every other template keeps the theme's own row grid: the
-  // collection route passes a differently-shaped slot (`c.$collectionSlug
-  // .tsx:220`) and must not lose its styled cards.
-  const host = template === "search" ? productSlot : undefined;
+  // The search and collection routes pass executed product slots.
+  // On both templates that block is the live result set.
   const rows = data?.rows;
+  // The search route passes executed product results. On the collection template,
+  // the theme's own row grid wins if rows are provided; if rows are absent
+  // (e.g. unmounted WidgetDataProvider), fallback to the host's productSlot.
+  const host =
+    template === "search"
+      ? productSlot
+      : template === "collection" && rows === undefined && productSlot
+        ? productSlot
+        : undefined;
   const heading = str("heading");
   const subhead = str("subhead");
   const badgeLabel = str("badgeLabel");
@@ -929,7 +933,7 @@ const SongoskritiProductGrid: WidgetComponent = (ctx) => {
   return (
     <section className="w-full bg-[var(--theme-surface)] py-16 sm:py-24">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-8">
-        {heading && (
+        {heading && !host && (
           <div className="mb-16 flex flex-col items-center text-center">
             <Heading className="font-serif text-[28px] sm:text-[36px] lg:text-[44px] font-normal tracking-[0.01em] text-[var(--theme-ink)] leading-snug">
               {heading}

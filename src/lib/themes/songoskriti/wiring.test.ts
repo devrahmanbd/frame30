@@ -28,22 +28,17 @@ describe("songoskriti wiring", () => {
     ]);
   });
 
-  it("homepage builds 20 sections, every type resolvable in the catalog", () => {
+  it("homepage builds 11 curated sections, every type resolvable in the catalog", () => {
     const s = (type: string, props = {}) =>
       ({ id: type, type, props }) as never;
     const sections = buildHomepageMain(s as never);
-    // Fashion-catalog rebuild: 21 sections opening on the hero carousel —
-    // signature sarees lead, campaign splits and craft stories interleave,
-    // trust + flagship outlets close. No announcement bar, no circles.
-    // MOST LOVED carries a mobile bp override + a recently-viewed re-entry.
-    expect(sections).toHaveLength(21);
+    expect(sections).toHaveLength(11);
     for (const section of sections) {
       expect(
         catalogEntry(section.type),
         `${section.type} must exist in the catalog`,
       ).toBeDefined();
     }
-    // Task 2: builders emit the intended names directly — no stand-ins.
     expect(sections.map((n) => n.type)).toEqual([
       "hero_carousel",
       "department_grid",
@@ -51,19 +46,9 @@ describe("songoskriti wiring", () => {
       "craft_story",
       "product_rail",
       "split_feature",
-      "product_rail",
-      "recently_viewed",
-      "finder_row",
-      "split_feature",
-      "product_rail",
-      "product_rail",
-      "split_feature",
       "collection_story",
       "product_rail",
-      "craft_story",
       "ugc_gallery",
-      "testimonials",
-      "split_feature",
       "trust_footer",
       "store_locator",
     ]);
