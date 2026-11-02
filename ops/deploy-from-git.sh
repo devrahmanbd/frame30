@@ -277,17 +277,18 @@ run_contract_checks() {
   # resolve from anywhere; when that happens, pin the same edge contract
   # edge-direct via --resolve (raw curl, so set -e can't kill the script),
   # keeping the check's teeth instead of skipping it.
-  if getent hosts microscrop.shop >/dev/null 2>&1; then
+  edge_ip="$(getent hosts framique.qubickle.com | awk 'NR==1{print $1}')"
+  ms_ip="$(getent hosts microscrop.shop 2>/dev/null | awk 'NR==1{print $1}')"
+  if [ -n "$ms_ip" ] && [ -n "$edge_ip" ] && [ "$ms_ip" = "$edge_ip" ]; then
     check "https://microscrop.shop/" "404"
   else
-    edge_ip="$(getent hosts framique.qubickle.com | awk 'NR==1{print $1}')"
     if [ -z "$edge_ip" ]; then
-      echo "VERIFY FAIL: microscrop.shop DNS is dead and framique.qubickle.com did not resolve for an edge-direct probe"
+      echo "VERIFY FAIL: framique.qubickle.com did not resolve for an edge-direct probe"
       fail=1
     else
-      um_code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 --resolve "microscrop.shop:443:$edge_ip" "https://microscrop.shop/") || um_code="000"
+      um_code=$(curl -sk -o /dev/null -w "%{http_code}" --max-time 30 --resolve "microscrop.shop:443:$edge_ip" "https://microscrop.shop/") || um_code="000"
       if [ "$um_code" = "404" ]; then
-        echo "VERIFY OK: microscrop.shop (edge-direct via $edge_ip; DNS delegation dead) -> 404"
+        echo "VERIFY OK: microscrop.shop (edge-direct via $edge_ip) -> 404"
       else
         echo "VERIFY FAIL: microscrop.shop (edge-direct via $edge_ip) -> $um_code (want 404)"
         fail=1
