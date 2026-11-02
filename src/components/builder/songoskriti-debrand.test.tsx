@@ -128,7 +128,7 @@ describe("Task 2 parity pins — songoskriti default output", () => {
     expect(html).toContain("Songoskriti");
     expect(html).toContain("Shop");
     expect(html).toContain("Customer Care");
-    expect(html).toContain("care@songoskriti.com");
+    expect(html).toContain("support@example.com");
     // ZONE 4: payments + legal.
     expect(html).toContain("Payment methods");
     expect(html).toContain("bKash");
