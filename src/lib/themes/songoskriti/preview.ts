@@ -28,7 +28,7 @@ import "./ornament-generic-presentation";
 // Live-rendering activation (HEADER DE-THEMING lane): this preview entry
 // is in the prod import graph (preview-sources → preview, dynamically
 // imported by storefront routes), so re-exporting the header presentation
-// runs its `registerThemePresentation` side effect for live rendering.
+import "./header-presentation";
 export { SongoskritiHeaderPresentation } from "./header-presentation";
 // Live-rendering activation (PRESENTATION-CLAIMS lane): register the 13
 // Songoskriti presentation claims through the storefront graph. The
