@@ -334,8 +334,8 @@ function HeroSkinSlide({
           <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--theme-accent)] animate-pulse" />
           <span>
             {locale === "bn"
-              ? "সংস্কৃতি অটেলিয়ার · সংস্করণ ০৪"
-              : "Songoskriti Atelier · Edition 04"}
+              ? "ফ্লেম ফ্যাশন বিডি · তাঁত ঐতিহ্য"
+              : "Flame Fashion BD · Handloom Heritage"}
           </span>
         </div>
         <div className="hidden sm:flex items-center gap-2 text-[var(--theme-surface)]/70">

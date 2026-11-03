@@ -518,17 +518,14 @@ export function HeaderDesktopNav({
                         <div className="flex items-center gap-2">
                           <span className="h-1.5 w-1.5 rounded-full bg-[var(--theme-accent)] animate-pulse" />
                           <span>
-                            {t(
-                              "Songoskriti Editorial Archive · Dhaka Atelier",
-                              "সংস্কৃতি অটেলিয়ার সংগ্রহশালা · ঢাকা অটেলিয়ার",
-                            )}
+                            {t("Collections", "কালেকশন")}
                           </span>
                         </div>
                         <div className="hidden sm:flex items-center gap-3 text-[var(--theme-ink)]/60">
                           <span>
                             {t(
-                              "Complimentary Concierge Courier Over ৳5,000",
-                              "৳৫,০০০ এর অর্ডারে বিশেষ কুরিয়ার সেবা",
+                              "Free delivery on orders over ৳5,000",
+                              "৳৫,০০০ এর বেশি অর্ডারে ফ্রি ডেলিভারি",
                             )}
                           </span>
                           <span className="text-[var(--theme-accent)]">
@@ -536,8 +533,8 @@ export function HeaderDesktopNav({
                           </span>
                           <span>
                             {t(
-                              "Handcrafted Provenance",
-                              "হস্তশিল্পের নিশ্চয়তা",
+                              "Authentic Products",
+                              "আসল পণ্য",
                             )}
                           </span>
                         </div>
@@ -798,10 +795,7 @@ export function HeaderMobileDrawer({
             <div className="flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--theme-accent)] animate-pulse" />
               <span>
-                {t(
-                  "Songoskriti Atelier · Edition 04",
-                  "সংস্কৃতি অটেলিয়ার · সংস্করণ ০৪",
-                )}
+                {t("Store Menu", "স্টোর মেনু")}
               </span>
             </div>
             <span className="text-[var(--theme-accent)]">✦</span>
@@ -877,7 +871,7 @@ export function HeaderMobileDrawer({
         <div className="px-4 pb-20 pt-6 border-t border-[var(--theme-border)] space-y-4 text-[12px] text-[var(--theme-ink)]/70">
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50 mb-1">
-              {t("Flagship Ateliers", "ফ্ল্যাগশিপ অটেলিয়ার")}
+              {t("Flagship Stores", "ফ্ল্যাগশিপ আউটলেট")}
             </p>
             <p className="font-serif text-[13px] text-[var(--theme-ink)]">
               {t(
@@ -888,7 +882,7 @@ export function HeaderMobileDrawer({
           </div>
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50 mb-1">
-              {t("Client Concierge", "কনসিয়ার্জ সেবা")}
+              {t("Customer Support", "কাস্টমার সাপোর্ট")}
             </p>
             <a
               href="tel:+8801711000000"

@@ -33,6 +33,22 @@ export function getBuiltinTheme(key: string): BuiltinThemeEntry | null {
   return ENTRIES[key];
 }
 
+export function activateBuiltinThemes(): void {
+  for (const key of OFFICIAL_THEME_KEYS) {
+    const entry = ENTRIES[key];
+    if (entry && typeof entry.source === "function") {
+      try {
+        entry.source();
+      } catch {
+        // Safe activation
+      }
+    }
+  }
+}
+
+// Eagerly activate builtin themes so theme presentations and shells self-register
+activateBuiltinThemes();
+
 export function builtinThemeKeys(): BuiltinThemeKey[] {
   return [...OFFICIAL_THEME_KEYS];
 }

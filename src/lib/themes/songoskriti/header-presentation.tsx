@@ -20,7 +20,7 @@
  * this module still names only its own key.
  */
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import {
   Menu as MenuIcon,
   Search,
@@ -63,30 +63,66 @@ function SongoskritiLink({
   base,
   locale,
   className,
+  activeClassName,
   onNavigate,
 }: {
   item: CanonicalMenuItem;
   base: string;
   locale: string;
   className?: string;
+  activeClassName?: string;
   onNavigate?: () => void;
 }) {
   if (!item.label) return null;
+  const href = canonicalHref(item, base);
   const newTab = item.metadata?.["target"] === "_blank";
-  return (
-    <a
-      href={canonicalHref(item, base)}
-      title={item.metadata?.["title"] || undefined}
-      onClick={onNavigate}
-      {...(newTab ? { target: "_blank", rel: "noreferrer" } : {})}
-      className={className}
-    >
+
+  let currentPath = "";
+  try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    currentPath = useRouterState().location.pathname;
+  } catch {
+    currentPath = "";
+  }
+
+  const isActive = Boolean(
+    currentPath &&
+      href !== "#" &&
+      (currentPath === href ||
+        (href !== "/" &&
+          href !== `/store/${base}` &&
+          currentPath.startsWith(`${href}/`))),
+  );
+
+  const appliedClass = `${className ?? ""} ${isActive && activeClassName ? activeClassName : ""}`.trim();
+
+  const isExternal =
+    href.startsWith("http") ||
+    href.startsWith("mailto:") ||
+    href.startsWith("tel:") ||
+    href === "#" ||
+    newTab;
+
+  const content = (
+    <>
       {canonicalLabel(item, locale)}
       {item.badge ? (
         <span className="ml-2 inline-flex min-h-5 items-center rounded-full bg-[var(--theme-muted)] px-2 text-[11px] font-semibold text-[var(--theme-ink)]">
           {item.badge}
         </span>
       ) : null}
+    </>
+  );
+
+  return (
+    <a
+      href={href}
+      title={item.metadata?.["title"] || undefined}
+      onClick={onNavigate}
+      {...(newTab ? { target: "_blank", rel: "noreferrer" } : {})}
+      className={appliedClass}
+    >
+      {content}
     </a>
   );
 }
@@ -123,7 +159,7 @@ function SongoskritiPromoTile({
         )}
         <div className="absolute top-2.5 left-2.5 z-10">
           <span className="inline-flex items-center rounded-xs bg-[var(--theme-ink)]/90 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-surface)] backdrop-blur-xs">
-            {locale === "bn" ? "লুকবুক সংস্করণ" : "Editorial Lookbook"}
+            {locale === "bn" ? "বিশেষ কালেকশন" : "Featured Collection"}
           </span>
         </div>
       </div>
@@ -164,6 +200,7 @@ function SongoskritiMegaChild({
           item={item}
           base={base}
           locale={locale}
+          activeClassName="text-[var(--theme-accent,#C05A3E)] font-semibold"
           className="flex min-h-[40px] items-center text-left font-serif text-[15px] font-medium tracking-wide text-[var(--theme-ink)] motion-safe:transition-colors hover:text-[var(--theme-accent,#C05A3E)]"
         />
       </div>
@@ -175,6 +212,7 @@ function SongoskritiMegaChild({
                 item={grandchild}
                 base={base}
                 locale={locale}
+                activeClassName="text-[var(--theme-accent,#C05A3E)] font-semibold"
                 className="group/link flex min-h-[38px] items-center text-left font-sans text-[13px] text-[var(--theme-ink)]/70 motion-safe:transition-all hover:text-[var(--theme-ink)] hover:translate-x-1"
               />
             </li>
@@ -191,9 +229,17 @@ export function SongoskritiDesktopNav({
   base = "",
   locale = "en",
   label,
-  scrolled = false,
 }: SongoskritiNavProps & { scrolled?: boolean }) {
   if (items.length === 0) return null;
+
+  let currentPath = "";
+  try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    currentPath = useRouterState().location.pathname;
+  } catch {
+    currentPath = "";
+  }
+
   return (
     <nav
       aria-label={label ?? (locale === "bn" ? "মেনু" : "Menu")}
@@ -201,74 +247,100 @@ export function SongoskritiDesktopNav({
       className="w-full"
     >
       <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 lg:gap-x-9">
-        {items.map((item) => (
-          <li key={item.id} className="group relative flex h-full items-center">
-            <SongoskritiLink
-              item={item}
-              base={base}
-              locale={locale}
-              className="inline-flex items-center py-[24px] text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--theme-ink)]/80 transition-colors hover:text-[var(--theme-ink)]"
-            />
-            {item.children && item.children.length > 0 && (
-              <div
-                data-mega="songoskriti"
-                style={{ top: scrolled ? "64px" : "105px" }}
-                className="fixed left-0 z-50 hidden w-full pt-0 group-hover:block group-focus-within:block"
-              >
-                <div className="max-h-[85vh] w-full overflow-y-auto border-t border-[var(--theme-border)] bg-[var(--theme-surface)] shadow-2xl">
-                  {/* Top Editorial Archive Ribbon */}
-                  <div className="border-b border-[var(--theme-border)]/60 bg-[var(--theme-surface)]/90 backdrop-blur-xs px-10 py-2.5">
-                    <div className="mx-auto flex max-w-[1440px] items-center justify-between text-[10px] font-medium tracking-[0.22em] uppercase text-[var(--theme-ink)]/75">
-                      <div className="flex items-center gap-2">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[var(--theme-accent,#C05A3E)] animate-pulse" />
-                        <span>
-                          {locale === "bn"
-                            ? "সংস্কৃতি অটেলিয়ার সংগ্রহশালা · ঢাকা অটেলিয়ার"
-                            : "Songoskriti Editorial Archive · Dhaka Atelier"}
-                        </span>
-                      </div>
-                      <div className="hidden sm:flex items-center gap-3 text-[var(--theme-ink)]/60">
-                        <span>
-                          {locale === "bn"
-                            ? "৳৫,০০০ এর অর্ডারে বিশেষ কুরিয়ার সেবা"
-                            : "Complimentary Concierge Courier Over ৳5,000"}
-                        </span>
-                        <span className="text-[var(--theme-accent,#C05A3E)]">✦</span>
-                        <span>
-                          {locale === "bn"
-                            ? "হস্তশিল্পের নিশ্চয়তা"
-                            : "Handcrafted Provenance"}
-                        </span>
+        {items.map((item) => {
+          const itemHref = canonicalHref(item, base);
+          const isItemActive = Boolean(
+            currentPath &&
+              itemHref !== "#" &&
+              (currentPath === itemHref ||
+                (itemHref !== "/" &&
+                  itemHref !== `/store/${base}` &&
+                  currentPath.startsWith(`${itemHref}/`)) ||
+                item.children?.some((c) => {
+                  const cHref = canonicalHref(c, base);
+                  return (
+                    cHref !== "#" &&
+                    (currentPath === cHref ||
+                      c.children?.some(
+                        (gc) => canonicalHref(gc, base) === currentPath,
+                      ))
+                  );
+                })),
+          );
+
+          return (
+            <li key={item.id} className="group flex h-full items-center">
+              <SongoskritiLink
+                item={item}
+                base={base}
+                locale={locale}
+                className={`relative inline-flex items-center py-[24px] text-[11px] font-medium uppercase tracking-[0.2em] transition-colors ${
+                  isItemActive
+                    ? "text-[var(--theme-ink)] font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[var(--theme-accent,#C05A3E)]"
+                    : "text-[var(--theme-ink)]/80 hover:text-[var(--theme-ink)]"
+                }`}
+              />
+              {item.children && item.children.length > 0 && (
+                <div
+                  data-mega="songoskriti"
+                  className="absolute left-0 top-full z-50 hidden w-full pt-0 group-hover:block group-focus-within:block pointer-events-auto before:absolute before:-top-4 before:left-0 before:right-0 before:h-4 before:content-['']"
+                >
+                  <div className="max-h-[85vh] w-full overflow-y-auto border-t border-[var(--theme-border)] bg-[var(--theme-surface)] shadow-2xl">
+                    {/* Top Editorial Archive Ribbon */}
+                    <div className="border-b border-[var(--theme-border)]/60 bg-[var(--theme-surface)]/90 backdrop-blur-xs px-10 py-2.5">
+                      <div className="mx-auto flex max-w-[1440px] items-center justify-between text-[10px] font-medium tracking-[0.22em] uppercase text-[var(--theme-ink)]/75">
+                        <div className="flex items-center gap-2">
+                          <span className="h-1.5 w-1.5 rounded-full bg-[var(--theme-accent,#C05A3E)] animate-pulse" />
+                          <span>
+                            {locale === "bn"
+                              ? "ফ্লেম ফ্যাশন বিডি · হ্যান্ডলুম ও উৎসবের সংগ্রহ"
+                              : "Flame Fashion BD · Handloom & Festive Collections"}
+                          </span>
+                        </div>
+                        <div className="hidden sm:flex items-center gap-3 text-[var(--theme-ink)]/60">
+                          <span>
+                            {locale === "bn"
+                              ? "৳৫,০০০ এর বেশি অর্ডারে সারাদেশে ফ্রি ডেলিভারি"
+                              : "Free delivery across Bangladesh on orders over ৳5,000"}
+                          </span>
+                          <span className="text-[var(--theme-accent,#C05A3E)]">✦</span>
+                          <span>
+                            {locale === "bn"
+                              ? "আসল হ্যান্ডলুম"
+                              : "Authentic Handloom"}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="mx-auto flex max-w-[1440px] gap-16 px-10 py-12">
-                    <ul className="grid flex-1 grid-cols-4 gap-x-8 gap-y-10">
-                      {item.children.map((child) => (
-                        <SongoskritiMegaChild
-                          key={child.id}
-                          item={child}
-                          base={base}
-                          locale={locale}
-                        />
-                      ))}
-                    </ul>
-                    {(item.image || item.promo) && (
-                      <div className="w-[320px] shrink-0">
-                        <SongoskritiPromoTile
-                          item={item}
-                          base={base}
-                          locale={locale}
-                        />
-                      </div>
-                    )}
+                    <div className="mx-auto flex max-w-[1440px] gap-16 px-10 py-12">
+                      <ul className="grid flex-1 grid-cols-4 gap-x-8 gap-y-10">
+                        {item.children.map((child) => (
+                          <SongoskritiMegaChild
+                            key={child.id}
+                            item={child}
+                            base={base}
+                            locale={locale}
+                          />
+                        ))}
+                      </ul>
+
+                      {(item.image || item.promo) && (
+                        <div className="w-[320px] shrink-0">
+                          <SongoskritiPromoTile
+                            item={item}
+                            base={base}
+                            locale={locale}
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </li>
-        ))}
+              )}
+            </li>
+          );
+        })}
       </ul>
     </nav>
   );
@@ -294,6 +366,7 @@ function SongoskritiDrawerSubtree({
             base={base}
             locale={locale}
             onNavigate={onNavigate}
+            activeClassName="text-[var(--theme-accent,#C05A3E)] font-semibold"
             className="block min-h-[44px] py-2.5 text-[15px] font-medium text-[var(--theme-ink)]/80"
           />
           {node.children && node.children.length > 0 && (
@@ -325,7 +398,30 @@ export function SongoskritiMobileDrawer({
   defaultExpandedId?: string | null;
   onNavigate?: () => void;
 }) {
-  const [expanded, setExpanded] = useState<string | null>(defaultExpandedId);
+  let currentPath = "";
+  try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    currentPath = useRouterState().location.pathname;
+  } catch {
+    currentPath = "";
+  }
+
+  let initialExpanded = defaultExpandedId;
+  if (!initialExpanded && currentPath) {
+    const activeParent = items.find((item) =>
+      item.children?.some((c) => {
+        const cHref = canonicalHref(c, base);
+        return (
+          cHref !== "#" &&
+          (currentPath === cHref ||
+            c.children?.some((gc) => canonicalHref(gc, base) === currentPath))
+        );
+      }),
+    );
+    if (activeParent) initialExpanded = activeParent.id;
+  }
+
+  const [expanded, setExpanded] = useState<string | null>(initialExpanded);
   if (items.length === 0) return null;
   return (
     <nav
@@ -333,14 +429,14 @@ export function SongoskritiMobileDrawer({
       data-nav="songoskriti-drawer"
       className="flex flex-col"
     >
-      {/* Drawer Atelier Top Metadata */}
+      {/* Drawer Top Metadata */}
       <div className="mb-3 pb-3 border-b border-[var(--theme-border)]/70 flex items-center justify-between text-[10px] font-semibold tracking-[0.2em] uppercase text-[var(--theme-ink)]/75">
         <div className="flex items-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full bg-[var(--theme-accent,#C05A3E)] animate-pulse" />
           <span>
             {locale === "bn"
-              ? "সংস্কৃতি অটেলিয়ার · সংস্করণ ০৪"
-              : "Songoskriti Atelier · Edition 04"}
+              ? "ফ্লেম ফ্যাশন বিডি · কালেকশন"
+              : "Flame Fashion BD · Collections"}
           </span>
         </div>
         <span className="text-[var(--theme-accent,#C05A3E)]">✦</span>
@@ -358,6 +454,7 @@ export function SongoskritiMobileDrawer({
                   base={base}
                   locale={locale}
                   onNavigate={onNavigate}
+                  activeClassName="text-[var(--theme-accent,#C05A3E)] font-semibold"
                   className="block flex-1 py-5 text-[13px] font-semibold uppercase tracking-wider text-[var(--theme-ink)]"
                 />
                 {kids.length > 0 && (
@@ -398,11 +495,11 @@ export function SongoskritiMobileDrawer({
         })}
       </ul>
 
-      {/* Drawer Concierge Footer */}
+      {/* Drawer Footer */}
       <div className="mt-8 pt-6 border-t border-[var(--theme-border)] space-y-4 text-[12px] text-[var(--theme-ink)]/70">
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50 mb-1">
-            {locale === "bn" ? "ফ্ল্যাগশিপ অটেলিয়ার" : "Flagship Ateliers"}
+            {locale === "bn" ? "ফ্ল্যাগশিপ আউটলেট" : "Flagship Stores"}
           </p>
           <p className="font-serif text-[13px] text-[var(--theme-ink)]">
             {locale === "bn"
@@ -412,7 +509,7 @@ export function SongoskritiMobileDrawer({
         </div>
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50 mb-1">
-            {locale === "bn" ? "কনসিয়ার্জ সেবা" : "Client Concierge"}
+            {locale === "bn" ? "কাস্টমার সার্ভিস" : "Customer Support"}
           </p>
           <a
             href="tel:+8801711000000"
@@ -640,7 +737,7 @@ export function SongoskritiHeaderShell({
       />
 
       <div
-        className={`relative mx-auto flex transition-all duration-250 max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-10 ${scrolled ? "h-[64px]" : "h-[72px]"}`}
+        className={`mx-auto flex transition-all duration-250 max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-10 ${scrolled ? "h-[64px]" : "h-[72px]"}`}
       >
         <div className="flex items-center gap-4 shrink-0">
           {mobileMenu.length > 0 && (

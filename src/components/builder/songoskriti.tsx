@@ -470,8 +470,8 @@ const Testimonials: WidgetComponent = ({
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--theme-accent)]" />
             <p className="text-[11px] font-semibold tracking-[0.25em] uppercase text-[var(--theme-accent)]">
               {locale === "bn"
-                ? "গ্রাহকদের ভালোবাসা · সংস্করণ ০৪"
-                : "Patron Chronicles · Edition 04"}
+                ? "গ্রাহকদের মতামত"
+                : "Customer Reviews"}
             </p>
           </div>
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-light tracking-tight text-[var(--theme-ink)]">
@@ -1078,8 +1078,11 @@ const SongoskritiProductGrid: WidgetComponent = (ctx) => {
   const badgeLabel = str("badgeLabel");
   const promise = str("promise");
 
+  if (host) {
+    return <div className="w-full">{host}</div>;
+  }
+
   if (
-    host === undefined &&
     rows !== undefined &&
     rows.length === 0 &&
     !data?.pending
@@ -1087,9 +1090,9 @@ const SongoskritiProductGrid: WidgetComponent = (ctx) => {
     return null;
 
   return (
-    <section className="w-full bg-[var(--theme-surface)] py-16 sm:py-24">
-      <div className="mx-auto w-full max-w-6xl px-4 sm:px-8">
-        {heading && !host && (
+    <section className="w-full bg-[var(--theme-surface)] py-8 sm:py-16">
+      <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-6 lg:px-10">
+        {heading && (
           <div className="mb-16 flex flex-col items-center text-center">
             <Heading className="font-serif text-[28px] sm:text-[36px] lg:text-[44px] font-normal tracking-[0.01em] text-[var(--theme-ink)] leading-snug">
               {heading}
@@ -1310,8 +1313,8 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
                 <span className="h-1.5 w-1.5 rounded-full bg-[var(--theme-accent)]" />
                 <p className="text-[10px] font-semibold tracking-[0.25em] uppercase text-[var(--theme-accent)]">
                   {locale === "bn"
-                    ? "সংস্কৃতি সমাচার · সংস্করণ ০৪"
-                    : "The Atelier Gazette · Edition 04"}
+                    ? "নতুন কালেকশন ও আপডেট"
+                    : "New Drops & Updates"}
                 </p>
               </div>
               <h3 className="font-serif text-[22px] sm:text-[30px] font-light tracking-[0.01em] text-[var(--theme-surface)] leading-snug">
@@ -1385,14 +1388,14 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
               </div>
               <p className="font-serif text-[13px] leading-relaxed text-[var(--theme-ink)]/70 mb-5 max-w-sm">
                 {locale === "bn"
-                  ? "বাংলার ছয় শতাব্দীর বুনন ঐতিহ্যের অনন্য সংরক্ষণ ও আধুনিক রূপায়ণ।"
-                  : "Preserving Bengal's six centuries of weaving heritage through contemporary luxury."}
+                  ? "বাংলাদেশের ঐতিহ্যবাহী তাঁত ও আধুনিক ফ্যাশনের মেলবন্ধন।"
+                  : "Handcrafted Bangladeshi fashion, authentic handloom weaves, and contemporary festive wear."}
               </p>
               <div className="mb-6 space-y-1 text-[12px] text-[var(--theme-ink)]/70">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50">
                   {locale === "bn"
-                    ? "ফ্ল্যাগশিপ অটেলিয়ার"
-                    : "Flagship Concierge"}
+                    ? "ফ্ল্যাগশিপ আউটলেট"
+                    : "Flagship Stores"}
                 </p>
                 <p className="text-[12px] text-[var(--theme-ink)]/85">
                   {locale === "bn"
@@ -2552,7 +2555,7 @@ const SongoskritiCategoryHeader: WidgetComponent = ({
       data-collection-header
     >
       {/* Breadcrumb strip */}
-      <div className="mx-auto max-w-6xl px-4 sm:px-8 flex justify-center">
+      <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-6 lg:px-10 flex justify-center">
         <nav
           aria-label="Breadcrumb"
           className="flex items-center gap-2 pt-12 pb-4 text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--theme-ink)]/40"
