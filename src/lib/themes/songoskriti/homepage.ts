@@ -404,12 +404,6 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     s("testimonials", {
       skin: "carousel",
       autoAdvanceMs: 6000,
-      heading: "Patron Chronicles",
-      heading_bn: "গ্রাহকদের অভিজ্ঞতা ও ভালোবাসা",
-      subhead:
-        "Real stories and cherished moments from patrons who wear our weaves.",
-      subhead_bn:
-        "আমাদের তাঁতের পোশাক ও ঐতিহ্য নিয়ে সম্মানিত গ্রাহকদের আন্তরিক অনুভূতি।",
       testimonials: [
         {
           quote:
@@ -421,12 +415,6 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
           role: "Dhaka · Jamdani Saree",
           role_bn: "ঢাকা · জামদানি শাড়ি",
           image: "/ph/songoskriti/ugc-1.jpg",
-          productTitle: "Dhakai Jamdani Silk Saree",
-          productTitle_bn: "ঢাকাই জামদানি সিল্ক শাড়ি",
-          productHref: `${p}/dhakai-jamdani-silk-saree`,
-          occasion: "Daughter's Wedding",
-          occasion_bn: "কন্যার বিবাহ",
-          rating: 5,
         },
         {
           quote:
@@ -438,12 +426,6 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
           role: "Chittagong · Handloom Panjabi",
           role_bn: "চট্টগ্রাম · হ্যান্ডলুম পাঞ্জাবি",
           image: "/ph/songoskriti/ugc-2.jpg",
-          productTitle: "Comilla Handspun Khadi Kurta",
-          productTitle_bn: "কুমিল্লা খাদি কুর্তা",
-          productHref: `${p}/comilla-handspun-khadi-kurta`,
-          occasion: "Anniversary Celebration",
-          occasion_bn: "বিবাহবার্ষিকী",
-          rating: 5,
         },
         {
           quote:
@@ -455,12 +437,6 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
           role: "Sylhet · Cotton Saree",
           role_bn: "সিলেট · কটন শাড়ি",
           image: "/ph/songoskriti/ugc-5.jpg",
-          productTitle: "Tangail Taant Cotton Saree",
-          productTitle_bn: "টাঙ্গাইল তাঁত কটন শাড়ি",
-          productHref: `${p}/tangail-taant-cotton-saree`,
-          occasion: "Eid-ul-Fitr Morning",
-          occasion_bn: "ঈদুল ফিতর",
-          rating: 5,
         },
         {
           quote:
@@ -472,12 +448,6 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
           role: "Rajshahi · Nakshi Kantha",
           role_bn: "রাজশাহী · নকশি কাঁথা",
           image: "/ph/songoskriti/ugc-6.jpg",
-          productTitle: "Nakshi Kantha Silk Saree",
-          productTitle_bn: "নকশি কাঁথা সিল্ক শাড়ি",
-          productHref: `${p}/nakshi-kantha-silk-saree`,
-          occasion: "Family Heirloom",
-          occasion_bn: "পারিবারিক সংগ্রহ",
-          rating: 5,
         },
       ],
     }),

@@ -5,7 +5,12 @@
  * route only supplies the collection's live products to the theme's widgets
  * and keeps a plain grid as the fallback when nothing is published.
  */
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  notFound,
+  redirect,
+} from "@tanstack/react-router";
 import { useLang } from "@/lib/i18n";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { PluginLayer } from "@/components/store/PluginLayer";
@@ -24,10 +29,18 @@ import { CollectionView } from "@/components/store/CollectionView";
 
 export const Route = createFileRoute("/store/$slug/c/$collectionSlug")({
   loader: async ({ params }) => {
+    const rawSlug = params.collectionSlug;
+    const normalizedSlug = rawSlug.toLowerCase();
+    if (rawSlug !== normalizedSlug) {
+      throw redirect({
+        href: `/store/${params.slug}/c/${normalizedSlug}`,
+        statusCode: 301,
+      });
+    }
     let data;
     try {
       data = await getStoreCollection({
-        data: { slug: params.slug, collectionSlug: params.collectionSlug },
+        data: { slug: params.slug, collectionSlug: normalizedSlug },
       });
     } catch (err) {
       // Infrastructure blips (5xx/timeout) reach the shared errorComponent

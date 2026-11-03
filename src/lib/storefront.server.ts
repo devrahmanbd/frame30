@@ -426,6 +426,13 @@ export async function loadStoreCollection(
   const siteKit = await storefrontSiteKit(merchant.id);
   const { loadStoreMenus } = await import("./menus/menu.server");
   const { listStorefrontPlugins } = await import("./plugins.server");
+  const { permalinkSettingsFor } = await import("./permalink.server");
+  const { buildPermalink } = await import("./permalink");
+  const permalinkSettings = await permalinkSettingsFor(db, merchant.id);
+  const canonicalPath = buildPermalink(permalinkSettings, {
+    kind: "collection",
+    slug: collection.slug,
+  });
 
   return {
     merchant,
@@ -435,6 +442,7 @@ export async function loadStoreCollection(
       slug: collection.slug,
       description: collection.description,
     },
+    canonicalPath,
     products: mergePublicVariants(
       products ?? [],
       await fetchPublicVariants((products ?? []).map((p) => p.id)),

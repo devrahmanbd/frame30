@@ -331,12 +331,12 @@ function HeroSkinSlide({
       {/* TOP EDITORIAL METADATA: Atelier edition & UNESCO craft provenance */}
       <div className="relative z-10 w-full pt-8 sm:pt-10 px-6 sm:px-12 lg:px-16 flex items-center justify-between text-[10px] sm:text-[11px] font-medium tracking-[0.25em] uppercase text-[var(--theme-surface)]/80 select-none">
         <div className="flex items-center gap-2.5">
-          <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--theme-accent,#C05A3E)] animate-pulse" />
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--theme-accent)] animate-pulse" />
           <span>{locale === "bn" ? "সংস্কৃতি অটেলিয়ার · সংস্করণ ০৪" : "Songoskriti Atelier · Edition 04"}</span>
         </div>
         <div className="hidden sm:flex items-center gap-2 text-[var(--theme-surface)]/70">
           <span>{locale === "bn" ? "ইউনেস্কো বিশ্ব ঐতিহ্য" : "UNESCO World Heritage"}</span>
-          <span className="text-[var(--theme-accent,#C05A3E)]">✦</span>
+          <span className="text-[var(--theme-accent)]">✦</span>
           <span>{locale === "bn" ? "সোনারগাঁও ও টাঙ্গাইল তাঁত" : "Sonargaon & Tangail Looms"}</span>
         </div>
       </div>
@@ -348,11 +348,11 @@ function HeroSkinSlide({
           <div className="max-w-3xl">
             {slide.caption && (
               <div className="flex items-center gap-3 mb-4 sm:mb-5">
-                <span className="h-px w-8 sm:w-12 bg-[var(--theme-accent,#C05A3E)]" />
+                <span className="h-px w-8 sm:w-12 bg-[var(--theme-accent)]" />
                 <p
                   data-hero-eyebrow
                   data-part="caption"
-                  className="text-[11px] sm:text-[12px] font-medium tracking-[0.3em] uppercase text-[var(--theme-accent,#C05A3E)]"
+                  className="text-[11px] sm:text-[12px] font-medium tracking-[0.3em] uppercase text-[var(--theme-accent)]"
                 >
                   {locale === "bn" && slide.captionBn
                     ? slide.captionBn
@@ -387,7 +387,7 @@ function HeroSkinSlide({
               {slide.ctaLabel && (
                 <a
                   href={slide.ctaUrl || "#"}
-                  className="group inline-flex items-center gap-3 min-h-[48px] bg-[var(--theme-surface)] text-[var(--theme-ink)] px-8 text-[11px] font-semibold tracking-[0.2em] uppercase hover:bg-[var(--theme-accent,#C05A3E)] hover:text-white transition-all duration-300 shadow-lg shadow-black/20"
+                  className="group inline-flex items-center gap-3 min-h-11 sm:min-h-[48px] bg-[var(--theme-surface)] text-[var(--theme-ink)] px-8 text-[11px] font-semibold tracking-[0.2em] uppercase hover:bg-[var(--theme-accent)] hover:text-[var(--theme-surface)] transition-all duration-300 shadow-lg shadow-black/20"
                 >
                   <span>
                     {locale === "bn" && slide.ctaLabelBn
@@ -421,7 +421,7 @@ function HeroSkinSlide({
                       role="tab"
                       onClick={() => goTo(idx)}
                       aria-selected={isActive}
-                      className={`group flex items-center gap-2.5 py-2 text-left min-h-[44px] transition-all duration-300 ${
+                      className={`group flex items-center gap-2.5 py-2 text-left min-h-11 transition-all duration-300 ${
                         isActive
                           ? "text-[var(--theme-surface)] opacity-100"
                           : "text-[var(--theme-surface)]/50 hover:text-[var(--theme-surface)]/80 hover:opacity-80"
@@ -440,7 +440,7 @@ function HeroSkinSlide({
                       <span
                         className={`h-[2px] transition-all duration-500 rounded-full ${
                           isActive
-                            ? "w-8 sm:w-12 bg-[var(--theme-accent,#C05A3E)]"
+                            ? "w-8 sm:w-12 bg-[var(--theme-accent)]"
                             : "w-3 sm:w-4 bg-[var(--theme-surface)]/30 group-hover:bg-[var(--theme-surface)]/60"
                         }`}
                       />

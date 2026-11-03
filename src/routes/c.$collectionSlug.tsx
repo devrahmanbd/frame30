@@ -25,6 +25,14 @@ import { CollectionView } from "@/components/store/CollectionView";
  */
 export const Route = createFileRoute("/c/$collectionSlug")({
   loader: async ({ params, location }) => {
+    const rawSlug = params.collectionSlug;
+    const normalizedSlug = rawSlug.toLowerCase();
+    if (rawSlug !== normalizedSlug) {
+      throw redirect({
+        href: `/c/${normalizedSlug}`,
+        statusCode: 301,
+      });
+    }
     let host: Awaited<ReturnType<typeof resolveStorefrontHostFn>> = null;
     try {
       host = await resolveStorefrontHostFn();
@@ -40,7 +48,7 @@ export const Route = createFileRoute("/c/$collectionSlug")({
         params: { key: defaultPreviewKey() },
         search: {
           template: "collection",
-          focus: params.collectionSlug.toLowerCase().slice(0, 64),
+          focus: normalizedSlug.slice(0, 64),
           q: undefined,
           max: undefined,
         },
@@ -48,9 +56,15 @@ export const Route = createFileRoute("/c/$collectionSlug")({
       });
     }
     const data = await getStoreCollection({
-      data: { slug: host.merchantSlug, collectionSlug: params.collectionSlug },
+      data: { slug: host.merchantSlug, collectionSlug: normalizedSlug },
     });
-    if (!data) throw notFound();
+    if (!data) {
+      const { handleMissingStoreUrl } = await import("@/lib/missing-url");
+      throw await handleMissingStoreUrl(
+        host.merchantSlug,
+        `/c/${normalizedSlug}`,
+      );
+    }
     // Custom bases: the old prefixed URL still matches this static route,
     // so canonicalize it here instead of serving duplicates.
     const { canonicalRedirectFn } = await import("@/lib/permalink.functions");
@@ -81,7 +95,9 @@ export const Route = createFileRoute("/c/$collectionSlug")({
       loaderData.seo?.metaDescription ||
       loaderData.collection.description ||
       `Shop ${loaderData.collection.name} at ${loaderData.merchant.name}.`;
-    const canonicalPath = `/c/${loaderData.collection.slug}`;
+    const canonicalPath =
+      (loaderData as unknown as { canonicalPath?: string }).canonicalPath ||
+      `/c/${loaderData.collection.slug}`;
     const canonical = loaderData.origin
       ? `${loaderData.origin}${canonicalPath}`
       : canonicalPath;
