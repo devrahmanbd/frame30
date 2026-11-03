@@ -286,33 +286,6 @@ export function SongoskritiDesktopNav({
                   className="absolute left-0 top-full z-50 hidden w-full pt-0 group-hover:block group-focus-within:block pointer-events-auto before:absolute before:-top-4 before:left-0 before:right-0 before:h-4 before:content-['']"
                 >
                   <div className="max-h-[85vh] w-full overflow-y-auto border-t border-[var(--theme-border)] bg-[var(--theme-surface)] shadow-2xl">
-                    {/* Top Editorial Archive Ribbon */}
-                    <div className="border-b border-[var(--theme-border)]/60 bg-[var(--theme-surface)]/90 backdrop-blur-xs px-10 py-2.5">
-                      <div className="mx-auto flex max-w-[1440px] items-center justify-between text-[10px] font-medium tracking-[0.22em] uppercase text-[var(--theme-ink)]/75">
-                        <div className="flex items-center gap-2">
-                          <span className="h-1.5 w-1.5 rounded-full bg-[var(--theme-accent,#C05A3E)] animate-pulse" />
-                          <span>
-                            {locale === "bn"
-                              ? "ফ্লেম ফ্যাশন বিডি · হ্যান্ডলুম ও উৎসবের সংগ্রহ"
-                              : "Flame Fashion BD · Handloom & Festive Collections"}
-                          </span>
-                        </div>
-                        <div className="hidden sm:flex items-center gap-3 text-[var(--theme-ink)]/60">
-                          <span>
-                            {locale === "bn"
-                              ? "৳৫,০০০ এর বেশি অর্ডারে সারাদেশে ফ্রি ডেলিভারি"
-                              : "Free delivery across Bangladesh on orders over ৳5,000"}
-                          </span>
-                          <span className="text-[var(--theme-accent,#C05A3E)]">✦</span>
-                          <span>
-                            {locale === "bn"
-                              ? "আসল হ্যান্ডলুম"
-                              : "Authentic Handloom"}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
                     <div className="mx-auto flex max-w-[1440px] gap-16 px-10 py-12">
                       <ul className="grid flex-1 grid-cols-4 gap-x-8 gap-y-10">
                         {item.children.map((child) => (
@@ -429,19 +402,6 @@ export function SongoskritiMobileDrawer({
       data-nav="songoskriti-drawer"
       className="flex flex-col"
     >
-      {/* Drawer Top Metadata */}
-      <div className="mb-3 pb-3 border-b border-[var(--theme-border)]/70 flex items-center justify-between text-[10px] font-semibold tracking-[0.2em] uppercase text-[var(--theme-ink)]/75">
-        <div className="flex items-center gap-2">
-          <span className="h-1.5 w-1.5 rounded-full bg-[var(--theme-accent,#C05A3E)] animate-pulse" />
-          <span>
-            {locale === "bn"
-              ? "ফ্লেম ফ্যাশন বিডি · কালেকশন"
-              : "Flame Fashion BD · Collections"}
-          </span>
-        </div>
-        <span className="text-[var(--theme-accent,#C05A3E)]">✦</span>
-      </div>
-
       <ul>
         {items.map((item) => {
           const kids = item.children ?? [];
@@ -503,8 +463,8 @@ export function SongoskritiMobileDrawer({
           </p>
           <p className="font-serif text-[13px] text-[var(--theme-ink)]">
             {locale === "bn"
-              ? "উত্তরা ৩ · গুলশান ২ · চট্টগ্রাম জিইসি"
-              : "Uttara Sector 3 · Gulshan 2 · Chittagong GEC"}
+              ? "উত্তরা ৩, গুলশান ২, চট্টগ্রাম জিইসি"
+              : "Uttara Sector 3, Gulshan 2, Chittagong GEC"}
           </p>
         </div>
         <div>
@@ -658,6 +618,7 @@ export function SongoskritiHeaderShell({
   cartHydrated,
   locale,
   t,
+  showAnnouncement = true,
 }: HeaderShellProps) {
   const { base, headerMenu, mobileMenu, headerChrome } = data;
   const { mobileOpen, setMobileOpen, scrolled, expandedMobileMenu } = behavior;
@@ -727,14 +688,16 @@ export function SongoskritiHeaderShell({
           via the registry; the shared bar is the generic fallback. The
           language switch lives in the icon controls below (everyday parity),
           so this slot owns announcement chrome only. ── */}
-      <HeaderAnnouncementBar
-        themeKey="songoskriti"
-        headerChrome={headerChrome}
-        scrolled={scrolled}
-        locale={locale}
-        slug={slug}
-        t={t}
-      />
+      {showAnnouncement && (
+        <HeaderAnnouncementBar
+          themeKey="songoskriti"
+          headerChrome={headerChrome}
+          scrolled={scrolled}
+          locale={locale}
+          slug={slug}
+          t={t}
+        />
+      )}
 
       <div
         className={`mx-auto flex transition-all duration-250 max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-10 ${scrolled ? "h-[64px]" : "h-[72px]"}`}

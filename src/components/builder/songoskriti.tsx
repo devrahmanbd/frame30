@@ -516,9 +516,7 @@ const Testimonials: WidgetComponent = ({
                           loading="lazy"
                         />
                       ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[var(--theme-muted)] to-[var(--theme-surface)] font-serif text-6xl text-[var(--theme-ink)]/15 select-none">
-                          ✦
-                        </div>
+                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[var(--theme-muted)] to-[var(--theme-surface)] select-none" />
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-[var(--theme-ink)]/75 via-transparent to-transparent pointer-events-none" />
 
@@ -2548,37 +2546,14 @@ const SongoskritiCategoryHeader: WidgetComponent = ({
   const displayDesc = t(locale, desc, descBn);
 
   // Tightly-sized bg that matches the page surface (not white, not grey)
-  // so breadcrumb through subnav reads as one compact region.
+  // so subnav reads as one compact region.
   return (
     <div
       className="w-full bg-[var(--theme-surface)] border-b border-[var(--theme-border)]"
       data-collection-header
     >
-      {/* Breadcrumb strip */}
-      <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-6 lg:px-10 flex justify-center">
-        <nav
-          aria-label="Breadcrumb"
-          className="flex items-center gap-2 pt-12 pb-4 text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--theme-ink)]/40"
-        >
-          <a
-            href={link("/")}
-            className="hover:text-[var(--theme-ink)]/70 transition-colors"
-          >
-            {homeLabel}
-          </a>
-          {breadcrumbParent && (
-            <>
-              <span>/</span>
-              <span>{breadcrumbParent}</span>
-            </>
-          )}
-          <span>/</span>
-          <span className="text-[var(--theme-ink)]/70">{displayTitle}</span>
-        </nav>
-      </div>
-
       {/* Title + description */}
-      <div className="mx-auto max-w-4xl px-4 sm:px-8 pb-16 sm:pb-24 flex flex-col items-center text-center">
+      <div className="mx-auto max-w-4xl px-4 sm:px-8 pt-12 sm:pt-16 pb-16 sm:pb-24 flex flex-col items-center text-center">
         <h1 className="font-serif text-[40px] sm:text-[56px] lg:text-[72px] font-light text-[var(--theme-ink)] leading-[1.2] tracking-normal">
           {displayTitle}
         </h1>

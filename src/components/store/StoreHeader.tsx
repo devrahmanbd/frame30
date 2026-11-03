@@ -303,6 +303,8 @@ export type HeaderShellProps = {
   /** BCP-47-ish locale for theme canonical labels (`en` | `bn`). */
   locale: string;
   t: (en: string, bn?: string) => string;
+  /** Suppress announcement bar (e.g. on collection landing pages). Defaults to true. */
+  showAnnouncement?: boolean;
 };
 
 export type HeaderShellComponent = (props: HeaderShellProps) => React.ReactNode;
@@ -512,35 +514,6 @@ export function HeaderDesktopNav({
                 className="fixed left-0 w-full pt-0 hidden group-hover:block group-focus-within:block z-50"
               >
                 <div className="w-full bg-[var(--theme-surface)] shadow-2xl border-t border-[var(--theme-border)] max-h-[85vh] overflow-y-auto">
-                  {isLuxury && (
-                    <div className="border-b border-[var(--theme-border)]/60 bg-[var(--theme-surface)]/90 backdrop-blur-xs px-10 py-2.5">
-                      <div className="mx-auto flex max-w-[1440px] items-center justify-between text-[10px] font-medium tracking-[0.22em] uppercase text-[var(--theme-ink)]/75">
-                        <div className="flex items-center gap-2">
-                          <span className="h-1.5 w-1.5 rounded-full bg-[var(--theme-accent)] animate-pulse" />
-                          <span>
-                            {t("Collections", "কালেকশন")}
-                          </span>
-                        </div>
-                        <div className="hidden sm:flex items-center gap-3 text-[var(--theme-ink)]/60">
-                          <span>
-                            {t(
-                              "Free delivery on orders over ৳5,000",
-                              "৳৫,০০০ এর বেশি অর্ডারে ফ্রি ডেলিভারি",
-                            )}
-                          </span>
-                          <span className="text-[var(--theme-accent)]">
-                            ✦
-                          </span>
-                          <span>
-                            {t(
-                              "Authentic Products",
-                              "আসল পণ্য",
-                            )}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
                   <div className="mx-auto flex max-w-[1440px] px-10 py-12 gap-16">
                     <ul className="flex-1 grid grid-cols-4 gap-x-8 gap-y-10">
                       {node.children.map((child: MenuNode) => (
@@ -790,17 +763,6 @@ export function HeaderMobileDrawer({
       style={{ top: scrolled ? "64px" : "108px" }}
     >
       <ul className="px-4 py-2 pb-12">
-        {isLuxury && (
-          <li className="mb-3 pb-3 border-b border-[var(--theme-border)]/70 flex items-center justify-between text-[10px] font-semibold tracking-[0.2em] uppercase text-[var(--theme-ink)]/75">
-            <div className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--theme-accent)] animate-pulse" />
-              <span>
-                {t("Store Menu", "স্টোর মেনু")}
-              </span>
-            </div>
-            <span className="text-[var(--theme-accent)]">✦</span>
-          </li>
-        )}
         {mobileMenu.map((node: MenuNode) => (
           <li key={node.id} className="border-b border-[var(--theme-border)]">
             <div className="flex justify-between items-center w-full">
@@ -875,8 +837,8 @@ export function HeaderMobileDrawer({
             </p>
             <p className="font-serif text-[13px] text-[var(--theme-ink)]">
               {t(
-                "Uttara Sector 3 · Gulshan 2 · Chittagong GEC",
-                "উত্তরা ৩ · গুলশান ২ · চট্টগ্রাম জিইসি",
+                "Uttara Sector 3, Gulshan 2, Chittagong GEC",
+                "উত্তরা ৩, গুলশান ২, চট্টগ্রাম জিইসি",
               )}
             </p>
           </div>
@@ -916,6 +878,7 @@ export function GenericHeaderShell({
   cartHydrated,
   locale,
   t,
+  showAnnouncement = true,
 }: HeaderShellProps) {
   const { headerChrome, isLuxury, base, headerMenu, mobileMenu } = data;
   const {
@@ -981,13 +944,15 @@ export function GenericHeaderShell({
     >
       {/* ── Announcement slot: generic fallback (theme shells own theirs
           via the same registry; no luxury markup lives here) ── */}
-      <HeaderAnnouncementBar
-        headerChrome={headerChrome}
-        scrolled={scrolled}
-        locale={locale}
-        slug={slug}
-        t={t}
-      />
+      {showAnnouncement && (
+        <HeaderAnnouncementBar
+          headerChrome={headerChrome}
+          scrolled={scrolled}
+          locale={locale}
+          slug={slug}
+          t={t}
+        />
+      )}
 
       {/* ── Main bar ── */}
       <div
@@ -1115,6 +1080,7 @@ export function ThemeHeaderRenderer({
   locale = "en",
   t,
   themeKey,
+  showAnnouncement,
 }: {
   slug: string;
   name: string;
@@ -1127,6 +1093,7 @@ export function ThemeHeaderRenderer({
   locale?: string;
   t: (en: string, bn?: string) => string;
   themeKey?: string | null;
+  showAnnouncement?: boolean;
 }) {
   const Shell = resolveHeaderShell(themeKey);
   return (
@@ -1141,6 +1108,7 @@ export function ThemeHeaderRenderer({
       cartHydrated={cartHydrated}
       locale={locale}
       t={t}
+      showAnnouncement={showAnnouncement}
     />
   );
 }
@@ -1154,6 +1122,7 @@ export function StoreHeader({
   menus,
   themeKey,
   menuSwap,
+  showAnnouncement = true,
 }: {
   slug: string;
   name: string;
@@ -1177,6 +1146,7 @@ export function StoreHeader({
    * resolver/boundary — shoppers never lose navigation.
    */
   menuSwap?: StoreMenuSwap;
+  showAnnouncement?: boolean;
 }) {
   void tagline;
   void storeTimezone;
@@ -1210,6 +1180,7 @@ export function StoreHeader({
       locale={lang}
       t={t}
       themeKey={themeKey}
+      showAnnouncement={showAnnouncement}
     />
   );
 }

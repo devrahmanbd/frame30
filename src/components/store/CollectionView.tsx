@@ -453,51 +453,6 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/20" />
           <div className="relative h-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 flex flex-col justify-end pb-8 sm:pb-12 text-white">
-            <nav aria-label="Breadcrumb" className="mb-3 sm:mb-4">
-              <ol className="flex items-center flex-wrap gap-1.5 text-[11px] uppercase tracking-[0.15em] font-medium text-white/70">
-                <li>
-                  <Link
-                    to={custom ? "/" : "/store/$slug"}
-                    params={{ slug }}
-                    className="hover:text-white transition-colors"
-                  >
-                    {t("Home", "হোম")}
-                  </Link>
-                </li>
-                {parentInfo && (
-                  <>
-                    <li>
-                      <span className="text-white/40">/</span>
-                    </li>
-                    <li>
-                      <Link
-                        to={
-                          custom
-                            ? "/c/$collectionSlug"
-                            : "/store/$slug/c/$collectionSlug"
-                        }
-                        params={
-                          custom
-                            ? { collectionSlug: parentInfo.slug }
-                            : { slug, collectionSlug: parentInfo.slug }
-                        }
-                        className="hover:text-white transition-colors"
-                      >
-                        {lang === "bn" && parentInfo.name_bn
-                          ? parentInfo.name_bn
-                          : parentInfo.name}
-                      </Link>
-                    </li>
-                  </>
-                )}
-                <li>
-                  <span className="text-white/40">/</span>
-                </li>
-                <li className="text-white font-semibold" aria-current="page">
-                  {collection.name}
-                </li>
-              </ol>
-            </nav>
             <h1
               style={{ color: "#ffffff" }}
               className="font-serif text-3xl sm:text-5xl lg:text-6xl !text-white font-normal tracking-tight drop-shadow-sm"
@@ -516,51 +471,6 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
         </div>
       ) : (
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 pt-6 sm:pt-10 pb-6 border-b border-border/40 mb-6">
-          <nav aria-label="Breadcrumb" className="mb-4">
-            <ol className="flex items-center flex-wrap gap-1.5 text-[11px] uppercase tracking-[0.15em] font-medium text-foreground/60">
-              <li>
-                <Link
-                  to={custom ? "/" : "/store/$slug"}
-                  params={{ slug }}
-                  className="hover:text-foreground transition-colors"
-                >
-                  {t("Home", "হোম")}
-                </Link>
-              </li>
-              {parentInfo && (
-                <>
-                  <li>
-                    <span className="text-foreground/40">/</span>
-                  </li>
-                  <li>
-                    <Link
-                      to={
-                        custom
-                          ? "/c/$collectionSlug"
-                          : "/store/$slug/c/$collectionSlug"
-                      }
-                      params={
-                        custom
-                          ? { collectionSlug: parentInfo.slug }
-                          : { slug, collectionSlug: parentInfo.slug }
-                      }
-                      className="hover:text-foreground transition-colors"
-                    >
-                      {lang === "bn" && parentInfo.name_bn
-                        ? parentInfo.name_bn
-                        : parentInfo.name}
-                    </Link>
-                  </li>
-                </>
-              )}
-              <li>
-                <span className="text-foreground/40">/</span>
-              </li>
-              <li className="text-foreground font-semibold" aria-current="page">
-                {collection.name}
-              </li>
-            </ol>
-          </nav>
           <div className="max-w-3xl">
             <h1 className="font-serif text-3xl sm:text-5xl text-foreground font-normal tracking-tight">
               {collection.name}
@@ -862,13 +772,17 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
   }
 
   // CollectionView supplies its own designed surface for category_header and
-  // result_toolbar (ROUTE_REPLACED in preview-safety contract). Filter them from
-  // the theme AST to prevent duplicate headers/toolbars.
+  // result_toolbar (ROUTE_REPLACED in preview-safety contract). Filter them and
+  // any generic announcement bars from the theme AST to guarantee a clean,
+  // spacious editorial fashion landing page.
   const cleanAst = dynamicAst
     ? {
         ...dynamicAst,
         main: dynamicAst.main.filter(
-          (s) => s.type !== "category_header" && s.type !== "result_toolbar",
+          (s) =>
+            s.type !== "category_header" &&
+            s.type !== "result_toolbar" &&
+            s.type !== "announcement_bar",
         ),
       }
     : dynamicAst;
@@ -898,6 +812,7 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
             tagline={settings?.tagline}
             menus={menus}
             themeKey={themeKey ?? null}
+            showAnnouncement={false}
           />
         }
         productSlot={grid}

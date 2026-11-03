@@ -5,25 +5,31 @@ describe("Songoskriti homepage seed configuration", () => {
   const s = (type: string, props = {}) => ({ id: type, type, props }) as never;
   const sections = buildHomepageMain(s);
 
-  it("accurately names UNESCO Intangible Cultural Heritage in hero slides", () => {
+  it("accurately describes UNESCO Intangible Cultural Heritage in Jamdani body text, without generic marketing badges", () => {
     const hero = sections.find((s) => s.type === "hero_carousel");
     expect(hero).toBeDefined();
     const slides = (hero?.props?.slides ?? []) as {
       caption?: string;
       caption_bn?: string;
+      subhead?: string;
+      subhead_bn?: string;
     }[];
-    const weaveSlide = slides.find(
-      (s) =>
-        s.caption?.includes("UNESCO") || s.caption_bn?.includes("ইউনেস্কো"),
-    );
-    expect(weaveSlide).toBeDefined();
-    expect(weaveSlide?.caption).toBe("UNESCO Intangible Cultural Heritage");
-    expect(weaveSlide?.caption_bn).toBe("ইউনেস্কো স্বীকৃত অধরা ঐতিহ্য");
-    // Ensure no inaccurate "World Heritage" claims
+    // Slides do not carry generic promotional/heritage captions
     for (const slide of slides) {
-      expect(slide.caption).not.toContain("World Heritage");
-      expect(slide.caption_bn).not.toContain("বিশ্ব ঐতিহ্য");
+      expect(slide.caption).toBeUndefined();
+      expect(slide.caption_bn).toBeUndefined();
     }
+    const jamdaniSlide = slides.find(
+      (s) =>
+        s.subhead?.includes("UNESCO") || s.subhead_bn?.includes("ইউনেস্কো"),
+    );
+    expect(jamdaniSlide).toBeDefined();
+    expect(jamdaniSlide?.subhead).toContain(
+      "Dhakai Jamdani weaving craft, an enduring handloom tradition recognized by UNESCO as Intangible Cultural Heritage of Humanity.",
+    );
+    expect(jamdaniSlide?.subhead_bn).toContain(
+      "ঢাকার ঐতিহ্যবাহী জামদানি বুনন শিল্প, ইউনেস্কো স্বীকৃত অধরা সাংস্কৃতিক ঐতিহ্য।",
+    );
   });
 
   it("maps 'From the Loom' collections to actual published destinations", () => {

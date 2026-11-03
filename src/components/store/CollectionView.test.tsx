@@ -173,4 +173,26 @@ describe("CollectionView header-fallback de-theming (HEADER DE-THEMING lane)", (
       "a foreign key must NOT inherit the theme presentation",
     ).toBeUndefined();
   });
+
+  it("removes breadcrumbs completely from the collection view", () => {
+    const html = renderCollection({
+      themeKey: "songoskriti",
+      collectionSlug: "women",
+      collectionName: "Women",
+    });
+    expect(html).not.toContain('aria-label="Breadcrumb"');
+    const genericHtml = renderCollection({
+      themeKey: null,
+      collectionSlug: "sarees",
+      collectionName: "Sarees",
+    });
+    expect(genericHtml).not.toContain('aria-label="Breadcrumb"');
+  });
+
+  it("suppresses the stock announcement bar on collection landing pages", () => {
+    const src = readFileSync("src/components/store/CollectionView.tsx", "utf8");
+    expect(src).toContain("showAnnouncement={false}");
+    expect(src).toContain('s.type !== "announcement_bar"');
+  });
 });
+

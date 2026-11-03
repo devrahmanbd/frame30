@@ -328,31 +328,6 @@ function HeroSkinSlide({
         className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[var(--theme-ink)]/50 via-transparent to-transparent"
       />
 
-      {/* TOP EDITORIAL METADATA: Atelier edition & UNESCO craft provenance */}
-      <div className="relative z-10 w-full pt-8 sm:pt-10 px-6 sm:px-12 lg:px-16 flex items-center justify-between text-[10px] sm:text-[11px] font-medium tracking-[0.25em] uppercase text-[var(--theme-surface)]/80 select-none">
-        <div className="flex items-center gap-2.5">
-          <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--theme-accent)] animate-pulse" />
-          <span>
-            {locale === "bn"
-              ? "ফ্লেম ফ্যাশন বিডি · তাঁত ঐতিহ্য"
-              : "Flame Fashion BD · Handloom Heritage"}
-          </span>
-        </div>
-        <div className="hidden sm:flex items-center gap-2 text-[var(--theme-surface)]/70">
-          <span>
-            {locale === "bn"
-              ? "ইউনেস্কো অধরা সাংস্কৃতিক ঐতিহ্য"
-              : "UNESCO Intangible Cultural Heritage"}
-          </span>
-          <span className="text-[var(--theme-accent)]">✦</span>
-          <span>
-            {locale === "bn"
-              ? "সোনারগাঁও ও টাঙ্গাইল তাঁত"
-              : "Sonargaon & Tangail Looms"}
-          </span>
-        </div>
-      </div>
-
       {/* LOWER CONTENT: Asymmetric editorial typography & slide timeline */}
       <div className="relative z-10 w-full pb-10 sm:pb-14 px-6 sm:px-12 lg:px-16">
         <div className="max-w-[1440px] mx-auto flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 lg:gap-12">

@@ -42,8 +42,6 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
           ctaLabel: "Shop New Arrivals",
           ctaLabel_bn: "নতুন সংগ্রহ দেখুন",
           ctaUrl: `${c}/new-in`,
-          caption: "Handcrafted Luxury",
-          caption_bn: "হস্তনির্মিত বিলাসিতা",
         },
         {
           image: "/ph/songoskriti/edit-festive-main.jpg",
@@ -55,21 +53,18 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
           ctaLabel: "Shop Festive",
           ctaLabel_bn: "উৎসব সংগ্রহ",
           ctaUrl: `${c}/festive`,
-          caption: "Curated Celebrations",
-          caption_bn: "উৎসব বিশেষ",
         },
         {
           image: "/ph/songoskriti/hero-weaves.jpg",
           headline: "The Art of Jamdani",
           headline_bn: "জামদানির শিল্পকলা",
           subhead:
-            "Fine threads, patient hands. An enduring legacy woven with timeless grace.",
-          subhead_bn: "সূক্ষ্ম সুতো, ধৈর্যশীল হাত। এক কালজয়ী ঐতিহ্য।",
+            "Dhakai Jamdani weaving craft, an enduring handloom tradition recognized by UNESCO as Intangible Cultural Heritage of Humanity.",
+          subhead_bn:
+            "ঢাকার ঐতিহ্যবাহী জামদানি বুনন শিল্প, ইউনেস্কো স্বীকৃত অধরা সাংস্কৃতিক ঐতিহ্য।",
           ctaLabel: "Explore Heritage Weaves",
           ctaLabel_bn: "ঐতিহ্যবাহী বুনন দেখুন",
           ctaUrl: `${c}/heritage`,
-          caption: "UNESCO Intangible Cultural Heritage",
-          caption_bn: "ইউনেস্কো স্বীকৃত অধরা ঐতিহ্য",
         },
       ],
       autoAdvanceMs: 6000,
