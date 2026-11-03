@@ -498,11 +498,17 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                 </li>
               </ol>
             </nav>
-            <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl text-white font-normal tracking-tight">
+            <h1
+              style={{ color: "#ffffff" }}
+              className="font-serif text-3xl sm:text-5xl lg:text-6xl !text-white font-normal tracking-tight drop-shadow-sm"
+            >
               {collection.name}
             </h1>
             {collection.description && (
-              <p className="mt-3 sm:mt-4 max-w-2xl text-[14px] sm:text-[16px] leading-relaxed text-white/85 font-sans font-light">
+              <p
+                style={{ color: "rgba(255, 255, 255, 0.9)" }}
+                className="mt-3 sm:mt-4 max-w-2xl text-[14px] sm:text-[16px] leading-relaxed !text-white/90 font-sans font-light drop-shadow-sm"
+              >
                 {collection.description}
               </p>
             )}
