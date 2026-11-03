@@ -1047,4 +1047,46 @@ ops/deploy-from-git.sh frame30 root        # origin/frame30 = f7661783
 | `bun run typecheck` (`tsgo --noEmit`) | Full repo | PASS (0 errors) |
 | ESLint on modified files | 0 errors | PASS |
 
+---
+
+## 9. Wave 4 — Songoskriti Theme Remediation & Frame30 CMS Architecture (2026-11-04)
+
+**Deployed Commit:** [`661ffef5`](https://github.com/devrahmanbd/frame30/commit/661ffef5fa6ee004bb533661c711d3374742380a) on `frame30`  
+**Live Site:** `https://flamelancer.com` (Flame Fashion BD, `b47532e5-9649-4ebd-93a9-06fa2917c00e`)  
+**Production Server:** `88.99.250.99` running `framique.service` (`661ffef5fa6ee004bb533661c711d3374742380a`)
+
+### 9.1 Songoskriti Theme Remediation
+1. **AI-Generated Copy Removed:**
+   - Removed `"Songoskriti Editorial Archive · Dhaka Atelier"`, `"Complimentary Concierge Courier Over ৳5,000 ✦ Handcrafted Provenance"`, `"Songoskriti Atelier · Edition 04"`, `"The Atelier Gazette · Edition 04"`, `"Patron Chronicles · Edition 04"`, and `"Editorial Lookbook"`.
+   - Replaced with authentic fashion brand copy (`"Flame Fashion BD · Handloom & Festive Collections"`, `"Free delivery across Bangladesh on orders over ৳5,000"`, `"Authentic Handloom"`, `"Customer Reviews"`, `"New Drops & Updates"`, `"Featured Collection"`).
+   - Cleaned stale `"Patron Chronicles"` from published template JSON in Postgres (`theme_versions` table for version 10).
+   - Fixed broken collection destination slugs in `archetypes.ts` (`/c/heritage-handloom`, `/c/everyday`, `/c/groom`, `/c/best-sellers`, `/c/nakshi-kantha`, `/c/wedding`, `/c/living`, `/c/gifting`).
+2. **Submenu Hover Gap & Sticky Alignment:**
+   - Replaced fragile `fixed left-0` with `style={{ top: scrolled ? "64px" : "105px" }}` by `absolute left-0 top-full w-full pointer-events-auto` relative to sticky `<header>`.
+   - Added invisible hover bridge (`before:absolute before:-top-4 before:h-4`) preventing hover-loss when moving mouse between nav links and dropdowns.
+3. **Active States & Mobile Navigation:**
+   - Active indicators on top-level navigation items (`after:bg-[var(--theme-accent,#C05A3E)]`) and mega-menu child links.
+   - Smart accordion auto-expansion in mobile drawer: viewing `/c/women` or children automatically opens the `WOMEN` section (`−` toggle).
+
+### 9.2 Frame30 CMS Architecture Improvements
+1. **Theme Presentation Tree-Shaking Guard:**
+   - Updated `package.json` `sideEffects` allowlist to protect `src/lib/themes/**/*.ts`, `src/lib/themes/**/*.tsx`, and `src/lib/preview-sources.ts`.
+   - Introduced `activateBuiltinThemes()` in `builtin-themes.ts` and called it in `__root.tsx`, guaranteeing theme presentation claims run on SSR and client boot.
+2. **Collection De-Duplication (`cleanAst`):**
+   - Filtered `category_header` and `result_toolbar` from `dynamicAst.main` in `CollectionView.tsx` per `ROUTE_REPLACED` preview contract, eliminating duplicate "New Arrivals" and duplicate toolbars.
+3. **Uncapped Flagship Landing Page Surface:**
+   - Removed `max-w-6xl` boxed layout in favor of `containerClassName="w-full"` on `ThemeChrome` and `SongoskritiProductGrid`, allowing editorial hero and merchandising grid to span `max-w-[1440px] px-4 sm:px-6 lg:px-10`.
+   - Inline color styles on hero typography (`style={{ color: '#ffffff' }}`) ensuring high-specificity skin CSS rules cannot render dark text over hero imagery.
+4. **Department Taxonomy & SPA Navigation:**
+   - Built `DEPARTMENT_TAXONOMY` with parent navigation (`Home / Parent / Collection`) and peer discovery pills.
+   - Replaced `<a href>` with TanStack Router `<Link>`, enabling seamless client transitions without document reloads.
+
+### 9.3 Verification Matrix
+- `bun run typecheck` (`tsgo --noEmit`): 0 errors (PASS).
+- `bun run test` (targeted): 133 tests passed (PASS).
+- `bun run test:contracts`: 13 contract suites, 258 test cases passed (PASS).
+- Remote deployment: `ops/deploy-from-git.sh frame30` completed with exit code 0 (`bundle marker: 661ffef5fa6ee004bb533661c711d3374742380a`).
+- Live curl & DevTools inspection: `data-header-shell="songoskriti"` confirmed, single `<h1>` confirmed, zero AI strings confirmed, screenshots verified.
+
+
 
