@@ -945,3 +945,106 @@ ops/deploy-from-git.sh frame30 root        # origin/frame30 = 4ea1d3ed
 7. **Cross-Device Inspection:**
    - Captured full visual verification at 1440×900 desktop and 390×844 mobile viewports using Chrome DevTools MCP. Responsive layouts, grids, touch targets, and commerce flows are fully operational.
 
+### 6.4 Fifth wave — Songoskriti Theme Issues & Frame30 CMS Architecture Fixes (2026-11-03)
+
+Narrow-scoped fixes addressing Songoskriti theme presentation defects and Frame30 CMS architecture routing, data contracts, and canonical redirect correctness across two distinct workstreams.
+
+| SHA        | Subject                                                                                   |
+| ---------- | ----------------------------------------------------------------------------------------- |
+| `f7661783` | `fix: songoskriti UNESCO claims, loom destinations, testimonials and canonical 301 redirects` |
+
+Deployed with the sanctioned path:
+
+```bash
+ops/deploy-from-git.sh frame30 root        # origin/frame30 = f7661783
+```
+
+| Deploy assertion                                                | Result                                                                   |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| bundle marker `.output/DEPLOYED_SHA`                            | **`f7661783151d7c3f533b18ce966b5e4e899aad00`** == deployed SHA           |
+| readiness `127.0.0.1:3200/api/healthz?type=readiness`           | **200**                                                                  |
+| `framique.service`                                              | **active**                                                               |
+| `flamelancer.com` `/` + `/c/festive`                            | **200 / 200**                                                            |
+| Script exit code & marker                                       | **`exit 0`**, **`DEPLOY OK: frame30 live (f7661783...)`**                |
+
+#### Workstream 1: Songoskriti Theme — Presentation and Content
+
+1. **A. Accurate UNESCO Intangible Cultural Heritage Claims:**
+   - Audited Songoskriti homepage (`src/lib/themes/songoskriti/homepage.ts`) and heritage builder component (`src/components/builder/heritage.tsx`).
+   - Replaced inaccurate "UNESCO World Heritage" / "ইউনেস্কো বিশ্ব ঐতিহ্য" claims with "UNESCO Intangible Cultural Heritage" / "ইউনেস্কো অধরা সাংস্কৃতিক ঐতিহ্য".
+   - Preserves proper designation: Jamdani and Tangail saree weaving are living traditions inscribed on the UNESCO Representative List of the Intangible Cultural Heritage of Humanity, not static physical World Heritage properties.
+   - Live verified:
+     ```bash
+     curl -sk https://flamelancer.com/ | grep -i "World Heritage"        # 0 matches (CLEAN)
+     curl -sk https://flamelancer.com/ | grep -i "বিশ্ব ঐতিহ্য"          # 0 matches (CLEAN)
+     curl -sk "https://flamelancer.com/?lang=bn" | grep -o "ইউনেস্কো অধরা সাংস্কৃতিক ঐতিহ্য"  # MATCH
+     ```
+
+2. **B. Corrected "From the Loom" Collection Destinations:**
+   - Audited the 4 signature weaves in `homepage.ts` (`s("collection_story")`) against actual published collections:
+     - **Jamdani**: points to `/c/jamdani` with subtitle `"UNESCO Intangible Cultural Heritage"`.
+     - **Tangail Handloom**: mapped to `/c/heritage-handloom` (active collection featuring Tangail Taant Handloom Cotton Saree).
+     - **Nakshi Kantha**: mapped to `/c/nakshi-kantha` (active collection with `Handcrafted Nakshi Kantha Quilt`).
+     - **Rajshahi Silk**: configured with `href: ""` (non-linked) since no Rajshahi Silk collection exists.
+   - In `SongoskritiCollectionStory` (`src/components/builder/songoskriti.tsx`), items with empty or absent `href` render as semantic, accessible non-clickable containers (`<div className="group block text-center cursor-default">`) instead of broken links (`<a href="#">`).
+
+3. **C. Eliminated Unverified Testimonial Claims & Fabricated Ratings:**
+   - In `src/components/builder/songoskriti.tsx`, stopped unconditionally defaulting missing ratings to `5`.
+   - Conditioned the "✓ Verified Patron" / "যাচাইকৃত ক্রেতা" badge strictly on `item.verified === true`. Unverified customer quotes no longer display fake verification badges.
+   - Conditioned star ratings and the artisan score block strictly on `item.rating !== null`. Unrated rows omit the rating block entirely instead of fabricating "5.0 Artisan Rating" / "৫.০ হস্তশিল্প মূল্যায়ন".
+   - Live verified:
+     ```bash
+     curl -sk https://flamelancer.com/ | grep -i "Verified Patron"      # 0 matches (CLEAN)
+     curl -sk https://flamelancer.com/ | grep -i "Artisan Rating"       # 0 matches (CLEAN)
+     ```
+
+#### Workstream 2: Frame30 CMS Architecture — Routing, Data Contracts & Correctness
+
+1. **A. Canonical Redirects Enforce HTTP 301 Permanent Redirect Status:**
+   - In `src/routes/c.$collectionSlug.tsx`, updated canonical redirect when custom collection bases are in effect to explicitly specify `statusCode: 301`:
+     ```ts
+     if (to) throw redirect({ href: to, statusCode: 301, replace: true });
+     ```
+   - Standardized `statusCode: 301` on canonical redirects across `src/routes/p.$productSlug.tsx` and `src/routes/pages.$pageSlug.tsx`.
+
+2. **B. Permalink Configuration & Resolution Consistency:**
+   - Audited the `/c/festive` collection route and verified custom base customizability:
+     - **Default base**: `/c/festive` returns HTTP 200.
+     - **Custom base `/category/festive`**: Supported via `collectionBase: "/category"`; stale `/c/festive` requests issue 301 to `/category/festive`.
+     - **Custom base `/supersale/festive`**: Supported via `collectionBase: "/supersale"`; stale `/c/festive` requests issue 301 to `/supersale/festive`.
+     - **Root-level `/festive`**: Supported via `collectionBase: ""` (root post-name URLs).
+     - **Trailing slash**: `/c/festive/` issues HTTP 307 to `/c/festive`.
+     - **Case normalization**: `/c/FESTIVE` issues HTTP 301 to `/c/festive`.
+     - **Root-level collision order**: `article -> product -> collection -> page` enforced in `url-resolve.server.ts`.
+   - Live headers verified:
+     ```bash
+     curl -sI https://flamelancer.com/c/festive   # HTTP/2 200
+     curl -sI https://flamelancer.com/c/festive/  # HTTP/2 307 -> /c/festive
+     curl -sI https://flamelancer.com/c/FESTIVE   # HTTP/2 301 -> /c/festive
+     ```
+
+3. **C. Canonical Metadata & Type Safety:**
+   - Removed unsafe type assertion `(loaderData as unknown as { canonicalPath?: string }).canonicalPath` in `src/routes/c.$collectionSlug.tsx`.
+   - Exported clean type contracts:
+     - `StoreCollectionData` in `src/lib/storefront.server.ts`
+     - `StoreCollectionPayload` in `src/lib/storefront.functions.ts`
+   - Added canonical link and `og:url` tags with storefront origin to both `c.$collectionSlug.tsx` and `store.$slug.c.$collectionSlug.tsx`.
+
+4. **D. Tenant Isolation & Visibility Enforced:**
+   - Confirmed `loadStoreCollection` in `storefront.server.ts` strictly queries `.eq("merchant_id", merchant.id)` and `.eq("is_published", true)` for collections, and `.eq("status", "active")` for associated products.
+
+5. **E. Separation of Collections & Product Categories:**
+   - Maintained architectural separation between curated merchandising collections (`collections` / `collection_products`), product classification taxonomy (`product_categories`), and blog editorial categories (`/blog/category/:slug`).
+
+#### Verification Summary
+
+| Suite / Gate | Test count | Status |
+| ------------ | ---------- | ------ |
+| `src/components/builder/songoskriti.test.tsx` | 55 passed | PASS |
+| `src/lib/themes/songoskriti/homepage.test.ts` | 3 passed | PASS |
+| `src/lib/permalink-canonical.test.ts` | 10 passed | PASS |
+| `bun run test:contracts` (13 contract suites) | 258 passed | PASS |
+| `bun run typecheck` (`tsgo --noEmit`) | Full repo | PASS (0 errors) |
+| ESLint on modified files | 0 errors | PASS |
+
+
