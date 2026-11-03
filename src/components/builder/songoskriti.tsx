@@ -299,6 +299,7 @@ const Testimonials: WidgetComponent = ({
   int,
   locale,
   editing,
+  link,
 }) => {
   const testimonials = rowsOf(section, "testimonials")
     .map((row) => ({
@@ -306,11 +307,28 @@ const Testimonials: WidgetComponent = ({
       author: readBn(row, "author", locale),
       role: readBn(row, "role", locale),
       image: readString(row, "image"),
+      productTitle:
+        readBn(row, "productTitle", locale) ||
+        readBn(row, "product_title", locale),
+      productHref:
+        readString(row, "productHref") || readString(row, "product_href"),
+      occasion: readBn(row, "occasion", locale),
+      rating: Number(row["rating"]) || 5,
     }))
     .filter((item) => item.quote);
 
   const skin = resolveSkin("testimonials", str("skin"));
-  const autoAdvanceMs = int("autoAdvanceMs", 5000, 1500, 15000);
+  const autoAdvanceMs = int("autoAdvanceMs", 6000, 1500, 15000);
+  const heading =
+    str("heading") ||
+    t(locale, "Patron Chronicles", "গ্রাহকদের অভিজ্ঞতা ও ভালোবাসা");
+  const subhead =
+    str("subhead") ||
+    t(
+      locale,
+      "Real stories from the homes that cherish our handloom weaves.",
+      "আমাদের ঐতিহ্যবাহী বুনন নিয়ে সম্মানিত গ্রাহকদের অভিজ্ঞতা।",
+    );
 
   const {
     index: current,
@@ -422,94 +440,209 @@ const Testimonials: WidgetComponent = ({
     );
   }
 
-  // Default: full-width crossfade carousel (Nakhrali model)
-  // Each quote cross-fades in/out via opacity transitions on a fixed-height
-  // stack — no layout shift, no scroll snap needed.
+  // Default: Two-column split Patron Chronicles editorial layout
   return (
     <section
       ref={scope}
       data-reveal
-      className="w-full bg-[var(--theme-surface)] py-16 sm:py-20"
+      className="w-full bg-[var(--theme-surface)] py-20 sm:py-28 border-y border-[var(--theme-border)]/60"
       aria-label={t(locale, "Testimonials", "প্রশংসাপত্র")}
       onMouseEnter={() => pause()}
       onMouseLeave={() => resume()}
     >
-      {/* Fixed-height crossfade stack */}
-      <div
-        className="relative mx-auto max-w-4xl px-4 sm:px-8"
-        style={{ minHeight: "clamp(240px, 36vw, 360px)" }}
-        aria-live="polite"
-        aria-atomic="true"
-      >
-        {testimonials.map((item, i) => (
-          <div
-            key={`${item.author}-${i}`}
-            className={`absolute inset-0 flex flex-col items-center justify-center text-center transition-opacity duration-700 ease-in-out ${
-              i === current
-                ? "opacity-100 pointer-events-auto"
-                : "opacity-0 pointer-events-none"
-            }`}
-            aria-hidden={i !== current}
-          >
-            {item.image ? (
-              <img
-                src={item.image}
-                alt={item.author}
-                className="mb-8 h-14 w-14 rounded-full object-cover ring-1 ring-foreground/10"
-                loading="lazy"
-              />
-            ) : (
-              <div className="mb-8 h-px w-12 bg-[var(--theme-ink)]/15" />
-            )}
-            <blockquote className="font-serif text-[18px] sm:text-[22px] lg:text-[26px] font-light leading-[1.65] tracking-[0.01em] text-[var(--theme-ink)]">
-              {item.quote}
-            </blockquote>
-            <div className="mt-10 flex items-center justify-center gap-5">
-              <div className="h-px w-10 bg-[var(--theme-ink)]/20" />
-              <p
-                data-part="author"
-                className="text-[10px] font-medium uppercase tracking-[0.25em] text-[var(--theme-ink)]"
-              >
-                {item.author}
-                {item.role && (
-                  <span className="text-[var(--theme-ink)]/50 ml-2 font-normal normal-case tracking-normal">
-                    · {item.role}
-                  </span>
-                )}
-              </p>
-              <div className="h-px w-10 bg-[var(--theme-ink)]/20" />
-            </div>
+      <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-8 lg:px-12">
+        {/* Section Header */}
+        <div className="mb-14 sm:mb-16 flex flex-col items-center text-center max-w-2xl mx-auto">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--theme-accent)]" />
+            <p className="text-[11px] font-semibold tracking-[0.25em] uppercase text-[var(--theme-accent)]">
+              {locale === "bn"
+                ? "গ্রাহকদের ভালোবাসা · সংস্করণ ০৪"
+                : "Patron Chronicles · Edition 04"}
+            </p>
           </div>
-        ))}
-      </div>
-
-      {/* Nakhrali-style thin progress bar indicators */}
-      {testimonials.length > 1 && (
-        <div
-          className="mt-10 flex items-center justify-center gap-3"
-          role="tablist"
-        >
-          {testimonials.map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              role="tab"
-              onClick={() => goTo(i)}
-              aria-label={`${t(locale, "Testimonial", "প্রশংসাপত্র")} ${i + 1}`}
-              aria-selected={i === current}
-              className="group flex items-center justify-center min-h-11 min-w-11"
-            >
-              <span
-                className={`block h-[2px] rounded-full transition-all duration-500 ease-out ${
-                  i === current
-                    ? "w-10 bg-[var(--theme-ink)]"
-                    : "w-5 bg-[var(--theme-ink)]/25 group-hover:bg-[var(--theme-ink)]/50"
-                }`}
-              />
-            </button>
-          ))}
+          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-light tracking-tight text-[var(--theme-ink)]">
+            {heading}
+          </h2>
+          {subhead && (
+            <p className="mt-3 text-[14px] sm:text-[15px] font-serif font-light text-[var(--theme-ink)]/65">
+              {subhead}
+            </p>
+          )}
         </div>
-      )}
+
+        {/* Carousel Container */}
+        <div
+          className="relative min-h-[480px] sm:min-h-[420px] lg:min-h-[380px]"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {testimonials.map((item, i) => {
+            const isCurrent = i === current;
+            const displayImage = item.image;
+
+            return (
+              <div
+                key={`${item.author}-${i}`}
+                className={`transition-all duration-700 ease-in-out ${
+                  isCurrent
+                    ? "opacity-100 relative pointer-events-auto"
+                    : "opacity-0 absolute inset-0 pointer-events-none"
+                }`}
+                aria-hidden={!isCurrent}
+              >
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
+                  {/* Left Column: Patron Portrait & Provenance Badge */}
+                  <div className="lg:col-span-5 flex flex-col items-center sm:items-start">
+                    <div className="group/portrait relative aspect-[4/5] sm:aspect-[3/4] w-full max-w-[340px] sm:max-w-[380px] overflow-hidden rounded-xs bg-[var(--theme-muted)] shadow-xl border border-[var(--theme-border)]/80 mx-auto lg:mx-0">
+                      {displayImage ? (
+                        <img
+                          src={displayImage}
+                          alt={item.author}
+                          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover/portrait:scale-105"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[var(--theme-muted)] to-[var(--theme-surface)] font-serif text-6xl text-[var(--theme-ink)]/15 select-none">
+                          ✦
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-[var(--theme-ink)]/75 via-transparent to-transparent pointer-events-none" />
+
+                      {/* Verified Badge */}
+                      <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5 rounded-xs bg-[var(--theme-surface)]/95 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-[var(--theme-ink)] backdrop-blur-xs shadow-xs">
+                        <span className="text-[var(--theme-accent)]">✓</span>
+                        <span>
+                          {locale === "bn" ? "যাচাইকৃত ক্রেতা" : "Verified Patron"}
+                        </span>
+                      </div>
+
+                      {/* Occasion / City Marker */}
+                      <div className="absolute bottom-3.5 left-3.5 right-3.5 z-10 text-[var(--theme-surface)]">
+                        {item.occasion && (
+                          <p className="text-[10px] font-medium tracking-[0.2em] uppercase text-[var(--theme-surface)]/80">
+                            {locale === "bn" ? "উপলক্ষ: " : "Occasion: "}
+                            <span className="text-[var(--theme-surface)] font-semibold">
+                              {item.occasion}
+                            </span>
+                          </p>
+                        )}
+                        <p className="mt-0.5 font-serif text-sm tracking-wide text-[var(--theme-surface)]/95">
+                          {item.author}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Column: Artisan Rating, Quote, Attire details & Direct Look */}
+                  <div className="lg:col-span-7 flex flex-col justify-center">
+                    {/* 5-star artisan rating */}
+                    <div className="flex items-center gap-3 mb-6">
+                      <div
+                        className="flex text-[var(--theme-accent)] text-sm tracking-widest"
+                        aria-hidden="true"
+                      >
+                        {"★".repeat(Math.min(5, Math.max(1, item.rating)))}
+                      </div>
+                      <span className="h-px w-6 bg-[var(--theme-border)]" />
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[var(--theme-ink)]/60">
+                        {locale === "bn"
+                          ? "৫.০ হস্তশিল্প মূল্যায়ন"
+                          : "5.0 Artisan Rating"}
+                      </span>
+                    </div>
+
+                    {/* Editorial Quote */}
+                    <blockquote className="font-serif text-[18px] sm:text-[22px] lg:text-[25px] font-light leading-[1.65] text-[var(--theme-ink)] tracking-normal">
+                      &ldquo;{item.quote}&rdquo;
+                    </blockquote>
+
+                    {/* Author & City Role */}
+                    <div className="mt-8 flex items-center gap-4">
+                      <div className="h-px w-10 bg-[var(--theme-accent)]" />
+                      <div>
+                        <p
+                          data-part="author"
+                          className="font-serif text-base sm:text-lg font-medium text-[var(--theme-ink)]"
+                        >
+                          {item.author}
+                        </p>
+                        {item.role && (
+                          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--theme-ink)]/55">
+                            {item.role}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Purchased Garment Chip */}
+                    {item.productTitle && (
+                      <div className="mt-6 pt-5 border-t border-[var(--theme-border)]/60 flex items-center gap-3">
+                        <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50">
+                          {locale === "bn" ? "পোশাক: " : "Attire: "}
+                        </span>
+                        <a
+                          href={link(item.productHref || "#")}
+                          className="group/chip inline-flex items-center gap-2 rounded-xs border border-[var(--theme-border)] bg-[var(--theme-surface)] px-3.5 py-1.5 text-[11px] font-medium text-[var(--theme-ink)] hover:border-[var(--theme-accent)] hover:text-[var(--theme-accent)] transition-all shadow-2xs"
+                        >
+                          <span className="font-serif font-normal">
+                            {item.productTitle}
+                          </span>
+                          <span className="transition-transform duration-200 group-hover/chip:translate-x-1 text-xs">
+                            →
+                          </span>
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Numbered Editorial Timeline Navigation */}
+        {testimonials.length > 1 && (
+          <div
+            className="mt-12 sm:mt-16 flex flex-wrap items-center justify-center gap-4 sm:gap-6 select-none"
+            role="tablist"
+          >
+            {testimonials.map((item, i) => {
+              const isCurrent = i === current;
+              const numStr = String(i + 1).padStart(2, "0");
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  role="tab"
+                  onClick={() => goTo(i)}
+                  aria-label={`${t(locale, "Testimonial", "প্রশংসাপত্র")} ${i + 1}`}
+                  aria-selected={isCurrent}
+                  className={`group flex items-center gap-2.5 py-2 min-h-11 transition-all duration-300 ${
+                    isCurrent
+                      ? "text-[var(--theme-ink)] font-semibold"
+                      : "text-[var(--theme-ink)]/40 hover:text-[var(--theme-ink)]/75"
+                  }`}
+                >
+                  <span className="font-mono text-xs tracking-wider">
+                    {numStr}
+                  </span>
+                  <span className="hidden sm:inline-block font-serif text-xs truncate max-w-[100px]">
+                    {item.author}
+                  </span>
+                  <span
+                    className={`h-[2px] transition-all duration-500 rounded-full ${
+                      isCurrent
+                        ? "w-8 sm:w-12 bg-[var(--theme-accent)]"
+                        : "w-3 sm:w-4 bg-[var(--theme-ink)]/20 group-hover:bg-[var(--theme-ink)]/40"
+                    }`}
+                  />
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </section>
   );
 };
@@ -1149,10 +1282,18 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
 
       {/* ZONE 2: Newsletter (theme-authored, skipped when empty) */}
       {newsletterHeading && (
-        <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 mb-20 sm:mb-32">
-          <div className="border-t border-b border-[var(--theme-border)] py-10 sm:py-16 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 lg:gap-16">
+        <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 mb-20 sm:mb-28">
+          <div className="border-t border-b border-[var(--theme-border)]/80 py-12 sm:py-16 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 lg:gap-16 bg-[var(--theme-surface)]">
             <div className="w-full lg:w-1/2">
-              <h3 className="font-serif text-[20px] sm:text-[28px] font-medium tracking-[0.02em] text-[var(--theme-ink)] leading-snug">
+              <div className="flex items-center gap-2 mb-2.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-[var(--theme-accent)]" />
+                <p className="text-[10px] font-semibold tracking-[0.25em] uppercase text-[var(--theme-accent)]">
+                  {locale === "bn"
+                    ? "সংস্কৃতি সমাচার · সংস্করণ ০৪"
+                    : "The Atelier Gazette · Edition 04"}
+                </p>
+              </div>
+              <h3 className="font-serif text-[22px] sm:text-[30px] font-light tracking-[0.01em] text-[var(--theme-ink)] leading-snug">
                 {newsletterHeading}
               </h3>
             </div>
@@ -1166,20 +1307,20 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
                   name="email"
                   type="email"
                   required
-                  className="h-12 w-full flex-1 rounded-none border-b border-[var(--theme-border)] bg-transparent px-2 py-2 text-[13px] outline-none transition-colors placeholder:text-[var(--theme-ink)]/30 focus:border-[var(--theme-ink)]"
+                  className="h-12 w-full flex-1 rounded-none border-b border-[var(--theme-border)] bg-transparent px-2 py-2 text-[13px] outline-none transition-colors placeholder:text-[var(--theme-ink)]/30 focus:border-[var(--theme-accent)]"
                   placeholder={
                     locale === "bn" ? "ইমেইল লিখুন" : "Enter your email"
                   }
                 />
                 <button
                   type="submit"
-                  className="h-12 w-full sm:w-auto px-8 bg-[var(--theme-ink)] text-[var(--theme-surface)] text-[11px] font-medium uppercase tracking-[0.2em] hover:bg-[var(--theme-ink)]/90 transition-colors flex-shrink-0"
+                  className="h-12 w-full sm:w-auto px-8 bg-[var(--theme-ink)] text-[var(--theme-surface)] text-[11px] font-semibold uppercase tracking-[0.2em] hover:bg-[var(--theme-accent)] transition-colors flex-shrink-0 shadow-xs"
                 >
                   {newsletterButton}
                 </button>
               </form>
               {newsletterConsent && (
-                <p className="mt-4 text-[10px] text-[var(--theme-ink)]/40 uppercase tracking-widest text-left">
+                <p className="mt-3.5 text-[10px] text-[var(--theme-ink)]/50 uppercase tracking-widest text-left">
                   {newsletterConsent}
                 </p>
               )}
@@ -1191,28 +1332,79 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
       {/* ZONE 3: Utility navigation/contact matrix */}
       <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 mb-20 sm:mb-24">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-          {/* LEFT: Brand identity & social (theme-authored, skipped when empty) */}
+          {/* LEFT: Brand identity & concierge (theme-authored, skipped when empty) */}
           {brandName && (
             <div className="lg:col-span-4 flex flex-col pb-8 lg:pb-0 border-b border-[var(--theme-border)] lg:border-none">
-              <span className="font-serif text-[28px] sm:text-[36px] text-[var(--theme-ink)] tracking-wider mb-6">
-                {brandName}
-              </span>
-              <div className="flex items-center gap-4 text-[var(--theme-ink)]/60">
+              <div className="flex items-center gap-3 mb-4">
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 32 32"
+                  fill="none"
+                  aria-hidden="true"
+                  className="text-[var(--theme-accent)]"
+                >
+                  <path
+                    d="M16 2L2 16L16 30L30 16L16 2Z"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M16 8L8 16L16 24L24 16L16 8Z"
+                    stroke="currentColor"
+                    strokeWidth="1.2"
+                    strokeLinejoin="round"
+                  />
+                  <circle cx="16" cy="16" r="2.5" fill="currentColor" />
+                </svg>
+                <span className="font-serif text-[26px] sm:text-[32px] text-[var(--theme-ink)] tracking-wider">
+                  {brandName}
+                </span>
+              </div>
+              <p className="font-serif text-[13px] leading-relaxed text-[var(--theme-ink)]/70 mb-5 max-w-sm">
+                {locale === "bn"
+                  ? "বাংলার ছয় শতাব্দীর বুনন ঐতিহ্যের অনন্য সংরক্ষণ ও আধুনিক রূপায়ণ।"
+                  : "Preserving Bengal's six centuries of weaving heritage through contemporary luxury."}
+              </p>
+              <div className="mb-6 space-y-1 text-[12px] text-[var(--theme-ink)]/70">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50">
+                  {locale === "bn" ? "ফ্ল্যাগশিপ অটেলিয়ার" : "Flagship Concierge"}
+                </p>
+                <p className="text-[12px] text-[var(--theme-ink)]/85">
+                  {locale === "bn"
+                    ? "উত্তরা ৩ · গুলশান ২ · চট্টগ্রাম জিইসি"
+                    : "Uttara Sector 3 · Gulshan 2 · Chittagong"}
+                </p>
+                <a
+                  href="tel:+8809612345678"
+                  className="inline-flex items-center gap-1.5 text-[var(--theme-accent)] font-medium text-[12px] min-h-[44px]"
+                >
+                  <span>+880 96 1234 5678</span>
+                  <span className="text-[10px] text-[var(--theme-ink)]/50">
+                    (10am–9pm)
+                  </span>
+                </a>
+              </div>
+              <div className="flex items-center gap-3 text-[var(--theme-ink)]/60">
                 <a
                   href="#"
-                  className="hover:text-[var(--theme-ink)] transition-colors"
+                  aria-label="Instagram"
+                  className="flex h-11 w-11 items-center justify-center rounded-xs border border-[var(--theme-border)]/60 hover:border-[var(--theme-accent)] hover:text-[var(--theme-accent)] transition-colors"
                 >
                   <Instagram size={18} />
                 </a>
                 <a
                   href="#"
-                  className="hover:text-[var(--theme-ink)] transition-colors"
+                  aria-label="Facebook"
+                  className="flex h-11 w-11 items-center justify-center rounded-xs border border-[var(--theme-border)]/60 hover:border-[var(--theme-accent)] hover:text-[var(--theme-accent)] transition-colors"
                 >
                   <Facebook size={18} />
                 </a>
                 <a
                   href="#"
-                  className="hover:text-[var(--theme-ink)] transition-colors"
+                  aria-label="Twitter"
+                  className="flex h-11 w-11 items-center justify-center rounded-xs border border-[var(--theme-border)]/60 hover:border-[var(--theme-accent)] hover:text-[var(--theme-accent)] transition-colors"
                 >
                   <Twitter size={18} />
                 </a>
@@ -1221,18 +1413,19 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
           )}
 
           {/* CENTER & RIGHT: Navigation columns */}
-          <div className="lg:col-span-8 grid grid-cols-1 min-[400px]:grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-4 lg:gap-12">
+          <div className="lg:col-span-8 grid grid-cols-1 min-[400px]:grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-4 lg:gap-12">
             {sitemapColumns.map((col) => (
               <div key={col.title}>
-                <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--theme-ink)] mb-6 sm:mb-8">
-                  {col.title}
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)] mb-5 flex items-center gap-2">
+                  <span className="h-1 w-1 rounded-full bg-[var(--theme-accent)]" />
+                  <span>{col.title}</span>
                 </p>
-                <ul className="space-y-4">
+                <ul className="space-y-1">
                   {col.links.map((linkItem) => (
                     <li key={`${col.title}-${linkItem.label}`}>
                       <a
                         href={link(linkItem.href)}
-                        className="font-serif text-[15px] font-light text-[var(--theme-ink)]/70 hover:text-[var(--theme-ink)] transition-colors"
+                        className="font-serif text-[14px] sm:text-[15px] font-light text-[var(--theme-ink)]/75 hover:text-[var(--theme-accent)] hover:translate-x-1 transition-all min-h-[44px] flex items-center"
                       >
                         {linkItem.label}
                       </a>

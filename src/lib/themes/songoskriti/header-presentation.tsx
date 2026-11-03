@@ -100,35 +100,50 @@ function SongoskritiPromoTile({
   base: string;
   locale: string;
 }) {
-  if (item.image) {
-    return (
-      <div className="aspect-[3/4] w-full overflow-hidden bg-[var(--theme-muted)]">
-        <img
-          src={item.image}
-          alt={canonicalLabel(item, locale)}
-          className="h-full w-full object-cover"
-          loading="lazy"
-        />
-      </div>
-    );
-  }
-  const promo = item.promo;
-  if (!promo) return null;
+  const imgSrc = item.image || item.promo?.image;
+  const promoTitle = item.promo
+    ? canonicalPromoTitle(item.promo, locale)
+    : canonicalLabel(item, locale);
+  const href = item.promo
+    ? canonicalHref(item.promo, base)
+    : canonicalHref(item, base);
+
+  if (!imgSrc && !item.promo) return null;
+
   return (
-    <a
-      href={canonicalHref(promo, base)}
-      className="flex min-h-[44px] items-center gap-3"
-    >
-      <img
-        src={promo.image}
-        alt=""
-        className="h-12 w-12 shrink-0 rounded-sm object-cover"
-        loading="lazy"
-      />
-      <span className="text-sm font-semibold text-[var(--theme-ink)]">
-        {canonicalPromoTitle(promo, locale)}
-      </span>
-    </a>
+    <div className="group/lookbook relative flex flex-col overflow-hidden rounded-xs border border-[var(--theme-border)]/80 bg-[var(--theme-surface)] p-3.5 shadow-sm transition-all duration-300 hover:shadow-md">
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-[var(--theme-muted)]">
+        {imgSrc && (
+          <img
+            src={imgSrc}
+            alt={promoTitle}
+            className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover/lookbook:scale-105"
+            loading="lazy"
+          />
+        )}
+        <div className="absolute top-2.5 left-2.5 z-10">
+          <span className="inline-flex items-center rounded-xs bg-[var(--theme-ink)]/90 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-surface)] backdrop-blur-xs">
+            {locale === "bn" ? "লুকবুক সংস্করণ" : "Editorial Lookbook"}
+          </span>
+        </div>
+      </div>
+      <div className="mt-3.5 flex flex-col">
+        <span className="font-serif text-[15px] font-medium text-[var(--theme-ink)]">
+          {promoTitle}
+        </span>
+        <a
+          href={href}
+          className="mt-2.5 inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-accent,#C05A3E)] hover:text-[var(--theme-ink)] transition-colors min-h-[44px]"
+        >
+          <span>
+            {locale === "bn" ? "কেনাকাটা" : "Shop"} {canonicalLabel(item, locale)}
+          </span>
+          <span className="transition-transform duration-200 group-hover/lookbook:translate-x-1">
+            →
+          </span>
+        </a>
+      </div>
+    </div>
   );
 }
 
@@ -143,21 +158,24 @@ function SongoskritiMegaChild({
 }) {
   return (
     <li>
-      <SongoskritiLink
-        item={item}
-        base={base}
-        locale={locale}
-        className="flex min-h-[44px] items-center text-left font-serif text-[16px] font-normal text-[var(--theme-ink)] motion-safe:transition-colors hover:text-[var(--theme-ink)]/70"
-      />
+      <div className="flex items-center gap-2 pb-2.5 mb-3 border-b border-[var(--theme-border)]/60">
+        <span className="h-1 w-1 rounded-full bg-[var(--theme-accent,#C05A3E)] shrink-0" />
+        <SongoskritiLink
+          item={item}
+          base={base}
+          locale={locale}
+          className="flex min-h-[40px] items-center text-left font-serif text-[15px] font-medium tracking-wide text-[var(--theme-ink)] motion-safe:transition-colors hover:text-[var(--theme-accent,#C05A3E)]"
+        />
+      </div>
       {item.children && item.children.length > 0 && (
-        <ul className="mt-4 space-y-3">
+        <ul className="space-y-1">
           {item.children.map((grandchild) => (
             <li key={grandchild.id}>
               <SongoskritiLink
                 item={grandchild}
                 base={base}
                 locale={locale}
-                className="flex min-h-[44px] items-center text-left font-sans text-[13px] text-[var(--theme-ink)]/60 motion-safe:transition-colors hover:text-[var(--theme-ink)]"
+                className="group/link flex min-h-[38px] items-center text-left font-sans text-[13px] text-[var(--theme-ink)]/70 motion-safe:transition-all hover:text-[var(--theme-ink)] hover:translate-x-1"
               />
             </li>
           ))}
@@ -197,7 +215,34 @@ export function SongoskritiDesktopNav({
                 style={{ top: scrolled ? "64px" : "105px" }}
                 className="fixed left-0 z-50 hidden w-full pt-0 group-hover:block group-focus-within:block"
               >
-                <div className="max-h-[85vh] w-full overflow-y-auto border-t border-[var(--theme-border)] bg-[var(--theme-surface)] shadow-xl">
+                <div className="max-h-[85vh] w-full overflow-y-auto border-t border-[var(--theme-border)] bg-[var(--theme-surface)] shadow-2xl">
+                  {/* Top Editorial Archive Ribbon */}
+                  <div className="border-b border-[var(--theme-border)]/60 bg-[var(--theme-surface)]/90 backdrop-blur-xs px-10 py-2.5">
+                    <div className="mx-auto flex max-w-[1440px] items-center justify-between text-[10px] font-medium tracking-[0.22em] uppercase text-[var(--theme-ink)]/75">
+                      <div className="flex items-center gap-2">
+                        <span className="h-1.5 w-1.5 rounded-full bg-[var(--theme-accent,#C05A3E)] animate-pulse" />
+                        <span>
+                          {locale === "bn"
+                            ? "সংস্কৃতি অটেলিয়ার সংগ্রহশালা · ঢাকা অটেলিয়ার"
+                            : "Songoskriti Editorial Archive · Dhaka Atelier"}
+                        </span>
+                      </div>
+                      <div className="hidden sm:flex items-center gap-3 text-[var(--theme-ink)]/60">
+                        <span>
+                          {locale === "bn"
+                            ? "৳৫,০০০ এর অর্ডারে বিশেষ কুরিয়ার সেবা"
+                            : "Complimentary Concierge Courier Over ৳5,000"}
+                        </span>
+                        <span className="text-[var(--theme-accent,#C05A3E)]">✦</span>
+                        <span>
+                          {locale === "bn"
+                            ? "হস্তশিল্পের নিশ্চয়তা"
+                            : "Handcrafted Provenance"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="mx-auto flex max-w-[1440px] gap-16 px-10 py-12">
                     <ul className="grid flex-1 grid-cols-4 gap-x-8 gap-y-10">
                       {item.children.map((child) => (
@@ -216,15 +261,6 @@ export function SongoskritiDesktopNav({
                           base={base}
                           locale={locale}
                         />
-                        <div className="mt-4 flex min-h-[44px] items-center gap-2">
-                          <span className="font-sans text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--theme-ink)]">
-                            {locale === "bn" ? "কেনাকাটা" : "Shop"}{" "}
-                            {canonicalLabel(item, locale)}
-                          </span>
-                          <span className="text-xs text-[var(--theme-ink)]">
-                            →
-                          </span>
-                        </div>
                       </div>
                     )}
                   </div>
@@ -295,7 +331,21 @@ export function SongoskritiMobileDrawer({
     <nav
       aria-label={label ?? (locale === "bn" ? "স্টোর মেনু" : "Store menu")}
       data-nav="songoskriti-drawer"
+      className="flex flex-col"
     >
+      {/* Drawer Atelier Top Metadata */}
+      <div className="mb-3 pb-3 border-b border-[var(--theme-border)]/70 flex items-center justify-between text-[10px] font-semibold tracking-[0.2em] uppercase text-[var(--theme-ink)]/75">
+        <div className="flex items-center gap-2">
+          <span className="h-1.5 w-1.5 rounded-full bg-[var(--theme-accent,#C05A3E)] animate-pulse" />
+          <span>
+            {locale === "bn"
+              ? "সংস্কৃতি অটেলিয়ার · সংস্করণ ০৪"
+              : "Songoskriti Atelier · Edition 04"}
+          </span>
+        </div>
+        <span className="text-[var(--theme-accent,#C05A3E)]">✦</span>
+      </div>
+
       <ul>
         {items.map((item) => {
           const kids = item.children ?? [];
@@ -308,7 +358,7 @@ export function SongoskritiMobileDrawer({
                   base={base}
                   locale={locale}
                   onNavigate={onNavigate}
-                  className="block flex-1 py-5 text-[13px] font-semibold uppercase tracking-wide text-[var(--theme-ink)]"
+                  className="block flex-1 py-5 text-[13px] font-semibold uppercase tracking-wider text-[var(--theme-ink)]"
                 />
                 {kids.length > 0 && (
                   <button
@@ -347,6 +397,34 @@ export function SongoskritiMobileDrawer({
           );
         })}
       </ul>
+
+      {/* Drawer Concierge Footer */}
+      <div className="mt-8 pt-6 border-t border-[var(--theme-border)] space-y-4 text-[12px] text-[var(--theme-ink)]/70">
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50 mb-1">
+            {locale === "bn" ? "ফ্ল্যাগশিপ অটেলিয়ার" : "Flagship Ateliers"}
+          </p>
+          <p className="font-serif text-[13px] text-[var(--theme-ink)]">
+            {locale === "bn"
+              ? "উত্তরা ৩ · গুলশান ২ · চট্টগ্রাম জিইসি"
+              : "Uttara Sector 3 · Gulshan 2 · Chittagong GEC"}
+          </p>
+        </div>
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50 mb-1">
+            {locale === "bn" ? "কনসিয়ার্জ সেবা" : "Client Concierge"}
+          </p>
+          <a
+            href="tel:+8801711000000"
+            className="inline-flex items-center gap-1.5 text-[var(--theme-accent,#C05A3E)] font-medium"
+          >
+            <span>+880 1711-000000</span>
+            <span className="text-[10px] text-[var(--theme-ink)]/50">
+              (10am–8pm)
+            </span>
+          </a>
+        </div>
+      </div>
     </nav>
   );
 }

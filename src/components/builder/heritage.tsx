@@ -220,7 +220,7 @@ function HeroSkinSlide({
         alt={slide.headline}
         className="absolute inset-0 h-full w-full object-cover"
         loading={isFirst ? "eager" : "lazy"}
-        fetchPriority={isFirst ? "high" : "auto"}
+        fetchPriority={isFirst ? "high" : undefined}
         decoding="async"
       />
     ) : (
@@ -311,58 +311,144 @@ function HeroSkinSlide({
       role="group"
       aria-roledescription="slide"
       aria-label={slideLabel}
-      className="fq-enter-fade relative flex items-end justify-center overflow-hidden h-[calc(100vh-108px)] min-h-[580px] sm:min-h-[680px]"
+      className="fq-enter-fade relative flex flex-col justify-between overflow-hidden h-[calc(100vh-105px)] min-h-[640px] sm:min-h-[720px] lg:min-h-[780px]"
     >
       {/* Full-bleed background image */}
-      <div className="absolute inset-0">{art}</div>
-      {/* Gradient overlay — darkens toward bottom for text legibility */}
+      <div data-hero-art className="absolute inset-0">
+        {art}
+      </div>
+
+      {/* Multi-tier cinematic vignette overlay */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-t from-[var(--theme-ink)]/65 via-[var(--theme-ink)]/20 to-transparent"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--theme-ink)]/90 via-[var(--theme-ink)]/35 to-[var(--theme-ink)]/20"
       />
-      {/* Copy — pinned to bottom center, Nakhrali style */}
-      <div className="relative z-10 w-full flex flex-col items-center text-center px-4 pb-16 sm:pb-24">
-        {slide.caption && (
-          <p
-            data-hero-eyebrow
-            data-part="caption"
-            className="mb-5 text-[10px] font-medium tracking-[0.35em] text-[var(--theme-surface)]/70 uppercase"
-          >
-            {locale === "bn" && slide.captionBn
-              ? slide.captionBn
-              : slide.caption}
-          </p>
-        )}
-        <Heading
-          data-hero-headline
-          {...(locale === "bn" && slide.headlineBn ? { lang: "bn" } : {})}
-          className="font-serif text-4xl sm:text-6xl lg:text-[5.5rem] font-light text-[var(--theme-surface)] leading-[1.05] tracking-[-0.01em] max-w-4xl"
-        >
-          {locale === "bn" && slide.headlineBn
-            ? slide.headlineBn
-            : slide.headline}
-        </Heading>
-        {slide.subhead && (
-          <p
-            data-hero-sub
-            className="mt-5 max-w-xl font-serif text-base sm:text-[18px] font-light leading-relaxed text-[var(--theme-surface)]/75"
-          >
-            {subhead}
-          </p>
-        )}
-        <div
-          data-hero-cta
-          className="mt-8 flex items-center justify-center gap-6"
-        >
-          {slide.ctaLabel && (
-            <a
-              href={slide.ctaUrl || "#"}
-              className="inline-flex items-center min-h-11 bg-[var(--theme-surface)]/10 border border-[var(--theme-surface)]/40 backdrop-blur-sm px-8 text-[11px] font-medium tracking-[0.25em] uppercase text-[var(--theme-surface)] hover:bg-[var(--theme-surface)] hover:text-foreground transition-all duration-300"
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[var(--theme-ink)]/50 via-transparent to-transparent"
+      />
+
+      {/* TOP EDITORIAL METADATA: Atelier edition & UNESCO craft provenance */}
+      <div className="relative z-10 w-full pt-8 sm:pt-10 px-6 sm:px-12 lg:px-16 flex items-center justify-between text-[10px] sm:text-[11px] font-medium tracking-[0.25em] uppercase text-[var(--theme-surface)]/80 select-none">
+        <div className="flex items-center gap-2.5">
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--theme-accent,#C05A3E)] animate-pulse" />
+          <span>{locale === "bn" ? "সংস্কৃতি অটেলিয়ার · সংস্করণ ০৪" : "Songoskriti Atelier · Edition 04"}</span>
+        </div>
+        <div className="hidden sm:flex items-center gap-2 text-[var(--theme-surface)]/70">
+          <span>{locale === "bn" ? "ইউনেস্কো বিশ্ব ঐতিহ্য" : "UNESCO World Heritage"}</span>
+          <span className="text-[var(--theme-accent,#C05A3E)]">✦</span>
+          <span>{locale === "bn" ? "সোনারগাঁও ও টাঙ্গাইল তাঁত" : "Sonargaon & Tangail Looms"}</span>
+        </div>
+      </div>
+
+      {/* LOWER CONTENT: Asymmetric editorial typography & slide timeline */}
+      <div className="relative z-10 w-full pb-10 sm:pb-14 px-6 sm:px-12 lg:px-16">
+        <div className="max-w-[1440px] mx-auto flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 lg:gap-12">
+          {/* Left Block: Eyebrow, Headline, Subhead, Luxury CTA */}
+          <div className="max-w-3xl">
+            {slide.caption && (
+              <div className="flex items-center gap-3 mb-4 sm:mb-5">
+                <span className="h-px w-8 sm:w-12 bg-[var(--theme-accent,#C05A3E)]" />
+                <p
+                  data-hero-eyebrow
+                  data-part="caption"
+                  className="text-[11px] sm:text-[12px] font-medium tracking-[0.3em] uppercase text-[var(--theme-accent,#C05A3E)]"
+                >
+                  {locale === "bn" && slide.captionBn
+                    ? slide.captionBn
+                    : slide.caption}
+                </p>
+              </div>
+            )}
+
+            <Heading
+              data-hero-headline
+              {...(locale === "bn" && slide.headlineBn ? { lang: "bn" } : {})}
+              className="font-serif text-4xl sm:text-6xl lg:text-[4.75rem] font-light text-[var(--theme-surface)] leading-[1.04] tracking-[-0.015em]"
             >
-              {locale === "bn" && slide.ctaLabelBn
-                ? slide.ctaLabelBn
-                : slide.ctaLabel}
-            </a>
+              {locale === "bn" && slide.headlineBn
+                ? slide.headlineBn
+                : slide.headline}
+            </Heading>
+
+            {slide.subhead && (
+              <p
+                data-hero-sub
+                className="mt-4 sm:mt-5 max-w-xl font-serif text-base sm:text-lg font-light leading-relaxed text-[var(--theme-surface)]/85"
+              >
+                {subhead}
+              </p>
+            )}
+
+            <div
+              data-hero-cta
+              className="mt-6 sm:mt-8 flex flex-wrap items-center gap-4"
+            >
+              {slide.ctaLabel && (
+                <a
+                  href={slide.ctaUrl || "#"}
+                  className="group inline-flex items-center gap-3 min-h-[48px] bg-[var(--theme-surface)] text-[var(--theme-ink)] px-8 text-[11px] font-semibold tracking-[0.2em] uppercase hover:bg-[var(--theme-accent,#C05A3E)] hover:text-white transition-all duration-300 shadow-lg shadow-black/20"
+                >
+                  <span>
+                    {locale === "bn" && slide.ctaLabelBn
+                      ? slide.ctaLabelBn
+                      : slide.ctaLabel}
+                  </span>
+                  <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">
+                    →
+                  </span>
+                </a>
+              )}
+            </div>
+          </div>
+
+          {/* Right Block: Numbered Editorial Timeline Navigation */}
+          {slides.length > 1 && (
+            <div
+              className="flex flex-col gap-3 lg:items-end select-none"
+              role="tablist"
+              aria-label={t(locale, "Slides", "স্লাইড")}
+            >
+              <div className="flex items-center gap-3 sm:gap-4 overflow-x-auto pb-1 max-w-full">
+                {slides.map((s, idx) => {
+                  const isActive = idx === current;
+                  const labelNumber = String(idx + 1).padStart(2, "0");
+                  const titlePreview = locale === "bn" && s.headlineBn ? s.headlineBn : s.headline;
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      role="tab"
+                      onClick={() => goTo(idx)}
+                      aria-selected={isActive}
+                      className={`group flex items-center gap-2.5 py-2 text-left min-h-[44px] transition-all duration-300 ${
+                        isActive
+                          ? "text-[var(--theme-surface)] opacity-100"
+                          : "text-[var(--theme-surface)]/50 hover:text-[var(--theme-surface)]/80 hover:opacity-80"
+                      }`}
+                    >
+                      <span className="font-mono text-xs font-semibold tracking-wider">
+                        {labelNumber}
+                      </span>
+                      <span
+                        className={`hidden sm:inline-block font-serif text-xs truncate max-w-[120px] lg:max-w-[140px] tracking-wide transition-opacity ${
+                          isActive ? "opacity-100" : "opacity-0 group-hover:opacity-60"
+                        }`}
+                      >
+                        {titlePreview}
+                      </span>
+                      <span
+                        className={`h-[2px] transition-all duration-500 rounded-full ${
+                          isActive
+                            ? "w-8 sm:w-12 bg-[var(--theme-accent,#C05A3E)]"
+                            : "w-3 sm:w-4 bg-[var(--theme-surface)]/30 group-hover:bg-[var(--theme-surface)]/60"
+                        }`}
+                      />
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           )}
         </div>
       </div>

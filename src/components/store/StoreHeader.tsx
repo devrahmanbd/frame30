@@ -511,7 +511,39 @@ export function HeaderDesktopNav({
                 style={{ top: scrolled ? "64px" : "105px" }}
                 className="fixed left-0 w-full pt-0 hidden group-hover:block group-focus-within:block z-50"
               >
-                <div className="w-full bg-[var(--theme-surface)] shadow-xl border-t border-[var(--theme-border)] max-h-[85vh] overflow-y-auto">
+                <div className="w-full bg-[var(--theme-surface)] shadow-2xl border-t border-[var(--theme-border)] max-h-[85vh] overflow-y-auto">
+                  {isLuxury && (
+                    <div className="border-b border-[var(--theme-border)]/60 bg-[var(--theme-surface)]/90 backdrop-blur-xs px-10 py-2.5">
+                      <div className="mx-auto flex max-w-[1440px] items-center justify-between text-[10px] font-medium tracking-[0.22em] uppercase text-[var(--theme-ink)]/75">
+                        <div className="flex items-center gap-2">
+                          <span className="h-1.5 w-1.5 rounded-full bg-[var(--theme-accent)] animate-pulse" />
+                          <span>
+                            {t(
+                              "Songoskriti Editorial Archive · Dhaka Atelier",
+                              "সংস্কৃতি অটেলিয়ার সংগ্রহশালা · ঢাকা অটেলিয়ার",
+                            )}
+                          </span>
+                        </div>
+                        <div className="hidden sm:flex items-center gap-3 text-[var(--theme-ink)]/60">
+                          <span>
+                            {t(
+                              "Complimentary Concierge Courier Over ৳5,000",
+                              "৳৫,০০০ এর অর্ডারে বিশেষ কুরিয়ার সেবা",
+                            )}
+                          </span>
+                          <span className="text-[var(--theme-accent)]">
+                            ✦
+                          </span>
+                          <span>
+                            {t(
+                              "Handcrafted Provenance",
+                              "হস্তশিল্পের নিশ্চয়তা",
+                            )}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   <div className="mx-auto flex max-w-[1440px] px-10 py-12 gap-16">
                     <ul className="flex-1 grid grid-cols-4 gap-x-8 gap-y-10">
                       {node.children.map((child: MenuNode) => (
@@ -760,7 +792,21 @@ export function HeaderMobileDrawer({
       className="border-t border-[var(--theme-border)] bg-[var(--theme-surface)] md:hidden overflow-y-auto max-h-[calc(100vh-[64px])] fixed left-0 w-full z-40 bottom-0"
       style={{ top: scrolled ? "64px" : "108px" }}
     >
-      <ul className="px-4 py-2 pb-24">
+      <ul className="px-4 py-2 pb-12">
+        {isLuxury && (
+          <li className="mb-3 pb-3 border-b border-[var(--theme-border)]/70 flex items-center justify-between text-[10px] font-semibold tracking-[0.2em] uppercase text-[var(--theme-ink)]/75">
+            <div className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--theme-accent)] animate-pulse" />
+              <span>
+                {t(
+                  "Songoskriti Atelier · Edition 04",
+                  "সংস্কৃতি অটেলিয়ার · সংস্করণ ০৪",
+                )}
+              </span>
+            </div>
+            <span className="text-[var(--theme-accent)]">✦</span>
+          </li>
+        )}
         {mobileMenu.map((node: MenuNode) => (
           <li key={node.id} className="border-b border-[var(--theme-border)]">
             <div className="flex justify-between items-center w-full">
@@ -827,6 +873,35 @@ export function HeaderMobileDrawer({
           </li>
         ))}
       </ul>
+      {isLuxury && (
+        <div className="px-4 pb-20 pt-6 border-t border-[var(--theme-border)] space-y-4 text-[12px] text-[var(--theme-ink)]/70">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50 mb-1">
+              {t("Flagship Ateliers", "ফ্ল্যাগশিপ অটেলিয়ার")}
+            </p>
+            <p className="font-serif text-[13px] text-[var(--theme-ink)]">
+              {t(
+                "Uttara Sector 3 · Gulshan 2 · Chittagong GEC",
+                "উত্তরা ৩ · গুলশান ২ · চট্টগ্রাম জিইসি",
+              )}
+            </p>
+          </div>
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50 mb-1">
+              {t("Client Concierge", "কনসিয়ার্জ সেবা")}
+            </p>
+            <a
+              href="tel:+8801711000000"
+              className="inline-flex items-center gap-1.5 text-[var(--theme-accent)] font-medium"
+            >
+              <span>+880 1711-000000</span>
+              <span className="text-[10px] text-[var(--theme-ink)]/50">
+                (10am–8pm)
+              </span>
+            </a>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
