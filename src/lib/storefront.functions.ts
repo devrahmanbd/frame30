@@ -396,6 +396,10 @@ export const getStoreCollection = createServerFn({ method: "GET" })
     return { ...found, products, origin: requestOrigin() };
   });
 
+export type StoreCollectionPayload = NonNullable<
+  Awaited<ReturnType<typeof getStoreCollection>>
+>;
+
 /**
  * Custom-domain host resolution (public, unauthenticated).
  *

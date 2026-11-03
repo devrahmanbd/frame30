@@ -301,19 +301,33 @@ const Testimonials: WidgetComponent = ({
   link,
 }) => {
   const testimonials = rowsOf(section, "testimonials")
-    .map((row) => ({
-      quote: readBn(row, "quote", locale),
-      author: readBn(row, "author", locale),
-      role: readBn(row, "role", locale),
-      image: readString(row, "image"),
-      productTitle:
-        readBn(row, "productTitle", locale) ||
-        readBn(row, "product_title", locale),
-      productHref:
-        readString(row, "productHref") || readString(row, "product_href"),
-      occasion: readBn(row, "occasion", locale),
-      rating: Number(row["rating"]) || 5,
-    }))
+    .map((row) => {
+      const rawRating = row["rating"];
+      const rating =
+        rawRating !== undefined &&
+        rawRating !== null &&
+        rawRating !== "" &&
+        !isNaN(Number(rawRating)) &&
+        Number(rawRating) > 0
+          ? Number(rawRating)
+          : null;
+      const verified = Boolean(row["verified"] ?? row["isVerified"]);
+
+      return {
+        quote: readBn(row, "quote", locale),
+        author: readBn(row, "author", locale),
+        role: readBn(row, "role", locale),
+        image: readString(row, "image"),
+        productTitle:
+          readBn(row, "productTitle", locale) ||
+          readBn(row, "product_title", locale),
+        productHref:
+          readString(row, "productHref") || readString(row, "product_href"),
+        occasion: readBn(row, "occasion", locale),
+        rating,
+        verified,
+      };
+    })
     .filter((item) => item.quote);
 
   const skin = resolveSkin("testimonials", str("skin"));
@@ -509,12 +523,16 @@ const Testimonials: WidgetComponent = ({
                       <div className="absolute inset-0 bg-gradient-to-t from-[var(--theme-ink)]/75 via-transparent to-transparent pointer-events-none" />
 
                       {/* Verified Badge */}
-                      <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5 rounded-xs bg-[var(--theme-surface)]/95 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-[var(--theme-ink)] backdrop-blur-xs shadow-xs">
-                        <span className="text-[var(--theme-accent)]">✓</span>
-                        <span>
-                          {locale === "bn" ? "যাচাইকৃত ক্রেতা" : "Verified Patron"}
-                        </span>
-                      </div>
+                      {item.verified && (
+                        <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5 rounded-xs bg-[var(--theme-surface)]/95 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-[var(--theme-ink)] backdrop-blur-xs shadow-xs">
+                          <span className="text-[var(--theme-accent)]">✓</span>
+                          <span>
+                            {locale === "bn"
+                              ? "যাচাইকৃত ক্রেতা"
+                              : "Verified Patron"}
+                          </span>
+                        </div>
+                      )}
 
                       {/* Occasion / City Marker */}
                       <div className="absolute bottom-3.5 left-3.5 right-3.5 z-10 text-[var(--theme-surface)]">
@@ -535,21 +553,25 @@ const Testimonials: WidgetComponent = ({
 
                   {/* Right Column: Artisan Rating, Quote, Attire details & Direct Look */}
                   <div className="lg:col-span-7 flex flex-col justify-center">
-                    {/* 5-star artisan rating */}
-                    <div className="flex items-center gap-3 mb-6">
-                      <div
-                        className="flex text-[var(--theme-accent)] text-sm tracking-widest"
-                        aria-hidden="true"
-                      >
-                        {"★".repeat(Math.min(5, Math.max(1, item.rating)))}
+                    {/* Artisan rating — only render when rating data is present */}
+                    {item.rating !== null && (
+                      <div className="flex items-center gap-3 mb-6">
+                        <div
+                          className="flex text-[var(--theme-accent)] text-sm tracking-widest"
+                          aria-hidden="true"
+                        >
+                          {"★".repeat(
+                            Math.min(5, Math.max(1, Math.round(item.rating))),
+                          )}
+                        </div>
+                        <span className="h-px w-6 bg-[var(--theme-border)]" />
+                        <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[var(--theme-ink)]/60">
+                          {locale === "bn"
+                            ? `${item.rating.toFixed(1)} হস্তশিল্প মূল্যায়ন`
+                            : `${item.rating.toFixed(1)} Artisan Rating`}
+                        </span>
                       </div>
-                      <span className="h-px w-6 bg-[var(--theme-border)]" />
-                      <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[var(--theme-ink)]/60">
-                        {locale === "bn"
-                          ? "৫.০ হস্তশিল্প মূল্যায়ন"
-                          : "5.0 Artisan Rating"}
-                      </span>
-                    </div>
+                    )}
 
                     {/* Editorial Quote */}
                     <blockquote className="font-serif text-[18px] sm:text-[22px] lg:text-[25px] font-light leading-[1.65] text-[var(--theme-ink)] tracking-normal">
@@ -1368,7 +1390,9 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
               </p>
               <div className="mb-6 space-y-1 text-[12px] text-[var(--theme-ink)]/70">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50">
-                  {locale === "bn" ? "ফ্ল্যাগশিপ অটেলিয়ার" : "Flagship Concierge"}
+                  {locale === "bn"
+                    ? "ফ্ল্যাগশিপ অটেলিয়ার"
+                    : "Flagship Concierge"}
                 </p>
                 <p className="text-[12px] text-[var(--theme-ink)]/85">
                   {locale === "bn"
@@ -2235,32 +2259,47 @@ const SongoskritiCollectionStory: WidgetComponent = ({
           )}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {collections.map((c, i) => (
-            <a
-              key={i}
-              href={link(c.href || "#")}
-              className="group block text-center"
-            >
-              <div className="w-full aspect-[4/5] overflow-hidden bg-[var(--theme-surface)] mb-6">
-                {c.image && (
-                  <img
-                    src={c.image}
-                    alt={c.title}
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                    loading="lazy"
-                  />
+          {collections.map((c, i) => {
+            const hasLink = Boolean(c.href && c.href !== "#");
+            const content = (
+              <>
+                <div className="w-full aspect-[4/5] overflow-hidden bg-[var(--theme-surface)] mb-6">
+                  {c.image && (
+                    <img
+                      src={c.image}
+                      alt={c.title}
+                      className={`w-full h-full object-cover transition-transform duration-1000 ${hasLink ? "group-hover:scale-105" : ""}`}
+                      loading="lazy"
+                    />
+                  )}
+                </div>
+                {c.subtitle && (
+                  <p className="text-[11px] font-normal tracking-[0.08em] text-[var(--theme-ink)]/50 mb-2">
+                    {c.subtitle}
+                  </p>
                 )}
+                <h3
+                  className={`font-serif text-[18px] font-light tracking-wide text-[var(--theme-ink)] ${hasLink ? "group-hover:text-[var(--theme-ink)]/70 transition-colors" : ""}`}
+                >
+                  {c.title}
+                </h3>
+              </>
+            );
+
+            return hasLink ? (
+              <a
+                key={i}
+                href={link(c.href)}
+                className="group block text-center"
+              >
+                {content}
+              </a>
+            ) : (
+              <div key={i} className="group block text-center cursor-default">
+                {content}
               </div>
-              {c.subtitle && (
-                <p className="text-[11px] font-normal tracking-[0.08em] text-[var(--theme-ink)]/50 mb-2">
-                  {c.subtitle}
-                </p>
-              )}
-              <h3 className="font-serif text-[18px] font-light tracking-wide text-[var(--theme-ink)] group-hover:text-[var(--theme-ink)]/70 transition-colors">
-                {c.title}
-              </h3>
-            </a>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

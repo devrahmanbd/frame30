@@ -70,7 +70,7 @@ export const Route = createFileRoute("/p/$productSlug")({
         pathname: location.pathname,
       },
     });
-    if (to) throw redirect({ href: to, replace: true });
+    if (to) throw redirect({ href: to, statusCode: 301, replace: true });
     return data;
   },
   head: ({ loaderData }) => {

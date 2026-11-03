@@ -49,7 +49,7 @@ export const Route = createFileRoute("/pages/$pageSlug")({
         pathname: location.pathname,
       },
     });
-    if (to) throw redirect({ href: to, replace: true });
+    if (to) throw redirect({ href: to, statusCode: 301, replace: true });
     return found;
   },
   head: ({ loaderData }) => {

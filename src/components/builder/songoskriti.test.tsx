@@ -234,6 +234,67 @@ describe("testimonials", () => {
     expect(html).toContain("চমৎকার।");
     expect(html).toContain("নাসরিন");
   });
+
+  it("does not render Verified Patron badge or rating when omitted from row data", () => {
+    const section = {
+      ...newSection("testimonials"),
+      props: {
+        testimonials: [
+          { quote: "Wonderful weave.", author: "Amina", role: "Dhaka" },
+        ],
+      },
+    };
+    const html = render(Cmp(), section);
+    expect(html).not.toContain("Verified Patron");
+    expect(html).not.toContain("যাচাইকৃত ক্রেতা");
+    expect(html).not.toContain("Artisan Rating");
+    expect(html).not.toContain("হস্তশিল্প মূল্যায়ন");
+  });
+
+  it("renders Verified Patron badge and formatted rating when explicitly provided", () => {
+    const section = {
+      ...newSection("testimonials"),
+      props: {
+        testimonials: [
+          {
+            quote: "Authentic Jamdani.",
+            author: "Rehana",
+            verified: true,
+            rating: 4.8,
+          },
+        ],
+      },
+    };
+    const html = render(Cmp(), section);
+    expect(html).toContain("Verified Patron");
+    expect(html).toContain("4.8 Artisan Rating");
+    expect(html).toContain("★★★★★");
+  });
+});
+
+describe("collection_story", () => {
+  const Cmp = () => SONGOSKRITI_WIDGETS["collection_story"];
+
+  it("renders non-clickable container when href is empty and anchor when href is provided", () => {
+    const section = {
+      ...newSection("collection_story"),
+      props: {
+        collections: [
+          { title: "Rajshahi Silk", href: "", subtitle: "Artisan crafted" },
+          {
+            title: "Jamdani",
+            href: "/c/jamdani",
+            subtitle: "UNESCO Intangible Cultural Heritage",
+          },
+        ],
+      },
+    };
+    const html = render(Cmp(), section);
+    expect(html).toContain("Rajshahi Silk");
+    expect(html).toContain("Jamdani");
+    expect(html).toContain('href="/c/jamdani"');
+    expect(html).not.toMatch(/<a[^>]*Rajshahi Silk/);
+  });
 });
 
 describe("trust_footer", () => {

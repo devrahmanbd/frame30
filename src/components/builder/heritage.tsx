@@ -332,12 +332,24 @@ function HeroSkinSlide({
       <div className="relative z-10 w-full pt-8 sm:pt-10 px-6 sm:px-12 lg:px-16 flex items-center justify-between text-[10px] sm:text-[11px] font-medium tracking-[0.25em] uppercase text-[var(--theme-surface)]/80 select-none">
         <div className="flex items-center gap-2.5">
           <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--theme-accent)] animate-pulse" />
-          <span>{locale === "bn" ? "সংস্কৃতি অটেলিয়ার · সংস্করণ ০৪" : "Songoskriti Atelier · Edition 04"}</span>
+          <span>
+            {locale === "bn"
+              ? "সংস্কৃতি অটেলিয়ার · সংস্করণ ০৪"
+              : "Songoskriti Atelier · Edition 04"}
+          </span>
         </div>
         <div className="hidden sm:flex items-center gap-2 text-[var(--theme-surface)]/70">
-          <span>{locale === "bn" ? "ইউনেস্কো বিশ্ব ঐতিহ্য" : "UNESCO World Heritage"}</span>
+          <span>
+            {locale === "bn"
+              ? "ইউনেস্কো অধরা সাংস্কৃতিক ঐতিহ্য"
+              : "UNESCO Intangible Cultural Heritage"}
+          </span>
           <span className="text-[var(--theme-accent)]">✦</span>
-          <span>{locale === "bn" ? "সোনারগাঁও ও টাঙ্গাইল তাঁত" : "Sonargaon & Tangail Looms"}</span>
+          <span>
+            {locale === "bn"
+              ? "সোনারগাঁও ও টাঙ্গাইল তাঁত"
+              : "Sonargaon & Tangail Looms"}
+          </span>
         </div>
       </div>
 
@@ -413,7 +425,8 @@ function HeroSkinSlide({
                 {slides.map((s, idx) => {
                   const isActive = idx === current;
                   const labelNumber = String(idx + 1).padStart(2, "0");
-                  const titlePreview = locale === "bn" && s.headlineBn ? s.headlineBn : s.headline;
+                  const titlePreview =
+                    locale === "bn" && s.headlineBn ? s.headlineBn : s.headline;
                   return (
                     <button
                       key={idx}
@@ -432,7 +445,9 @@ function HeroSkinSlide({
                       </span>
                       <span
                         className={`hidden sm:inline-block font-serif text-xs truncate max-w-[120px] lg:max-w-[140px] tracking-wide transition-opacity ${
-                          isActive ? "opacity-100" : "opacity-0 group-hover:opacity-60"
+                          isActive
+                            ? "opacity-100"
+                            : "opacity-0 group-hover:opacity-60"
                         }`}
                       >
                         {titlePreview}

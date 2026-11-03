@@ -461,6 +461,10 @@ export async function loadStoreCollection(
   };
 }
 
+export type StoreCollectionData = NonNullable<
+  Awaited<ReturnType<typeof loadStoreCollection>>
+>;
+
 export type StorefrontPreview = { merchantId: string; themeId: string } | null;
 
 /**

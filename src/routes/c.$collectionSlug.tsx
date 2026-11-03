@@ -76,7 +76,7 @@ export const Route = createFileRoute("/c/$collectionSlug")({
         pathname: location.pathname,
       },
     });
-    if (to) throw redirect({ href: to, replace: true });
+    if (to) throw redirect({ href: to, statusCode: 301, replace: true });
     return data;
   },
   head: ({ loaderData }) => {
@@ -96,8 +96,7 @@ export const Route = createFileRoute("/c/$collectionSlug")({
       loaderData.collection.description ||
       `Shop ${loaderData.collection.name} at ${loaderData.merchant.name}.`;
     const canonicalPath =
-      (loaderData as unknown as { canonicalPath?: string }).canonicalPath ||
-      `/c/${loaderData.collection.slug}`;
+      loaderData.canonicalPath || `/c/${loaderData.collection.slug}`;
     const canonical = loaderData.origin
       ? `${loaderData.origin}${canonicalPath}`
       : canonicalPath;
