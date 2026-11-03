@@ -93,6 +93,7 @@ import "@/lib/themes/songoskriti/ornament-presentation";
 // instead of the unavailable placeholder. Wired through the SAME editor
 // carrier as the owner component above; the def claim stays lazy.
 import "@/lib/themes/songoskriti/ornament-generic-presentation";
+import "@/lib/themes/songoskriti/header-presentation";
 
 /* ---------------------------------------------------------------- helpers */
 
