@@ -846,7 +846,7 @@ describe("StoreHeader T3.1 layer boundaries (HeaderData + Behavior + Renderer)",
         t={(en) => en}
       />,
     );
-    expect(luxuryHtml).toContain("fixed left-0 w-full top-full");
+    expect(luxuryHtml).toContain("fixed left-0 w-full");
     expect(luxuryHtml).toContain("grid-cols-4");
     const genericParent = dbNode({ id: "g-1", label: "Shop", url: "/c/shop" });
     (genericParent as unknown as { children: MenuNode[] }).children = [
@@ -863,7 +863,7 @@ describe("StoreHeader T3.1 layer boundaries (HeaderData + Behavior + Renderer)",
       />,
     );
     expect(genericHtml).toContain("absolute left-1/2 -translate-x-1/2");
-    expect(genericHtml).not.toContain("fixed left-0 w-full top-full");
+    expect(genericHtml).not.toContain("fixed left-0 w-full");
   });
 
   it("ThemeHeaderRenderer: announcement bar renders only for luxury chrome", () => {

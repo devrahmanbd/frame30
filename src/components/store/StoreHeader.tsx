@@ -483,6 +483,7 @@ export function HeaderDesktopNav({
   headerFallback,
   fallbackLabel,
   isLuxury,
+  scrolled = false,
   t,
 }: {
   headerMenu: readonly MenuNode[];
@@ -490,6 +491,7 @@ export function HeaderDesktopNav({
   headerFallback: boolean;
   fallbackLabel: (label: string) => string;
   isLuxury: boolean;
+  scrolled?: boolean;
   t: (en: string, bn?: string) => string;
 }) {
   if (headerMenu.length === 0) return null;
@@ -505,7 +507,10 @@ export function HeaderDesktopNav({
               className="inline-flex items-center py-[24px] text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--theme-ink)]/80 hover:text-[var(--theme-ink)] transition-colors"
             />
             {isLuxury && node.children && node.children.length > 0 && (
-              <div className="fixed left-0 w-full top-full pt-0 hidden group-hover:block group-focus-within:block z-50">
+              <div
+                style={{ top: scrolled ? "64px" : "105px" }}
+                className="fixed left-0 w-full pt-0 hidden group-hover:block group-focus-within:block z-50"
+              >
                 <div className="w-full bg-[var(--theme-surface)] shadow-xl border-t border-[var(--theme-border)] max-h-[85vh] overflow-y-auto">
                   <div className="mx-auto flex max-w-[1440px] px-10 py-12 gap-16">
                     <ul className="flex-1 grid grid-cols-4 gap-x-8 gap-y-10">
@@ -880,6 +885,7 @@ export function GenericHeaderShell({
       headerFallback={data.headerFallback}
       fallbackLabel={data.fallbackLabel}
       isLuxury={isLuxury}
+      scrolled={scrolled}
       t={t}
     />
   );

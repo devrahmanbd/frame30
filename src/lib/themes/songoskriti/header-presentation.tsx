@@ -173,7 +173,8 @@ export function SongoskritiDesktopNav({
   base = "",
   locale = "en",
   label,
-}: SongoskritiNavProps) {
+  scrolled = false,
+}: SongoskritiNavProps & { scrolled?: boolean }) {
   if (items.length === 0) return null;
   return (
     <nav
@@ -193,7 +194,8 @@ export function SongoskritiDesktopNav({
             {item.children && item.children.length > 0 && (
               <div
                 data-mega="songoskriti"
-                className="fixed left-0 top-full z-50 hidden w-full pt-0 group-hover:block group-focus-within:block"
+                style={{ top: scrolled ? "64px" : "105px" }}
+                className="fixed left-0 z-50 hidden w-full pt-0 group-hover:block group-focus-within:block"
               >
                 <div className="max-h-[85vh] w-full overflow-y-auto border-t border-[var(--theme-border)] bg-[var(--theme-surface)] shadow-xl">
                   <div className="mx-auto flex max-w-[1440px] gap-16 px-10 py-12">
@@ -515,6 +517,7 @@ export function SongoskritiHeaderShell({
       base={base}
       locale={locale}
       label={navLabel}
+      scrolled={scrolled}
     />
   );
   const drawerThemeNav = (
