@@ -46,7 +46,7 @@ describe("Songoskriti homepage seed configuration", () => {
     expect(jamdani?.subtitle).toBe("UNESCO Intangible Cultural Heritage");
 
     const rajshahi = collections.find((c) => c.title === "Rajshahi Silk");
-    expect(rajshahi?.href).toBe(""); // Non-linked because no collection exists
+    expect(rajshahi?.href).toBe("/c/rajshahi-silk"); // Linked to published Rajshahi Silk collection
 
     const tangail = collections.find((c) => c.title === "Tangail Handloom");
     expect(tangail?.href).toBe("/c/heritage-handloom");

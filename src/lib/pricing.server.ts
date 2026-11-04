@@ -95,7 +95,7 @@ export async function priceCart(
   const db = publicClient();
   const { data: merchant, error: mErr } = await db
     .from("merchants")
-    .select("id, name, slug, currency_code, status")
+    .select("id, name, slug, currency_code, status, vat_registration_no")
     .eq("slug", slug)
     .eq("status", "active")
     .maybeSingle();
@@ -105,7 +105,7 @@ export async function priceCart(
   const { data: settings } = await db
     .from("merchant_settings")
     .select(
-      "cod_enabled, mfs_enabled, cod_surcharge_minor_int, shipping_flat_minor_int, free_shipping_threshold_minor_int, prices_include_vat",
+      "cod_enabled, mfs_enabled, cod_surcharge_minor_int, shipping_flat_minor_int, free_shipping_threshold_minor_int, prices_include_vat, business_bin",
     )
     .eq("merchant_id", merchant.id)
     .maybeSingle();
@@ -222,10 +222,23 @@ export async function priceCart(
       : 0;
 
   // VAT comes from the legal-year table via `vat_resolve`, never a constant.
-  const rate = await resolveVatRate(db, {
-    country: "BD",
-    category: "standard",
-  });
+  // Under Bangladesh NBR regulations, a merchant without a registered BIN cannot
+  // charge VAT on consumer sales.
+  const hasVatRegistration = Boolean(
+    merchant.vat_registration_no?.trim() || settings?.business_bin?.trim(),
+  );
+  const rate = hasVatRegistration
+    ? await resolveVatRate(db, {
+        country: "BD",
+        category: "standard",
+      })
+    : {
+        countryCode: "BD",
+        category: "standard",
+        rateBasisPoints: 0,
+        effectiveYear: new Date().getUTCFullYear(),
+        resolved: true,
+      };
   const currency = merchant.currency_code;
   const net = clampAtZero(
     sub(money(subtotalMinor, currency), money(discountMinor, currency)),

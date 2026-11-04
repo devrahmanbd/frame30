@@ -1794,8 +1794,7 @@ const MEGA_MENU_DEFS: Record<
   },
   Kids: {
     sections: [
-      { title: "BY GENDER", links: ["Girls", "Boys", "Unisex"] },
-      { title: "BY OCCASION", links: ["Festive", "School", "Family Matching"] },
+      { title: "BY OCCASION", links: ["Festive", "Family Matching"] },
     ],
     featuredImage: `/api/public/ph/${placeholderSeed("mega-kids")}`,
     shopAllHref: "/c/kids",
@@ -2314,7 +2313,8 @@ const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
   // handle); the generic fallback names no brand and links nowhere.
   const handleLabel =
     str("handleLabel") || t(locale, "Follow us", "অনুসরণ করুন");
-  const handleHref = str("handleHref") || "https://instagram.com";
+  const handleHref =
+    str("handleHref") || "https://instagram.com/flamefashionbd";
   const rawImages = (str("images") || "")
     .split(",")
     .map((i) => i.trim())
@@ -2386,7 +2386,7 @@ const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
             >
               <img
                 src={img}
-                alt="User generated content"
+                alt="Flame Fashion BD Lookbook"
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 scale-100"
                 loading="lazy"
               />

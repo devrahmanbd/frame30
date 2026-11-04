@@ -117,20 +117,16 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
     title: "Contact",
     title_bn: "যোগাযোগ",
     links: [
-      "Phone: +880 96 1234 5678|/pages/contact",
-      "Email: support@example.com|mailto:support@example.com",
-      "North Outlet|/pages/stores#north",
-      "Central Outlet|/pages/stores#central",
-      "Port City Outlet|/pages/stores#port",
-      "Support: 10AM - 9PM|/pages/contact",
+      "Email: support@flamelancer.com|mailto:support@flamelancer.com",
+      "Support: Saturday – Thursday, 10AM – 8PM|/pages/contact",
+      "Order Tracking|/pages/track-order",
+      "Nationwide Delivery across Bangladesh|/pages/shipping",
     ].join("\n"),
     links_bn: [
-      "ফোন: +৮৮০ ৯৬ ১২৩৪ ৫৬৭৮|/pages/contact",
-      "ইমেইল: support@example.com|mailto:support@example.com",
-      "উত্তর আউটলেট|/pages/stores#north",
-      "সেন্ট্রাল আউটলেট|/pages/stores#central",
-      "বন্দর নগরী আউটলেট|/pages/stores#port",
-      "সাপোর্ট: সকাল ১০টা - রাত ৯টা|/pages/contact",
+      "ইমেইল: support@flamelancer.com|mailto:support@flamelancer.com",
+      "সাপোর্ট: শনিবার – বৃহস্পতিবার, সকাল ১০টা – রাত ৮টা|/pages/contact",
+      "অর্ডার ট্র্যাকিং|/pages/track-order",
+      "সারাদেশে ক্যাশ অন ডেলিভারি|/pages/shipping",
     ].join("\n"),
   },
 ];
@@ -138,11 +134,6 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
 export const PAYMENTS_HEADING = "Payment methods";
 export const PAYMENTS_HEADING_BN = "পেমেন্ট মাধ্যম";
 export const PAYMENTS_LIST = [
-  "bKash",
-  "Nagad",
-  "Rocket",
-  "Visa",
-  "Mastercard",
   "Cash on Delivery",
 ];
 

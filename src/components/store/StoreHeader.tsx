@@ -458,7 +458,7 @@ export function HeaderBrandMark({
   const logoNode = headerChrome ? (
     <img
       src={headerChrome.logo.src}
-      alt={headerChrome.logo.alt}
+      alt={name || headerChrome.logo.alt}
       className="h-[34px] w-auto object-contain transition-all duration-300"
     />
   ) : null;

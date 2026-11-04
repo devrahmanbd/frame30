@@ -56,7 +56,11 @@ const DEPARTMENT_TAXONOMY: Record<string, DepartmentContext> = {
         label: "Wedding & Bridal",
         label_bn: "বিয়ে ও ব্রাইডাল",
       },
-      { slug: "taaga-fusion", label: "Taaga Fusion", label_bn: "তাগা ফিউশন" },
+      {
+        slug: "rajshahi-silk",
+        label: "Rajshahi Silk",
+        label_bn: "রাজশাহী সিল্ক",
+      },
       { slug: "jewellery", label: "Jewellery", label_bn: "গহনা" },
       { slug: "new-in", label: "New Arrivals", label_bn: "নতুন আগমন" },
       { slug: "best-sellers", label: "Best Sellers", label_bn: "জনপ্রিয়" },
@@ -280,11 +284,24 @@ const DEPARTMENT_TAXONOMY: Record<string, DepartmentContext> = {
         label_bn: "ঐতিহ্যবাহী কারুশিল্প",
       },
       { slug: "gifting", label: "Gift Items", label_bn: "উপহার সামগ্রী" },
+    ],
+  },
+  "rajshahi-silk": {
+    parent: { slug: "women", name: "Women", name_bn: "নারী" },
+    pills: [
       {
-        slug: "aarong-earth",
-        label: "Aarong Earth",
-        label_bn: "আড়ং আর্থ",
+        slug: "rajshahi-silk",
+        label: "Rajshahi Silk",
+        label_bn: "রাজশাহী সিল্ক",
       },
+      { slug: "sarees", label: "All Sarees", label_bn: "সকল শাড়ি" },
+      { slug: "jamdani", label: "Dhakai Jamdani", label_bn: "ঢাকাই জামদানি" },
+      {
+        slug: "heritage-handloom",
+        label: "Heritage Handloom",
+        label_bn: "ঐতিহ্যবাহী তাঁত",
+      },
+      { slug: "women", label: "All Women", label_bn: "সকল কালেকশন" },
     ],
   },
   "nakshi-kantha": {
@@ -1270,8 +1287,8 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
 
   // CollectionView supplies its own designed surface for category_header and
   // result_toolbar (ROUTE_REPLACED in preview-safety contract). Filter them and
-  // any generic announcement bars from the theme AST to guarantee a clean,
-  // spacious editorial fashion landing page.
+  // any generic announcement bars, breadcrumbs, and product rails from the theme
+  // AST to guarantee a clean, spacious editorial fashion landing page.
   const cleanAst = dynamicAst
     ? {
         ...dynamicAst,
@@ -1279,7 +1296,9 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
           (s) =>
             s.type !== "category_header" &&
             s.type !== "result_toolbar" &&
-            s.type !== "announcement_bar",
+            s.type !== "announcement_bar" &&
+            s.type !== "breadcrumb" &&
+            s.type !== "product_rail",
         ),
       }
     : dynamicAst;

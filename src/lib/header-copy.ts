@@ -53,14 +53,14 @@ export const HEADER_FALLBACK_MENU = [
       },
       {
         id: "w-modern",
-        label: "Modern & Craft",
-        url: "/c/taaga-fusion",
+        label: "Silk & Craft",
+        url: "/c/rajshahi-silk",
         children: [
-          { id: "wm-taaga", label: "Taaga Fusion", url: "/c/taaga-fusion" },
+          { id: "wm-silk", label: "Rajshahi Silk", url: "/c/rajshahi-silk" },
           {
             id: "wm-artisan",
-            label: "Artisan Essentials",
-            url: "/c/artisan-essentials",
+            label: "Heritage Handloom",
+            url: "/c/heritage-handloom",
           },
           {
             id: "wm-jewellery",
@@ -122,7 +122,7 @@ export const HEADER_FALLBACK_MENU = [
         url: "/c/everyday",
         children: [
           { id: "me-everyday", label: "Everyday Heritage", url: "/c/everyday" },
-          { id: "me-taaga", label: "Taaga Man", url: "/c/taaga-fusion" },
+          { id: "me-cotton", label: "Cotton Panjabi", url: "/c/panjabi" },
           {
             id: "me-trending",
             label: "Trending Styles",
@@ -164,13 +164,9 @@ export const HEADER_FALLBACK_MENU = [
       {
         id: "k-occasion",
         label: "Family Occasion",
-        url: "/c/wedding",
+        url: "/c/festive",
         children: [
-          {
-            id: "ko-wedding",
-            label: "Wedding & Celebration",
-            url: "/c/wedding",
-          },
+          { id: "ko-eid", label: "Eid & Festive", url: "/c/eid-festive" },
           { id: "ko-festive", label: "Festive Collection", url: "/c/festive" },
         ],
       },
@@ -180,24 +176,7 @@ export const HEADER_FALLBACK_MENU = [
         url: "/c/new-in",
         children: [
           { id: "kfe-new", label: "New Festive Drops", url: "/c/new-in" },
-          {
-            id: "kfe-artisan",
-            label: "Artisan Essentials",
-            url: "/c/artisan-essentials",
-          },
-        ],
-      },
-      {
-        id: "k-collections",
-        label: "Collections",
-        url: "/c/kids",
-        children: [
-          { id: "kc-all", label: "All Kids' Wear", url: "/c/kids" },
-          {
-            id: "kc-handloom",
-            label: "Heritage Handloom",
-            url: "/c/heritage-handloom",
-          },
+          { id: "kfe-kids", label: "All Kids' Wear", url: "/c/kids" },
         ],
       },
     ],
@@ -240,9 +219,9 @@ export const HEADER_FALLBACK_MENU = [
           },
           { id: "fl-living", label: "Living & Home Decor", url: "/c/living" },
           {
-            id: "fl-wellness",
-            label: "Botanical Wellness",
-            url: "/c/aarong-earth",
+            id: "fl-kantha",
+            label: "Nakshi Kantha Art",
+            url: "/c/nakshi-kantha",
           },
         ],
       },
@@ -297,18 +276,18 @@ export const HEADER_FALLBACK_MENU = [
       },
       {
         id: "h-lifestyle",
-        label: "Lifestyle & Wellness",
-        url: "/c/aarong-earth",
+        label: "Silk & Craft Heritage",
+        url: "/c/rajshahi-silk",
         children: [
           {
-            id: "hl-wellness",
-            label: "Aarong Earth Wellness",
-            url: "/c/aarong-earth",
+            id: "hl-silk",
+            label: "Rajshahi Silk Heritage",
+            url: "/c/rajshahi-silk",
           },
           {
-            id: "hl-essentials",
-            label: "Artisan Essentials",
-            url: "/c/artisan-essentials",
+            id: "hl-handloom",
+            label: "Tangail Taant Handloom",
+            url: "/c/heritage-handloom",
           },
           { id: "hl-everyday", label: "Everyday Heritage", url: "/c/everyday" },
         ],
@@ -367,18 +346,18 @@ export const HEADER_FALLBACK_MENU = [
       },
       {
         id: "n-modern",
-        label: "Modern Styles",
-        url: "/c/taaga-fusion",
+        label: "Silk & Weaves",
+        url: "/c/rajshahi-silk",
         children: [
           {
-            id: "nm-taaga",
-            label: "Taaga Bohemian Fusion",
-            url: "/c/taaga-fusion",
+            id: "nm-silk",
+            label: "Pure Rajshahi Silk",
+            url: "/c/rajshahi-silk",
           },
           {
-            id: "nm-wellness",
-            label: "Botanical Wellness",
-            url: "/c/aarong-earth",
+            id: "nm-handloom",
+            label: "Heritage Handloom",
+            url: "/c/heritage-handloom",
           },
         ],
       },

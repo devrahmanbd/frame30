@@ -322,7 +322,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
         {
           title: "Rajshahi Silk",
           image: "/ph/songoskriti/prod-saree.png",
-          href: "",
+          href: `${c}/rajshahi-silk`,
           subtitle: "Artisan crafted",
         },
         {
@@ -380,10 +380,10 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     s("ugc_gallery", {
       heading: "WORN BY YOU",
       heading_bn: "আপনার পরিধানে",
-      subhead: "SONGOSKRITI IN THE WORLD",
-      subhead_bn: "সংস্কৃতি সারা দুনিয়ায়",
-      handleLabel: "Follow @SONGOSKRITI",
-      handleHref: "https://instagram.com",
+      subhead: "FLAME FASHION BD LOOKBOOK",
+      subhead_bn: "ফ্লেম ফ্যাশন লুকবুক",
+      handleLabel: "Follow @flamefashionbd",
+      handleHref: "https://instagram.com/flamefashionbd",
       images:
         "/ph/songoskriti/ugc-1.jpg, /ph/songoskriti/ugc-2.jpg, /ph/songoskriti/ugc-3.png, /ph/songoskriti/ugc-4.png, /ph/songoskriti/ugc-5.jpg, /ph/songoskriti/ugc-6.jpg",
     }),
