@@ -120,7 +120,11 @@ const DEPARTMENT_TAXONOMY: Record<string, DepartmentContext> = {
         label_bn: "বিয়ে ও ব্রাইডাল",
       },
       { slug: "sarees", label: "Festive Sarees", label_bn: "উৎসবের শাড়ি" },
-      { slug: "panjabi", label: "Festive Panjabi", label_bn: "উৎসবের পাঞ্জাবি" },
+      {
+        slug: "panjabi",
+        label: "Festive Panjabi",
+        label_bn: "উৎসবের পাঞ্জাবি",
+      },
       { slug: "groom", label: "Groom Wear", label_bn: "বরের পোশাক" },
     ],
   },
@@ -139,7 +143,11 @@ const DEPARTMENT_TAXONOMY: Record<string, DepartmentContext> = {
       { slug: "groom", label: "Groom & Sherwani", label_bn: "বর ও শেরওয়ানি" },
       { slug: "sarees", label: "Bridal Sarees", label_bn: "ব্রাইডাল শাড়ি" },
       { slug: "jamdani", label: "Dhakai Jamdani", label_bn: "ঢাকাই জামদানি" },
-      { slug: "jewellery", label: "Bridal Jewellery", label_bn: "ব্রাইডাল গহনা" },
+      {
+        slug: "jewellery",
+        label: "Bridal Jewellery",
+        label_bn: "ব্রাইডাল গহনা",
+      },
       { slug: "mehendi", label: "Mehendi", label_bn: "মেহেদি" },
       { slug: "sangeet", label: "Sangeet", label_bn: "সংগীত" },
     ],
@@ -219,7 +227,11 @@ const DEPARTMENT_TAXONOMY: Record<string, DepartmentContext> = {
         label_bn: "তাঁত পাঞ্জাবি",
       },
       { slug: "eid-festive", label: "Eid Festive", label_bn: "ঈদ কালেকশন" },
-      { slug: "everyday", label: "Everyday Kurta", label_bn: "দৈনন্দিন কুর্তা" },
+      {
+        slug: "everyday",
+        label: "Everyday Kurta",
+        label_bn: "দৈনন্দিন কুর্তা",
+      },
       { slug: "men", label: "All Men", label_bn: "সকল কালেকশন" },
     ],
   },
@@ -347,6 +359,19 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
   const custom = isCustomHostPath(location.pathname);
 
   const [filterOpen, setFilterOpen] = useState(false);
+  const [filterAvailability, setFilterAvailability] = useState<
+    "all" | "in_stock" | "out_of_stock"
+  >("all");
+  const [filterPrice, setFilterPrice] = useState<
+    "all" | "under_5000" | "5000_10000" | "above_10000"
+  >("all");
+  const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>(
+    [],
+  );
+  const [sortBy, setSortBy] = useState<
+    "featured" | "price_asc" | "price_desc" | "title"
+  >("featured");
+  const [visibleCount, setVisibleCount] = useState<number>(12);
 
   useEffect(() => {
     if (filterOpen) {
@@ -384,6 +409,22 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
       if (collection.slug === "men") heroImage = "/ph/songoskriti/cat-men.jpg";
     }
   } else if (
+    ["sarees", "jamdani", "heritage-handloom"].includes(collection.slug)
+  ) {
+    collectionType = "department";
+    // Flagship saree/weave collections: same editorial hero treatment as
+    // top-level departments. Only renders for the songoskriti theme key.
+    if (isSongoskriti) {
+      showHero = true;
+      if (collection.slug === "sarees")
+        heroImage = "/ph/songoskriti/prod-saree.png";
+      if (
+        collection.slug === "jamdani" ||
+        collection.slug === "heritage-handloom"
+      )
+        heroImage = "/ph/songoskriti/hero-weaves.jpg";
+    }
+  } else if (
     ["festive", "wedding", "eid", "heritage"].includes(collection.slug)
   ) {
     collectionType = "campaign";
@@ -419,10 +460,14 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
           return { parent: parent ?? null, pills };
         }
         if (item.children) {
-          const found = findInTree(item.children as typeof HEADER_FALLBACK_MENU, targetSlug, {
-            slug: itemSlug,
-            name: item.label,
-          });
+          const found = findInTree(
+            item.children as typeof HEADER_FALLBACK_MENU,
+            targetSlug,
+            {
+              slug: itemSlug,
+              name: item.label,
+            },
+          );
           if (found) return found;
         }
       }
@@ -440,6 +485,93 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
       }));
     }
   }
+
+  const filteredProducts = products.filter((p) => {
+    const variants = p.product_variants ?? [];
+    const min = variants.length
+      ? Math.min(...variants.map((v) => Number(v.price_amount_minor_int)))
+      : 0;
+    const inStock = variants.some((v) => v.stock_quantity > 0);
+
+    // Availability filter
+    if (filterAvailability === "in_stock" && !inStock) return false;
+    if (filterAvailability === "out_of_stock" && inStock) return false;
+
+    // Price filtering (BDT minor units: 5,000 BDT = 500,000 minor)
+    if (filterPrice === "under_5000" && min >= 500000) return false;
+    if (filterPrice === "5000_10000" && (min < 500000 || min > 1000000))
+      return false;
+    if (filterPrice === "above_10000" && min <= 1000000) return false;
+
+    // Category / Tag filter
+    if (selectedSubcategories.length > 0) {
+      const pTags = ((p as { tags?: string[] }).tags ?? []).map((t) =>
+        t.toLowerCase(),
+      );
+      const pTitle = p.title.toLowerCase();
+      const match = selectedSubcategories.some(
+        (sub) =>
+          pTags.includes(sub.toLowerCase()) ||
+          pTitle.includes(sub.toLowerCase()),
+      );
+      if (!match) return false;
+    }
+
+    return true;
+  });
+
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    if (sortBy === "price_asc") {
+      const aMin = Math.min(
+        ...(a.product_variants ?? []).map(
+          (v) => Number(v.price_amount_minor_int) || 0,
+        ),
+      );
+      const bMin = Math.min(
+        ...(b.product_variants ?? []).map(
+          (v) => Number(v.price_amount_minor_int) || 0,
+        ),
+      );
+      return aMin - bMin;
+    }
+    if (sortBy === "price_desc") {
+      const aMin = Math.min(
+        ...(a.product_variants ?? []).map(
+          (v) => Number(v.price_amount_minor_int) || 0,
+        ),
+      );
+      const bMin = Math.min(
+        ...(b.product_variants ?? []).map(
+          (v) => Number(v.price_amount_minor_int) || 0,
+        ),
+      );
+      return bMin - aMin;
+    }
+    if (sortBy === "title") {
+      return a.title.localeCompare(b.title);
+    }
+    return 0;
+  });
+
+  const displayedProducts = sortedProducts.slice(0, visibleCount);
+  const activeFiltersCount =
+    (filterAvailability !== "all" ? 1 : 0) +
+    (filterPrice !== "all" ? 1 : 0) +
+    selectedSubcategories.length;
+
+  const availableCategoryFilters =
+    subnavPills.length > 0
+      ? subnavPills.filter((p) => p.slug !== collection.slug)
+      : [
+          { slug: "sarees", label: "Sarees", label_bn: "শাড়ি" },
+          {
+            slug: "jamdani",
+            label: "Dhakai Jamdani",
+            label_bn: "ঢাকাই জামদানি",
+          },
+          { slug: "festive", label: "Festive", label_bn: "উৎসব" },
+          { slug: "panjabi", label: "Panjabi", label_bn: "পাঞ্জাবি" },
+        ];
 
   const grid = (
     <div className="w-full pb-20">
@@ -541,39 +673,109 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                 strokeWidth={1.5}
               />
               {t("Filter", "ফিল্টার")}
+              {activeFiltersCount > 0 && (
+                <span className="ml-1 inline-flex size-5 items-center justify-center rounded-full bg-foreground text-[10px] font-bold text-background">
+                  {activeFiltersCount}
+                </span>
+              )}
             </button>
+            {activeFiltersCount > 0 && (
+              <button
+                onClick={() => {
+                  setFilterAvailability("all");
+                  setFilterPrice("all");
+                  setSelectedSubcategories([]);
+                }}
+                className="text-[11px] font-medium text-muted-foreground hover:text-foreground underline underline-offset-2 ml-2 cursor-pointer"
+              >
+                {t("Clear filters", "ফিল্টার রিসেট")}
+              </button>
+            )}
           </div>
           <div className="text-[11px] font-semibold uppercase tracking-widest text-foreground/50 hidden md:block">
-            {products.length}{" "}
-            {products.length === 1
+            {sortedProducts.length}{" "}
+            {sortedProducts.length === 1
               ? t("Product", "পণ্য")
               : t("Products", "পণ্যসমূহ")}
           </div>
           <div className="flex items-center gap-2">
-            <button className="flex items-center gap-2 text-[12px] font-medium uppercase tracking-widest text-foreground hover:opacity-70 transition-opacity group cursor-pointer">
-              <span className="text-foreground/50">{t("Sort:", "বাছাই:")}</span>{" "}
-              {t("Featured", "সেরা")}
+            <div className="relative inline-flex items-center">
+              <span className="text-[12px] text-foreground/50 mr-2 uppercase tracking-widest">
+                {t("Sort:", "বাছাই:")}
+              </span>
+              <select
+                aria-label={t("Sort collection", "কালেকশন সাজান")}
+                value={sortBy}
+                onChange={(e) =>
+                  setSortBy(
+                    e.target.value as
+                      "featured" | "price_asc" | "price_desc" | "title",
+                  )
+                }
+                className="appearance-none bg-transparent pr-5 py-1 text-[12px] font-medium uppercase tracking-widest text-foreground hover:opacity-70 transition-opacity cursor-pointer focus:outline-hidden"
+              >
+                <option
+                  value="featured"
+                  className="bg-background text-foreground"
+                >
+                  {t("Featured", "সেরা")}
+                </option>
+                <option
+                  value="price_asc"
+                  className="bg-background text-foreground"
+                >
+                  {t("Price: Low to High", "মূল্য: কম থেকে বেশি")}
+                </option>
+                <option
+                  value="price_desc"
+                  className="bg-background text-foreground"
+                >
+                  {t("Price: High to Low", "মূল্য: বেশি থেকে কম")}
+                </option>
+                <option value="title" className="bg-background text-foreground">
+                  {t("Name: A to Z", "নাম: ক থেকে জ্ঞ")}
+                </option>
+              </select>
               <ChevronDown
-                className="size-[14px] text-foreground/60"
+                className="pointer-events-none absolute right-0 size-[14px] text-foreground/60"
                 strokeWidth={1.5}
               />
-            </button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* ── 4. Merchandising Product Grid ── */}
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
-        {products.length === 0 ? (
-          <p className="py-16 text-center text-muted-foreground">
-            {t(
-              "No products in this collection yet.",
-              "এই কালেকশনে এখনো কোনো পণ্য নেই।",
+        {sortedProducts.length === 0 ? (
+          <div className="py-20 text-center space-y-4">
+            <p className="text-muted-foreground text-[15px]">
+              {products.length === 0
+                ? t(
+                    "No products in this collection yet.",
+                    "এই কালেকশনে এখনো কোনো পণ্য নেই।",
+                  )
+                : t(
+                    "No products match your selected filters.",
+                    "বাছাইকৃত ফিল্টারে কোনো পণ্য পাওয়া যায়নি।",
+                  )}
+            </p>
+            {activeFiltersCount > 0 && (
+              <button
+                onClick={() => {
+                  setFilterAvailability("all");
+                  setFilterPrice("all");
+                  setSelectedSubcategories([]);
+                }}
+                className="px-6 py-2.5 text-[11px] font-semibold uppercase tracking-widest text-background bg-foreground hover:bg-foreground/90 transition-colors cursor-pointer"
+              >
+                {t("Clear all filters", "সব ফিল্টার মুছুন")}
+              </button>
             )}
-          </p>
+          </div>
         ) : (
           <ul className="grid grid-cols-2 gap-x-4 gap-y-12 sm:grid-cols-3 sm:gap-x-6 sm:gap-y-16 lg:grid-cols-4 lg:gap-x-8">
-            {products.map((p) => {
+            {displayedProducts.map((p) => {
               const variants = p.product_variants ?? [];
               const min = variants.length
                 ? Math.min(
@@ -582,13 +784,21 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                 : 0;
               const inStock = variants.some((v) => v.stock_quantity > 0);
 
+              // NEW / BESTSELLER assigned from product data (tags/attributes), never by collection slug
+              const pTags = ((p as { tags?: string[] }).tags ?? []).map((t) =>
+                t.toLowerCase(),
+              );
               let badge: string | null = null;
-              if (collectionType === "curated" && collection.slug === "new-in") {
+              if (
+                pTags.includes("new") ||
+                pTags.includes("new-in") ||
+                pTags.includes("new-arrival")
+              ) {
                 badge = "NEW";
               } else if (
-                collectionType === "curated" &&
-                (collection.slug === "bestsellers" ||
-                  collection.slug === "best-sellers")
+                pTags.includes("bestseller") ||
+                pTags.includes("best-seller") ||
+                pTags.includes("trending")
               ) {
                 badge = "BESTSELLER";
               }
@@ -652,9 +862,12 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
         )}
       </div>
 
-      {products.length > 0 && (
+      {sortedProducts.length > displayedProducts.length && (
         <div className="mt-16 text-center">
-          <button className="px-10 py-3.5 text-[12px] font-semibold uppercase tracking-[0.1em] text-foreground border border-foreground/20 hover:border-foreground/40 transition-colors bg-transparent cursor-pointer">
+          <button
+            onClick={() => setVisibleCount((prev) => prev + 12)}
+            className="px-10 py-3.5 text-[12px] font-semibold uppercase tracking-[0.1em] text-foreground border border-foreground/20 hover:border-foreground/40 transition-colors bg-transparent cursor-pointer"
+          >
             {t("Load More", "আরো দেখুন")}
           </button>
         </div>
@@ -672,32 +885,62 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
             <div className="flex items-center justify-between p-6 border-b border-border/40">
               <h2 className="text-[13px] font-semibold uppercase tracking-[0.1em] text-foreground">
                 {t("Filters", "ফিল্টার")}
+                {activeFiltersCount > 0 && ` (${activeFiltersCount})`}
               </h2>
               <button
                 onClick={() => setFilterOpen(false)}
                 className="text-foreground/60 hover:text-foreground transition-colors p-2 -mr-2 cursor-pointer"
+                aria-label="Close filters"
               >
                 <X className="size-[20px]" strokeWidth={1.5} />
               </button>
             </div>
 
             <div className="flex-1 overflow-y-auto p-6 space-y-8">
-              <div className="space-y-4">
-                <h3 className="text-[11px] font-semibold uppercase tracking-widest text-foreground/50">
-                  {t("Category", "ক্যাটাগরি")}
-                </h3>
-                <ul className="space-y-3">
-                  {["Sarees", "Jamdani", "Festive", "Tangail"].map((f) => (
-                    <li key={f} className="flex items-center gap-3">
-                      <input
-                        type="checkbox"
-                        className="size-4 rounded-sm border-foreground/30 accent-foreground"
-                      />
-                      <span className="text-[14px] text-foreground/80">{f}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {availableCategoryFilters.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-[11px] font-semibold uppercase tracking-widest text-foreground/50">
+                    {t("Category", "ক্যাটাগরি")}
+                  </h3>
+                  <ul className="space-y-3">
+                    {availableCategoryFilters.map((f) => {
+                      const isChecked = selectedSubcategories.includes(f.slug);
+                      const fLabel =
+                        lang === "bn" && f.label_bn ? f.label_bn : f.label;
+                      return (
+                        <li key={f.slug} className="flex items-center gap-3">
+                          <input
+                            type="checkbox"
+                            id={`filter-cat-${f.slug}`}
+                            checked={isChecked}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedSubcategories([
+                                  ...selectedSubcategories,
+                                  f.slug,
+                                ]);
+                              } else {
+                                setSelectedSubcategories(
+                                  selectedSubcategories.filter(
+                                    (s) => s !== f.slug,
+                                  ),
+                                );
+                              }
+                            }}
+                            className="size-4 rounded-sm border-foreground/30 accent-foreground cursor-pointer"
+                          />
+                          <label
+                            htmlFor={`filter-cat-${f.slug}`}
+                            className="text-[14px] text-foreground/80 cursor-pointer"
+                          >
+                            {fLabel}
+                          </label>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )}
 
               <div className="space-y-4">
                 <h3 className="text-[11px] font-semibold uppercase tracking-widest text-foreground/50">
@@ -705,16 +948,46 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                 </h3>
                 <ul className="space-y-3">
                   {[
-                    "Under ৳5,000",
-                    "৳5,000 - ৳10,000",
-                    "Above ৳10,000",
-                  ].map((f) => (
-                    <li key={f} className="flex items-center gap-3">
+                    { key: "all", en: "All Prices", bn: "সকল মূল্য" },
+                    {
+                      key: "under_5000",
+                      en: "Under ৳5,000",
+                      bn: "৳৫,০০০ এর নিচে",
+                    },
+                    {
+                      key: "5000_10000",
+                      en: "৳5,000 - ৳10,000",
+                      bn: "৳৫,০০০ - ৳১০,০০০",
+                    },
+                    {
+                      key: "above_10000",
+                      en: "Above ৳10,000",
+                      bn: "৳১০,০০০ এর উপরে",
+                    },
+                  ].map((pOpt) => (
+                    <li key={pOpt.key} className="flex items-center gap-3">
                       <input
-                        type="checkbox"
-                        className="size-4 rounded-sm border-foreground/30 accent-foreground"
+                        type="radio"
+                        id={`filter-price-${pOpt.key}`}
+                        name="filter-price"
+                        checked={filterPrice === pOpt.key}
+                        onChange={() =>
+                          setFilterPrice(
+                            pOpt.key as
+                              | "all"
+                              | "under_5000"
+                              | "5000_10000"
+                              | "above_10000",
+                          )
+                        }
+                        className="size-4 accent-foreground cursor-pointer"
                       />
-                      <span className="text-[14px] text-foreground/80">{f}</span>
+                      <label
+                        htmlFor={`filter-price-${pOpt.key}`}
+                        className="text-[14px] text-foreground/80 cursor-pointer"
+                      >
+                        {lang === "bn" ? pOpt.bn : pOpt.en}
+                      </label>
                     </li>
                   ))}
                 </ul>
@@ -725,13 +998,30 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                   {t("Availability", "উপলব্ধতা")}
                 </h3>
                 <ul className="space-y-3">
-                  {["In Stock", "Out of Stock"].map((f) => (
-                    <li key={f} className="flex items-center gap-3">
+                  {[
+                    { key: "all", en: "All Products", bn: "সকল পণ্য" },
+                    { key: "in_stock", en: "In Stock", bn: "স্টকে আছে" },
+                    { key: "out_of_stock", en: "Out of Stock", bn: "স্টক নেই" },
+                  ].map((aOpt) => (
+                    <li key={aOpt.key} className="flex items-center gap-3">
                       <input
-                        type="checkbox"
-                        className="size-4 rounded-sm border-foreground/30 accent-foreground"
+                        type="radio"
+                        id={`filter-avail-${aOpt.key}`}
+                        name="filter-avail"
+                        checked={filterAvailability === aOpt.key}
+                        onChange={() =>
+                          setFilterAvailability(
+                            aOpt.key as "all" | "in_stock" | "out_of_stock",
+                          )
+                        }
+                        className="size-4 accent-foreground cursor-pointer"
                       />
-                      <span className="text-[14px] text-foreground/80">{f}</span>
+                      <label
+                        htmlFor={`filter-avail-${aOpt.key}`}
+                        className="text-[14px] text-foreground/80 cursor-pointer"
+                      >
+                        {lang === "bn" ? aOpt.bn : aOpt.en}
+                      </label>
                     </li>
                   ))}
                 </ul>
@@ -740,7 +1030,11 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
 
             <div className="p-6 border-t border-border/40 grid grid-cols-2 gap-4 bg-muted/10">
               <button
-                onClick={() => setFilterOpen(false)}
+                onClick={() => {
+                  setFilterAvailability("all");
+                  setFilterPrice("all");
+                  setSelectedSubcategories([]);
+                }}
                 className="w-full py-3.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-foreground border border-foreground/20 hover:border-foreground/40 transition-colors bg-transparent cursor-pointer"
               >
                 {t("Clear All", "মুছে ফেলুন")}

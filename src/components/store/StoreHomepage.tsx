@@ -6,6 +6,7 @@ import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { PluginLayer } from "@/components/store/PluginLayer";
 import { useLang } from "@/lib/i18n";
 import { buildTrayRegistry } from "@/lib/unified-widget-registry";
+import { flattenAst } from "@/lib/builder-ast";
 import type { getStorePageFn } from "@/lib/storefront-search.functions";
 
 type HomepageData = NonNullable<Awaited<ReturnType<typeof getStorePageFn>>>;
@@ -96,6 +97,10 @@ export function StoreHomepage({
     </article>
   );
 
+  const hasAnnouncement = ast
+    ? flattenAst(ast).some((s) => s.type === "announcement_bar")
+    : false;
+
   return (
     <PluginLayer plugins={installedPlugins ?? []}>
       <ThemeChrome
@@ -115,6 +120,7 @@ export function StoreHomepage({
             name={merchant.name}
             menus={menus}
             themeKey={themeKey ?? null}
+            showAnnouncement={hasAnnouncement}
           />
         }
         contextSlots={{ page_content: content }}

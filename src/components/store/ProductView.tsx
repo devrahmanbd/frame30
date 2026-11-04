@@ -113,9 +113,6 @@ export function PriceBlock({
           </p>
         )}
       </div>
-      <p className="mt-1 text-sm text-muted-foreground">
-        VAT included. Delivery calculated at checkout.
-      </p>
       <div className="self-start">
         <ScarcityBadge stock={Number(variant?.stock_quantity ?? 0)} />
       </div>
@@ -275,9 +272,25 @@ export function AddToCart({
           </div>
         )}
         <div className="flex gap-2">
-          <span className="font-semibold text-foreground">Returns:</span>
+          <span className="font-semibold text-foreground">
+            {t("Returns:", "রিটার্ন:")}
+          </span>
           <span className="text-muted-foreground">
-            7-day easy returns policy.
+            {custom ? (
+              <a
+                href="/pages/returns"
+                className="underline underline-offset-2 hover:opacity-70"
+              >
+                {t("Returns & Exchanges →", "রিটার্ন ও পরিবর্তন →")}
+              </a>
+            ) : (
+              <a
+                href={`/store/${merchant.slug}/pages/returns`}
+                className="underline underline-offset-2 hover:opacity-70"
+              >
+                {t("Returns & Exchanges →", "রিটার্ন ও পরিবর্তন →")}
+              </a>
+            )}
           </span>
         </div>
       </div>
@@ -297,6 +310,15 @@ export function ProductDetails({
   const { t } = useLang();
   const [openDetails, setOpenDetails] = useState(true);
   const [openCare, setOpenCare] = useState(false);
+
+  // Extract care instructions from product tags (e.g. "care:dry-clean", "care:hand-wash").
+  // Only show the care accordion when the product has a care tag.
+  const careTags = (product.tags ?? []).filter((tag) =>
+    tag.toLowerCase().startsWith("care:"),
+  );
+  const careText = careTags
+    .map((tag) => tag.replace(/^care:/i, "").replace(/-/g, " "))
+    .join(". ");
 
   return (
     <div className="mt-12 border-t border-border">
@@ -347,27 +369,28 @@ export function ProductDetails({
         </details>
       )}
 
-      <details
-        className="group border-b border-border"
-        open={openCare}
-        onClick={(e) => {
-          e.preventDefault();
-          setOpenCare(!openCare);
-        }}
-      >
-        <summary className="flex cursor-pointer items-center justify-between py-5 text-sm font-semibold uppercase tracking-wider text-foreground hover:text-foreground/80">
-          {t("Care Instructions", "যত্ন")}
-          <ChevronDown
-            className={`size-4 transition-transform duration-300 ${openCare ? "rotate-180" : ""}`}
-          />
-        </summary>
-        <div className="pb-6">
-          <p className="whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
-            Dry clean only. Store in a cool, dry place. Keep away from direct
-            sunlight.
-          </p>
-        </div>
-      </details>
+      {careText && (
+        <details
+          className="group border-b border-border"
+          open={openCare}
+          onClick={(e) => {
+            e.preventDefault();
+            setOpenCare(!openCare);
+          }}
+        >
+          <summary className="flex cursor-pointer items-center justify-between py-5 text-sm font-semibold uppercase tracking-wider text-foreground hover:text-foreground/80">
+            {t("Care Instructions", "যত্ন")}
+            <ChevronDown
+              className={`size-4 transition-transform duration-300 ${openCare ? "rotate-180" : ""}`}
+            />
+          </summary>
+          <div className="pb-6">
+            <p className="whitespace-pre-line text-sm leading-relaxed text-muted-foreground capitalize">
+              {careText}.
+            </p>
+          </div>
+        </details>
+      )}
     </div>
   );
 }
@@ -594,6 +617,10 @@ export function ProductView({ data }: { data: ProductPayload }) {
     </div>
   );
 
+  const hasAnnouncement = ast
+    ? flattenAst(ast).some((s) => s.type === "announcement_bar")
+    : false;
+
   return (
     <>
       <PluginLayer plugins={installedPlugins}>
@@ -613,6 +640,7 @@ export function ProductView({ data }: { data: ProductPayload }) {
               name={merchant.name}
               menus={menus}
               themeKey={themeKey ?? null}
+              showAnnouncement={hasAnnouncement}
             />
           }
           contextSlots={{

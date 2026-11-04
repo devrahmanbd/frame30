@@ -8,6 +8,7 @@ import { PluginLayer } from "@/components/store/PluginLayer";
 import { useLang } from "@/lib/i18n";
 import { isCustomHostPath } from "@/lib/storefront-url";
 import { buildTrayRegistry } from "@/lib/unified-widget-registry";
+import { flattenAst } from "@/lib/builder-ast";
 import type { getStorePageFn } from "@/lib/storefront-search.functions";
 
 export type PagePayload = Exclude<
@@ -191,6 +192,10 @@ export function PageView({ data }: { data: PagePayload }) {
     ? "mx-auto max-w-5xl px-4 py-8"
     : "mx-auto grid max-w-5xl gap-8 px-4 py-8 lg:grid-cols-[1fr_15rem]";
 
+  const hasAnnouncement = ast
+    ? flattenAst(ast).some((s) => s.type === "announcement_bar")
+    : false;
+
   return (
     <PluginLayer plugins={installedPlugins}>
       <ThemeChrome
@@ -211,6 +216,7 @@ export function PageView({ data }: { data: PagePayload }) {
             name={merchant.name}
             menus={menus}
             themeKey={themeKey ?? null}
+            showAnnouncement={hasAnnouncement}
           />
         }
         contextSlots={{ breadcrumb, page_content: pageContent }}

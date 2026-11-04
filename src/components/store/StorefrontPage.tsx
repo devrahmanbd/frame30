@@ -12,6 +12,7 @@ import {
 } from "@/components/store/CustomCode";
 import { fmtMinor } from "@/lib/money";
 import { useLang } from "@/lib/i18n";
+import { flattenAst } from "@/lib/builder-ast";
 import type { getStorefront } from "@/lib/storefront.functions";
 
 /** Resolved non-null payload of `getStorefront` — the single shape every
@@ -53,6 +54,10 @@ export function StorefrontPage({ data }: { data: StorefrontPayload }) {
   const [term, setTerm] = useState("");
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [collectionId, setCollectionId] = useState<string | null>(null);
+
+  const hasAnnouncement = ast
+    ? flattenAst(ast).some((s) => s.type === "announcement_bar")
+    : false;
 
   const q = term.trim().toLowerCase();
   const collectionMembers = collectionId
@@ -310,6 +315,7 @@ export function StorefrontPage({ data }: { data: StorefrontPayload }) {
               allowCustomerTimezone={tokens?.allowCustomerTimezone}
               menus={menus}
               themeKey={themeKey ?? null}
+              showAnnouncement={hasAnnouncement}
             />
             {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
             {/* <SupportWidget slug={slug} /> */}

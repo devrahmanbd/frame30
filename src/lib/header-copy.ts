@@ -123,7 +123,11 @@ export const HEADER_FALLBACK_MENU = [
         children: [
           { id: "me-everyday", label: "Everyday Heritage", url: "/c/everyday" },
           { id: "me-taaga", label: "Taaga Man", url: "/c/taaga-fusion" },
-          { id: "me-trending", label: "Trending Styles", url: "/c/best-sellers" },
+          {
+            id: "me-trending",
+            label: "Trending Styles",
+            url: "/c/best-sellers",
+          },
         ],
       },
       {
@@ -249,11 +253,6 @@ export const HEADER_FALLBACK_MENU = [
         children: [
           { id: "fc-new", label: "New Arrivals", url: "/c/new-in" },
           { id: "fc-best", label: "Best Sellers", url: "/c/best-sellers" },
-          {
-            id: "fc-story",
-            label: "Festive Editorial",
-            url: "/blog/demo-festive-collection",
-          },
         ],
       },
     ],
@@ -283,7 +282,11 @@ export const HEADER_FALLBACK_MENU = [
         label: "Folk Crafts & Living",
         url: "/c/living",
         children: [
-          { id: "hc-kantha", label: "Nakshi Kantha Art", url: "/c/nakshi-kantha" },
+          {
+            id: "hc-kantha",
+            label: "Nakshi Kantha Art",
+            url: "/c/nakshi-kantha",
+          },
           { id: "hc-living", label: "Living & Home Decor", url: "/c/living" },
           {
             id: "hc-jewellery",
@@ -318,12 +321,12 @@ export const HEADER_FALLBACK_MENU = [
           {
             id: "hj-weavers",
             label: "Master Weavers of Tangail",
-            url: "/blog/demo-master-weavers",
+            url: "/pages/master-weavers",
           },
           {
             id: "hj-kantha",
             label: "Nakshi Kantha Folk Art",
-            url: "/blog/demo-nakshi-kantha",
+            url: "/pages/artisans",
           },
           { id: "hj-all", label: "The Journal Index", url: "/blog" },
         ],

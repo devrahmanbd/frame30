@@ -397,7 +397,7 @@ export async function loadStoreCollection(
     ids.length
       ? db
           .from("products")
-          .select("id, title, slug, description, image_url")
+          .select("id, title, slug, description, image_url, tags, created_at")
           .eq("merchant_id", merchant.id)
           .eq("status", "active")
           .in("id", ids)
