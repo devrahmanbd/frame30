@@ -339,6 +339,185 @@ const DEPARTMENT_TAXONOMY: Record<string, DepartmentContext> = {
   },
 };
 
+export type CollectionProduct = CollectionPayload["products"][number];
+
+export type FilterFacetOption = {
+  tag: string;
+  label: string;
+  label_bn?: string;
+  count: number;
+};
+
+export const KNOWN_TAG_LABELS: Record<string, { en: string; bn: string }> = {
+  jamdani: { en: "Dhakai Jamdani", bn: "ঢাকাই জামদানি" },
+  silk: { en: "Pure Silk", bn: "সিল্ক" },
+  cotton: { en: "Handloom Cotton", bn: "সুতি" },
+  handloom: { en: "Handloom / Taant", bn: "তাঁত" },
+  tangail: { en: "Tangail Taant", bn: "টাঙ্গাইল তাঁত" },
+  katan: { en: "Katan Silk", bn: "কাতান" },
+  handpainted: { en: "Hand-Painted", bn: "হ্যান্ড-পেইন্টেড" },
+  festive: { en: "Festive Wear", bn: "উৎসবের পোশাক" },
+  heritage: { en: "Heritage", bn: "ঐতিহ্য" },
+  womens: { en: "Women's", bn: "নারী" },
+  mens: { en: "Men's", bn: "পুরুষ" },
+  muslin: { en: "Fine Muslin", bn: "মসলিন" },
+  dupatta: { en: "Dupatta", bn: "ওড়না" },
+  blockprint: { en: "Block Print", bn: "ব্লক প্রিন্ট" },
+  panjabi: { en: "Panjabi", bn: "পাঞ্জাবি" },
+  rajshahi: { en: "Rajshahi Silk", bn: "রাজশাহী সিল্ক" },
+  "nakshi kantha": { en: "Nakshi Kantha", bn: "নকশী কাঁথা" },
+  quilt: { en: "Handcrafted Quilt", bn: "কাঁথা" },
+  living: { en: "Living & Decor", bn: "হোম ও লিভিং" },
+  jewelry: { en: "Jewelry", bn: "গহনা" },
+  brass: { en: "Brass Craft", bn: "পিতল" },
+  earrings: { en: "Earrings", bn: "কানের দুল" },
+  terracotta: { en: "Terracotta", bn: "পোড়ামাটি" },
+  casual: { en: "Casual Wear", bn: "দৈনন্দিন পোশাক" },
+  linen: { en: "Linen", bn: "লিনেন" },
+  khadi: { en: "Handspun Khadi", bn: "খাদি" },
+  taaga: { en: "Taaga Fusion", bn: "তাগা ফিউশন" },
+};
+
+export const PRICE_OPTIONS = [
+  { key: "all", en: "All Prices", bn: "সকল মূল্য" },
+  { key: "under_5000", en: "Under ৳5,000", bn: "৳৫,০০০ এর নিচে" },
+  { key: "5000_10000", en: "৳5,000 - ৳10,000", bn: "৳৫,০০০ - ৳১০,০০০" },
+  { key: "above_10000", en: "Above ৳10,000", bn: "৳১০,০০০ এর উপরে" },
+] as const;
+
+export const AVAILABILITY_OPTIONS = [
+  { key: "all", en: "All Products", bn: "সকল পণ্য" },
+  { key: "in_stock", en: "In Stock Only", bn: "স্টকে আছে" },
+  { key: "out_of_stock", en: "Out of Stock", bn: "স্টক নেই" },
+] as const;
+
+/**
+ * Extract genuine weave/material options based on actual product tags in the collection.
+ * Does not fabricate facets or attributes; excludes redundant collection-level tags.
+ */
+export function extractWeaveFacets(
+  products: readonly { tags?: string[] }[],
+  collectionSlug: string,
+): FilterFacetOption[] {
+  const counts = new Map<string, number>();
+  for (const p of products) {
+    const tags = p.tags ?? [];
+    for (const rawTag of tags) {
+      const tag = rawTag.toLowerCase().trim();
+      if (!tag || tag.startsWith("care:")) continue;
+      // Skip redundant collection tag
+      if (
+        tag === collectionSlug.toLowerCase() ||
+        (collectionSlug === "sarees" && tag === "saree") ||
+        (collectionSlug === "women" && tag === "womens")
+      ) {
+        continue;
+      }
+      counts.set(tag, (counts.get(tag) ?? 0) + 1);
+    }
+  }
+
+  const facets: FilterFacetOption[] = [];
+  for (const [tag, count] of counts.entries()) {
+    const known = KNOWN_TAG_LABELS[tag];
+    facets.push({
+      tag,
+      label: known ? known.en : tag.charAt(0).toUpperCase() + tag.slice(1),
+      label_bn: known?.bn,
+      count,
+    });
+  }
+
+  return facets.sort(
+    (a, b) => b.count - a.count || a.label.localeCompare(b.label),
+  );
+}
+
+/**
+ * Pure filter logic: checks exact tag membership (no title substring matching),
+ * BDT price brackets, and stock availability.
+ */
+export function filterCollectionProducts(
+  products: readonly CollectionProduct[],
+  filters: {
+    availability: "all" | "in_stock" | "out_of_stock";
+    price: "all" | "under_5000" | "5000_10000" | "above_10000";
+    tags: readonly string[];
+  },
+): CollectionProduct[] {
+  return products.filter((p) => {
+    const variants = p.product_variants ?? [];
+    const min = variants.length
+      ? Math.min(...variants.map((v) => Number(v.price_amount_minor_int) || 0))
+      : 0;
+    const inStock = variants.some((v) => (v.stock_quantity ?? 0) > 0);
+
+    // Availability filter
+    if (filters.availability === "in_stock" && !inStock) return false;
+    if (filters.availability === "out_of_stock" && inStock) return false;
+
+    // Price filtering (BDT minor units: 5,000 BDT = 500,000 minor)
+    if (filters.price === "under_5000" && min >= 500000) return false;
+    if (filters.price === "5000_10000" && (min < 500000 || min > 1000000))
+      return false;
+    if (filters.price === "above_10000" && min <= 1000000) return false;
+
+    // Weave / Material / Tag filter (exact tag membership, no title matching)
+    if (filters.tags.length > 0) {
+      const pTags = ((p as { tags?: string[] }).tags ?? []).map((t) =>
+        t.toLowerCase(),
+      );
+      const match = filters.tags.some((tag) =>
+        pTags.includes(tag.toLowerCase()),
+      );
+      if (!match) return false;
+    }
+
+    return true;
+  });
+}
+
+/**
+ * Pure sort logic: featured, price ascending, price descending, alphabetical title.
+ */
+export function sortCollectionProducts(
+  products: readonly CollectionProduct[],
+  sortBy: "featured" | "price_asc" | "price_desc" | "title",
+): CollectionProduct[] {
+  return [...products].sort((a, b) => {
+    if (sortBy === "price_asc") {
+      const aMin = Math.min(
+        ...(a.product_variants ?? []).map(
+          (v) => Number(v.price_amount_minor_int) || 0,
+        ),
+      );
+      const bMin = Math.min(
+        ...(b.product_variants ?? []).map(
+          (v) => Number(v.price_amount_minor_int) || 0,
+        ),
+      );
+      return aMin - bMin;
+    }
+    if (sortBy === "price_desc") {
+      const aMin = Math.min(
+        ...(a.product_variants ?? []).map(
+          (v) => Number(v.price_amount_minor_int) || 0,
+        ),
+      );
+      const bMin = Math.min(
+        ...(b.product_variants ?? []).map(
+          (v) => Number(v.price_amount_minor_int) || 0,
+        ),
+      );
+      return bMin - aMin;
+    }
+    if (sortBy === "title") {
+      return a.title.localeCompare(b.title);
+    }
+    return 0;
+  });
+}
+
 export function CollectionView({ data }: { data: CollectionPayload }) {
   const { t, lang } = useLang();
   const {
@@ -358,23 +537,21 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
   const { location } = useRouterState();
   const custom = isCustomHostPath(location.pathname);
 
-  const [filterOpen, setFilterOpen] = useState(false);
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [filterAvailability, setFilterAvailability] = useState<
     "all" | "in_stock" | "out_of_stock"
   >("all");
   const [filterPrice, setFilterPrice] = useState<
     "all" | "under_5000" | "5000_10000" | "above_10000"
   >("all");
-  const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>(
-    [],
-  );
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<
     "featured" | "price_asc" | "price_desc" | "title"
   >("featured");
   const [visibleCount, setVisibleCount] = useState<number>(12);
 
   useEffect(() => {
-    if (filterOpen) {
+    if (mobileFilterOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -382,7 +559,7 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [filterOpen]);
+  }, [mobileFilterOpen]);
 
   // Theme-remediation Task 3: brand follows the installed theme key,
   // never the store slug or display name. A foreign theme on a
@@ -486,92 +663,142 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
     }
   }
 
-  const filteredProducts = products.filter((p) => {
-    const variants = p.product_variants ?? [];
-    const min = variants.length
-      ? Math.min(...variants.map((v) => Number(v.price_amount_minor_int)))
-      : 0;
-    const inStock = variants.some((v) => v.stock_quantity > 0);
+  // Meaningful facets extracted dynamically from actual products in this collection
+  const availableFacets = extractWeaveFacets(products, collection.slug);
 
-    // Availability filter
-    if (filterAvailability === "in_stock" && !inStock) return false;
-    if (filterAvailability === "out_of_stock" && inStock) return false;
-
-    // Price filtering (BDT minor units: 5,000 BDT = 500,000 minor)
-    if (filterPrice === "under_5000" && min >= 500000) return false;
-    if (filterPrice === "5000_10000" && (min < 500000 || min > 1000000))
-      return false;
-    if (filterPrice === "above_10000" && min <= 1000000) return false;
-
-    // Category / Tag filter
-    if (selectedSubcategories.length > 0) {
-      const pTags = ((p as { tags?: string[] }).tags ?? []).map((t) =>
-        t.toLowerCase(),
-      );
-      const pTitle = p.title.toLowerCase();
-      const match = selectedSubcategories.some(
-        (sub) =>
-          pTags.includes(sub.toLowerCase()) ||
-          pTitle.includes(sub.toLowerCase()),
-      );
-      if (!match) return false;
-    }
-
-    return true;
+  const filteredProducts = filterCollectionProducts(products, {
+    availability: filterAvailability,
+    price: filterPrice,
+    tags: selectedTags,
   });
 
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
-    if (sortBy === "price_asc") {
-      const aMin = Math.min(
-        ...(a.product_variants ?? []).map(
-          (v) => Number(v.price_amount_minor_int) || 0,
-        ),
-      );
-      const bMin = Math.min(
-        ...(b.product_variants ?? []).map(
-          (v) => Number(v.price_amount_minor_int) || 0,
-        ),
-      );
-      return aMin - bMin;
-    }
-    if (sortBy === "price_desc") {
-      const aMin = Math.min(
-        ...(a.product_variants ?? []).map(
-          (v) => Number(v.price_amount_minor_int) || 0,
-        ),
-      );
-      const bMin = Math.min(
-        ...(b.product_variants ?? []).map(
-          (v) => Number(v.price_amount_minor_int) || 0,
-        ),
-      );
-      return bMin - aMin;
-    }
-    if (sortBy === "title") {
-      return a.title.localeCompare(b.title);
-    }
-    return 0;
-  });
-
+  const sortedProducts = sortCollectionProducts(filteredProducts, sortBy);
   const displayedProducts = sortedProducts.slice(0, visibleCount);
+
   const activeFiltersCount =
     (filterAvailability !== "all" ? 1 : 0) +
     (filterPrice !== "all" ? 1 : 0) +
-    selectedSubcategories.length;
+    selectedTags.length;
 
-  const availableCategoryFilters =
-    subnavPills.length > 0
-      ? subnavPills.filter((p) => p.slug !== collection.slug)
-      : [
-          { slug: "sarees", label: "Sarees", label_bn: "শাড়ি" },
-          {
-            slug: "jamdani",
-            label: "Dhakai Jamdani",
-            label_bn: "ঢাকাই জামদানি",
-          },
-          { slug: "festive", label: "Festive", label_bn: "উৎসব" },
-          { slug: "panjabi", label: "Panjabi", label_bn: "পাঞ্জাবি" },
-        ];
+  const clearAllFilters = () => {
+    setFilterAvailability("all");
+    setFilterPrice("all");
+    setSelectedTags([]);
+  };
+
+  const renderFilterControls = (prefix: string) => (
+    <div className="space-y-6">
+      {/* 1. Weave / Craft / Fabric (if any exist for this collection) */}
+      {availableFacets.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="text-[11px] font-semibold uppercase tracking-widest text-foreground/60">
+            {t("Weave & Material", "তাঁত ও উপাদান")}
+          </h3>
+          <ul className="space-y-2">
+            {availableFacets.map((facet) => {
+              const isChecked = selectedTags.includes(facet.tag);
+              const facetLabel =
+                lang === "bn" && facet.label_bn ? facet.label_bn : facet.label;
+              const id = `${prefix}-facet-${facet.tag}`;
+              return (
+                <li
+                  key={facet.tag}
+                  className="flex items-center justify-between text-[13px]"
+                >
+                  <label
+                    htmlFor={id}
+                    className="flex items-center gap-2.5 cursor-pointer text-foreground/80 hover:text-foreground select-none"
+                  >
+                    <input
+                      type="checkbox"
+                      id={id}
+                      checked={isChecked}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedTags([...selectedTags, facet.tag]);
+                        } else {
+                          setSelectedTags(
+                            selectedTags.filter((t) => t !== facet.tag),
+                          );
+                        }
+                      }}
+                      className="size-4 rounded-xs border-border/80 text-foreground accent-foreground focus:ring-0 cursor-pointer"
+                    />
+                    <span>{facetLabel}</span>
+                  </label>
+                  <span className="text-[11px] text-muted-foreground tabular-nums">
+                    {facet.count}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
+      {/* 2. Price Range (BDT) */}
+      <div className="space-y-3 pt-4 border-t border-border/30">
+        <h3 className="text-[11px] font-semibold uppercase tracking-widest text-foreground/60">
+          {t("Price Range", "মূল্য সীমা")}
+        </h3>
+        <ul className="space-y-2">
+          {PRICE_OPTIONS.map((opt) => {
+            const id = `${prefix}-price-${opt.key}`;
+            const isSelected = filterPrice === opt.key;
+            return (
+              <li key={opt.key} className="flex items-center text-[13px]">
+                <label
+                  htmlFor={id}
+                  className="flex items-center gap-2.5 cursor-pointer text-foreground/80 hover:text-foreground select-none"
+                >
+                  <input
+                    type="radio"
+                    id={id}
+                    name={`${prefix}-price`}
+                    checked={isSelected}
+                    onChange={() => setFilterPrice(opt.key)}
+                    className="size-4 text-foreground accent-foreground focus:ring-0 cursor-pointer"
+                  />
+                  <span>{lang === "bn" ? opt.bn : opt.en}</span>
+                </label>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      {/* 3. Availability */}
+      <div className="space-y-3 pt-4 border-t border-border/30">
+        <h3 className="text-[11px] font-semibold uppercase tracking-widest text-foreground/60">
+          {t("Availability", "উপলব্ধতা")}
+        </h3>
+        <ul className="space-y-2">
+          {AVAILABILITY_OPTIONS.map((opt) => {
+            const id = `${prefix}-avail-${opt.key}`;
+            const isSelected = filterAvailability === opt.key;
+            return (
+              <li key={opt.key} className="flex items-center text-[13px]">
+                <label
+                  htmlFor={id}
+                  className="flex items-center gap-2.5 cursor-pointer text-foreground/80 hover:text-foreground select-none"
+                >
+                  <input
+                    type="radio"
+                    id={id}
+                    name={`${prefix}-avail`}
+                    checked={isSelected}
+                    onChange={() => setFilterAvailability(opt.key)}
+                    className="size-4 text-foreground accent-foreground focus:ring-0 cursor-pointer"
+                  />
+                  <span>{lang === "bn" ? opt.bn : opt.en}</span>
+                </label>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </div>
+  );
 
   const grid = (
     <div className="w-full pb-20">
@@ -662,233 +889,337 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
 
       {/* ── 3. Merchandising Filter & Sort Toolbar ── */}
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 mb-8">
-        <div className="flex flex-wrap items-center justify-between py-4 border-y border-border/40 gap-4 sticky top-[64px] bg-background/95 backdrop-blur-xs z-20">
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setFilterOpen(true)}
-              className="flex items-center gap-2 text-[12px] font-medium uppercase tracking-widest text-foreground hover:opacity-70 transition-opacity group cursor-pointer"
-            >
-              <SlidersHorizontal
-                className="size-[16px] text-foreground/60 group-hover:text-foreground"
-                strokeWidth={1.5}
-              />
-              {t("Filter", "ফিল্টার")}
-              {activeFiltersCount > 0 && (
-                <span className="ml-1 inline-flex size-5 items-center justify-center rounded-full bg-foreground text-[10px] font-bold text-background">
-                  {activeFiltersCount}
-                </span>
-              )}
-            </button>
-            {activeFiltersCount > 0 && (
+        <div className="py-4 border-y border-border/40 sticky top-[64px] bg-background/95 backdrop-blur-xs z-20">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              {/* Mobile filter trigger */}
               <button
-                onClick={() => {
-                  setFilterAvailability("all");
-                  setFilterPrice("all");
-                  setSelectedSubcategories([]);
-                }}
-                className="text-[11px] font-medium text-muted-foreground hover:text-foreground underline underline-offset-2 ml-2 cursor-pointer"
+                onClick={() => setMobileFilterOpen(true)}
+                className="lg:hidden flex items-center gap-2 text-[12px] font-medium uppercase tracking-widest text-foreground hover:opacity-70 transition-opacity group cursor-pointer"
               >
-                {t("Clear filters", "ফিল্টার রিসেট")}
+                <SlidersHorizontal
+                  className="size-[16px] text-foreground/60 group-hover:text-foreground"
+                  strokeWidth={1.5}
+                />
+                {t("Filter", "ফিল্টার")}
+                {activeFiltersCount > 0 && (
+                  <span className="ml-1 inline-flex size-5 items-center justify-center rounded-full bg-foreground text-[10px] font-bold text-background">
+                    {activeFiltersCount}
+                  </span>
+                )}
               </button>
-            )}
-          </div>
-          <div className="text-[11px] font-semibold uppercase tracking-widest text-foreground/50 hidden md:block">
-            {sortedProducts.length}{" "}
-            {sortedProducts.length === 1
-              ? t("Product", "পণ্য")
-              : t("Products", "পণ্যসমূহ")}
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="relative inline-flex items-center">
-              <span className="text-[12px] text-foreground/50 mr-2 uppercase tracking-widest">
-                {t("Sort:", "বাছাই:")}
-              </span>
-              <select
-                aria-label={t("Sort collection", "কালেকশন সাজান")}
-                value={sortBy}
-                onChange={(e) =>
-                  setSortBy(
-                    e.target.value as
-                      "featured" | "price_asc" | "price_desc" | "title",
-                  )
-                }
-                className="appearance-none bg-transparent pr-5 py-1 text-[12px] font-medium uppercase tracking-widest text-foreground hover:opacity-70 transition-opacity cursor-pointer focus:outline-hidden"
-              >
-                <option
-                  value="featured"
-                  className="bg-background text-foreground"
+
+              <div className="text-[11px] font-semibold uppercase tracking-widest text-foreground/60">
+                {sortedProducts.length}{" "}
+                {sortedProducts.length === 1
+                  ? t("Product", "পণ্য")
+                  : t("Products", "পণ্যসমূহ")}
+              </div>
+
+              {activeFiltersCount > 0 && (
+                <button
+                  onClick={clearAllFilters}
+                  className="hidden sm:inline-block text-[11px] font-medium text-muted-foreground hover:text-foreground underline underline-offset-2 ml-2 cursor-pointer"
                 >
-                  {t("Featured", "সেরা")}
-                </option>
-                <option
-                  value="price_asc"
-                  className="bg-background text-foreground"
+                  {t("Clear filters", "ফিল্টার রিসেট")}
+                </button>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <div className="relative inline-flex items-center">
+                <span className="text-[12px] text-foreground/50 mr-2 uppercase tracking-widest">
+                  {t("Sort:", "বাছাই:")}
+                </span>
+                <select
+                  aria-label={t("Sort collection", "কালেকশন সাজান")}
+                  value={sortBy}
+                  onChange={(e) =>
+                    setSortBy(
+                      e.target.value as
+                        "featured" | "price_asc" | "price_desc" | "title",
+                    )
+                  }
+                  className="appearance-none bg-transparent pr-5 py-1 text-[12px] font-medium uppercase tracking-widest text-foreground hover:opacity-70 transition-opacity cursor-pointer focus:outline-hidden"
                 >
-                  {t("Price: Low to High", "মূল্য: কম থেকে বেশি")}
-                </option>
-                <option
-                  value="price_desc"
-                  className="bg-background text-foreground"
-                >
-                  {t("Price: High to Low", "মূল্য: বেশি থেকে কম")}
-                </option>
-                <option value="title" className="bg-background text-foreground">
-                  {t("Name: A to Z", "নাম: ক থেকে জ্ঞ")}
-                </option>
-              </select>
-              <ChevronDown
-                className="pointer-events-none absolute right-0 size-[14px] text-foreground/60"
-                strokeWidth={1.5}
-              />
+                  <option
+                    value="featured"
+                    className="bg-background text-foreground"
+                  >
+                    {t("Featured", "সেরা")}
+                  </option>
+                  <option
+                    value="price_asc"
+                    className="bg-background text-foreground"
+                  >
+                    {t("Price: Low to High", "মূল্য: কম থেকে বেশি")}
+                  </option>
+                  <option
+                    value="price_desc"
+                    className="bg-background text-foreground"
+                  >
+                    {t("Price: High to Low", "মূল্য: বেশি থেকে কম")}
+                  </option>
+                  <option
+                    value="title"
+                    className="bg-background text-foreground"
+                  >
+                    {t("Name: A to Z", "নাম: ক থেকে জ্ঞ")}
+                  </option>
+                </select>
+                <ChevronDown
+                  className="pointer-events-none absolute right-0 size-[14px] text-foreground/60"
+                  strokeWidth={1.5}
+                />
+              </div>
             </div>
           </div>
+
+          {/* Active filter chips */}
+          {activeFiltersCount > 0 && (
+            <div className="flex flex-wrap items-center gap-2 pt-3 mt-3 border-t border-border/20">
+              {selectedTags.map((tag) => {
+                const facet = availableFacets.find((f) => f.tag === tag);
+                const label =
+                  lang === "bn" && facet?.label_bn
+                    ? facet.label_bn
+                    : (facet?.label ?? tag);
+                return (
+                  <span
+                    key={tag}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-muted/60 text-foreground border border-border/40"
+                  >
+                    {label}
+                    <button
+                      onClick={() =>
+                        setSelectedTags(selectedTags.filter((t) => t !== tag))
+                      }
+                      className="hover:opacity-70 p-0.5 cursor-pointer"
+                      aria-label={`Remove ${label} filter`}
+                    >
+                      <X className="size-3" />
+                    </button>
+                  </span>
+                );
+              })}
+
+              {filterPrice !== "all" && (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-muted/60 text-foreground border border-border/40">
+                  {lang === "bn"
+                    ? PRICE_OPTIONS.find((o) => o.key === filterPrice)?.bn
+                    : PRICE_OPTIONS.find((o) => o.key === filterPrice)?.en}
+                  <button
+                    onClick={() => setFilterPrice("all")}
+                    className="hover:opacity-70 p-0.5 cursor-pointer"
+                    aria-label="Remove price filter"
+                  >
+                    <X className="size-3" />
+                  </button>
+                </span>
+              )}
+
+              {filterAvailability !== "all" && (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-muted/60 text-foreground border border-border/40">
+                  {lang === "bn"
+                    ? AVAILABILITY_OPTIONS.find(
+                        (o) => o.key === filterAvailability,
+                      )?.bn
+                    : AVAILABILITY_OPTIONS.find(
+                        (o) => o.key === filterAvailability,
+                      )?.en}
+                  <button
+                    onClick={() => setFilterAvailability("all")}
+                    className="hover:opacity-70 p-0.5 cursor-pointer"
+                    aria-label="Remove availability filter"
+                  >
+                    <X className="size-3" />
+                  </button>
+                </span>
+              )}
+
+              <button
+                onClick={clearAllFilters}
+                className="text-[11px] font-medium text-muted-foreground hover:text-foreground underline underline-offset-2 ml-1 cursor-pointer"
+              >
+                {t("Clear all", "সব মুছুন")}
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* ── 4. Merchandising Product Grid ── */}
+      {/* ── 4. Merchandising Product Grid with Persistent Desktop Sidebar ── */}
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
-        {sortedProducts.length === 0 ? (
-          <div className="py-20 text-center space-y-4">
-            <p className="text-muted-foreground text-[15px]">
-              {products.length === 0
-                ? t(
-                    "No products in this collection yet.",
-                    "এই কালেকশনে এখনো কোনো পণ্য নেই।",
-                  )
-                : t(
-                    "No products match your selected filters.",
-                    "বাছাইকৃত ফিল্টারে কোনো পণ্য পাওয়া যায়নি।",
-                  )}
-            </p>
-            {activeFiltersCount > 0 && (
-              <button
-                onClick={() => {
-                  setFilterAvailability("all");
-                  setFilterPrice("all");
-                  setSelectedSubcategories([]);
-                }}
-                className="px-6 py-2.5 text-[11px] font-semibold uppercase tracking-widest text-background bg-foreground hover:bg-foreground/90 transition-colors cursor-pointer"
-              >
-                {t("Clear all filters", "সব ফিল্টার মুছুন")}
-              </button>
+        <div className="lg:flex lg:items-start lg:gap-10">
+          {/* Desktop persistent filter sidebar */}
+          <aside
+            aria-label={t("Filter products", "পণ্য ফিল্টার")}
+            className="hidden lg:block w-64 shrink-0 space-y-6 pr-6 border-r border-border/30 sticky top-[130px]"
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-border/40">
+              <h2 className="text-[12px] font-semibold uppercase tracking-widest text-foreground">
+                {t("Filters", "ফিল্টার")}
+                {activeFiltersCount > 0 && ` (${activeFiltersCount})`}
+              </h2>
+              {activeFiltersCount > 0 && (
+                <button
+                  onClick={clearAllFilters}
+                  className="text-[11px] font-medium text-muted-foreground hover:text-foreground underline underline-offset-2 cursor-pointer"
+                >
+                  {t("Clear all", "সব মুছুন")}
+                </button>
+              )}
+            </div>
+
+            {renderFilterControls("desktop")}
+          </aside>
+
+          {/* Product grid / list area */}
+          <div className="flex-1 min-w-0">
+            {sortedProducts.length === 0 ? (
+              <div className="py-20 text-center space-y-4">
+                <p className="text-muted-foreground text-[15px]">
+                  {products.length === 0
+                    ? t(
+                        "No products in this collection yet.",
+                        "এই কালেকশনে এখনো কোনো পণ্য নেই।",
+                      )
+                    : t(
+                        "No products match your selected filters.",
+                        "বাছাইকৃত ফিল্টারে কোনো পণ্য পাওয়া যায়নি।",
+                      )}
+                </p>
+                {activeFiltersCount > 0 && (
+                  <button
+                    onClick={clearAllFilters}
+                    className="px-6 py-2.5 text-[11px] font-semibold uppercase tracking-widest text-background bg-foreground hover:bg-foreground/90 transition-colors cursor-pointer"
+                  >
+                    {t("Clear all filters", "সব ফিল্টার মুছুন")}
+                  </button>
+                )}
+              </div>
+            ) : (
+              <>
+                <ul className="grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 sm:gap-x-6 sm:gap-y-12">
+                  {displayedProducts.map((p) => {
+                    const variants = p.product_variants ?? [];
+                    const min = variants.length
+                      ? Math.min(
+                          ...variants.map((v) =>
+                            Number(v.price_amount_minor_int),
+                          ),
+                        )
+                      : 0;
+                    const inStock = variants.some((v) => v.stock_quantity > 0);
+
+                    // NEW / BESTSELLER assigned from product data (tags/attributes), never by collection slug
+                    const pTags = ((p as { tags?: string[] }).tags ?? []).map(
+                      (t) => t.toLowerCase(),
+                    );
+                    let badge: string | null = null;
+                    if (
+                      pTags.includes("new") ||
+                      pTags.includes("new-in") ||
+                      pTags.includes("new-arrival")
+                    ) {
+                      badge = "NEW";
+                    } else if (
+                      pTags.includes("bestseller") ||
+                      pTags.includes("best-seller") ||
+                      pTags.includes("trending")
+                    ) {
+                      badge = "BESTSELLER";
+                    }
+
+                    const cardBody = (
+                      <>
+                        <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#f4f4f4] group-hover:bg-[#eaeaea] transition-colors">
+                          <StoreImage
+                            image={p.image ?? null}
+                            fallbackSrc={p.image_url}
+                            alt={p.title}
+                            seed={p.id}
+                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                            className="size-full object-cover object-top transition-transform duration-[1.5s] group-hover:scale-[1.03]"
+                          />
+                          {badge && (
+                            <div className="absolute top-3 left-3 bg-background/90 backdrop-blur-sm px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-foreground shadow-sm">
+                              {badge}
+                            </div>
+                          )}
+                          {!inStock && (
+                            <div className="absolute bottom-3 left-3 bg-foreground/90 backdrop-blur-sm px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-background shadow-sm">
+                              {t("Out of stock", "স্টক নেই")}
+                            </div>
+                          )}
+                        </div>
+                        <div className="mt-4 space-y-1">
+                          <p className="text-[13px] sm:text-[14px] font-medium leading-snug text-foreground tracking-wide line-clamp-2 font-serif">
+                            {p.title}
+                          </p>
+                          <p className="money text-[13px] font-medium tracking-wide text-foreground/80 font-sans mt-0.5">
+                            {fmtMinor(min, merchant.currency_code)}
+                          </p>
+                        </div>
+                      </>
+                    );
+
+                    return (
+                      <li key={p.id}>
+                        {custom ? (
+                          <Link
+                            to="/p/$productSlug"
+                            params={{ productSlug: p.slug }}
+                            className="group block"
+                          >
+                            {cardBody}
+                          </Link>
+                        ) : (
+                          <Link
+                            to="/store/$slug/p/$productSlug"
+                            params={{ slug, productSlug: p.slug }}
+                            className="group block"
+                          >
+                            {cardBody}
+                          </Link>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+
+                {sortedProducts.length > displayedProducts.length && (
+                  <div className="mt-16 text-center">
+                    <button
+                      onClick={() => setVisibleCount((prev) => prev + 12)}
+                      className="px-10 py-3.5 text-[12px] font-semibold uppercase tracking-[0.1em] text-foreground border border-foreground/20 hover:border-foreground/40 transition-colors bg-transparent cursor-pointer"
+                    >
+                      {t("Load More", "আরো দেখুন")}
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </div>
-        ) : (
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-12 sm:grid-cols-3 sm:gap-x-6 sm:gap-y-16 lg:grid-cols-4 lg:gap-x-8">
-            {displayedProducts.map((p) => {
-              const variants = p.product_variants ?? [];
-              const min = variants.length
-                ? Math.min(
-                    ...variants.map((v) => Number(v.price_amount_minor_int)),
-                  )
-                : 0;
-              const inStock = variants.some((v) => v.stock_quantity > 0);
-
-              // NEW / BESTSELLER assigned from product data (tags/attributes), never by collection slug
-              const pTags = ((p as { tags?: string[] }).tags ?? []).map((t) =>
-                t.toLowerCase(),
-              );
-              let badge: string | null = null;
-              if (
-                pTags.includes("new") ||
-                pTags.includes("new-in") ||
-                pTags.includes("new-arrival")
-              ) {
-                badge = "NEW";
-              } else if (
-                pTags.includes("bestseller") ||
-                pTags.includes("best-seller") ||
-                pTags.includes("trending")
-              ) {
-                badge = "BESTSELLER";
-              }
-
-              const cardBody = (
-                <>
-                  <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#f4f4f4] group-hover:bg-[#eaeaea] transition-colors">
-                    <StoreImage
-                      image={p.image ?? null}
-                      fallbackSrc={p.image_url}
-                      alt={p.title}
-                      seed={p.id}
-                      sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                      className="size-full object-cover object-top transition-transform duration-[1.5s] group-hover:scale-[1.03]"
-                    />
-                    {badge && (
-                      <div className="absolute top-3 left-3 bg-background/90 backdrop-blur-sm px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-foreground shadow-sm">
-                        {badge}
-                      </div>
-                    )}
-                    {!inStock && (
-                      <div className="absolute bottom-3 left-3 bg-foreground/90 backdrop-blur-sm px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-background shadow-sm">
-                        {t("Out of stock", "স্টক নেই")}
-                      </div>
-                    )}
-                  </div>
-                  <div className="mt-4 space-y-1">
-                    <p className="text-[13px] sm:text-[14px] font-medium leading-snug text-foreground tracking-wide line-clamp-2 font-serif">
-                      {p.title}
-                    </p>
-                    <p className="money text-[13px] font-medium tracking-wide text-foreground/80 font-sans mt-0.5">
-                      {fmtMinor(min, merchant.currency_code)}
-                    </p>
-                  </div>
-                </>
-              );
-
-              return (
-                <li key={p.id}>
-                  {custom ? (
-                    <Link
-                      to="/p/$productSlug"
-                      params={{ productSlug: p.slug }}
-                      className="group block"
-                    >
-                      {cardBody}
-                    </Link>
-                  ) : (
-                    <Link
-                      to="/store/$slug/p/$productSlug"
-                      params={{ slug, productSlug: p.slug }}
-                      className="group block"
-                    >
-                      {cardBody}
-                    </Link>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        )}
+        </div>
       </div>
 
-      {sortedProducts.length > displayedProducts.length && (
-        <div className="mt-16 text-center">
-          <button
-            onClick={() => setVisibleCount((prev) => prev + 12)}
-            className="px-10 py-3.5 text-[12px] font-semibold uppercase tracking-[0.1em] text-foreground border border-foreground/20 hover:border-foreground/40 transition-colors bg-transparent cursor-pointer"
-          >
-            {t("Load More", "আরো দেখুন")}
-          </button>
-        </div>
-      )}
-
-      {/* ── 5. Slide-Over Filter Drawer ── */}
-      {filterOpen && (
-        <>
+      {/* ── 5. Compact Mobile Filter Sheet (Immediate updates, no Apply buffering) ── */}
+      {mobileFilterOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
           <div
-            className="fixed inset-0 bg-black/40 z-50 backdrop-blur-sm transition-opacity"
-            onClick={() => setFilterOpen(false)}
+            className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
+            onClick={() => setMobileFilterOpen(false)}
             aria-hidden="true"
           />
-          <div className="fixed inset-y-0 left-0 w-full max-w-[360px] bg-background z-50 shadow-2xl flex flex-col transform transition-transform duration-300">
-            <div className="flex items-center justify-between p-6 border-b border-border/40">
+          <div className="fixed inset-y-0 right-0 w-full max-w-[340px] bg-background z-50 shadow-2xl flex flex-col">
+            <div className="flex items-center justify-between p-5 border-b border-border/40">
               <h2 className="text-[13px] font-semibold uppercase tracking-[0.1em] text-foreground">
                 {t("Filters", "ফিল্টার")}
                 {activeFiltersCount > 0 && ` (${activeFiltersCount})`}
               </h2>
               <button
-                onClick={() => setFilterOpen(false)}
+                onClick={() => setMobileFilterOpen(false)}
                 className="text-foreground/60 hover:text-foreground transition-colors p-2 -mr-2 cursor-pointer"
                 aria-label="Close filters"
               >
@@ -896,158 +1227,30 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 space-y-8">
-              {availableCategoryFilters.length > 0 && (
-                <div className="space-y-4">
-                  <h3 className="text-[11px] font-semibold uppercase tracking-widest text-foreground/50">
-                    {t("Category", "ক্যাটাগরি")}
-                  </h3>
-                  <ul className="space-y-3">
-                    {availableCategoryFilters.map((f) => {
-                      const isChecked = selectedSubcategories.includes(f.slug);
-                      const fLabel =
-                        lang === "bn" && f.label_bn ? f.label_bn : f.label;
-                      return (
-                        <li key={f.slug} className="flex items-center gap-3">
-                          <input
-                            type="checkbox"
-                            id={`filter-cat-${f.slug}`}
-                            checked={isChecked}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                setSelectedSubcategories([
-                                  ...selectedSubcategories,
-                                  f.slug,
-                                ]);
-                              } else {
-                                setSelectedSubcategories(
-                                  selectedSubcategories.filter(
-                                    (s) => s !== f.slug,
-                                  ),
-                                );
-                              }
-                            }}
-                            className="size-4 rounded-sm border-foreground/30 accent-foreground cursor-pointer"
-                          />
-                          <label
-                            htmlFor={`filter-cat-${f.slug}`}
-                            className="text-[14px] text-foreground/80 cursor-pointer"
-                          >
-                            {fLabel}
-                          </label>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              )}
-
-              <div className="space-y-4">
-                <h3 className="text-[11px] font-semibold uppercase tracking-widest text-foreground/50">
-                  {t("Price Range", "মূল্য সীমা")}
-                </h3>
-                <ul className="space-y-3">
-                  {[
-                    { key: "all", en: "All Prices", bn: "সকল মূল্য" },
-                    {
-                      key: "under_5000",
-                      en: "Under ৳5,000",
-                      bn: "৳৫,০০০ এর নিচে",
-                    },
-                    {
-                      key: "5000_10000",
-                      en: "৳5,000 - ৳10,000",
-                      bn: "৳৫,০০০ - ৳১০,০০০",
-                    },
-                    {
-                      key: "above_10000",
-                      en: "Above ৳10,000",
-                      bn: "৳১০,০০০ এর উপরে",
-                    },
-                  ].map((pOpt) => (
-                    <li key={pOpt.key} className="flex items-center gap-3">
-                      <input
-                        type="radio"
-                        id={`filter-price-${pOpt.key}`}
-                        name="filter-price"
-                        checked={filterPrice === pOpt.key}
-                        onChange={() =>
-                          setFilterPrice(
-                            pOpt.key as
-                              | "all"
-                              | "under_5000"
-                              | "5000_10000"
-                              | "above_10000",
-                          )
-                        }
-                        className="size-4 accent-foreground cursor-pointer"
-                      />
-                      <label
-                        htmlFor={`filter-price-${pOpt.key}`}
-                        className="text-[14px] text-foreground/80 cursor-pointer"
-                      >
-                        {lang === "bn" ? pOpt.bn : pOpt.en}
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="text-[11px] font-semibold uppercase tracking-widest text-foreground/50">
-                  {t("Availability", "উপলব্ধতা")}
-                </h3>
-                <ul className="space-y-3">
-                  {[
-                    { key: "all", en: "All Products", bn: "সকল পণ্য" },
-                    { key: "in_stock", en: "In Stock", bn: "স্টকে আছে" },
-                    { key: "out_of_stock", en: "Out of Stock", bn: "স্টক নেই" },
-                  ].map((aOpt) => (
-                    <li key={aOpt.key} className="flex items-center gap-3">
-                      <input
-                        type="radio"
-                        id={`filter-avail-${aOpt.key}`}
-                        name="filter-avail"
-                        checked={filterAvailability === aOpt.key}
-                        onChange={() =>
-                          setFilterAvailability(
-                            aOpt.key as "all" | "in_stock" | "out_of_stock",
-                          )
-                        }
-                        className="size-4 accent-foreground cursor-pointer"
-                      />
-                      <label
-                        htmlFor={`filter-avail-${aOpt.key}`}
-                        className="text-[14px] text-foreground/80 cursor-pointer"
-                      >
-                        {lang === "bn" ? aOpt.bn : aOpt.en}
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            <div className="flex-1 overflow-y-auto p-5 space-y-6">
+              {renderFilterControls("mobile")}
             </div>
 
-            <div className="p-6 border-t border-border/40 grid grid-cols-2 gap-4 bg-muted/10">
+            <div className="p-4 border-t border-border/40 grid grid-cols-2 gap-3 bg-muted/10">
               <button
-                onClick={() => {
-                  setFilterAvailability("all");
-                  setFilterPrice("all");
-                  setSelectedSubcategories([]);
-                }}
-                className="w-full py-3.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-foreground border border-foreground/20 hover:border-foreground/40 transition-colors bg-transparent cursor-pointer"
+                onClick={clearAllFilters}
+                disabled={activeFiltersCount === 0}
+                className="w-full py-3 text-[11px] font-semibold uppercase tracking-[0.1em] text-foreground border border-foreground/20 hover:border-foreground/40 disabled:opacity-40 transition-colors bg-transparent cursor-pointer"
               >
                 {t("Clear All", "মুছে ফেলুন")}
               </button>
               <button
-                onClick={() => setFilterOpen(false)}
-                className="w-full py-3.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-background bg-foreground hover:bg-foreground/90 transition-colors cursor-pointer"
+                onClick={() => setMobileFilterOpen(false)}
+                className="w-full py-3 text-[11px] font-semibold uppercase tracking-[0.1em] text-background bg-foreground hover:bg-foreground/90 transition-colors cursor-pointer"
               >
-                {t("Apply", "প্রয়োগ করুন")}
+                {t(
+                  `View ${sortedProducts.length}`,
+                  `${sortedProducts.length}টি পণ্য দেখুন`,
+                )}
               </button>
             </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

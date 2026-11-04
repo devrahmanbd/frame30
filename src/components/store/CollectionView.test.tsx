@@ -196,3 +196,168 @@ describe("CollectionView header-fallback de-theming (HEADER DE-THEMING lane)", (
   });
 });
 
+import {
+  extractWeaveFacets,
+  filterCollectionProducts,
+  sortCollectionProducts,
+  type CollectionProduct,
+} from "./CollectionView";
+
+describe("CollectionView Faceting & Filtering", () => {
+  const sampleProducts: CollectionProduct[] = [
+    {
+      id: "p-1",
+      title: "Dhakai Jamdani Silk Saree",
+      slug: "dhakai-jamdani-silk-saree",
+      tags: ["jamdani", "silk", "saree", "heritage"],
+      product_variants: [
+        {
+          id: "v-1",
+          price_amount_minor_int: 1850000,
+          stock_quantity: 5,
+        },
+      ],
+    } as unknown as CollectionProduct,
+    {
+      id: "p-2",
+      title: "Hand-Painted Silk Festive Saree",
+      slug: "hand-painted-silk-festive-saree",
+      tags: ["silk", "saree", "handpainted", "festive", "womens"],
+      product_variants: [
+        {
+          id: "v-2",
+          price_amount_minor_int: 1250000,
+          stock_quantity: 0,
+        },
+      ],
+    } as unknown as CollectionProduct,
+    {
+      id: "p-3",
+      title: "Tangail Taant Cotton Saree",
+      slug: "tangail-taant-cotton-saree",
+      tags: ["saree", "handloom", "cotton", "tangail"],
+      product_variants: [
+        {
+          id: "v-3",
+          price_amount_minor_int: 385000,
+          stock_quantity: 8,
+        },
+      ],
+    } as unknown as CollectionProduct,
+  ];
+
+  it("extracts genuine weave facets, excluding redundant collection tags and care instructions", () => {
+    const facets = extractWeaveFacets(
+      [
+        ...sampleProducts,
+        {
+          tags: ["care:dry-clean-only", "sarees", "silk"],
+        },
+      ],
+      "sarees",
+    );
+
+    // "saree", "sarees", and "care:dry-clean-only" must be excluded
+    const tags = facets.map((f) => f.tag);
+    expect(tags).not.toContain("saree");
+    expect(tags).not.toContain("sarees");
+    expect(tags).not.toContain("care:dry-clean-only");
+
+    // silk appears twice in sampleProducts plus 1 extra => count = 3
+    const silkFacet = facets.find((f) => f.tag === "silk");
+    expect(silkFacet).toBeDefined();
+    expect(silkFacet?.count).toBe(3);
+    expect(silkFacet?.label).toBe("Pure Silk");
+    expect(silkFacet?.label_bn).toBe("সিল্ক");
+  });
+
+  it("filters products by exact tag membership, not title substring matching", () => {
+    // If we filter by 'tangail', only p-3 matches
+    const tangailFiltered = filterCollectionProducts(sampleProducts, {
+      availability: "all",
+      price: "all",
+      tags: ["tangail"],
+    });
+    expect(tangailFiltered.map((p) => p.id)).toEqual(["p-3"]);
+
+    // Title containing word but tag not present should NOT match
+    const fakeProduct = {
+      id: "fake",
+      title: "Silk Embroidered Dupatta",
+      slug: "silk-embroidered-dupatta",
+      tags: ["dupatta", "embroidered"],
+      product_variants: [{ price_amount_minor_int: 500000, stock_quantity: 1 }],
+    } as unknown as CollectionProduct;
+
+    const filtered = filterCollectionProducts([fakeProduct], {
+      availability: "all",
+      price: "all",
+      tags: ["silk"],
+    });
+    expect(filtered).toHaveLength(0);
+  });
+
+  it("filters products by BDT price brackets", () => {
+    // under_5000 (< 500,000 minor)
+    const under5k = filterCollectionProducts(sampleProducts, {
+      availability: "all",
+      price: "under_5000",
+      tags: [],
+    });
+    expect(under5k.map((p) => p.id)).toEqual(["p-3"]);
+
+    // above_10000 (> 1,000,000 minor)
+    const above10k = filterCollectionProducts(sampleProducts, {
+      availability: "all",
+      price: "above_10000",
+      tags: [],
+    });
+    expect(above10k.map((p) => p.id)).toEqual(["p-1", "p-2"]);
+  });
+
+  it("filters products by stock availability", () => {
+    const inStock = filterCollectionProducts(sampleProducts, {
+      availability: "in_stock",
+      price: "all",
+      tags: [],
+    });
+    expect(inStock.map((p) => p.id)).toEqual(["p-1", "p-3"]);
+
+    const outOfStock = filterCollectionProducts(sampleProducts, {
+      availability: "out_of_stock",
+      price: "all",
+      tags: [],
+    });
+    expect(outOfStock.map((p) => p.id)).toEqual(["p-2"]);
+  });
+
+  it("sorts products by price ascending, descending, and title", () => {
+    const asc = sortCollectionProducts(sampleProducts, "price_asc");
+    expect(asc.map((p) => p.id)).toEqual(["p-3", "p-2", "p-1"]);
+
+    const desc = sortCollectionProducts(sampleProducts, "price_desc");
+    expect(desc.map((p) => p.id)).toEqual(["p-1", "p-2", "p-3"]);
+  });
+
+  it("renders desktop persistent filter sidebar markup and visible result count", () => {
+    const testPayload = payload({
+      themeKey: "songoskriti",
+      collectionSlug: "sarees",
+      collectionName: "Sarees",
+    });
+    testPayload.products = sampleProducts;
+
+    const html = renderToStaticMarkup(
+      <QueryClientProvider client={new QueryClient()}>
+        <LanguageProvider initialLang="en">
+          <CollectionView data={testPayload} />
+        </LanguageProvider>
+      </QueryClientProvider>,
+    );
+
+    expect(html).toContain('aria-label="Filter products"');
+    expect(html).toContain("Pure Silk");
+    expect(html).toContain("Dhakai Jamdani");
+    expect(html).toContain("3 Products");
+  });
+});

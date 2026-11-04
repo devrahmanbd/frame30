@@ -184,6 +184,7 @@ function StoreBlogArticlePage() {
         name={merchantName}
         menus={data.chrome?.menus ?? []}
         themeKey={data.chrome?.themeKey ?? null}
+        showAnnouncement={false}
       />
       <ThemeChrome
         template="blog"

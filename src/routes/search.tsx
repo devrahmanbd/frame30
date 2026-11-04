@@ -540,6 +540,7 @@ function SearchPage() {
               name={chrome?.merchant.name ?? slug}
               menus={chrome?.menus}
               themeKey={chrome?.themeKey ?? null}
+              showAnnouncement={false}
             />
             {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
             {/* <SupportWidget slug={slug} /> */}

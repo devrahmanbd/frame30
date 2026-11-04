@@ -506,6 +506,7 @@ function AccountPage() {
               slug={slug}
               name={chrome?.merchant.name ?? store?.name ?? slug}
               themeKey={chrome?.themeKey ?? null}
+              showAnnouncement={false}
             />
           }
           containerClassName="mx-auto max-w-[var(--fq-container,1280px)] px-4 py-12 sm:px-6 lg:px-8"

@@ -263,7 +263,7 @@ export function AddToCart({
             </span>
           </div>
         )}
-        {(settings?.cod_enabled ?? true) && (
+        {settings?.cod_enabled === true && (
           <div className="flex gap-2">
             <span className="font-semibold text-foreground">Payment:</span>
             <span className="text-muted-foreground">

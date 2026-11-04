@@ -95,6 +95,7 @@ function StoreBlogIndexPage() {
         name={merchantName}
         menus={data.chrome?.menus ?? []}
         themeKey={data.chrome?.themeKey ?? null}
+        showAnnouncement={false}
       />
       {/* The cards' category chips are STORE links here: inside the
           merchant's storefront they point at

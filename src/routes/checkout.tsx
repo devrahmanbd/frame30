@@ -144,6 +144,7 @@ function CheckoutPage() {
             slug={slug}
             name={merchant.name}
             themeKey={themeKey ?? null}
+            showAnnouncement={false}
           />
         }
         containerClassName="mx-auto w-full max-w-[var(--fq-container,1280px)] px-4 pb-24 sm:px-6 lg:px-8"
@@ -710,11 +711,7 @@ function CheckoutBody({
     // BOTH — a shopper must always see the rail they are paying with and
     // the total they are paying.
     if (!showSummary) {
-      return (
-        <div className="w-full py-4">
-          {form}
-        </div>
-      );
+      return <div className="w-full py-4">{form}</div>;
     }
     return (
       <div className="grid w-full gap-8 py-4 lg:grid-cols-[1.2fr_1fr]">

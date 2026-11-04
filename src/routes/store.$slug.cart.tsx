@@ -92,6 +92,7 @@ function CartPage() {
               name={merchant.name}
               menus={menus}
               themeKey={themeKey ?? null}
+              showAnnouncement={false}
             />
             {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
             {/* <SupportWidget slug={slug} /> */}

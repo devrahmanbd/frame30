@@ -347,8 +347,11 @@ function StoreArticlePage({
         name={merchantName}
         menus={data.chrome?.menus ?? []}
         themeKey={data.chrome?.themeKey ?? null}
+        showAnnouncement={false}
       />
-      <BlogFeedProvider value={relatedFeed(data.related, article.slug, "/blog")}>
+      <BlogFeedProvider
+        value={relatedFeed(data.related, article.slug, "/blog")}
+      >
         <ThemeChrome
           template="blog"
           ast={data.chrome?.ast ?? null}

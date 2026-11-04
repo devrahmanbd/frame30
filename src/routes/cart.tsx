@@ -96,6 +96,7 @@ function CartPage() {
               name={merchant.name}
               menus={data.menus}
               themeKey={data.themeKey ?? null}
+              showAnnouncement={false}
             />
           </>
         }

@@ -272,6 +272,7 @@ function StoreBlogIndexPage({
         name={merchantName}
         menus={data.chrome?.menus ?? []}
         themeKey={data.chrome?.themeKey ?? null}
+        showAnnouncement={false}
       />
       <BlogArchiveTheme
         feed={{
