@@ -459,12 +459,12 @@ export function SongoskritiMobileDrawer({
       <div className="mt-8 pt-6 border-t border-[var(--theme-border)] space-y-4 text-[12px] text-[var(--theme-ink)]/70">
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50 mb-1">
-            {locale === "bn" ? "ফ্ল্যাগশিপ আউটলেট" : "Flagship Stores"}
+            {locale === "bn" ? "কাস্টমার কনসিয়ার্জ" : "Customer Concierge"}
           </p>
           <p className="font-serif text-[13px] text-[var(--theme-ink)]">
             {locale === "bn"
-              ? "উত্তরা ৩, গুলশান ২, চট্টগ্রাম জিইসি"
-              : "Uttara Sector 3, Gulshan 2, Chittagong GEC"}
+              ? "সারাদেশে ডোরস্টেপ ডেলিভারি ও ৭ দিনের এক্সচেঞ্জ"
+              : "Nationwide Doorstep Delivery & 7-Day Exchange"}
           </p>
         </div>
         <div>
@@ -472,10 +472,10 @@ export function SongoskritiMobileDrawer({
             {locale === "bn" ? "কাস্টমার সার্ভিস" : "Customer Support"}
           </p>
           <a
-            href="tel:+8801711000000"
+            href="mailto:support@flamelancer.com"
             className="inline-flex items-center gap-1.5 text-[var(--theme-accent,#C05A3E)] font-medium"
           >
-            <span>+880 1711-000000</span>
+            <span>support@flamelancer.com</span>
             <span className="text-[10px] text-[var(--theme-ink)]/50">
               (10am–8pm)
             </span>

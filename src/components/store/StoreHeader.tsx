@@ -833,12 +833,12 @@ export function HeaderMobileDrawer({
         <div className="px-4 pb-20 pt-6 border-t border-[var(--theme-border)] space-y-4 text-[12px] text-[var(--theme-ink)]/70">
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50 mb-1">
-              {t("Flagship Stores", "ফ্ল্যাগশিপ আউটলেট")}
+              {t("Customer Concierge", "কাস্টমার কনসিয়ার্জ")}
             </p>
             <p className="font-serif text-[13px] text-[var(--theme-ink)]">
               {t(
-                "Uttara Sector 3, Gulshan 2, Chittagong GEC",
-                "উত্তরা ৩, গুলশান ২, চট্টগ্রাম জিইসি",
+                "Nationwide Doorstep Delivery & 7-Day Exchange",
+                "সারাদেশে ডোরস্টেপ ডেলিভারি ও ৭ দিনের এক্সচেঞ্জ",
               )}
             </p>
           </div>
@@ -847,10 +847,10 @@ export function HeaderMobileDrawer({
               {t("Customer Support", "কাস্টমার সাপোর্ট")}
             </p>
             <a
-              href="tel:+8801711000000"
+              href="mailto:support@flamelancer.com"
               className="inline-flex items-center gap-1.5 text-[var(--theme-accent)] font-medium"
             >
-              <span>+880 1711-000000</span>
+              <span>support@flamelancer.com</span>
               <span className="text-[10px] text-[var(--theme-ink)]/50">
                 (10am–8pm)
               </span>
