@@ -1088,5 +1088,56 @@ ops/deploy-from-git.sh frame30 root        # origin/frame30 = f7661783
 - Remote deployment: `ops/deploy-from-git.sh frame30` completed with exit code 0 (`bundle marker: 661ffef5fa6ee004bb533661c711d3374742380a`).
 - Live curl & DevTools inspection: `data-header-shell="songoskriti"` confirmed, single `<h1>` confirmed, zero AI strings confirmed, screenshots verified.
 
+---
 
+## 10. Wave 5 — Songoskriti Design Quality Recovery & Slop Eradication (2026-11-04)
 
+**Deployed Commit:** [`f94a6781`](https://github.com/devrahmanbd/frame30/commit/f94a67812274dd6e7e029a7bf5fd881b5a68df9c) on `frame30`  
+**Live Site:** `https://flamelancer.com` (Flame Fashion BD, `b47532e5-9649-4ebd-93a9-06fa2917c00e`)  
+**Production Server:** `88.99.250.99` running `framique.service` (`f94a67812274dd6e7e029a7bf5fd881b5a68df9c`)
+
+### 10.1 Root Cause of Previous Downgrade
+1. **Hero Vertical Hanging Bug:**
+   - In commit `62113f22`, the top decorative metadata bar was removed from `HeroSkinSlide` in `src/components/builder/heritage.tsx`, but the container kept `flex flex-col justify-between`.
+   - With only 1 child element remaining inside the container, CSS `justify-between` pushed the entire headline, subhead, and CTA high into the middle/upper third of the viewport, obscuring the model's portrait and destroying the visual hierarchy.
+2. **Artificial Sticker Badges:**
+   - Hardcoded `badgeLabel` properties (`"HANDLOOM"`, `"NEW"`, `"BESTSELLER"`, `"HERITAGE"`, `"ARTISAN"`) in `homepage.ts` and in the published PostgreSQL `theme_versions` template rendered tacky colored badges over authentic product photography.
+3. **Fabricated Social Proof:**
+   - Unverified customer testimonials ("Nusrat Rahman", etc.) were hardcoded in `homepage.ts` and published templates in PostgreSQL, violating the truth-in-commerce design policy.
+
+### 10.2 Recovered Design & Code Remediation
+1. **Immersive Campaign Hero Composition (`heritage.tsx`):**
+   - Grounded lower layout: Changed `flex flex-col justify-between` to `flex flex-col justify-end pb-12 sm:pb-16 lg:pb-20`, perfectly anchoring the headline, subhead, CTA, and timeline navigation to the lower third.
+   - Refined Vignette: Layered dual gradients (`bg-gradient-to-t from-[var(--theme-ink)]/90 via-[var(--theme-ink)]/40 to-transparent` and `bg-gradient-to-r from-[var(--theme-ink)]/60 via-[var(--theme-ink)]/20 to-transparent`) ensuring high-contrast legibility without darkening portrait subjects.
+   - Deliberate Typography: `font-serif text-4xl sm:text-6xl lg:text-[5.25rem] font-light leading-[1.04] tracking-[-0.015em]`, delivering a luxury fashion campaign aesthetic.
+   - Docked Timeline Navigation: Restored the horizontal timeline (`01`, `02`, `03`) with terracotta progress indicator on the right side of the lower third.
+2. **Complete Slop & Badge Eradication (`homepage.ts`, `songoskriti.tsx`):**
+   - Removed all `badgeLabel` definitions from `product_rail` calls in `homepage.ts`.
+   - Emptied default testimonials (`testimonials: []`) in `homepage.ts` while preserving the 21-section sequence enforced by `wiring.test.ts`. The component returns `null` when items are empty, cleanly omitting fake reviews on the storefront.
+   - Replaced middle dot separators in store locations with commas (`"Uttara Sector 3, Gulshan 2, Chittagong"` and `"উত্তরা ৩, গুলশান ২, চট্টগ্রাম জিইসি"`).
+   - Updated badge terminology: `"Verified Patron"` → `"Verified Customer"`.
+3. **Database Remediation & Cache Synchronization (`88.99.250.99`):**
+   - Executed PostgreSQL remediation on `framique-supabase-db`:
+     - Cleaned `theme_versions` row `d551c21d-46a8-41a9-8eb1-6a4055883904` (version 10): stripped all `badgeLabel`s, emptied `testimonials`, and updated hero slide 3 subhead.
+     - Synchronized `theme_drafts` for theme `c9e9f286-67ad-44e2-86d3-71f2878bbd53`.
+   - Flushed Redis cache (`docker exec -i deploy-redis-1 redis-cli FLUSHDB`).
+   - Restarted `framique.service` and verified readiness probe (`200 OK`).
+
+### 10.3 Verification Matrix
+| Suite / Gate | Test count | Status |
+| ------------ | ---------- | ------ |
+| `bun run typecheck` (`tsgo --noEmit`) | Full repo | PASS (0 errors) |
+| `src/components/builder/songoskriti.test.tsx` | 55 passed | PASS |
+| `src/components/builder/heritage.test.tsx` | 6 passed | PASS |
+| `src/lib/themes/songoskriti/homepage.test.ts` | 4 passed | PASS |
+| `src/components/store/CollectionView.test.tsx` | 3 passed | PASS |
+| `src/lib/themes/songoskriti/wiring.test.ts` | 7 passed (21-section contract) | PASS |
+| `bun run test:contracts` | 13 contract suites, 258 test cases | PASS |
+| Production deployment | `ops/deploy-from-git.sh frame30` | PASS (`f94a67812274dd6e7e029a7bf5fd881b5a68df9c`) |
+| Live Chrome DevTools DOM audit | `flamelancer.com` | `stickerBadgesCount: 0`, `testimonialsPresent: false`, `hasNusrat: false`, `hasUNESCOInHero: false` |
+
+### 10.4 Visual Proof Artifacts
+- **Desktop Homepage Hero (1440px):** `homepage-hero-recovered-1440.png` — Immersive full-bleed presentation, headline grounded in lower third, clean CTA, docked timeline navigation, zero mid-air badges or artificial eyebrows.
+- **Desktop Collection View (1440px):** `collection-women-recovered-1440.png` — Full-width handloom cotton hero banner, active taxonomy pills, 7 products, clean unobstructed cards.
+- **Mobile Collection View (390px):** `collection-women-mobile-390.png` — Responsive header, fluid banner, horizontal scrolling pill list, responsive 2-column card grid.
+- **Product Detail View (1440px):** `product-jamdani-recovered-1440.png` — Authentic description, minor unit pricing, variant pills, real stock indicator.
