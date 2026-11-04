@@ -1389,50 +1389,98 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
                   ? "বাংলাদেশের ঐতিহ্যবাহী তাঁত ও আধুনিক ফ্যাশনের মেলবন্ধন।"
                   : "Handcrafted Bangladeshi fashion, authentic handloom weaves, and contemporary festive wear."}
               </p>
-              <div className="mb-6 space-y-1 text-[12px] text-[var(--theme-ink)]/70">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50">
-                  {locale === "bn"
-                    ? "ফ্ল্যাগশিপ আউটলেট"
-                    : "Flagship Stores"}
-                </p>
-                <p className="text-[12px] text-[var(--theme-ink)]/85">
-                  {locale === "bn"
-                    ? "উত্তরা ৩, গুলশান ২, চট্টগ্রাম জিইসি"
-                    : "Uttara Sector 3, Gulshan 2, Chittagong"}
-                </p>
-                <a
-                  href="tel:+8809612345678"
-                  className="inline-flex items-center gap-1.5 text-[var(--theme-accent)] font-medium text-[12px] min-h-[44px]"
-                >
-                  <span>+880 96 1234 5678</span>
-                  <span className="text-[10px] text-[var(--theme-ink)]/50">
-                    (10am–9pm)
-                  </span>
-                </a>
-              </div>
-              <div className="flex items-center gap-3 text-[var(--theme-ink)]/60">
-                <a
-                  href="#"
-                  aria-label="Instagram"
-                  className="flex h-11 w-11 items-center justify-center rounded-xs border border-[var(--theme-border)]/60 hover:border-[var(--theme-accent)] hover:text-[var(--theme-accent)] transition-colors"
-                >
-                  <Instagram size={18} />
-                </a>
-                <a
-                  href="#"
-                  aria-label="Facebook"
-                  className="flex h-11 w-11 items-center justify-center rounded-xs border border-[var(--theme-border)]/60 hover:border-[var(--theme-accent)] hover:text-[var(--theme-accent)] transition-colors"
-                >
-                  <Facebook size={18} />
-                </a>
-                <a
-                  href="#"
-                  aria-label="Twitter"
-                  className="flex h-11 w-11 items-center justify-center rounded-xs border border-[var(--theme-border)]/60 hover:border-[var(--theme-accent)] hover:text-[var(--theme-accent)] transition-colors"
-                >
-                  <Twitter size={18} />
-                </a>
-              </div>
+                  {brandName.includes("Flame") ? (
+                    <>
+                      <div className="mb-6 space-y-1 text-[12px] text-[var(--theme-ink)]/70">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50">
+                          {locale === "bn"
+                            ? "অনলাইন সেবা ও সহায়তা"
+                            : "Customer Concierge"}
+                        </p>
+                        <p className="text-[12px] text-[var(--theme-ink)]/85">
+                          {locale === "bn"
+                            ? "সারা দেশে হোম ডেলিভারি ও ৭ দিনের এক্সচেঞ্জ"
+                            : "Nationwide Doorstep Delivery & 7-Day Exchange"}
+                        </p>
+                        <a
+                          href="mailto:support@flamelancer.com"
+                          className="inline-flex items-center gap-1.5 text-[var(--theme-accent)] font-medium text-[12px] min-h-[44px]"
+                        >
+                          <span>support@flamelancer.com</span>
+                          <span className="text-[10px] text-[var(--theme-ink)]/50">
+                            (10am–8pm)
+                          </span>
+                        </a>
+                      </div>
+                      <div className="flex items-center gap-3 text-[var(--theme-ink)]/60">
+                        <a
+                          href="https://instagram.com/flamefashionbd"
+                          aria-label="Instagram"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex h-11 w-11 items-center justify-center rounded-xs border border-[var(--theme-border)]/60 hover:border-[var(--theme-accent)] hover:text-[var(--theme-accent)] transition-colors"
+                        >
+                          <Instagram size={18} />
+                        </a>
+                        <a
+                          href="https://facebook.com/flamefashionbd"
+                          aria-label="Facebook"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex h-11 w-11 items-center justify-center rounded-xs border border-[var(--theme-border)]/60 hover:border-[var(--theme-accent)] hover:text-[var(--theme-accent)] transition-colors"
+                        >
+                          <Facebook size={18} />
+                        </a>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="mb-6 space-y-1 text-[12px] text-[var(--theme-ink)]/70">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50">
+                          {locale === "bn"
+                            ? "ফ্ল্যাগশিপ আউটলেট"
+                            : "Flagship Stores"}
+                        </p>
+                        <p className="text-[12px] text-[var(--theme-ink)]/85">
+                          {locale === "bn"
+                            ? "উত্তরা ৩, গুলশান ২, চট্টগ্রাম জিইসি"
+                            : "Uttara Sector 3, Gulshan 2, Chittagong"}
+                        </p>
+                        <a
+                          href="tel:+8809612345678"
+                          className="inline-flex items-center gap-1.5 text-[var(--theme-accent)] font-medium text-[12px] min-h-[44px]"
+                        >
+                          <span>+880 96 1234 5678</span>
+                          <span className="text-[10px] text-[var(--theme-ink)]/50">
+                            (10am–9pm)
+                          </span>
+                        </a>
+                      </div>
+                      <div className="flex items-center gap-3 text-[var(--theme-ink)]/60">
+                        <a
+                          href="#"
+                          aria-label="Instagram"
+                          className="flex h-11 w-11 items-center justify-center rounded-xs border border-[var(--theme-border)]/60 hover:border-[var(--theme-accent)] hover:text-[var(--theme-accent)] transition-colors"
+                        >
+                          <Instagram size={18} />
+                        </a>
+                        <a
+                          href="#"
+                          aria-label="Facebook"
+                          className="flex h-11 w-11 items-center justify-center rounded-xs border border-[var(--theme-border)]/60 hover:border-[var(--theme-accent)] hover:text-[var(--theme-accent)] transition-colors"
+                        >
+                          <Facebook size={18} />
+                        </a>
+                        <a
+                          href="#"
+                          aria-label="Twitter"
+                          className="flex h-11 w-11 items-center justify-center rounded-xs border border-[var(--theme-border)]/60 hover:border-[var(--theme-accent)] hover:text-[var(--theme-accent)] transition-colors"
+                        >
+                          <Twitter size={18} />
+                        </a>
+                      </div>
+                    </>
+                  )}
             </div>
           )}
 
@@ -2386,7 +2434,12 @@ const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
             >
               <img
                 src={img}
-                alt="Flame Fashion BD Lookbook"
+                alt={
+                  str("imageAlt") ||
+                  (str("subhead")?.includes("LOOKBOOK")
+                    ? "Flame Fashion BD Lookbook"
+                    : "User generated content")
+                }
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 scale-100"
                 loading="lazy"
               />

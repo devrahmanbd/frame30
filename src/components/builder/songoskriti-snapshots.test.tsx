@@ -88,8 +88,8 @@ const FIXED_FOOTER_PROPS: Record<string, PropValue> = {
   brandName_bn: "সংস্কৃতি",
   paymentsHeading: "Payment methods",
   paymentsHeading_bn: "পেমেন্ট মাধ্যম",
-  paymentsMarks: "bKash, Nagad, Rocket, Visa, Mastercard, Cash on Delivery",
-  paymentsMarks_bn: "বিকাশ, নগদ, রকেট, ভিসা, মাস্টারকার্ড, ক্যাশ অন ডেলিভারি",
+  paymentsMarks: "Cash on Delivery",
+  paymentsMarks_bn: "ক্যাশ অন ডেলিভারি",
   c1Title: "Shop",
   c1Title_bn: "কেনাকাটা",
   c1Links: [
@@ -155,20 +155,16 @@ const FIXED_FOOTER_PROPS: Record<string, PropValue> = {
   c4Title: "Contact",
   c4Title_bn: "যোগাযোগ",
   c4Links: [
-    "Phone: +880 96 1234 5678|/pages/contact",
-    "Email: support@example.com|mailto:support@example.com",
-    "North Outlet|/pages/stores#north",
-    "Central Outlet|/pages/stores#central",
-    "Port City Outlet|/pages/stores#port",
-    "Support: 10AM - 9PM|/pages/contact",
+    "Email: support@flamelancer.com|mailto:support@flamelancer.com",
+    "Support: Saturday – Thursday, 10AM – 8PM|/pages/contact",
+    "Order Tracking|/pages/track-order",
+    "Nationwide Delivery across Bangladesh|/pages/shipping",
   ].join("\n"),
   c4Links_bn: [
-    "ফোন: +৮৮০ ৯৬ ১২৩৪ ৫৬৭৮|/pages/contact",
-    "ইমেইল: support@example.com|mailto:support@example.com",
-    "উত্তর আউটলেট|/pages/stores#north",
-    "সেন্ট্রাল আউটলেট|/pages/stores#central",
-    "বন্দর নগরী আউটলেট|/pages/stores#port",
-    "সাপোর্ট: সকাল ১০টা - রাত ৯টা|/pages/contact",
+    "ইমেইল: support@flamelancer.com|mailto:support@flamelancer.com",
+    "সাপোর্ট: শনিবার – বৃহস্পতিবার, সকাল ১০টা – রাত ৮টা|/pages/contact",
+    "অর্ডার ট্র্যাকিং|/pages/track-order",
+    "সারাদেশে ক্যাশ অন ডেলিভারি|/pages/shipping",
   ].join("\n"),
 };
 
@@ -194,10 +190,10 @@ const FIXED_LOCATOR_PROPS: Record<string, PropValue> = {
 const FIXED_UGC_PROPS: Record<string, PropValue> = {
   heading: "WORN BY YOU",
   heading_bn: "আপনার পরিধানে",
-  subhead: "SONGOSKRITI IN THE WORLD",
-  subhead_bn: "সংস্কৃতি সারা দুনিয়ায়",
-  handleLabel: "Follow @SONGOSKRITI",
-  handleHref: "https://instagram.com",
+  subhead: "FLAME FASHION BD LOOKBOOK",
+  subhead_bn: "ফ্লেম ফ্যাশন লুকবুক",
+  handleLabel: "Follow @flamefashionbd",
+  handleHref: "https://instagram.com/flamefashionbd",
   images:
     "/ph/songoskriti/ugc-1.jpg, /ph/songoskriti/ugc-2.jpg, /ph/songoskriti/ugc-3.png, /ph/songoskriti/ugc-4.png, /ph/songoskriti/ugc-5.jpg, /ph/songoskriti/ugc-6.jpg",
 };
@@ -297,7 +293,7 @@ describe("Task 2 fix — full static-markup snapshots from fixed fixtures", () =
       fixedSection("ugc_gallery", FIXED_UGC_PROPS),
       "en",
     );
-    expect(html).toContain("Follow @SONGOSKRITI");
+    expect(html).toContain("Follow @flamefashionbd");
     expect(html).toMatchSnapshot();
   });
 
@@ -307,7 +303,7 @@ describe("Task 2 fix — full static-markup snapshots from fixed fixtures", () =
       fixedSection("ugc_gallery", FIXED_UGC_PROPS),
       "bn",
     );
-    expect(html).toContain("সংস্কৃতি সারা দুনিয়ায়");
+    expect(html).toContain("ফ্লেম ফ্যাশন লুকবুক");
     expect(html).toMatchSnapshot();
   });
 });
