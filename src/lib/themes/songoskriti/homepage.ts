@@ -310,8 +310,8 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       heading: "FROM THE LOOM",
       heading_bn: "তাঁত থেকে",
       subhead:
-        "Jamdani, Tangail Taant, Rajshahi Silk and Nakshi Kantha — timeless weaves, each with a story.",
-      subhead_bn: "জামদানি, টাঙ্গাইল তাঁত, রাজশাহী সিল্ক ও নকশি কাঁথা।",
+        "Traditional handloom weaves from master weavers across Bangladesh.",
+      subhead_bn: "বাংলাদেশের ঐতিহ্যবাহী তাঁত ও কারুশিল্প।",
       collections: [
         {
           title: "Jamdani",
@@ -323,19 +323,19 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
           title: "Rajshahi Silk",
           image: "/ph/songoskriti/prod-saree.png",
           href: `${c}/rajshahi-silk`,
-          subtitle: "Artisan crafted",
+          subtitle: "Pure Silk Weave",
         },
         {
           title: "Tangail Handloom",
           image: "/ph/songoskriti/cat-newin.png",
           href: `${c}/heritage-handloom`,
-          subtitle: "Limited weave",
+          subtitle: "Cotton Taant",
         },
         {
           title: "Nakshi Kantha",
           image: "/ph/songoskriti/cat-living.png",
           href: `${c}/nakshi-kantha`,
-          subtitle: "Master stitch",
+          subtitle: "Hand-Embroidered",
         },
       ],
     }),
@@ -398,11 +398,11 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     }),
 
     // ────────────────────────────────────────────────────────────────────
-    // 18. THE SONGOSKRITI JOURNAL — blog/editorial content cards
+    // 18. THE FLAME FASHION BD JOURNAL — blog/editorial content cards
     // ────────────────────────────────────────────────────────────────────
     s("split_feature", {
-      heading: "THE SONGOSKRITI\nJOURNAL",
-      heading_bn: "সংস্কৃতির\nজার্নাল",
+      heading: "THE FLAME FASHION BD\nJOURNAL",
+      heading_bn: "ফ্লেম ফ্যাশন\nজার্নাল",
       body: "Stories from the loom, styling guides and the heritage behind every thread.",
       body_bn: "তাঁত থেকে গল্প, স্টাইলিং গাইড ও প্রতিটি সুতোর পেছনের ইতিহাস।",
       ctaLabel: "HOW TO IDENTIFY AUTHENTIC JAMDANI →",
@@ -417,7 +417,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     }),
 
     // ────────────────────────────────────────────────────────────────────
-    // 19. WHY SONGOSKRITI — trust/service strip
+    // 19. WHY FLAME FASHION BD — trust/service strip
     // ────────────────────────────────────────────────────────────────────
     s("trust_footer", {
       i1Title: "Fast delivery",
@@ -431,29 +431,29 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
           icon: "secure",
           title: "AUTHENTIC CRAFT",
           title_bn: "খাঁটি কারুশিল্প",
-          body: "Verified artisan-made pieces — no factory substitutes",
-          body_bn: "যাচাইকৃত কারিগর-তৈরি পণ্য — কারখানার বিকল্প নয়",
+          body: "Handcrafted in Bangladesh — authentic traditional weaves",
+          body_bn: "বাংলাদেশে তৈরি — খাঁটি ঐতিহ্যবাহী তাঁত পণ্য",
         },
         {
           icon: "delivery",
           title: "NATIONWIDE DELIVERY",
           title_bn: "সারাদেশে ডেলিভারি",
-          body: "Reliable delivery across Bangladesh",
-          body_bn: "সারা বাংলাদেশে নির্ভরযোগ্য ডেলিভারি",
+          body: "Cash on delivery across Bangladesh",
+          body_bn: "সারা বাংলাদেশে ক্যাশ অন ডেলিভারি",
         },
         {
           icon: "returns",
           title: "EASY EXCHANGE",
           title_bn: "সহজ বিনিময়",
-          body: "Straightforward 7-day exchange policy",
-          body_bn: "সহজ ৭-দিনের বিনিময় নীতি",
+          body: "7-day doorstep exchange",
+          body_bn: "৭-দিনের সহজ বিনিময় সুবিধা",
         },
         {
           icon: "support",
-          title: "HUMAN SUPPORT",
-          title_bn: "মানবিক সহায়তা",
-          body: "Real people, not automated walls",
-          body_bn: "সত্যিকারের মানুষ, স্বয়ংক্রিয় উত্তর নয়",
+          title: "CUSTOMER CARE",
+          title_bn: "গ্রাহক সেবা",
+          body: "Saturday – Thursday, 10:00 AM – 8:00 PM",
+          body_bn: "শনিবার – বৃহস্পতিবার, সকাল ১০:০০ – রাত ৮:০০",
         },
       ],
     }),

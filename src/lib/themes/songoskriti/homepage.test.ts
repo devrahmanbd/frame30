@@ -43,24 +43,56 @@ describe("Songoskriti homepage seed configuration", () => {
       subtitle: string;
     }[];
 
+    expect(story?.props?.subhead).toBe(
+      "Traditional handloom weaves from master weavers across Bangladesh.",
+    );
+
     const jamdani = collections.find((c) => c.title === "Jamdani");
     expect(jamdani?.href).toBe("/c/jamdani");
     expect(jamdani?.subtitle).toBe("Traditional Handloom");
 
     const rajshahi = collections.find((c) => c.title === "Rajshahi Silk");
     expect(rajshahi?.href).toBe("/c/rajshahi-silk"); // Linked to published Rajshahi Silk collection
+    expect(rajshahi?.subtitle).toBe("Pure Silk Weave");
 
     const tangail = collections.find((c) => c.title === "Tangail Handloom");
     expect(tangail?.href).toBe("/c/heritage-handloom");
+    expect(tangail?.subtitle).toBe("Cotton Taant");
 
     const nakshi = collections.find((c) => c.title === "Nakshi Kantha");
     expect(nakshi?.href).toBe("/c/nakshi-kantha");
+    expect(nakshi?.subtitle).toBe("Hand-Embroidered");
 
     // Must not link to non-existent /c/wedding, /c/sarees, or /c/living
     const hrefs = collections.map((c) => c.href);
     expect(hrefs).not.toContain("/c/wedding");
     expect(hrefs).not.toContain("/c/sarees");
     expect(hrefs).not.toContain("/c/living");
+  });
+
+  it("features Flame Fashion BD Journal with authentic craft articles", () => {
+    const journal = sections.find(
+      (s) =>
+        s.type === "split_feature" &&
+        (s.props?.heading as string)?.includes("JOURNAL"),
+    );
+    expect(journal).toBeDefined();
+    expect(journal?.props?.heading).toBe("THE FLAME FASHION BD\nJOURNAL");
+    expect(journal?.props?.heading_bn).toBe("ফ্লেম ফ্যাশন\nজার্নাল");
+    expect(journal?.props?.ctaUrl).toBe("/blog/authentic-jamdani");
+    expect(journal?.props?.ctaUrl2).toBe("/blog/bengali-wedding");
+  });
+
+  it("verifies trust footer displays accurate customer care hours and policies", () => {
+    const trust = sections.find((s) => s.type === "trust_footer");
+    expect(trust).toBeDefined();
+    const items = (trust?.props?.items ?? []) as {
+      title: string;
+      body: string;
+    }[];
+    const customerCare = items.find((i) => i.title === "CUSTOMER CARE");
+    expect(customerCare).toBeDefined();
+    expect(customerCare?.body).toBe("Saturday – Thursday, 10:00 AM – 8:00 PM");
   });
 
   it("merchandises curated products neutrally as Festive Selection instead of fabricated popularity", () => {

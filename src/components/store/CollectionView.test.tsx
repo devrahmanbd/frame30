@@ -441,7 +441,7 @@ describe("CollectionView Faceting & Filtering", () => {
     });
     expect(above10k).toHaveLength(0);
 
-    // Matches custom BDT min/max price range
+    // Matches custom BDT min/max price range (v-cheap: 3500)
     const customMatch = filterCollectionProducts([multiVariantProduct], {
       availability: "all",
       price: "all",
@@ -451,6 +451,27 @@ describe("CollectionView Faceting & Filtering", () => {
     });
     expect(customMatch).toHaveLength(1);
 
+    // Matches custom BDT min/max price range (v-luxe: 7500)
+    const customMatchLuxe = filterCollectionProducts([multiVariantProduct], {
+      availability: "all",
+      price: "all",
+      minPriceBDT: 7000,
+      maxPriceBDT: 9000,
+      tags: [],
+    });
+    expect(customMatchLuxe).toHaveLength(1);
+
+    // Crucial variant-invariance test: range [4000, 7000] falls between v-cheap (3500) and v-luxe (7500)
+    // Neither variant satisfies BOTH min and max simultaneously, so product must NOT match!
+    const customNoVariantInRange = filterCollectionProducts([multiVariantProduct], {
+      availability: "all",
+      price: "all",
+      minPriceBDT: 4000,
+      maxPriceBDT: 7000,
+      tags: [],
+    });
+    expect(customNoVariantInRange).toHaveLength(0);
+
     const customNoMatch = filterCollectionProducts([multiVariantProduct], {
       availability: "all",
       price: "all",
@@ -459,5 +480,29 @@ describe("CollectionView Faceting & Filtering", () => {
       tags: [],
     });
     expect(customNoMatch).toHaveLength(0);
+
+    // Test product without variants: falls back to top-level price_amount_minor_int
+    const singlePriceProduct = {
+      id: "sp-1",
+      title: "Handmade Brass Jhumka",
+      slug: "brass-jhumka",
+      tags: ["jewelry", "brass"],
+      price_amount_minor_int: 250000, // 2,500 BDT
+      product_variants: [],
+    } as unknown as CollectionProduct;
+
+    const singleMatch = filterCollectionProducts([singlePriceProduct], {
+      availability: "all",
+      price: "under_5000",
+      tags: [],
+    });
+    expect(singleMatch).toHaveLength(1);
+
+    const singleNoMatch = filterCollectionProducts([singlePriceProduct], {
+      availability: "all",
+      price: "5000_10000",
+      tags: [],
+    });
+    expect(singleNoMatch).toHaveLength(0);
   });
 });

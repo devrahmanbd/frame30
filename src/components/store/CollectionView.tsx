@@ -271,8 +271,10 @@ export function filterCollectionProducts(
     const variants = p.product_variants ?? [];
     const prices = variants.length
       ? variants.map((v) => Number(v.price_amount_minor_int) || 0)
-      : [0];
-    const inStock = variants.some((v) => (v.stock_quantity ?? 0) > 0);
+      : [Number((p as { price_amount_minor_int?: number }).price_amount_minor_int) || 0];
+    const inStock = variants.length
+      ? variants.some((v) => (v.stock_quantity ?? 0) > 0)
+      : true;
 
     // Availability filter
     if (filters.availability === "in_stock" && !inStock) return false;
@@ -295,15 +297,23 @@ export function filterCollectionProducts(
       if (!matches) return false;
     }
 
-    // Flexible custom BDT range if supplied
-    if (filters.minPriceBDT != null && filters.minPriceBDT > 0) {
-      const minMinor = filters.minPriceBDT * 100;
-      const matches = prices.some((price) => price >= minMinor);
-      if (!matches) return false;
-    }
-    if (filters.maxPriceBDT != null && filters.maxPriceBDT > 0) {
-      const maxMinor = filters.maxPriceBDT * 100;
-      const matches = prices.some((price) => price <= maxMinor);
+    // Flexible custom BDT range if supplied:
+    // Evaluates against the SAME variant so one variant doesn't satisfy min while another satisfies max
+    const minMinor =
+      filters.minPriceBDT != null && filters.minPriceBDT > 0
+        ? filters.minPriceBDT * 100
+        : null;
+    const maxMinor =
+      filters.maxPriceBDT != null && filters.maxPriceBDT > 0
+        ? filters.maxPriceBDT * 100
+        : null;
+
+    if (minMinor != null || maxMinor != null) {
+      const matches = prices.some((price) => {
+        if (minMinor != null && price < minMinor) return false;
+        if (maxMinor != null && price > maxMinor) return false;
+        return true;
+      });
       if (!matches) return false;
     }
 
@@ -389,6 +399,10 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
   const [filterPrice, setFilterPrice] = useState<
     "all" | "under_5000" | "5000_10000" | "above_10000"
   >("all");
+  const [minPriceBDT, setMinPriceBDT] = useState<number | null>(null);
+  const [maxPriceBDT, setMaxPriceBDT] = useState<number | null>(null);
+  const [minPriceInput, setMinPriceInput] = useState<string>("");
+  const [maxPriceInput, setMaxPriceInput] = useState<string>("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<
     "featured" | "price_asc" | "price_desc" | "title"
@@ -398,6 +412,18 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
     "weave" | "price" | "avail" | null
   >(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Reset pagination to first page whenever any filter or sort option changes
+  useEffect(() => {
+    setVisibleCount(12);
+  }, [
+    filterAvailability,
+    filterPrice,
+    minPriceBDT,
+    maxPriceBDT,
+    selectedTags,
+    sortBy,
+  ]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -501,6 +527,8 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
   const candidateProducts = filterCollectionProducts(products, {
     availability: filterAvailability,
     price: filterPrice,
+    minPriceBDT,
+    maxPriceBDT,
     tags: [],
   });
   const candidateFacetCounts = new Map(
@@ -518,6 +546,8 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
   const filteredProducts = filterCollectionProducts(products, {
     availability: filterAvailability,
     price: filterPrice,
+    minPriceBDT,
+    maxPriceBDT,
     tags: selectedTags,
   });
 
@@ -526,12 +556,16 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
 
   const activeFiltersCount =
     (filterAvailability !== "all" ? 1 : 0) +
-    (filterPrice !== "all" ? 1 : 0) +
+    (filterPrice !== "all" || minPriceBDT != null || maxPriceBDT != null ? 1 : 0) +
     selectedTags.length;
 
   const clearAllFilters = () => {
     setFilterAvailability("all");
     setFilterPrice("all");
+    setMinPriceBDT(null);
+    setMaxPriceBDT(null);
+    setMinPriceInput("");
+    setMaxPriceInput("");
     setSelectedTags([]);
   };
 
@@ -593,7 +627,8 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
         <ul className="space-y-2">
           {PRICE_OPTIONS.map((opt) => {
             const id = `${prefix}-price-${opt.key}`;
-            const isSelected = filterPrice === opt.key;
+            const isSelected =
+              filterPrice === opt.key && minPriceBDT == null && maxPriceBDT == null;
             return (
               <li key={opt.key} className="flex items-center text-[13px]">
                 <label
@@ -605,7 +640,13 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                     id={id}
                     name={`${prefix}-price`}
                     checked={isSelected}
-                    onChange={() => setFilterPrice(opt.key)}
+                    onChange={() => {
+                      setFilterPrice(opt.key);
+                      setMinPriceBDT(null);
+                      setMaxPriceBDT(null);
+                      setMinPriceInput("");
+                      setMaxPriceInput("");
+                    }}
                     className="size-4 text-foreground accent-foreground focus:ring-0 cursor-pointer"
                   />
                   <span>{lang === "bn" ? opt.bn : opt.en}</span>
@@ -614,6 +655,42 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
             );
           })}
         </ul>
+        <div className="pt-2 space-y-1.5">
+          <span className="text-[11px] font-medium text-muted-foreground block">
+            {t("Custom Range (BDT)", "কাস্টম সীমা (টাকা)")}
+          </span>
+          <div className="flex items-center gap-2">
+            <input
+              type="number"
+              min={0}
+              placeholder="Min ৳"
+              value={minPriceInput}
+              onChange={(e) => {
+                const val = e.target.value;
+                setMinPriceInput(val);
+                const num = val === "" ? null : Number(val);
+                setMinPriceBDT(num != null && !isNaN(num) && num >= 0 ? num : null);
+                if (filterPrice !== "all") setFilterPrice("all");
+              }}
+              className="w-full h-8 px-2 text-xs border border-border/70 rounded-xs bg-background focus:outline-none focus:border-foreground"
+            />
+            <span className="text-muted-foreground text-xs">–</span>
+            <input
+              type="number"
+              min={0}
+              placeholder="Max ৳"
+              value={maxPriceInput}
+              onChange={(e) => {
+                const val = e.target.value;
+                setMaxPriceInput(val);
+                const num = val === "" ? null : Number(val);
+                setMaxPriceBDT(num != null && !isNaN(num) && num >= 0 ? num : null);
+                if (filterPrice !== "all") setFilterPrice("all");
+              }}
+              className="w-full h-8 px-2 text-xs border border-border/70 rounded-xs bg-background focus:outline-none focus:border-foreground"
+            />
+          </div>
+        </div>
       </div>
 
       {/* 3. Availability */}
@@ -865,17 +942,23 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                       )
                     }
                     className={`inline-flex items-center gap-2 px-3.5 py-1.5 text-[12px] font-medium tracking-wide uppercase transition-colors cursor-pointer border ${
-                      filterPrice !== "all"
+                      filterPrice !== "all" || minPriceBDT != null || maxPriceBDT != null
                         ? "bg-foreground text-background border-foreground font-semibold"
                         : "bg-background text-foreground/80 hover:text-foreground border-border/70 hover:border-border"
                     }`}
                   >
                     <span>
-                      {filterPrice === "all"
-                        ? t("Price", "মূল্য")
-                        : lang === "bn"
-                          ? PRICE_OPTIONS.find((o) => o.key === filterPrice)?.bn
-                          : PRICE_OPTIONS.find((o) => o.key === filterPrice)?.en}
+                      {minPriceBDT != null || maxPriceBDT != null
+                        ? minPriceBDT != null && maxPriceBDT != null
+                          ? `৳${minPriceBDT.toLocaleString()}–৳${maxPriceBDT.toLocaleString()}`
+                          : minPriceBDT != null
+                            ? `≥ ৳${minPriceBDT.toLocaleString()}`
+                            : `≤ ৳${maxPriceBDT!.toLocaleString()}`
+                        : filterPrice === "all"
+                          ? t("Price", "মূল্য")
+                          : lang === "bn"
+                            ? PRICE_OPTIONS.find((o) => o.key === filterPrice)?.bn
+                            : PRICE_OPTIONS.find((o) => o.key === filterPrice)?.en}
                     </span>
                     <ChevronDown
                       className={`size-3.5 transition-transform duration-200 ${openDropdown === "price" ? "rotate-180" : ""}`}
@@ -883,7 +966,7 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                   </button>
 
                   <div
-                    className={`absolute top-full left-0 mt-2 w-64 bg-background border border-border/80 shadow-lg p-4 z-40 ${
+                    className={`absolute top-full left-0 mt-2 w-72 bg-background border border-border/80 shadow-lg p-4 z-40 ${
                       openDropdown === "price" ? "block" : "hidden"
                     }`}
                   >
@@ -891,10 +974,16 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                       <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                         {t("Price (BDT)", "মূল্য সীমা")}
                       </span>
-                      {filterPrice !== "all" && (
+                      {(filterPrice !== "all" || minPriceBDT != null || maxPriceBDT != null) && (
                         <button
                           type="button"
-                          onClick={() => setFilterPrice("all")}
+                          onClick={() => {
+                            setFilterPrice("all");
+                            setMinPriceBDT(null);
+                            setMaxPriceBDT(null);
+                            setMinPriceInput("");
+                            setMaxPriceInput("");
+                          }}
                           className="text-[11px] text-muted-foreground hover:text-foreground underline cursor-pointer"
                         >
                           {t("Reset", "রিসেট")}
@@ -911,9 +1000,17 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                             <input
                               type="radio"
                               name="desktop-toolbar-price"
-                              checked={filterPrice === opt.key}
+                              checked={
+                                filterPrice === opt.key &&
+                                minPriceBDT == null &&
+                                maxPriceBDT == null
+                              }
                               onChange={() => {
                                 setFilterPrice(opt.key);
+                                setMinPriceBDT(null);
+                                setMaxPriceBDT(null);
+                                setMinPriceInput("");
+                                setMaxPriceInput("");
                                 setOpenDropdown(null);
                               }}
                               className="size-4 text-foreground accent-foreground cursor-pointer"
@@ -923,6 +1020,50 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                         </li>
                       ))}
                     </ul>
+                    <div className="pt-3 mt-3 border-t border-border/40 space-y-2">
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block">
+                        {t("Custom Range (BDT)", "কাস্টম সীমা (টাকা)")}
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          min={0}
+                          placeholder="Min ৳"
+                          value={minPriceInput}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setMinPriceInput(val);
+                            const num = val === "" ? null : Number(val);
+                            setMinPriceBDT(
+                              num != null && !isNaN(num) && num >= 0
+                                ? num
+                                : null,
+                            );
+                            if (filterPrice !== "all") setFilterPrice("all");
+                          }}
+                          className="w-full h-8 px-2 text-xs border border-border/70 rounded-xs bg-background focus:outline-none focus:border-foreground"
+                        />
+                        <span className="text-muted-foreground text-xs">–</span>
+                        <input
+                          type="number"
+                          min={0}
+                          placeholder="Max ৳"
+                          value={maxPriceInput}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setMaxPriceInput(val);
+                            const num = val === "" ? null : Number(val);
+                            setMaxPriceBDT(
+                              num != null && !isNaN(num) && num >= 0
+                                ? num
+                                : null,
+                            );
+                            if (filterPrice !== "all") setFilterPrice("all");
+                          }}
+                          className="w-full h-8 px-2 text-xs border border-border/70 rounded-xs bg-background focus:outline-none focus:border-foreground"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -1104,6 +1245,28 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                     : PRICE_OPTIONS.find((o) => o.key === filterPrice)?.en}
                   <button
                     onClick={() => setFilterPrice("all")}
+                    className="hover:opacity-70 p-0.5 cursor-pointer"
+                    aria-label="Remove price filter"
+                  >
+                    <X className="size-3" />
+                  </button>
+                </span>
+              )}
+
+              {(minPriceBDT != null || maxPriceBDT != null) && (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-muted/60 text-foreground border border-border/40">
+                  {minPriceBDT != null && maxPriceBDT != null
+                    ? `৳${minPriceBDT.toLocaleString()} – ৳${maxPriceBDT.toLocaleString()}`
+                    : minPriceBDT != null
+                      ? `≥ ৳${minPriceBDT.toLocaleString()}`
+                      : `≤ ৳${maxPriceBDT!.toLocaleString()}`}
+                  <button
+                    onClick={() => {
+                      setMinPriceBDT(null);
+                      setMaxPriceBDT(null);
+                      setMinPriceInput("");
+                      setMaxPriceInput("");
+                    }}
                     className="hover:opacity-70 p-0.5 cursor-pointer"
                     aria-label="Remove price filter"
                   >
