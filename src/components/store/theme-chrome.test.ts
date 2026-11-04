@@ -37,9 +37,9 @@ describe("themeChromeFor", () => {
       alt: "Songoskriti",
     });
     expect(chrome!.announcement).toEqual({
-      left: "EASY 7-DAY EXCHANGE",
-      center: "Free delivery across Bangladesh on orders over BDT 5000",
-      center_bn: "৫০০০ টাকার উপরে অর্ডারে সারা দেশে ফ্রি ডেলিভারি",
+      left: "",
+      center: "",
+      center_bn: "",
     });
     expect(chrome!.fallbackMenu.length).toBeGreaterThan(0);
   });

@@ -119,13 +119,13 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
     links: [
       "Email: support@flamelancer.com|mailto:support@flamelancer.com",
       "Support: Saturday – Thursday, 10AM – 8PM|/pages/contact",
-      "Order Tracking|/pages/track-order",
+      "Track Your Order|/pages/track-order",
       "Nationwide Delivery across Bangladesh|/pages/shipping",
     ].join("\n"),
     links_bn: [
       "ইমেইল: support@flamelancer.com|mailto:support@flamelancer.com",
       "সাপোর্ট: শনিবার – বৃহস্পতিবার, সকাল ১০টা – রাত ৮টা|/pages/contact",
-      "অর্ডার ট্র্যাকিং|/pages/track-order",
+      "অর্ডার অনুসন্ধান|/pages/track-order",
       "সারাদেশে ক্যাশ অন ডেলিভারি|/pages/shipping",
     ].join("\n"),
   },

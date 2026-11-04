@@ -498,9 +498,9 @@ export const HEADER_LOGO = {
   alt: "Songoskriti",
 } as const;
 
-/** Announcement-bar copy for the luxury header variant. */
+/** Announcement-bar copy for the luxury header variant (empty by default to avoid unverified claims). */
 export const HEADER_ANNOUNCEMENT = {
-  left: "EASY 7-DAY EXCHANGE",
-  center: "Free delivery across Bangladesh on orders over BDT 5000",
-  center_bn: "৫০০০ টাকার উপরে অর্ডারে সারা দেশে ফ্রি ডেলিভারি",
+  left: "",
+  center: "",
+  center_bn: "",
 } as const;

@@ -282,7 +282,7 @@ describe("Task 3 — freeze: chrome + singleton static pins", () => {
     const home = buildSongoskritiHomepage(stubBuilder<never>());
     const section = home.find((s) => s.type === "ugc_gallery")!;
     const html = render(SONGOSKRITI_WIDGETS["ugc_gallery"], section, "en");
-    expect(html).toContain("WORN BY YOU");
+    expect(html).toContain("SEASONAL LOOKBOOK");
   });
 
   it("testimonials singleton static pin", () => {
@@ -311,7 +311,19 @@ describe("Task 3 — freeze: chrome + singleton static pins", () => {
   it("store_locator singleton static pin", () => {
     const home = buildSongoskritiHomepage(stubBuilder<never>());
     const section = home.find((s) => s.type === "store_locator")!;
-    const html = render(SONGOSKRITI_WIDGETS["store_locator"], section, "en");
-    expect(html).toContain("VISIT SONGOSKRITI");
+    // Without configured stores, renders empty markup
+    const emptyHtml = render(SONGOSKRITI_WIDGETS["store_locator"], section, "en");
+    expect(emptyHtml).toBe("");
+
+    // With configured stores, renders store section
+    const withStores = {
+      ...section,
+      props: {
+        ...section.props,
+        s1Name: "Flagship Studio",
+      },
+    };
+    const html = render(SONGOSKRITI_WIDGETS["store_locator"], withStores, "en");
+    expect(html).toContain("Flagship Studio");
   });
 });

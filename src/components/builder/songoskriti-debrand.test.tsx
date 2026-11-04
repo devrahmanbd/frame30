@@ -128,10 +128,10 @@ describe("Task 2 parity pins — songoskriti default output", () => {
     expect(html).toContain("Songoskriti");
     expect(html).toContain("Shop");
     expect(html).toContain("Customer Care");
-    expect(html).toContain("support@example.com");
+    expect(html).toContain("support@flamelancer.com");
     // ZONE 4: payments + legal.
     expect(html).toContain("Payment methods");
-    expect(html).toContain("bKash");
+    expect(html).toContain("Cash on Delivery");
     expect(html).toContain("© 2026 Songoskriti");
     expect(html).toContain("Terms");
     expect(html).toContain("Privacy");
@@ -148,29 +148,37 @@ describe("Task 2 parity pins — songoskriti default output", () => {
     expect(html).toContain("ইমেইল লিখুন");
   });
 
-  it("store_locator renders the flagship section (homepage props)", () => {
+  it("store_locator gracefully returns empty markup when zero stores are configured", () => {
     const section = songoskritiHomepage().find(
       (s) => s.type === "store_locator",
     )!;
     expect(section).toBeDefined();
     const html = render(StoreLocator, section, "en");
-    expect(html).toContain("VISIT SONGOSKRITI");
-    expect(html).toContain("OUR STORES");
-    expect(html).toContain("Uttara Flagship");
-    expect(html).toContain("Gulshan Showroom");
-    expect(html).toContain("Chattogram Store");
-    expect(html).toContain("Open 10am – 9pm daily");
-    expect(html).toContain("/ph/songoskriti/cat-women.png");
-    expect(html).toContain("GET DIRECTIONS →");
+    expect(html).toBe("");
   });
 
-  it("store_locator renders the flagship section in বাংলা", () => {
-    const section = songoskritiHomepage().find(
-      (s) => s.type === "store_locator",
-    )!;
-    const html = render(StoreLocator, section, "bn");
-    expect(html).toContain("সংস্কৃতি দেখুন");
-    expect(html).toContain("আমাদের শাখাসমূহ");
+  it("store_locator renders store cards when stores are configured via props", () => {
+    const section = {
+      ...songoskritiHomepage().find((s) => s.type === "store_locator")!,
+      props: {
+        heading: "Store Locations",
+        heading_bn: "স্টোর লোকেশন",
+        eyebrow: "OUR STORES",
+        eyebrow_bn: "আমাদের শাখাসমূহ",
+        s1Name: "Flagship Studio",
+        s1Hours: "Open 10am – 9pm daily",
+        s1Image: "/ph/songoskriti/cat-women.png",
+      },
+    };
+    const html = render(StoreLocator, section, "en");
+    expect(html).toContain("Store Locations");
+    expect(html).toContain("OUR STORES");
+    expect(html).toContain("Flagship Studio");
+    expect(html).toContain("Open 10am – 9pm daily");
+
+    const bnHtml = render(StoreLocator, section, "bn");
+    expect(bnHtml).toContain("স্টোর লোকেশন");
+    expect(bnHtml).toContain("আমাদের শাখাসমূহ");
   });
 
   it("ugc_gallery renders the community section (homepage props)", () => {
@@ -179,10 +187,10 @@ describe("Task 2 parity pins — songoskriti default output", () => {
     )!;
     expect(section).toBeDefined();
     const html = render(UgcGallery, section, "en");
-    expect(html).toContain("WORN BY YOU");
-    expect(html).toContain("SONGOSKRITI IN THE WORLD");
-    expect(html).toContain("Follow @SONGOSKRITI");
-    expect(html).toContain("https://instagram.com");
+    expect(html).toContain("SEASONAL LOOKBOOK");
+    expect(html).toContain("FLAME FASHION BD LOOKBOOK");
+    expect(html).toContain("Follow @flamefashionbd");
+    expect(html).toContain("https://instagram.com/flamefashionbd");
     expect(html).toContain("ugc-1.jpg");
   });
 });

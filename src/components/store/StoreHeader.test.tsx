@@ -302,7 +302,7 @@ describe("StoreHeader songoskriti data-driven menus (REPORT-THEMES §4/§7.1)", 
     // out of the theme-owned header-fallback shim); the shared header
     // resolves it through key-driven config.
     const fallbackSrc = readFileSync("src/lib/header-copy.ts", "utf8");
-    expect(fallbackSrc).toContain("EASY 7-DAY EXCHANGE");
+    expect(fallbackSrc).not.toContain("EASY 7-DAY EXCHANGE");
     const src = HEADER_SRC();
     expect(src).toContain("expandedMobileMenu");
     expect(src).toContain("min-h-[44px]");
@@ -313,11 +313,8 @@ describe("StoreHeader songoskriti data-driven menus (REPORT-THEMES §4/§7.1)", 
       name: "Songoskriti",
       themeKey: "songoskriti",
     });
-    // R1b: header announcement routes through the theme-owned
-    // `announcement_bar` presentation (registry) with the generic surface as
-    // fallback. Message copy (`center`) renders; `left` is layout chrome,
-    // never message copy, so it stays out (see `headerChromeAnnouncementItems`).
-    expect(html).toContain(
+    // Default theme chrome is clean: unverified promotional claims are not injected
+    expect(html).not.toContain(
       "Free delivery across Bangladesh on orders over BDT 5000",
     );
     expect(html).not.toContain("w-1/3 text-left");
@@ -367,9 +364,9 @@ describe("StoreHeader songoskriti chrome resolves through themeChromeFor", () =>
       alt: "Songoskriti",
     });
     expect(chrome!.announcement).toEqual({
-      left: "EASY 7-DAY EXCHANGE",
-      center: "Free delivery across Bangladesh on orders over BDT 5000",
-      center_bn: "৫০০০ টাকার উপরে অর্ডারে সারা দেশে ফ্রি ডেলিভারি",
+      left: "",
+      center: "",
+      center_bn: "",
     });
     expect(chrome!.fallbackMenu.length).toBeGreaterThan(0);
   });
@@ -383,13 +380,11 @@ describe("StoreHeader songoskriti chrome resolves through themeChromeFor", () =>
     });
     // Values flow through the key-driven lookup: assert the resolved
     // values, so a theme copy change fails here instead of silently
-    // passing against stale literals. R1b: `center` renders through the
-    // theme-owned announcement presentation (registry/fallback); `left`
-    // stays out (layout chrome, not message copy).
+    // passing against stale literals.
     expect(html).toContain(chrome.logo.src);
     expect(html).toContain(`alt="${chrome.logo.alt}"`);
-    expect(html).not.toContain(chrome.announcement.left);
-    expect(html).toContain(chrome.announcement.center);
+    expect(html).not.toContain("EASY 7-DAY EXCHANGE");
+    expect(html).not.toContain("Free delivery across Bangladesh on orders over BDT 5000");
     const bnHtml = renderHeader({
       slug: "songoskriti",
       name: "Songoskriti",
@@ -866,8 +861,15 @@ describe("StoreHeader T3.1 layer boundaries (HeaderData + Behavior + Renderer)",
     expect(genericHtml).not.toContain("fixed left-0 w-full");
   });
 
-  it("ThemeHeaderRenderer: announcement bar renders only for luxury chrome", () => {
-    const chrome = themeChromeFor("songoskriti")!;
+  it("ThemeHeaderRenderer: announcement bar renders only when announcement copy is provided", () => {
+    const chrome = {
+      ...themeChromeFor("songoskriti")!,
+      announcement: {
+        left: "",
+        center: "Free shipping nationwide",
+        center_bn: "সারাদেশে ফ্রি শিপিং",
+      },
+    };
     const luxuryHtml = renderToStaticMarkup(
       <HeaderAnnouncementBar
         headerChrome={chrome}
@@ -875,10 +877,7 @@ describe("StoreHeader T3.1 layer boundaries (HeaderData + Behavior + Renderer)",
         t={(en) => en}
       />,
     );
-    // R1b: generic fallback renders message copy with the platform labels;
-    // `left` layout chrome stays out.
-    expect(luxuryHtml).not.toContain(chrome.announcement.left);
-    expect(luxuryHtml).toContain(chrome.announcement.center);
+    expect(luxuryHtml).toContain("Free shipping nationwide");
     expect(luxuryHtml).toContain('aria-label="Announcement"');
     const genericHtml = renderToStaticMarkup(
       <HeaderAnnouncementBar headerChrome={null} scrolled={false} t={enT} />,
@@ -1260,10 +1259,6 @@ describe("header theme presentation runtime (R1 — same menu + state → distin
     });
     // Localised nav landmark.
     expect(songoBn).toContain('aria-label="স্টোর মেনু"');
-    // Luxury announcement copy localises.
-    expect(songoBn).toContain(
-      "৫০০০ টাকার উপরে অর্ডারে সারা দেশে ফ্রি ডেলিভারি",
-    );
   });
 
   it("covers sticky state plus cart/account/search controls", () => {
@@ -1295,8 +1290,6 @@ describe("header theme presentation runtime (R1 — same menu + state → distin
     expect(customHtml).toContain('data-link-to="/account"');
     expect(customHtml).toContain('data-link-to="/cart"');
     expect(customHtml).toContain('href="/c/shop"');
-    // Luxury announcement collapses on scroll.
-    expect(stuck).toContain("h-0 opacity-0");
   });
 
   it("StoreHeader delegates end-to-end: shell marker follows the theme key", () => {
@@ -1325,7 +1318,14 @@ describe("header theme presentation runtime (R1 — same menu + state → distin
 });
 
 describe("header announcement via theme-owned presentations (R1b)", () => {
-  const chrome = () => themeChromeFor("songoskriti")!;
+  const chrome = () => ({
+    ...themeChromeFor("songoskriti")!,
+    announcement: {
+      left: "Notice",
+      center: "Free shipping across Bangladesh on orders over BDT 5000",
+      center_bn: "৫০০০ টাকার উপরে অর্ডারে সারা দেশে ফ্রি ডেলিভারি",
+    },
+  });
 
   function barHtml(
     themeKey: string | null | undefined,
@@ -1461,8 +1461,8 @@ describe("header announcement via theme-owned presentations (R1b)", () => {
         menus,
       });
       expect(songo).toContain('data-header-shell="songoskriti"');
-      expect(songo).toContain('data-announcement-presentation="songoskriti"');
-      expect(songo).toContain(chrome().announcement.center);
+      // Default theme chrome is clean: empty announcement yields no presentation
+      expect(songo).not.toContain('data-announcement-presentation="songoskriti"');
       // The shell keeps the language switch (songoskriti via icons now).
       expect(songo).toContain("EN");
       expect(songo).toContain("বাং");

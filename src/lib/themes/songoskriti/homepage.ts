@@ -34,11 +34,11 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       slides: [
         {
           image: "/ph/songoskriti/hero-festive.jpg",
-          headline: "Heritage, Woven for Today",
-          headline_bn: "ঐতিহ্য, আজকের জন্য বোনা",
+          headline: "Handloom Sarees & Festive Wear",
+          headline_bn: "হ্যান্ডলুম শাড়ি ও উৎসবের পোশাক",
           subhead:
-            "Contemporary silhouettes rooted in the craft of Bangladesh.",
-          subhead_bn: "বাংলাদেশের কারুশিল্পে প্রোথিত আধুনিক সিলুয়েট।",
+            "Authentic hand-woven Jamdani, Rajshahi silk, and festive panjabis.",
+          subhead_bn: "আসল তাঁতের জামদানি, রাজশাহী সিল্ক এবং উৎসবের পাঞ্জাবি।",
           ctaLabel: "Shop New Arrivals",
           ctaLabel_bn: "নতুন সংগ্রহ দেখুন",
           ctaUrl: `${c}/new-in`,
@@ -56,12 +56,12 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
         },
         {
           image: "/ph/songoskriti/hero-weaves.jpg",
-          headline: "The Art of Jamdani",
-          headline_bn: "জামদানির শিল্পকলা",
+          headline: "Dhakai Jamdani & Silk Weaves",
+          headline_bn: "ঢাকাই জামদানি ও সিল্কের বুনন",
           subhead:
-            "Dhakai Jamdani weaving craft, an enduring handloom tradition recognized by UNESCO as Intangible Cultural Heritage of Humanity.",
+            "Traditional geometric motifs hand-loomed by master weavers in Narayanganj.",
           subhead_bn:
-            "ঢাকার ঐতিহ্যবাহী জামদানি বুনন শিল্প, ইউনেস্কো স্বীকৃত অধরা সাংস্কৃতিক ঐতিহ্য।",
+            "নারায়ণগঞ্জের দক্ষ তাঁতিদের হাতে বোনা ঐতিহ্যবাহী জামদানি ও সিল্ক।",
           ctaLabel: "Explore Heritage Weaves",
           ctaLabel_bn: "ঐতিহ্যবাহী বুনন দেখুন",
           ctaUrl: `${c}/heritage`,
@@ -119,8 +119,8 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     s("product_rail", {
       heading: "Signature Sarees",
       heading_bn: "সিগনেচার শাড়ি",
-      subhead: "Handloom stories for every occasion.",
-      subhead_bn: "প্রতিটি উপলক্ষের জন্য হাতে বোনা গল্প।",
+      subhead: "Hand-woven Jamdani, Katan, and pure silk sarees.",
+      subhead_bn: "হাতে বোনা জামদানি, কাতান এবং পিওর সিল্ক শাড়ি।",
       limit: 10,
       source: "collection",
       collection: "sarees",
@@ -136,8 +136,8 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       eyebrow_bn: "ঐতিহ্য সংগ্রহ",
       heading: "THE ART OF JAMDANI",
       heading_bn: "জামদানির শিল্পকলা",
-      body: "Fine threads. Patient hands. A legacy that still moves forward.",
-      body_bn: "সূক্ষ্ম সুতো। ধৈর্যশীল হাত। এক ঐতিহ্য যা এখনও এগিয়ে চলে।",
+      body: "Fine cotton and silk threads woven by hand on traditional wooden pit looms.",
+      body_bn: "কাঠের তাঁতে হাতে বোনা ঐতিহ্যবাহী সুতি ও সিল্কের জামদানি।",
       ctaLabel: "EXPLORE JAMDANI",
       ctaLabel_bn: "জামদানি দেখুন",
       ctaHref: `${c}/jamdani`,
@@ -152,8 +152,8 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     s("product_rail", {
       heading: "New arrivals",
       heading_bn: "নতুন এসেছে",
-      subhead: "New pieces, fresh weaves, just in.",
-      subhead_bn: "নতুন বুনন, সদ্য এসেছে।",
+      subhead: "Latest additions to our seasonal collections.",
+      subhead_bn: "আমাদের সাম্প্রতিক কালেকশনের নতুন সংযোজন।",
       limit: 10,
       source: "collection",
       collection: "new-in",
@@ -167,8 +167,8 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     s("split_feature", {
       heading: "THE FESTIVE EDIT",
       heading_bn: "উৎসবের সাজ",
-      body: "Jamdani drapes, silk textures and modern Panjabis made for celebrations that feel entirely your own.",
-      body_bn: "জামদানি, সিল্ক ও আধুনিক পাঞ্জাবিতে আপনার উৎসব সম্পূর্ণ করুন।",
+      body: "Festive collection featuring pure silk sarees, tailored panjabis, and celebratory attire.",
+      body_bn: "উৎসবের কালেকশন: পিওর সিল্ক শাড়ি, পাঞ্জাবি এবং উৎসবের পোশাক।",
       ctaLabel: "SHOP WOMEN",
       ctaLabel_bn: "নারীর সংগ্রহ",
       ctaUrl: `${c}/women`,
@@ -181,15 +181,15 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     }),
 
     // ────────────────────────────────────────────────────────────────────
-    // 7. MOST LOVED — bestsellers with rating.
+    // 7. FESTIVE SELECTION — curated festive attire
     // Reference per-device override (mobile merchandising): 10 across on
     // desktop, 4 on phones. The bp layer only accepts responsive fields.
     {
       ...s("product_rail", {
-        heading: "Most loved",
-        heading_bn: "সবচেয়ে জনপ্রিয়",
-        subhead: "Pieces our customers return to.",
-        subhead_bn: "যে পণ্যগুলো বারবার ফিরে আসে।",
+        heading: "Festive Selection",
+        heading_bn: "উৎসবের সংগ্রহ",
+        subhead: "Curated handloom sarees and festive attire.",
+        subhead_bn: "নির্বাচিত তাঁতের শাড়ি এবং উৎসবের পোশাক।",
         limit: 10,
         source: "collection",
         collection: "festive",
@@ -317,7 +317,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
           title: "Jamdani",
           image: "/ph/songoskriti/hero-weaves.jpg",
           href: `${c}/jamdani`,
-          subtitle: "UNESCO Intangible Cultural Heritage",
+          subtitle: "Traditional Handloom",
         },
         {
           title: "Rajshahi Silk",
@@ -375,11 +375,11 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     }),
 
     // ────────────────────────────────────────────────────────────────────
-    // 16. WORN BY YOU — social proof / UGC gallery (6–9 images)
+    // 16. SEASONAL LOOKBOOK — editorial lookbook
     // ────────────────────────────────────────────────────────────────────
     s("ugc_gallery", {
-      heading: "WORN BY YOU",
-      heading_bn: "আপনার পরিধানে",
+      heading: "SEASONAL LOOKBOOK",
+      heading_bn: "সিজনাল লুকবুক",
       subhead: "FLAME FASHION BD LOOKBOOK",
       subhead_bn: "ফ্লেম ফ্যাশন লুকবুক",
       handleLabel: "Follow @flamefashionbd",
@@ -420,13 +420,6 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     // 19. WHY SONGOSKRITI — trust/service strip
     // ────────────────────────────────────────────────────────────────────
     s("trust_footer", {
-      // Lane A paired authoring (§(s.8)): the declared scalar i1–i3 titles
-      // are byte-identical to the catalogue defaults `parseSection` injects
-      // ("Fast delivery" / "Easy returns" / "Secure payment"), so no rendered
-      // copy changes — the widget prefers the `items[]` rows above whenever
-      // they are present (`songoskriti.tsx:531-547`, pinned by
-      // `songoskriti.test.tsx:252-259`). The pairs move the three gate slots
-      // from injected-fallback to authored-ok.
       i1Title: "Fast delivery",
       i1Title_bn: "দ্রুত ডেলিভারি",
       i2Title: "Easy returns",
@@ -466,25 +459,11 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     }),
 
     // ────────────────────────────────────────────────────────────────────
-    // 20. STORE LOCATIONS — flagship retail presence
+    // 20. STORE LOCATIONS — clean default (no fictional physical outlets)
     // ────────────────────────────────────────────────────────────────────
     s("store_locator", {
-      heading: "VISIT SONGOSKRITI",
-      heading_bn: "সংস্কৃতি দেখুন",
-      images:
-        "/ph/songoskriti/cat-women.png, /ph/songoskriti/cat-men.jpg, /ph/songoskriti/hero-festive.jpg",
-      s1Name: "Uttara Flagship",
-      s1Name_bn: "উত্তরা ফ্ল্যাগশিপ",
-      s1Hours: "Open 10am – 9pm daily",
-      s1Hours_bn: "প্রতিদিন সকাল ১০টা – রাত ৯টা",
-      s2Name: "Gulshan Showroom",
-      s2Name_bn: "গুলশান শোরুম",
-      s2Hours: "Open 10am – 9pm daily",
-      s2Hours_bn: "প্রতিদিন সকাল ১০টা – রাত ৯টা",
-      s3Name: "Chattogram Store",
-      s3Name_bn: "চট্টগ্রাম স্টোর",
-      s3Hours: "Open 10am – 8pm daily",
-      s3Hours_bn: "প্রতিদিন সকাল ১০টা – রাত ৮টা",
+      heading: "Store Locations",
+      heading_bn: "স্টোর লোকেশন",
     }),
   ];
 }

@@ -197,6 +197,7 @@ describe("CollectionView header-fallback de-theming (HEADER DE-THEMING lane)", (
 });
 
 import {
+  deriveCollectionHierarchy,
   extractWeaveFacets,
   filterCollectionProducts,
   sortCollectionProducts,
@@ -339,7 +340,7 @@ describe("CollectionView Faceting & Filtering", () => {
     expect(desc.map((p) => p.id)).toEqual(["p-1", "p-2", "p-3"]);
   });
 
-  it("renders desktop persistent filter sidebar markup and visible result count", () => {
+  it("renders desktop filter toolbar markup and visible result count", () => {
     const testPayload = payload({
       themeKey: "songoskriti",
       collectionSlug: "sarees",
@@ -359,5 +360,104 @@ describe("CollectionView Faceting & Filtering", () => {
     expect(html).toContain("Pure Silk");
     expect(html).toContain("Dhakai Jamdani");
     expect(html).toContain("3 Products");
+  });
+
+  it("dynamically derives collection sub-navigation hierarchy without hardcoded third-party routes", () => {
+    // Menu with Women -> Sarees, Salwar Kameez, Panjabi (no Taaga Fusion)
+    const customMenu = [
+      {
+        id: "m-1",
+        label: "Women",
+        label_bn: "নারী",
+        url: "/c/women",
+        children: [
+          { id: "m-1-1", label: "Sarees", label_bn: "শাড়ি", url: "/c/sarees" },
+          { id: "m-1-2", label: "Salwar Kameez", label_bn: "সালোয়ার কামিজ", url: "/c/salwar-kameez" },
+        ],
+      },
+      {
+        id: "m-2",
+        label: "Men",
+        label_bn: "পুরুষ",
+        url: "/c/men",
+        children: [
+          { id: "m-2-1", label: "Panjabi", label_bn: "পাঞ্জাবি", url: "/c/panjabi" },
+        ],
+      },
+    ];
+
+    // When viewing parent 'women', pills should be its children (Sarees, Salwar Kameez)
+    const womenHierarchy = deriveCollectionHierarchy({
+      collectionSlug: "women",
+      menuTree: customMenu as any,
+    });
+    expect(womenHierarchy.parent).toBeUndefined();
+    expect(womenHierarchy.pills.map((p) => p.slug)).toEqual(["women", "sarees", "salwar-kameez"]);
+    expect(womenHierarchy.pills[0].label).toBe("All Women");
+    expect(womenHierarchy.pills.map((p) => p.slug)).not.toContain("taaga-fusion");
+
+    // When viewing child 'sarees', parent should be Women and pills should be sibling subcategories
+    const sareesHierarchy = deriveCollectionHierarchy({
+      collectionSlug: "sarees",
+      menuTree: customMenu as any,
+    });
+    expect(sareesHierarchy.parent?.slug).toBe("women");
+    expect(sareesHierarchy.pills.map((p) => p.slug)).toEqual(["sarees", "salwar-kameez"]);
+  });
+
+  it("accurately filters multi-variant products if ANY variant matches the price range", () => {
+    const multiVariantProduct = {
+      id: "mv-1",
+      title: "Handloom Muslin Saree with Silver Zari",
+      slug: "muslin-saree-zari",
+      tags: ["muslin", "saree"],
+      product_variants: [
+        { id: "v-cheap", price_amount_minor_int: 350000, stock_quantity: 2 }, // BDT 3,500 (under 5k)
+        { id: "v-luxe", price_amount_minor_int: 750000, stock_quantity: 1 },  // BDT 7,500 (5k-10k)
+      ],
+    } as unknown as CollectionProduct;
+
+    // Matches under_5000 via v-cheap
+    const under5k = filterCollectionProducts([multiVariantProduct], {
+      availability: "all",
+      price: "under_5000",
+      tags: [],
+    });
+    expect(under5k).toHaveLength(1);
+
+    // Matches 5000_10000 via v-luxe
+    const midRange = filterCollectionProducts([multiVariantProduct], {
+      availability: "all",
+      price: "5000_10000",
+      tags: [],
+    });
+    expect(midRange).toHaveLength(1);
+
+    // Does NOT match above_10000
+    const above10k = filterCollectionProducts([multiVariantProduct], {
+      availability: "all",
+      price: "above_10000",
+      tags: [],
+    });
+    expect(above10k).toHaveLength(0);
+
+    // Matches custom BDT min/max price range
+    const customMatch = filterCollectionProducts([multiVariantProduct], {
+      availability: "all",
+      price: "all",
+      minPriceBDT: 3000,
+      maxPriceBDT: 4000,
+      tags: [],
+    });
+    expect(customMatch).toHaveLength(1);
+
+    const customNoMatch = filterCollectionProducts([multiVariantProduct], {
+      availability: "all",
+      price: "all",
+      minPriceBDT: 10000,
+      maxPriceBDT: 20000,
+      tags: [],
+    });
+    expect(customNoMatch).toHaveLength(0);
   });
 });

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { PluginLayer } from "@/components/store/PluginLayer";
@@ -36,325 +36,129 @@ type DepartmentContext = {
 };
 
 /**
- * Editorial department taxonomy: maps major fashion departments and subcategories
- * to their parent relationships and curated discovery pills.
+ * Dynamically derives collection hierarchy and discovery pills from
+ * merchant navigation menus, eliminating hardcoded department taxonomies
+ * and ensuring unpublished collections (e.g. Taaga Fusion) never leak.
  */
-const DEPARTMENT_TAXONOMY: Record<string, DepartmentContext> = {
-  women: {
-    pills: [
-      { slug: "women", label: "All Women", label_bn: "সকল কালেকশন" },
-      { slug: "sarees", label: "Sarees", label_bn: "শাড়ি" },
-      { slug: "jamdani", label: "Dhakai Jamdani", label_bn: "ঢাকাই জামদানি" },
-      {
-        slug: "heritage-handloom",
-        label: "Heritage Handloom",
-        label_bn: "ঐতিহ্যবাহী তাঁত",
-      },
-      { slug: "festive", label: "Festive", label_bn: "উৎসব" },
-      {
-        slug: "wedding",
-        label: "Wedding & Bridal",
-        label_bn: "বিয়ে ও ব্রাইডাল",
-      },
-      {
-        slug: "rajshahi-silk",
-        label: "Rajshahi Silk",
-        label_bn: "রাজশাহী সিল্ক",
-      },
-      { slug: "jewellery", label: "Jewellery", label_bn: "গহনা" },
-      { slug: "new-in", label: "New Arrivals", label_bn: "নতুন আগমন" },
-      { slug: "best-sellers", label: "Best Sellers", label_bn: "জনপ্রিয়" },
-    ],
-  },
-  sarees: {
-    parent: { slug: "women", name: "Women", name_bn: "নারী" },
-    pills: [
-      { slug: "sarees", label: "All Sarees", label_bn: "সকল শাড়ি" },
-      { slug: "jamdani", label: "Dhakai Jamdani", label_bn: "ঢাকাই জামদানি" },
-      {
-        slug: "heritage-handloom",
-        label: "Heritage Handloom",
-        label_bn: "ঐতিহ্যবাহী তাঁত",
-      },
-      { slug: "festive", label: "Festive Sarees", label_bn: "উৎসবের শাড়ি" },
-      { slug: "wedding", label: "Bridal Sarees", label_bn: "ব্রাইডাল শাড়ি" },
-      { slug: "women", label: "All Women", label_bn: "সকল কালেকশন" },
-    ],
-  },
-  jamdani: {
-    parent: { slug: "sarees", name: "Sarees", name_bn: "শাড়ি" },
-    pills: [
-      { slug: "jamdani", label: "Dhakai Jamdani", label_bn: "ঢাকাই জামদানি" },
-      { slug: "sarees", label: "All Sarees", label_bn: "সকল শাড়ি" },
-      {
-        slug: "heritage-handloom",
-        label: "Heritage Handloom",
-        label_bn: "ঐতিহ্যবাহী তাঁত",
-      },
-      { slug: "festive", label: "Festive", label_bn: "উৎসব" },
-      { slug: "wedding", label: "Wedding", label_bn: "বিয়ে" },
-    ],
-  },
-  "heritage-handloom": {
-    parent: { slug: "women", name: "Women", name_bn: "নারী" },
-    pills: [
-      {
-        slug: "heritage-handloom",
-        label: "Heritage Handloom",
-        label_bn: "ঐতিহ্যবাহী তাঁত",
-      },
-      { slug: "jamdani", label: "Dhakai Jamdani", label_bn: "ঢাকাই জামদানি" },
-      { slug: "sarees", label: "Sarees", label_bn: "শাড়ি" },
-      { slug: "nakshi-kantha", label: "Nakshi Kantha", label_bn: "নকশী কাঁথা" },
-      {
-        slug: "panjabi",
-        label: "Handloom Panjabi",
-        label_bn: "তাঁতের পাঞ্জাবি",
-      },
-    ],
-  },
-  festive: {
-    parent: { slug: "women", name: "Women", name_bn: "নারী" },
-    pills: [
-      { slug: "festive", label: "All Festive", label_bn: "উৎসব কালেকশন" },
-      { slug: "eid-festive", label: "Eid Festive", label_bn: "ঈদ কালেকশন" },
-      {
-        slug: "wedding",
-        label: "Wedding & Bridal",
-        label_bn: "বিয়ে ও ব্রাইডাল",
-      },
-      { slug: "sarees", label: "Festive Sarees", label_bn: "উৎসবের শাড়ি" },
-      {
-        slug: "panjabi",
-        label: "Festive Panjabi",
-        label_bn: "উৎসবের পাঞ্জাবি",
-      },
-      { slug: "groom", label: "Groom Wear", label_bn: "বরের পোশাক" },
-    ],
-  },
-  wedding: {
-    parent: {
-      slug: "festive",
-      name: "Festive & Occasion",
-      name_bn: "উৎসব ও অনুষ্ঠান",
-    },
-    pills: [
-      {
-        slug: "wedding",
-        label: "Wedding & Bridal",
-        label_bn: "বিয়ে ও ব্রাইডাল",
-      },
-      { slug: "groom", label: "Groom & Sherwani", label_bn: "বর ও শেরওয়ানি" },
-      { slug: "sarees", label: "Bridal Sarees", label_bn: "ব্রাইডাল শাড়ি" },
-      { slug: "jamdani", label: "Dhakai Jamdani", label_bn: "ঢাকাই জামদানি" },
-      {
-        slug: "jewellery",
-        label: "Bridal Jewellery",
-        label_bn: "ব্রাইডাল গহনা",
-      },
-      { slug: "mehendi", label: "Mehendi", label_bn: "মেহেদি" },
-      { slug: "sangeet", label: "Sangeet", label_bn: "সংগীত" },
-    ],
-  },
-  "taaga-fusion": {
-    parent: { slug: "women", name: "Women", name_bn: "নারী" },
-    pills: [
-      { slug: "taaga-fusion", label: "Taaga Fusion", label_bn: "তাগা ফিউশন" },
-      {
-        slug: "artisan-essentials",
-        label: "Artisan Essentials",
-        label_bn: "কারিগর কালেকশন",
-      },
-      { slug: "jewellery", label: "Jewellery", label_bn: "গহনা" },
-      { slug: "women", label: "All Women", label_bn: "নারী কালেকশন" },
-      { slug: "new-in", label: "New In", label_bn: "নতুন আগমন" },
-    ],
-  },
-  "artisan-essentials": {
-    parent: {
-      slug: "taaga-fusion",
-      name: "Modern & Craft",
-      name_bn: "আধুনিক ও কারুশিল্প",
-    },
-    pills: [
-      {
-        slug: "artisan-essentials",
-        label: "Artisan Essentials",
-        label_bn: "কারিগর কালেকশন",
-      },
-      { slug: "taaga-fusion", label: "Taaga Fusion", label_bn: "তাগা ফিউশন" },
-      {
-        slug: "heritage-handloom",
-        label: "Heritage Handloom",
-        label_bn: "ঐতিহ্যবাহী তাঁত",
-      },
-      { slug: "nakshi-kantha", label: "Nakshi Kantha", label_bn: "নকশী কাঁথা" },
-    ],
-  },
-  jewellery: {
-    parent: { slug: "women", name: "Women", name_bn: "নারী" },
-    pills: [
-      { slug: "jewellery", label: "All Jewellery", label_bn: "সকল গহনা" },
-      { slug: "wedding", label: "Bridal Sets", label_bn: "ব্রাইডাল সেট" },
-      { slug: "taaga-fusion", label: "Contemporary", label_bn: "আধুনিক গহনা" },
-      { slug: "sarees", label: "Sarees Match", label_bn: "শাড়ির গহনা" },
-    ],
-  },
-  men: {
-    pills: [
-      { slug: "men", label: "All Men", label_bn: "সকল কালেকশন" },
-      {
-        slug: "panjabi",
-        label: "Panjabi & Kurta",
-        label_bn: "পাঞ্জাবি ও কুর্তা",
-      },
-      { slug: "groom", label: "Groom & Wedding", label_bn: "বর ও বিয়ে" },
-      {
-        slug: "heritage-handloom",
-        label: "Heritage Handloom",
-        label_bn: "ঐতিহ্যবাহী তাঁত",
-      },
-      { slug: "everyday", label: "Everyday Wear", label_bn: "দৈনন্দিন পোশাক" },
-      { slug: "festive", label: "Festive Wear", label_bn: "উৎসবের পোশাক" },
-      { slug: "new-in", label: "New Arrivals", label_bn: "নতুন আগমন" },
-      { slug: "best-sellers", label: "Best Sellers", label_bn: "জনপ্রিয়" },
-    ],
-  },
-  panjabi: {
-    parent: { slug: "men", name: "Men", name_bn: "পুরুষ" },
-    pills: [
-      { slug: "panjabi", label: "All Panjabis", label_bn: "সকল পাঞ্জাবি" },
-      { slug: "groom", label: "Groom & Wedding", label_bn: "বর ও শেরওয়ানি" },
-      {
-        slug: "heritage-handloom",
-        label: "Heritage Handloom",
-        label_bn: "তাঁত পাঞ্জাবি",
-      },
-      { slug: "eid-festive", label: "Eid Festive", label_bn: "ঈদ কালেকশন" },
-      {
-        slug: "everyday",
-        label: "Everyday Kurta",
-        label_bn: "দৈনন্দিন কুর্তা",
-      },
-      { slug: "men", label: "All Men", label_bn: "সকল কালেকশন" },
-    ],
-  },
-  groom: {
-    parent: { slug: "men", name: "Men", name_bn: "পুরুষ" },
-    pills: [
-      { slug: "groom", label: "Groom & Wedding", label_bn: "বর ও বিয়ে" },
-      { slug: "panjabi", label: "Panjabis", label_bn: "পাঞ্জাবি" },
-      {
-        slug: "wedding",
-        label: "Wedding Collection",
-        label_bn: "বিয়ে কালেকশন",
-      },
-      { slug: "festive", label: "Festive Wear", label_bn: "উৎসব" },
-    ],
-  },
-  everyday: {
-    parent: { slug: "men", name: "Men", name_bn: "পুরুষ" },
-    pills: [
-      { slug: "everyday", label: "Everyday Wear", label_bn: "দৈনন্দিন পোশাক" },
-      {
-        slug: "panjabi",
-        label: "Casual Panjabi",
-        label_bn: "ক্যাজুয়াল পাঞ্জাবি",
-      },
-      { slug: "men", label: "All Men", label_bn: "সকল পুরুষ কালেকশন" },
-    ],
-  },
-  "eid-festive": {
-    parent: { slug: "festive", name: "Festive", name_bn: "উৎসব" },
-    pills: [
-      { slug: "eid-festive", label: "Eid Festive", label_bn: "ঈদ কালেকশন" },
-      { slug: "panjabi", label: "Men's Panjabi", label_bn: "পুরুষের পাঞ্জাবি" },
-      { slug: "sarees", label: "Festive Sarees", label_bn: "উৎসবের শাড়ি" },
-      { slug: "kids", label: "Kids Festive", label_bn: "কিডস কালেকশন" },
-      { slug: "family", label: "Family Outfits", label_bn: "ফ্যামিলি আউটফিট" },
-    ],
-  },
-  living: {
-    pills: [
-      { slug: "living", label: "All Living", label_bn: "সকল হোম ও লিভিং" },
-      { slug: "nakshi-kantha", label: "Nakshi Kantha", label_bn: "নকশী কাঁথা" },
-      {
-        slug: "heritage",
-        label: "Heritage Craft",
-        label_bn: "ঐতিহ্যবাহী কারুশিল্প",
-      },
-      { slug: "gifting", label: "Gift Items", label_bn: "উপহার সামগ্রী" },
-    ],
-  },
-  "rajshahi-silk": {
-    parent: { slug: "women", name: "Women", name_bn: "নারী" },
-    pills: [
-      {
-        slug: "rajshahi-silk",
-        label: "Rajshahi Silk",
-        label_bn: "রাজশাহী সিল্ক",
-      },
-      { slug: "sarees", label: "All Sarees", label_bn: "সকল শাড়ি" },
-      { slug: "jamdani", label: "Dhakai Jamdani", label_bn: "ঢাকাই জামদানি" },
-      {
-        slug: "heritage-handloom",
-        label: "Heritage Handloom",
-        label_bn: "ঐতিহ্যবাহী তাঁত",
-      },
-      { slug: "women", label: "All Women", label_bn: "সকল কালেকশন" },
-    ],
-  },
-  "nakshi-kantha": {
-    parent: {
-      slug: "living",
-      name: "Living & Heritage",
-      name_bn: "হোম ও ঐতিহ্য",
-    },
-    pills: [
-      { slug: "nakshi-kantha", label: "Nakshi Kantha", label_bn: "নকশী কাঁথা" },
-      { slug: "heritage", label: "Heritage Craft", label_bn: "কারুশিল্প" },
-      { slug: "living", label: "Home & Living", label_bn: "হোম ও লিভিং" },
-      { slug: "gifting", label: "Gifting", label_bn: "উপহার" },
-    ],
-  },
-  kids: {
-    pills: [
-      { slug: "kids", label: "All Kids", label_bn: "সকল কিডস" },
-      { slug: "family", label: "Family Matching", label_bn: "ফ্যামিলি কম্বো" },
-      { slug: "eid-festive", label: "Eid & Festive", label_bn: "ঈদ ও উৎসব" },
-      { slug: "new-in", label: "New Arrivals", label_bn: "নতুন আগমন" },
-    ],
-  },
-  family: {
-    parent: { slug: "kids", name: "Kids & Family", name_bn: "কিডস ও পরিবার" },
-    pills: [
-      { slug: "family", label: "Family Sets", label_bn: "ফ্যামিলি সেট" },
-      { slug: "kids", label: "Kids Wear", label_bn: "কিডস পোশাক" },
-      { slug: "eid-festive", label: "Eid Matching", label_bn: "ঈদ ম্যাচিং" },
-      { slug: "festive", label: "Festive", label_bn: "উৎসব" },
-    ],
-  },
-  "new-in": {
-    pills: [
-      { slug: "new-in", label: "New Arrivals", label_bn: "নতুন আগমন" },
-      { slug: "best-sellers", label: "Best Sellers", label_bn: "জনপ্রিয় পণ্য" },
-      { slug: "women", label: "Women", label_bn: "নারী" },
-      { slug: "men", label: "Men", label_bn: "পুরুষ" },
-      { slug: "festive", label: "Festive", label_bn: "উৎসব" },
-      { slug: "living", label: "Living", label_bn: "লিভিং" },
-    ],
-  },
-  "best-sellers": {
-    pills: [
-      { slug: "best-sellers", label: "Best Sellers", label_bn: "সেরা বিক্রিত" },
-      { slug: "new-in", label: "New Arrivals", label_bn: "নতুন আগমন" },
-      { slug: "women", label: "Women", label_bn: "নারী" },
-      { slug: "men", label: "Men", label_bn: "পুরুষ" },
-      { slug: "sarees", label: "Sarees", label_bn: "শাড়ি" },
-      { slug: "panjabi", label: "Panjabi", label_bn: "পাঞ্জাবি" },
-    ],
-  },
-};
+export function deriveCollectionHierarchy({
+  collectionSlug,
+  menuTree,
+  fallbackMenu = HEADER_FALLBACK_MENU,
+}: {
+  collectionSlug: string;
+  menuTree?: {
+    id?: string;
+    label: string;
+    label_bn?: string;
+    url: string;
+    children?: unknown[];
+  }[];
+  fallbackMenu?: typeof HEADER_FALLBACK_MENU;
+}): DepartmentContext {
+  const sourceTree =
+    menuTree && menuTree.length > 0 ? menuTree : fallbackMenu;
+
+  type NavItem = {
+    id?: string;
+    label: string;
+    label_bn?: string;
+    url: string;
+    children?: NavItem[];
+  };
+
+  const normalizeSlug = (url: string) =>
+    (url || "").replace(/^\/c\//, "").replace(/^\//, "").split("?")[0].trim();
+
+  const target = collectionSlug.toLowerCase().trim();
+
+  const collectChildPills = (node: NavItem): DiscoveryPill[] => {
+    const pills: DiscoveryPill[] = [];
+    if (!node.children || node.children.length === 0) return pills;
+    for (const child of node.children) {
+      const cSlug = normalizeSlug(child.url);
+      if (cSlug && !pills.some((p) => p.slug === cSlug)) {
+        pills.push({
+          slug: cSlug,
+          label: child.label,
+          label_bn: child.label_bn,
+        });
+      }
+      if (child.children && child.children.length > 0) {
+        for (const grandchild of child.children) {
+          const gcSlug = normalizeSlug(grandchild.url);
+          if (gcSlug && !pills.some((p) => p.slug === gcSlug)) {
+            pills.push({
+              slug: gcSlug,
+              label: grandchild.label,
+              label_bn: grandchild.label_bn,
+            });
+          }
+        }
+      }
+    }
+    return pills;
+  };
+
+  const searchTree = (
+    items: NavItem[],
+    parentItem?: NavItem,
+  ): {
+    node: NavItem;
+    parent?: ParentCategory;
+    siblings: DiscoveryPill[];
+  } | null => {
+    for (const item of items) {
+      const itemSlug = normalizeSlug(item.url);
+      if (itemSlug === target) {
+        const parent = parentItem
+          ? {
+              slug: normalizeSlug(parentItem.url),
+              name: parentItem.label,
+              name_bn: parentItem.label_bn,
+            }
+          : undefined;
+        const siblings: DiscoveryPill[] = items.map((i) => ({
+          slug: normalizeSlug(i.url),
+          label: i.label,
+          label_bn: i.label_bn,
+        }));
+        return { node: item, parent, siblings };
+      }
+      if (item.children && item.children.length > 0) {
+        const found = searchTree(item.children, item);
+        if (found) return found;
+      }
+    }
+    return null;
+  };
+
+  const match = searchTree(sourceTree as NavItem[]);
+
+  if (match) {
+    const childPills = collectChildPills(match.node);
+    if (childPills.length > 0) {
+      const pills: DiscoveryPill[] = [
+        {
+          slug: collectionSlug,
+          label: `All ${match.node.label}`,
+          label_bn: match.node.label_bn
+            ? `সকল ${match.node.label_bn}`
+            : undefined,
+        },
+        ...childPills.filter((p) => p.slug !== collectionSlug),
+      ];
+      return { parent: match.parent, pills };
+    }
+    if (match.siblings.length > 1) {
+      return { parent: match.parent, pills: match.siblings };
+    }
+    if (match.parent) {
+      return { parent: match.parent, pills: [] };
+    }
+  }
+
+  return { pills: [] };
+}
 
 export type CollectionProduct = CollectionPayload["products"][number];
 
@@ -392,7 +196,6 @@ export const KNOWN_TAG_LABELS: Record<string, { en: string; bn: string }> = {
   casual: { en: "Casual Wear", bn: "দৈনন্দিন পোশাক" },
   linen: { en: "Linen", bn: "লিনেন" },
   khadi: { en: "Handspun Khadi", bn: "খাদি" },
-  taaga: { en: "Taaga Fusion", bn: "তাগা ফিউশন" },
 };
 
 export const PRICE_OPTIONS = [
@@ -460,24 +263,49 @@ export function filterCollectionProducts(
     availability: "all" | "in_stock" | "out_of_stock";
     price: "all" | "under_5000" | "5000_10000" | "above_10000";
     tags: readonly string[];
+    minPriceBDT?: number | null;
+    maxPriceBDT?: number | null;
   },
 ): CollectionProduct[] {
   return products.filter((p) => {
     const variants = p.product_variants ?? [];
-    const min = variants.length
-      ? Math.min(...variants.map((v) => Number(v.price_amount_minor_int) || 0))
-      : 0;
+    const prices = variants.length
+      ? variants.map((v) => Number(v.price_amount_minor_int) || 0)
+      : [0];
     const inStock = variants.some((v) => (v.stock_quantity ?? 0) > 0);
 
     // Availability filter
     if (filters.availability === "in_stock" && !inStock) return false;
     if (filters.availability === "out_of_stock" && inStock) return false;
 
-    // Price filtering (BDT minor units: 5,000 BDT = 500,000 minor)
-    if (filters.price === "under_5000" && min >= 500000) return false;
-    if (filters.price === "5000_10000" && (min < 500000 || min > 1000000))
-      return false;
-    if (filters.price === "above_10000" && min <= 1000000) return false;
+    // Price bracket filtering (BDT minor units: 5,000 BDT = 500,000 minor)
+    // Matches if ANY variant falls into the selected price bracket
+    if (filters.price === "under_5000") {
+      const matches = prices.some((price) => price < 500000);
+      if (!matches) return false;
+    }
+    if (filters.price === "5000_10000") {
+      const matches = prices.some(
+        (price) => price >= 500000 && price <= 1000000,
+      );
+      if (!matches) return false;
+    }
+    if (filters.price === "above_10000") {
+      const matches = prices.some((price) => price > 1000000);
+      if (!matches) return false;
+    }
+
+    // Flexible custom BDT range if supplied
+    if (filters.minPriceBDT != null && filters.minPriceBDT > 0) {
+      const minMinor = filters.minPriceBDT * 100;
+      const matches = prices.some((price) => price >= minMinor);
+      if (!matches) return false;
+    }
+    if (filters.maxPriceBDT != null && filters.maxPriceBDT > 0) {
+      const maxMinor = filters.maxPriceBDT * 100;
+      const matches = prices.some((price) => price <= maxMinor);
+      if (!matches) return false;
+    }
 
     // Weave / Material / Tag filter (exact tag membership, no title matching)
     if (filters.tags.length > 0) {
@@ -566,6 +394,27 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
     "featured" | "price_asc" | "price_desc" | "title"
   >("featured");
   const [visibleCount, setVisibleCount] = useState<number>(12);
+  const [openDropdown, setOpenDropdown] = useState<
+    "weave" | "price" | "avail" | null
+  >(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpenDropdown(null);
+      }
+    }
+    if (openDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }
+  }, [openDropdown]);
 
   useEffect(() => {
     if (mobileFilterOpen) {
@@ -629,59 +478,42 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
     }
   }
 
-  // 2. Department & Subcategory Hierarchy Resolution
-  let parentInfo: ParentCategory | null = null;
-  let subnavPills: DiscoveryPill[] = [];
+  // 2. Department & Subcategory Hierarchy Resolution (dynamically derived)
+  const deptContext = deriveCollectionHierarchy({
+    collectionSlug: collection.slug,
+    menuTree: menus?.header,
+    fallbackMenu: HEADER_FALLBACK_MENU,
+  });
+  const parentInfo: ParentCategory | null = deptContext.parent ?? null;
+  let subnavPills: DiscoveryPill[] = deptContext.pills;
 
-  const taxonomy = DEPARTMENT_TAXONOMY[collection.slug];
-  if (taxonomy) {
-    parentInfo = taxonomy.parent ?? null;
-    subnavPills = taxonomy.pills;
-  } else {
-    // Try to find in HEADER_FALLBACK_MENU tree
-    const findInTree = (
-      items: typeof HEADER_FALLBACK_MENU,
-      targetSlug: string,
-      parent?: ParentCategory,
-    ): { parent: ParentCategory | null; pills: DiscoveryPill[] } | null => {
-      for (const item of items) {
-        const itemSlug = item.url.replace(/^\/c\//, "");
-        if (itemSlug === targetSlug) {
-          const pills: DiscoveryPill[] = (item.children ?? []).map((c) => ({
-            slug: c.url.replace(/^\/c\//, ""),
-            label: c.label,
-          }));
-          return { parent: parent ?? null, pills };
-        }
-        if (item.children) {
-          const found = findInTree(
-            item.children as typeof HEADER_FALLBACK_MENU,
-            targetSlug,
-            {
-              slug: itemSlug,
-              name: item.label,
-            },
-          );
-          if (found) return found;
-        }
-      }
-      return null;
-    };
-
-    const treeMatch = findInTree(HEADER_FALLBACK_MENU, collection.slug);
-    if (treeMatch && treeMatch.pills.length > 0) {
-      parentInfo = treeMatch.parent;
-      subnavPills = treeMatch.pills;
-    } else if (categories.length > 0) {
-      subnavPills = categories.map((cat) => ({
-        slug: (cat.url || "").replace(/^\/c\//, "").replace(/^\//, ""),
-        label: cat.label,
-      }));
-    }
+  if (subnavPills.length === 0 && categories.length > 0) {
+    subnavPills = categories.map((cat) => ({
+      slug: (cat.url || "").replace(/^\/c\//, "").replace(/^\//, ""),
+      label: cat.label,
+    }));
   }
 
   // Meaningful facets extracted dynamically from actual products in this collection
-  const availableFacets = extractWeaveFacets(products, collection.slug);
+  const baseFacets = extractWeaveFacets(products, collection.slug);
+
+  // Dynamically recalculate facet counts against products matching active price & availability filters
+  const candidateProducts = filterCollectionProducts(products, {
+    availability: filterAvailability,
+    price: filterPrice,
+    tags: [],
+  });
+  const candidateFacetCounts = new Map(
+    extractWeaveFacets(candidateProducts, collection.slug).map((f) => [
+      f.tag,
+      f.count,
+    ]),
+  );
+
+  const availableFacets: FilterFacetOption[] = baseFacets.map((facet) => ({
+    ...facet,
+    count: candidateFacetCounts.get(facet.tag) ?? 0,
+  }));
 
   const filteredProducts = filterCollectionProducts(products, {
     availability: filterAvailability,
@@ -904,9 +736,13 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
         </div>
       )}
 
-      {/* ── 3. Merchandising Filter & Sort Toolbar ── */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 mb-8">
-        <div className="py-4 border-y border-border/40 sticky top-[64px] bg-background/95 backdrop-blur-xs z-20">
+      {/* ── 3. Merchandising Horizontal Filter & Sort Toolbar ── */}
+      <div
+        ref={dropdownRef}
+        aria-label={t("Filter products", "পণ্য ফিল্টার")}
+        className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 mb-8"
+      >
+        <div className="py-3 border-y border-border/60 sticky top-[64px] bg-background/95 backdrop-blur-xs z-20">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               {/* Mobile filter trigger */}
@@ -926,6 +762,258 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                 )}
               </button>
 
+              {/* Desktop Horizontal Filter Dropdowns */}
+              <div className="hidden lg:flex items-center gap-2.5">
+                {/* 1. Weave & Material Dropdown */}
+                {availableFacets.length > 0 && (
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setOpenDropdown(
+                          openDropdown === "weave" ? null : "weave",
+                        )
+                      }
+                      className={`inline-flex items-center gap-2 px-3.5 py-1.5 text-[12px] font-medium tracking-wide uppercase transition-colors cursor-pointer border ${
+                        selectedTags.length > 0
+                          ? "bg-foreground text-background border-foreground font-semibold"
+                          : "bg-background text-foreground/80 hover:text-foreground border-border/70 hover:border-border"
+                      }`}
+                    >
+                      <span>{t("Weave & Material", "তাঁত ও উপাদান")}</span>
+                      {selectedTags.length > 0 && (
+                        <span className="size-4 rounded-full bg-background text-foreground text-[10px] font-bold inline-flex items-center justify-center">
+                          {selectedTags.length}
+                        </span>
+                      )}
+                      <ChevronDown
+                        className={`size-3.5 transition-transform duration-200 ${openDropdown === "weave" ? "rotate-180" : ""}`}
+                      />
+                    </button>
+
+                    <div
+                      className={`absolute top-full left-0 mt-2 w-72 bg-background border border-border/80 shadow-lg p-4 z-40 ${
+                        openDropdown === "weave" ? "block" : "hidden"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between pb-2 mb-3 border-b border-border/40">
+                        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                          {t("Select Weave", "তাঁত বাছাই")}
+                        </span>
+                        {selectedTags.length > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => setSelectedTags([])}
+                            className="text-[11px] text-muted-foreground hover:text-foreground underline cursor-pointer"
+                          >
+                            {t("Clear", "মুছুন")}
+                          </button>
+                        )}
+                      </div>
+                      <ul className="space-y-2 max-h-60 overflow-y-auto pr-1">
+                        {availableFacets.map((facet) => {
+                          const isChecked = selectedTags.includes(facet.tag);
+                          const facetLabel =
+                            lang === "bn" && facet.label_bn
+                              ? facet.label_bn
+                              : facet.label;
+                          return (
+                            <li
+                              key={facet.tag}
+                              className="flex items-center justify-between text-[13px]"
+                            >
+                              <label className="flex items-center gap-2.5 cursor-pointer text-foreground/85 hover:text-foreground select-none">
+                                <input
+                                  type="checkbox"
+                                  checked={isChecked}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setSelectedTags([
+                                        ...selectedTags,
+                                        facet.tag,
+                                      ]);
+                                    } else {
+                                      setSelectedTags(
+                                        selectedTags.filter(
+                                          (t) => t !== facet.tag,
+                                        ),
+                                      );
+                                    }
+                                  }}
+                                  className="size-4 rounded-xs border-border/80 text-foreground accent-foreground cursor-pointer"
+                                />
+                                <span>{facetLabel}</span>
+                              </label>
+                              <span className="text-[11px] text-muted-foreground tabular-nums">
+                                {facet.count}
+                              </span>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </div>
+                )}
+
+                {/* 2. Price Range Dropdown */}
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setOpenDropdown(
+                        openDropdown === "price" ? null : "price",
+                      )
+                    }
+                    className={`inline-flex items-center gap-2 px-3.5 py-1.5 text-[12px] font-medium tracking-wide uppercase transition-colors cursor-pointer border ${
+                      filterPrice !== "all"
+                        ? "bg-foreground text-background border-foreground font-semibold"
+                        : "bg-background text-foreground/80 hover:text-foreground border-border/70 hover:border-border"
+                    }`}
+                  >
+                    <span>
+                      {filterPrice === "all"
+                        ? t("Price", "মূল্য")
+                        : lang === "bn"
+                          ? PRICE_OPTIONS.find((o) => o.key === filterPrice)?.bn
+                          : PRICE_OPTIONS.find((o) => o.key === filterPrice)?.en}
+                    </span>
+                    <ChevronDown
+                      className={`size-3.5 transition-transform duration-200 ${openDropdown === "price" ? "rotate-180" : ""}`}
+                    />
+                  </button>
+
+                  <div
+                    className={`absolute top-full left-0 mt-2 w-64 bg-background border border-border/80 shadow-lg p-4 z-40 ${
+                      openDropdown === "price" ? "block" : "hidden"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between pb-2 mb-3 border-b border-border/40">
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        {t("Price (BDT)", "মূল্য সীমা")}
+                      </span>
+                      {filterPrice !== "all" && (
+                        <button
+                          type="button"
+                          onClick={() => setFilterPrice("all")}
+                          className="text-[11px] text-muted-foreground hover:text-foreground underline cursor-pointer"
+                        >
+                          {t("Reset", "রিসেট")}
+                        </button>
+                      )}
+                    </div>
+                    <ul className="space-y-2">
+                      {PRICE_OPTIONS.map((opt) => (
+                        <li
+                          key={opt.key}
+                          className="flex items-center text-[13px]"
+                        >
+                          <label className="flex items-center gap-2.5 cursor-pointer text-foreground/85 hover:text-foreground select-none">
+                            <input
+                              type="radio"
+                              name="desktop-toolbar-price"
+                              checked={filterPrice === opt.key}
+                              onChange={() => {
+                                setFilterPrice(opt.key);
+                                setOpenDropdown(null);
+                              }}
+                              className="size-4 text-foreground accent-foreground cursor-pointer"
+                            />
+                            <span>{lang === "bn" ? opt.bn : opt.en}</span>
+                          </label>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                {/* 3. Availability Dropdown */}
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setOpenDropdown(
+                        openDropdown === "avail" ? null : "avail",
+                      )
+                    }
+                    className={`inline-flex items-center gap-2 px-3.5 py-1.5 text-[12px] font-medium tracking-wide uppercase transition-colors cursor-pointer border ${
+                      filterAvailability !== "all"
+                        ? "bg-foreground text-background border-foreground font-semibold"
+                        : "bg-background text-foreground/80 hover:text-foreground border-border/70 hover:border-border"
+                    }`}
+                  >
+                    <span>
+                      {filterAvailability === "all"
+                        ? t("Availability", "উপলব্ধতা")
+                        : lang === "bn"
+                          ? AVAILABILITY_OPTIONS.find(
+                              (o) => o.key === filterAvailability,
+                            )?.bn
+                          : AVAILABILITY_OPTIONS.find(
+                              (o) => o.key === filterAvailability,
+                            )?.en}
+                    </span>
+                    <ChevronDown
+                      className={`size-3.5 transition-transform duration-200 ${openDropdown === "avail" ? "rotate-180" : ""}`}
+                    />
+                  </button>
+
+                  <div
+                    className={`absolute top-full left-0 mt-2 w-56 bg-background border border-border/80 shadow-lg p-4 z-40 ${
+                      openDropdown === "avail" ? "block" : "hidden"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between pb-2 mb-3 border-b border-border/40">
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        {t("Availability", "উপলব্ধতা")}
+                      </span>
+                      {filterAvailability !== "all" && (
+                        <button
+                          type="button"
+                          onClick={() => setFilterAvailability("all")}
+                          className="text-[11px] text-muted-foreground hover:text-foreground underline cursor-pointer"
+                        >
+                          {t("Reset", "রিসেট")}
+                        </button>
+                      )}
+                    </div>
+                    <ul className="space-y-2">
+                      {AVAILABILITY_OPTIONS.map((opt) => (
+                        <li
+                          key={opt.key}
+                          className="flex items-center text-[13px]"
+                        >
+                          <label className="flex items-center gap-2.5 cursor-pointer text-foreground/85 hover:text-foreground select-none">
+                            <input
+                              type="radio"
+                              name="desktop-toolbar-avail"
+                              checked={filterAvailability === opt.key}
+                              onChange={() => {
+                                setFilterAvailability(opt.key);
+                                setOpenDropdown(null);
+                              }}
+                              className="size-4 text-foreground accent-foreground cursor-pointer"
+                            />
+                            <span>{lang === "bn" ? opt.bn : opt.en}</span>
+                          </label>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                {activeFiltersCount > 0 && (
+                  <button
+                    type="button"
+                    onClick={clearAllFilters}
+                    className="text-[11px] font-medium text-muted-foreground hover:text-foreground underline underline-offset-2 ml-1 cursor-pointer"
+                  >
+                    {t("Clear all", "সব মুছুন")}
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
               <div className="text-[11px] font-semibold uppercase tracking-widest text-foreground/60">
                 {sortedProducts.length}{" "}
                 {sortedProducts.length === 1
@@ -933,19 +1021,8 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                   : t("Products", "পণ্যসমূহ")}
               </div>
 
-              {activeFiltersCount > 0 && (
-                <button
-                  onClick={clearAllFilters}
-                  className="hidden sm:inline-block text-[11px] font-medium text-muted-foreground hover:text-foreground underline underline-offset-2 ml-2 cursor-pointer"
-                >
-                  {t("Clear filters", "ফিল্টার রিসেট")}
-                </button>
-              )}
-            </div>
-
-            <div className="flex items-center gap-2">
               <div className="relative inline-flex items-center">
-                <span className="text-[12px] text-foreground/50 mr-2 uppercase tracking-widest">
+                <span className="hidden sm:inline text-[12px] text-foreground/50 mr-2 uppercase tracking-widest">
                   {t("Sort:", "বাছাই:")}
                 </span>
                 <select
@@ -1065,59 +1142,34 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
         </div>
       </div>
 
-      {/* ── 4. Merchandising Product Grid with Persistent Desktop Sidebar ── */}
+      {/* ── 4. Full-Width Merchandising Product Grid ── */}
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
-        <div className="lg:flex lg:items-start lg:gap-10">
-          {/* Desktop persistent filter sidebar */}
-          <aside
-            aria-label={t("Filter products", "পণ্য ফিল্টার")}
-            className="hidden lg:block w-64 shrink-0 space-y-6 pr-6 border-r border-border/30 sticky top-[130px]"
-          >
-            <div className="flex items-center justify-between pb-3 border-b border-border/40">
-              <h2 className="text-[12px] font-semibold uppercase tracking-widest text-foreground">
-                {t("Filters", "ফিল্টার")}
-                {activeFiltersCount > 0 && ` (${activeFiltersCount})`}
-              </h2>
+        <div className="w-full">
+          {sortedProducts.length === 0 ? (
+            <div className="py-20 text-center space-y-4">
+              <p className="text-muted-foreground text-[15px]">
+                {products.length === 0
+                  ? t(
+                      "No products in this collection yet.",
+                      "এই কালেকশনে এখনো কোনো পণ্য নেই।",
+                    )
+                  : t(
+                      "No products match your selected filters.",
+                      "বাছাইকৃত ফিল্টারে কোনো পণ্য পাওয়া যায়নি।",
+                    )}
+              </p>
               {activeFiltersCount > 0 && (
                 <button
                   onClick={clearAllFilters}
-                  className="text-[11px] font-medium text-muted-foreground hover:text-foreground underline underline-offset-2 cursor-pointer"
+                  className="px-6 py-2.5 text-[11px] font-semibold uppercase tracking-widest text-background bg-foreground hover:bg-foreground/90 transition-colors cursor-pointer"
                 >
-                  {t("Clear all", "সব মুছুন")}
+                  {t("Clear all filters", "সব ফিল্টার মুছুন")}
                 </button>
               )}
             </div>
-
-            {renderFilterControls("desktop")}
-          </aside>
-
-          {/* Product grid / list area */}
-          <div className="flex-1 min-w-0">
-            {sortedProducts.length === 0 ? (
-              <div className="py-20 text-center space-y-4">
-                <p className="text-muted-foreground text-[15px]">
-                  {products.length === 0
-                    ? t(
-                        "No products in this collection yet.",
-                        "এই কালেকশনে এখনো কোনো পণ্য নেই।",
-                      )
-                    : t(
-                        "No products match your selected filters.",
-                        "বাছাইকৃত ফিল্টারে কোনো পণ্য পাওয়া যায়নি।",
-                      )}
-                </p>
-                {activeFiltersCount > 0 && (
-                  <button
-                    onClick={clearAllFilters}
-                    className="px-6 py-2.5 text-[11px] font-semibold uppercase tracking-widest text-background bg-foreground hover:bg-foreground/90 transition-colors cursor-pointer"
-                  >
-                    {t("Clear all filters", "সব ফিল্টার মুছুন")}
-                  </button>
-                )}
-              </div>
-            ) : (
-              <>
-                <ul className="grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 sm:gap-x-6 sm:gap-y-12">
+          ) : (
+            <>
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-6 sm:gap-y-12">
                   {displayedProducts.map((p) => {
                     const variants = p.product_variants ?? [];
                     const min = variants.length
@@ -1219,7 +1271,6 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
             )}
           </div>
         </div>
-      </div>
 
       {/* ── 5. Compact Mobile Filter Sheet (Immediate updates, no Apply buffering) ── */}
       {mobileFilterOpen && (
@@ -1261,7 +1312,7 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                 className="w-full py-3 text-[11px] font-semibold uppercase tracking-[0.1em] text-background bg-foreground hover:bg-foreground/90 transition-colors cursor-pointer"
               >
                 {t(
-                  `View ${sortedProducts.length}`,
+                  `Show ${sortedProducts.length} Products`,
                   `${sortedProducts.length}টি পণ্য দেখুন`,
                 )}
               </button>

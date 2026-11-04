@@ -235,7 +235,7 @@ describe("chrome-localization: header long-label rendering (en + bn)", () => {
     expect(bn).toContain('aria-label="স্টোর মেনু"');
   });
 
-  it("renders the fallback tree + announcement Bengali strings (no clipping of bn copy)", () => {
+  it("renders the fallback tree Bengali strings (no clipping of bn copy)", () => {
     const bn = renderHeader({
       slug: "songoskriti",
       name: "Songoskriti",
@@ -245,7 +245,6 @@ describe("chrome-localization: header long-label rendering (en + bn)", () => {
     expect(bn).toContain("মহিলা");
     expect(bn).toContain("পুরুষ");
     expect(bn).toContain("কেনাকাটা");
-    expect(bn).toContain("৫০০০ টাকার উপরে অর্ডারে সারা দেশে ফ্রি ডেলিভারি");
     expect(BN_RE.test(bn)).toBe(true);
   });
 });

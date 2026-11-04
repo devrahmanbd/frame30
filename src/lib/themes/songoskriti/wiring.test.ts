@@ -103,7 +103,7 @@ describe("songoskriti wiring", () => {
     // (flagship outlets) and "Contact" (customer care) across 28 links.
     expect(labels).toContain("Stores");
     expect(labels).toContain("Contact");
-    expect(labels).toHaveLength(28);
+    expect(labels).toHaveLength(26);
     expect(new Set(labels).size).toBe(labels.length);
   });
 

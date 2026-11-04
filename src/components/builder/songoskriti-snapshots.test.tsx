@@ -157,39 +157,40 @@ const FIXED_FOOTER_PROPS: Record<string, PropValue> = {
   c4Links: [
     "Email: support@flamelancer.com|mailto:support@flamelancer.com",
     "Support: Saturday – Thursday, 10AM – 8PM|/pages/contact",
-    "Order Tracking|/pages/track-order",
+    "Track Your Order|/pages/track-order",
     "Nationwide Delivery across Bangladesh|/pages/shipping",
   ].join("\n"),
   c4Links_bn: [
     "ইমেইল: support@flamelancer.com|mailto:support@flamelancer.com",
     "সাপোর্ট: শনিবার – বৃহস্পতিবার, সকাল ১০টা – রাত ৮টা|/pages/contact",
-    "অর্ডার ট্র্যাকিং|/pages/track-order",
+    "অর্ডার অনুসন্ধান|/pages/track-order",
     "সারাদেশে ক্যাশ অন ডেলিভারি|/pages/shipping",
   ].join("\n"),
 };
 
 const FIXED_LOCATOR_PROPS: Record<string, PropValue> = {
-  heading: "VISIT SONGOSKRITI",
-  heading_bn: "সংস্কৃতি দেখুন",
+  heading: "Store Locations",
+  heading_bn: "স্টোর লোকেশন",
+};
+
+const SAMPLE_STORE_PROPS: Record<string, PropValue> = {
+  heading: "Store Locations",
+  heading_bn: "স্টোর লোকেশন",
   images:
-    "/ph/songoskriti/cat-women.png, /ph/songoskriti/cat-men.jpg, /ph/songoskriti/hero-festive.jpg",
-  s1Name: "Uttara Flagship",
-  s1Name_bn: "উত্তরা ফ্ল্যাগশিপ",
+    "/ph/songoskriti/cat-men.jpg, /ph/songoskriti/hero-festive.jpg",
+  s1Name: "Flagship Showroom",
+  s1Name_bn: "ফ্ল্যাগশিপ শোরুম",
   s1Hours: "Open 10am – 9pm daily",
   s1Hours_bn: "প্রতিদিন সকাল ১০টা – রাত ৯টা",
-  s2Name: "Gulshan Showroom",
-  s2Name_bn: "গুলশান শোরুম",
+  s2Name: "Festive Boutique",
+  s2Name_bn: "উৎসব বুটিক",
   s2Hours: "Open 10am – 9pm daily",
   s2Hours_bn: "প্রতিদিন সকাল ১০টা – রাত ৯টা",
-  s3Name: "Chattogram Store",
-  s3Name_bn: "চট্টগ্রাম স্টোর",
-  s3Hours: "Open 10am – 8pm daily",
-  s3Hours_bn: "প্রতিদিন সকাল ১০টা – রাত ৮টা",
 };
 
 const FIXED_UGC_PROPS: Record<string, PropValue> = {
-  heading: "WORN BY YOU",
-  heading_bn: "আপনার পরিধানে",
+  heading: "SEASONAL LOOKBOOK",
+  heading_bn: "সিজনাল লুকবুক",
   subhead: "FLAME FASHION BD LOOKBOOK",
   subhead_bn: "ফ্লেম ফ্যাশন লুকবুক",
   handleLabel: "Follow @flamefashionbd",
@@ -267,23 +268,32 @@ describe("Task 2 fix — full static-markup snapshots from fixed fixtures", () =
     expect(html).toMatchSnapshot();
   });
 
-  it("store-locator en", () => {
+  it("store-locator returns empty string when no physical stores configured", () => {
     const html = render(
       StoreLocator,
       fixedSection("store_locator", FIXED_LOCATOR_PROPS),
       "en",
     );
-    expect(html).toContain("VISIT SONGOSKRITI");
+    expect(html).toBe("");
+  });
+
+  it("store-locator en", () => {
+    const html = render(
+      StoreLocator,
+      fixedSection("store_locator", SAMPLE_STORE_PROPS),
+      "en",
+    );
+    expect(html).toContain("Flagship Showroom");
     expect(html).toMatchSnapshot();
   });
 
   it("store-locator bn", () => {
     const html = render(
       StoreLocator,
-      fixedSection("store_locator", FIXED_LOCATOR_PROPS),
+      fixedSection("store_locator", SAMPLE_STORE_PROPS),
       "bn",
     );
-    expect(html).toContain("সংস্কৃতি দেখুন");
+    expect(html).toContain("ফ্ল্যাগশিপ শোরুম");
     expect(html).toMatchSnapshot();
   });
 
@@ -294,6 +304,7 @@ describe("Task 2 fix — full static-markup snapshots from fixed fixtures", () =
       "en",
     );
     expect(html).toContain("Follow @flamefashionbd");
+    expect(html).toContain("SEASONAL LOOKBOOK");
     expect(html).toMatchSnapshot();
   });
 
@@ -304,6 +315,7 @@ describe("Task 2 fix — full static-markup snapshots from fixed fixtures", () =
       "bn",
     );
     expect(html).toContain("ফ্লেম ফ্যাশন লুকবুক");
+    expect(html).toContain("সিজনাল লুকবুক");
     expect(html).toMatchSnapshot();
   });
 });
