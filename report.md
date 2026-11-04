@@ -1210,3 +1210,64 @@ ops/deploy-from-git.sh frame30 root        # origin/frame30 = f7661783
 | Live DevTools Browser | Cart `/cart` (Checkout Now button visible; ৳0 VAT) | PASS |
 | Live DevTools Browser | Checkout `/checkout` (Cash on delivery payment; ৳0 VAT) | PASS |
 
+---
+
+## 12. Wave 12: Production Audit Defect Remediations & Collection Filtering Overhaul
+
+**Date:** 2026-11-05 · **Branch:** `frame30` · **Deployed Bundle SHA:** `227e1cdaa83b29767ba3f3268586b0204965bd86` · **Merchant:** Flame Fashion BD (`b47532e5-9649-4ebd-93a9-06fa2917c00e` / `flamelancer.com`)
+
+### 12.1 Verified Defect Resolutions
+
+1. **Global Theme Chrome Announcement Bar Suppression:**
+   - **Defect:** Unverified claim (`EASY 7-DAY EXCHANGE · Free delivery across Bangladesh on orders over BDT 5000`) was injected into global theme chrome by `header-copy.ts` and `theme-chrome.ts`.
+   - **Remediation:** Emptied `HEADER_ANNOUNCEMENT` in `src/lib/header-copy.ts`. Verified in browser that `announcementBar` evaluates to `null` across desktop and mobile.
+
+2. **Dynamic Menu-Derived Sub-Navigation & Taaga Fusion Elimination:**
+   - **Defect:** `DEPARTMENT_TAXONOMY` in `CollectionView.tsx` hardcoded unpublished routes including `taaga-fusion`.
+   - **Remediation:** Completely removed `DEPARTMENT_TAXONOMY` (320 LOC eliminated). Implemented `deriveCollectionHierarchy({ collectionSlug, menuTree, fallbackMenu })` to dynamically resolve discovery pills from published merchant navigation menus (`menus?.header`). Verified `/c/women` renders only authentic published categories (`All Women`, `Sarees`, `Dhakai Jamdani`, `Festive Sarees`, etc.) with zero `taaga-fusion` pills.
+
+3. **Homepage Craft Story & Narayanganj Handloom Authenticity:**
+   - **Defect:** Hero slides and collection stories contained AI-generated marketing puffery and UNESCO heritage claims.
+   - **Remediation:** Replaced Slide 1 with `Festive Silk & Handloom Collection`, Slide 3 with `Dhakai Jamdani & Silk Weaves` ("Traditional geometric motifs hand-loomed by master weavers in Narayanganj"), and collection story subtitle with "Traditional Handloom".
+
+4. **Zero Fictional Physical Outlets:**
+   - **Defect:** Default theme blueprints populated fictional addresses (`Uttara Flagship`, `Gulshan Showroom`, `Chattogram Store`).
+   - **Remediation:** Emptied store entries from theme defaults. When zero physical stores are configured by the merchant, `StoreLocator` gracefully returns empty markup (`""`). Verified `hasStoreLocator: false` on `https://flamelancer.com`.
+
+5. **Neutral Merchandising for "Most Loved":**
+   - **Defect:** Generic popularity claims fabricated product ratings and sales velocity.
+   - **Remediation:** Retitled rail to `Festive Selection` (`heading: "Festive Selection"`, `subhead: "Curated handloom sarees and festive attire."`, Bengali twin `উৎসবের বিশেষ সংগ্রহ`). Reconciled both `theme_versions` and `theme_drafts` in remote PostgreSQL.
+
+6. **Verified Lookbook Attribution:**
+   - **Defect:** Stock campaign photography was labeled as customer-submitted UGC ("WORN BY YOU").
+   - **Remediation:** Retitled to `SEASONAL LOOKBOOK` / `FLAME FASHION BD LOOKBOOK` (`সিজনাল লুকবুক`), attributing visuals honestly to seasonal lookbook photography while linking to verified brand handle `@flamefashionbd`.
+
+7. **Archetype Copy & Children's Apparel Restriction:**
+   - **Defect:** Kids category taxonomy leaked adult bridal links. Generic copy ("Fresh from the loom", "Crafted for the Modern Man") persisted in `archetypes.ts`.
+   - **Remediation:** Cleaned archetype copy to neutral luxury craft voice. Restricted Kids subcategories to child-specific garments (`Girls Festive`, `Boys Panjabi`, `New In Kids`, `Family Sets`).
+
+8. **Collection Filtering Overhaul (Horizontal Toolbar + Dynamic Facets):**
+   - **Architecture:** Replaced the rigid 256px fixed left sidebar with a compact horizontal filter toolbar positioned directly above the product grid.
+   - **Expanded Merchandising Grid:** Desktop product grid expanded from 3 to 4 columns (`grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4`).
+   - **Expandable Dropdowns:** Added popover controls with click-outside listeners for `Weave & Material`, flexible BDT `Price Range` (brackets + custom BDT inputs), `Availability`, and `Sort`.
+   - **Dynamic Facet Counts:** Recalculates facet counts dynamically against active price and availability candidate products.
+   - **Multi-Variant Matching:** Evaluates price matching across all variants (`prices.some(...)`) so multi-tier products match properly.
+   - **Mobile Responsiveness:** Compact mobile filter sheet with reactive count updating directly on the action button ("Show 3 Products").
+
+### 12.2 Verification Summary
+- **TypeScript:** `bun run typecheck` (`tsgo --noEmit`) $\to$ PASS (0 errors)
+- **Unit & Component Tests:** Vitest full suite $\to$ PASS (640 files, 9,047 tests passed)
+- **Contract Gate:** `bun run test:contracts` $\to$ PASS (13 suites, 258 test cases)
+- **Live Bundle:** `227e1cdaa83b29767ba3f3268586b0204965bd86` deployed and healthy on `88.99.250.99`
+- **Chrome DevTools Live Audit:**
+  - `announcementBar: null`
+  - `hasFestiveSelection: true`
+  - `hasLookbook: true`
+  - `hasWornByYou: false`
+  - `hasStoreLocator: false`
+  - `hasFictionalOutlets: false`
+  - `hasUnesco: false`
+  - Horizontal toolbar with 4 dropdowns active on `/c/sarees`
+  - Live facet filtering: selecting `Pure Silk` updates grid reactively to 3 products
+  - Mobile filter drawer: updates button to `SHOW 3 PRODUCTS` live without page reload
+
