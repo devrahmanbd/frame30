@@ -1141,3 +1141,72 @@ ops/deploy-from-git.sh frame30 root        # origin/frame30 = f7661783
 - **Desktop Collection View (1440px):** `collection-women-recovered-1440.png` — Full-width handloom cotton hero banner, active taxonomy pills, 7 products, clean unobstructed cards.
 - **Mobile Collection View (390px):** `collection-women-mobile-390.png` — Responsive header, fluid banner, horizontal scrolling pill list, responsive 2-column card grid.
 - **Product Detail View (1440px):** `product-jamdani-recovered-1440.png` — Authentic description, minor unit pricing, variant pills, real stock indicator.
+
+---
+
+## 11. Flame Fashion BD Production Audit & Defect Fixes (Nov 2026)
+
+**Target Store:** `https://flamelancer.com` · **Merchant ID:** `b47532e5-9649-4ebd-93a9-06fa2917c00e` · **Theme:** `songoskriti` · **Currency:** `BDT`
+
+### 11.1 Verified Findings & Root Causes
+1. **Navigation Routing & Hierarchy:**
+   - "From the Loom" collection tiles on the homepage routed incorrectly (Rajshahi Silk → `/c/wedding`, Tangail → `/c/sarees`, Nakshi Kantha → `/c/living`).
+   - Desktop and mobile header menus contained confusing Kids/Occasions subcategories (adult bridal links nested under Kids) and obsolete third-party anchors (`Taaga Fusion`, `Aarong Earth`).
+   - Mobile navigation drawer contained hardcoded fictional outlet addresses ("Uttara Sector 3, Gulshan 2, Chittagong GEC") and placeholder customer service phone (`+880 1711-000000`).
+2. **Homepage Copy:**
+   - Repetitive generic filler slogans and artificial claims degraded luxury brand voice.
+3. **Catalog & Trademark Integrity:**
+   - Third-party trademarked collections (`aarong-earth`, `taaga-fusion`) were published and products leaked into the merchant's New Arrivals (`/c/new-in`).
+4. **Collection View Cleanliness & Real-Time Filtering:**
+   - Collection pages rendered redundant breadcrumbs, duplicate announcement bars, and empty "More to explore" sections (`product_rail-39`).
+   - Filtering previously relied on clunky slide-overs without real-time reactive counts.
+5. **Trust, Contacts & Payment Gateways:**
+   - Footer and contact pages referenced fictional email (`support@example.com`), fictional hotline (`+880 96 1234 5678`), and unconfigured digital payment icons (bKash/Visa) despite merchant being Cash on Delivery only.
+6. **Social & Lookbook Representation:**
+   - Instagram links pointed to generic `instagram.com` root instead of verified brand handle `https://instagram.com/flamefashionbd`. Lookbook photos lacked clear editorial attribution.
+7. **Cart CTA & Taxation Compliance:**
+   - The Cart summary had `"showCta": false` in database theme versions, hiding the "Checkout Now" button.
+   - Taxation logic charged 5% VAT even when merchant lacked VAT/BIN registration numbers, violating Bangladesh NBR tax regulations.
+8. **Brand Consistency:**
+   - Merchant brand is **Flame Fashion BD**; internal theme engine key is `songoskriti`. Logo alt tags and headers had hardcoded theme keys instead of dynamic merchant brand names.
+
+### 11.2 Architectural & Code Remediations
+1. **Navigation & Mobile Drawer (`StoreHeader.tsx`, `header-presentation.tsx`, `header-copy.ts`, `homepage.ts`):**
+   - Corrected Loom links to canonical collection endpoints: `/c/jamdani` (Dhakai Jamdani), `/c/rajshahi-silk` (Rajshahi Silk), `/c/heritage-handloom` (Tangail Handloom), `/c/nakshi-kantha` (Nakshi Kantha).
+   - Cleaned Kids navigation to feature festive children's clothing without adult wedding cross-links.
+   - Replaced fictional store anchors and placeholder phone in mobile navigation drawers with verified Customer Concierge (Nationwide Doorstep Delivery & 7-Day Exchange) and `support@flamelancer.com`.
+2. **Catalog & Database Integrity (Remote PostgreSQL & `theme_versions`):**
+   - Unpublished `aarong-earth` and `taaga-fusion` collections in database (`is_published = false`).
+   - Created and published `Rajshahi Silk` collection (`slug = 'rajshahi-silk'`) and linked 6 pure silk products.
+   - Purged Aarong Earth and Taaga items from `new-in` and populated genuine Flame Fashion BD items (`Pure Silk Embroidered Panjabi`, `Tussar Silk Festive Waistcoat Koti`, `Mirpur Katan Silk Festive Saree`, `Embroidered Pure Silk Salwar Suit`).
+   - Updated `nav_menu_items` to reflect `Silk & Handloom` (`/c/rajshahi-silk`), `Artisan Craft` (`/c/nakshi-kantha`), and `Online Concierge` (`/pages/contact`).
+3. **Collection View Streamlining (`CollectionView.tsx`, `theme_versions`):**
+   - In `cleanAst`, filtered out `breadcrumb`, `announcement_bar`, `category_header`, `result_toolbar`, and `product_rail`.
+   - Removed `product_rail-39` from collection templates in database.
+   - Replaced slide-overs with real-time persistent desktop filter sidebar and compact mobile filter sheet supporting BDT price range, weave/category, and in-stock availability without redundant Apply buttons.
+4. **Trust & Footer Neutrality (`footer-copy.ts`, `songoskriti.tsx`, `storefront_pages`):**
+   - Updated payment marks to "Cash on Delivery" only (`PAYMENT_MARKS = "Cash on Delivery"`).
+   - In `storefront_pages`, updated contact and stores content to reflect nationwide online concierge service, 7-day doorstep exchange, and `support@flamelancer.com`.
+5. **Cart CTA & 0% VAT Rule (`pricing.server.ts`, `theme_versions`):**
+   - Set `"showCta": true`, `"ctaUrl": "/checkout"`, and `"ctaLabel": "Checkout Now"` in `templates.cart.main`.
+   - Updated `pricing.server.ts` to query `vat_registration_no` and `business_bin`. When neither is configured, VAT is evaluated as 0 basis points (0% VAT).
+6. **Social & Lookbook Attribution (`homepage.ts`, `songoskriti.tsx`):**
+   - Set UGC gallery handle to `https://instagram.com/flamefashionbd`, label to `Follow @flamefashionbd`, and subhead to `FLAME FASHION BD LOOKBOOK`.
+
+### 11.3 Verification Matrix
+| Verification Step | Target / Gate | Result |
+| :--- | :--- | :--- |
+| `bun run typecheck` | `tsgo --noEmit` | PASS (0 errors) |
+| Unit tests | `StoreHeader`, `CollectionView`, `songoskriti`, `cart`, `homepage` | PASS (165/165 passed) |
+| Contract gate | `bun run test:contracts` | PASS (13 suites, 258 test cases) |
+| Live Bundle Marker | `01279a9884d78edb584b1d00841d675217d3f6be` | Deployed & verified on `88.99.250.99` |
+| Live DevTools Browser | Homepage Loom links (`/c/jamdani`, `/c/rajshahi-silk`, `/c/heritage-handloom`, `/c/nakshi-kantha`) | PASS |
+| Live DevTools Browser | Homepage UGC (`https://instagram.com/flamefashionbd`) | PASS |
+| Live DevTools Browser | Footer payment methods (Cash on Delivery only; 0 digital gateways) | PASS |
+| Live DevTools Browser | Footer contact (`support@flamelancer.com`; 0 `example.com`; 0 fake phone) | PASS |
+| Live DevTools Browser | Mobile drawer (Customer Concierge; 0 fake outlets; 0 `1711-000000`) | PASS |
+| Live DevTools Browser | Collection `/c/rajshahi-silk` (6 genuine silk items; 0 breadcrumbs; 0 empty sections) | PASS |
+| Live DevTools Browser | Collection `/c/new-in` (0 Aarong Earth items; 0 Taaga items) | PASS |
+| Live DevTools Browser | Cart `/cart` (Checkout Now button visible; ৳0 VAT) | PASS |
+| Live DevTools Browser | Checkout `/checkout` (Cash on delivery payment; ৳0 VAT) | PASS |
+
