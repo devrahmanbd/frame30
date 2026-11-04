@@ -126,7 +126,6 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       collection: "sarees",
       cardVariant: "standard",
       showRating: false,
-      badgeLabel: "HANDLOOM",
     }),
 
     // ────────────────────────────────────────────────────────────────────
@@ -160,7 +159,6 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       collection: "new-in",
       cardVariant: "compact",
       showRating: false,
-      badgeLabel: "NEW",
     }),
 
     // ────────────────────────────────────────────────────────────────────
@@ -197,7 +195,6 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
         collection: "festive",
         cardVariant: "editorial",
         showRating: false,
-        badgeLabel: "BESTSELLER",
       }),
       bp: { mobile: { limit: 4 } },
     },
@@ -270,7 +267,6 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       collection: "panjabi",
       cardVariant: "compact",
       showRating: false,
-      badgeLabel: "HERITAGE",
     }),
 
     // ────────────────────────────────────────────────────────────────────
@@ -357,7 +353,6 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       collection: "jewellery",
       cardVariant: "editorial",
       showRating: false,
-      badgeLabel: "ARTISAN",
     }),
 
     // ────────────────────────────────────────────────────────────────────
@@ -399,52 +394,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     s("testimonials", {
       skin: "carousel",
       autoAdvanceMs: 6000,
-      testimonials: [
-        {
-          quote:
-            "The Jamdani saree I received was breathtaking. The weave is so intricate — I've never seen anything like it in any store. It was the centerpiece of my daughter's wedding.",
-          quote_bn:
-            "যে জামদানি শাড়িটি আমি পেয়েছি তা সত্যিই অসাধারণ। এত সূক্ষ্ম বুনন আমি আগে কোনো দোকানে দেখিনি। এটি আমার মেয়ের বিয়ের সবচেয়ে প্রশংসিত পোশাক ছিল।",
-          author: "Nusrat Rahman",
-          author_bn: "নুসরাত রহমান",
-          role: "Dhaka · Jamdani Saree",
-          role_bn: "ঢাকা · জামদানি শাড়ি",
-          image: "/ph/songoskriti/ugc-1.jpg",
-        },
-        {
-          quote:
-            "My husband's Panjabi arrived beautifully packaged in an artisan cloth box. The handloom khadi texture has unmatched weight and elegance.",
-          quote_bn:
-            "আমার স্বামীর জন্য নেওয়া পাঞ্জাবিটি চমৎকার কাপড়ের বাক্সে প্যাক করা এসেছিল। খাদি কাপড়ের টেক্সচার এবং আভিজাত্য অসাধারণ।",
-          author: "Priya Chakraborty",
-          author_bn: "প্রিয়া চক্রবর্তী",
-          role: "Chittagong · Handloom Panjabi",
-          role_bn: "চট্টগ্রাম · হ্যান্ডলুম পাঞ্জাবি",
-          image: "/ph/songoskriti/ugc-2.jpg",
-        },
-        {
-          quote:
-            "Ordered for Eid and it arrived on time with care. The cotton saree feels amazing to wear — light, breathable and strikingly beautiful.",
-          quote_bn:
-            "ঈদের জন্য অর্ডার করেছিলাম এবং দ্রুত ডেলিভারি পেয়েছি। টাঙ্গাইল তাঁতের শাড়িটি পরায় ভীষণ আরামদায়ক এবং দেখতে রাজকীয়।",
-          author: "Tasnim Ahmed",
-          author_bn: "তাসনিম আহমেদ",
-          role: "Sylhet · Cotton Saree",
-          role_bn: "সিলেট · কটন শাড়ি",
-          image: "/ph/songoskriti/ugc-5.jpg",
-        },
-        {
-          quote:
-            "Finally a Bangladeshi brand that takes both craft and packaging seriously. The Nakshi Kantha piece I bought is a work of art.",
-          quote_bn:
-            "অবশেষে একটি দেশীয় ব্র্যান্ড যা ঐতিহ্যবাহী কারুকাজকে আন্তর্জাতিক মানের রূপ দিয়েছে। নকশি কাঁথাটি সত্যিই একটি শিল্পকর্ম।",
-          author: "Farhan Islam",
-          author_bn: "ফারহান ইসলাম",
-          role: "Rajshahi · Nakshi Kantha",
-          role_bn: "রাজশাহী · নকশি কাঁথা",
-          image: "/ph/songoskriti/ugc-6.jpg",
-        },
-      ],
+      testimonials: [],
     }),
 
     // ────────────────────────────────────────────────────────────────────

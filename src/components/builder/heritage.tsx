@@ -311,7 +311,7 @@ function HeroSkinSlide({
       role="group"
       aria-roledescription="slide"
       aria-label={slideLabel}
-      className="fq-enter-fade relative flex flex-col justify-between overflow-hidden h-[calc(100vh-105px)] min-h-[640px] sm:min-h-[720px] lg:min-h-[780px]"
+      className="fq-enter-fade relative flex flex-col justify-end overflow-hidden h-[calc(100vh-105px)] min-h-[640px] sm:min-h-[720px] lg:min-h-[780px]"
     >
       {/* Full-bleed background image */}
       <div data-hero-art className="absolute inset-0">
@@ -321,15 +321,15 @@ function HeroSkinSlide({
       {/* Multi-tier cinematic vignette overlay */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--theme-ink)]/90 via-[var(--theme-ink)]/35 to-[var(--theme-ink)]/20"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--theme-ink)]/90 via-[var(--theme-ink)]/40 to-transparent"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[var(--theme-ink)]/50 via-transparent to-transparent"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[var(--theme-ink)]/60 via-[var(--theme-ink)]/20 to-transparent"
       />
 
       {/* LOWER CONTENT: Asymmetric editorial typography & slide timeline */}
-      <div className="relative z-10 w-full pb-10 sm:pb-14 px-6 sm:px-12 lg:px-16">
+      <div className="relative z-10 w-full pb-12 sm:pb-16 lg:pb-20 px-6 sm:px-12 lg:px-16">
         <div className="max-w-[1440px] mx-auto flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 lg:gap-12">
           {/* Left Block: Eyebrow, Headline, Subhead, Luxury CTA */}
           <div className="max-w-3xl">
@@ -351,7 +351,7 @@ function HeroSkinSlide({
             <Heading
               data-hero-headline
               {...(locale === "bn" && slide.headlineBn ? { lang: "bn" } : {})}
-              className="font-serif text-4xl sm:text-6xl lg:text-[4.75rem] font-light text-[var(--theme-surface)] leading-[1.04] tracking-[-0.015em]"
+              className="font-serif text-4xl sm:text-6xl lg:text-[5.25rem] font-light text-[var(--theme-surface)] leading-[1.04] tracking-[-0.015em]"
             >
               {locale === "bn" && slide.headlineBn
                 ? slide.headlineBn

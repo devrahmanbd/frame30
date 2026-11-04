@@ -266,7 +266,7 @@ describe("testimonials", () => {
       },
     };
     const html = render(Cmp(), section);
-    expect(html).toContain("Verified Patron");
+    expect(html).toContain("Verified Customer");
     expect(html).toContain("4.8 Artisan Rating");
     expect(html).toContain("★★★★★");
   });

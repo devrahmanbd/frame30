@@ -61,17 +61,20 @@ describe("Songoskriti homepage seed configuration", () => {
     expect(hrefs).not.toContain("/c/living");
   });
 
-  it("does not fabricate ratings or verified flags in default testimonial rows", () => {
+  it("omits unverified customer testimonials by default to avoid fabricated social proof", () => {
     const testimonials = sections.find((s) => s.type === "testimonials");
     expect(testimonials).toBeDefined();
     const rows = (testimonials?.props?.testimonials ?? []) as Record<
       string,
       unknown
     >[];
-    expect(rows.length).toBeGreaterThan(0);
-    for (const row of rows) {
-      expect(row.rating).toBeUndefined();
-      expect(row.verified).toBeUndefined();
+    expect(rows).toEqual([]);
+  });
+
+  it("omits artificial sticker badges from product rails", () => {
+    const rails = sections.filter((s) => s.type === "product_rail");
+    for (const rail of rails) {
+      expect(rail?.props?.badgeLabel).toBeUndefined();
     }
   });
 });

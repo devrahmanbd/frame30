@@ -334,13 +334,13 @@ const Testimonials: WidgetComponent = ({
   const autoAdvanceMs = int("autoAdvanceMs", 6000, 1500, 15000);
   const heading =
     str("heading") ||
-    t(locale, "Patron Chronicles", "গ্রাহকদের অভিজ্ঞতা ও ভালোবাসা");
+    t(locale, "Customer Reviews", "গ্রাহকদের মতামত");
   const subhead =
     str("subhead") ||
     t(
       locale,
-      "Real stories from the homes that cherish our handloom weaves.",
-      "আমাদের ঐতিহ্যবাহী বুনন নিয়ে সম্মানিত গ্রাহকদের অভিজ্ঞতা।",
+      "Feedback and reviews from our customers.",
+      "আমাদের পণ্য নিয়ে গ্রাহকদের অভিজ্ঞতা।",
     );
 
   const {
@@ -527,7 +527,7 @@ const Testimonials: WidgetComponent = ({
                           <span>
                             {locale === "bn"
                               ? "যাচাইকৃত ক্রেতা"
-                              : "Verified Patron"}
+                              : "Verified Customer"}
                           </span>
                         </div>
                       )}
@@ -1397,8 +1397,8 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
                 </p>
                 <p className="text-[12px] text-[var(--theme-ink)]/85">
                   {locale === "bn"
-                    ? "উত্তরা ৩ · গুলশান ২ · চট্টগ্রাম জিইসি"
-                    : "Uttara Sector 3 · Gulshan 2 · Chittagong"}
+                    ? "উত্তরা ৩, গুলশান ২, চট্টগ্রাম জিইসি"
+                    : "Uttara Sector 3, Gulshan 2, Chittagong"}
                 </p>
                 <a
                   href="tel:+8809612345678"
