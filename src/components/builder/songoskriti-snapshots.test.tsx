@@ -77,19 +77,20 @@ function stubBuilder<T>(): T {
 /* ------------------------------------------- fixed fixtures (literals) */
 
 const FIXED_FOOTER_PROPS: Record<string, PropValue> = {
-  newsletterHeading: "First to the festive drops",
-  newsletterHeading_bn: "উৎসবের ড্রপ সবার আগে",
-  newsletterButton: "Join the list",
-  newsletterButton_bn: "তালিকায় যোগ দিন",
-  newsletterConsent: "We email only for festive drops. Unsubscribe anytime.",
-  newsletterConsent_bn:
-    "শুধু উৎসবের ড্রপের জন্য ইমেইল পাঠাই। যেকোনো সময় আনসাবস্ক্রাইব করুন।",
   brandName: "",
   brandName_bn: "",
-  paymentsHeading: "Payment methods",
-  paymentsHeading_bn: "পেমেন্ট মাধ্যম",
-  paymentsMarks: "Cash on Delivery",
-  paymentsMarks_bn: "ক্যাশ অন ডেলিভারি",
+  brandTagline: "",
+  brandTagline_bn: "",
+  newsletterHeading: "Stay connected",
+  newsletterHeading_bn: "যুক্ত থাকুন",
+  newsletterButton: "Subscribe",
+  newsletterButton_bn: "সাবস্ক্রাইব করুন",
+  newsletterConsent: "Unsubscribe anytime.",
+  newsletterConsent_bn: "যেকোনো সময় আনসাবস্ক্রাইব করুন।",
+  paymentsHeading: "",
+  paymentsHeading_bn: "",
+  paymentsMarks: "",
+  paymentsMarks_bn: "",
   c1Title: "Shop",
   c1Title_bn: "কেনাকাটা",
   c1Links: [
@@ -134,23 +135,19 @@ const FIXED_FOOTER_PROPS: Record<string, PropValue> = {
     "সাধারণ জিজ্ঞাসা|/pages/faq",
     "যোগাযোগ|/pages/contact",
   ].join("\n"),
-  c3Title: "Our Heritage",
-  c3Title_bn: "আমাদের ঐতিহ্য",
+  c3Title: "About Us",
+  c3Title_bn: "আমাদের সম্পর্কে",
   c3Links: [
     "Our Story|/pages/about",
-    "Master Weavers|/pages/master-weavers",
-    "Handloom Heritage|/blog/handloom",
-    "Artisan Partnerships|/pages/artisans",
-    "Journal|/blog",
-    "Stores|/pages/stores",
+    "Terms of Service|/pages/terms",
+    "Privacy Policy|/pages/privacy",
+    "Blog & Updates|/blog",
   ].join("\n"),
   c3Links_bn: [
     "আমাদের গল্প|/pages/about",
-    "মাস্টার তাঁতি|/pages/master-weavers",
-    "হাতে বোনা ঐতিহ্য|/blog/handloom",
-    "তাঁতি অংশীদারিত্ব|/pages/artisans",
-    "জার্নাল|/blog",
-    "স্টোরসমূহ|/pages/stores",
+    "ব্যবহারের শর্তাবলী|/pages/terms",
+    "গোপনীয়তা নীতি|/pages/privacy",
+    "ব্লগ ও আপডেট|/blog",
   ].join("\n"),
   c4Title: "Help & Inquiries",
   c4Title_bn: "সহায়তা ও জিজ্ঞাসা",
@@ -176,8 +173,7 @@ const FIXED_LOCATOR_PROPS: Record<string, PropValue> = {
 const SAMPLE_STORE_PROPS: Record<string, PropValue> = {
   heading: "Store Locations",
   heading_bn: "স্টোর লোকেশন",
-  images:
-    "/ph/songoskriti/cat-men.jpg, /ph/songoskriti/hero-festive.jpg",
+  images: "/ph/songoskriti/cat-men.jpg, /ph/songoskriti/hero-festive.jpg",
   s1Name: "Flagship Showroom",
   s1Name_bn: "ফ্ল্যাগশিপ শোরুম",
   s1Hours: "Open 10am – 9pm daily",
@@ -264,7 +260,7 @@ describe("Task 2 fix — full static-markup snapshots from fixed fixtures", () =
       fixedSection("footer_sitemap", FIXED_FOOTER_PROPS),
       "bn",
     );
-    expect(html).toContain("পেমেন্ট মাধ্যম");
+    expect(html).toContain("© 2026");
     expect(html).toMatchSnapshot();
   });
 

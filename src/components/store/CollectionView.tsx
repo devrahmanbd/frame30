@@ -70,8 +70,7 @@ export function deriveCollectionHierarchy({
   fallbackMenu?: typeof HEADER_FALLBACK_MENU;
   publishedCollectionSlugs?: string[];
 }): DepartmentContext {
-  const sourceTree =
-    menuTree && menuTree.length > 0 ? menuTree : fallbackMenu;
+  const sourceTree = menuTree && menuTree.length > 0 ? menuTree : fallbackMenu;
 
   type NavItem = {
     id?: string;
@@ -374,8 +373,7 @@ export function resolveProductPricingAndStock(
   const rawVariants = (p.product_variants ?? []).filter(Boolean);
   const variants = rawVariants.map((v) => {
     const price = Number(v.price_amount_minor_int) || 0;
-    const stock =
-      v.stock_quantity != null ? Number(v.stock_quantity) : null;
+    const stock = v.stock_quantity != null ? Number(v.stock_quantity) : null;
     return {
       price,
       stock,
@@ -397,9 +395,7 @@ export function resolveProductPricingAndStock(
       Number(pFields.price_amount_minor_int) ||
       Number(pFields.price_min_minor_int) ||
       Number(pFields.price_minor_int) ||
-      (typeof pFields.price === "number"
-        ? Math.round(pFields.price * 100)
-        : 0);
+      (typeof pFields.price === "number" ? Math.round(pFields.price * 100) : 0);
     prices = productPrice > 0 ? [productPrice] : [0];
   }
 
@@ -535,22 +531,27 @@ export function filterCollectionProducts(
     if (filters.availability === "out_of_stock" && info.inStock) return false;
 
     // Price bracket filtering (BDT minor units: 5,000 BDT = 500,000 minor)
+    if (filters.price !== "all" && !info.hasPrice) return false;
+
     if (filters.price === "under_5000") {
-      const matches = info.variants.length > 0
-        ? info.variants.some((v) => v.price < 500000)
-        : info.priceMinMinor < 500000;
+      const matches =
+        info.variants.length > 0
+          ? info.variants.some((v) => v.price > 0 && v.price < 500000)
+          : info.hasPrice && info.priceMinMinor < 500000;
       if (!matches) return false;
     }
     if (filters.price === "5000_10000") {
-      const matches = info.variants.length > 0
-        ? info.variants.some((v) => v.price >= 500000 && v.price <= 1000000)
-        : info.priceMinMinor >= 500000 && info.priceMinMinor <= 1000000;
+      const matches =
+        info.variants.length > 0
+          ? info.variants.some((v) => v.price >= 500000 && v.price <= 1000000)
+          : info.priceMinMinor >= 500000 && info.priceMinMinor <= 1000000;
       if (!matches) return false;
     }
     if (filters.price === "above_10000") {
-      const matches = info.variants.length > 0
-        ? info.variants.some((v) => v.price > 1000000)
-        : info.priceMinMinor > 1000000;
+      const matches =
+        info.variants.length > 0
+          ? info.variants.some((v) => v.price > 1000000)
+          : info.priceMinMinor > 1000000;
       if (!matches) return false;
     }
 
@@ -566,17 +567,21 @@ export function filterCollectionProducts(
         : null;
 
     if (minMinor != null || maxMinor != null) {
-      const matches = info.variants.length > 0
-        ? info.variants.some((v) => {
-            if (minMinor != null && v.price < minMinor) return false;
-            if (maxMinor != null && v.price > maxMinor) return false;
-            return true;
-          })
-        : (() => {
-            if (minMinor != null && info.priceMinMinor < minMinor) return false;
-            if (maxMinor != null && info.priceMinMinor > maxMinor) return false;
-            return true;
-          })();
+      if (!info.hasPrice) return false;
+      const matches =
+        info.variants.length > 0
+          ? info.variants.some((v) => {
+              if (minMinor != null && v.price < minMinor) return false;
+              if (maxMinor != null && v.price > maxMinor) return false;
+              return true;
+            })
+          : (() => {
+              if (minMinor != null && info.priceMinMinor < minMinor)
+                return false;
+              if (maxMinor != null && info.priceMinMinor > maxMinor)
+                return false;
+              return true;
+            })();
       if (!matches) return false;
     }
 
@@ -607,12 +612,18 @@ export function sortCollectionProducts(
     if (sortBy === "price_asc") {
       const aInfo = resolveProductPricingAndStock(a);
       const bInfo = resolveProductPricingAndStock(b);
-      return aInfo.priceMinMinor - bInfo.priceMinMinor || a.title.localeCompare(b.title);
+      return (
+        aInfo.priceMinMinor - bInfo.priceMinMinor ||
+        a.title.localeCompare(b.title)
+      );
     }
     if (sortBy === "price_desc") {
       const aInfo = resolveProductPricingAndStock(a);
       const bInfo = resolveProductPricingAndStock(b);
-      return bInfo.priceMinMinor - aInfo.priceMinMinor || a.title.localeCompare(b.title);
+      return (
+        bInfo.priceMinMinor - aInfo.priceMinMinor ||
+        a.title.localeCompare(b.title)
+      );
     }
     if (sortBy === "title") {
       return a.title.localeCompare(b.title);
@@ -798,7 +809,9 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
 
   const activeFiltersCount =
     (filterAvailability !== "all" ? 1 : 0) +
-    (filterPrice !== "all" || minPriceBDT != null || maxPriceBDT != null ? 1 : 0) +
+    (filterPrice !== "all" || minPriceBDT != null || maxPriceBDT != null
+      ? 1
+      : 0) +
     selectedTags.length;
 
   const clearAllFilters = () => {
@@ -870,7 +883,9 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
           {PRICE_OPTIONS.map((opt) => {
             const id = `${prefix}-price-${opt.key}`;
             const isSelected =
-              filterPrice === opt.key && minPriceBDT == null && maxPriceBDT == null;
+              filterPrice === opt.key &&
+              minPriceBDT == null &&
+              maxPriceBDT == null;
             return (
               <li key={opt.key} className="flex items-center text-[13px]">
                 <label
@@ -911,7 +926,9 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                 const val = e.target.value;
                 setMinPriceInput(val);
                 const num = val === "" ? null : Number(val);
-                setMinPriceBDT(num != null && !isNaN(num) && num >= 0 ? num : null);
+                setMinPriceBDT(
+                  num != null && !isNaN(num) && num >= 0 ? num : null,
+                );
                 if (filterPrice !== "all") setFilterPrice("all");
               }}
               className="w-full h-8 px-2 text-xs border border-border/70 rounded-xs bg-background focus:outline-none focus:border-foreground"
@@ -926,7 +943,9 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                 const val = e.target.value;
                 setMaxPriceInput(val);
                 const num = val === "" ? null : Number(val);
-                setMaxPriceBDT(num != null && !isNaN(num) && num >= 0 ? num : null);
+                setMaxPriceBDT(
+                  num != null && !isNaN(num) && num >= 0 ? num : null,
+                );
                 if (filterPrice !== "all") setFilterPrice("all");
               }}
               className="w-full h-8 px-2 text-xs border border-border/70 rounded-xs bg-background focus:outline-none focus:border-foreground"
@@ -1179,12 +1198,12 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                   <button
                     type="button"
                     onClick={() =>
-                      setOpenDropdown(
-                        openDropdown === "price" ? null : "price",
-                      )
+                      setOpenDropdown(openDropdown === "price" ? null : "price")
                     }
                     className={`inline-flex items-center gap-2 px-3.5 py-1.5 text-[12px] font-medium tracking-wide uppercase transition-colors cursor-pointer border ${
-                      filterPrice !== "all" || minPriceBDT != null || maxPriceBDT != null
+                      filterPrice !== "all" ||
+                      minPriceBDT != null ||
+                      maxPriceBDT != null
                         ? "bg-foreground text-background border-foreground font-semibold"
                         : "bg-background text-foreground/80 hover:text-foreground border-border/70 hover:border-border"
                     }`}
@@ -1199,8 +1218,10 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                         : filterPrice === "all"
                           ? t("Price", "মূল্য")
                           : lang === "bn"
-                            ? PRICE_OPTIONS.find((o) => o.key === filterPrice)?.bn
-                            : PRICE_OPTIONS.find((o) => o.key === filterPrice)?.en}
+                            ? PRICE_OPTIONS.find((o) => o.key === filterPrice)
+                                ?.bn
+                            : PRICE_OPTIONS.find((o) => o.key === filterPrice)
+                                ?.en}
                     </span>
                     <ChevronDown
                       className={`size-3.5 transition-transform duration-200 ${openDropdown === "price" ? "rotate-180" : ""}`}
@@ -1216,7 +1237,9 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                       <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                         {t("Price (BDT)", "মূল্য সীমা")}
                       </span>
-                      {(filterPrice !== "all" || minPriceBDT != null || maxPriceBDT != null) && (
+                      {(filterPrice !== "all" ||
+                        minPriceBDT != null ||
+                        maxPriceBDT != null) && (
                         <button
                           type="button"
                           onClick={() => {
@@ -1314,9 +1337,7 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                   <button
                     type="button"
                     onClick={() =>
-                      setOpenDropdown(
-                        openDropdown === "avail" ? null : "avail",
-                      )
+                      setOpenDropdown(openDropdown === "avail" ? null : "avail")
                     }
                     className={`inline-flex items-center gap-2 px-3.5 py-1.5 text-[12px] font-medium tracking-wide uppercase transition-colors cursor-pointer border ${
                       filterAvailability !== "all"
@@ -1575,101 +1596,101 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
           ) : (
             <>
               <ul className="grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-6 sm:gap-y-12">
-                  {displayedProducts.map((p) => {
-                    const info = resolveProductPricingAndStock(p);
-                    const min = info.priceMinMinor;
-                    const inStock = info.inStock;
+                {displayedProducts.map((p) => {
+                  const info = resolveProductPricingAndStock(p);
+                  const min = info.priceMinMinor;
+                  const inStock = info.inStock;
 
-                    // NEW / BESTSELLER assigned from product data (tags/attributes), never by collection slug
-                    const pTags = ((p as { tags?: string[] }).tags ?? []).map(
-                      (t) => t.toLowerCase(),
-                    );
-                    let badge: string | null = null;
-                    if (
-                      pTags.includes("new") ||
-                      pTags.includes("new-in") ||
-                      pTags.includes("new-arrival")
-                    ) {
-                      badge = "NEW";
-                    } else if (
-                      pTags.includes("bestseller") ||
-                      pTags.includes("best-seller") ||
-                      pTags.includes("trending")
-                    ) {
-                      badge = "BESTSELLER";
-                    }
+                  // NEW / BESTSELLER assigned from product data (tags/attributes), never by collection slug
+                  const pTags = ((p as { tags?: string[] }).tags ?? []).map(
+                    (t) => t.toLowerCase(),
+                  );
+                  let badge: string | null = null;
+                  if (
+                    pTags.includes("new") ||
+                    pTags.includes("new-in") ||
+                    pTags.includes("new-arrival")
+                  ) {
+                    badge = "NEW";
+                  } else if (
+                    pTags.includes("bestseller") ||
+                    pTags.includes("best-seller") ||
+                    pTags.includes("trending")
+                  ) {
+                    badge = "BESTSELLER";
+                  }
 
-                    const cardBody = (
-                      <>
-                        <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#f4f4f4] group-hover:bg-[#eaeaea] transition-colors">
-                          <StoreImage
-                            image={p.image ?? null}
-                            fallbackSrc={p.image_url}
-                            alt={p.title}
-                            seed={p.id}
-                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                            className="size-full object-cover object-top transition-transform duration-[1.5s] group-hover:scale-[1.03]"
-                          />
-                          {badge && (
-                            <div className="absolute top-3 left-3 bg-background/90 backdrop-blur-sm px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-foreground shadow-sm">
-                              {badge}
-                            </div>
-                          )}
-                          {!inStock && (
-                            <div className="absolute bottom-3 left-3 bg-foreground/90 backdrop-blur-sm px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-background shadow-sm">
-                              {t("Out of stock", "স্টক নেই")}
-                            </div>
-                          )}
-                        </div>
-                        <div className="mt-4 space-y-1">
-                          <p className="text-[13px] sm:text-[14px] font-medium leading-snug text-foreground tracking-wide line-clamp-2 font-serif">
-                            {p.title}
-                          </p>
-                          <p className="money text-[13px] font-medium tracking-wide text-foreground/80 font-sans mt-0.5">
-                            {fmtMinor(min, merchant.currency_code)}
-                          </p>
-                        </div>
-                      </>
-                    );
-
-                    return (
-                      <li key={p.id}>
-                        {custom ? (
-                          <Link
-                            to="/p/$productSlug"
-                            params={{ productSlug: p.slug }}
-                            className="group block"
-                          >
-                            {cardBody}
-                          </Link>
-                        ) : (
-                          <Link
-                            to="/store/$slug/p/$productSlug"
-                            params={{ slug, productSlug: p.slug }}
-                            className="group block"
-                          >
-                            {cardBody}
-                          </Link>
+                  const cardBody = (
+                    <>
+                      <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#f4f4f4] group-hover:bg-[#eaeaea] transition-colors">
+                        <StoreImage
+                          image={p.image ?? null}
+                          fallbackSrc={p.image_url}
+                          alt={p.title}
+                          seed={p.id}
+                          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                          className="size-full object-cover object-top transition-transform duration-[1.5s] group-hover:scale-[1.03]"
+                        />
+                        {badge && (
+                          <div className="absolute top-3 left-3 bg-background/90 backdrop-blur-sm px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-foreground shadow-sm">
+                            {badge}
+                          </div>
                         )}
-                      </li>
-                    );
-                  })}
-                </ul>
+                        {!inStock && (
+                          <div className="absolute bottom-3 left-3 bg-foreground/90 backdrop-blur-sm px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest text-background shadow-sm">
+                            {t("Out of stock", "স্টক নেই")}
+                          </div>
+                        )}
+                      </div>
+                      <div className="mt-4 space-y-1">
+                        <p className="text-[13px] sm:text-[14px] font-medium leading-snug text-foreground tracking-wide line-clamp-2 font-serif">
+                          {p.title}
+                        </p>
+                        <p className="money text-[13px] font-medium tracking-wide text-foreground/80 font-sans mt-0.5">
+                          {fmtMinor(min, merchant.currency_code)}
+                        </p>
+                      </div>
+                    </>
+                  );
 
-                {sortedProducts.length > displayedProducts.length && (
-                  <div className="mt-16 text-center">
-                    <button
-                      onClick={() => setVisibleCount((prev) => prev + 12)}
-                      className="px-10 py-3.5 text-[12px] font-semibold uppercase tracking-[0.1em] text-foreground border border-foreground/20 hover:border-foreground/40 transition-colors bg-transparent cursor-pointer"
-                    >
-                      {t("Load More", "আরো দেখুন")}
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
+                  return (
+                    <li key={p.id}>
+                      {custom ? (
+                        <Link
+                          to="/p/$productSlug"
+                          params={{ productSlug: p.slug }}
+                          className="group block"
+                        >
+                          {cardBody}
+                        </Link>
+                      ) : (
+                        <Link
+                          to="/store/$slug/p/$productSlug"
+                          params={{ slug, productSlug: p.slug }}
+                          className="group block"
+                        >
+                          {cardBody}
+                        </Link>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+
+              {sortedProducts.length > displayedProducts.length && (
+                <div className="mt-16 text-center">
+                  <button
+                    onClick={() => setVisibleCount((prev) => prev + 12)}
+                    className="px-10 py-3.5 text-[12px] font-semibold uppercase tracking-[0.1em] text-foreground border border-foreground/20 hover:border-foreground/40 transition-colors bg-transparent cursor-pointer"
+                  >
+                    {t("Load More", "আরো দেখুন")}
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>
+      </div>
 
       {/* ── 5. Compact Mobile Filter Sheet (Immediate updates, no Apply buffering) ── */}
       {mobileFilterOpen && (

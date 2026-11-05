@@ -374,7 +374,12 @@ describe("CollectionView Faceting & Filtering", () => {
         url: "/c/women",
         children: [
           { id: "m-1-1", label: "Sarees", label_bn: "শাড়ি", url: "/c/sarees" },
-          { id: "m-1-2", label: "Salwar Kameez", label_bn: "সালোয়ার কামিজ", url: "/c/salwar-kameez" },
+          {
+            id: "m-1-2",
+            label: "Salwar Kameez",
+            label_bn: "সালোয়ার কামিজ",
+            url: "/c/salwar-kameez",
+          },
         ],
       },
       {
@@ -383,7 +388,12 @@ describe("CollectionView Faceting & Filtering", () => {
         label_bn: "পুরুষ",
         url: "/c/men",
         children: [
-          { id: "m-2-1", label: "Panjabi", label_bn: "পাঞ্জাবি", url: "/c/panjabi" },
+          {
+            id: "m-2-1",
+            label: "Panjabi",
+            label_bn: "পাঞ্জাবি",
+            url: "/c/panjabi",
+          },
         ],
       },
     ];
@@ -392,22 +402,31 @@ describe("CollectionView Faceting & Filtering", () => {
     const publishedList = ["women", "sarees", "salwar-kameez", "panjabi"];
     const womenHierarchy = deriveCollectionHierarchy({
       collectionSlug: "women",
-      menuTree: customMenu as any,
+      menuTree: customMenu,
       publishedCollectionSlugs: publishedList,
     });
     expect(womenHierarchy.parent).toBeUndefined();
-    expect(womenHierarchy.pills.map((p) => p.slug)).toEqual(["women", "sarees", "salwar-kameez"]);
+    expect(womenHierarchy.pills.map((p) => p.slug)).toEqual([
+      "women",
+      "sarees",
+      "salwar-kameez",
+    ]);
     expect(womenHierarchy.pills[0].label).toBe("All Women");
-    expect(womenHierarchy.pills.map((p) => p.slug)).not.toContain("taaga-fusion");
+    expect(womenHierarchy.pills.map((p) => p.slug)).not.toContain(
+      "taaga-fusion",
+    );
 
     // When viewing child 'sarees', parent should be Women and pills should be sibling subcategories
     const sareesHierarchy = deriveCollectionHierarchy({
       collectionSlug: "sarees",
-      menuTree: customMenu as any,
+      menuTree: customMenu,
       publishedCollectionSlugs: publishedList,
     });
     expect(sareesHierarchy.parent?.slug).toBe("women");
-    expect(sareesHierarchy.pills.map((p) => p.slug)).toEqual(["sarees", "salwar-kameez"]);
+    expect(sareesHierarchy.pills.map((p) => p.slug)).toEqual([
+      "sarees",
+      "salwar-kameez",
+    ]);
   });
 
   it("accurately filters multi-variant products if ANY variant matches the price range", () => {
@@ -418,7 +437,7 @@ describe("CollectionView Faceting & Filtering", () => {
       tags: ["muslin", "saree"],
       product_variants: [
         { id: "v-cheap", price_amount_minor_int: 350000, stock_quantity: 2 }, // BDT 3,500 (under 5k)
-        { id: "v-luxe", price_amount_minor_int: 750000, stock_quantity: 1 },  // BDT 7,500 (5k-10k)
+        { id: "v-luxe", price_amount_minor_int: 750000, stock_quantity: 1 }, // BDT 7,500 (5k-10k)
       ],
     } as unknown as CollectionProduct;
 
@@ -468,13 +487,16 @@ describe("CollectionView Faceting & Filtering", () => {
 
     // Crucial variant-invariance test: range [4000, 7000] falls between v-cheap (3500) and v-luxe (7500)
     // Neither variant satisfies BOTH min and max simultaneously, so product must NOT match!
-    const customNoVariantInRange = filterCollectionProducts([multiVariantProduct], {
-      availability: "all",
-      price: "all",
-      minPriceBDT: 4000,
-      maxPriceBDT: 7000,
-      tags: [],
-    });
+    const customNoVariantInRange = filterCollectionProducts(
+      [multiVariantProduct],
+      {
+        availability: "all",
+        price: "all",
+        minPriceBDT: 4000,
+        maxPriceBDT: 7000,
+        tags: [],
+      },
+    );
     expect(customNoVariantInRange).toHaveLength(0);
 
     const customNoMatch = filterCollectionProducts([multiVariantProduct], {
@@ -610,7 +632,9 @@ describe("Simple products and collection navigation integrity", () => {
       {
         id: "mv-mid",
         title: "Tangail Taant Saree",
-        product_variants: [{ price_amount_minor_int: 385000, stock_quantity: 5 }],
+        product_variants: [
+          { price_amount_minor_int: 385000, stock_quantity: 5 },
+        ],
       } as unknown as CollectionProduct,
       {
         id: "sp-cheap",
@@ -622,15 +646,25 @@ describe("Simple products and collection navigation integrity", () => {
       {
         id: "mv-expensive",
         title: "Dhakai Muslin Jamdani",
-        product_variants: [{ price_amount_minor_int: 2500000, stock_quantity: 2 }],
+        product_variants: [
+          { price_amount_minor_int: 2500000, stock_quantity: 2 },
+        ],
       } as unknown as CollectionProduct,
     ];
 
     const sortedAsc = sortCollectionProducts(mixedProducts, "price_asc");
-    expect(sortedAsc.map((p) => p.id)).toEqual(["sp-cheap", "mv-mid", "mv-expensive"]);
+    expect(sortedAsc.map((p) => p.id)).toEqual([
+      "sp-cheap",
+      "mv-mid",
+      "mv-expensive",
+    ]);
 
     const sortedDesc = sortCollectionProducts(mixedProducts, "price_desc");
-    expect(sortedDesc.map((p) => p.id)).toEqual(["mv-expensive", "mv-mid", "sp-cheap"]);
+    expect(sortedDesc.map((p) => p.id)).toEqual([
+      "mv-expensive",
+      "mv-mid",
+      "sp-cheap",
+    ]);
   });
 
   it("filters simple products by stock availability accurately", () => {
@@ -708,54 +742,301 @@ describe("Simple products and collection navigation integrity", () => {
     expect(resolved[1].product_variants[0].stock_quantity).toBe(0);
 
     // 2. Pricing and stock resolver
-    const info1 = resolveProductPricingAndStock(resolved[0] as unknown as CollectionProduct);
+    const info1 = resolveProductPricingAndStock(
+      resolved[0] as unknown as CollectionProduct,
+    );
     expect(info1.hasPrice).toBe(true);
     expect(info1.priceMinMinor).toBe(250000);
     expect(info1.inStock).toBe(true);
     expect(info1.isOutOfStock).toBe(false);
 
-    const info2 = resolveProductPricingAndStock(resolved[1] as unknown as CollectionProduct);
+    const info2 = resolveProductPricingAndStock(
+      resolved[1] as unknown as CollectionProduct,
+    );
     expect(info2.hasPrice).toBe(true);
     expect(info2.priceMinMinor).toBe(850000);
     expect(info2.inStock).toBe(false);
     expect(info2.isOutOfStock).toBe(true);
 
     // 3. Price bracket filter: under 5000 vs 5000-10000
-    const under5k = filterCollectionProducts(resolved as unknown as CollectionProduct[], {
-      availability: "all",
-      price: "under_5000",
-      tags: [],
-    });
+    const under5k = filterCollectionProducts(
+      resolved as unknown as CollectionProduct[],
+      {
+        availability: "all",
+        price: "under_5000",
+        tags: [],
+      },
+    );
     expect(under5k.map((p) => p.id)).toEqual(["p-simple-1"]);
 
-    const between5kAnd10k = filterCollectionProducts(resolved as unknown as CollectionProduct[], {
-      availability: "all",
-      price: "5000_10000",
-      tags: [],
-    });
+    const between5kAnd10k = filterCollectionProducts(
+      resolved as unknown as CollectionProduct[],
+      {
+        availability: "all",
+        price: "5000_10000",
+        tags: [],
+      },
+    );
     expect(between5kAnd10k.map((p) => p.id)).toEqual(["p-simple-2"]);
 
     // 4. Availability filter: in_stock vs out_of_stock
-    const inStock = filterCollectionProducts(resolved as unknown as CollectionProduct[], {
+    const inStock = filterCollectionProducts(
+      resolved as unknown as CollectionProduct[],
+      {
+        availability: "in_stock",
+        price: "all",
+        tags: [],
+      },
+    );
+    expect(inStock.map((p) => p.id)).toEqual(["p-simple-1"]);
+
+    const outOfStock = filterCollectionProducts(
+      resolved as unknown as CollectionProduct[],
+      {
+        availability: "out_of_stock",
+        price: "all",
+        tags: [],
+      },
+    );
+    expect(outOfStock.map((p) => p.id)).toEqual(["p-simple-2"]);
+
+    // 5. Sorting: price asc vs price desc
+    const sortedAsc = sortCollectionProducts(
+      resolved as unknown as CollectionProduct[],
+      "price_asc",
+    );
+    expect(sortedAsc.map((p) => p.id)).toEqual(["p-simple-1", "p-simple-2"]);
+
+    const sortedDesc = sortCollectionProducts(
+      resolved as unknown as CollectionProduct[],
+      "price_desc",
+    );
+    expect(sortedDesc.map((p) => p.id)).toEqual(["p-simple-2", "p-simple-1"]);
+  });
+
+  it("consistently handles zero variants, single variant, and multi-variant products across pricing, stock, filters, and sorting", () => {
+    // 1. Zero variants (simple product with root price & stock)
+    const p0InStock = {
+      id: "p0-in",
+      title: "Clay Pottery Bowl",
+      price_amount_minor_int: 300000, // 3,000 BDT
+      stock_quantity: 10,
+      product_variants: [],
+      tags: ["craft", "home"],
+    } as unknown as CollectionProduct;
+
+    // 2. Zero variants (simple product out of stock)
+    const p0OutOfStock = {
+      id: "p0-out",
+      title: "Terracotta Vase",
+      price_amount_minor_int: 700000, // 7,000 BDT
+      stock_quantity: 0,
+      product_variants: [],
+      tags: ["craft", "terracotta"],
+    } as unknown as CollectionProduct;
+
+    // 3. Zero variants (missing price and stock info)
+    const p0UnpricedNoStock = {
+      id: "p0-unpriced",
+      title: "Unpriced Mystery Item",
+      product_variants: [],
+      tags: ["craft"],
+    } as unknown as CollectionProduct;
+
+    // 4. Single variant (in stock)
+    const p1InStock = {
+      id: "p1-in",
+      title: "Handspun Khadi Shirt",
+      product_variants: [
+        { id: "v1-1", price_amount_minor_int: 450000, stock_quantity: 8 }, // 4,500 BDT
+      ],
+      tags: ["apparel", "khadi"],
+    } as unknown as CollectionProduct;
+
+    // 5. Single variant (out of stock)
+    const p1OutOfStock = {
+      id: "p1-out",
+      title: "Embroidered Silk Stole",
+      product_variants: [
+        { id: "v1-2", price_amount_minor_int: 850000, stock_quantity: 0 }, // 8,500 BDT
+      ],
+      tags: ["apparel", "silk"],
+    } as unknown as CollectionProduct;
+
+    // 6. Multi-variant (one variant in stock, one out: range 6,000 - 9,000 BDT, overall in stock)
+    const pMInStock = {
+      id: "pm-in",
+      title: "Festive Silk Saree",
+      product_variants: [
+        { id: "vm-1", price_amount_minor_int: 600000, stock_quantity: 2 }, // 6,000 BDT
+        { id: "vm-2", price_amount_minor_int: 900000, stock_quantity: 0 }, // 9,000 BDT
+      ],
+      tags: ["saree", "festive"],
+    } as unknown as CollectionProduct;
+
+    // 7. Multi-variant (all variants out of stock: range 2,000 - 2,500 BDT)
+    const pMOutOfStock = {
+      id: "pm-out",
+      title: "Block Print Cotton Scarf",
+      product_variants: [
+        { id: "vm-3", price_amount_minor_int: 200000, stock_quantity: 0 }, // 2,000 BDT
+        { id: "vm-4", price_amount_minor_int: 250000, stock_quantity: 0 }, // 2,500 BDT
+      ],
+      tags: ["apparel", "cotton"],
+    } as unknown as CollectionProduct;
+
+    const allProducts = [
+      p0InStock,
+      p0OutOfStock,
+      p0UnpricedNoStock,
+      p1InStock,
+      p1OutOfStock,
+      pMInStock,
+      pMOutOfStock,
+    ];
+
+    // Assert resolver agreement
+    const res0In = resolveProductPricingAndStock(p0InStock);
+    expect(res0In.hasPrice).toBe(true);
+    expect(res0In.priceMinMinor).toBe(300000);
+    expect(res0In.priceMaxMinor).toBe(300000);
+    expect(res0In.isPriceRange).toBe(false);
+    expect(res0In.inStock).toBe(true);
+    expect(res0In.isOutOfStock).toBe(false);
+
+    const res0Out = resolveProductPricingAndStock(p0OutOfStock);
+    expect(res0Out.hasPrice).toBe(true);
+    expect(res0Out.priceMinMinor).toBe(700000);
+    expect(res0Out.inStock).toBe(false);
+    expect(res0Out.isOutOfStock).toBe(true);
+
+    const res0Unpriced = resolveProductPricingAndStock(p0UnpricedNoStock);
+    expect(res0Unpriced.hasPrice).toBe(false);
+    expect(res0Unpriced.priceMinMinor).toBe(0);
+    expect(res0Unpriced.inStock).toBe(false);
+    expect(res0Unpriced.isOutOfStock).toBe(true);
+
+    const res1In = resolveProductPricingAndStock(p1InStock);
+    expect(res1In.hasPrice).toBe(true);
+    expect(res1In.priceMinMinor).toBe(450000);
+    expect(res1In.priceMaxMinor).toBe(450000);
+    expect(res1In.isPriceRange).toBe(false);
+    expect(res1In.inStock).toBe(true);
+
+    const res1Out = resolveProductPricingAndStock(p1OutOfStock);
+    expect(res1Out.hasPrice).toBe(true);
+    expect(res1Out.priceMinMinor).toBe(850000);
+    expect(res1Out.inStock).toBe(false);
+    expect(res1Out.isOutOfStock).toBe(true);
+
+    const resMIn = resolveProductPricingAndStock(pMInStock);
+    expect(resMIn.hasPrice).toBe(true);
+    expect(resMIn.priceMinMinor).toBe(600000);
+    expect(resMIn.priceMaxMinor).toBe(900000);
+    expect(resMIn.isPriceRange).toBe(true);
+    expect(resMIn.inStock).toBe(true);
+    expect(resMIn.isOutOfStock).toBe(false);
+
+    const resMOut = resolveProductPricingAndStock(pMOutOfStock);
+    expect(resMOut.hasPrice).toBe(true);
+    expect(resMOut.priceMinMinor).toBe(200000);
+    expect(resMOut.priceMaxMinor).toBe(250000);
+    expect(resMOut.isPriceRange).toBe(true);
+    expect(resMOut.inStock).toBe(false);
+    expect(resMOut.isOutOfStock).toBe(true);
+
+    // Availability filtering
+    const inStockFiltered = filterCollectionProducts(allProducts, {
       availability: "in_stock",
       price: "all",
       tags: [],
     });
-    expect(inStock.map((p) => p.id)).toEqual(["p-simple-1"]);
+    expect(inStockFiltered.map((p) => p.id)).toEqual([
+      "p0-in",
+      "p1-in",
+      "pm-in",
+    ]);
 
-    const outOfStock = filterCollectionProducts(resolved as unknown as CollectionProduct[], {
+    const outOfStockFiltered = filterCollectionProducts(allProducts, {
       availability: "out_of_stock",
       price: "all",
       tags: [],
     });
-    expect(outOfStock.map((p) => p.id)).toEqual(["p-simple-2"]);
+    expect(outOfStockFiltered.map((p) => p.id)).toEqual([
+      "p0-out",
+      "p0-unpriced",
+      "p1-out",
+      "pm-out",
+    ]);
 
-    // 5. Sorting: price asc vs price desc
-    const sortedAsc = sortCollectionProducts(resolved as unknown as CollectionProduct[], "price_asc");
-    expect(sortedAsc.map((p) => p.id)).toEqual(["p-simple-1", "p-simple-2"]);
+    // Price bracket filtering
+    // Under 5,000 BDT (< 500,000 minor): p0-in (300k), p1-in (450k), pm-out (200k-250k).
+    // p0-unpriced is excluded because hasPrice is false!
+    const under5k = filterCollectionProducts(allProducts, {
+      availability: "all",
+      price: "under_5000",
+      tags: [],
+    });
+    expect(under5k.map((p) => p.id)).toEqual(["p0-in", "p1-in", "pm-out"]);
 
-    const sortedDesc = sortCollectionProducts(resolved as unknown as CollectionProduct[], "price_desc");
-    expect(sortedDesc.map((p) => p.id)).toEqual(["p-simple-2", "p-simple-1"]);
+    // 5,000 - 10,000 BDT (500,000 - 1,000,000 minor): p0-out (700k), p1-out (850k), pm-in (600k-900k)
+    const between5kAnd10k = filterCollectionProducts(allProducts, {
+      availability: "all",
+      price: "5000_10000",
+      tags: [],
+    });
+    expect(between5kAnd10k.map((p) => p.id)).toEqual([
+      "p0-out",
+      "p1-out",
+      "pm-in",
+    ]);
+
+    // Custom price range: BDT 4,000 to 6,500 (400,000 to 650,000 minor)
+    const customRange = filterCollectionProducts(allProducts, {
+      availability: "all",
+      price: "all",
+      tags: [],
+      minPriceBDT: 4000,
+      maxPriceBDT: 6500,
+    });
+    // p1-in (4,500) and pm-in (has variant at 6,000) match
+    expect(customRange.map((p) => p.id)).toEqual(["p1-in", "pm-in"]);
+
+    // Strict variant-invariance check on custom range: BDT 6,500 to 7,500
+    // pm-in has variants at 6,000 and 9,000. Neither variant is within [6500, 7500], so pm-in MUST NOT match!
+    const customRangeStrict = filterCollectionProducts(allProducts, {
+      availability: "all",
+      price: "all",
+      tags: [],
+      minPriceBDT: 6500,
+      maxPriceBDT: 7500,
+    });
+    expect(customRangeStrict.map((p) => p.id)).toEqual(["p0-out"]);
+
+    // Sorting: price_asc
+    // p0-unpriced has priceMinMinor = 0, so it appears first, followed by ascending prices
+    const sortedAsc = sortCollectionProducts(allProducts, "price_asc");
+    expect(sortedAsc.map((p) => p.id)).toEqual([
+      "p0-unpriced",
+      "pm-out",
+      "p0-in",
+      "p1-in",
+      "pm-in",
+      "p0-out",
+      "p1-out",
+    ]);
+
+    // Sorting: price_desc
+    const sortedDesc = sortCollectionProducts(allProducts, "price_desc");
+    expect(sortedDesc.map((p) => p.id)).toEqual([
+      "p1-out",
+      "p0-out",
+      "pm-in",
+      "p1-in",
+      "p0-in",
+      "pm-out",
+      "p0-unpriced",
+    ]);
   });
 
   it("deriveCollectionHierarchy rejects non-collection routes and logs diagnostics", () => {
@@ -775,7 +1056,7 @@ describe("Simple products and collection navigation integrity", () => {
 
     const hierarchy = deriveCollectionHierarchy({
       collectionSlug: "festive-sarees",
-      menuTree: menuWithMixedLinks as any,
+      menuTree: menuWithMixedLinks,
       publishedCollectionSlugs: ["festive-sarees", "silk-sarees"],
     });
 
@@ -793,7 +1074,9 @@ describe("Simple products and collection navigation integrity", () => {
     expect(hierarchy.diagnostics).toBeDefined();
     const diagnostics = hierarchy.diagnostics ?? [];
     expect(diagnostics.length).toBeGreaterThan(0);
-    const nonColl = diagnostics.filter((d) => d.code === "non_collection_destination");
+    const nonColl = diagnostics.filter(
+      (d) => d.code === "non_collection_destination",
+    );
     expect(nonColl.length).toBeGreaterThanOrEqual(2);
     expect(nonColl.map((d) => d.url)).toEqual(
       expect.arrayContaining(["/pages/contact", "/blog/jamdani"]),
@@ -808,7 +1091,11 @@ describe("Simple products and collection navigation integrity", () => {
         url: "/c/women",
         children: [
           { id: "m-c1", label: "Signature Sarees", url: "/c/sarees" },
-          { id: "m-c2", label: "Old Stale Collection", url: "/c/stale-collection" },
+          {
+            id: "m-c2",
+            label: "Old Stale Collection",
+            url: "/c/stale-collection",
+          },
           { id: "m-c3", label: "Dhakai Jamdani", url: "/c/jamdani" },
           { id: "m-c4", label: "Deleted Draft", url: "/c/draft-collection" },
         ],
@@ -820,7 +1107,7 @@ describe("Simple products and collection navigation integrity", () => {
 
     const hierarchy = deriveCollectionHierarchy({
       collectionSlug: "women",
-      menuTree: menuWithStaleLinks as any,
+      menuTree: menuWithStaleLinks,
       publishedCollectionSlugs: publishedSlugs,
     });
 
@@ -850,9 +1137,7 @@ describe("Simple products and collection navigation integrity", () => {
         id: "1",
         label: "Women",
         url: "/c/women",
-        children: [
-          { id: "1-1", label: "Sarees", url: "/c/sarees" },
-        ],
+        children: [{ id: "1-1", label: "Sarees", url: "/c/sarees" }],
       },
     ];
     // Undefined publishedCollectionSlugs fails closed: pills are empty, diagnostics recorded
@@ -862,7 +1147,9 @@ describe("Simple products and collection navigation integrity", () => {
     });
     expect(undefHierarchy.pills).toEqual([]);
     expect(
-      undefHierarchy.diagnostics?.some((d) => d.code === "unpublished_or_stale_collection"),
+      undefHierarchy.diagnostics?.some(
+        (d) => d.code === "unpublished_or_stale_collection",
+      ),
     ).toBe(true);
 
     // Empty array fails closed
@@ -877,7 +1164,9 @@ describe("Simple products and collection navigation integrity", () => {
   it("top-level department with no child collections returns empty pills (no subcategory rail)", () => {
     const hierarchy = deriveCollectionHierarchy({
       collectionSlug: "kids",
-      menuTree: HEADER_FALLBACK_MENU as any,
+      menuTree: HEADER_FALLBACK_MENU as unknown as Parameters<
+        typeof deriveCollectionHierarchy
+      >[0]["menuTree"],
       publishedCollectionSlugs: ["kids"],
     });
     expect(hierarchy.parent).toBeUndefined();

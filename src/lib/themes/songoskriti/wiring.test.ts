@@ -76,7 +76,8 @@ describe("songoskriti wiring", () => {
     const testimonials = sections.find((n) => n.type === "testimonials");
     if (testimonials) {
       expect(
-        (testimonials.props as { testimonials?: unknown[] })?.testimonials ?? [],
+        (testimonials.props as { testimonials?: unknown[] })?.testimonials ??
+          [],
       ).toHaveLength(0);
     }
 
@@ -110,11 +111,8 @@ describe("songoskriti wiring", () => {
         .map((row) => row.split("|")[0]!.trim())
         .filter(Boolean),
     );
-    // Merge reconciliation: both lanes' fallback labels survive — "Stores"
-    // (flagship outlets) and "Contact" (customer care) across 28 links.
-    expect(labels).toContain("Stores");
     expect(labels).toContain("Contact");
-    expect(labels).toHaveLength(26);
+    expect(labels).toHaveLength(24);
     expect(new Set(labels).size).toBe(labels.length);
   });
 

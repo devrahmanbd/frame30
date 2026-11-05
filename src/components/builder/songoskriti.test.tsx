@@ -305,7 +305,9 @@ describe("trust_footer", () => {
       ...newSection("trust_footer"),
       props: { items: [] },
     };
-    expect(render(Cmp(), section, "en", true)).toContain("configure verified merchant policies");
+    expect(render(Cmp(), section, "en", true)).toContain(
+      "configure verified merchant policies",
+    );
     expect(render(Cmp(), section)).toBe("");
   });
 
@@ -446,6 +448,32 @@ describe("trust_footer", () => {
     const html = render(Cmp(), section);
     expect(html).not.toContain("100% secure encrypted checkout");
     expect(html).toBe("");
+  });
+
+  it("only uses NATIONWIDE DELIVERY heading when configured policy confirms nationwide coverage", () => {
+    // 1. Regional COD policy uses CASH ON DELIVERY heading, never NATIONWIDE DELIVERY
+    const regionalSection = {
+      ...newSection("trust_footer"),
+      props: {
+        items: [],
+        codPolicy: "Cash on delivery available in Dhaka metropolitan area only",
+      },
+    };
+    const regionalHtml = render(Cmp(), regionalSection, "en");
+    expect(regionalHtml).toContain("CASH ON DELIVERY");
+    expect(regionalHtml).not.toContain("NATIONWIDE DELIVERY");
+
+    // 2. Explicit nationwide policy uses NATIONWIDE DELIVERY heading
+    const nationwideSection = {
+      ...newSection("trust_footer"),
+      props: {
+        items: [],
+        codPolicy:
+          "Cash on delivery available nationwide across all 64 districts",
+      },
+    };
+    const nationwideHtml = render(Cmp(), nationwideSection, "en");
+    expect(nationwideHtml).toContain("NATIONWIDE DELIVERY");
   });
 });
 

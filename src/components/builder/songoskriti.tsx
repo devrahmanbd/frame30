@@ -334,8 +334,7 @@ const Testimonials: WidgetComponent = ({
   const skin = resolveSkin("testimonials", str("skin"));
   const autoAdvanceMs = int("autoAdvanceMs", 6000, 1500, 15000);
   const heading =
-    str("heading") ||
-    t(locale, "Customer Reviews", "গ্রাহকদের মতামত");
+    str("heading") || t(locale, "Customer Reviews", "গ্রাহকদের মতামত");
   const subhead =
     str("subhead") ||
     t(
@@ -470,9 +469,7 @@ const Testimonials: WidgetComponent = ({
           <div className="flex items-center gap-2 mb-3">
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--theme-accent)]" />
             <p className="text-[11px] font-semibold tracking-[0.25em] uppercase text-[var(--theme-accent)]">
-              {locale === "bn"
-                ? "গ্রাহকদের মতামত"
-                : "Customer Reviews"}
+              {locale === "bn" ? "গ্রাহকদের মতামত" : "Customer Reviews"}
             </p>
           </div>
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-light tracking-tight text-[var(--theme-ink)]">
@@ -677,7 +674,13 @@ const TRUST_FOOTER_ICON = {
   quality: Star,
 } as const;
 
-const TrustFooter: WidgetComponent = ({ str, bool, section, locale, editing }) => {
+const TrustFooter: WidgetComponent = ({
+  str,
+  bool,
+  section,
+  locale,
+  editing,
+}) => {
   // Task 5 motion: once-only batch reveal at full intent; static otherwise.
   const scope = useRef<HTMLDivElement | null>(null);
   useScrollReveals(scope, true);
@@ -695,49 +698,85 @@ const TrustFooter: WidgetComponent = ({ str, bool, section, locale, editing }) =
 
   const codPolicy =
     str("codPolicy") ||
-    (typeof dynamicPolicy.cod_policy === "string" ? dynamicPolicy.cod_policy : "") ||
-    (typeof dynamic.codPolicy === "string" ? (dynamic.codPolicy as string) : "");
+    (typeof dynamicPolicy.cod_policy === "string"
+      ? dynamicPolicy.cod_policy
+      : "") ||
+    (typeof dynamic.codPolicy === "string"
+      ? (dynamic.codPolicy as string)
+      : "");
 
   const deliveryPolicy =
     str("deliveryPolicy") ||
-    (typeof dynamicPolicy.delivery_policy === "string" ? dynamicPolicy.delivery_policy : "") ||
-    (typeof dynamic.deliveryPolicy === "string" ? (dynamic.deliveryPolicy as string) : "");
+    (typeof dynamicPolicy.delivery_policy === "string"
+      ? dynamicPolicy.delivery_policy
+      : "") ||
+    (typeof dynamic.deliveryPolicy === "string"
+      ? (dynamic.deliveryPolicy as string)
+      : "");
 
   const exchangePolicy =
     str("exchangePolicy") ||
     str("returnPolicy") ||
-    (typeof dynamicPolicy.exchange_policy === "string" ? dynamicPolicy.exchange_policy : "") ||
-    (typeof dynamic.exchangePolicy === "string" ? (dynamic.exchangePolicy as string) : "");
+    (typeof dynamicPolicy.exchange_policy === "string"
+      ? dynamicPolicy.exchange_policy
+      : "") ||
+    (typeof dynamic.exchangePolicy === "string"
+      ? (dynamic.exchangePolicy as string)
+      : "");
 
   const supportHours =
     str("supportHours") ||
-    (typeof dynamicPolicy.support_hours === "string" ? dynamicPolicy.support_hours : "") ||
-    (typeof dynamic.supportHours === "string" ? (dynamic.supportHours as string) : "");
+    (typeof dynamicPolicy.support_hours === "string"
+      ? dynamicPolicy.support_hours
+      : "") ||
+    (typeof dynamic.supportHours === "string"
+      ? (dynamic.supportHours as string)
+      : "");
 
   const supportEmail =
     str("supportEmail") ||
     str("support_email") ||
-    (typeof dynamicPolicy.support_email === "string" ? dynamicPolicy.support_email : "") ||
-    (typeof dynamicMerchant.support_email === "string" ? dynamicMerchant.support_email : "") ||
-    (typeof dynamic.support_email === "string" ? (dynamic.support_email as string) : "");
+    (typeof dynamicPolicy.support_email === "string"
+      ? dynamicPolicy.support_email
+      : "") ||
+    (typeof dynamicMerchant.support_email === "string"
+      ? dynamicMerchant.support_email
+      : "") ||
+    (typeof dynamic.support_email === "string"
+      ? (dynamic.support_email as string)
+      : "");
 
   const supportPhone =
     str("supportPhone") ||
     str("support_phone") ||
-    (typeof dynamicPolicy.support_phone === "string" ? dynamicPolicy.support_phone : "") ||
-    (typeof dynamicMerchant.support_phone === "string" ? dynamicMerchant.support_phone : "") ||
-    (typeof dynamic.support_phone === "string" ? (dynamic.support_phone as string) : "");
+    (typeof dynamicPolicy.support_phone === "string"
+      ? dynamicPolicy.support_phone
+      : "") ||
+    (typeof dynamicMerchant.support_phone === "string"
+      ? dynamicMerchant.support_phone
+      : "") ||
+    (typeof dynamic.support_phone === "string"
+      ? (dynamic.support_phone as string)
+      : "");
 
   const craftPolicy =
     str("craftPolicy") ||
     str("authenticityGuarantee") ||
-    (typeof dynamicPolicy.craft_policy === "string" ? dynamicPolicy.craft_policy : "") ||
-    (typeof dynamic.craftPolicy === "string" ? (dynamic.craftPolicy as string) : "");
+    (typeof dynamicPolicy.craft_policy === "string"
+      ? dynamicPolicy.craft_policy
+      : "") ||
+    (typeof dynamic.craftPolicy === "string"
+      ? (dynamic.craftPolicy as string)
+      : "");
 
   const paymentPolicy =
     str("paymentPolicy") ||
-    (typeof dynamicPolicy.payment_policy === "string" ? dynamicPolicy.payment_policy : "") ||
-    (typeof dynamic.paymentPolicy === "string" ? (dynamic.paymentPolicy as string) : "");
+    (typeof dynamicPolicy.payment_policy === "string"
+      ? dynamicPolicy.payment_policy
+      : "") ||
+    (typeof dynamic.paymentPolicy === "string"
+      ? (dynamic.paymentPolicy as string)
+      : "");
 
   // Repeater-first (trust_bar precedent): studio `items` rows win when
   // present, scalar i1–i4 triples remain as the fallback.
@@ -794,15 +833,35 @@ const TrustFooter: WidgetComponent = ({ str, bool, section, locale, editing }) =
 
       if (isDeliveryOrCod) {
         if (codPolicy) {
+          const isNationwide = /nationwide|across bangladesh|সারাদেশে/i.test(
+            `${codPolicy} ${item.title}`,
+          );
+          const defaultTitle = isNationwide
+            ? locale === "bn"
+              ? "সারাদেশে ডেলিভারি"
+              : "NATIONWIDE DELIVERY"
+            : locale === "bn"
+              ? "ক্যাশ অন ডেলিভারি"
+              : "CASH ON DELIVERY";
           items.push({
             icon: item.icon || "delivery",
-            title: item.title || (locale === "bn" ? "সারাদেশে ডেলিভারি" : "NATIONWIDE DELIVERY"),
+            title: item.title || defaultTitle,
             body: codPolicy,
           });
         } else if (deliveryPolicy) {
+          const isNationwide = /nationwide|across bangladesh|সারাদেশে/i.test(
+            `${deliveryPolicy} ${item.title}`,
+          );
+          const defaultTitle = isNationwide
+            ? locale === "bn"
+              ? "সারাদেশে ডেলিভারি"
+              : "NATIONWIDE DELIVERY"
+            : locale === "bn"
+              ? "ডেলিভারি সুবিধা"
+              : "DELIVERY SERVICE";
           items.push({
             icon: item.icon || "delivery",
-            title: item.title || (locale === "bn" ? "ডেলিভারি সুবিধা" : "DELIVERY SERVICE"),
+            title: item.title || defaultTitle,
             body: deliveryPolicy,
           });
         }
@@ -811,7 +870,8 @@ const TrustFooter: WidgetComponent = ({ str, bool, section, locale, editing }) =
         if (exchangePolicy) {
           items.push({
             icon: item.icon || "returns",
-            title: item.title || (locale === "bn" ? "সহজ বিনিময়" : "EASY EXCHANGE"),
+            title:
+              item.title || (locale === "bn" ? "সহজ বিনিময়" : "EASY EXCHANGE"),
             body: exchangePolicy,
           });
         }
@@ -820,13 +880,15 @@ const TrustFooter: WidgetComponent = ({ str, bool, section, locale, editing }) =
         if (supportHours) {
           items.push({
             icon: item.icon || "support",
-            title: item.title || (locale === "bn" ? "গ্রাহক সেবা" : "CUSTOMER CARE"),
+            title:
+              item.title || (locale === "bn" ? "গ্রাহক সেবা" : "CUSTOMER CARE"),
             body: supportHours,
           });
         } else if (supportEmail) {
           items.push({
             icon: item.icon || "support",
-            title: item.title || (locale === "bn" ? "গ্রাহক সেবা" : "CUSTOMER CARE"),
+            title:
+              item.title || (locale === "bn" ? "গ্রাহক সেবা" : "CUSTOMER CARE"),
             body:
               locale === "bn"
                 ? `ইমেইল সহায়তা: ${supportEmail}`
@@ -835,7 +897,8 @@ const TrustFooter: WidgetComponent = ({ str, bool, section, locale, editing }) =
         } else if (supportPhone) {
           items.push({
             icon: item.icon || "support",
-            title: item.title || (locale === "bn" ? "গ্রাহক সেবা" : "CUSTOMER CARE"),
+            title:
+              item.title || (locale === "bn" ? "গ্রাহক সেবা" : "CUSTOMER CARE"),
             body:
               locale === "bn"
                 ? `হটলাইন: ${supportPhone}`
@@ -847,7 +910,9 @@ const TrustFooter: WidgetComponent = ({ str, bool, section, locale, editing }) =
         if (craftPolicy) {
           items.push({
             icon: item.icon || "secure",
-            title: item.title || (locale === "bn" ? "খাঁটি কারুশিল্প" : "AUTHENTIC CRAFT"),
+            title:
+              item.title ||
+              (locale === "bn" ? "খাঁটি কারুশিল্প" : "AUTHENTIC CRAFT"),
             body: craftPolicy,
           });
         }
@@ -856,7 +921,9 @@ const TrustFooter: WidgetComponent = ({ str, bool, section, locale, editing }) =
         if (paymentPolicy) {
           items.push({
             icon: item.icon || "secure",
-            title: item.title || (locale === "bn" ? "নিরাপদ পেমেন্ট" : "SECURE PAYMENT"),
+            title:
+              item.title ||
+              (locale === "bn" ? "নিরাপদ পেমেন্ট" : "SECURE PAYMENT"),
             body: paymentPolicy,
           });
         }
@@ -866,15 +933,33 @@ const TrustFooter: WidgetComponent = ({ str, bool, section, locale, editing }) =
   } else {
     // When no candidates configured in section, build exclusively from verified merchant policies
     if (codPolicy) {
+      const isNationwide = /nationwide|across bangladesh|সারাদেশে/i.test(
+        codPolicy,
+      );
       items.push({
         icon: "delivery",
-        title: locale === "bn" ? "সারাদেশে ডেলিভারি" : "NATIONWIDE DELIVERY",
+        title: isNationwide
+          ? locale === "bn"
+            ? "সারাদেশে ডেলিভারি"
+            : "NATIONWIDE DELIVERY"
+          : locale === "bn"
+            ? "ক্যাশ অন ডেলিভারি"
+            : "CASH ON DELIVERY",
         body: codPolicy,
       });
     } else if (deliveryPolicy) {
+      const isNationwide = /nationwide|across bangladesh|সারাদেশে/i.test(
+        deliveryPolicy,
+      );
       items.push({
         icon: "delivery",
-        title: locale === "bn" ? "ডেলিভারি সুবিধা" : "DELIVERY SERVICE",
+        title: isNationwide
+          ? locale === "bn"
+            ? "সারাদেশে ডেলিভারি"
+            : "NATIONWIDE DELIVERY"
+          : locale === "bn"
+            ? "ডেলিভারি সুবিধা"
+            : "DELIVERY SERVICE",
         body: deliveryPolicy,
       });
     }
@@ -1309,12 +1394,7 @@ const SongoskritiProductGrid: WidgetComponent = (ctx) => {
     return <div className="w-full">{host}</div>;
   }
 
-  if (
-    rows !== undefined &&
-    rows.length === 0 &&
-    !data?.pending
-  )
-    return null;
+  if (rows !== undefined && rows.length === 0 && !data?.pending) return null;
 
   return (
     <section className="w-full bg-[var(--theme-surface)] py-8 sm:py-16">
@@ -1437,7 +1517,11 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
   section,
   link,
   locale,
+  editing,
 }) => {
+  const dynamic = (useDynamicContext(editing) || {}) as Record<string, unknown>;
+  const dynamicMerchant = (dynamic.merchant || {}) as Record<string, unknown>;
+
   const itemRows = Array.isArray(section.props.items)
     ? section.props.items
         .map((row) => {
@@ -1499,6 +1583,12 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
   const newsletterButton = str("newsletterButton") || "Subscribe";
   const newsletterConsent = str("newsletterConsent");
   const brandName = str("brandName");
+  const brandTagline =
+    str("brandTagline") ||
+    str("tagline") ||
+    (typeof dynamicMerchant.tagline === "string"
+      ? (dynamicMerchant.tagline as string)
+      : "");
   const paymentMarks = str("paymentsMarks")
     .split(/[,\n]+/)
     .map((m) => m.trim())
@@ -1619,11 +1709,11 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
                   {brandName}
                 </span>
               </div>
-              <p className="font-serif text-[13px] leading-relaxed text-[var(--theme-ink)]/70 mb-5 max-w-sm">
-                {locale === "bn"
-                  ? "বাংলাদেশের ঐতিহ্যবাহী তাঁত ও আধুনিক ফ্যাশনের মেলবন্ধন।"
-                  : "Handcrafted Bangladeshi fashion, authentic handloom weaves, and contemporary festive wear."}
-              </p>
+              {brandTagline && (
+                <p className="font-serif text-[13px] leading-relaxed text-[var(--theme-ink)]/70 mb-5 max-w-sm">
+                  {brandTagline}
+                </p>
+              )}
               {(supportEmail || policyDelivery) && (
                 <div className="mb-6 space-y-1 text-[12px] text-[var(--theme-ink)]/70">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50">
@@ -2037,9 +2127,7 @@ const MEGA_MENU_DEFS: Record<
     shopAllHref: "/c/men",
   },
   Kids: {
-    sections: [
-      { title: "BY OCCASION", links: ["Festive", "Family Matching"] },
-    ],
+    sections: [{ title: "BY OCCASION", links: ["Festive", "Family Matching"] }],
     featuredImage: `/api/public/ph/${placeholderSeed("mega-kids")}`,
     shopAllHref: "/c/kids",
   },

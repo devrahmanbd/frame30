@@ -83,16 +83,16 @@ describe("Songoskriti homepage seed configuration", () => {
     expect(journal?.props?.ctaUrl2).toBe("/blog/bengali-wedding");
   });
 
-  it("verifies trust footer displays accurate customer care hours and policies", () => {
+  it("verifies trust footer binds customer care to policyKey without hardcoded hours", () => {
     const trust = sections.find((s) => s.type === "trust_footer");
     expect(trust).toBeDefined();
     const items = (trust?.props?.items ?? []) as {
       title: string;
-      body: string;
+      policyKey?: string;
     }[];
     const customerCare = items.find((i) => i.title === "CUSTOMER CARE");
     expect(customerCare).toBeDefined();
-    expect(customerCare?.body).toBe("Saturday – Thursday, 10:00 AM – 8:00 PM");
+    expect(customerCare?.policyKey).toBe("support");
   });
 
   it("merchandises curated products neutrally as Festive Selection instead of fabricated popularity", () => {

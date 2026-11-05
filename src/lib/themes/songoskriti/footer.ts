@@ -29,8 +29,12 @@ export type FooterSectionBuilder = (
   extras?: Extras,
 ) => Section;
 
-export const BRAND_NAME = "Songoskriti";
-export const BRAND_NAME_BN = "সংস্কৃতি";
+/**
+ * @deprecated Theme blueprints must not enforce customer-facing brand names.
+ * Read merchant name from merchant profile/context.
+ */
+export const BRAND_NAME = "";
+export const BRAND_NAME_BN = "";
 
 export { COLOPHON, NEWSLETTER, PAYMENT_MARKS, PAYMENT_MARKS_BN, STATEMENT };
 
@@ -94,23 +98,19 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
     ].join("\n"),
   },
   {
-    title: "Our Heritage",
-    title_bn: "আমাদের ঐতিহ্য",
+    title: "About Us",
+    title_bn: "আমাদের সম্পর্কে",
     links: [
       "Our Story|/pages/about",
-      "Master Weavers|/pages/master-weavers",
-      "Handloom Heritage|/blog/handloom",
-      "Artisan Partnerships|/pages/artisans",
-      "Journal|/blog",
-      "Stores|/pages/stores",
+      "Terms of Service|/pages/terms",
+      "Privacy Policy|/pages/privacy",
+      "Blog & Updates|/blog",
     ].join("\n"),
     links_bn: [
       "আমাদের গল্প|/pages/about",
-      "মাস্টার তাঁতি|/pages/master-weavers",
-      "হাতে বোনা ঐতিহ্য|/blog/handloom",
-      "তাঁতি অংশীদারিত্ব|/pages/artisans",
-      "জার্নাল|/blog",
-      "স্টোরসমূহ|/pages/stores",
+      "ব্যবহারের শর্তাবলী|/pages/terms",
+      "গোপনীয়তা নীতি|/pages/privacy",
+      "ব্লগ ও আপডেট|/blog",
     ].join("\n"),
   },
   {
@@ -133,18 +133,20 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
 
 export const PAYMENTS_HEADING = "Payment methods";
 export const PAYMENTS_HEADING_BN = "পেমেন্ট মাধ্যম";
-export const PAYMENTS_LIST = [
-  "Cash on Delivery",
-];
+export const PAYMENTS_LIST = ["Cash on Delivery"];
 
 export type SongoskritiMerchantFooterInfo = {
   name?: string | null;
   nameBn?: string | null;
+  tagline?: string | null;
+  taglineBn?: string | null;
   supportEmail?: string | null;
   supportHours?: string | null;
   supportPhone?: string | null;
   deliveryInfo?: string | null;
   deliveryInfoBn?: string | null;
+  paymentMethods?: string[] | string | null;
+  paymentMethodsBn?: string[] | string | null;
 };
 
 /**
@@ -161,21 +163,31 @@ export function buildSongoskritiFooter(
 ): Section[] {
   const brandName = merchant?.name || "";
   const brandNameBn = merchant?.nameBn || brandName;
+  const brandTagline = merchant?.tagline || "";
+  const brandTaglineBn = merchant?.taglineBn || brandTagline;
 
   let c4Title = FALLBACK_COLUMNS[3]!.title;
   let c4TitleBn = FALLBACK_COLUMNS[3]!.title_bn;
   let c4Links = FALLBACK_COLUMNS[3]!.links;
   let c4LinksBn = FALLBACK_COLUMNS[3]!.links_bn;
 
-  if (merchant?.supportEmail || merchant?.supportHours || merchant?.deliveryInfo) {
+  if (
+    merchant?.supportEmail ||
+    merchant?.supportHours ||
+    merchant?.deliveryInfo
+  ) {
     c4Title = "Contact";
     c4TitleBn = "যোগাযোগ";
     const lines: string[] = [];
     const linesBn: string[] = [];
 
     if (merchant.supportEmail) {
-      lines.push(`Email: ${merchant.supportEmail}|mailto:${merchant.supportEmail}`);
-      linesBn.push(`ইমেইল: ${merchant.supportEmail}|mailto:${merchant.supportEmail}`);
+      lines.push(
+        `Email: ${merchant.supportEmail}|mailto:${merchant.supportEmail}`,
+      );
+      linesBn.push(
+        `ইমেইল: ${merchant.supportEmail}|mailto:${merchant.supportEmail}`,
+      );
     }
     if (merchant.supportHours) {
       lines.push(`Support: ${merchant.supportHours}|/pages/contact`);
@@ -185,12 +197,34 @@ export function buildSongoskritiFooter(
     linesBn.push("অর্ডার অনুসন্ধান|/pages/track-order");
     if (merchant.deliveryInfo) {
       lines.push(`${merchant.deliveryInfo}|/pages/shipping`);
-      linesBn.push(`${merchant.deliveryInfoBn || merchant.deliveryInfo}|/pages/shipping`);
+      linesBn.push(
+        `${merchant.deliveryInfoBn || merchant.deliveryInfo}|/pages/shipping`,
+      );
     }
 
     c4Links = lines.join("\n");
     c4LinksBn = linesBn.join("\n");
   }
+
+  let paymentsMarks = "";
+  let paymentsMarksBn = "";
+  if (merchant?.paymentMethods) {
+    paymentsMarks = Array.isArray(merchant.paymentMethods)
+      ? merchant.paymentMethods.join(", ")
+      : merchant.paymentMethods;
+    paymentsMarksBn = merchant.paymentMethodsBn
+      ? Array.isArray(merchant.paymentMethodsBn)
+        ? merchant.paymentMethodsBn.join(", ")
+        : merchant.paymentMethodsBn
+      : paymentsMarks;
+  }
+
+  const colophonBody = merchant?.supportHours
+    ? `Support & customer care — ${merchant.supportHours}.`
+    : "";
+  const colophonBodyBn = merchant?.supportHours
+    ? `সহায়তা ও গ্রাহক সেবা — ${merchant.supportHours}।`
+    : "";
 
   return [
     s("footer_sitemap", {
@@ -202,10 +236,12 @@ export function buildSongoskritiFooter(
       newsletterConsent_bn: NEWSLETTER.consentText_bn,
       brandName,
       brandName_bn: brandNameBn,
-      paymentsHeading: PAYMENTS_HEADING,
-      paymentsHeading_bn: PAYMENTS_HEADING_BN,
-      paymentsMarks: PAYMENT_MARKS,
-      paymentsMarks_bn: PAYMENT_MARKS_BN,
+      brandTagline,
+      brandTagline_bn: brandTaglineBn,
+      paymentsHeading: paymentsMarks ? PAYMENTS_HEADING : "",
+      paymentsHeading_bn: paymentsMarksBn ? PAYMENTS_HEADING_BN : "",
+      paymentsMarks,
+      paymentsMarks_bn: paymentsMarksBn,
       c1Title: FALLBACK_COLUMNS[0]!.title,
       c1Title_bn: FALLBACK_COLUMNS[0]!.title_bn,
       c1Links: FALLBACK_COLUMNS[0]!.links,
@@ -225,12 +261,8 @@ export function buildSongoskritiFooter(
     }),
     s("rich_text", {
       heading: "",
-      body: merchant?.supportHours
-        ? `Support & customer care — ${merchant.supportHours}.`
-        : (merchant ? "" : COLOPHON.body),
-      body_bn: merchant?.supportHours
-        ? `সহায়তা ও গ্রাহক সেবা — ${merchant.supportHours}।`
-        : (merchant ? "" : COLOPHON.body_bn),
+      body: colophonBody,
+      body_bn: colophonBodyBn,
     }),
   ];
 }

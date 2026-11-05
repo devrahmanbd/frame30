@@ -82,10 +82,14 @@ function songoskritiFooterSection(
     name?: string | null;
     nameBn?: string | null;
     supportEmail?: string | null;
+    paymentMethods?: string | null;
+    paymentMethodsBn?: string | null;
   } = {
     name: "Songoskriti",
     nameBn: "সংস্কৃতি",
     supportEmail: "support@flamelancer.com",
+    paymentMethods: "Cash on Delivery",
+    paymentMethodsBn: "ক্যাশ অন ডেলিভারি",
   },
 ): Section {
   const section = buildSongoskritiFooter(
@@ -131,9 +135,9 @@ describe("Task 2 parity pins — songoskriti default output", () => {
     expect(html).not.toContain("Woven in Bangladesh");
     expect(html).not.toContain("OUR STORY →");
     // ZONE 2: single newsletter form.
-    expect(html).toContain("First to the festive drops");
-    expect(html).toContain("Join the list");
-    expect(html).toContain("We email only for festive drops");
+    expect(html).toContain("Stay connected");
+    expect(html).toContain("Subscribe");
+    expect(html).toContain("Unsubscribe anytime.");
     expect(html).toContain("Enter your email");
     // ZONE 3: brand identity + sitemap columns.
     expect(html).toContain("Songoskriti");
@@ -153,8 +157,8 @@ describe("Task 2 parity pins — songoskriti default output", () => {
     expect(html).not.toContain("বাংলাদেশে বোনা, পরা হয় সর্বত্র");
     expect(html).not.toContain("আমাদের গল্প →");
     expect(html).toContain("সংস্কৃতি");
-    expect(html).toContain("উৎসবের ড্রপ সবার আগে");
-    expect(html).toContain("তালিকায় যোগ দিন");
+    expect(html).toContain("যুক্ত থাকুন");
+    expect(html).toContain("সাবস্ক্রাইব করুন");
     expect(html).toContain("পেমেন্ট মাধ্যম");
     expect(html).toContain("ইমেইল লিখুন");
   });
@@ -232,7 +236,8 @@ describe("Task 2 no-brand renderers — props/tokens/demo-data only", () => {
 
   it("new merchant installing Songoskriti inherits zero Flame Fashion BD details, hours, delivery promises, or brand name", () => {
     // Bare default theme blueprint without merchant overrides
-    const rawSections = buildSongoskritiFooter(stubBuilder<FooterSectionBuilder>());
+    const rawSections =
+      buildSongoskritiFooter(stubBuilder<FooterSectionBuilder>());
     const sitemap = rawSections.find((n) => n.type === "footer_sitemap")!;
     const html = render(FooterSitemap, sitemap, "en");
 

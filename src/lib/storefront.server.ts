@@ -48,6 +48,10 @@ export type StorefrontIndexProduct = {
   description: string | null;
   image_url: string | null;
   category_id: string | null;
+  product_kind?: string | null;
+  requires_shipping?: boolean;
+  price_amount_minor_int?: number;
+  stock_quantity?: number | null;
   product_variants: (PublicVariant | DemoFallbackVariant)[];
 };
 
@@ -469,7 +473,7 @@ export async function loadStoreCollection(
       ? db
           .from("products")
           .select(
-            "id, title, slug, description, image_url, tags, status, created_at, product_variants(id, product_id, name, sku, price_amount_minor_int, compare_at_amount_minor_int, stock_quantity)",
+            "id, title, slug, description, image_url, tags, status, created_at, product_kind, requires_shipping, product_variants(id, product_id, name, sku, price_amount_minor_int, compare_at_amount_minor_int, stock_quantity)",
           )
           .eq("merchant_id", merchant.id)
           .eq("status", "active")
@@ -677,7 +681,7 @@ async function loadStorefrontUncached(
     db
       .from("products")
       .select(
-        "id, title, slug, description, image_url, category_id, tags, status, created_at",
+        "id, title, slug, description, image_url, category_id, tags, status, created_at, product_kind, requires_shipping",
       )
       .eq("merchant_id", merchant.id)
       .eq("status", "active")

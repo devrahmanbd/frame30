@@ -45,59 +45,117 @@ export function TrustFooter(props: TrustFooterProps) {
 
   const codPolicy =
     props.codPolicy ||
-    (typeof dynamicPolicy.cod_policy === "string" ? dynamicPolicy.cod_policy : "") ||
-    (typeof dynamic.codPolicy === "string" ? (dynamic.codPolicy as string) : "");
+    (typeof dynamicPolicy.cod_policy === "string"
+      ? dynamicPolicy.cod_policy
+      : "") ||
+    (typeof dynamic.codPolicy === "string"
+      ? (dynamic.codPolicy as string)
+      : "");
 
   const deliveryPolicy =
     props.deliveryPolicy ||
-    (typeof dynamicPolicy.delivery_policy === "string" ? dynamicPolicy.delivery_policy : "") ||
-    (typeof dynamic.deliveryPolicy === "string" ? (dynamic.deliveryPolicy as string) : "");
+    (typeof dynamicPolicy.delivery_policy === "string"
+      ? dynamicPolicy.delivery_policy
+      : "") ||
+    (typeof dynamic.deliveryPolicy === "string"
+      ? (dynamic.deliveryPolicy as string)
+      : "");
 
   const exchangePolicy =
     props.exchangePolicy ||
     props.returnPolicy ||
-    (typeof dynamicPolicy.exchange_policy === "string" ? dynamicPolicy.exchange_policy : "") ||
-    (typeof dynamic.exchangePolicy === "string" ? (dynamic.exchangePolicy as string) : "");
+    (typeof dynamicPolicy.exchange_policy === "string"
+      ? dynamicPolicy.exchange_policy
+      : "") ||
+    (typeof dynamic.exchangePolicy === "string"
+      ? (dynamic.exchangePolicy as string)
+      : "");
 
   const supportHours =
     props.supportHours ||
-    (typeof dynamicPolicy.support_hours === "string" ? dynamicPolicy.support_hours : "") ||
-    (typeof dynamic.supportHours === "string" ? (dynamic.supportHours as string) : "");
+    (typeof dynamicPolicy.support_hours === "string"
+      ? dynamicPolicy.support_hours
+      : "") ||
+    (typeof dynamic.supportHours === "string"
+      ? (dynamic.supportHours as string)
+      : "");
 
   const supportEmail =
     props.supportEmail ||
-    (typeof dynamicPolicy.support_email === "string" ? dynamicPolicy.support_email : "") ||
-    (typeof dynamicMerchant.support_email === "string" ? dynamicMerchant.support_email : "") ||
-    (typeof dynamic.support_email === "string" ? (dynamic.support_email as string) : "");
+    (typeof dynamicPolicy.support_email === "string"
+      ? dynamicPolicy.support_email
+      : "") ||
+    (typeof dynamicMerchant.support_email === "string"
+      ? dynamicMerchant.support_email
+      : "") ||
+    (typeof dynamic.support_email === "string"
+      ? (dynamic.support_email as string)
+      : "");
 
   const supportPhone =
     props.supportPhone ||
-    (typeof dynamicPolicy.support_phone === "string" ? dynamicPolicy.support_phone : "") ||
-    (typeof dynamicMerchant.support_phone === "string" ? dynamicMerchant.support_phone : "") ||
-    (typeof dynamic.support_phone === "string" ? (dynamic.support_phone as string) : "");
+    (typeof dynamicPolicy.support_phone === "string"
+      ? dynamicPolicy.support_phone
+      : "") ||
+    (typeof dynamicMerchant.support_phone === "string"
+      ? dynamicMerchant.support_phone
+      : "") ||
+    (typeof dynamic.support_phone === "string"
+      ? (dynamic.support_phone as string)
+      : "");
 
   const craftPolicy =
     props.craftPolicy ||
-    (typeof dynamicPolicy.craft_policy === "string" ? dynamicPolicy.craft_policy : "") ||
-    (typeof dynamic.craftPolicy === "string" ? (dynamic.craftPolicy as string) : "");
+    (typeof dynamicPolicy.craft_policy === "string"
+      ? dynamicPolicy.craft_policy
+      : "") ||
+    (typeof dynamic.craftPolicy === "string"
+      ? (dynamic.craftPolicy as string)
+      : "");
 
   const paymentPolicy =
     props.paymentPolicy ||
-    (typeof dynamicPolicy.payment_policy === "string" ? dynamicPolicy.payment_policy : "") ||
-    (typeof dynamic.paymentPolicy === "string" ? (dynamic.paymentPolicy as string) : "");
+    (typeof dynamicPolicy.payment_policy === "string"
+      ? dynamicPolicy.payment_policy
+      : "") ||
+    (typeof dynamic.paymentPolicy === "string"
+      ? (dynamic.paymentPolicy as string)
+      : "");
 
-  const badges: { icon: "delivery" | "returns" | "secure" | "support" | "quality"; title: string; body: string }[] = [];
+  const badges: {
+    icon: "delivery" | "returns" | "secure" | "support" | "quality";
+    title: string;
+    body: string;
+  }[] = [];
 
   if (codPolicy) {
+    const isNationwide = /nationwide|across bangladesh|সারাদেশে/i.test(
+      codPolicy,
+    );
     badges.push({
       icon: "delivery",
-      title: locale === "bn" ? "সারাদেশে ডেলিভারি" : "NATIONWIDE DELIVERY",
+      title: isNationwide
+        ? locale === "bn"
+          ? "সারাদেশে ডেলিভারি"
+          : "NATIONWIDE DELIVERY"
+        : locale === "bn"
+          ? "ক্যাশ অন ডেলিভারি"
+          : "CASH ON DELIVERY",
       body: codPolicy,
     });
   } else if (deliveryPolicy) {
+    const isNationwide = /nationwide|across bangladesh|সারাদেশে/i.test(
+      deliveryPolicy,
+    );
     badges.push({
       icon: "delivery",
-      title: locale === "bn" ? "ডেলিভারি সুবিধা" : "DELIVERY SERVICE",
+      title: isNationwide
+        ? locale === "bn"
+          ? "সারাদেশে ডেলিভারি"
+          : "NATIONWIDE DELIVERY"
+        : locale === "bn"
+          ? "ডেলিভারি সুবিধা"
+          : "DELIVERY SERVICE",
       body: deliveryPolicy,
     });
   }
@@ -120,13 +178,19 @@ export function TrustFooter(props: TrustFooterProps) {
     badges.push({
       icon: "support",
       title: locale === "bn" ? "গ্রাহক সেবা" : "CUSTOMER CARE",
-      body: locale === "bn" ? `ইমেইল সহায়তা: ${supportEmail}` : `Email support: ${supportEmail}`,
+      body:
+        locale === "bn"
+          ? `ইমেইল সহায়তা: ${supportEmail}`
+          : `Email support: ${supportEmail}`,
     });
   } else if (supportPhone) {
     badges.push({
       icon: "support",
       title: locale === "bn" ? "গ্রাহক সেবা" : "CUSTOMER CARE",
-      body: locale === "bn" ? `হটলাইন: ${supportPhone}` : `Hotline: ${supportPhone}`,
+      body:
+        locale === "bn"
+          ? `হটলাইন: ${supportPhone}`
+          : `Hotline: ${supportPhone}`,
     });
   }
 
@@ -162,7 +226,9 @@ export function TrustFooter(props: TrustFooterProps) {
 
   return (
     <div data-reveal className="w-full border-t border-[var(--theme-border)]">
-      <ul className={`mx-auto grid max-w-[var(--fq-container,1440px)] ${gridCols} divide-x divide-[var(--theme-border)] px-0`}>
+      <ul
+        className={`mx-auto grid max-w-[var(--fq-container,1440px)] ${gridCols} divide-x divide-[var(--theme-border)] px-0`}
+      >
         {badges.map((item, idx) => {
           const Icon = ICONS[item.icon] || Star;
           return (

@@ -311,7 +311,8 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       heading_bn: "তাঁত থেকে",
       subhead:
         "Hand-loomed Jamdani, Rajshahi silk, Tangail taant, and Nakshi Kantha.",
-      subhead_bn: "জামদানি, রাজশাহী সিল্ক, টাঙ্গাইল তাঁত এবং নকশী কাঁথা সংগ্রহ।",
+      subhead_bn:
+        "জামদানি, রাজশাহী সিল্ক, টাঙ্গাইল তাঁত এবং নকশী কাঁথা সংগ্রহ।",
       collections: [
         {
           title: "Jamdani",
@@ -364,8 +365,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       heading: "Made Slowly.\nWorn for Years.",
       heading_bn: "ধীরে তৈরি।\nবছরের পর বছর পরা।",
       body: "Traditional handloom weaving techniques preserved and crafted with care across Bangladesh.",
-      body_bn:
-        "বাংলাদেশে যত্ন ও দক্ষতার সাথে তৈরি ঐতিহ্যবাহী তাঁত পণ্য।",
+      body_bn: "বাংলাদেশে যত্ন ও দক্ষতার সাথে তৈরি ঐতিহ্যবাহী তাঁত পণ্য।",
       ctaLabel: "MEET THE ARTISANS",
       ctaLabel_bn: "কারিগরদের সাথে পরিচিত হোন",
       ctaHref: `${c}/heritage`,
@@ -431,8 +431,6 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
           icon: "support",
           title: "CUSTOMER CARE",
           title_bn: "গ্রাহক সেবা",
-          body: "Saturday – Thursday, 10:00 AM – 8:00 PM",
-          body_bn: "শনিবার – বৃহস্পতিবার, সকাল ১০:০০ – রাত ৮:০০",
           policyKey: "support",
         },
       ],
