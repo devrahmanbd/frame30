@@ -1271,3 +1271,49 @@ ops/deploy-from-git.sh frame30 root        # origin/frame30 = f7661783
   - Live facet filtering: selecting `Pure Silk` updates grid reactively to 3 products
   - Mobile filter drawer: updates button to `SHOW 3 PRODUCTS` live without page reload
 
+---
+
+## 13. Wave 13: Final Remediation of Outstanding Storefront Issues & Multi-Variant Filtering
+
+**Date:** 2026-11-05 · **Branch:** `frame30` · **Deployed Bundle SHA:** `2d57cc26d19bdc9c037230a850761e4c33d82e9a` · **Merchant:** Flame Fashion BD (`b47532e5-9649-4ebd-93a9-06fa2917c00e` / `flamelancer.com`)
+
+### 13.1 Verified Defect Resolutions
+
+1. **Multi-Variant Price Filtering Correctness (`CollectionView.tsx`):**
+   - **Defect:** Price boundary checking evaluated min price and max price independently (`prices.some(p => p >= min)` and `prices.some(p => p <= max)`), causing multi-variant products whose individual variants do NOT fall within the price range (e.g., variant 1 = ৳3,500, variant 2 = ৳7,500 filtered by ৳4,000–৳7,000) to be falsely included.
+   - **Remediation:** Enforced variant-invariance check where the **same individual variant** must satisfy both bounds simultaneously: `prices.some(p => (min == null || p >= min) && (max == null || p <= max))`. Handled single-price products via fallback `price_amount_minor_int`.
+   - **UI Enhancement:** Added custom `Min ৳` and `Max ৳` numeric input fields inside both the desktop Price popover and the mobile filter drawer. Active custom price tag `৳min – ৳max` displays with instant dismissal (`×`), updating the product grid and facet counts reactively. Pagination resets (`setVisibleCount(12)`) on any filter or sort modification.
+
+2. **Authentic Craft Copy & UNESCO Claim Elimination (`homepage.ts`, Remote DB):**
+   - **Defect:** "From the Loom" collection story retained generic subtitles (`Artisan crafted`, `Limited weave`, `Master stitch`) and AI-generated copy.
+   - **Remediation:** Replaced subtitles with authentic craft descriptions: Rajshahi Silk (`Pure Silk Weave`), Tangail Handloom (`Cotton Taant`), Nakshi Kantha (`Hand-Embroidered`), Jamdani (`Traditional Handloom`). Subhead updated to `"Traditional handloom weaves from master weavers across Bangladesh."` Reconciled across `theme_versions` and `theme_drafts` in remote PostgreSQL.
+
+3. **Flame Fashion BD Journal Alignment (`homepage.ts`, Remote DB):**
+   - **Defect:** Section 18 hardcoded `THE SONGOSKRITI JOURNAL` and `সংস্কৃতির জার্নাল`.
+   - **Remediation:** Retitled to `THE FLAME FASHION BD JOURNAL` (`ফ্লেম ফ্যাশন জার্নাল`) linking to verified master weaver blog articles `/blog/authentic-jamdani` and `/blog/bengali-wedding`.
+
+4. **100% Unified Customer Support Information (`footer-copy.ts`, `homepage.ts`):**
+   - **Defect:** `footer-copy.ts` colophon still showed outdated hours `10am to 9pm`, conflicting with verified merchant policy.
+   - **Remediation:** Aligned `COLOPHON` to `Saturday to Thursday, 10am to 8pm` (সকাল ১০টা থেকে রাত ৮টা). Trust footer strip updated to feature `CUSTOMER CARE` (`Saturday – Thursday, 10:00 AM – 8:00 PM`). All surfaces (header, mobile drawer, footer, contact page, trust strip) now state unified support details with zero placeholder phone numbers or fictional emails.
+
+5. **Kids Category Taxonomy & 404 Prevention (`archetypes.ts`):**
+   - **Defect:** Kids archetype categories linked to non-existent URLs (`/c/girls-festive`, `/c/boys-panjabi`, `/c/kids-new-in`), resulting in broken routes.
+   - **Remediation:** Cleaned categories to point only to published, child-appropriate collections (`/c/kids`, `/c/family`, `/c/eid-festive`, `/c/festive`). Verified `/c/kids` in browser renders 0 broken links and displays genuine children's apparel (`Girls Embroidered Silk Ghagra Choli Set`).
+
+6. **Catalog & Trademark Debranding (Remote PostgreSQL):**
+   - **Defect:** 4 product titles still contained trademarked names (`Taaga`, `Aarong Earth`).
+   - **Remediation:** Debranded titles and slugs in remote DB to neutral merchant-owned names (`Bohemian Hand-Embroidered Tunic Kurti`, `Relaxed Handloom Linen Mandarin Shirt`, `Artisan Sandalwood & Wild Turmeric Cold-Pressed Soap`, `Artisan Wild Rose Water & Herbal Ubtan Glow Kit`). Verified `/c/women` renders zero `taaga` or `aarong` references.
+
+### 13.2 Verification Summary
+- **TypeScript:** `bun run typecheck` (`tsgo --noEmit`) $\to$ PASS (0 errors)
+- **Unit & Component Tests:** Vitest full suite $\to$ PASS (640 files, 9,049 tests passed, 0 failures)
+- **Contract Gate:** `bun run test:contracts` $\to$ PASS (13 suites, 258 test cases)
+- **Live Bundle:** `2d57cc26d19bdc9c037230a850761e4c33d82e9a` deployed and healthy on `88.99.250.99`
+- **Chrome DevTools Live Audit:**
+  - `https://flamelancer.com/`: Journal titled `THE FLAME FASHION BD JOURNAL`, Loom subtitles verified (`Pure Silk Weave`, `Cotton Taant`, `Hand-Embroidered`, `Traditional Handloom`), Customer care `Saturday – Thursday, 10:00 AM – 8:00 PM`.
+  - `https://flamelancer.com/c/sarees`: Tested custom price filter `Min ৳ 10000` to `Max ৳ 15000` $\to$ filtered reactively to exactly 2 matching sarees (`Hand-Painted Pure Silk Festive Saree` @ ৳12,500 and `Mirpur Katan Silk Festive Saree` @ ৳14,500); active chip displayed `৳10,000 – ৳15,000`; dismissing chip restored all 4 sarees.
+  - `https://flamelancer.com/c/women`: 0 `taaga` words, 0 `aarong` words, 0 broken links.
+  - `https://flamelancer.com/c/kids`: 0 404 links, renders child-appropriate attire (`Girls Embroidered Silk Ghagra Choli Set`).
+  - Mobile (390px): Compact filter sheet with reactive count ("SHOW 4 PRODUCTS"), clean layout.
+  - Cart & Checkout: Checkout button visible, ৳0 VAT, Cash on Delivery verified.
+
