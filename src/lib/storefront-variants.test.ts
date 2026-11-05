@@ -46,12 +46,14 @@ describe("mergePublicVariants", () => {
       [
         {
           id: "sp-1",
+          title: "Jamdani Saree",
           price_amount_minor_int: 350000,
           stock_quantity: 15,
           status: "active",
         },
         {
           id: "sp-2",
+          title: "Clay Cup",
           price: 25.5,
           stock_quantity: 0,
         },
@@ -59,23 +61,39 @@ describe("mergePublicVariants", () => {
           id: "sp-3",
           price_min_minor_int: 120000,
         },
+        {
+          id: "sp-empty",
+        },
       ],
       [],
     );
 
-    expect(out[0].product_variants).toEqual([]);
+    expect(out[0].product_variants).toHaveLength(1);
+    expect(out[0].product_variants[0].id).toBe("sp-1-default");
+    expect(out[0].product_variants[0].name).toBe("Jamdani Saree");
+    expect(out[0].product_variants[0].price_amount_minor_int).toBe(350000);
+    expect(out[0].product_variants[0].stock_quantity).toBe(15);
     expect(out[0].price_amount_minor_int).toBe(350000);
     expect(out[0].stock_quantity).toBe(15);
     expect(out[0].status).toBe("active");
 
-    expect(out[1].product_variants).toEqual([]);
-    expect(out[1].price_amount_minor_int).toBe(2550); // Math.round(25.5 * 100)
+    expect(out[1].product_variants).toHaveLength(1);
+    expect(out[1].product_variants[0].id).toBe("sp-2-default");
+    expect(out[1].product_variants[0].price_amount_minor_int).toBe(2550); // Math.round(25.5 * 100)
+    expect(out[1].product_variants[0].stock_quantity).toBe(0);
+    expect(out[1].price_amount_minor_int).toBe(2550);
     expect(out[1].stock_quantity).toBe(0);
     expect(out[1].status).toBe("active");
 
-    expect(out[2].product_variants).toEqual([]);
+    expect(out[2].product_variants).toHaveLength(1);
+    expect(out[2].product_variants[0].price_amount_minor_int).toBe(120000);
+    expect(out[2].product_variants[0].stock_quantity).toBe(0);
     expect(out[2].price_amount_minor_int).toBe(120000);
     expect(out[2].stock_quantity).toBeNull();
+
+    expect(out[3].product_variants).toEqual([]);
+    expect(out[3].price_amount_minor_int).toBe(0);
+    expect(out[3].stock_quantity).toBeNull();
   });
 
   it("hoists min variant price and total stock for multi-variant products", () => {

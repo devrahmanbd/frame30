@@ -417,36 +417,23 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     }),
 
     // ────────────────────────────────────────────────────────────────────
-    // 19. WHY FLAME FASHION BD — trust/service strip
+    // 19. TRUST STRIP — policy-verified merchant assurances
     // ────────────────────────────────────────────────────────────────────
     s("trust_footer", {
-      i1Title: "Fast delivery",
-      i1Title_bn: "দ্রুত ডেলিভারি",
-      i2Title: "Easy returns",
-      i2Title_bn: "সহজ রিটার্ন",
-      i3Title: "Secure payment",
-      i3Title_bn: "নিরাপদ পেমেন্ট",
       items: [
         {
-          icon: "secure",
-          title: "AUTHENTIC CRAFT",
-          title_bn: "খাঁটি কারুশিল্প",
-          body: "Handcrafted in Bangladesh — authentic traditional weaves",
-          body_bn: "বাংলাদেশে তৈরি — খাঁটি ঐতিহ্যবাহী তাঁত পণ্য",
-        },
-        {
           icon: "delivery",
-          title: "NATIONWIDE DELIVERY",
-          title_bn: "সারাদেশে ডেলিভারি",
-          body: "Doorstep delivery across Bangladesh",
-          body_bn: "সারা বাংলাদেশে নির্ভরযোগ্য ডেলিভারি",
+          title: "CASH ON DELIVERY",
+          title_bn: "ক্যাশ অন ডেলিভারি",
+          policyKey: "cod",
         },
         {
           icon: "support",
           title: "CUSTOMER CARE",
           title_bn: "গ্রাহক সেবা",
-          body: "Dedicated assistance for orders and inquiries",
-          body_bn: "অর্ডার ও তথ্যের জন্য সরাসরি সহায়তা",
+          body: "Saturday – Thursday, 10:00 AM – 8:00 PM",
+          body_bn: "শনিবার – বৃহস্পতিবার, সকাল ১০:০০ – রাত ৮:০০",
+          policyKey: "support",
         },
       ],
     }),

@@ -45,6 +45,7 @@ export type DynamicContext = {
   };
   customer?: { name?: string | null; email?: string | null };
   cart?: { count?: number | null; total?: string | null };
+  [key: string]: unknown;
 };
 
 /** Everything a merchant can pick from the tag menu, grouped for the UI. */

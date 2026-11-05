@@ -6596,6 +6596,13 @@ const CONTENT: Record<string, Control[]> = {
           tab: "content",
           section: "Trust footer",
         }),
+        c({
+          key: "policyKey",
+          label: "Policy key",
+          type: "text",
+          tab: "content",
+          section: "Trust footer",
+        }),
       ],
     }),
     ...[1, 2, 3, 4].flatMap((i) => [

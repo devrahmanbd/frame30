@@ -165,8 +165,19 @@ function CollectionPage() {
               ? Math.min(
                   ...variants.map((v) => Number(v.price_amount_minor_int)),
                 )
-              : 0;
-            const inStock = variants.some((v) => v.stock_quantity > 0);
+              : Number(
+                  (p as unknown as { price_amount_minor_int?: number })
+                    .price_amount_minor_int,
+                ) || 0;
+            const inStock = variants.length
+              ? variants.some((v) => v.stock_quantity > 0)
+              : (p as unknown as { stock_quantity?: number | null })
+                    .stock_quantity != null
+                ? Number(
+                    (p as unknown as { stock_quantity?: number })
+                      .stock_quantity,
+                  ) > 0
+                : true;
             return (
               <li key={p.id}>
                 <Link

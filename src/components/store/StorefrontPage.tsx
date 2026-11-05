@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { StoreFooterMenus } from "@/components/store/StoreFooterMenus";
 import { StoreImage } from "@/components/store/StoreImage";
 import { isCustomHostPath } from "@/lib/storefront-url";
 import { WidgetDataProvider } from "@/components/builder/WidgetDataContext";
+import { DynamicContextProvider } from "@/components/builder/DynamicContext";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import {
   CustomCodeBody,
@@ -281,61 +282,88 @@ export function StorefrontPage({ data }: { data: StorefrontPayload }) {
   // The published `index` template owns the page: header, main and footer
   // slots all come from the active theme, and this component only supplies the
   // live catalogue and collection data the theme's widgets ask for.
+  const dynamicValues = useMemo(
+    () => ({
+      merchant: {
+        id: merchant.id,
+        name: merchant.name,
+        slug: merchant.slug,
+        support_email: settings?.support_email ?? null,
+        support_phone: settings?.support_phone ?? null,
+        cod_enabled: settings?.cod_enabled ?? false,
+      },
+      policy: {
+        cod_enabled: settings?.cod_enabled ?? false,
+        support_email: settings?.support_email ?? null,
+        support_phone: settings?.support_phone ?? null,
+      },
+      support_email: settings?.support_email ?? "",
+      support_phone: settings?.support_phone ?? "",
+      supportEmail: settings?.support_email ?? "",
+      supportPhone: settings?.support_phone ?? "",
+      cod_enabled: settings?.cod_enabled ?? false,
+      codEnabled: settings?.cod_enabled ?? false,
+    }),
+    [merchant, settings],
+  );
+
   return (
     <WidgetDataProvider bundle={widgetBundle} map={widgetData}>
-      {preview && (
-        <p
-          role="status"
-          className="bg-primary px-4 py-2 text-center text-sm font-medium text-primary-foreground"
-        >
-          {t(
-            "Previewing an unpublished draft — shoppers see the live theme.",
-            "অপ্রকাশিত খসড়ার প্রিভিউ — ক্রেতারা লাইভ থিম দেখছেন।",
-          )}
-        </p>
-      )}
-      <CustomCodeSurface code={customCode} />
-      <ThemeChrome
-        template="index"
-        containerClassName="w-full"
-        ast={ast}
-        tokens={tokens}
-        storeSlug={slug}
-        themeKey={themeKey ?? null}
-        merchantId={merchant.id}
-        siteKit={siteKit}
-        chrome={
-          <>
-            <CustomCodeBody code={customCode} slot="start" />
-            <StoreHeader
-              slug={slug}
-              name={merchant.name}
-              tagline={settings?.tagline}
-              storeTimezone={tokens?.timezone}
-              allowCustomerTimezone={tokens?.allowCustomerTimezone}
-              menus={menus}
-              themeKey={themeKey ?? null}
-              showAnnouncement={hasAnnouncement}
-              supportEmail={settings?.support_email}
-            />
-            {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
-            {/* <SupportWidget slug={slug} /> */}
-          </>
-        }
-        productSlot={catalog}
-        collectionSlot={collectionSlot}
-        fallback={
-          <>
-            {defaultHero}
-            {catalog}
-          </>
-        }
-      />
-      {/* Phase 16 T4: dashboard-designed footer menu. Renders only when a
-          footer location is claimed; otherwise the theme's static footer
-          widgets stand alone as the fallback. */}
-      {menus && <StoreFooterMenus slug={slug} nodes={menus.footer} />}
-      <CustomCodeBody code={customCode} slot="end" />
+      <DynamicContextProvider value={dynamicValues}>
+        {preview && (
+          <p
+            role="status"
+            className="bg-primary px-4 py-2 text-center text-sm font-medium text-primary-foreground"
+          >
+            {t(
+              "Previewing an unpublished draft — shoppers see the live theme.",
+              "অপ্রকাশিত খসড়ার প্রিভিউ — ক্রেতারা লাইভ থিম দেখছেন।",
+            )}
+          </p>
+        )}
+        <CustomCodeSurface code={customCode} />
+        <ThemeChrome
+          template="index"
+          containerClassName="w-full"
+          ast={ast}
+          tokens={tokens}
+          storeSlug={slug}
+          themeKey={themeKey ?? null}
+          merchantId={merchant.id}
+          siteKit={siteKit}
+          chrome={
+            <>
+              <CustomCodeBody code={customCode} slot="start" />
+              <StoreHeader
+                slug={slug}
+                name={merchant.name}
+                tagline={settings?.tagline}
+                storeTimezone={tokens?.timezone}
+                allowCustomerTimezone={tokens?.allowCustomerTimezone}
+                menus={menus}
+                themeKey={themeKey ?? null}
+                showAnnouncement={hasAnnouncement}
+                supportEmail={settings?.support_email}
+              />
+              {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
+              {/* <SupportWidget slug={slug} /> */}
+            </>
+          }
+          productSlot={catalog}
+          collectionSlot={collectionSlot}
+          fallback={
+            <>
+              {defaultHero}
+              {catalog}
+            </>
+          }
+        />
+        {/* Phase 16 T4: dashboard-designed footer menu. Renders only when a
+            footer location is claimed; otherwise the theme's static footer
+            widgets stand alone as the fallback. */}
+        {menus && <StoreFooterMenus slug={slug} nodes={menus.footer} />}
+        <CustomCodeBody code={customCode} slot="end" />
+      </DynamicContextProvider>
     </WidgetDataProvider>
   );
 }

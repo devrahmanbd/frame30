@@ -105,9 +105,29 @@ export function mergePublicVariants<
       }
     }
 
+    const resolvedVariants: PublicVariant[] =
+      variants.length > 0
+        ? variants
+        : price_amount_minor_int > 0 || stock_quantity != null
+          ? [
+              {
+                id: `${p.id}-default`,
+                product_id: p.id,
+                name: (pAny.title as string) || "Default",
+                sku: (pAny.sku as string) || null,
+                price_amount_minor_int,
+                compare_at_amount_minor_int:
+                  typeof pAny.compare_at_amount_minor_int === "number"
+                    ? pAny.compare_at_amount_minor_int
+                    : null,
+                stock_quantity: stock_quantity ?? 0,
+              },
+            ]
+          : [];
+
     return {
       ...p,
-      product_variants: variants,
+      product_variants: resolvedVariants,
       price_amount_minor_int,
       stock_quantity,
       status: (pAny.status as string) || "active",
@@ -656,7 +676,9 @@ async function loadStorefrontUncached(
       .maybeSingle(),
     db
       .from("products")
-      .select("id, title, slug, description, image_url, category_id")
+      .select(
+        "id, title, slug, description, image_url, category_id, tags, status, created_at",
+      )
       .eq("merchant_id", merchant.id)
       .eq("status", "active")
       .order("created_at", { ascending: false })

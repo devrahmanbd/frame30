@@ -3,6 +3,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { PluginLayer } from "@/components/store/PluginLayer";
 import { StoreHeader } from "@/components/store/StoreHeader";
+import { DynamicContextProvider } from "@/components/builder/DynamicContext";
 import { StoreImage } from "@/components/store/StoreImage";
 import { fmtMinor } from "@/lib/money";
 import { useLang } from "@/lib/i18n";
@@ -1743,33 +1744,57 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
       )
     : false;
 
+  const dynamicValues = {
+    merchant: {
+      id: merchant.id,
+      name: merchant.name,
+      slug: merchant.slug,
+      support_email: settings?.support_email ?? null,
+      support_phone: settings?.support_phone ?? null,
+      cod_enabled: settings?.cod_enabled ?? false,
+    },
+    policy: {
+      cod_enabled: settings?.cod_enabled ?? false,
+      support_email: settings?.support_email ?? null,
+      support_phone: settings?.support_phone ?? null,
+    },
+    support_email: settings?.support_email ?? "",
+    support_phone: settings?.support_phone ?? "",
+    supportEmail: settings?.support_email ?? "",
+    supportPhone: settings?.support_phone ?? "",
+    cod_enabled: settings?.cod_enabled ?? false,
+    codEnabled: settings?.cod_enabled ?? false,
+  };
+
   return (
     <PluginLayer plugins={installedPlugins}>
-      <ThemeChrome
-        template="collection"
-        containerClassName="w-full"
-        ast={cleanAst}
-        tokens={tokens}
-        storeSlug={slug}
-        themeKey={themeKey ?? null}
-        merchantId={merchant.id}
-        siteKit={siteKit}
-        ownsPrimary={custom}
-        chrome={
-          <StoreHeader
-            slug={slug}
-            name={merchant.name}
-            tagline={settings?.tagline}
-            menus={menus}
-            themeKey={themeKey ?? null}
-            showAnnouncement={false}
-            supportEmail={settings?.support_email}
-          />
-        }
-        productSlot={grid}
-        {...(hasProductGrid ? {} : { collectionSlot: grid })}
-        fallback={grid}
-      />
+      <DynamicContextProvider value={dynamicValues}>
+        <ThemeChrome
+          template="collection"
+          containerClassName="w-full"
+          ast={cleanAst}
+          tokens={tokens}
+          storeSlug={slug}
+          themeKey={themeKey ?? null}
+          merchantId={merchant.id}
+          siteKit={siteKit}
+          ownsPrimary={custom}
+          chrome={
+            <StoreHeader
+              slug={slug}
+              name={merchant.name}
+              tagline={settings?.tagline}
+              menus={menus}
+              themeKey={themeKey ?? null}
+              showAnnouncement={false}
+              supportEmail={settings?.support_email}
+            />
+          }
+          productSlot={grid}
+          {...(hasProductGrid ? {} : { collectionSlot: grid })}
+          fallback={grid}
+        />
+      </DynamicContextProvider>
     </PluginLayer>
   );
 }

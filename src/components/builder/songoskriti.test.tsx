@@ -305,14 +305,15 @@ describe("trust_footer", () => {
       ...newSection("trust_footer"),
       props: { items: [] },
     };
-    expect(render(Cmp(), section, "en", true)).toContain("add badges");
+    expect(render(Cmp(), section, "en", true)).toContain("configure verified merchant policies");
     expect(render(Cmp(), section)).toBe("");
   });
 
-  it("prefers items[] rows when present", () => {
+  it("prefers items[] rows when present and policy is verified", () => {
     const section = {
       ...newSection("trust_footer"),
       props: {
+        codEnabled: true,
         items: [{ icon: "delivery", title: "Fast delivery", body: "" }],
         i1Title: "Ignored fallback",
       },
@@ -322,18 +323,86 @@ describe("trust_footer", () => {
     expect(html).not.toContain("Ignored fallback");
   });
 
-  it("falls back to i1–i4 scalar triples", () => {
+  it("falls back to i1–i4 scalar triples when policies are verified", () => {
     const section = {
       ...newSection("trust_footer"),
       props: {
         ...newSection("trust_footer").props,
         items: [],
+        codEnabled: true,
+        exchangePolicy: "7-day exchange with receipt",
+        supportEmail: "support@example.com",
       },
     };
     const html = render(Cmp(), section);
     expect(html).toContain("Fast delivery");
     expect(html).toContain("Easy returns");
     expect(html).toContain("Secure payment");
+  });
+
+  it("omits unverified claims rather than replacing them with generic promises", () => {
+    const unverifiedSection = {
+      ...newSection("trust_footer"),
+      props: {
+        items: [
+          {
+            icon: "returns",
+            title: "7-Day Exchange Guarantee",
+            body: "Full exchange within 7 days",
+          },
+          {
+            icon: "support",
+            title: "Customer Service",
+            body: "Saturday – Thursday, 10:00 AM – 8:00 PM",
+          },
+          {
+            icon: "delivery",
+            title: "Nationwide Cash on Delivery",
+            body: "Cash on delivery available across Bangladesh",
+          },
+        ],
+        // No verified merchant policies configured:
+        codEnabled: false,
+        exchangePolicy: "",
+        supportHours: "",
+        supportEmail: "",
+      },
+    };
+
+    const html = render(Cmp(), unverifiedSection, "en");
+    // All 3 claims are unverified — must be omitted, NEVER replaced by generic promises
+    expect(html).not.toContain("Convenient exchange support");
+    expect(html).not.toContain("Dedicated assistance for orders and inquiries");
+    expect(html).not.toContain("Doorstep delivery across Bangladesh");
+    expect(html).toBe("");
+  });
+
+  it("renders verified merchant policy values accurately", () => {
+    const verifiedSection = {
+      ...newSection("trust_footer"),
+      props: {
+        items: [
+          {
+            icon: "delivery",
+            title: "Nationwide Delivery",
+            body: "Cash on delivery",
+            policyKey: "cod",
+          },
+          {
+            icon: "support",
+            title: "Customer Support",
+            body: "Support channel",
+            policyKey: "support",
+          },
+        ],
+        codEnabled: true,
+        supportEmail: "support@flamelancer.com",
+      },
+    };
+
+    const html = render(Cmp(), verifiedSection, "en");
+    expect(html).toContain("Cash on delivery available nationwide");
+    expect(html).toContain("Email support: support@flamelancer.com");
   });
 });
 

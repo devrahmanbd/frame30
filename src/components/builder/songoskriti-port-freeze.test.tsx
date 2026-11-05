@@ -304,8 +304,23 @@ describe("Task 3 — freeze: chrome + singleton static pins", () => {
   it("trust_footer singleton static pin", () => {
     const home = buildSongoskritiHomepage(stubBuilder<never>());
     const section = home.find((s) => s.type === "trust_footer")!;
-    const html = render(SONGOSKRITI_WIDGETS["trust_footer"], section, "en");
-    expect(html).toContain("grid-cols-2 lg:grid-cols-4");
+    // Without verified merchant policies, unverified trust claims render empty markup
+    const emptyHtml = render(SONGOSKRITI_WIDGETS["trust_footer"], section, "en");
+    expect(emptyHtml).toBe("");
+
+    // With verified merchant policies, renders policy-verified assurances grid
+    const withPolicies = {
+      ...section,
+      props: {
+        ...section.props,
+        codEnabled: true,
+        supportEmail: "support@flamelancer.com",
+      },
+    };
+    const html = render(SONGOSKRITI_WIDGETS["trust_footer"], withPolicies, "en");
+    expect(html).toContain("grid max-w-[var(--fq-container,1440px)]");
+    expect(html).toContain("CASH ON DELIVERY");
+    expect(html).toContain("support@flamelancer.com");
   });
 
   it("store_locator singleton static pin", () => {

@@ -57,6 +57,7 @@ import {
 } from "@/lib/facet-url";
 import { groupFacetRows, useCollectionQuery } from "./collection";
 import { useCarouselCycle, useScrollReveals } from "./songoskriti-motion";
+import { useDynamicContext } from "./DynamicContext";
 import { MediaFrame } from "./primitives/MediaFrame";
 import {
   ProductCard,
@@ -676,66 +677,295 @@ const TRUST_FOOTER_ICON = {
   quality: Star,
 } as const;
 
-const TrustFooter: WidgetComponent = ({ str, section, locale, editing }) => {
+const TrustFooter: WidgetComponent = ({ str, bool, section, locale, editing }) => {
   // Task 5 motion: once-only batch reveal at full intent; static otherwise.
   const scope = useRef<HTMLDivElement | null>(null);
   useScrollReveals(scope, true);
+  const dynamic = (useDynamicContext(editing) || {}) as Record<string, unknown>;
+
+  const dynamicMerchant = (dynamic.merchant || {}) as Record<string, unknown>;
+  const dynamicPolicy = (dynamic.policy || {}) as Record<string, unknown>;
+
+  const codEnabled =
+    bool("codEnabled") ||
+    bool("cod_enabled") ||
+    Boolean(dynamicPolicy.cod_enabled) ||
+    Boolean(dynamicMerchant.cod_enabled) ||
+    Boolean(dynamic.cod_enabled);
+
+  const codPolicy =
+    str("codPolicy") ||
+    (typeof dynamicPolicy.cod_policy === "string" ? dynamicPolicy.cod_policy : "") ||
+    (typeof dynamic.codPolicy === "string" ? (dynamic.codPolicy as string) : "");
+
+  const deliveryPolicy =
+    str("deliveryPolicy") ||
+    (typeof dynamicPolicy.delivery_policy === "string" ? dynamicPolicy.delivery_policy : "") ||
+    (typeof dynamic.deliveryPolicy === "string" ? (dynamic.deliveryPolicy as string) : "");
+
+  const exchangePolicy =
+    str("exchangePolicy") ||
+    str("returnPolicy") ||
+    (typeof dynamicPolicy.exchange_policy === "string" ? dynamicPolicy.exchange_policy : "") ||
+    (typeof dynamic.exchangePolicy === "string" ? (dynamic.exchangePolicy as string) : "");
+
+  const supportHours =
+    str("supportHours") ||
+    (typeof dynamicPolicy.support_hours === "string" ? dynamicPolicy.support_hours : "") ||
+    (typeof dynamic.supportHours === "string" ? (dynamic.supportHours as string) : "");
+
+  const supportEmail =
+    str("supportEmail") ||
+    str("support_email") ||
+    (typeof dynamicPolicy.support_email === "string" ? dynamicPolicy.support_email : "") ||
+    (typeof dynamicMerchant.support_email === "string" ? dynamicMerchant.support_email : "") ||
+    (typeof dynamic.support_email === "string" ? (dynamic.support_email as string) : "");
+
+  const supportPhone =
+    str("supportPhone") ||
+    str("support_phone") ||
+    (typeof dynamicPolicy.support_phone === "string" ? dynamicPolicy.support_phone : "") ||
+    (typeof dynamicMerchant.support_phone === "string" ? dynamicMerchant.support_phone : "") ||
+    (typeof dynamic.support_phone === "string" ? (dynamic.support_phone as string) : "");
+
+  const craftPolicy =
+    str("craftPolicy") ||
+    str("authenticityGuarantee") ||
+    (typeof dynamicPolicy.craft_policy === "string" ? dynamicPolicy.craft_policy : "") ||
+    (typeof dynamic.craftPolicy === "string" ? (dynamic.craftPolicy as string) : "");
+
+  const paymentPolicy =
+    str("paymentPolicy") ||
+    (typeof dynamicPolicy.payment_policy === "string" ? dynamicPolicy.payment_policy : "") ||
+    (typeof dynamic.paymentPolicy === "string" ? (dynamic.paymentPolicy as string) : "");
+
   // Repeater-first (trust_bar precedent): studio `items` rows win when
-  // present, scalar i1–i4 triples remain as the fallback for
-  // theme-authored sections.
-  const itemRows = rowsOf(section, "items")
+  // present, scalar i1–i4 triples remain as the fallback.
+  const rawRows = rowsOf(section, "items")
     .map((row) => ({
       icon: readString(row, "icon"),
       title: readBn(row, "title", locale),
       body: readBn(row, "body", locale),
+      policyKey: readString(row, "policyKey") || readString(row, "policy_key"),
     }))
-    .filter((row) => row.title)
-    .map((item) => {
-      let body = item.body;
-      if (body.includes("Cash on delivery") && !str("codPolicy")) {
-        body =
-          locale === "bn"
-            ? "সারা বাংলাদেশে নির্ভরযোগ্য ডেলিভারি"
-            : "Doorstep delivery across Bangladesh";
-      }
-      if (body.includes("7-day") && !str("exchangePolicy")) {
-        body =
-          locale === "bn"
-            ? "সহজ ও নির্ভরযোগ্য বিনিময় সহায়তা"
-            : "Convenient exchange support";
-      }
-      if (body.includes("10:00 AM") && !str("supportHours")) {
-        body =
-          locale === "bn"
-            ? "অর্ডার ও তথ্যের জন্য সরাসরি সহায়তা"
-            : "Dedicated assistance for orders and inquiries";
-      }
-      return { ...item, body };
-    });
-  const items =
-    itemRows.length > 0
-      ? itemRows
+    .filter((row) => row.title);
+
+  const rawItems =
+    rawRows.length > 0
+      ? rawRows
       : [1, 2, 3, 4]
           .map((n) => ({
             icon: str(`i${n}Icon`),
             title: str(`i${n}Title`),
             body: str(`i${n}Body`),
+            policyKey: str(`i${n}PolicyKey`),
           }))
           .filter((item) => item.title);
+
+  const items: { icon: string; title: string; body: string }[] = [];
+
+  if (rawItems.length > 0) {
+    for (const item of rawItems) {
+      const text = `${item.title} ${item.body} ${item.policyKey}`.toLowerCase();
+      const isDeliveryOrCod =
+        item.policyKey === "cod" ||
+        item.policyKey === "delivery" ||
+        /delivery|cash on delivery|cod|ডেলিভারি|ক্যাশ অন ডেলিভারি/.test(text);
+
+      const isReturnOrExchange =
+        item.policyKey === "exchange" ||
+        item.policyKey === "returns" ||
+        /return|exchange|7-day|বিনিময়|রিটার্ন/.test(text);
+
+      const isSupportOrCare =
+        item.policyKey === "support" ||
+        item.policyKey === "care" ||
+        /support|customer care|care|সহায়তা|গ্রাহক সেবা|10:00/.test(text);
+
+      const isCraftOrAuthentic =
+        item.policyKey === "craft" ||
+        item.policyKey === "authenticity" ||
+        /craft|authentic|weaves|কারুশিল্প|ঐতিহ্যবাহী/.test(text);
+
+      const isPaymentOrSecure =
+        item.policyKey === "payment" ||
+        item.policyKey === "secure" ||
+        /payment|secure|নিরাপদ|পেমেন্ট/.test(text);
+
+      if (isDeliveryOrCod) {
+        if (codPolicy) {
+          items.push({
+            icon: item.icon || "delivery",
+            title: item.title || (locale === "bn" ? "সারাদেশে ডেলিভারি" : "NATIONWIDE DELIVERY"),
+            body: codPolicy,
+          });
+        } else if (deliveryPolicy) {
+          items.push({
+            icon: item.icon || "delivery",
+            title: item.title || (locale === "bn" ? "সারাদেশে ডেলিভারি" : "NATIONWIDE DELIVERY"),
+            body: deliveryPolicy,
+          });
+        } else if (codEnabled) {
+          items.push({
+            icon: item.icon || "delivery",
+            title: item.title || (locale === "bn" ? "ক্যাশ অন ডেলিভারি" : "CASH ON DELIVERY"),
+            body:
+              locale === "bn"
+                ? "সারা দেশে ক্যাশ অন ডেলিভারি সুবিধা উপলব্ধ"
+                : "Cash on delivery available nationwide",
+          });
+        }
+        // If unverified: OMIT badge. Do not replace with generic promise.
+      } else if (isReturnOrExchange) {
+        if (exchangePolicy) {
+          items.push({
+            icon: item.icon || "returns",
+            title: item.title || (locale === "bn" ? "সহজ বিনিময়" : "EASY EXCHANGE"),
+            body: exchangePolicy,
+          });
+        }
+        // If unverified: OMIT badge. Do not replace with generic promise.
+      } else if (isSupportOrCare) {
+        if (supportHours) {
+          items.push({
+            icon: item.icon || "support",
+            title: item.title || (locale === "bn" ? "গ্রাহক সেবা" : "CUSTOMER CARE"),
+            body: supportHours,
+          });
+        } else if (supportEmail) {
+          items.push({
+            icon: item.icon || "support",
+            title: item.title || (locale === "bn" ? "গ্রাহক সেবা" : "CUSTOMER CARE"),
+            body:
+              locale === "bn"
+                ? `ইমেইল সহায়তা: ${supportEmail}`
+                : `Email support: ${supportEmail}`,
+          });
+        } else if (supportPhone) {
+          items.push({
+            icon: item.icon || "support",
+            title: item.title || (locale === "bn" ? "গ্রাহক সেবা" : "CUSTOMER CARE"),
+            body:
+              locale === "bn"
+                ? `হটলাইন: ${supportPhone}`
+                : `Hotline: ${supportPhone}`,
+          });
+        }
+        // If unverified: OMIT badge. Do not replace with generic promise.
+      } else if (isCraftOrAuthentic) {
+        if (craftPolicy) {
+          items.push({
+            icon: item.icon || "secure",
+            title: item.title || (locale === "bn" ? "খাঁটি কারুশিল্প" : "AUTHENTIC CRAFT"),
+            body: craftPolicy,
+          });
+        }
+        // If unverified: OMIT badge. Do not replace with generic promise.
+      } else if (isPaymentOrSecure) {
+        if (paymentPolicy) {
+          items.push({
+            icon: item.icon || "secure",
+            title: item.title || (locale === "bn" ? "নিরাপদ পেমেন্ট" : "SECURE PAYMENT"),
+            body: paymentPolicy,
+          });
+        } else {
+          items.push({
+            icon: item.icon || "secure",
+            title: item.title || (locale === "bn" ? "নিরাপদ পেমেন্ট" : "SECURE PAYMENT"),
+            body:
+              item.body ||
+              (locale === "bn"
+                ? "নিরাপদ ও সুরক্ষিত লেনদেন"
+                : "100% secure encrypted checkout"),
+          });
+        }
+      } else if (item.body && !/7-day|10:00|cash on delivery/i.test(item.body)) {
+        items.push(item);
+      }
+    }
+  } else {
+    // When no candidates configured in section, build exclusively from verified merchant policies
+    if (codPolicy) {
+      items.push({
+        icon: "delivery",
+        title: locale === "bn" ? "সারাদেশে ডেলিভারি" : "NATIONWIDE DELIVERY",
+        body: codPolicy,
+      });
+    } else if (codEnabled) {
+      items.push({
+        icon: "delivery",
+        title: locale === "bn" ? "ক্যাশ অন ডেলিভারি" : "CASH ON DELIVERY",
+        body:
+          locale === "bn"
+            ? "সারা দেশে ক্যাশ অন ডেলিভারি সুবিধা উপলব্ধ"
+            : "Cash on delivery available nationwide",
+      });
+    }
+
+    if (exchangePolicy) {
+      items.push({
+        icon: "returns",
+        title: locale === "bn" ? "সহজ বিনিময়" : "EASY EXCHANGE",
+        body: exchangePolicy,
+      });
+    }
+
+    if (supportHours) {
+      items.push({
+        icon: "support",
+        title: locale === "bn" ? "গ্রাহক সেবা" : "CUSTOMER CARE",
+        body: supportHours,
+      });
+    } else if (supportEmail) {
+      items.push({
+        icon: "support",
+        title: locale === "bn" ? "গ্রাহক সেবা" : "CUSTOMER CARE",
+        body:
+          locale === "bn"
+            ? `ইমেইল সহায়তা: ${supportEmail}`
+            : `Email support: ${supportEmail}`,
+      });
+    }
+
+    if (craftPolicy) {
+      items.push({
+        icon: "secure",
+        title: locale === "bn" ? "খাঁটি কারুশিল্প" : "AUTHENTIC CRAFT",
+        body: craftPolicy,
+      });
+    }
+  }
+
   if (items.length === 0) {
     return editing ? (
       <p className="text-xs text-muted-foreground">
-        {t(locale, "Trust footer: add badges.", "আস্থা ফুটার: ব্যাজ যোগ করুন।")}
+        {t(
+          locale,
+          "Trust footer: configure verified merchant policies to display badges.",
+          "আস্থা ফুটার: ব্যাজ প্রদর্শনের জন্য যাচাইকৃত মার্চেন্ট পলিসি যুক্ত করুন।",
+        )}
       </p>
     ) : null;
   }
+
+  const gridCols =
+    items.length === 1
+      ? "grid-cols-1"
+      : items.length === 2
+        ? "grid-cols-2"
+        : items.length === 3
+          ? "grid-cols-1 sm:grid-cols-3"
+          : "grid-cols-2 lg:grid-cols-4";
+
   return (
     <div
       ref={scope}
       data-reveal
       className="w-full border-t border-[var(--theme-border)]"
     >
-      <ul className="mx-auto grid max-w-[var(--fq-container,1440px)] grid-cols-2 lg:grid-cols-4 divide-x divide-[var(--theme-border)] px-0">
+      <ul
+        className={`mx-auto grid max-w-[var(--fq-container,1440px)] ${gridCols} divide-x divide-[var(--theme-border)] px-0`}
+      >
         {items.map((item, idx) => (
           <li
             key={item.title}

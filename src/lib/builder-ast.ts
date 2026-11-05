@@ -5703,6 +5703,7 @@ const BASE_CATALOG: CatalogEntry[] = [
           text("title_bn", "Title (বাংলা)"),
           text("body", "Body", 120),
           text("body_bn", "Body (বাংলা)", 120),
+          text("policyKey", "Policy key", 30),
         ],
       },
       text("i1Icon", "Item 1 icon key", 20),
