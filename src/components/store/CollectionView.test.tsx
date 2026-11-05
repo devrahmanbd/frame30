@@ -201,6 +201,7 @@ import {
   extractWeaveFacets,
   filterCollectionProducts,
   sortCollectionProducts,
+  resolveProductPricingAndStock,
   type CollectionProduct,
 } from "./CollectionView";
 
@@ -504,5 +505,174 @@ describe("CollectionView Faceting & Filtering", () => {
       tags: [],
     });
     expect(singleNoMatch).toHaveLength(0);
+  });
+});
+
+describe("Simple products and collection navigation integrity", () => {
+  it("resolves pricing and stock correctly for simple products without variants", () => {
+    // 1. Simple product with price and positive stock
+    const pInStock = {
+      id: "sp-in",
+      title: "Handmade Ceramic Cup",
+      price_amount_minor_int: 45000, // 450 BDT
+      stock_quantity: 5,
+      product_variants: [],
+    } as unknown as CollectionProduct;
+    const resIn = resolveProductPricingAndStock(pInStock);
+    expect(resIn.hasPrice).toBe(true);
+    expect(resIn.priceMinMinor).toBe(45000);
+    expect(resIn.priceMaxMinor).toBe(45000);
+    expect(resIn.isPriceRange).toBe(false);
+    expect(resIn.inStock).toBe(true);
+    expect(resIn.isOutOfStock).toBe(false);
+
+    // 2. Simple product with stock_quantity = 0
+    const pOutOfStock = {
+      id: "sp-out-1",
+      title: "Silk Scarf",
+      price_amount_minor_int: 120000,
+      stock_quantity: 0,
+      product_variants: [],
+    } as unknown as CollectionProduct;
+    const resOut1 = resolveProductPricingAndStock(pOutOfStock);
+    expect(resOut1.inStock).toBe(false);
+    expect(resOut1.isOutOfStock).toBe(true);
+
+    // 3. Simple product with stock_status = "out_of_stock"
+    const pOutOfStockStatus = {
+      id: "sp-out-2",
+      title: "Embroidered Kurti",
+      price_amount_minor_int: 180000,
+      stock_status: "out_of_stock",
+      product_variants: [],
+    } as unknown as CollectionProduct;
+    const resOut2 = resolveProductPricingAndStock(pOutOfStockStatus);
+    expect(resOut2.inStock).toBe(false);
+    expect(resOut2.isOutOfStock).toBe(true);
+
+    // 4. Simple product with is_in_stock = false
+    const pIsInStockFalse = {
+      id: "sp-out-3",
+      title: "Cotton Dupatta",
+      price_amount_minor_int: 65000,
+      is_in_stock: false,
+      product_variants: [],
+    } as unknown as CollectionProduct;
+    const resOut3 = resolveProductPricingAndStock(pIsInStockFalse);
+    expect(resOut3.inStock).toBe(false);
+    expect(resOut3.isOutOfStock).toBe(true);
+
+    // 5. Simple product active with no inventory metadata defaults to in-stock
+    const pDefaultActive = {
+      id: "sp-active",
+      title: "Silver Anklet",
+      price_amount_minor_int: 300000,
+      product_variants: [],
+    } as unknown as CollectionProduct;
+    const resDefault = resolveProductPricingAndStock(pDefaultActive);
+    expect(resDefault.inStock).toBe(true);
+    expect(resDefault.isOutOfStock).toBe(false);
+  });
+
+  it("sorts mixed collections of simple and multi-variant products reliably without Infinity", () => {
+    const mixedProducts: CollectionProduct[] = [
+      {
+        id: "mv-mid",
+        title: "Tangail Taant Saree",
+        product_variants: [{ price_amount_minor_int: 385000, stock_quantity: 5 }],
+      } as unknown as CollectionProduct,
+      {
+        id: "sp-cheap",
+        title: "Terracotta Earrings",
+        price_amount_minor_int: 150000, // 1,500 BDT
+        stock_quantity: 10,
+        product_variants: [],
+      } as unknown as CollectionProduct,
+      {
+        id: "mv-expensive",
+        title: "Dhakai Muslin Jamdani",
+        product_variants: [{ price_amount_minor_int: 2500000, stock_quantity: 2 }],
+      } as unknown as CollectionProduct,
+    ];
+
+    const sortedAsc = sortCollectionProducts(mixedProducts, "price_asc");
+    expect(sortedAsc.map((p) => p.id)).toEqual(["sp-cheap", "mv-mid", "mv-expensive"]);
+
+    const sortedDesc = sortCollectionProducts(mixedProducts, "price_desc");
+    expect(sortedDesc.map((p) => p.id)).toEqual(["mv-expensive", "mv-mid", "sp-cheap"]);
+  });
+
+  it("filters simple products by stock availability accurately", () => {
+    const products: CollectionProduct[] = [
+      {
+        id: "sp-in-1",
+        title: "In Stock Simple",
+        price_amount_minor_int: 100000,
+        stock_quantity: 3,
+        product_variants: [],
+      } as unknown as CollectionProduct,
+      {
+        id: "sp-out-1",
+        title: "Out of Stock Simple",
+        price_amount_minor_int: 100000,
+        stock_quantity: 0,
+        product_variants: [],
+      } as unknown as CollectionProduct,
+    ];
+
+    const inStockOnly = filterCollectionProducts(products, {
+      availability: "in_stock",
+      price: "all",
+      tags: [],
+    });
+    expect(inStockOnly.map((p) => p.id)).toEqual(["sp-in-1"]);
+
+    const outOfStockOnly = filterCollectionProducts(products, {
+      availability: "out_of_stock",
+      price: "all",
+      tags: [],
+    });
+    expect(outOfStockOnly.map((p) => p.id)).toEqual(["sp-out-1"]);
+  });
+
+  it("deriveCollectionHierarchy rejects non-collection routes and logs diagnostics", () => {
+    const menuWithMixedLinks = [
+      {
+        id: "m-parent",
+        label: "About Us",
+        url: "/pages/about",
+        children: [
+          { id: "m-c1", label: "Contact", url: "/pages/contact" },
+          { id: "m-c2", label: "Heritage Blog", url: "/blog/jamdani" },
+          { id: "m-c3", label: "Festive Sarees", url: "/c/festive-sarees" },
+          { id: "m-c4", label: "Silk Sarees", url: "/c/silk-sarees" },
+        ],
+      },
+    ];
+
+    const hierarchy = deriveCollectionHierarchy({
+      collectionSlug: "festive-sarees",
+      menuTree: menuWithMixedLinks as any,
+    });
+
+    // Parent is /pages/about which is not a collection, so parent should be undefined
+    expect(hierarchy.parent).toBeUndefined();
+
+    // Pills should only contain valid collection slugs, never /pages/contact or /blog/jamdani
+    const pillSlugs = hierarchy.pills.map((p) => p.slug);
+    expect(pillSlugs).toEqual(["festive-sarees", "silk-sarees"]);
+    expect(pillSlugs).not.toContain("pages/contact");
+    expect(pillSlugs).not.toContain("contact");
+    expect(pillSlugs).not.toContain("blog/jamdani");
+
+    // Diagnostics should report non-collection destinations
+    expect(hierarchy.diagnostics).toBeDefined();
+    const diagnostics = hierarchy.diagnostics ?? [];
+    expect(diagnostics.length).toBeGreaterThan(0);
+    const nonColl = diagnostics.filter((d) => d.code === "non_collection_destination");
+    expect(nonColl.length).toBeGreaterThanOrEqual(2);
+    expect(nonColl.map((d) => d.url)).toEqual(
+      expect.arrayContaining(["/pages/contact", "/blog/jamdani"]),
+    );
   });
 });

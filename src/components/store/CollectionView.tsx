@@ -33,12 +33,21 @@ type ParentCategory = {
 type DepartmentContext = {
   parent?: ParentCategory;
   pills: DiscoveryPill[];
+  diagnostics?: MenuDiagnostic[];
+};
+
+export type MenuDiagnostic = {
+  code: "non_collection_destination" | "invalid_slug";
+  url: string;
+  label: string;
 };
 
 /**
  * Dynamically derives collection hierarchy and discovery pills from
  * merchant navigation menus, eliminating hardcoded department taxonomies
  * and ensuring unpublished collections (e.g. Taaga Fusion) never leak.
+ * Validates that destinations are legitimate collection URLs and prevents
+ * transforming non-collection routes (e.g. /pages/contact, /blog/...) into /c/...
  */
 export function deriveCollectionHierarchy({
   collectionSlug,
@@ -66,8 +75,21 @@ export function deriveCollectionHierarchy({
     children?: NavItem[];
   };
 
-  const normalizeSlug = (url: string) =>
-    (url || "").replace(/^\/c\//, "").replace(/^\//, "").split("?")[0].trim();
+  const diagnostics: MenuDiagnostic[] = [];
+
+  const extractCollectionSlug = (url: string): string | null => {
+    if (!url) return null;
+    const trimmed = (url || "").trim().split("?")[0];
+    if (trimmed.startsWith("/c/")) {
+      const slug = trimmed.slice(3).replace(/^\/+|\/+$/g, "");
+      return slug && !slug.includes("/") ? slug.toLowerCase() : null;
+    }
+    if (trimmed.startsWith("/collections/")) {
+      const slug = trimmed.slice(13).replace(/^\/+|\/+$/g, "");
+      return slug && !slug.includes("/") ? slug.toLowerCase() : null;
+    }
+    return null;
+  };
 
   const target = collectionSlug.toLowerCase().trim();
 
@@ -75,22 +97,38 @@ export function deriveCollectionHierarchy({
     const pills: DiscoveryPill[] = [];
     if (!node.children || node.children.length === 0) return pills;
     for (const child of node.children) {
-      const cSlug = normalizeSlug(child.url);
-      if (cSlug && !pills.some((p) => p.slug === cSlug)) {
-        pills.push({
-          slug: cSlug,
+      const cSlug = extractCollectionSlug(child.url);
+      if (cSlug) {
+        if (!pills.some((p) => p.slug === cSlug)) {
+          pills.push({
+            slug: cSlug,
+            label: child.label,
+            label_bn: child.label_bn,
+          });
+        }
+      } else if (child.url && !child.url.startsWith("#")) {
+        diagnostics.push({
+          code: "non_collection_destination",
+          url: child.url,
           label: child.label,
-          label_bn: child.label_bn,
         });
       }
       if (child.children && child.children.length > 0) {
         for (const grandchild of child.children) {
-          const gcSlug = normalizeSlug(grandchild.url);
-          if (gcSlug && !pills.some((p) => p.slug === gcSlug)) {
-            pills.push({
-              slug: gcSlug,
+          const gcSlug = extractCollectionSlug(grandchild.url);
+          if (gcSlug) {
+            if (!pills.some((p) => p.slug === gcSlug)) {
+              pills.push({
+                slug: gcSlug,
+                label: grandchild.label,
+                label_bn: grandchild.label_bn,
+              });
+            }
+          } else if (grandchild.url && !grandchild.url.startsWith("#")) {
+            diagnostics.push({
+              code: "non_collection_destination",
+              url: grandchild.url,
               label: grandchild.label,
-              label_bn: grandchild.label_bn,
             });
           }
         }
@@ -108,20 +146,36 @@ export function deriveCollectionHierarchy({
     siblings: DiscoveryPill[];
   } | null => {
     for (const item of items) {
-      const itemSlug = normalizeSlug(item.url);
+      const itemSlug = extractCollectionSlug(item.url);
       if (itemSlug === target) {
-        const parent = parentItem
-          ? {
-              slug: normalizeSlug(parentItem.url),
-              name: parentItem.label,
-              name_bn: parentItem.label_bn,
-            }
-          : undefined;
-        const siblings: DiscoveryPill[] = items.map((i) => ({
-          slug: normalizeSlug(i.url),
-          label: i.label,
-          label_bn: i.label_bn,
-        }));
+        const parentSlug = parentItem
+          ? extractCollectionSlug(parentItem.url)
+          : null;
+        const parent =
+          parentItem && parentSlug
+            ? {
+                slug: parentSlug,
+                name: parentItem.label,
+                name_bn: parentItem.label_bn,
+              }
+            : undefined;
+        const siblings: DiscoveryPill[] = [];
+        for (const i of items) {
+          const sSlug = extractCollectionSlug(i.url);
+          if (sSlug) {
+            siblings.push({
+              slug: sSlug,
+              label: i.label,
+              label_bn: i.label_bn,
+            });
+          } else if (i.url && !i.url.startsWith("#")) {
+            diagnostics.push({
+              code: "non_collection_destination",
+              url: i.url,
+              label: i.label,
+            });
+          }
+        }
         return { node: item, parent, siblings };
       }
       if (item.children && item.children.length > 0) {
@@ -147,17 +201,17 @@ export function deriveCollectionHierarchy({
         },
         ...childPills.filter((p) => p.slug !== collectionSlug),
       ];
-      return { parent: match.parent, pills };
+      return { parent: match.parent, pills, diagnostics };
     }
     if (match.siblings.length > 1) {
-      return { parent: match.parent, pills: match.siblings };
+      return { parent: match.parent, pills: match.siblings, diagnostics };
     }
     if (match.parent) {
-      return { parent: match.parent, pills: [] };
+      return { parent: match.parent, pills: [], diagnostics };
     }
   }
 
-  return { pills: [] };
+  return { pills: [], diagnostics };
 }
 
 export type CollectionProduct = CollectionPayload["products"][number];
@@ -253,9 +307,156 @@ export function extractWeaveFacets(
   );
 }
 
+export type ProductPricingAndStock = {
+  priceMinMinor: number;
+  priceMaxMinor: number;
+  prices: number[];
+  inStock: boolean;
+  hasInventoryInfo: boolean;
+  stockQuantity: number | null;
+  variants: { price: number; stock: number | null; inStock: boolean }[];
+  hasPrice: boolean;
+  isOutOfStock: boolean;
+  isPriceRange: boolean;
+};
+
+/**
+ * Unified product price and stock resolver for simple products and multi-variant products.
+ * Guarantees a single source of truth across card display, filtering, sorting, and facet counts.
+ */
+export function resolveProductPricingAndStock(
+  p: CollectionProduct,
+): ProductPricingAndStock {
+  const rawVariants = (p.product_variants ?? []).filter(Boolean);
+  const variants = rawVariants.map((v) => {
+    const price = Number(v.price_amount_minor_int) || 0;
+    const stock =
+      v.stock_quantity != null ? Number(v.stock_quantity) : null;
+    return {
+      price,
+      stock,
+      inStock: stock != null ? stock > 0 : true,
+    };
+  });
+
+  let prices: number[] = [];
+  if (variants.length > 0) {
+    prices = variants.map((v) => v.price);
+  } else {
+    const pFields = p as unknown as {
+      price_amount_minor_int?: number;
+      price_min_minor_int?: number;
+      price_minor_int?: number;
+      price?: number;
+    };
+    const productPrice =
+      Number(pFields.price_amount_minor_int) ||
+      Number(pFields.price_min_minor_int) ||
+      Number(pFields.price_minor_int) ||
+      (typeof pFields.price === "number"
+        ? Math.round(pFields.price * 100)
+        : 0);
+    prices = productPrice > 0 ? [productPrice] : [0];
+  }
+
+  const priceMinMinor = prices.length > 0 ? Math.min(...prices) : 0;
+  const priceMaxMinor = prices.length > 0 ? Math.max(...prices) : 0;
+
+  let inStock = true;
+  let hasInventoryInfo = false;
+  let stockQuantity: number | null = null;
+
+  if (variants.length > 0) {
+    const trackedVariants = variants.filter((v) => v.stock != null);
+    if (trackedVariants.length > 0) {
+      hasInventoryInfo = true;
+      stockQuantity = trackedVariants.reduce(
+        (acc, v) => acc + (v.stock ?? 0),
+        0,
+      );
+      inStock = trackedVariants.some((v) => (v.stock ?? 0) > 0);
+    } else {
+      const pAny = p as unknown as { status?: string; stock_status?: string };
+      if (
+        pAny.stock_status === "out_of_stock" ||
+        pAny.status === "inactive" ||
+        pAny.status === "draft"
+      ) {
+        hasInventoryInfo = true;
+        inStock = false;
+      } else {
+        hasInventoryInfo = false;
+        inStock = true;
+      }
+    }
+  } else {
+    const pAny = p as unknown as {
+      stock_quantity?: number | null;
+      inventory_quantity?: number | null;
+      stock_status?: string | null;
+      is_in_stock?: boolean | null;
+      available?: boolean | null;
+      status?: string | null;
+    };
+    if (typeof pAny.stock_quantity === "number") {
+      hasInventoryInfo = true;
+      stockQuantity = pAny.stock_quantity;
+      inStock = pAny.stock_quantity > 0;
+    } else if (typeof pAny.inventory_quantity === "number") {
+      hasInventoryInfo = true;
+      stockQuantity = pAny.inventory_quantity;
+      inStock = pAny.inventory_quantity > 0;
+    } else if (pAny.stock_status === "out_of_stock") {
+      hasInventoryInfo = true;
+      stockQuantity = 0;
+      inStock = false;
+    } else if (pAny.stock_status === "in_stock") {
+      hasInventoryInfo = true;
+      inStock = true;
+    } else if (pAny.is_in_stock === false || pAny.available === false) {
+      hasInventoryInfo = true;
+      stockQuantity = 0;
+      inStock = false;
+    } else if (pAny.is_in_stock === true || pAny.available === true) {
+      hasInventoryInfo = true;
+      inStock = true;
+    } else if (
+      pAny.status === "inactive" ||
+      pAny.status === "draft" ||
+      pAny.status === "archived"
+    ) {
+      hasInventoryInfo = true;
+      stockQuantity = 0;
+      inStock = false;
+    } else {
+      hasInventoryInfo = false;
+      stockQuantity = null;
+      inStock = true;
+    }
+  }
+
+  const hasPrice = priceMinMinor > 0;
+  const isOutOfStock = !inStock;
+  const isPriceRange = priceMinMinor !== priceMaxMinor && variants.length > 1;
+
+  return {
+    priceMinMinor,
+    priceMaxMinor,
+    prices,
+    inStock,
+    hasInventoryInfo,
+    stockQuantity,
+    variants,
+    hasPrice,
+    isOutOfStock,
+    isPriceRange,
+  };
+}
+
 /**
  * Pure filter logic: checks exact tag membership (no title substring matching),
- * BDT price brackets, and stock availability.
+ * BDT price brackets, and stock availability across both simple products and
+ * multi-variant products using one consistent data contract.
  */
 export function filterCollectionProducts(
   products: readonly CollectionProduct[],
@@ -268,32 +469,29 @@ export function filterCollectionProducts(
   },
 ): CollectionProduct[] {
   return products.filter((p) => {
-    const variants = p.product_variants ?? [];
-    const prices = variants.length
-      ? variants.map((v) => Number(v.price_amount_minor_int) || 0)
-      : [Number((p as { price_amount_minor_int?: number }).price_amount_minor_int) || 0];
-    const inStock = variants.length
-      ? variants.some((v) => (v.stock_quantity ?? 0) > 0)
-      : true;
+    const info = resolveProductPricingAndStock(p);
 
     // Availability filter
-    if (filters.availability === "in_stock" && !inStock) return false;
-    if (filters.availability === "out_of_stock" && inStock) return false;
+    if (filters.availability === "in_stock" && !info.inStock) return false;
+    if (filters.availability === "out_of_stock" && info.inStock) return false;
 
     // Price bracket filtering (BDT minor units: 5,000 BDT = 500,000 minor)
-    // Matches if ANY variant falls into the selected price bracket
     if (filters.price === "under_5000") {
-      const matches = prices.some((price) => price < 500000);
+      const matches = info.variants.length > 0
+        ? info.variants.some((v) => v.price < 500000)
+        : info.priceMinMinor < 500000;
       if (!matches) return false;
     }
     if (filters.price === "5000_10000") {
-      const matches = prices.some(
-        (price) => price >= 500000 && price <= 1000000,
-      );
+      const matches = info.variants.length > 0
+        ? info.variants.some((v) => v.price >= 500000 && v.price <= 1000000)
+        : info.priceMinMinor >= 500000 && info.priceMinMinor <= 1000000;
       if (!matches) return false;
     }
     if (filters.price === "above_10000") {
-      const matches = prices.some((price) => price > 1000000);
+      const matches = info.variants.length > 0
+        ? info.variants.some((v) => v.price > 1000000)
+        : info.priceMinMinor > 1000000;
       if (!matches) return false;
     }
 
@@ -309,11 +507,17 @@ export function filterCollectionProducts(
         : null;
 
     if (minMinor != null || maxMinor != null) {
-      const matches = prices.some((price) => {
-        if (minMinor != null && price < minMinor) return false;
-        if (maxMinor != null && price > maxMinor) return false;
-        return true;
-      });
+      const matches = info.variants.length > 0
+        ? info.variants.some((v) => {
+            if (minMinor != null && v.price < minMinor) return false;
+            if (maxMinor != null && v.price > maxMinor) return false;
+            return true;
+          })
+        : (() => {
+            if (minMinor != null && info.priceMinMinor < minMinor) return false;
+            if (maxMinor != null && info.priceMinMinor > maxMinor) return false;
+            return true;
+          })();
       if (!matches) return false;
     }
 
@@ -334,6 +538,7 @@ export function filterCollectionProducts(
 
 /**
  * Pure sort logic: featured, price ascending, price descending, alphabetical title.
+ * Works seamlessly with both simple and multi-variant products.
  */
 export function sortCollectionProducts(
   products: readonly CollectionProduct[],
@@ -341,30 +546,14 @@ export function sortCollectionProducts(
 ): CollectionProduct[] {
   return [...products].sort((a, b) => {
     if (sortBy === "price_asc") {
-      const aMin = Math.min(
-        ...(a.product_variants ?? []).map(
-          (v) => Number(v.price_amount_minor_int) || 0,
-        ),
-      );
-      const bMin = Math.min(
-        ...(b.product_variants ?? []).map(
-          (v) => Number(v.price_amount_minor_int) || 0,
-        ),
-      );
-      return aMin - bMin;
+      const aInfo = resolveProductPricingAndStock(a);
+      const bInfo = resolveProductPricingAndStock(b);
+      return aInfo.priceMinMinor - bInfo.priceMinMinor || a.title.localeCompare(b.title);
     }
     if (sortBy === "price_desc") {
-      const aMin = Math.min(
-        ...(a.product_variants ?? []).map(
-          (v) => Number(v.price_amount_minor_int) || 0,
-        ),
-      );
-      const bMin = Math.min(
-        ...(b.product_variants ?? []).map(
-          (v) => Number(v.price_amount_minor_int) || 0,
-        ),
-      );
-      return bMin - aMin;
+      const aInfo = resolveProductPricingAndStock(a);
+      const bInfo = resolveProductPricingAndStock(b);
+      return bInfo.priceMinMinor - aInfo.priceMinMinor || a.title.localeCompare(b.title);
     }
     if (sortBy === "title") {
       return a.title.localeCompare(b.title);
@@ -1334,15 +1523,9 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
             <>
               <ul className="grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-6 sm:gap-y-12">
                   {displayedProducts.map((p) => {
-                    const variants = p.product_variants ?? [];
-                    const min = variants.length
-                      ? Math.min(
-                          ...variants.map((v) =>
-                            Number(v.price_amount_minor_int),
-                          ),
-                        )
-                      : 0;
-                    const inStock = variants.some((v) => v.stock_quantity > 0);
+                    const info = resolveProductPricingAndStock(p);
+                    const min = info.priceMinMinor;
+                    const inStock = info.inStock;
 
                     // NEW / BESTSELLER assigned from product data (tags/attributes), never by collection slug
                     const pTags = ((p as { tags?: string[] }).tags ?? []).map(

@@ -213,8 +213,8 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     s("finder_row", {
       heading: "Shop by occasion",
       heading_bn: "উপলক্ষ অনুযায়ী কিনুন",
-      body: "Pick a moment — we take you straight to matching weaves, silhouettes and collections.",
-      body_bn: "আপনার উপলক্ষ বেছে নিন — আমরা আপনাকে সঠিক সংগ্রহে পৌঁছে দেব।",
+      body: "Curated attire for Eid, weddings, holud ceremonies, and festive gatherings.",
+      body_bn: "ঈদ, বিয়ে, গায়ে হলুদ ও পারিবারিক উৎসবের জন্য পোশাক।",
       o1Label: "EID & FESTIVE",
       o1Label_bn: "ঈদ ও উৎসব",
       o1Href: `${c}/festive`,
@@ -244,8 +244,8 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     s("split_feature", {
       heading: "THE MODERN\nPANJABI",
       heading_bn: "আধুনিক\nপাঞ্জাবি",
-      body: "Tradition, cut for today. Premium handloom and cotton Panjabis for the discerning man.",
-      body_bn: "ঐতিহ্য, আজকের জন্য কাটা। বিশেষ হাতে বোনা ও কটন পাঞ্জাবি।",
+      body: "Tailored handloom cotton and silk panjabis for festive occasions and everyday wear.",
+      body_bn: "উৎসব ও দৈনন্দিন ব্যবহারের জন্য সুতি এবং সিল্কের পাঞ্জাবি।",
       ctaLabel: "SHOP PANJABI",
       ctaLabel_bn: "পাঞ্জাবি সংগ্রহ",
       ctaUrl: `${c}/panjabi`,
@@ -310,8 +310,8 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       heading: "FROM THE LOOM",
       heading_bn: "তাঁত থেকে",
       subhead:
-        "Traditional handloom weaves from master weavers across Bangladesh.",
-      subhead_bn: "বাংলাদেশের ঐতিহ্যবাহী তাঁত ও কারুশিল্প।",
+        "Hand-loomed Jamdani, Rajshahi silk, Tangail taant, and Nakshi Kantha.",
+      subhead_bn: "জামদানি, রাজশাহী সিল্ক, টাঙ্গাইল তাঁত এবং নকশী কাঁথা সংগ্রহ।",
       collections: [
         {
           title: "Jamdani",

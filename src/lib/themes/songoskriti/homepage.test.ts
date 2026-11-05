@@ -44,7 +44,7 @@ describe("Songoskriti homepage seed configuration", () => {
     }[];
 
     expect(story?.props?.subhead).toBe(
-      "Traditional handloom weaves from master weavers across Bangladesh.",
+      "Hand-loomed Jamdani, Rajshahi silk, Tangail taant, and Nakshi Kantha.",
     );
 
     const jamdani = collections.find((c) => c.title === "Jamdani");

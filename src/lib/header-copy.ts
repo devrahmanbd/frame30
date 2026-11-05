@@ -150,33 +150,11 @@ export const HEADER_FALLBACK_MENU = [
     children: [
       {
         id: "k-festive",
-        label: "Festive Kids",
+        label: "Festive Clothing",
         url: "/c/kids",
         children: [
           { id: "kf-ghagra", label: "Festive Ghagra Choli", url: "/c/kids" },
-          {
-            id: "kf-eid",
-            label: "Eid Children's Wear",
-            url: "/c/eid-festive",
-          },
-        ],
-      },
-      {
-        id: "k-occasion",
-        label: "Family Occasion",
-        url: "/c/festive",
-        children: [
-          { id: "ko-eid", label: "Eid & Festive", url: "/c/eid-festive" },
-          { id: "ko-festive", label: "Festive Collection", url: "/c/festive" },
-        ],
-      },
-      {
-        id: "k-featured",
-        label: "Curated",
-        url: "/c/new-in",
-        children: [
-          { id: "kfe-new", label: "New Festive Drops", url: "/c/new-in" },
-          { id: "kfe-kids", label: "All Kids' Wear", url: "/c/kids" },
+          { id: "kf-all", label: "All Children's Wear", url: "/c/kids" },
         ],
       },
     ],
