@@ -48,6 +48,7 @@ vi.mock("@tanstack/react-router", async (importOriginal) => {
 
 import { CollectionView, type CollectionPayload } from "./CollectionView";
 import { LanguageProvider } from "@/lib/i18n";
+import { HEADER_FALLBACK_MENU } from "@/lib/header-copy";
 
 function payload({
   themeKey,
@@ -718,5 +719,21 @@ describe("Simple products and collection navigation integrity", () => {
     expect(staleDiags.map((d) => d.url)).toEqual(
       expect.arrayContaining(["/c/stale-collection", "/c/draft-collection"]),
     );
+  });
+
+  it("falls back to fallbackMenu when collection is not in custom menuTree", () => {
+    const customMenuTree = [
+      { id: "1", label: "Women", url: "/c/women", children: [] },
+      { id: "2", label: "Men", url: "/c/men", children: [] },
+    ];
+    const hierarchy = deriveCollectionHierarchy({
+      collectionSlug: "kids",
+      menuTree: customMenuTree,
+      fallbackMenu: HEADER_FALLBACK_MENU,
+      publishedCollectionSlugs: ["women", "men", "kids", "living"],
+    });
+
+    const pillSlugs = hierarchy.pills.map((p) => p.slug);
+    expect(pillSlugs).toContain("kids");
   });
 });

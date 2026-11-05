@@ -218,11 +218,16 @@ export function deriveCollectionHierarchy({
     return null;
   };
 
-  const match = searchTree(sourceTree as NavItem[]);
+  let match = searchTree(sourceTree as NavItem[]);
+  if (!match && menuTree && menuTree.length > 0 && fallbackMenu) {
+    match = searchTree(fallbackMenu as NavItem[]);
+  }
 
   if (match) {
-    const childPills = collectChildPills(match.node);
-    if (childPills.length > 0) {
+    const distinctChildPills = collectChildPills(match.node).filter(
+      (p) => p.slug !== collectionSlug,
+    );
+    if (distinctChildPills.length > 0) {
       const pills: DiscoveryPill[] = [
         {
           slug: collectionSlug,
@@ -231,7 +236,7 @@ export function deriveCollectionHierarchy({
             ? `সকল ${match.node.label_bn}`
             : undefined,
         },
-        ...childPills.filter((p) => p.slug !== collectionSlug),
+        ...distinctChildPills,
       ];
       return { parent: match.parent, pills, diagnostics };
     }
@@ -736,10 +741,30 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
   let subnavPills: DiscoveryPill[] = deptContext.pills;
 
   if (subnavPills.length === 0 && categories.length > 0) {
-    subnavPills = categories.map((cat) => ({
-      slug: (cat.url || "").replace(/^\/c\//, "").replace(/^\//, ""),
-      label: cat.label,
-    }));
+    subnavPills = categories
+      .map((cat) => {
+        const trimmed = (cat.url || "").trim().split("?")[0];
+        let cSlug: string | null = null;
+        if (trimmed.startsWith("/c/")) {
+          cSlug = trimmed.slice(3).replace(/^\/+|\/+$/g, "");
+        } else if (trimmed.startsWith("/collections/")) {
+          cSlug = trimmed.slice(13).replace(/^\/+|\/+$/g, "");
+        }
+        if (!cSlug || cSlug.includes("/")) return null;
+        cSlug = cSlug.toLowerCase();
+        if (
+          data.publishedCollectionSlugs &&
+          data.publishedCollectionSlugs.length > 0 &&
+          !data.publishedCollectionSlugs.includes(cSlug)
+        ) {
+          return null;
+        }
+        return {
+          slug: cSlug,
+          label: cat.label,
+        };
+      })
+      .filter((p): p is DiscoveryPill => p !== null);
   }
 
   // Meaningful facets extracted dynamically from actual products in this collection
