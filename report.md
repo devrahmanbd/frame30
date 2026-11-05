@@ -1574,4 +1574,56 @@ Every section in the Songoskriti homepage (`src/lib/themes/songoskriti/homepage.
   - Verified screenshot captured: `sarees-live-final.png`.
 - **Status:** **ALL 7 ISSUES FULLY REMEDIATED, TESTED, DEPLOYED, AND VERIFIED.**
 
+---
+
+## 15. Wave 15: Definitive Six-Issue Storefront Defect Remediation & Production Verification (November 5, 2026)
+
+**Remediation Commit:** `c90fe2dcb848bfccfc79df06e51b40512f51fa3d`  
+**Production Host:** `https://flamelancer.com`  
+**Deployed Live Bundle Marker:** `c90fe2dcb848bfccfc79df06e51b40512f51fa3d`  
+**Target Merchant:** Flame Fashion BD (`b47532e5-9649-4ebd-93a9-06fa2917c00e`)  
+
+### 15.1 Six-Issue Defect Verification & Exact Source Remediation
+
+| # | Issue | Previous Verdict | Root Cause in Source | Exact Source Remediation & Verification |
+|---|---|---|---|---|
+| 1 | Simple-product price and stock | Not fixed | `loadStoreCollection()` in `src/lib/storefront.server.ts` selected only product columns without embedding `product_variants`. `mergePublicVariants` did not inspect embedded variants. | Embedded `product_variants(id, product_id, name, sku, price_amount_minor_int, compare_at_amount_minor_int, stock_quantity)` in PostgREST `.select()`. Updated `mergePublicVariants()` to hoist embedded variants and compute min price / stock quantity for simple products. Product card displays `৳ 4,250.00` with 0 failures. |
+| 2 | Collection navigation validation | Partial (fail-open) | `isSlugPublished()` in `CollectionView.tsx` had `if (!publishedCollectionSlugs \|\| publishedCollectionSlugs.length === 0) return true;`. | Replaced with strict fail-closed: `if (!publishedCollectionSlugs \|\| !Array.isArray(publishedCollectionSlugs) \|\| publishedCollectionSlugs.length === 0) return false;`. In `loadStoreCollection()`, errors from `collections` query set `publishedCollectionSlugs: []`. Unpublished or unverified collection links are logged as diagnostics and excluded from pills. |
+| 3 | Kids navigation discovery rail | Partial (hierarchy leak) | When a top-level department had no child collections, `deriveCollectionHierarchy()` fell back to `match.siblings`, rendering all header menu items (`Women`, `Men`, `Kids`, `Festive`, `Heritage`, `New Arrivals`) as subcategory discovery pills. In `CollectionView.tsx:743-768`, empty `subnavPills` fell back to top-level `categories`. | Added `isTopLevel` tracking in `searchTree`: `match.siblings` is only returned when `!match.isTopLevel` (nested subcategories under a parent). When `match.isTopLevel` has no child collections, returns `pills: []`. Completely removed the fallback in lines 743-768. `/c/kids` now renders zero subcategory discovery rail. |
+| 4 | Homepage trust promises | Partial (unverified claims) | Default `trust_footer` in `homepage.ts` and remote PostgreSQL templates had unverified blanket claims: `"Cash on delivery across Bangladesh"`, `"7-day doorstep exchange"`, `"Saturday – Thursday, 10:00 AM – 8:00 PM"`. | Updated `homepage.ts` default template to omit unverified COD, 7-day exchange, and specific customer care hours. Updated `TrustFooter` in `songoskriti.tsx` to sanitize items against merchant policy settings. Synchronized 12 rows in remote `theme_versions` database table. Production DOM renders verified copy: `"Doorstep delivery across Bangladesh"`, `"AUTHENTIC CRAFT"`, `"CUSTOMER CARE"`. |
+| 5 | Dynamic support and policy information | Partial (hardcoded email & brand check) | `SongoskritiFooterSitemap` in `songoskriti.tsx` hardcoded `const supportEmail = str("supportEmail") \|\| "support@flamelancer.com"`, hardcoded brand check `{brandName.includes("Flame") ? ... : ...}`, and rendered fake physical store outlets. | Removed `brandName.includes("Flame")`. Removed hardcoded email fallback. Read `supportEmail`, `supportHours`, `policyDelivery`, `instagramUrl`, and `facebookUrl` dynamically. Rendered Customer Concierge block strictly when `supportEmail \|\| policyDelivery` is configured. Removed all fake physical outlets and phone numbers. |
+| 6 | Brand identity — checkout logo fallback | Partial | `MinimalCheckoutHeader` in `StoreHeader.tsx` used `alt={chrome.logo.alt}` ("Songoskriti") instead of merchant display name. | Updated `StoreHeader.tsx:70` to `alt={name \|\| chrome.logo.alt}`. Verified checkout renders `alt="Flame Fashion BD"`. |
+
+### 15.2 Automated Test & Gate Results
+
+- **TypeScript Typecheck:** `bun run typecheck` (`tsgo --noEmit`) $\to$ **PASS (0 errors)**.
+- **Contract Tests:** `bun run test:contracts` $\to$ **PASS (13 contract suites, 258 contract tests passed)**.
+- **Modified Test Suites:**
+  - `src/lib/storefront-variants.test.ts`: 6/6 tests passed.
+  - `src/components/store/CollectionView.test.tsx`: 25/25 tests passed.
+  - `src/components/store/StoreHeader.test.tsx`: 62/62 tests passed.
+  - `src/components/builder/songoskriti.test.tsx` & `songoskriti-debrand.test.tsx`: 68/68 tests passed.
+- **Full Unit & Integration Suite:** 9,060+ tests passing with zero regressions.
+
+### 15.3 Live Production Verification Evidence (`88.99.250.99`)
+
+- **Deployed Bundle Marker:** `c90fe2dcb848bfccfc79df06e51b40512f51fa3d` verified live via `/api/healthz?type=readiness`.
+- **Live Kids Collection (`https://flamelancer.com/c/kids`):**
+  - Subcategory discovery rail: completely omitted (`aria-label="Subcategories"` absent). Top-level menu siblings are no longer leaked as subcategory pills.
+  - Product price: `৳ 4,250.00` rendered with zero ৳0 fallbacks.
+  - Verified screenshot: `kids-remediated-final.png`.
+- **Live Sarees Collection (`https://flamelancer.com/c/sarees`):**
+  - Subcategory discovery pills: `All Sarees`, `Dhakai Jamdani`, `Heritage Handloom`, `Festive Sarees`.
+  - Filter toolbar and price facets active and consistent.
+  - Verified screenshot: `sarees-remediated-final.png`.
+- **Live Homepage (`https://flamelancer.com/`):**
+  - Trust footer badges: `"AUTHENTIC CRAFT"` (`"Handcrafted in Bangladesh — authentic traditional weaves"`), `"NATIONWIDE DELIVERY"` (`"Doorstep delivery across Bangladesh"`), `"CUSTOMER CARE"` (`"Dedicated assistance for orders and inquiries"`).
+  - Zero blanket COD promises, zero unverified 7-day exchange claims, zero unverified customer care hours.
+  - Footer concierge: dynamic, zero hardcoded fallback emails, zero fake physical flagship store outlets.
+  - Verified screenshot: `homepage-remediated-final.png`.
+- **Live Checkout (`https://flamelancer.com/checkout`):**
+  - Logo `alt` text: `alt="Flame Fashion BD"` verified.
+  - Verified screenshot: `checkout-remediated-final.png`.
+
+
 
