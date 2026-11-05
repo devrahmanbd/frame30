@@ -233,7 +233,15 @@ describe("Task 3 — freeze: chrome + singleton static pins", () => {
       buildSongoskritiFooter(stubBuilder<FooterSectionBuilder>());
     const sitemap = sections.find((n) => n.type === "footer_sitemap")!;
     const html = render(SONGOSKRITI_WIDGETS["footer_sitemap"], sitemap, "en");
-    expect(html).toContain("© 2026 Songoskriti");
+    expect(html).toContain("© 2026");
+    const withMerchant = buildSongoskritiFooter(
+      stubBuilder<FooterSectionBuilder>(),
+      { name: "Custom Merchant" },
+    );
+    const customSitemap = withMerchant.find((n) => n.type === "footer_sitemap")!;
+    expect(
+      render(SONGOSKRITI_WIDGETS["footer_sitemap"], customSitemap, "en"),
+    ).toContain("© 2026 Custom Merchant");
   });
 
   it("hero_carousel singleton static pin", () => {
@@ -314,6 +322,7 @@ describe("Task 3 — freeze: chrome + singleton static pins", () => {
       props: {
         ...section.props,
         codEnabled: true,
+        codPolicy: "Cash on delivery available nationwide",
         supportEmail: "support@flamelancer.com",
       },
     };

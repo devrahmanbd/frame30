@@ -44,6 +44,6 @@ export const PAYMENT_MARKS = "Cash on Delivery";
 export const PAYMENT_MARKS_BN = "ক্যাশ অন ডেলিভারি";
 
 export const COLOPHON = {
-  body: "Support & customer care — open Saturday to Thursday, 10am to 8pm.",
-  body_bn: "সহায়তা ও গ্রাহক সেবা — শনিবার থেকে বৃহস্পতিবার, সকাল ১০টা থেকে রাত ৮টা।",
+  body: "Support & customer care.",
+  body_bn: "সহায়তা ও গ্রাহক সেবা।",
 } as const;

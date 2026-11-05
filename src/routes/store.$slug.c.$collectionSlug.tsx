@@ -25,7 +25,10 @@ import {
 import { fmtMinor } from "@/lib/money";
 import { flattenAst } from "@/lib/builder-ast";
 import { rebaseMenuHref } from "@/lib/menus/menu";
-import { CollectionView } from "@/components/store/CollectionView";
+import {
+  CollectionView,
+  resolveProductPricingAndStock,
+} from "@/components/store/CollectionView";
 
 export const Route = createFileRoute("/store/$slug/c/$collectionSlug")({
   loader: async ({ params }) => {
@@ -160,24 +163,9 @@ function CollectionPage() {
       ) : (
         <ul className="grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-6">
           {products.map((p) => {
-            const variants = p.product_variants ?? [];
-            const min = variants.length
-              ? Math.min(
-                  ...variants.map((v) => Number(v.price_amount_minor_int)),
-                )
-              : Number(
-                  (p as unknown as { price_amount_minor_int?: number })
-                    .price_amount_minor_int,
-                ) || 0;
-            const inStock = variants.length
-              ? variants.some((v) => v.stock_quantity > 0)
-              : (p as unknown as { stock_quantity?: number | null })
-                    .stock_quantity != null
-                ? Number(
-                    (p as unknown as { stock_quantity?: number })
-                      .stock_quantity,
-                  ) > 0
-                : true;
+            const pricing = resolveProductPricingAndStock(p as never);
+            const min = pricing.priceMinMinor;
+            const inStock = pricing.inStock;
             return (
               <li key={p.id}>
                 <Link

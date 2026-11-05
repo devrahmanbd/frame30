@@ -802,20 +802,11 @@ const TrustFooter: WidgetComponent = ({ str, bool, section, locale, editing }) =
         } else if (deliveryPolicy) {
           items.push({
             icon: item.icon || "delivery",
-            title: item.title || (locale === "bn" ? "সারাদেশে ডেলিভারি" : "NATIONWIDE DELIVERY"),
+            title: item.title || (locale === "bn" ? "ডেলিভারি সুবিধা" : "DELIVERY SERVICE"),
             body: deliveryPolicy,
           });
-        } else if (codEnabled) {
-          items.push({
-            icon: item.icon || "delivery",
-            title: item.title || (locale === "bn" ? "ক্যাশ অন ডেলিভারি" : "CASH ON DELIVERY"),
-            body:
-              locale === "bn"
-                ? "সারা দেশে ক্যাশ অন ডেলিভারি সুবিধা উপলব্ধ"
-                : "Cash on delivery available nationwide",
-          });
         }
-        // If unverified: OMIT badge. Do not replace with generic promise.
+        // If unverified: OMIT badge. Do not infer nationwide COD merely from codEnabled: true.
       } else if (isReturnOrExchange) {
         if (exchangePolicy) {
           items.push({
@@ -868,19 +859,8 @@ const TrustFooter: WidgetComponent = ({ str, bool, section, locale, editing }) =
             title: item.title || (locale === "bn" ? "নিরাপদ পেমেন্ট" : "SECURE PAYMENT"),
             body: paymentPolicy,
           });
-        } else {
-          items.push({
-            icon: item.icon || "secure",
-            title: item.title || (locale === "bn" ? "নিরাপদ পেমেন্ট" : "SECURE PAYMENT"),
-            body:
-              item.body ||
-              (locale === "bn"
-                ? "নিরাপদ ও সুরক্ষিত লেনদেন"
-                : "100% secure encrypted checkout"),
-          });
         }
-      } else if (item.body && !/7-day|10:00|cash on delivery/i.test(item.body)) {
-        items.push(item);
+        // If unverified: OMIT badge. Do not synthesize "100% secure encrypted checkout".
       }
     }
   } else {
@@ -891,14 +871,11 @@ const TrustFooter: WidgetComponent = ({ str, bool, section, locale, editing }) =
         title: locale === "bn" ? "সারাদেশে ডেলিভারি" : "NATIONWIDE DELIVERY",
         body: codPolicy,
       });
-    } else if (codEnabled) {
+    } else if (deliveryPolicy) {
       items.push({
         icon: "delivery",
-        title: locale === "bn" ? "ক্যাশ অন ডেলিভারি" : "CASH ON DELIVERY",
-        body:
-          locale === "bn"
-            ? "সারা দেশে ক্যাশ অন ডেলিভারি সুবিধা উপলব্ধ"
-            : "Cash on delivery available nationwide",
+        title: locale === "bn" ? "ডেলিভারি সুবিধা" : "DELIVERY SERVICE",
+        body: deliveryPolicy,
       });
     }
 

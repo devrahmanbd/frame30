@@ -379,7 +379,7 @@ export function resolveProductPricingAndStock(
     return {
       price,
       stock,
-      inStock: stock != null ? stock > 0 : true,
+      inStock: stock != null ? stock > 0 : false,
     };
   });
 
@@ -406,7 +406,7 @@ export function resolveProductPricingAndStock(
   const priceMinMinor = prices.length > 0 ? Math.min(...prices) : 0;
   const priceMaxMinor = prices.length > 0 ? Math.max(...prices) : 0;
 
-  let inStock = true;
+  let inStock = false;
   let hasInventoryInfo = false;
   let stockQuantity: number | null = null;
 
@@ -420,17 +420,32 @@ export function resolveProductPricingAndStock(
       );
       inStock = trackedVariants.some((v) => (v.stock ?? 0) > 0);
     } else {
-      const pAny = p as unknown as { status?: string; stock_status?: string };
+      const pAny = p as unknown as {
+        status?: string;
+        stock_status?: string;
+        available?: boolean;
+        is_in_stock?: boolean;
+      };
       if (
         pAny.stock_status === "out_of_stock" ||
         pAny.status === "inactive" ||
-        pAny.status === "draft"
+        pAny.status === "draft" ||
+        pAny.status === "archived" ||
+        pAny.available === false ||
+        pAny.is_in_stock === false
       ) {
         hasInventoryInfo = true;
         inStock = false;
+      } else if (
+        pAny.stock_status === "in_stock" ||
+        pAny.available === true ||
+        pAny.is_in_stock === true
+      ) {
+        hasInventoryInfo = true;
+        inStock = true;
       } else {
         hasInventoryInfo = false;
-        inStock = true;
+        inStock = false;
       }
     }
   } else {
@@ -475,7 +490,7 @@ export function resolveProductPricingAndStock(
     } else {
       hasInventoryInfo = false;
       stockQuantity = null;
-      inStock = true;
+      inStock = false;
     }
   }
 

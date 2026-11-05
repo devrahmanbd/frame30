@@ -14,6 +14,7 @@ import {
 import { fmtMinor } from "@/lib/money";
 import { useLang } from "@/lib/i18n";
 import { flattenAst } from "@/lib/builder-ast";
+import { resolveProductPricingAndStock } from "@/components/store/CollectionView";
 import type { getStorefront } from "@/lib/storefront.functions";
 
 /** Resolved non-null payload of `getStorefront` — the single shape every
@@ -158,13 +159,9 @@ export function StorefrontPage({ data }: { data: StorefrontPayload }) {
       ) : (
         <ul className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {visible.map((p) => {
-            const variants = p.product_variants ?? [];
-            const min = variants.length
-              ? Math.min(
-                  ...variants.map((v) => Number(v.price_amount_minor_int)),
-                )
-              : 0;
-            const inStock = variants.some((v) => v.stock_quantity > 0);
+            const pricing = resolveProductPricingAndStock(p as never);
+            const min = pricing.priceMinMinor;
+            const inStock = pricing.inStock;
             const cardBody = (
               <>
                 <div className="aspect-square bg-muted">

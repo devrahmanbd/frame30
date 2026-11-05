@@ -566,16 +566,43 @@ describe("Simple products and collection navigation integrity", () => {
     expect(resOut3.inStock).toBe(false);
     expect(resOut3.isOutOfStock).toBe(true);
 
-    // 5. Simple product active with no inventory metadata defaults to in-stock
-    const pDefaultActive = {
-      id: "sp-active",
+    // 5. Simple product with missing inventory metadata must NOT be assumed in-stock
+    const pMissingInventory = {
+      id: "sp-missing",
       title: "Silver Anklet",
       price_amount_minor_int: 300000,
       product_variants: [],
     } as unknown as CollectionProduct;
-    const resDefault = resolveProductPricingAndStock(pDefaultActive);
-    expect(resDefault.inStock).toBe(true);
-    expect(resDefault.isOutOfStock).toBe(false);
+    const resMissing = resolveProductPricingAndStock(pMissingInventory);
+    expect(resMissing.inStock).toBe(false);
+    expect(resMissing.hasInventoryInfo).toBe(false);
+    expect(resMissing.isOutOfStock).toBe(true);
+
+    // 6. Simple product with explicit in_stock status
+    const pExplicitInStock = {
+      id: "sp-explicit-in",
+      title: "Gold Anklet",
+      price_amount_minor_int: 500000,
+      stock_status: "in_stock",
+      product_variants: [],
+    } as unknown as CollectionProduct;
+    const resExplicit = resolveProductPricingAndStock(pExplicitInStock);
+    expect(resExplicit.inStock).toBe(true);
+    expect(resExplicit.isOutOfStock).toBe(false);
+
+    // 7. Multi-variant product with missing inventory data across all variants
+    const pMvMissing = {
+      id: "mv-missing",
+      title: "Katan Saree",
+      product_variants: [
+        { price_amount_minor_int: 1200000 },
+        { price_amount_minor_int: 1400000 },
+      ],
+    } as unknown as CollectionProduct;
+    const resMvMissing = resolveProductPricingAndStock(pMvMissing);
+    expect(resMvMissing.inStock).toBe(false);
+    expect(resMvMissing.hasInventoryInfo).toBe(false);
+    expect(resMvMissing.isOutOfStock).toBe(true);
   });
 
   it("sorts mixed collections of simple and multi-variant products reliably without Infinity", () => {

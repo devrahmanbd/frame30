@@ -114,19 +114,19 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
     ].join("\n"),
   },
   {
-    title: "Contact",
-    title_bn: "যোগাযোগ",
+    title: "Help & Inquiries",
+    title_bn: "সহায়তা ও জিজ্ঞাসা",
     links: [
-      "Email: support@flamelancer.com|mailto:support@flamelancer.com",
-      "Support: Saturday – Thursday, 10AM – 8PM|/pages/contact",
+      "Help & Inquiries|/pages/contact",
       "Track Your Order|/pages/track-order",
-      "Nationwide Delivery across Bangladesh|/pages/shipping",
+      "Shipping Information|/pages/shipping",
+      "Customer Care FAQ|/pages/faq",
     ].join("\n"),
     links_bn: [
-      "ইমেইল: support@flamelancer.com|mailto:support@flamelancer.com",
-      "সাপোর্ট: শনিবার – বৃহস্পতিবার, সকাল ১০টা – রাত ৮টা|/pages/contact",
+      "সহায়তা ও অনুসন্ধান|/pages/contact",
       "অর্ডার অনুসন্ধান|/pages/track-order",
-      "সারাদেশে ক্যাশ অন ডেলিভারি|/pages/shipping",
+      "শিপিং তথ্য|/pages/shipping",
+      "গ্রাহক সহায়তা কেন্দ্র|/pages/faq",
     ].join("\n"),
   },
 ];
@@ -137,6 +137,16 @@ export const PAYMENTS_LIST = [
   "Cash on Delivery",
 ];
 
+export type SongoskritiMerchantFooterInfo = {
+  name?: string | null;
+  nameBn?: string | null;
+  supportEmail?: string | null;
+  supportHours?: string | null;
+  supportPhone?: string | null;
+  deliveryInfo?: string | null;
+  deliveryInfoBn?: string | null;
+};
+
 /**
  * Link columns + payments + colophon. Statement, newsletter, story link
  * and brand imagery were removed from the footer by design — the footer
@@ -145,7 +155,43 @@ export const PAYMENTS_LIST = [
  * Brand zones live here as authored props (with `_bn` twins): the shared
  * `footer_sitemap` renderer is prop-driven and hardcodes no brand content.
  */
-export function buildSongoskritiFooter(s: FooterSectionBuilder): Section[] {
+export function buildSongoskritiFooter(
+  s: FooterSectionBuilder,
+  merchant?: SongoskritiMerchantFooterInfo,
+): Section[] {
+  const brandName = merchant?.name || "";
+  const brandNameBn = merchant?.nameBn || brandName;
+
+  let c4Title = FALLBACK_COLUMNS[3]!.title;
+  let c4TitleBn = FALLBACK_COLUMNS[3]!.title_bn;
+  let c4Links = FALLBACK_COLUMNS[3]!.links;
+  let c4LinksBn = FALLBACK_COLUMNS[3]!.links_bn;
+
+  if (merchant?.supportEmail || merchant?.supportHours || merchant?.deliveryInfo) {
+    c4Title = "Contact";
+    c4TitleBn = "যোগাযোগ";
+    const lines: string[] = [];
+    const linesBn: string[] = [];
+
+    if (merchant.supportEmail) {
+      lines.push(`Email: ${merchant.supportEmail}|mailto:${merchant.supportEmail}`);
+      linesBn.push(`ইমেইল: ${merchant.supportEmail}|mailto:${merchant.supportEmail}`);
+    }
+    if (merchant.supportHours) {
+      lines.push(`Support: ${merchant.supportHours}|/pages/contact`);
+      linesBn.push(`সাপোর্ট: ${merchant.supportHours}|/pages/contact`);
+    }
+    lines.push("Track Your Order|/pages/track-order");
+    linesBn.push("অর্ডার অনুসন্ধান|/pages/track-order");
+    if (merchant.deliveryInfo) {
+      lines.push(`${merchant.deliveryInfo}|/pages/shipping`);
+      linesBn.push(`${merchant.deliveryInfoBn || merchant.deliveryInfo}|/pages/shipping`);
+    }
+
+    c4Links = lines.join("\n");
+    c4LinksBn = linesBn.join("\n");
+  }
+
   return [
     s("footer_sitemap", {
       newsletterHeading: NEWSLETTER.heading,
@@ -154,8 +200,8 @@ export function buildSongoskritiFooter(s: FooterSectionBuilder): Section[] {
       newsletterButton_bn: NEWSLETTER.buttonLabel_bn,
       newsletterConsent: NEWSLETTER.consentText,
       newsletterConsent_bn: NEWSLETTER.consentText_bn,
-      brandName: BRAND_NAME,
-      brandName_bn: BRAND_NAME_BN,
+      brandName,
+      brandName_bn: brandNameBn,
       paymentsHeading: PAYMENTS_HEADING,
       paymentsHeading_bn: PAYMENTS_HEADING_BN,
       paymentsMarks: PAYMENT_MARKS,
@@ -172,15 +218,19 @@ export function buildSongoskritiFooter(s: FooterSectionBuilder): Section[] {
       c3Title_bn: FALLBACK_COLUMNS[2]!.title_bn,
       c3Links: FALLBACK_COLUMNS[2]!.links,
       c3Links_bn: FALLBACK_COLUMNS[2]!.links_bn,
-      c4Title: FALLBACK_COLUMNS[3]!.title,
-      c4Title_bn: FALLBACK_COLUMNS[3]!.title_bn,
-      c4Links: FALLBACK_COLUMNS[3]!.links,
-      c4Links_bn: FALLBACK_COLUMNS[3]!.links_bn,
+      c4Title,
+      c4Title_bn: c4TitleBn,
+      c4Links,
+      c4Links_bn: c4LinksBn,
     }),
     s("rich_text", {
       heading: "",
-      body: COLOPHON.body,
-      body_bn: COLOPHON.body_bn,
+      body: merchant?.supportHours
+        ? `Support & customer care — ${merchant.supportHours}.`
+        : (merchant ? "" : COLOPHON.body),
+      body_bn: merchant?.supportHours
+        ? `সহায়তা ও গ্রাহক সেবা — ${merchant.supportHours}।`
+        : (merchant ? "" : COLOPHON.body_bn),
     }),
   ];
 }
@@ -192,8 +242,11 @@ export function buildSongoskritiFooter(s: FooterSectionBuilder): Section[] {
  * always passes props and never uses extras — so this passes `s` through
  * directly with no adapter closure.
  */
-export function buildFooterMain(s: SectionBuilder): Section[] {
+export function buildFooterMain(
+  s: SectionBuilder,
+  merchant?: SongoskritiMerchantFooterInfo,
+): Section[] {
   // SectionBuilder drops the unused extras channel (see blueprint note
   // above), so the skin-default wrapper feeds straight into the blueprint.
-  return buildSongoskritiFooter(withSongoskritiDefaults(s));
+  return buildSongoskritiFooter(withSongoskritiDefaults(s), merchant);
 }

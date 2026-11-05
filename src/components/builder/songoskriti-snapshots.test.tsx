@@ -84,8 +84,8 @@ const FIXED_FOOTER_PROPS: Record<string, PropValue> = {
   newsletterConsent: "We email only for festive drops. Unsubscribe anytime.",
   newsletterConsent_bn:
     "শুধু উৎসবের ড্রপের জন্য ইমেইল পাঠাই। যেকোনো সময় আনসাবস্ক্রাইব করুন।",
-  brandName: "Songoskriti",
-  brandName_bn: "সংস্কৃতি",
+  brandName: "",
+  brandName_bn: "",
   paymentsHeading: "Payment methods",
   paymentsHeading_bn: "পেমেন্ট মাধ্যম",
   paymentsMarks: "Cash on Delivery",
@@ -152,19 +152,19 @@ const FIXED_FOOTER_PROPS: Record<string, PropValue> = {
     "জার্নাল|/blog",
     "স্টোরসমূহ|/pages/stores",
   ].join("\n"),
-  c4Title: "Contact",
-  c4Title_bn: "যোগাযোগ",
+  c4Title: "Help & Inquiries",
+  c4Title_bn: "সহায়তা ও জিজ্ঞাসা",
   c4Links: [
-    "Email: support@flamelancer.com|mailto:support@flamelancer.com",
-    "Support: Saturday – Thursday, 10AM – 8PM|/pages/contact",
+    "Help & Inquiries|/pages/contact",
     "Track Your Order|/pages/track-order",
-    "Nationwide Delivery across Bangladesh|/pages/shipping",
+    "Shipping Information|/pages/shipping",
+    "Customer Care FAQ|/pages/faq",
   ].join("\n"),
   c4Links_bn: [
-    "ইমেইল: support@flamelancer.com|mailto:support@flamelancer.com",
-    "সাপোর্ট: শনিবার – বৃহস্পতিবার, সকাল ১০টা – রাত ৮টা|/pages/contact",
+    "সহায়তা ও অনুসন্ধান|/pages/contact",
     "অর্ডার অনুসন্ধান|/pages/track-order",
-    "সারাদেশে ক্যাশ অন ডেলিভারি|/pages/shipping",
+    "শিপিং তথ্য|/pages/shipping",
+    "গ্রাহক সহায়তা কেন্দ্র|/pages/faq",
   ].join("\n"),
 };
 
@@ -254,7 +254,7 @@ describe("Task 2 fix — full static-markup snapshots from fixed fixtures", () =
       fixedSection("footer_sitemap", FIXED_FOOTER_PROPS),
       "en",
     );
-    expect(html).toContain("© 2026 Songoskriti");
+    expect(html).toContain("© 2026");
     expect(html).toMatchSnapshot();
   });
 

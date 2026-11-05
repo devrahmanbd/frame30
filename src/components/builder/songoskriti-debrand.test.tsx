@@ -77,9 +77,20 @@ function stubBuilder<T>(): T {
 }
 
 /** The footer_sitemap section the songoskriti blueprint authors. */
-function songoskritiFooterSection(): Section {
+function songoskritiFooterSection(
+  merchant: {
+    name?: string | null;
+    nameBn?: string | null;
+    supportEmail?: string | null;
+  } = {
+    name: "Songoskriti",
+    nameBn: "সংস্কৃতি",
+    supportEmail: "support@flamelancer.com",
+  },
+): Section {
   const section = buildSongoskritiFooter(
     stubBuilder<FooterSectionBuilder>(),
+    merchant,
   ).find((n) => n.type === "footer_sitemap")!;
   if (!section) throw new Error("blueprint must author a footer_sitemap");
   return section;
@@ -217,6 +228,20 @@ describe("Task 2 no-brand renderers — props/tokens/demo-data only", () => {
     expect(html).toContain("Terms");
     expect(html).toContain("Privacy");
     expect(html).toContain("© 2026");
+  });
+
+  it("new merchant installing Songoskriti inherits zero Flame Fashion BD details, hours, delivery promises, or brand name", () => {
+    // Bare default theme blueprint without merchant overrides
+    const rawSections = buildSongoskritiFooter(stubBuilder<FooterSectionBuilder>());
+    const sitemap = rawSections.find((n) => n.type === "footer_sitemap")!;
+    const html = render(FooterSitemap, sitemap, "en");
+
+    expect(html).not.toContain("support@flamelancer.com");
+    expect(html).not.toContain("10AM – 8PM");
+    expect(html).not.toContain("Saturday – Thursday");
+    expect(html).not.toContain("Nationwide Delivery across Bangladesh");
+    expect(html).not.toContain("Songoskriti");
+    expect(html).not.toContain("Flame Fashion BD");
   });
 
   it("footer_sitemap skips brand zones without brand props", () => {

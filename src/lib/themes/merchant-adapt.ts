@@ -5,6 +5,8 @@ export interface MerchantAdaptData {
   nameBn?: string | null;
   supportEmail?: string | null;
   supportPhone?: string | null;
+  supportHours?: string | null;
+  deliveryPolicy?: string | null;
   locations?: Array<{ name: string; slug?: string }> | null;
 }
 
@@ -18,11 +20,17 @@ function adaptText(
     s = s.replaceAll("সংস্কৃতি", merchant.nameBn || merchant.name);
   }
   s = s.replaceAll("Songoskriti", merchant.name);
+  s = s.replaceAll("Flame Fashion BD", merchant.name);
 
   // If text contains newline or contact/location strings, process line-by-line
   if (
     s.includes("\n") ||
+    s.includes("support@flamelancer.com") ||
     s.includes("care@songoskriti.com") ||
+    s.includes("Saturday – Thursday, 10AM – 8PM") ||
+    s.includes("Saturday to Thursday, 10am to 8pm") ||
+    s.includes("Nationwide Delivery across Bangladesh") ||
+    s.includes("সারাদেশে ক্যাশ অন ডেলিভারি") ||
     s.includes("+880 96 1234 5678") ||
     s.includes("Flagship") ||
     s.includes("ফ্ল্যাগশিপ") ||
@@ -40,12 +48,47 @@ function adaptText(
 
     for (const line of lines) {
       // Email
-      if (line.includes("care@songoskriti.com")) {
+      if (
+        line.includes("support@flamelancer.com") ||
+        line.includes("care@songoskriti.com")
+      ) {
         if (merchant.supportEmail) {
           filteredLines.push(
             isBn
               ? `ইমেইল: ${merchant.supportEmail}|mailto:${merchant.supportEmail}`
               : `Email: ${merchant.supportEmail}|mailto:${merchant.supportEmail}`,
+          );
+        }
+        continue;
+      }
+
+      // Support hours
+      if (
+        line.includes("Saturday – Thursday, 10AM – 8PM") ||
+        line.includes("Saturday to Thursday, 10am to 8pm") ||
+        line.includes("Support: Saturday – Thursday, 10AM – 8PM") ||
+        line.includes("সাপোর্ট: শনিবার – বৃহস্পতিবার")
+      ) {
+        if (merchant.supportHours) {
+          filteredLines.push(
+            isBn
+              ? `সাপোর্ট: ${merchant.supportHours}|/pages/contact`
+              : `Support: ${merchant.supportHours}|/pages/contact`,
+          );
+        }
+        continue;
+      }
+
+      // Delivery policy
+      if (
+        line.includes("Nationwide Delivery across Bangladesh") ||
+        line.includes("সারাদেশে ক্যাশ অন ডেলিভারি")
+      ) {
+        if (merchant.deliveryPolicy) {
+          filteredLines.push(
+            isBn
+              ? `${merchant.deliveryPolicy}|/pages/shipping`
+              : `${merchant.deliveryPolicy}|/pages/shipping`,
           );
         }
         continue;

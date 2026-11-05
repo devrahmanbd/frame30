@@ -314,6 +314,7 @@ describe("trust_footer", () => {
       ...newSection("trust_footer"),
       props: {
         codEnabled: true,
+        codPolicy: "Fast delivery across Dhaka",
         items: [{ icon: "delivery", title: "Fast delivery", body: "" }],
         i1Title: "Ignored fallback",
       },
@@ -329,9 +330,10 @@ describe("trust_footer", () => {
       props: {
         ...newSection("trust_footer").props,
         items: [],
-        codEnabled: true,
+        codPolicy: "Delivery across Dhaka and Chattogram",
         exchangePolicy: "7-day exchange with receipt",
         supportEmail: "support@example.com",
+        paymentPolicy: "Secured by SSLCommerz",
       },
     };
     const html = render(Cmp(), section);
@@ -396,6 +398,7 @@ describe("trust_footer", () => {
           },
         ],
         codEnabled: true,
+        codPolicy: "Cash on delivery available nationwide",
         supportEmail: "support@flamelancer.com",
       },
     };
@@ -403,6 +406,46 @@ describe("trust_footer", () => {
     const html = render(Cmp(), verifiedSection, "en");
     expect(html).toContain("Cash on delivery available nationwide");
     expect(html).toContain("Email support: support@flamelancer.com");
+  });
+
+  it("does not infer nationwide COD merely from codEnabled: true without codPolicy", () => {
+    const section = {
+      ...newSection("trust_footer"),
+      props: {
+        items: [
+          {
+            icon: "delivery",
+            title: "Cash on Delivery",
+            body: "Cash on delivery",
+            policyKey: "cod",
+          },
+        ],
+        codEnabled: true,
+      },
+    };
+    const html = render(Cmp(), section);
+    expect(html).not.toContain("nationwide");
+    expect(html).not.toContain("Cash on delivery available nationwide");
+    expect(html).toBe("");
+  });
+
+  it("does not synthesize 100% secure encrypted checkout when paymentPolicy is missing", () => {
+    const section = {
+      ...newSection("trust_footer"),
+      props: {
+        items: [
+          {
+            icon: "secure",
+            title: "Secure Payment",
+            body: "100% secure encrypted checkout",
+            policyKey: "payment",
+          },
+        ],
+      },
+    };
+    const html = render(Cmp(), section);
+    expect(html).not.toContain("100% secure encrypted checkout");
+    expect(html).toBe("");
   });
 });
 
