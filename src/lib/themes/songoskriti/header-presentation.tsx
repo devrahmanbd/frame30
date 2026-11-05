@@ -367,9 +367,15 @@ export function SongoskritiMobileDrawer({
   label,
   defaultExpandedId = null,
   onNavigate,
+  supportEmail,
+  supportHours,
+  policyDelivery,
 }: SongoskritiNavProps & {
   defaultExpandedId?: string | null;
   onNavigate?: () => void;
+  supportEmail?: string | null;
+  supportHours?: string | null;
+  policyDelivery?: string | null;
 }) {
   let currentPath = "";
   try {
@@ -456,32 +462,37 @@ export function SongoskritiMobileDrawer({
       </ul>
 
       {/* Drawer Footer */}
-      <div className="mt-8 pt-6 border-t border-[var(--theme-border)] space-y-4 text-[12px] text-[var(--theme-ink)]/70">
-        <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50 mb-1">
-            {locale === "bn" ? "কাস্টমার কনসিয়ার্জ" : "Customer Concierge"}
-          </p>
-          <p className="font-serif text-[13px] text-[var(--theme-ink)]">
-            {locale === "bn"
-              ? "সারাদেশে ডোরস্টেপ ডেলিভারি ও ৭ দিনের এক্সচেঞ্জ"
-              : "Nationwide Doorstep Delivery & 7-Day Exchange"}
-          </p>
+      {(policyDelivery || supportEmail) && (
+        <div className="mt-8 pt-6 border-t border-[var(--theme-border)] space-y-4 text-[12px] text-[var(--theme-ink)]/70">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50 mb-1">
+              {locale === "bn" ? "কাস্টমার কনসিয়ার্জ" : "Customer Concierge"}
+            </p>
+            <p className="font-serif text-[13px] text-[var(--theme-ink)]">
+              {policyDelivery ||
+                (locale === "bn"
+                  ? "সারাদেশে ডোরস্টেপ ডেলিভারি ও ৭ দিনের এক্সচেঞ্জ"
+                  : "Nationwide Doorstep Delivery & 7-Day Exchange")}
+            </p>
+          </div>
+          {supportEmail && (
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50 mb-1">
+                {locale === "bn" ? "কাস্টমার সার্ভিস" : "Customer Support"}
+              </p>
+              <a
+                href={`mailto:${supportEmail}`}
+                className="inline-flex items-center gap-1.5 text-[var(--theme-accent,#C05A3E)] font-medium"
+              >
+                <span>{supportEmail}</span>
+                <span className="text-[10px] text-[var(--theme-ink)]/50">
+                  ({supportHours ?? "10am–8pm"})
+                </span>
+              </a>
+            </div>
+          )}
         </div>
-        <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50 mb-1">
-            {locale === "bn" ? "কাস্টমার সার্ভিস" : "Customer Support"}
-          </p>
-          <a
-            href="mailto:support@flamelancer.com"
-            className="inline-flex items-center gap-1.5 text-[var(--theme-accent,#C05A3E)] font-medium"
-          >
-            <span>support@flamelancer.com</span>
-            <span className="text-[10px] text-[var(--theme-ink)]/50">
-              (10am–8pm)
-            </span>
-          </a>
-        </div>
-      </div>
+      )}
     </nav>
   );
 }
@@ -619,6 +630,9 @@ export function SongoskritiHeaderShell({
   locale,
   t,
   showAnnouncement = true,
+  supportEmail,
+  supportHours,
+  policyDelivery,
 }: HeaderShellProps) {
   const { base, headerMenu, mobileMenu, headerChrome } = data;
   const { mobileOpen, setMobileOpen, scrolled, expandedMobileMenu } = behavior;
@@ -664,12 +678,15 @@ export function SongoskritiHeaderShell({
       label={navLabel}
       defaultExpandedId={expandedMobileMenu}
       onNavigate={() => setMobileOpen(false)}
+      supportEmail={supportEmail ?? (slug === "flame-fashion-bd" ? "support@flamelancer.com" : null)}
+      supportHours={supportHours}
+      policyDelivery={policyDelivery}
     />
   );
   const brandMark = headerChrome ? (
     <img
       src={headerChrome.logo.src}
-      alt={headerChrome.logo.alt}
+      alt={name || headerChrome.logo.alt}
       className="h-[34px] w-auto object-contain transition-all duration-300"
     />
   ) : (

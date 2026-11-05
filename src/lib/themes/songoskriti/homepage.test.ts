@@ -27,10 +27,10 @@ describe("Songoskriti homepage seed configuration", () => {
     );
     expect(jamdaniSlide).toBeDefined();
     expect(jamdaniSlide?.subhead).toContain(
-      "Traditional geometric motifs hand-loomed by master weavers in Narayanganj.",
+      "Traditional geometric motifs and heritage weaves crafted on authentic wooden pit looms.",
     );
     expect(jamdaniSlide?.subhead_bn).toContain(
-      "নারায়ণগঞ্জের দক্ষ তাঁতিদের হাতে বোনা ঐতিহ্যবাহী জামদানি ও সিল্ক।",
+      "ঐতিহ্যবাহী কাঠের তাঁতে বোনা ক্লাসিক জ্যামিতিক নকশার জামদানি ও সিল্ক।",
     );
   });
 

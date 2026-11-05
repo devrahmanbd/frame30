@@ -1278,6 +1278,8 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
   const paymentHeading =
     str("paymentsHeading") || t(locale, "Payment methods", "পেমেন্ট মাধ্যম");
 
+  const supportEmail = str("supportEmail") || "support@flamelancer.com";
+
   return (
     <section className="w-full flex flex-col pt-10 sm:pt-20">
       {/* ZONE 1: Brand closing statement (theme-authored, skipped when empty) */}
@@ -1403,10 +1405,10 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
                             : "Nationwide Doorstep Delivery & 7-Day Exchange"}
                         </p>
                         <a
-                          href="mailto:support@flamelancer.com"
+                          href={`mailto:${supportEmail}`}
                           className="inline-flex items-center gap-1.5 text-[var(--theme-accent)] font-medium text-[12px] min-h-[44px]"
                         >
-                          <span>support@flamelancer.com</span>
+                          <span>{supportEmail}</span>
                           <span className="text-[10px] text-[var(--theme-ink)]/50">
                             (10am–8pm)
                           </span>

@@ -675,4 +675,48 @@ describe("Simple products and collection navigation integrity", () => {
       expect.arrayContaining(["/pages/contact", "/blog/jamdani"]),
     );
   });
+
+  it("deriveCollectionHierarchy rejects unpublished or stale collection URLs against publishedCollectionSlugs", () => {
+    const menuWithStaleLinks = [
+      {
+        id: "m-parent",
+        label: "Women",
+        url: "/c/women",
+        children: [
+          { id: "m-c1", label: "Signature Sarees", url: "/c/sarees" },
+          { id: "m-c2", label: "Old Stale Collection", url: "/c/stale-collection" },
+          { id: "m-c3", label: "Dhakai Jamdani", url: "/c/jamdani" },
+          { id: "m-c4", label: "Deleted Draft", url: "/c/draft-collection" },
+        ],
+      },
+    ];
+
+    // Only sarees, jamdani and women are published
+    const publishedSlugs = ["women", "sarees", "jamdani"];
+
+    const hierarchy = deriveCollectionHierarchy({
+      collectionSlug: "women",
+      menuTree: menuWithStaleLinks as any,
+      publishedCollectionSlugs: publishedSlugs,
+    });
+
+    const pillSlugs = hierarchy.pills.map((p) => p.slug);
+    // Should include "women" (All Women), "sarees", "jamdani"
+    expect(pillSlugs).toContain("women");
+    expect(pillSlugs).toContain("sarees");
+    expect(pillSlugs).toContain("jamdani");
+
+    // Stale/unpublished collections MUST be excluded
+    expect(pillSlugs).not.toContain("stale-collection");
+    expect(pillSlugs).not.toContain("draft-collection");
+
+    // Diagnostics should record the unpublished collections
+    const staleDiags = (hierarchy.diagnostics ?? []).filter(
+      (d) => d.code === "unpublished_or_stale_collection",
+    );
+    expect(staleDiags).toHaveLength(2);
+    expect(staleDiags.map((d) => d.url)).toEqual(
+      expect.arrayContaining(["/c/stale-collection", "/c/draft-collection"]),
+    );
+  });
 });

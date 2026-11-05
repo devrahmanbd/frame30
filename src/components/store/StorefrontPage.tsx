@@ -316,6 +316,7 @@ export function StorefrontPage({ data }: { data: StorefrontPayload }) {
               menus={menus}
               themeKey={themeKey ?? null}
               showAnnouncement={hasAnnouncement}
+              supportEmail={settings?.support_email}
             />
             {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
             {/* <SupportWidget slug={slug} /> */}

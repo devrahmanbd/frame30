@@ -150,12 +150,8 @@ export const HEADER_FALLBACK_MENU = [
     children: [
       {
         id: "k-festive",
-        label: "Festive Clothing",
+        label: "Children's Wear",
         url: "/c/kids",
-        children: [
-          { id: "kf-ghagra", label: "Festive Ghagra Choli", url: "/c/kids" },
-          { id: "kf-all", label: "All Children's Wear", url: "/c/kids" },
-        ],
       },
     ],
   },

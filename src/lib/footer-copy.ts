@@ -16,17 +16,17 @@
 export const STATEMENT = {
   heading: "Woven in Bangladesh, worn everywhere",
   heading_bn: "বাংলাদেশে বোনা, পরা হয় সর্বত্র",
-  body: "Keeping traditional handloom and artisanal craft alive through fair artisan partnerships.",
+  body: "Keeping traditional handloom and artisanal craft alive through authentic heritage textiles.",
   body_bn:
-    "ন্যায্য কারিগর অংশীদারিত্বে ঐতিহ্যবাহী বুনন ও কারুশিল্প বাঁচিয়ে রাখা।",
+    "ঐতিহ্যবাহী তাঁত ও টেক্সটাইল কারুশিল্পের সংরক্ষণ।",
 } as const;
 
 export const NEWSLETTER = {
   heading: "First to the festive drops",
   heading_bn: "উৎসবের ড্রপ সবার আগে",
-  body: "One letter per drop. Weaves, restocks and artisan stories — never spam.",
+  body: "Seasonal collections, authentic weaves, and festive arrivals.",
   body_bn:
-    "প্রতি ড্রপে একটি চিঠি। বুনন, রিস্টক ও তাঁতিদের গল্প — কোনো স্প্যাম নয়।",
+    "মৌসুমি কালেকশন, আসল বুনন ও উৎসবের নতুন পোশাক।",
   buttonLabel: "Join the list",
   buttonLabel_bn: "তালিকায় যোগ দিন",
   consentText: "We email only for festive drops. Unsubscribe anytime.",

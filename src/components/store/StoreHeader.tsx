@@ -305,6 +305,9 @@ export type HeaderShellProps = {
   t: (en: string, bn?: string) => string;
   /** Suppress announcement bar (e.g. on collection landing pages). Defaults to true. */
   showAnnouncement?: boolean;
+  supportEmail?: string | null;
+  supportHours?: string | null;
+  policyDelivery?: string | null;
 };
 
 export type HeaderShellComponent = (props: HeaderShellProps) => React.ReactNode;
@@ -743,6 +746,9 @@ export function HeaderMobileDrawer({
   setExpandedMobileMenu,
   setMobileOpen,
   t,
+  supportEmail,
+  supportHours,
+  policyDelivery,
 }: {
   mobileMenu: readonly MenuNode[];
   base: string;
@@ -754,6 +760,9 @@ export function HeaderMobileDrawer({
   setExpandedMobileMenu: React.Dispatch<React.SetStateAction<string | null>>;
   setMobileOpen: React.Dispatch<React.SetStateAction<boolean>>;
   t: (en: string, bn?: string) => string;
+  supportEmail?: string | null;
+  supportHours?: string | null;
+  policyDelivery?: string | null;
 }) {
   return (
     <nav
@@ -836,26 +845,29 @@ export function HeaderMobileDrawer({
               {t("Customer Concierge", "কাস্টমার কনসিয়ার্জ")}
             </p>
             <p className="font-serif text-[13px] text-[var(--theme-ink)]">
-              {t(
-                "Nationwide Doorstep Delivery & 7-Day Exchange",
-                "সারাদেশে ডোরস্টেপ ডেলিভারি ও ৭ দিনের এক্সচেঞ্জ",
-              )}
+              {policyDelivery ||
+                t(
+                  "Nationwide Doorstep Delivery & 7-Day Exchange",
+                  "সারাদেশে ডোরস্টেপ ডেলিভারি ও ৭ দিনের এক্সচেঞ্জ",
+                )}
             </p>
           </div>
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50 mb-1">
-              {t("Customer Support", "কাস্টমার সাপোর্ট")}
-            </p>
-            <a
-              href="mailto:support@flamelancer.com"
-              className="inline-flex items-center gap-1.5 text-[var(--theme-accent)] font-medium"
-            >
-              <span>support@flamelancer.com</span>
-              <span className="text-[10px] text-[var(--theme-ink)]/50">
-                (10am–8pm)
-              </span>
-            </a>
-          </div>
+          {supportEmail && (
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50 mb-1">
+                {t("Customer Support", "কাস্টমার সাপোর্ট")}
+              </p>
+              <a
+                href={`mailto:${supportEmail}`}
+                className="inline-flex items-center gap-1.5 text-[var(--theme-accent)] font-medium"
+              >
+                <span>{supportEmail}</span>
+                <span className="text-[10px] text-[var(--theme-ink)]/50">
+                  ({supportHours ?? "10am–8pm"})
+                </span>
+              </a>
+            </div>
+          )}
         </div>
       )}
     </nav>
@@ -879,6 +891,9 @@ export function GenericHeaderShell({
   locale,
   t,
   showAnnouncement = true,
+  supportEmail,
+  supportHours,
+  policyDelivery,
 }: HeaderShellProps) {
   const { headerChrome, isLuxury, base, headerMenu, mobileMenu } = data;
   const {
@@ -933,6 +948,9 @@ export function GenericHeaderShell({
       setExpandedMobileMenu={setExpandedMobileMenu}
       setMobileOpen={setMobileOpen}
       t={t}
+      supportEmail={supportEmail}
+      supportHours={supportHours}
+      policyDelivery={policyDelivery}
     />
   );
   return (
@@ -1081,6 +1099,9 @@ export function ThemeHeaderRenderer({
   t,
   themeKey,
   showAnnouncement,
+  supportEmail,
+  supportHours,
+  policyDelivery,
 }: {
   slug: string;
   name: string;
@@ -1094,6 +1115,9 @@ export function ThemeHeaderRenderer({
   t: (en: string, bn?: string) => string;
   themeKey?: string | null;
   showAnnouncement?: boolean;
+  supportEmail?: string | null;
+  supportHours?: string | null;
+  policyDelivery?: string | null;
 }) {
   const Shell = resolveHeaderShell(themeKey);
   return (
@@ -1109,6 +1133,9 @@ export function ThemeHeaderRenderer({
       locale={locale}
       t={t}
       showAnnouncement={showAnnouncement}
+      supportEmail={supportEmail}
+      supportHours={supportHours}
+      policyDelivery={policyDelivery}
     />
   );
 }
@@ -1123,6 +1150,9 @@ export function StoreHeader({
   themeKey,
   menuSwap,
   showAnnouncement = true,
+  supportEmail,
+  supportHours,
+  policyDelivery,
 }: {
   slug: string;
   name: string;
@@ -1130,23 +1160,12 @@ export function StoreHeader({
   storeTimezone?: string;
   allowCustomerTimezone?: boolean;
   menus?: Pick<StoreMenus, "header" | "mobile"> | null;
-  /**
-   * Theme-remediation Task 3: explicit merchant theme key driving header
-   * chrome. Null/undefined renders the generic header — chrome never
-   * sniffs the slug or display name.
-   */
   themeKey?: string | null;
-  /**
-   * TRACK M — optional nav renderer swap (review-gated). Absent keeps
-   * today's precedence exactly (dashboard rows, else theme fallback). An
-   * approved swap substitutes engine-rendered rows fail-open, and — when the
-   * plugin registered a renderer for the slot — replaces the nav
-   * presentation too: unapproved, scope-denied, unregistered or throwing
-   * renderers keep the theme markup and log through the shared
-   * resolver/boundary — shoppers never lose navigation.
-   */
   menuSwap?: StoreMenuSwap;
   showAnnouncement?: boolean;
+  supportEmail?: string | null;
+  supportHours?: string | null;
+  policyDelivery?: string | null;
 }) {
   void tagline;
   void storeTimezone;
@@ -1181,6 +1200,9 @@ export function StoreHeader({
       t={t}
       themeKey={themeKey}
       showAnnouncement={showAnnouncement}
+      supportEmail={supportEmail}
+      supportHours={supportHours}
+      policyDelivery={policyDelivery}
     />
   );
 }

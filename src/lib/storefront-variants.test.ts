@@ -40,4 +40,52 @@ describe("mergePublicVariants", () => {
     expect(out[0].product_variants).toEqual([]);
     expect(mergePublicVariants([], [row("p1", 100, 1)])).toEqual([]);
   });
+
+  it("resolves pricing and stock for simple products without variants", () => {
+    const out = mergePublicVariants(
+      [
+        {
+          id: "sp-1",
+          price_amount_minor_int: 350000,
+          stock_quantity: 15,
+          status: "active",
+        },
+        {
+          id: "sp-2",
+          price: 25.5,
+          stock_quantity: 0,
+        },
+        {
+          id: "sp-3",
+          price_min_minor_int: 120000,
+        },
+      ],
+      [],
+    );
+
+    expect(out[0].product_variants).toEqual([]);
+    expect(out[0].price_amount_minor_int).toBe(350000);
+    expect(out[0].stock_quantity).toBe(15);
+    expect(out[0].status).toBe("active");
+
+    expect(out[1].product_variants).toEqual([]);
+    expect(out[1].price_amount_minor_int).toBe(2550); // Math.round(25.5 * 100)
+    expect(out[1].stock_quantity).toBe(0);
+    expect(out[1].status).toBe("active");
+
+    expect(out[2].product_variants).toEqual([]);
+    expect(out[2].price_amount_minor_int).toBe(120000);
+    expect(out[2].stock_quantity).toBeNull();
+  });
+
+  it("hoists min variant price and total stock for multi-variant products", () => {
+    const out = mergePublicVariants(
+      [{ id: "mp-1", status: "active" }],
+      [row("mp-1", 500000, 10), row("mp-1", 420000, 5)],
+    );
+
+    expect(out[0].product_variants).toHaveLength(2);
+    expect(out[0].price_amount_minor_int).toBe(420000);
+    expect(out[0].stock_quantity).toBe(15);
+  });
 });

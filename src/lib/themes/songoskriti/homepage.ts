@@ -59,9 +59,9 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
           headline: "Dhakai Jamdani & Silk Weaves",
           headline_bn: "ঢাকাই জামদানি ও সিল্কের বুনন",
           subhead:
-            "Traditional geometric motifs hand-loomed by master weavers in Narayanganj.",
+            "Traditional geometric motifs and heritage weaves crafted on authentic wooden pit looms.",
           subhead_bn:
-            "নারায়ণগঞ্জের দক্ষ তাঁতিদের হাতে বোনা ঐতিহ্যবাহী জামদানি ও সিল্ক।",
+            "ঐতিহ্যবাহী কাঠের তাঁতে বোনা ক্লাসিক জ্যামিতিক নকশার জামদানি ও সিল্ক।",
           ctaLabel: "Explore Heritage Weaves",
           ctaLabel_bn: "ঐতিহ্যবাহী বুনন দেখুন",
           ctaUrl: `${c}/heritage`,
@@ -363,9 +363,9 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       eyebrow_bn: "বুননের পেছনের হাত",
       heading: "Made Slowly.\nWorn for Years.",
       heading_bn: "ধীরে তৈরি।\nবছরের পর বছর পরা।",
-      body: "In Tangail, Sonargaon and across Bangladesh, generations of artisans carry techniques that cannot be mass-produced.",
+      body: "Traditional handloom weaving techniques preserved and crafted with care across Bangladesh.",
       body_bn:
-        "টাঙ্গাইল, সোনারগাঁয়ে প্রজন্মের পর প্রজন্ম তাঁতিরা সংরক্ষণ করছেন যে কৌশল।",
+        "বাংলাদেশে যত্ন ও দক্ষতার সাথে তৈরি ঐতিহ্যবাহী তাঁত পণ্য।",
       ctaLabel: "MEET THE ARTISANS",
       ctaLabel_bn: "কারিগরদের সাথে পরিচিত হোন",
       ctaHref: `${c}/heritage`,

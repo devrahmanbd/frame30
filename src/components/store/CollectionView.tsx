@@ -37,7 +37,10 @@ type DepartmentContext = {
 };
 
 export type MenuDiagnostic = {
-  code: "non_collection_destination" | "invalid_slug";
+  code:
+    | "non_collection_destination"
+    | "invalid_slug"
+    | "unpublished_or_stale_collection";
   url: string;
   label: string;
 };
@@ -53,6 +56,7 @@ export function deriveCollectionHierarchy({
   collectionSlug,
   menuTree,
   fallbackMenu = HEADER_FALLBACK_MENU,
+  publishedCollectionSlugs,
 }: {
   collectionSlug: string;
   menuTree?: {
@@ -63,6 +67,7 @@ export function deriveCollectionHierarchy({
     children?: unknown[];
   }[];
   fallbackMenu?: typeof HEADER_FALLBACK_MENU;
+  publishedCollectionSlugs?: string[];
 }): DepartmentContext {
   const sourceTree =
     menuTree && menuTree.length > 0 ? menuTree : fallbackMenu;
@@ -91,6 +96,13 @@ export function deriveCollectionHierarchy({
     return null;
   };
 
+  const isSlugPublished = (slug: string): boolean => {
+    if (!publishedCollectionSlugs || publishedCollectionSlugs.length === 0) {
+      return true;
+    }
+    return publishedCollectionSlugs.includes(slug);
+  };
+
   const target = collectionSlug.toLowerCase().trim();
 
   const collectChildPills = (node: NavItem): DiscoveryPill[] => {
@@ -99,7 +111,13 @@ export function deriveCollectionHierarchy({
     for (const child of node.children) {
       const cSlug = extractCollectionSlug(child.url);
       if (cSlug) {
-        if (!pills.some((p) => p.slug === cSlug)) {
+        if (!isSlugPublished(cSlug)) {
+          diagnostics.push({
+            code: "unpublished_or_stale_collection",
+            url: child.url,
+            label: child.label,
+          });
+        } else if (!pills.some((p) => p.slug === cSlug)) {
           pills.push({
             slug: cSlug,
             label: child.label,
@@ -117,7 +135,13 @@ export function deriveCollectionHierarchy({
         for (const grandchild of child.children) {
           const gcSlug = extractCollectionSlug(grandchild.url);
           if (gcSlug) {
-            if (!pills.some((p) => p.slug === gcSlug)) {
+            if (!isSlugPublished(gcSlug)) {
+              diagnostics.push({
+                code: "unpublished_or_stale_collection",
+                url: grandchild.url,
+                label: grandchild.label,
+              });
+            } else if (!pills.some((p) => p.slug === gcSlug)) {
               pills.push({
                 slug: gcSlug,
                 label: grandchild.label,
@@ -152,7 +176,7 @@ export function deriveCollectionHierarchy({
           ? extractCollectionSlug(parentItem.url)
           : null;
         const parent =
-          parentItem && parentSlug
+          parentItem && parentSlug && isSlugPublished(parentSlug)
             ? {
                 slug: parentSlug,
                 name: parentItem.label,
@@ -163,11 +187,19 @@ export function deriveCollectionHierarchy({
         for (const i of items) {
           const sSlug = extractCollectionSlug(i.url);
           if (sSlug) {
-            siblings.push({
-              slug: sSlug,
-              label: i.label,
-              label_bn: i.label_bn,
-            });
+            if (!isSlugPublished(sSlug)) {
+              diagnostics.push({
+                code: "unpublished_or_stale_collection",
+                url: i.url,
+                label: i.label,
+              });
+            } else {
+              siblings.push({
+                slug: sSlug,
+                label: i.label,
+                label_bn: i.label_bn,
+              });
+            }
           } else if (i.url && !i.url.startsWith("#")) {
             diagnostics.push({
               code: "non_collection_destination",
@@ -698,6 +730,7 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
     collectionSlug: collection.slug,
     menuTree: menus?.header,
     fallbackMenu: HEADER_FALLBACK_MENU,
+    publishedCollectionSlugs: data.publishedCollectionSlugs,
   });
   const parentInfo: ParentCategory | null = deptContext.parent ?? null;
   let subnavPills: DiscoveryPill[] = deptContext.pills;
@@ -1726,6 +1759,7 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
             menus={menus}
             themeKey={themeKey ?? null}
             showAnnouncement={false}
+            supportEmail={settings?.support_email}
           />
         }
         productSlot={grid}

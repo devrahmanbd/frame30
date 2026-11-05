@@ -56,17 +56,58 @@ export function mergePublicVariants<
 >(
   products: P[],
   rows: PublicVariant[],
-): (P & { product_variants: PublicVariant[] })[] {
+): (P & {
+  product_variants: PublicVariant[];
+  price_amount_minor_int: number;
+  stock_quantity: number | null;
+  status: string;
+})[] {
   const byProduct = new Map<string, PublicVariant[]>();
   for (const row of rows) {
     const list = byProduct.get(row.product_id) ?? [];
     list.push(row);
     byProduct.set(row.product_id, list);
   }
-  return products.map((p) => ({
-    ...p,
-    product_variants: byProduct.get(p.id) ?? [],
-  }));
+  return products.map((p) => {
+    const variants = byProduct.get(p.id) ?? [];
+    const pAny = p as Record<string, unknown>;
+
+    let price_amount_minor_int = 0;
+    let stock_quantity: number | null = null;
+
+    if (variants.length > 0) {
+      const prices = variants.map((v) => Number(v.price_amount_minor_int) || 0);
+      price_amount_minor_int = Math.min(...prices);
+
+      const tracked = variants.filter((v) => v.stock_quantity != null);
+      if (tracked.length > 0) {
+        stock_quantity = tracked.reduce(
+          (sum, v) => sum + Number(v.stock_quantity || 0),
+          0,
+        );
+      }
+    } else {
+      price_amount_minor_int =
+        Number(pAny.price_amount_minor_int) ||
+        Number(pAny.price_min_minor_int) ||
+        Number(pAny.price_minor_int) ||
+        (typeof pAny.price === "number" ? Math.round(pAny.price * 100) : 0);
+
+      if (typeof pAny.stock_quantity === "number") {
+        stock_quantity = pAny.stock_quantity;
+      } else if (typeof pAny.inventory_quantity === "number") {
+        stock_quantity = pAny.inventory_quantity;
+      }
+    }
+
+    return {
+      ...p,
+      product_variants: variants,
+      price_amount_minor_int,
+      stock_quantity,
+      status: (pAny.status as string) || "active",
+    };
+  });
 }
 
 export async function fetchPublicVariants(
@@ -393,11 +434,16 @@ export async function loadStoreCollection(
   if (!collection) return null;
 
   const ids = (collection.collection_products ?? []).map((cp) => cp.product_id);
-  const [{ data: products }, theme, { data: settings }] = await Promise.all([
+  const [
+    { data: products },
+    theme,
+    { data: settings },
+    { data: merchantCollections },
+  ] = await Promise.all([
     ids.length
       ? db
           .from("products")
-          .select("id, title, slug, description, image_url, tags, created_at")
+          .select("id, title, slug, description, image_url, tags, status, created_at")
           .eq("merchant_id", merchant.id)
           .eq("status", "active")
           .in("id", ids)
@@ -406,9 +452,16 @@ export async function loadStoreCollection(
     loadPublished(merchant.id, "collection"),
     db
       .from("merchant_settings")
-      .select("tagline")
+      .select(
+        "tagline, support_email, support_phone, cod_enabled, mfs_enabled, shipping_flat_minor_int, free_shipping_threshold_minor_int",
+      )
       .eq("merchant_id", merchant.id)
       .maybeSingle(),
+    db
+      .from("collections")
+      .select("slug")
+      .eq("merchant_id", merchant.id)
+      .eq("is_published", true),
   ]);
 
   const { resolveSeo } = await import("./seo.server");
@@ -434,6 +487,10 @@ export async function loadStoreCollection(
     slug: collection.slug,
   });
 
+  const publishedCollectionSlugs = (merchantCollections ?? []).map(
+    (c) => c.slug,
+  );
+
   return {
     merchant,
     collection: {
@@ -443,6 +500,7 @@ export async function loadStoreCollection(
       description: collection.description,
     },
     canonicalPath,
+    publishedCollectionSlugs,
     products: mergePublicVariants(
       products ?? [],
       await fetchPublicVariants((products ?? []).map((p) => p.id)),
@@ -584,7 +642,7 @@ async function loadStorefrontUncached(
     db
       .from("merchant_settings")
       .select(
-        "tagline, cod_enabled, mfs_enabled, shipping_flat_minor_int, free_shipping_threshold_minor_int, setup_steps",
+        "tagline, support_email, support_phone, cod_enabled, mfs_enabled, shipping_flat_minor_int, free_shipping_threshold_minor_int, setup_steps",
       )
       .eq("merchant_id", merchant.id)
       .maybeSingle(),
