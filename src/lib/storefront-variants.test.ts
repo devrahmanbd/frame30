@@ -88,4 +88,27 @@ describe("mergePublicVariants", () => {
     expect(out[0].price_amount_minor_int).toBe(420000);
     expect(out[0].stock_quantity).toBe(15);
   });
+
+  it("preserves and hoists embedded product_variants when row list is empty", () => {
+    const embedded = [
+      {
+        product_id: "emb-1",
+        id: "emb-v1",
+        name: "Standard",
+        sku: "EMB-STD",
+        price_amount_minor_int: 320000,
+        compare_at_amount_minor_int: null,
+        stock_quantity: 8,
+      },
+    ];
+    const out = mergePublicVariants(
+      [{ id: "emb-1", product_variants: embedded, status: "active" }],
+      [],
+    );
+
+    expect(out[0].product_variants).toHaveLength(1);
+    expect(out[0].price_amount_minor_int).toBe(320000);
+    expect(out[0].stock_quantity).toBe(8);
+  });
 });
+

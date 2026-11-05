@@ -689,7 +689,29 @@ const TrustFooter: WidgetComponent = ({ str, section, locale, editing }) => {
       title: readBn(row, "title", locale),
       body: readBn(row, "body", locale),
     }))
-    .filter((row) => row.title);
+    .filter((row) => row.title)
+    .map((item) => {
+      let body = item.body;
+      if (body.includes("Cash on delivery") && !str("codPolicy")) {
+        body =
+          locale === "bn"
+            ? "সারা বাংলাদেশে নির্ভরযোগ্য ডেলিভারি"
+            : "Doorstep delivery across Bangladesh";
+      }
+      if (body.includes("7-day") && !str("exchangePolicy")) {
+        body =
+          locale === "bn"
+            ? "সহজ ও নির্ভরযোগ্য বিনিময় সহায়তা"
+            : "Convenient exchange support";
+      }
+      if (body.includes("10:00 AM") && !str("supportHours")) {
+        body =
+          locale === "bn"
+            ? "অর্ডার ও তথ্যের জন্য সরাসরি সহায়তা"
+            : "Dedicated assistance for orders and inquiries";
+      }
+      return { ...item, body };
+    });
   const items =
     itemRows.length > 0
       ? itemRows
@@ -1278,7 +1300,11 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
   const paymentHeading =
     str("paymentsHeading") || t(locale, "Payment methods", "পেমেন্ট মাধ্যম");
 
-  const supportEmail = str("supportEmail") || "support@flamelancer.com";
+  const supportEmail = str("supportEmail");
+  const supportHours = str("supportHours");
+  const policyDelivery = str("policyDelivery");
+  const instagramUrl = str("instagramUrl");
+  const facebookUrl = str("facebookUrl");
 
   return (
     <section className="w-full flex flex-col pt-10 sm:pt-20">
@@ -1391,98 +1417,59 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
                   ? "বাংলাদেশের ঐতিহ্যবাহী তাঁত ও আধুনিক ফ্যাশনের মেলবন্ধন।"
                   : "Handcrafted Bangladeshi fashion, authentic handloom weaves, and contemporary festive wear."}
               </p>
-                  {brandName.includes("Flame") ? (
-                    <>
-                      <div className="mb-6 space-y-1 text-[12px] text-[var(--theme-ink)]/70">
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50">
-                          {locale === "bn"
-                            ? "অনলাইন সেবা ও সহায়তা"
-                            : "Customer Concierge"}
-                        </p>
-                        <p className="text-[12px] text-[var(--theme-ink)]/85">
-                          {locale === "bn"
-                            ? "সারা দেশে হোম ডেলিভারি ও ৭ দিনের এক্সচেঞ্জ"
-                            : "Nationwide Doorstep Delivery & 7-Day Exchange"}
-                        </p>
-                        <a
-                          href={`mailto:${supportEmail}`}
-                          className="inline-flex items-center gap-1.5 text-[var(--theme-accent)] font-medium text-[12px] min-h-[44px]"
-                        >
-                          <span>{supportEmail}</span>
-                          <span className="text-[10px] text-[var(--theme-ink)]/50">
-                            (10am–8pm)
-                          </span>
-                        </a>
-                      </div>
-                      <div className="flex items-center gap-3 text-[var(--theme-ink)]/60">
-                        <a
-                          href="https://instagram.com/flamefashionbd"
-                          aria-label="Instagram"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex h-11 w-11 items-center justify-center rounded-xs border border-[var(--theme-border)]/60 hover:border-[var(--theme-accent)] hover:text-[var(--theme-accent)] transition-colors"
-                        >
-                          <Instagram size={18} />
-                        </a>
-                        <a
-                          href="https://facebook.com/flamefashionbd"
-                          aria-label="Facebook"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex h-11 w-11 items-center justify-center rounded-xs border border-[var(--theme-border)]/60 hover:border-[var(--theme-accent)] hover:text-[var(--theme-accent)] transition-colors"
-                        >
-                          <Facebook size={18} />
-                        </a>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="mb-6 space-y-1 text-[12px] text-[var(--theme-ink)]/70">
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50">
-                          {locale === "bn"
-                            ? "ফ্ল্যাগশিপ আউটলেট"
-                            : "Flagship Stores"}
-                        </p>
-                        <p className="text-[12px] text-[var(--theme-ink)]/85">
-                          {locale === "bn"
-                            ? "উত্তরা ৩, গুলশান ২, চট্টগ্রাম জিইসি"
-                            : "Uttara Sector 3, Gulshan 2, Chittagong"}
-                        </p>
-                        <a
-                          href="tel:+8809612345678"
-                          className="inline-flex items-center gap-1.5 text-[var(--theme-accent)] font-medium text-[12px] min-h-[44px]"
-                        >
-                          <span>+880 96 1234 5678</span>
-                          <span className="text-[10px] text-[var(--theme-ink)]/50">
-                            (10am–9pm)
-                          </span>
-                        </a>
-                      </div>
-                      <div className="flex items-center gap-3 text-[var(--theme-ink)]/60">
-                        <a
-                          href="#"
-                          aria-label="Instagram"
-                          className="flex h-11 w-11 items-center justify-center rounded-xs border border-[var(--theme-border)]/60 hover:border-[var(--theme-accent)] hover:text-[var(--theme-accent)] transition-colors"
-                        >
-                          <Instagram size={18} />
-                        </a>
-                        <a
-                          href="#"
-                          aria-label="Facebook"
-                          className="flex h-11 w-11 items-center justify-center rounded-xs border border-[var(--theme-border)]/60 hover:border-[var(--theme-accent)] hover:text-[var(--theme-accent)] transition-colors"
-                        >
-                          <Facebook size={18} />
-                        </a>
-                        <a
-                          href="#"
-                          aria-label="Twitter"
-                          className="flex h-11 w-11 items-center justify-center rounded-xs border border-[var(--theme-border)]/60 hover:border-[var(--theme-accent)] hover:text-[var(--theme-accent)] transition-colors"
-                        >
-                          <Twitter size={18} />
-                        </a>
-                      </div>
-                    </>
+              {(supportEmail || policyDelivery) && (
+                <div className="mb-6 space-y-1 text-[12px] text-[var(--theme-ink)]/70">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50">
+                    {locale === "bn"
+                      ? "অনলাইন সেবা ও সহায়তা"
+                      : "Customer Concierge"}
+                  </p>
+                  {policyDelivery && (
+                    <p className="text-[12px] text-[var(--theme-ink)]/85">
+                      {policyDelivery}
+                    </p>
                   )}
+                  {supportEmail && (
+                    <a
+                      href={`mailto:${supportEmail}`}
+                      className="inline-flex items-center gap-1.5 text-[var(--theme-accent)] font-medium text-[12px] min-h-[44px]"
+                    >
+                      <span>{supportEmail}</span>
+                      {supportHours && (
+                        <span className="text-[10px] text-[var(--theme-ink)]/50">
+                          ({supportHours})
+                        </span>
+                      )}
+                    </a>
+                  )}
+                </div>
+              )}
+              {Boolean(instagramUrl || facebookUrl) && (
+                <div className="flex items-center gap-3 text-[var(--theme-ink)]/60">
+                  {instagramUrl && (
+                    <a
+                      href={instagramUrl}
+                      aria-label="Instagram"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex h-11 w-11 items-center justify-center rounded-xs border border-[var(--theme-border)]/60 hover:border-[var(--theme-accent)] hover:text-[var(--theme-accent)] transition-colors"
+                    >
+                      <Instagram size={18} />
+                    </a>
+                  )}
+                  {facebookUrl && (
+                    <a
+                      href={facebookUrl}
+                      aria-label="Facebook"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex h-11 w-11 items-center justify-center rounded-xs border border-[var(--theme-border)]/60 hover:border-[var(--theme-accent)] hover:text-[var(--theme-accent)] transition-colors"
+                    >
+                      <Facebook size={18} />
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
           )}
 

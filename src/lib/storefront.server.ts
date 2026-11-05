@@ -69,8 +69,13 @@ export function mergePublicVariants<
     byProduct.set(row.product_id, list);
   }
   return products.map((p) => {
-    const variants = byProduct.get(p.id) ?? [];
     const pAny = p as Record<string, unknown>;
+    const embeddedVariants = Array.isArray(pAny.product_variants)
+      ? (pAny.product_variants as PublicVariant[])
+      : [];
+    const fetchedVariants = byProduct.get(p.id) ?? [];
+    const variants =
+      fetchedVariants.length > 0 ? fetchedVariants : embeddedVariants;
 
     let price_amount_minor_int = 0;
     let stock_quantity: number | null = null;
@@ -438,12 +443,14 @@ export async function loadStoreCollection(
     { data: products },
     theme,
     { data: settings },
-    { data: merchantCollections },
+    { data: merchantCollections, error: colErr },
   ] = await Promise.all([
     ids.length
       ? db
           .from("products")
-          .select("id, title, slug, description, image_url, tags, status, created_at")
+          .select(
+            "id, title, slug, description, image_url, tags, status, created_at, product_variants(id, product_id, name, sku, price_amount_minor_int, compare_at_amount_minor_int, stock_quantity)",
+          )
           .eq("merchant_id", merchant.id)
           .eq("status", "active")
           .in("id", ids)
@@ -487,9 +494,10 @@ export async function loadStoreCollection(
     slug: collection.slug,
   });
 
-  const publishedCollectionSlugs = (merchantCollections ?? []).map(
-    (c) => c.slug,
-  );
+  const publishedCollectionSlugs =
+    colErr || !merchantCollections
+      ? []
+      : merchantCollections.map((c) => c.slug);
 
   return {
     merchant,

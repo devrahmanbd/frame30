@@ -389,9 +389,11 @@ describe("CollectionView Faceting & Filtering", () => {
     ];
 
     // When viewing parent 'women', pills should be its children (Sarees, Salwar Kameez)
+    const publishedList = ["women", "sarees", "salwar-kameez", "panjabi"];
     const womenHierarchy = deriveCollectionHierarchy({
       collectionSlug: "women",
       menuTree: customMenu as any,
+      publishedCollectionSlugs: publishedList,
     });
     expect(womenHierarchy.parent).toBeUndefined();
     expect(womenHierarchy.pills.map((p) => p.slug)).toEqual(["women", "sarees", "salwar-kameez"]);
@@ -402,6 +404,7 @@ describe("CollectionView Faceting & Filtering", () => {
     const sareesHierarchy = deriveCollectionHierarchy({
       collectionSlug: "sarees",
       menuTree: customMenu as any,
+      publishedCollectionSlugs: publishedList,
     });
     expect(sareesHierarchy.parent?.slug).toBe("women");
     expect(sareesHierarchy.pills.map((p) => p.slug)).toEqual(["sarees", "salwar-kameez"]);
@@ -654,6 +657,7 @@ describe("Simple products and collection navigation integrity", () => {
     const hierarchy = deriveCollectionHierarchy({
       collectionSlug: "festive-sarees",
       menuTree: menuWithMixedLinks as any,
+      publishedCollectionSlugs: ["festive-sarees", "silk-sarees"],
     });
 
     // Parent is /pages/about which is not a collection, so parent should be undefined
@@ -721,19 +725,60 @@ describe("Simple products and collection navigation integrity", () => {
     );
   });
 
+  it("deriveCollectionHierarchy fails closed when publishedCollectionSlugs is missing or empty", () => {
+    const customMenuTree = [
+      {
+        id: "1",
+        label: "Women",
+        url: "/c/women",
+        children: [
+          { id: "1-1", label: "Sarees", url: "/c/sarees" },
+        ],
+      },
+    ];
+    // Undefined publishedCollectionSlugs fails closed: pills are empty, diagnostics recorded
+    const undefHierarchy = deriveCollectionHierarchy({
+      collectionSlug: "women",
+      menuTree: customMenuTree,
+    });
+    expect(undefHierarchy.pills).toEqual([]);
+    expect(
+      undefHierarchy.diagnostics?.some((d) => d.code === "unpublished_or_stale_collection"),
+    ).toBe(true);
+
+    // Empty array fails closed
+    const emptyHierarchy = deriveCollectionHierarchy({
+      collectionSlug: "women",
+      menuTree: customMenuTree,
+      publishedCollectionSlugs: [],
+    });
+    expect(emptyHierarchy.pills).toEqual([]);
+  });
+
+  it("top-level department with no child collections returns empty pills (no subcategory rail)", () => {
+    const hierarchy = deriveCollectionHierarchy({
+      collectionSlug: "kids",
+      menuTree: HEADER_FALLBACK_MENU as any,
+      publishedCollectionSlugs: ["kids"],
+    });
+    expect(hierarchy.parent).toBeUndefined();
+    expect(hierarchy.pills).toEqual([]);
+  });
+
   it("falls back to fallbackMenu when collection is not in custom menuTree", () => {
     const customMenuTree = [
       { id: "1", label: "Women", url: "/c/women", children: [] },
       { id: "2", label: "Men", url: "/c/men", children: [] },
     ];
     const hierarchy = deriveCollectionHierarchy({
-      collectionSlug: "kids",
+      collectionSlug: "sarees",
       menuTree: customMenuTree,
       fallbackMenu: HEADER_FALLBACK_MENU,
-      publishedCollectionSlugs: ["women", "men", "kids", "living"],
+      publishedCollectionSlugs: ["women", "men", "sarees", "jamdani"],
     });
 
+    expect(hierarchy.parent?.slug).toBe("women");
     const pillSlugs = hierarchy.pills.map((p) => p.slug);
-    expect(pillSlugs).toContain("kids");
+    expect(pillSlugs).toContain("jamdani");
   });
 });

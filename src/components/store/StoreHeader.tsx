@@ -67,7 +67,7 @@ export function MinimalCheckoutHeader({
           {chrome ? (
             <img
               src={chrome.logo.src}
-              alt={chrome.logo.alt}
+              alt={name || chrome.logo.alt}
               className="h-[28px] w-auto object-contain"
             />
           ) : (

@@ -97,8 +97,12 @@ export function deriveCollectionHierarchy({
   };
 
   const isSlugPublished = (slug: string): boolean => {
-    if (!publishedCollectionSlugs || publishedCollectionSlugs.length === 0) {
-      return true;
+    if (
+      !publishedCollectionSlugs ||
+      !Array.isArray(publishedCollectionSlugs) ||
+      publishedCollectionSlugs.length === 0
+    ) {
+      return false;
     }
     return publishedCollectionSlugs.includes(slug);
   };
@@ -167,6 +171,7 @@ export function deriveCollectionHierarchy({
   ): {
     node: NavItem;
     parent?: ParentCategory;
+    isTopLevel: boolean;
     siblings: DiscoveryPill[];
   } | null => {
     for (const item of items) {
@@ -208,7 +213,7 @@ export function deriveCollectionHierarchy({
             });
           }
         }
-        return { node: item, parent, siblings };
+        return { node: item, parent, isTopLevel: !parentItem, siblings };
       }
       if (item.children && item.children.length > 0) {
         const found = searchTree(item.children, item);
@@ -240,12 +245,13 @@ export function deriveCollectionHierarchy({
       ];
       return { parent: match.parent, pills, diagnostics };
     }
-    if (match.siblings.length > 1) {
+    if (!match.isTopLevel && match.siblings.length > 1) {
       return { parent: match.parent, pills: match.siblings, diagnostics };
     }
     if (match.parent) {
       return { parent: match.parent, pills: [], diagnostics };
     }
+    return { parent: undefined, pills: [], diagnostics };
   }
 
   return { pills: [], diagnostics };
@@ -738,34 +744,7 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
     publishedCollectionSlugs: data.publishedCollectionSlugs,
   });
   const parentInfo: ParentCategory | null = deptContext.parent ?? null;
-  let subnavPills: DiscoveryPill[] = deptContext.pills;
-
-  if (subnavPills.length === 0 && categories.length > 0) {
-    subnavPills = categories
-      .map((cat) => {
-        const trimmed = (cat.url || "").trim().split("?")[0];
-        let cSlug: string | null = null;
-        if (trimmed.startsWith("/c/")) {
-          cSlug = trimmed.slice(3).replace(/^\/+|\/+$/g, "");
-        } else if (trimmed.startsWith("/collections/")) {
-          cSlug = trimmed.slice(13).replace(/^\/+|\/+$/g, "");
-        }
-        if (!cSlug || cSlug.includes("/")) return null;
-        cSlug = cSlug.toLowerCase();
-        if (
-          data.publishedCollectionSlugs &&
-          data.publishedCollectionSlugs.length > 0 &&
-          !data.publishedCollectionSlugs.includes(cSlug)
-        ) {
-          return null;
-        }
-        return {
-          slug: cSlug,
-          label: cat.label,
-        };
-      })
-      .filter((p): p is DiscoveryPill => p !== null);
-  }
+  const subnavPills: DiscoveryPill[] = deptContext.pills;
 
   // Meaningful facets extracted dynamically from actual products in this collection
   const baseFacets = extractWeaveFacets(products, collection.slug);

@@ -453,6 +453,15 @@ describe("themeChromeFor identity edge — key-driven, never slug or name", () =
     expect(lookalike).not.toContain("logo-lockup");
     expect(lookalike).toContain("Songoskriti");
   });
+
+  it("MinimalCheckoutHeader uses merchant display name for logo alt text", () => {
+    const themed = renderMinimal({
+      slug: "flame-fashion-bd",
+      name: "Flame Fashion BD",
+      themeKey: "songoskriti",
+    });
+    expect(themed).toContain('alt="Flame Fashion BD"');
+  });
 });
 
 describe("StoreHeader menu swap — TRACK M review gate (fail-open, logged)", () => {
