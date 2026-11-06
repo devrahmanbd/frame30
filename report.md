@@ -1562,7 +1562,7 @@ Every section in the Songoskriti homepage (`src/lib/themes/songoskriti/homepage.
   - Zero mentions of "Narayanganj" or unverified claims.
   - Verified screenshot captured: `homepage-verified-final.png`.
 - **Live Kids Collection (`https://flamelancer.com/c/kids`):**
-  - Subcategory discovery rail displays only published collections (`Women`, `Men`, `Kids`, `Festive`, `Heritage`, `New Arrivals`).
+  - Subcategory discovery rail: completely omitted (top-level departments with no subcategories do not leak top-level menu siblings).
   - Zero duplicate "Girls Festive" pills.
   - Zero broken `/c/pages%2Fabout` links.
   - Product price rendered accurately at `৳ 4,250.00` (no ৳0 price).

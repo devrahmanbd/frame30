@@ -128,22 +128,7 @@ export function TrustFooter(props: TrustFooterProps) {
     body: string;
   }[] = [];
 
-  if (codPolicy) {
-    const isNationwide = /nationwide|across bangladesh|সারাদেশে/i.test(
-      codPolicy,
-    );
-    badges.push({
-      icon: "delivery",
-      title: isNationwide
-        ? locale === "bn"
-          ? "সারাদেশে ডেলিভারি"
-          : "NATIONWIDE DELIVERY"
-        : locale === "bn"
-          ? "ক্যাশ অন ডেলিভারি"
-          : "CASH ON DELIVERY",
-      body: codPolicy,
-    });
-  } else if (deliveryPolicy) {
+  if (deliveryPolicy) {
     const isNationwide = /nationwide|across bangladesh|সারাদেশে/i.test(
       deliveryPolicy,
     );
@@ -157,6 +142,14 @@ export function TrustFooter(props: TrustFooterProps) {
           ? "ডেলিভারি সুবিধা"
           : "DELIVERY SERVICE",
       body: deliveryPolicy,
+    });
+  }
+
+  if (codPolicy) {
+    badges.push({
+      icon: "delivery",
+      title: locale === "bn" ? "ক্যাশ অন ডেলিভারি" : "CASH ON DELIVERY",
+      body: codPolicy,
     });
   }
 

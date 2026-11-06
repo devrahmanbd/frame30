@@ -383,7 +383,7 @@ export function resolveProductPricingAndStock(
 
   let prices: number[] = [];
   if (variants.length > 0) {
-    prices = variants.map((v) => v.price);
+    prices = variants.map((v) => v.price).filter((pr) => pr > 0);
   } else {
     const pFields = p as unknown as {
       price_amount_minor_int?: number;
@@ -396,7 +396,7 @@ export function resolveProductPricingAndStock(
       Number(pFields.price_min_minor_int) ||
       Number(pFields.price_minor_int) ||
       (typeof pFields.price === "number" ? Math.round(pFields.price * 100) : 0);
-    prices = productPrice > 0 ? [productPrice] : [0];
+    prices = productPrice > 0 ? [productPrice] : [];
   }
 
   const priceMinMinor = prices.length > 0 ? Math.min(...prices) : 0;
@@ -490,7 +490,10 @@ export function resolveProductPricingAndStock(
     }
   }
 
-  const hasPrice = priceMinMinor > 0;
+  const hasPrice = prices.length > 0 && priceMinMinor > 0;
+  if (!hasPrice) {
+    inStock = false;
+  }
   const isOutOfStock = !inStock;
   const isPriceRange = priceMinMinor !== priceMaxMinor && variants.length > 1;
 
@@ -1647,7 +1650,9 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
                           {p.title}
                         </p>
                         <p className="money text-[13px] font-medium tracking-wide text-foreground/80 font-sans mt-0.5">
-                          {fmtMinor(min, merchant.currency_code)}
+                          {info.hasPrice
+                            ? fmtMinor(min, merchant.currency_code)
+                            : t("Unavailable", "মূল্য অপ্রাপ্য")}
                         </p>
                       </div>
                     </>

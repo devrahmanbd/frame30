@@ -72,9 +72,7 @@ export const SONGOSKRITI_COLLECTIONS: Record<string, CollectionConfig> = {
     title: "Kids",
     title_bn: "বাচ্চাদের",
     heroImage: "/ph/songoskriti/cat-kids.jpg",
-    categories: [
-      { iLabel: "All Children's Wear", iHref: "/c/kids" },
-    ],
+    categories: [],
     featuredCollection: "kids",
     editorial: {
       image: "/ph/songoskriti/hero-festive.jpg",

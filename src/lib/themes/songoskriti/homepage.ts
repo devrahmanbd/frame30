@@ -360,14 +360,14 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     // 15. ARTISAN STORY — the human behind the weave
     // ────────────────────────────────────────────────────────────────────
     s("craft_story", {
-      eyebrow: "THE HANDS BEHIND THE WEAVE",
-      eyebrow_bn: "বুননের পেছনের হাত",
-      heading: "Made Slowly.\nWorn for Years.",
-      heading_bn: "ধীরে তৈরি।\nবছরের পর বছর পরা।",
-      body: "Traditional handloom weaving techniques preserved and crafted with care across Bangladesh.",
-      body_bn: "বাংলাদেশে যত্ন ও দক্ষতার সাথে তৈরি ঐতিহ্যবাহী তাঁত পণ্য।",
-      ctaLabel: "MEET THE ARTISANS",
-      ctaLabel_bn: "কারিগরদের সাথে পরিচিত হোন",
+      eyebrow: "HANDLOOM WEAVING",
+      eyebrow_bn: "তাঁত বুনন",
+      heading: "Handcrafted Sarees & Attire",
+      heading_bn: "হাতে তৈরি শাড়ি ও পোশাক",
+      body: "Carefully woven fabrics and traditional attire crafted by Bangladeshi weavers.",
+      body_bn: "বাংলাদেশি তাঁতিদের তৈরি যত্নশীল ঐতিহ্যবাহী শাড়ি ও পোশাক।",
+      ctaLabel: "EXPLORE HERITAGE",
+      ctaLabel_bn: "ঐতিহ্য অন্বেষণ করুন",
       ctaHref: `${c}/heritage`,
       imageUrl: "/ph/songoskriti/hero-artisans.jpg",
       scrim: true,
@@ -403,8 +403,8 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     s("split_feature", {
       heading: "THE FLAME FASHION BD\nJOURNAL",
       heading_bn: "ফ্লেম ফ্যাশন\nজার্নাল",
-      body: "Stories from the loom, styling guides and the heritage behind every thread.",
-      body_bn: "তাঁত থেকে গল্প, স্টাইলিং গাইড ও প্রতিটি সুতোর পেছনের ইতিহাস।",
+      body: "Styling guides, fabric care, and stories about our traditional collections.",
+      body_bn: "স্টাইলিং নির্দেশিকা, কাপড়ের যত্ন এবং আমাদের ঐতিহ্যবাহী কালেকশনের গল্প।",
       ctaLabel: "HOW TO IDENTIFY AUTHENTIC JAMDANI →",
       ctaLabel_bn: "খাঁটি জামদানি চেনার উপায় →",
       ctaUrl: "/blog/authentic-jamdani",

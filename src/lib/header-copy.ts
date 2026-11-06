@@ -147,13 +147,7 @@ export const HEADER_FALLBACK_MENU = [
     label: "Kids",
     url: "/c/kids",
     image: "/ph/songoskriti/cat-kids.jpg",
-    children: [
-      {
-        id: "k-festive",
-        label: "Children's Wear",
-        url: "/c/kids",
-      },
-    ],
+    children: [],
   },
   {
     id: "festive",

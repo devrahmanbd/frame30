@@ -112,7 +112,7 @@ export function mergePublicVariants<
     const resolvedVariants: PublicVariant[] =
       variants.length > 0
         ? variants
-        : price_amount_minor_int > 0 || stock_quantity != null
+        : price_amount_minor_int > 0
           ? [
               {
                 id: `${p.id}-default`,
@@ -888,7 +888,9 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
 
   const { data: product } = await db
     .from("products")
-    .select("id, title, slug, description, image_url, tags, category_id")
+    .select(
+      "id, title, slug, description, image_url, tags, category_id, product_kind, requires_shipping, status",
+    )
     .eq("merchant_id", merchant.id)
     .eq("slug", productSlug)
     .eq("status", "active")

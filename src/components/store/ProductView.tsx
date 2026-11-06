@@ -98,8 +98,19 @@ export function PriceBlock({
     | undefined;
   currencyCode: string;
 }) {
+  const { t } = useLang();
   const price = variant?.price_amount_minor_int ?? 0;
   const compareAt = variant?.compare_at_amount_minor_int;
+
+  if (!variant || price <= 0) {
+    return (
+      <div className="flex flex-col border-b border-border pb-6 mt-6">
+        <p className="font-sans text-xl font-medium text-muted-foreground">
+          {t("Unavailable", "মূল্য অপ্রাপ্য")}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col border-b border-border pb-6 mt-6">
@@ -190,21 +201,27 @@ export function AddToCart({
   const { t } = useLang();
   const [qty, setQty] = useState(1);
   const stock = variant?.stock_quantity ?? 0;
+  const isPriced =
+    Boolean(variant) &&
+    ((variant as { price_amount_minor_int?: number }).price_amount_minor_int == null ||
+      (variant as { price_amount_minor_int?: number }).price_amount_minor_int! > 0);
 
   return (
     <div className="mt-8">
       <p
         className={`mb-4 text-sm font-medium ${
-          stock > 0 ? "text-success-foreground" : "text-danger-foreground"
+          isPriced && stock > 0 ? "text-success-foreground" : "text-danger-foreground"
         }`}
       >
-        {stock > 0
-          ? t(`${stock} in stock`, `স্টকে ${stock} টি`)
-          : t("Out of stock", "স্টক নেই")}
+        {!isPriced
+          ? t("Unavailable", "পণ্যটি বর্তমানে পাওয়া যাচ্ছে না")
+          : stock > 0
+            ? t(`${stock} in stock`, `স্টকে ${stock} টি`)
+            : t("Out of stock", "স্টক নেই")}
       </p>
 
       <div className="flex flex-wrap gap-3 items-center">
-        {stock > 0 && (
+        {isPriced && stock > 0 && (
           <div className="flex h-14 w-32 items-center border border-border">
             <button
               type="button"
@@ -229,9 +246,9 @@ export function AddToCart({
         )}
         <button
           type="button"
-          disabled={!variant || stock <= 0}
+          disabled={!variant || !isPriced || stock <= 0}
           onClick={() => {
-            if (!variant) return;
+            if (!variant || !isPriced) return;
             add(variant.id, qty);
             setAdded(true);
           }}

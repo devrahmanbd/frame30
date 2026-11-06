@@ -463,13 +463,26 @@ describe("trust_footer", () => {
     expect(regionalHtml).toContain("CASH ON DELIVERY");
     expect(regionalHtml).not.toContain("NATIONWIDE DELIVERY");
 
-    // 2. Explicit nationwide policy uses NATIONWIDE DELIVERY heading
-    const nationwideSection = {
+    // 2. COD policy mentioning nationwide stays CASH ON DELIVERY (never conflated with delivery coverage)
+    const codNationwideSection = {
       ...newSection("trust_footer"),
       props: {
         items: [],
         codPolicy:
           "Cash on delivery available nationwide across all 64 districts",
+      },
+    };
+    const codNationwideHtml = render(Cmp(), codNationwideSection, "en");
+    expect(codNationwideHtml).toContain("CASH ON DELIVERY");
+    expect(codNationwideHtml).not.toContain("NATIONWIDE DELIVERY");
+
+    // 3. Explicit nationwide delivery policy uses NATIONWIDE DELIVERY heading
+    const nationwideSection = {
+      ...newSection("trust_footer"),
+      props: {
+        items: [],
+        deliveryPolicy:
+          "Doorstep delivery available nationwide across all 64 districts",
       },
     };
     const nationwideHtml = render(Cmp(), nationwideSection, "en");

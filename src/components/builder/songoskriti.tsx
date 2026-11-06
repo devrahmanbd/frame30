@@ -806,10 +806,13 @@ const TrustFooter: WidgetComponent = ({
   if (rawItems.length > 0) {
     for (const item of rawItems) {
       const text = `${item.title} ${item.body} ${item.policyKey}`.toLowerCase();
-      const isDeliveryOrCod =
+      const isCod =
         item.policyKey === "cod" ||
+        /cash on delivery|cod|ক্যাশ অন ডেলিভারি/.test(text);
+
+      const isDelivery =
         item.policyKey === "delivery" ||
-        /delivery|cash on delivery|cod|ডেলিভারি|ক্যাশ অন ডেলিভারি/.test(text);
+        (/delivery|ডেলিভারি/.test(text) && !isCod);
 
       const isReturnOrExchange =
         item.policyKey === "exchange" ||
@@ -831,24 +834,18 @@ const TrustFooter: WidgetComponent = ({
         item.policyKey === "secure" ||
         /payment|secure|নিরাপদ|পেমেন্ট/.test(text);
 
-      if (isDeliveryOrCod) {
+      if (isCod) {
         if (codPolicy) {
-          const isNationwide = /nationwide|across bangladesh|সারাদেশে/i.test(
-            `${codPolicy} ${item.title}`,
-          );
-          const defaultTitle = isNationwide
-            ? locale === "bn"
-              ? "সারাদেশে ডেলিভারি"
-              : "NATIONWIDE DELIVERY"
-            : locale === "bn"
-              ? "ক্যাশ অন ডেলিভারি"
-              : "CASH ON DELIVERY";
           items.push({
             icon: item.icon || "delivery",
-            title: item.title || defaultTitle,
+            title:
+              item.title ||
+              (locale === "bn" ? "ক্যাশ অন ডেলিভারি" : "CASH ON DELIVERY"),
             body: codPolicy,
           });
-        } else if (deliveryPolicy) {
+        }
+      } else if (isDelivery) {
+        if (deliveryPolicy) {
           const isNationwide = /nationwide|across bangladesh|সারাদেশে/i.test(
             `${deliveryPolicy} ${item.title}`,
           );
@@ -864,8 +861,15 @@ const TrustFooter: WidgetComponent = ({
             title: item.title || defaultTitle,
             body: deliveryPolicy,
           });
+        } else if (codPolicy) {
+          items.push({
+            icon: item.icon || "delivery",
+            title:
+              item.title ||
+              (locale === "bn" ? "ক্যাশ অন ডেলিভারি" : "CASH ON DELIVERY"),
+            body: codPolicy,
+          });
         }
-        // If unverified: OMIT badge. Do not infer nationwide COD merely from codEnabled: true.
       } else if (isReturnOrExchange) {
         if (exchangePolicy) {
           items.push({
@@ -932,22 +936,7 @@ const TrustFooter: WidgetComponent = ({
     }
   } else {
     // When no candidates configured in section, build exclusively from verified merchant policies
-    if (codPolicy) {
-      const isNationwide = /nationwide|across bangladesh|সারাদেশে/i.test(
-        codPolicy,
-      );
-      items.push({
-        icon: "delivery",
-        title: isNationwide
-          ? locale === "bn"
-            ? "সারাদেশে ডেলিভারি"
-            : "NATIONWIDE DELIVERY"
-          : locale === "bn"
-            ? "ক্যাশ অন ডেলিভারি"
-            : "CASH ON DELIVERY",
-        body: codPolicy,
-      });
-    } else if (deliveryPolicy) {
+    if (deliveryPolicy) {
       const isNationwide = /nationwide|across bangladesh|সারাদেশে/i.test(
         deliveryPolicy,
       );
@@ -961,6 +950,14 @@ const TrustFooter: WidgetComponent = ({
             ? "ডেলিভারি সুবিধা"
             : "DELIVERY SERVICE",
         body: deliveryPolicy,
+      });
+    }
+
+    if (codPolicy) {
+      items.push({
+        icon: "delivery",
+        title: locale === "bn" ? "ক্যাশ অন ডেলিভারি" : "CASH ON DELIVERY",
+        body: codPolicy,
       });
     }
 

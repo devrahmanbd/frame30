@@ -179,14 +179,18 @@ export function StorefrontPage({ data }: { data: StorefrontPayload }) {
                     {p.title}
                   </h3>
                   <p className="money mt-1 text-sm font-semibold">
-                    {fmtMinor(min, merchant.currency_code)}
+                    {pricing.hasPrice
+                      ? fmtMinor(min, merchant.currency_code)
+                      : t("Unavailable", "মূল্য অপ্রাপ্য")}
                   </p>
                   <p
                     className={`mt-1 text-xs ${inStock ? "text-success-foreground" : "text-danger-foreground"}`}
                   >
-                    {inStock
-                      ? t("In stock", "স্টকে আছে")
-                      : t("Out of stock", "স্টক নেই")}
+                    {!pricing.hasPrice
+                      ? t("Unavailable", "পণ্যটি বর্তমানে পাওয়া যাচ্ছে না")
+                      : inStock
+                        ? t("In stock", "স্টকে আছে")
+                        : t("Out of stock", "স্টক নেই")}
                   </p>
                 </div>
               </>
