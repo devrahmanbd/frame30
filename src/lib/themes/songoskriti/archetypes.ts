@@ -112,7 +112,7 @@ export const SONGOSKRITI_COLLECTIONS: Record<string, CollectionConfig> = {
     heroImage: "/ph/songoskriti/hero-artisans.jpg",
     categories: [
       { iLabel: "Jamdani", iHref: "/c/jamdani" },
-      { iLabel: "Heritage Handloom", iHref: "/c/heritage-handloom" },
+      { iLabel: "Tangail Handloom", iHref: "/c/tangail" },
       { iLabel: "Nakshi Kantha", iHref: "/c/nakshi-kantha" },
       { iLabel: "Rajshahi Silk", iHref: "/c/rajshahi-silk" },
     ],

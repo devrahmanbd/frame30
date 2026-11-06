@@ -740,7 +740,14 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
       if (collection.slug === "men") heroImage = "/ph/songoskriti/cat-men.jpg";
     }
   } else if (
-    ["sarees", "jamdani", "heritage-handloom"].includes(collection.slug)
+    [
+      "sarees",
+      "jamdani",
+      "heritage-handloom",
+      "tangail",
+      "rajshahi-silk",
+      "nakshi-kantha",
+    ].includes(collection.slug)
   ) {
     collectionType = "department";
     // Flagship saree/weave collections: same editorial hero treatment as
@@ -749,7 +756,13 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
       showHero = true;
       if (collection.slug === "sarees")
         heroImage = "/ph/songoskriti/prod-saree.png";
-      if (
+      else if (collection.slug === "tangail")
+        heroImage = "/ph/songoskriti/cat-newin.png";
+      else if (collection.slug === "rajshahi-silk")
+        heroImage = "/ph/songoskriti/prod-saree.png";
+      else if (collection.slug === "nakshi-kantha")
+        heroImage = "/ph/songoskriti/cat-living.png";
+      else if (
         collection.slug === "jamdani" ||
         collection.slug === "heritage-handloom"
       )

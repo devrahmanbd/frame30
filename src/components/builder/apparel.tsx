@@ -812,9 +812,10 @@ const SustainBadge: WidgetComponent = (ctx) => {
 /* ------------------------------------------------------ complete_the_look */
 
 const CompleteTheLook: WidgetComponent = (ctx) => {
-  const { str, int, data, locale, Heading } = ctx;
+  const { str, int, data, locale, Heading, editing } = ctx;
   const limit = int("limit", 4, 2, 6);
   const rows = (data?.rows ?? []).slice(0, limit);
+  if (rows.length === 0 && !data?.pending && !editing) return null;
   const label = str("heading") || t(locale, "Complete the look", "পুরো লুক");
   return (
     <section aria-label={label}>

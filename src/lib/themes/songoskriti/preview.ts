@@ -160,8 +160,8 @@ export function songoskritiPreviewSource(
               "More to explore",
               "আরও দেখুন",
               "festive",
-              "Loved across 64 districts",
-              "সারা দেশে জনপ্রিয়",
+              "",
+              "",
             ),
           ];
         }
@@ -218,8 +218,8 @@ export function songoskritiPreviewSource(
               "Complete the look",
               "লুক সম্পূর্ণ করুন",
               "festive",
-              "Loved across 64 districts",
-              "সারা দেশে জনপ্রিয়",
+              "",
+              "",
               4,
             ),
           ];

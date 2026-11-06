@@ -618,7 +618,7 @@ const RatingSummary: WidgetComponent = (ctx) => {
 };
 
 const ReviewList: WidgetComponent = (ctx) => {
-  const { str, bool, int, locale, data } = ctx;
+  const { str, bool, int, locale, data, editing } = ctx;
   const [verified, setVerified] = useState(false);
   if (data?.pending) return <Skeleton lines={5} />;
   const all = data?.rows ?? [];
@@ -634,6 +634,7 @@ const ReviewList: WidgetComponent = (ctx) => {
     return String(b.date ?? "").localeCompare(String(a.date ?? ""));
   });
   const rows = sorted.slice(0, int("limit", 6, 1, 24));
+  if (rows.length === 0 && !editing) return null;
   return (
     <section aria-label={locale === "bn" ? "রিভিউ" : "Reviews"}>
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">

@@ -2579,6 +2579,36 @@ const SONGOSKRITI: DemoCatalog = {
       name: "Gifting",
       description: "Kantha, brass and keepsakes to gift.",
     },
+    {
+      slug: "jamdani",
+      name: "Dhakai Jamdani",
+      description: "Finest handwoven Jamdani sarees from Sonargaon looms.",
+    },
+    {
+      slug: "nakshi-kantha",
+      name: "Nakshi Kantha",
+      description: "Hand-stitched running-stitch kantha quilts and heirloom crafts.",
+    },
+    {
+      slug: "rajshahi-silk",
+      name: "Rajshahi Silk",
+      description: "Pure mulberry silk festive panjabis, sarees, and fine weaves.",
+    },
+    {
+      slug: "tangail",
+      name: "Tangail Handloom",
+      description: "Traditional cotton taant sarees woven on pit looms.",
+    },
+    {
+      slug: "sarees",
+      name: "Signature Sarees",
+      description: "Handcrafted Jamdani, Katan, and silk sarees.",
+    },
+    {
+      slug: "panjabi",
+      name: "Fine Panjabis",
+      description: "Tailored silk and khadi panjabis for celebration and everyday wear.",
+    },
   ],
   products: [
     {
@@ -2587,8 +2617,8 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Pure Rajshahi silk panjabi with subtle kantha stitch along the placket and mother-of-pearl buttons. Model is 182cm and wears size 40.",
       category: "men",
-      collections: ["new-in", "festive", "wedding"],
-      tags: ["panjabi", "silk", "festive", "mens"],
+      collections: ["new-in", "festive", "wedding", "rajshahi-silk", "panjabi"],
+      tags: ["panjabi", "silk", "festive", "mens", "rajshahi-silk"],
       image_url: "/ph/songoskriti/prod-panjabi.png",
       variants: [
         {
@@ -2619,7 +2649,7 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Authentic Sonargaon Dhakai Jamdani with floral jall motifs in mulberry silk. Includes 80cm unstitched blouse piece. Model is 170cm.",
       category: "women",
-      collections: ["new-in", "festive", "wedding"],
+      collections: ["new-in", "festive", "wedding", "sarees", "jamdani"],
       tags: ["jamdani", "saree", "silk", "handloom"],
       image_url: "/ph/songoskriti/prod-saree.png",
       images: [
@@ -2715,8 +2745,8 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Hand-stitched running-stitch kantha on layered natural cotton by Jessore craftswomen. Queen size, 88 x 96 in.",
       category: "living",
-      collections: ["bestsellers", "gifting", "new-in"],
-      tags: ["kantha", "quilt", "handloom", "living"],
+      collections: ["bestsellers", "gifting", "new-in", "nakshi-kantha"],
+      tags: ["kantha", "quilt", "handloom", "living", "nakshi-kantha"],
       image_url: "/ph/songoskriti/cat-living.png",
       variants: [
         {
@@ -2772,7 +2802,7 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Woven on a traditional wooden pit loom in Delduar, Tangail. 100% fine combed cotton with contrast zari border. Includes 80cm blouse piece.",
       category: "women",
-      collections: ["bestsellers", "festive"],
+      collections: ["bestsellers", "festive", "tangail", "sarees"],
       tags: ["cotton", "handloom", "saree", "tangail"],
       image_url: "/ph/songoskriti/cat-women.png",
       variants: [

@@ -329,7 +329,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
         {
           title: "Tangail Handloom",
           image: "/ph/songoskriti/cat-newin.png",
-          href: `${c}/heritage-handloom`,
+          href: `${c}/tangail`,
           subtitle: "Cotton Taant",
         },
         {

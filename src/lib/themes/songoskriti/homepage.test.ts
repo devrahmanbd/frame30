@@ -56,7 +56,7 @@ describe("Songoskriti homepage seed configuration", () => {
     expect(rajshahi?.subtitle).toBe("Pure Silk Weave");
 
     const tangail = collections.find((c) => c.title === "Tangail Handloom");
-    expect(tangail?.href).toBe("/c/heritage-handloom");
+    expect(tangail?.href).toBe("/c/tangail");
     expect(tangail?.subtitle).toBe("Cotton Taant");
 
     const nakshi = collections.find((c) => c.title === "Nakshi Kantha");

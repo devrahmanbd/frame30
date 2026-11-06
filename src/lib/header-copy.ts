@@ -31,11 +31,7 @@ export const HEADER_FALLBACK_MENU = [
         url: "/c/sarees",
         children: [
           { id: "ws-jamdani", label: "Dhakai Jamdani", url: "/c/jamdani" },
-          {
-            id: "ws-handloom",
-            label: "Heritage Handloom",
-            url: "/c/heritage-handloom",
-          },
+          { id: "ws-tangail", label: "Tangail Handloom", url: "/c/tangail" },
           { id: "ws-festive", label: "Festive Sarees", url: "/c/festive" },
           { id: "ws-all", label: "All Sarees", url: "/c/sarees" },
         ],
@@ -447,6 +443,8 @@ export const HEADER_MENU_BN: Record<string, string> = {
   "Search Storefront": "স্টোরে খুঁজুন",
   "Weaves & Craft": "বুনন ও কারুকাজ",
   "Rajshahi Silk": "রাজশাহী সিল্ক",
+  "Tangail Handloom": "টাঙ্গাইল তাঁত",
+  "Girls Festive Wear": "ছোটদের উৎসবের পোশাক",
   "Nakshi Kantha": "নকশি কাঁথা",
   "Artisan Stories": "কারিগরের গল্প",
   "The Journal": "জার্নাল",
