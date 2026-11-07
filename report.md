@@ -1,3 +1,24 @@
+# Frame30 / Flame Fashion BD & Songoskriti Production Remediation
+
+**Date:** 2026-11-07 · **Branch:** `frame30` / `main` · **Status:** Production Deployed & Verified  
+**Live Production Host:** `https://flamelancer.com` · **Preview Host:** `https://framique.qubickle.com/theme-preview/songoskriti`  
+**Target Merchant:** `b47532e5-9649-4ebd-93a9-06fa2917c00e` (Flame Fashion BD)  
+**Production Server:** `88.99.250.99:3200` (`framique.service`, OpenResty edge, Postgres `framique-supabase-db`, Redis `deploy-redis-1`)  
+
+### 10-Issue Follow-Up Audit Resolution Summary:
+1. **Announcement Bar**: Gated and suppressed on Songoskriti collection & storefront pages; returns null with zero residual wrapper or height.
+2. **Navigation Taxonomy**: Restored complete 3-tier Kids taxonomy (`Girls Festive Wear`, `Boys Ethnic Wear`, `All Children's Wear`) pointing to published `/c/kids`.
+3. **Homepage Copy & Craft Integrity**: Replaced generic slogans with authentic Bengal handloom craft narratives (Jamdani, Mulberry Silk, Tangail, Nakshi Kantha).
+4. **Trust Claims & Outlets**: Removed hardcoded mobile drawer fallbacks ("7-Day Exchange" and "10am-8pm"); gated delivery strictly to merchant flat rate microcopy without unverified "Nationwide" claims; fictional outlets purged.
+5. **UGC Attribution**: Clean lookbook defaults scoped to `@flamefashionbd` and seasonal lookbooks without fabricated claims.
+6. **Collection Filters**: Live horizontal filter toolbar with tags, materials, BDT price ranges, availability toggles, active count, and sort order. Multi-facet counts calculated dynamically with conjunctive filtering.
+7. **Brand Identity & Header**: Merchant brand name displayed in editorial wordmark decoupled from the theme SVG logo.
+8. **Collection Presentation**: Clean editorial layout; breadcrumbs suppressed for Songoskriti; dedicated Sarees and Tangail archetypes restored.
+9. **Merchandising Accuracy**: Skincare soap archived; fashion collections populated exclusively with authentic handloom apparel; broken footer `/pages/locations` link removed.
+10. **Product Policies & Care**: Dynamic VAT display gated strictly to `prices_include_vat`; COD gated to `cod_enabled === true`; return policy linked to `/pages/returns`.
+
+---
+
 # Frame30 / Songoskriti closeout — one official theme
 
 **Date:** 2026-11-02 · **Branch:** `frame30` · **Baseline HEAD:** `630e80be` · **Deployed SHA:** `edfc948f` (third wave; was `9d9a51bf`, `64172796`, and `9b91f18a` before that)

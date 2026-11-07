@@ -104,13 +104,11 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
       "Our Story|/pages/about",
       "Craft & Heritage|/pages/heritage",
       "Blog & Updates|/blog",
-      "Store Locations|/pages/locations",
     ].join("\n"),
     links_bn: [
       "আমাদের গল্প|/pages/about",
       "ঐতিহ্য ও কারুশিল্প|/pages/heritage",
       "ব্লগ ও আপডেট|/blog",
-      "স্টোর লোকেশন|/pages/locations",
     ].join("\n"),
   },
   {

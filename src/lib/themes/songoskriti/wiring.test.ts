@@ -112,7 +112,8 @@ describe("songoskriti wiring", () => {
         .filter(Boolean),
     );
     expect(labels).toContain("Contact");
-    expect(labels).toHaveLength(24);
+    // 23 links: "Store Locations|/pages/locations" was removed to prevent 404 links on merchant storefronts
+    expect(labels).toHaveLength(23);
     expect(new Set(labels).size).toBe(labels.length);
   });
 

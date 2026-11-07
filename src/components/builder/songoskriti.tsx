@@ -1386,9 +1386,31 @@ const SongoskritiProductGrid: WidgetComponent = (ctx) => {
   const subhead = str("subhead");
   const badgeLabel = str("badgeLabel");
   const promise = str("promise");
-
   if (host) {
-    return <div className="w-full">{host}</div>;
+    return (
+      <section className="w-full bg-[var(--theme-surface)] py-4">
+        <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-6 lg:px-10">
+          {heading && (
+            <div className="mb-6 flex flex-col items-center text-center">
+              {badgeLabel && (
+                <span className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-accent,#C05A3E)]">
+                  {badgeLabel}
+                </span>
+              )}
+              <Heading className="font-serif text-[28px] sm:text-[36px] lg:text-[44px] font-normal tracking-[0.01em] text-[var(--theme-ink)] leading-snug">
+                {heading}
+              </Heading>
+              {subhead && (
+                <p className="mt-2 font-serif text-[15px] sm:text-[16px] font-light leading-relaxed text-[var(--theme-ink)]/50 max-w-xl">
+                  {subhead}
+                </p>
+              )}
+            </div>
+          )}
+          {host}
+        </div>
+      </section>
+    );
   }
 
   if (rows !== undefined && rows.length === 0 && !data?.pending) return null;

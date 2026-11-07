@@ -281,9 +281,11 @@ export function AddToCart({
       <div className="mt-8 space-y-3 rounded border border-border bg-[var(--theme-surface,#f5f3f0)] p-4 text-sm">
         {(settings?.shipping_flat_minor_int ?? 0) > 0 && (
           <div className="flex gap-2">
-            <span className="font-semibold text-foreground">Delivery:</span>
+            <span className="font-semibold text-foreground">
+              {t("Delivery:", "ডেলিভারি:")}
+            </span>
             <span className="text-muted-foreground">
-              Nationwide shipping available.
+              {t("Standard delivery available", "স্ট্যান্ডার্ড ডেলিভারি সুবিধা")} ({fmtMinor(settings?.shipping_flat_minor_int ?? 0, "BDT")}).
             </span>
           </div>
         )}

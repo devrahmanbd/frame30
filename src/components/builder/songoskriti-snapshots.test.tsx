@@ -141,13 +141,11 @@ const FIXED_FOOTER_PROPS: Record<string, PropValue> = {
     "Our Story|/pages/about",
     "Craft & Heritage|/pages/heritage",
     "Blog & Updates|/blog",
-    "Store Locations|/pages/locations",
   ].join("\n"),
   c3Links_bn: [
     "আমাদের গল্প|/pages/about",
     "ঐতিহ্য ও কারুশিল্প|/pages/heritage",
     "ব্লগ ও আপডেট|/blog",
-    "স্টোর লোকেশন|/pages/locations",
   ].join("\n"),
   c4Title: "Policies",
   c4Title_bn: "নীতিমালা",

@@ -792,25 +792,24 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
   // Meaningful facets extracted dynamically from actual products in this collection
   const baseFacets = extractWeaveFacets(products, collection.slug);
 
-  // Dynamically recalculate facet counts against products matching active price & availability filters
-  const candidateProducts = filterCollectionProducts(products, {
-    availability: filterAvailability,
-    price: filterPrice,
-    minPriceBDT,
-    maxPriceBDT,
-    tags: [],
+  // Dynamically recalculate facet counts against products matching active price, availability,
+  // and other selected weave/material filters (conjunctive facet scoping).
+  const availableFacets: FilterFacetOption[] = baseFacets.map((facet) => {
+    const otherSelectedTags = selectedTags.filter(
+      (t) => t.toLowerCase() !== facet.tag.toLowerCase(),
+    );
+    const candidateMatches = filterCollectionProducts(products, {
+      availability: filterAvailability,
+      price: filterPrice,
+      minPriceBDT,
+      maxPriceBDT,
+      tags: [...otherSelectedTags, facet.tag],
+    });
+    return {
+      ...facet,
+      count: candidateMatches.length,
+    };
   });
-  const candidateFacetCounts = new Map(
-    extractWeaveFacets(candidateProducts, collection.slug).map((f) => [
-      f.tag,
-      f.count,
-    ]),
-  );
-
-  const availableFacets: FilterFacetOption[] = baseFacets.map((facet) => ({
-    ...facet,
-    count: candidateFacetCounts.get(facet.tag) ?? 0,
-  }));
 
   const filteredProducts = filterCollectionProducts(products, {
     availability: filterAvailability,
