@@ -1393,7 +1393,7 @@ const SongoskritiProductGrid: WidgetComponent = (ctx) => {
           {heading && (
             <div className="mb-6 flex flex-col items-center text-center">
               {badgeLabel && (
-                <span className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-accent,#C05A3E)]">
+                <span className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-accent)]">
                   {badgeLabel}
                 </span>
               )}

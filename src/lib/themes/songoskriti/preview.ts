@@ -207,17 +207,17 @@ export function songoskritiPreviewSource(
               text_bn: "পণ্যের বিবরণ ও কারুশিল্প",
             }),
             s("rich_text", {
-              heading: "Details",
-              heading_bn: "বিবরণ",
-              body: "Handcrafted with premium materials, traditional techniques, and enduring attention to detail.",
+              heading: "",
+              heading_bn: "",
+              body: "Authentic handloom construction, breathable pure natural fibers, hand-finished borders, and generational artisan weaving techniques.",
               body_bn:
-                "প্রিমিয়াম উপাদান, ঐতিহ্যবাহী কৌশল এবং দীর্ঘস্থায়ী যত্নে হস্তনির্মিত।",
+                "খাঁটি তাঁতের বুনন, আরামদায়ক প্রাকৃতিক সুতো, হস্তনির্মিত পাড় এবং আবহমান ঐতিহ্যবাহী কারুশিল্প।",
             }),
             rail(
               s,
               "Complete the look",
               "লুক সম্পূর্ণ করুন",
-              "festive",
+              "jewellery",
               "",
               "",
               4,

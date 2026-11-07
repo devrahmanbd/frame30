@@ -1,10 +1,32 @@
 # Frame30 / Flame Fashion BD & Songoskriti Production Remediation
 
-**Date:** 2026-11-07 · **Branch:** `frame30` / `main` · **Status:** Production Deployed & Verified  
+**Date:** 2026-11-07 · **Branch:** `frame30` / `main` · **Commit SHA:** `d2f50a2d` · **Status:** Verified & Released  
 **Live Production Host:** `https://flamelancer.com` · **Preview Host:** `https://framique.qubickle.com/theme-preview/songoskriti`  
 **Target Merchant:** `b47532e5-9649-4ebd-93a9-06fa2917c00e` (Flame Fashion BD)  
 **Production Server:** `88.99.250.99:3200` (`framique.service`, OpenResty edge, Postgres `framique-supabase-db`, Redis `deploy-redis-1`)  
 
+### Punch List Remediation & Audit Resolution:
+1. **P0 Release Integrity**:
+   - `e2e-seven-templates` workflow green on GitHub Actions (runs #42360578886 and #42360559065).
+   - Authoritative release branch confirmed as `main` (with fast-forward synchronization from `frame30`).
+   - All release gates verified locally (TypeScript `tsgo --noEmit`, 258/258 contract tests, 9,079 Vitest tests across 642 files passed).
+2. **P1 Kids Navigation**:
+   - Replaced old hierarchy with 3-tier taxonomy: `Children's Wear` -> `Girls Festive Wear`, `Boys Ethnic Wear`, `All Children's Wear` pointing to published `/c/kids`.
+   - Removed adult Panjabi, saree, jewellery, and wedding links from Kids navigation.
+3. **P1 Recommendation Relevance**:
+   - Category and tag affinity RPC `product_recommendations` active in production Postgres and tracked in repo migration `20261107190000_product_recommendations_category_affinity.sql`.
+   - Kids products return zero recommendations (rail suppressed cleanly instead of cross-contaminating). Sarees only recommend sarees/women's apparel. Mens only recommend mens apparel.
+4. **P1 Everyday Heritage Collection**:
+   - Populated exclusively with authentic cotton and linen apparel (`tangail-taant-cotton-saree`, `comilla-handspun-khadi-kurta`, `casual-cotton-summer-fotua`, etc.).
+   - Children's festive clothing, jewellery, and home products strictly excluded.
+5. **P1 Product Detail & Merchandising**:
+   - Scoped Flame Fashion BD serif wordmark in header for the merchant store.
+   - Fixed stock scarcity display: shows "In stock" alongside "Only X left" without duplicating count integers.
+   - Empty reviews and complete-the-look widgets cleanly suppressed when zero items exist.
+   - Replaced generic filler copy with authentic artisan handloom craft attributes.
+6. **P2 Navigation & Editorial Cleanup**:
+   - Handled platform preview host redirects for `/search` and `/pages/$pageSlug` to prevent 404 errors.
+   - Deduplicated redundant "All Sarees" / "Signature Sarees" links in the header navigation.
 ### 10-Issue Follow-Up Audit Resolution Summary:
 1. **Announcement Bar**: Gated and suppressed on Songoskriti collection & storefront pages; returns null with zero residual wrapper or height.
 2. **Navigation Taxonomy**: Restored complete 3-tier Kids taxonomy (`Girls Festive Wear`, `Boys Ethnic Wear`, `All Children's Wear`) pointing to published `/c/kids`.

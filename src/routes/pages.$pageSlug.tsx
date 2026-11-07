@@ -29,7 +29,20 @@ export const Route = createFileRoute("/pages/$pageSlug")({
     } catch {
       host = null;
     }
-    if (!host) throw notFound();
+    if (!host) {
+      const { defaultPreviewKey } = await import("@/lib/preview-sources");
+      throw redirect({
+        to: "/theme-preview/$key",
+        params: { key: defaultPreviewKey() },
+        search: {
+          template: "page",
+          focus: params.pageSlug.slice(0, 64),
+          q: undefined,
+          max: undefined,
+        },
+        replace: true,
+      });
+    }
     const found = await getStorePageFn({
       data: { slug: host.merchantSlug, pageSlug: params.pageSlug },
     });

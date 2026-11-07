@@ -2,6 +2,7 @@ import {
   createFileRoute,
   Link,
   notFound,
+  redirect,
   useNavigate,
 } from "@tanstack/react-router";
 import * as React from "react";
@@ -49,7 +50,20 @@ export const Route = createFileRoute("/search")({
     } catch {
       host = null;
     }
-    if (!host) throw notFound();
+    if (!host) {
+      const { defaultPreviewKey } = await import("@/lib/preview-sources");
+      throw redirect({
+        to: "/theme-preview/$key",
+        params: { key: defaultPreviewKey() },
+        search: {
+          template: "search",
+          focus: undefined,
+          q: typeof deps.q === "string" ? deps.q : undefined,
+          max: typeof deps.max === "number" || typeof deps.max === "string" ? String(deps.max) : undefined,
+        },
+        replace: true,
+      });
+    }
     const params = { slug: host.merchantSlug };
     const state = normalizeSearchParams(deps as Record<string, unknown>);
     // The published `search` template is fetched alongside the results, so the

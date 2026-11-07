@@ -773,6 +773,30 @@ export function applyDemoFocus(
             heading: focus!.title,
           },
         };
+      } else if (
+        rail &&
+        isCollectionBound &&
+        (next.props["heading"] === "More to explore" ||
+          next.props["heading_bn"] === "আরও দেখুন")
+      ) {
+        const col = focus!.collection.toLowerCase();
+        let relatedCol = col;
+        if (col === "kids") {
+          relatedCol = "kids-related";
+        } else if (col === "sarees" || col === "jamdani" || col === "tangail") {
+          relatedCol = "heritage-handloom";
+        } else if (col === "mens" || col === "panjabi") {
+          relatedCol = "artisan-essentials";
+        } else if (col === "women" || col === "womens") {
+          relatedCol = "heritage-handloom";
+        }
+        next = {
+          ...next,
+          props: {
+            ...next.props,
+            collection: relatedCol,
+          },
+        };
       }
 
       const kids = next.children;

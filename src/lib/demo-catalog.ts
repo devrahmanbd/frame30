@@ -832,6 +832,12 @@ const HANDLOOM_APPAREL: DemoCatalog = {
       description: "Silk panjabis cut for celebrations.",
     },
     {
+      slug: "everyday",
+      name: "Everyday Heritage",
+      description:
+        "Comfortable handloom cottons and khadi essentials for everyday wear.",
+    },
+    {
       slug: "festive-gifting",
       name: "Festive Gifting",
       description: "Jewelry, wellness and keepsakes to gift.",
@@ -846,6 +852,7 @@ const HANDLOOM_APPAREL: DemoCatalog = {
       category: "womens",
       collections: [
         "heritage-handloom",
+        "everyday",
         "eid-festive",
         "bridal-sarees",
         "festive-sale",
@@ -1075,6 +1082,7 @@ const HANDLOOM_APPAREL: DemoCatalog = {
       category: "mens",
       collections: [
         "artisan-essentials",
+        "everyday",
         "heritage-handloom",
         "festive-sale",
         "groom-panjabis",
@@ -1279,7 +1287,7 @@ const HANDLOOM_APPAREL: DemoCatalog = {
       description:
         "Airy and lightweight short-sleeved casual fotua handwoven from breathable Bangladeshi cotton. Styled with band collar, relaxed silhouette, and coconut shell buttons for everyday ease.",
       category: "mens",
-      collections: ["artisan-essentials", "festive-sale", "mens", "taaga-man"],
+      collections: ["artisan-essentials", "everyday", "festive-sale", "mens", "taaga-man"],
       tags: ["fotua", "cotton", "casual", "mens", "summer"],
       image_url: "/api/public/ph/mens/casual-cotton-summer-fotua.svg",
       variants: [
@@ -1356,6 +1364,7 @@ const HANDLOOM_APPAREL: DemoCatalog = {
       category: "mens",
       collections: [
         "artisan-essentials",
+        "everyday",
         "best-sellers",
         "festive-sale",
         "mens",
@@ -1453,6 +1462,7 @@ const HANDLOOM_APPAREL: DemoCatalog = {
       category: "taaga",
       collections: [
         "taaga-fusion",
+        "everyday",
         "new-in",
         "festive-gifting",
         "festive-sale",
@@ -1500,6 +1510,7 @@ const HANDLOOM_APPAREL: DemoCatalog = {
       category: "taaga",
       collections: [
         "taaga-fusion",
+        "everyday",
         "artisan-essentials",
         "festive-gifting",
         "festive-sale",

@@ -223,7 +223,9 @@ export function AddToCart({
         {!isPriced
           ? t("Unavailable", "পণ্যটি বর্তমানে পাওয়া যাচ্ছে না")
           : stock > 0
-            ? t(`${stock} in stock`, `স্টকে ${stock} টি`)
+            ? stock <= 10
+              ? t("In stock", "স্টকে আছে")
+              : t(`${stock} in stock`, `স্টকে ${stock} টি`)
             : t("Out of stock", "স্টক নেই")}
       </p>
 

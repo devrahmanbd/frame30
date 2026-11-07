@@ -121,8 +121,15 @@ export function previewDemoMap(
             prod?.tags?.includes(slug)
           );
         });
-        if (filtered.length > 0) {
+        const isKnown =
+          catalog.collections.some((c) => c.slug === slug) ||
+          catalog.products.some(
+            (p) => p.category === slug || p.tags?.includes(slug),
+          );
+        if (isKnown) {
           rows = filtered;
+        } else {
+          rows = filtered.length > 0 ? filtered : base;
         }
       }
     }

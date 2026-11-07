@@ -412,21 +412,28 @@ export function ProductConversion({
 
   const summary = reviewSummary(bundle.data?.agg ?? null);
   const reviews = bundle.data?.reviews ?? [];
+  const recs = bundle.data?.recommendations ?? [];
+  const recent = bundle.data?.recentlyViewed ?? [];
+
+  if (reviews.length === 0 && recs.length === 0 && recent.length === 0 && !bundle.isLoading) {
+    return null;
+  }
 
   return (
     <div className="mt-14 border-t border-border pt-10">
-      <section aria-labelledby="reviews-heading">
-        <h2 id="reviews-heading" className="text-lg font-semibold">
-          {t("Customer reviews", "ক্রেতার রিভিউ")}
-        </h2>
+      {reviews.length > 0 && (
+        <section aria-labelledby="reviews-heading">
+          <h2 id="reviews-heading" className="text-lg font-semibold">
+            {t("Customer reviews", "ক্রেতার রিভিউ")}
+          </h2>
 
-        {bundle.isLoading ? (
-          <div
-            className="mt-4 h-24 animate-pulse rounded-fq-md bg-muted"
-            aria-hidden
-          />
-        ) : (
-          <div className="mt-4 grid gap-6 md:grid-cols-[220px_1fr]">
+          {bundle.isLoading ? (
+            <div
+              className="mt-4 h-24 animate-pulse rounded-fq-md bg-muted"
+              aria-hidden
+            />
+          ) : (
+            <div className="mt-4 grid gap-6 md:grid-cols-[220px_1fr]">
             <div>
               <p className="text-3xl font-semibold tabular-nums">
                 {summary.mean.toFixed(1)}
@@ -520,6 +527,7 @@ export function ProductConversion({
           </div>
         )}
       </section>
+      )}
 
       <ProductRail
         slug={slug}

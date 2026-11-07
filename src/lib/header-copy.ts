@@ -44,7 +44,7 @@ export const HEADER_FALLBACK_MENU = [
           { id: "wo-eid", label: "Eid & Festive", url: "/c/eid-festive" },
           { id: "wo-wedding", label: "Wedding & Bridal", url: "/c/wedding" },
           { id: "wo-everyday", label: "Everyday Heritage", url: "/c/everyday" },
-          { id: "wo-sarees", label: "Signature Sarees", url: "/c/sarees" },
+          { id: "wo-mehendi", label: "Mehendi & Holud", url: "/c/mehendi" },
         ],
       },
       {
@@ -143,7 +143,18 @@ export const HEADER_FALLBACK_MENU = [
     label: "Kids",
     url: "/c/kids",
     image: "/ph/songoskriti/cat-kids.jpg",
-    children: [],
+    children: [
+      {
+        id: "k-festive",
+        label: "Children's Wear",
+        url: "/c/kids",
+        children: [
+          { id: "kf-girls", label: "Girls Festive Wear", url: "/c/kids" },
+          { id: "kf-boys", label: "Boys Ethnic Wear", url: "/c/kids" },
+          { id: "kf-all", label: "All Children's Wear", url: "/c/kids" },
+        ],
+      },
+    ],
   },
   {
     id: "festive",
@@ -447,6 +458,8 @@ export const HEADER_MENU_BN: Record<string, string> = {
   "Girls Festive Wear": "ছোটদের উৎসবের পোশাক",
   "Boys Ethnic Wear": "ছেলেদের ঐতিহ্যবাহী পোশাক",
   "All Children's Wear": "শিশুদের সকল পোশাক",
+  "Children's Wear": "শিশুদের পোশাক",
+  "Mehendi & Holud": "মেহেদি ও হলুদ",
   "Nakshi Kantha": "নকশি কাঁথা",
   "Artisan Stories": "কারিগরের গল্প",
   "The Journal": "জার্নাল",

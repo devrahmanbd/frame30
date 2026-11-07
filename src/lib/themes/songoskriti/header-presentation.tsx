@@ -684,17 +684,20 @@ export function SongoskritiHeaderShell({
       policyDelivery={policyDelivery}
     />
   );
-  const brandMark = headerChrome ? (
-    <img
-      src={headerChrome.logo.src}
-      alt={name || headerChrome.logo.alt}
-      className="h-[34px] w-auto object-contain transition-all duration-300"
-    />
-  ) : (
-    <span className="font-bangla-display block truncate text-xl font-semibold tracking-tight text-[var(--theme-ink)]">
-      {name}
-    </span>
-  );
+  const isFlameMerchant =
+    slug === "flame-fashion-bd" || name === "Flame Fashion BD";
+  const brandMark =
+    headerChrome && !isFlameMerchant ? (
+      <img
+        src={headerChrome.logo.src}
+        alt={name || headerChrome.logo.alt}
+        className="h-[34px] w-auto object-contain transition-all duration-300"
+      />
+    ) : (
+      <span className="font-serif text-2xl font-light tracking-[0.15em] uppercase text-[var(--theme-ink)] block truncate">
+        {name}
+      </span>
+    );
   return (
     <header
       data-header-shell="songoskriti"
