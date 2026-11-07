@@ -143,6 +143,39 @@ export const SONGOSKRITI_COLLECTIONS: Record<string, CollectionConfig> = {
     ],
     featuredCollection: "new-in",
   },
+  sarees: {
+    type: "department",
+    title: "Sarees",
+    title_bn: "শাড়ি",
+    heroImage: "/ph/songoskriti/prod-saree.png",
+    categories: [
+      { iLabel: "Dhakai Jamdani", iHref: "/c/jamdani" },
+      { iLabel: "Tangail Handloom", iHref: "/c/tangail" },
+      { iLabel: "Rajshahi Silk", iHref: "/c/rajshahi-silk" },
+      { iLabel: "Festive Sarees", iHref: "/c/festive" },
+    ],
+    featuredCollection: "sarees",
+    editorial: {
+      image: "/ph/songoskriti/hero-weaves.jpg",
+      heading: "Master Handloom Sarees",
+      heading_bn: "সেরা তাঁতের শাড়ি",
+      body: "Authentic hand-woven Jamdani, pure silk, and traditional cotton taant.",
+      body_bn: "আসল তাঁতের জামদানি, খাঁটি সিল্ক এবং ঐতিহ্যবাহী সুতি তাঁত।",
+    },
+    secondaryCollection: "new-in",
+  },
+  tangail: {
+    type: "department",
+    title: "Tangail Handloom",
+    title_bn: "টাঙ্গাইল তাঁত",
+    heroImage: "/ph/songoskriti/cat-newin.png",
+    categories: [
+      { iLabel: "All Sarees", iHref: "/c/sarees" },
+      { iLabel: "Dhakai Jamdani", iHref: "/c/jamdani" },
+      { iLabel: "Rajshahi Silk", iHref: "/c/rajshahi-silk" },
+    ],
+    featuredCollection: "tangail",
+  },
 };
 
 let n = 0;

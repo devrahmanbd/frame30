@@ -469,6 +469,7 @@ function useMockProductSlots(
     cod_enabled: true,
     mfs_enabled: true,
     free_shipping_threshold_minor_int: null,
+    prices_include_vat: false,
   };
 
   const mappedVariant =

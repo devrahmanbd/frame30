@@ -908,7 +908,7 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
     db
       .from("merchant_settings")
       .select(
-        "cod_enabled, mfs_enabled, shipping_flat_minor_int, free_shipping_threshold_minor_int",
+        "cod_enabled, mfs_enabled, shipping_flat_minor_int, free_shipping_threshold_minor_int, prices_include_vat",
       )
       .eq("merchant_id", merchant.id)
       .maybeSingle(),

@@ -445,6 +445,8 @@ export const HEADER_MENU_BN: Record<string, string> = {
   "Rajshahi Silk": "রাজশাহী সিল্ক",
   "Tangail Handloom": "টাঙ্গাইল তাঁত",
   "Girls Festive Wear": "ছোটদের উৎসবের পোশাক",
+  "Boys Ethnic Wear": "ছেলেদের ঐতিহ্যবাহী পোশাক",
+  "All Children's Wear": "শিশুদের সকল পোশাক",
   "Nakshi Kantha": "নকশি কাঁথা",
   "Artisan Stories": "কারিগরের গল্প",
   "The Journal": "জার্নাল",

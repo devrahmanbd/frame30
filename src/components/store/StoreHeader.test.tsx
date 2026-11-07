@@ -1484,4 +1484,10 @@ describe("header announcement via theme-owned presentations (R1b)", () => {
       );
     }
   });
+
+  it("drawer omits unverified 7-Day Exchange when policyDelivery is unconfigured", () => {
+    const src = HEADER_SRC();
+    expect(src).not.toContain("Nationwide Doorstep Delivery & 7-Day Exchange");
+    expect(src).not.toContain("সারাদেশে ডোরস্টেপ ডেলিভারি ও ৭ দিনের এক্সচেঞ্জ");
+  });
 });

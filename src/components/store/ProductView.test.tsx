@@ -18,7 +18,7 @@ import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { ReactElement } from "react";
 
-import { ProductCraftStory } from "./ProductView";
+import { PriceBlock, ProductCraftStory } from "./ProductView";
 import { LanguageProvider } from "@/lib/i18n";
 
 const CRAFT_DESC =
@@ -76,5 +76,46 @@ describe("ProductCraftStory brand art follows the theme key", () => {
     const src = readFileSync("src/components/store/ProductView.tsx", "utf8");
     expect(src).toMatch(/themeKey === "songoskriti"|isSongoskriti/);
     expect(src).toContain("/ph/songoskriti/hero-artisans.jpg");
+  });
+});
+
+describe("PriceBlock VAT display is merchant-gated", () => {
+  const sampleVariant = {
+    price_amount_minor_int: 350000,
+    compare_at_amount_minor_int: 400000,
+    stock_quantity: 5,
+  };
+
+  it("omits VAT line when pricesIncludeVat is false or undefined", () => {
+    const htmlWithout = renderToStaticMarkup(
+      <LanguageProvider initialLang="en">
+        <PriceBlock variant={sampleVariant} currencyCode="BDT" />
+      </LanguageProvider>,
+    );
+    expect(htmlWithout).not.toContain("VAT included");
+
+    const htmlFalse = renderToStaticMarkup(
+      <LanguageProvider initialLang="en">
+        <PriceBlock
+          variant={sampleVariant}
+          currencyCode="BDT"
+          pricesIncludeVat={false}
+        />
+      </LanguageProvider>,
+    );
+    expect(htmlFalse).not.toContain("VAT included");
+  });
+
+  it("displays VAT included when merchant settings explicitly enable it", () => {
+    const htmlWith = renderToStaticMarkup(
+      <LanguageProvider initialLang="en">
+        <PriceBlock
+          variant={sampleVariant}
+          currencyCode="BDT"
+          pricesIncludeVat={true}
+        />
+      </LanguageProvider>,
+    );
+    expect(htmlWith).toContain("VAT included");
   });
 });

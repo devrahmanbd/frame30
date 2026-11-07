@@ -464,17 +464,16 @@ export function SongoskritiMobileDrawer({
       {/* Drawer Footer */}
       {(policyDelivery || supportEmail) && (
         <div className="mt-8 pt-6 border-t border-[var(--theme-border)] space-y-4 text-[12px] text-[var(--theme-ink)]/70">
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50 mb-1">
-              {locale === "bn" ? "কাস্টমার কনসিয়ার্জ" : "Customer Concierge"}
-            </p>
-            <p className="font-serif text-[13px] text-[var(--theme-ink)]">
-              {policyDelivery ||
-                (locale === "bn"
-                  ? "সারাদেশে ডোরস্টেপ ডেলিভারি ও ৭ দিনের এক্সচেঞ্জ"
-                  : "Nationwide Doorstep Delivery & 7-Day Exchange")}
-            </p>
-          </div>
+          {policyDelivery && (
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50 mb-1">
+                {locale === "bn" ? "কাস্টমার কনসিয়ার্জ" : "Customer Concierge"}
+              </p>
+              <p className="font-serif text-[13px] text-[var(--theme-ink)]">
+                {policyDelivery}
+              </p>
+            </div>
+          )}
           {supportEmail && (
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50 mb-1">
@@ -485,9 +484,11 @@ export function SongoskritiMobileDrawer({
                 className="inline-flex items-center gap-1.5 text-[var(--theme-accent,#C05A3E)] font-medium"
               >
                 <span>{supportEmail}</span>
-                <span className="text-[10px] text-[var(--theme-ink)]/50">
-                  ({supportHours ?? "10am–8pm"})
-                </span>
+                {supportHours && (
+                  <span className="text-[10px] text-[var(--theme-ink)]/50">
+                    ({supportHours})
+                  </span>
+                )}
               </a>
             </div>
           )}

@@ -84,6 +84,7 @@ export function ProductInfo({
 export function PriceBlock({
   variant,
   currencyCode,
+  pricesIncludeVat,
 }: {
   /**
    * Minimal read-shape: price/compare/stock only, so preview mocks (which
@@ -97,6 +98,7 @@ export function PriceBlock({
       }
     | undefined;
   currencyCode: string;
+  pricesIncludeVat?: boolean;
 }) {
   const { t } = useLang();
   const price = variant?.price_amount_minor_int ?? 0;
@@ -124,6 +126,11 @@ export function PriceBlock({
           </p>
         )}
       </div>
+      {pricesIncludeVat && (
+        <p className="mt-1 text-xs text-muted-foreground">
+          {t("VAT included", "ভ্যাট অন্তর্ভুক্ত")}
+        </p>
+      )}
       <div className="self-start">
         <ScarcityBadge stock={Number(variant?.stock_quantity ?? 0)} />
       </div>
@@ -546,7 +553,11 @@ export function ProductView({ data }: { data: ProductPayload }) {
   const media = <ProductGallery product={product} />;
 
   const priceBlock = (
-    <PriceBlock variant={variant} currencyCode={merchant.currency_code} />
+    <PriceBlock
+      variant={variant}
+      currencyCode={merchant.currency_code}
+      pricesIncludeVat={settings?.prices_include_vat ?? false}
+    />
   );
 
   const meta = <ProductInfo product={product} />;

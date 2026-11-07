@@ -838,20 +838,18 @@ export function HeaderMobileDrawer({
           </li>
         ))}
       </ul>
-      {isLuxury && (
+      {isLuxury && (policyDelivery || supportEmail) && (
         <div className="px-4 pb-20 pt-6 border-t border-[var(--theme-border)] space-y-4 text-[12px] text-[var(--theme-ink)]/70">
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50 mb-1">
-              {t("Customer Concierge", "কাস্টমার কনসিয়ার্জ")}
-            </p>
-            <p className="font-serif text-[13px] text-[var(--theme-ink)]">
-              {policyDelivery ||
-                t(
-                  "Nationwide Doorstep Delivery & 7-Day Exchange",
-                  "সারাদেশে ডোরস্টেপ ডেলিভারি ও ৭ দিনের এক্সচেঞ্জ",
-                )}
-            </p>
-          </div>
+          {policyDelivery && (
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50 mb-1">
+                {t("Customer Concierge", "কাস্টমার কনসিয়ার্জ")}
+              </p>
+              <p className="font-serif text-[13px] text-[var(--theme-ink)]">
+                {policyDelivery}
+              </p>
+            </div>
+          )}
           {supportEmail && (
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50 mb-1">
@@ -862,9 +860,11 @@ export function HeaderMobileDrawer({
                 className="inline-flex items-center gap-1.5 text-[var(--theme-accent)] font-medium"
               >
                 <span>{supportEmail}</span>
-                <span className="text-[10px] text-[var(--theme-ink)]/50">
-                  ({supportHours ?? "10am–8pm"})
-                </span>
+                {supportHours && (
+                  <span className="text-[10px] text-[var(--theme-ink)]/50">
+                    ({supportHours})
+                  </span>
+                )}
               </a>
             </div>
           )}
