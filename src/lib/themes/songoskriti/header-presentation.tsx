@@ -947,7 +947,9 @@ export function SongoskritiHeaderShell({
             </Link>
           )}
 
-          <LanguageToggle className="hidden sm:inline-flex" />
+          <div className="hidden sm:inline-flex shrink-0">
+            <LanguageToggle />
+          </div>
 
           {custom ? (
             <Link
