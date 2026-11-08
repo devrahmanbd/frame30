@@ -83,31 +83,37 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
         {
           title: "Sarees",
           image: "/ph/songoskriti/prod-saree.png",
+          hoverImage: "/ph/songoskriti/cat-women.png",
           href: `${c}/sarees`,
         },
         {
           title: "Panjabi",
           image: "/ph/songoskriti/prod-panjabi.png",
+          hoverImage: "/ph/songoskriti/campaign-men.jpg",
           href: `${c}/panjabi`,
         },
         {
           title: "Festive",
           image: "/ph/songoskriti/hero-festive.jpg",
+          hoverImage: "/ph/songoskriti/edit-festive-main.jpg",
           href: `${c}/festive`,
         },
         {
           title: "Wedding",
           image: "/ph/songoskriti/edit-festive-main.jpg",
+          hoverImage: "/ph/songoskriti/hero-festive.jpg",
           href: `${c}/wedding`,
         },
         {
           title: "Jewellery",
           image: "/ph/songoskriti/cat-jewelry.png",
+          hoverImage: "/ph/songoskriti/prod-necklace.png",
           href: `${c}/jewellery`,
         },
         {
           title: "Heritage",
-          image: "/ph/songoskriti/cat-newin.png",
+          image: "/ph/songoskriti/hero-weaves.jpg",
+          hoverImage: "/ph/songoskriti/hero-artisans.jpg",
           href: `${c}/heritage`,
         },
       ],

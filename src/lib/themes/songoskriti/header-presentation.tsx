@@ -183,6 +183,22 @@ function SongoskritiPromoTile({
   );
 }
 
+function getMegaMenuGridClass(groupCount: number, hasPromo: boolean): string {
+  if (hasPromo) {
+    if (groupCount <= 2) return "grid-cols-1 sm:grid-cols-2";
+    if (groupCount === 3) return "grid-cols-1 sm:grid-cols-3";
+    if (groupCount === 4) return "grid-cols-2 lg:grid-cols-4";
+    return "grid-cols-2 lg:grid-cols-3";
+  }
+  if (groupCount <= 1) return "grid-cols-1 max-w-sm";
+  if (groupCount === 2) return "grid-cols-1 sm:grid-cols-2";
+  if (groupCount === 3) return "grid-cols-1 sm:grid-cols-2 md:grid-cols-3";
+  if (groupCount === 4) return "grid-cols-1 sm:grid-cols-2 md:grid-cols-4";
+  if (groupCount === 5) return "grid-cols-2 md:grid-cols-3";
+  if (groupCount === 6) return "grid-cols-2 md:grid-cols-3";
+  return "grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
+}
+
 function SongoskritiMegaChild({
   item,
   base,
@@ -193,27 +209,26 @@ function SongoskritiMegaChild({
   locale: string;
 }) {
   return (
-    <li className="min-w-0">
-      <div className="flex items-center gap-2 pb-2.5 mb-3 border-b border-[var(--theme-border)]/60 min-w-0">
-        <span className="h-1 w-1 rounded-full bg-[var(--theme-accent,#C05A3E)] shrink-0" />
+    <li className="min-w-0 list-none marker:content-none m-0 p-0">
+      <div className="flex items-center pb-2.5 mb-3 border-b border-[var(--theme-border)]/60 min-w-0">
         <SongoskritiLink
           item={item}
           base={base}
           locale={locale}
           activeClassName="text-[var(--theme-accent,#C05A3E)] font-semibold"
-          className="flex min-h-[40px] items-center text-left font-serif text-[15px] font-medium tracking-wide text-[var(--theme-ink)] motion-safe:transition-colors hover:text-[var(--theme-accent,#C05A3E)] break-words whitespace-normal leading-snug"
+          className="flex min-h-[36px] items-center text-left font-serif text-[15px] font-semibold tracking-wide text-[var(--theme-ink)] motion-safe:transition-colors hover:text-[var(--theme-accent,#C05A3E)] break-words whitespace-normal leading-snug"
         />
       </div>
       {item.children && item.children.length > 0 && (
-        <ul className="space-y-1">
+        <ul className="list-none marker:content-none m-0 p-0 space-y-1">
           {item.children.map((grandchild) => (
-            <li key={grandchild.id} className="min-w-0">
+            <li key={grandchild.id} className="min-w-0 list-none marker:content-none m-0 p-0">
               <SongoskritiLink
                 item={grandchild}
                 base={base}
                 locale={locale}
                 activeClassName="text-[var(--theme-accent,#C05A3E)] font-semibold"
-                className="group/link flex min-h-[38px] items-center text-left font-sans text-[13px] text-[var(--theme-ink)]/70 motion-safe:transition-all hover:text-[var(--theme-ink)] hover:translate-x-1 break-words whitespace-normal leading-snug"
+                className="group/link flex min-h-[32px] items-center text-left font-sans text-[13px] text-[var(--theme-ink)]/75 motion-safe:transition-all hover:text-[var(--theme-ink)] hover:translate-x-1 break-words whitespace-normal leading-relaxed"
               />
             </li>
           ))}
@@ -223,7 +238,7 @@ function SongoskritiMegaChild({
   );
 }
 
-/** Luxury desktop mega nav — full-width fixed panel over canonical items. */
+/** Luxury desktop mega nav — centered floating panel over canonical items. */
 export function SongoskritiDesktopNav({
   items,
   base = "",
@@ -297,11 +312,16 @@ export function SongoskritiDesktopNav({
                   data-mega="songoskriti"
                   role="region"
                   aria-label={`${canonicalLabel(item, locale)} submenu`}
-                  className="absolute left-0 top-full z-50 hidden w-full pt-0 group-hover:block group-focus-within:block pointer-events-auto before:absolute before:-top-4 before:left-0 before:right-0 before:h-4 before:content-['']"
+                  className="absolute left-1/2 -translate-x-1/2 top-full z-50 hidden w-[min(1140px,calc(100vw-32px))] pt-0 group-hover:block group-focus-within:block pointer-events-auto before:absolute before:-top-4 before:left-0 before:right-0 before:h-4 before:content-['']"
                 >
-                  <div className="max-h-[85vh] w-full overflow-y-auto border-t border-[var(--theme-border)] bg-[var(--theme-surface)] shadow-2xl">
-                    <div className="mx-auto flex flex-col xl:flex-row max-w-[1440px] gap-8 xl:gap-12 2xl:gap-16 px-6 lg:px-10 py-10 lg:py-12">
-                      <ul className="grid flex-1 min-w-0 grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-x-8 gap-y-10">
+                  <div className="max-h-[85vh] w-full overflow-y-auto rounded-b-xl border border-[var(--theme-border)]/80 bg-[var(--theme-surface)] shadow-[0_20px_50px_rgba(0,0,0,0.12)] p-6 sm:p-8 lg:p-10">
+                    <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
+                      <ul
+                        className={`grid flex-1 min-w-0 ${getMegaMenuGridClass(
+                          item.children!.length,
+                          Boolean(item.image || item.promo),
+                        )} gap-x-8 gap-y-8 list-none marker:content-none m-0 p-0`}
+                      >
                         {item.children!.map((child) => (
                           <SongoskritiMegaChild
                             key={child.id}
@@ -313,7 +333,7 @@ export function SongoskritiDesktopNav({
                       </ul>
 
                       {(item.image || item.promo) && (
-                        <div className="w-full max-w-[320px] mx-auto xl:mx-0 xl:w-[280px] 2xl:w-[320px] shrink-0">
+                        <div className="w-full max-w-[280px] mx-auto lg:mx-0 lg:w-[260px] xl:w-[280px] shrink-0">
                           <SongoskritiPromoTile
                             item={item}
                             base={base}

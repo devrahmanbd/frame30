@@ -1076,29 +1076,46 @@ const SongoskritiProductCard = ({
   promise,
   badge,
 }: SongoskritiProductCardProps) => {
-  const image = row.imageUrl?.endsWith(".svg")
-    ? getLuxuryImage(row.id)
-    : row.imageUrl || getLuxuryImage(row.id);
-  const hoverImage = getLuxuryImage(row.id + "hover");
+  const primaryImage =
+    (row.imageUrls && row.imageUrls.length > 0 ? row.imageUrls[0] : null) ||
+    (row.imageUrl?.endsWith(".svg") ? null : row.imageUrl) ||
+    getLuxuryImage(row.id);
+
+  const rawSecondary =
+    row.imageUrls && row.imageUrls.length > 1 ? row.imageUrls[1] : null;
+
+  const hasHoverImage = Boolean(
+    rawSecondary &&
+      rawSecondary !== primaryImage &&
+      !rawSecondary.endsWith(".svg"),
+  );
+  const secondaryImage = hasHoverImage ? rawSecondary : null;
 
   return (
     <article className="group relative flex flex-col">
       <a
         href={row.href ?? "#"}
-        className="relative w-full aspect-[3/4] block overflow-hidden bg-[var(--theme-muted)]"
+        className="relative w-full aspect-[3/4] block overflow-hidden bg-[var(--theme-muted)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent,#C05A3E)]"
       >
         <img
-          src={image}
+          src={primaryImage}
           alt={row.title}
-          className="absolute inset-0 w-full h-full object-cover transition-all duration-[1200ms] ease-[cubic-bezier(0.23,1,0.32,1)] opacity-100 group-hover:opacity-0 group-hover:scale-105"
+          className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out ${
+            hasHoverImage
+              ? "opacity-100 group-hover:opacity-0 group-focus-within:opacity-0 [@media(hover:none)]:opacity-100 group-hover:scale-105"
+              : "opacity-100 group-hover:scale-105"
+          }`}
           loading="lazy"
         />
-        <img
-          src={hoverImage}
-          alt={row.title}
-          className="absolute inset-0 w-full h-full object-cover transition-all duration-[1200ms] ease-[cubic-bezier(0.23,1,0.32,1)] scale-[1.04] opacity-0 group-hover:scale-100 group-hover:opacity-100"
-          loading="lazy"
-        />
+        {hasHoverImage && secondaryImage && (
+          <img
+            src={secondaryImage}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover opacity-0 transition-all duration-700 ease-out scale-100 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-0 group-hover:scale-105"
+            loading="lazy"
+          />
+        )}
         {badge && (
           <span
             data-part="badge"
@@ -1899,8 +1916,13 @@ const SongoskritiDepartmentGrid: WidgetComponent = ({
 }) => {
   const departments = rowsOf(section, "departments")
     .map((row) => ({
-      title: readBn(row, "title", locale) || readBn(row, "name", locale),
+      title:
+        readBn(row, "title", locale) || readBn(row, "name", locale),
       image: readString(row, "image"),
+      hoverImage:
+        readString(row, "hoverImage") ||
+        readString(row, "hover_image") ||
+        null,
       href: readString(row, "href"),
     }))
     .filter((d) => d.title && d.href);
@@ -1913,10 +1935,6 @@ const SongoskritiDepartmentGrid: WidgetComponent = ({
   const heading =
     str("heading") ||
     (locale === "bn" ? "আমাদের সংগ্রহ" : "SHOP THE COLLECTION");
-
-  // 6-tile layout: first 2 tiles are taller (portrait hero), rest are landscape grid
-  const heroes = departments.slice(0, 2);
-  const grid = departments.slice(2);
 
   return (
     <section
@@ -1936,27 +1954,24 @@ const SongoskritiDepartmentGrid: WidgetComponent = ({
             {locale === "bn" ? "সব দেখুন" : "VIEW ALL"} →
           </a>
         </div>
-        {/* Desktop: 6-column grid. Mobile: 2-column grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-          {departments.map((dept, i) => (
+        {/* Responsive: 2 mobile, 3 tablet, 4 desktop, 6 wide desktop */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-5">
+          {departments.map((dept) => (
             <a
               key={dept.title}
               href={link(dept.href)}
-              className={`group block relative overflow-hidden ${
-                // First two tiles taller on desktop
-                i < 2 ? "lg:row-span-1" : ""
-              }`}
+              className="group block relative overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent,#C05A3E)]"
             >
-              <div
-                className={`relative w-full overflow-hidden bg-[var(--theme-muted)] ${
-                  i < 2 ? "aspect-[2/3]" : "aspect-[3/4]"
-                }`}
-              >
+              <div className="relative w-full aspect-[3/4] overflow-hidden bg-[var(--theme-muted)]">
                 {dept.image ? (
                   <img
                     src={dept.image}
                     alt={dept.title}
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1800ms] ease-out group-hover:scale-[1.05]"
+                    className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ease-out ${
+                      dept.hoverImage
+                        ? "opacity-100 group-hover:opacity-0 group-focus-within:opacity-0 [@media(hover:none)]:opacity-100 group-hover:scale-105"
+                        : "opacity-100 group-hover:scale-105"
+                    }`}
                     loading="lazy"
                   />
                 ) : (
@@ -1964,12 +1979,21 @@ const SongoskritiDepartmentGrid: WidgetComponent = ({
                     {dept.title.slice(0, 2).toUpperCase()}
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-[var(--theme-ink)]/70 via-black/10 to-transparent transition-opacity duration-500 group-hover:from-black/80" />
+                {dept.hoverImage && (
+                  <img
+                    src={dept.hoverImage}
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute inset-0 h-full w-full object-cover opacity-0 transition-all duration-700 ease-out scale-100 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-0 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--theme-ink)]/75 via-[var(--theme-ink)]/20 to-transparent transition-opacity duration-500 group-hover:from-[var(--theme-ink)]/85" />
                 <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
                   <h3 className="font-serif text-[14px] sm:text-[16px] font-light text-[var(--theme-surface)] tracking-[0.05em] uppercase leading-tight">
                     {dept.title}
                   </h3>
-                  <span className="mt-1.5 block text-[9px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-surface)]/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <span className="mt-1.5 block text-[9px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-surface)]/60 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300">
                     {locale === "bn" ? "দেখুন →" : "SHOP →"}
                   </span>
                 </div>

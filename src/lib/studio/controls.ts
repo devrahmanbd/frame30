@@ -2046,6 +2046,13 @@ const CONTENT: Record<string, Control[]> = {
           section: "Grid",
         }),
         c({
+          key: "hoverImage",
+          label: "Hover Image URL",
+          type: "text",
+          tab: "content",
+          section: "Grid",
+        }),
+        c({
           key: "title",
           label: "Title",
           type: "text",

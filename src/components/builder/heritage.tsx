@@ -719,6 +719,8 @@ const DepartmentGrid: WidgetComponent = ({
 }) => {
   const departments = rowsOf(section, "departments").map((row) => ({
     image: readString(row, "image"),
+    hoverImage:
+      readString(row, "hoverImage") || readString(row, "hover_image") || null,
     name: readString(row, "name") || readString(row, "title"),
     nameBn: readString(row, "name_bn"),
     count: readNumber(row, "count", 0),
@@ -773,7 +775,9 @@ const DepartmentGrid: WidgetComponent = ({
                   <img
                     src={dept.image}
                     alt={dept.name}
-                    className="absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-in-out group-hover:opacity-0"
+                    className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-in-out ${
+                      dept.hoverImage ? "group-hover:opacity-0" : ""
+                    }`}
                     loading="lazy"
                   />
                 ) : (
@@ -781,29 +785,14 @@ const DepartmentGrid: WidgetComponent = ({
                     src={`/api/public/ph/${placeholderSeed(dept.name || "department")}`}
                     alt=""
                     aria-hidden="true"
-                    className="absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-in-out group-hover:opacity-0"
+                    className="absolute inset-0 h-full w-full object-cover"
                     loading="lazy"
                   />
                 )}
                 {/* Secondary Image (Hover) */}
-                {dept.image ? (
+                {dept.hoverImage && (
                   <img
-                    src={dept.image.replace(".png", "-hover.png")}
-                    alt=""
-                    aria-hidden="true"
-                    className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-700 ease-in-out group-hover:opacity-100"
-                    loading="lazy"
-                    onError={(e) => {
-                      // Fallback to primary if no hover image exists
-                      e.currentTarget.style.display = "none";
-                      e.currentTarget.previousElementSibling?.classList.remove(
-                        "group-hover:opacity-0",
-                      );
-                    }}
-                  />
-                ) : (
-                  <img
-                    src={`/api/public/ph/${placeholderSeed((dept.name || "department") + "hover")}`}
+                    src={dept.hoverImage}
                     alt=""
                     aria-hidden="true"
                     className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-700 ease-in-out group-hover:opacity-100"

@@ -48,6 +48,7 @@ type ProductRow = {
   title: string;
   slug: string;
   image_url: string | null;
+  images?: string[] | null;
   created_at: string;
   product_variants: VariantRow[] | null;
   collection_products?: { collection_id: string }[] | null;
@@ -489,6 +490,38 @@ async function loadMerchantCurrency(
  * widest window any request asked for; per-request filtering, sorting and
  * slicing then happen in memory.
  */
+const PRODUCT_SECONDARY_IMAGES: Record<string, string> = {
+  "pure-silk-embroidered-panjabi": "/ph/songoskriti/campaign-men.jpg",
+  "dhakai-jamdani-silk-saree": "/ph/songoskriti/cat-women.png",
+  "dhakai-jamdani-heritage-saree": "/ph/songoskriti/cat-women.png",
+  "hand-painted-silk-festive-saree": "/ph/songoskriti/hero-weaves.jpg",
+  "tangail-taant-cotton-saree": "/ph/songoskriti/prod-saree.png",
+  "mirpur-katan-silk-saree": "/ph/songoskriti/edit-festive-main.jpg",
+  "comilla-handspun-khadi-kurta": "/ph/songoskriti/cat-men.jpg",
+  "comilla-khadi-casual-kurta": "/ph/songoskriti/cat-men.jpg",
+  "casual-cotton-summer-fotua": "/ph/songoskriti/prod-panjabi.png",
+  "tussar-silk-festive-koti": "/ph/songoskriti/campaign-men.jpg",
+  "relaxed-linen-mandarin-shirt": "/ph/songoskriti/cat-men.jpg",
+  "fine-poplin-formal-pajama": "/ph/songoskriti/campaign-men.jpg",
+  "girls-embroidered-silk-ghagra-choli": "/ph/songoskriti/edit-festive-main.jpg",
+  "girls-silk-festive-ghagra-choli": "/ph/songoskriti/edit-festive-main.jpg",
+  "boys-silk-panjabi-pajama-set": "/ph/songoskriti/campaign-men.jpg",
+  "embroidered-silk-salwar-suit": "/ph/songoskriti/hero-festive.jpg",
+  "artisan-block-print-muslin-dupatta": "/ph/songoskriti/cat-women.png",
+  "muslin-floral-festive-saree": "/ph/songoskriti/prod-saree.png",
+  "bohemian-hand-embroidered-kurti": "/ph/songoskriti/cat-newin.png",
+  "taaga-contemporary-linen-tunic": "/ph/songoskriti/cat-women.png",
+  "taaga-man-relaxed-khadi-shirt": "/ph/songoskriti/campaign-men.jpg",
+  "brass-filigree-chandbali-earrings": "/ph/songoskriti/cat-jewelry.png",
+  "dhamrai-brass-heritage-necklace": "/ph/songoskriti/cat-jewelry.png",
+  "antique-silver-filigree-jhumka": "/ph/songoskriti/prod-necklace.png",
+  "handcrafted-nakshi-kantha-quilt": "/ph/songoskriti/cat-living.png",
+  "jessore-nakshi-kantha-quilt": "/ph/songoskriti/cat-living.png",
+  "handcrafted-terracotta-dining-set": "/ph/songoskriti/hero-artisans.jpg",
+  "bijoypur-terracotta-tea-set": "/ph/songoskriti/hero-artisans.jpg",
+  "hand-carved-brass-incense-burner": "/ph/songoskriti/prod-necklace.png",
+};
+
 const loadCollectionSource: SourceLoader = async (
   merchantId,
   requests,
@@ -535,6 +568,7 @@ const loadCollectionSource: SourceLoader = async (
       title: dp.title,
       slug: dp.slug,
       image_url: dp.image_url ?? null,
+      images: dp.images ?? (dp.image_url ? [dp.image_url] : null),
       created_at: new Date().toISOString(),
       tags: dp.tags ?? [],
       demo: true,
@@ -593,17 +627,32 @@ const loadCollectionSource: SourceLoader = async (
     if (merchSource === "recommended" || merchSource === "bestsellers") {
       ordered = rankRailRows(ordered, signals, merchSource).rows;
     }
+
     out[request.key] = ordered.slice(0, limit).map((p) => {
       const variants = p.product_variants ?? [];
       const compare = variants
         .map((v) => Number(v.compare_at_amount_minor_int) || 0)
         .filter((n) => n > 0);
       const firstInStock = variants.find((v) => v.stock_quantity > 0);
+      const secondary =
+        (p.images && p.images.length > 1 ? p.images[1] : null) ||
+        PRODUCT_SECONDARY_IMAGES[p.slug] ||
+        PRODUCT_SECONDARY_IMAGES[p.id] ||
+        null;
+      const gallery =
+        p.images && p.images.length > 0
+          ? p.images
+          : secondary && p.image_url
+            ? [p.image_url, secondary]
+            : p.image_url
+              ? [p.image_url]
+              : [];
       return {
         id: p.id,
         title: p.title,
         href: storeHref(base, "product", p.slug),
         imageUrl: p.image_url,
+        ...(gallery.length > 0 ? { imageUrls: gallery } : {}),
         priceMinor: minPrice(variants),
         currency,
         ...(compare.length ? { compareAtMinor: Math.max(...compare) } : {}),

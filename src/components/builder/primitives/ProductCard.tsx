@@ -344,7 +344,7 @@ export function ProductCard({
             />
           )}
 
-          {/* Secondary layers — staggered crossfade in on group hover */}
+          {/* Secondary layers — staggered crossfade in on group hover & focus */}
           {imageUrls.map((src, index) => (
             <img
               key={`${row.id}-${index}`}
@@ -353,7 +353,7 @@ export function ProductCard({
               aria-hidden="true"
               loading="lazy"
               decoding="async"
-              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[250ms] ease-in-out opacity-0 group-hover:opacity-100 motion-reduce:transition-none ${LAYER_DELAYS[Math.min(index, LAYER_DELAYS.length - 1)] ?? ""}`}
+              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[250ms] ease-in-out opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-0 motion-reduce:transition-none ${LAYER_DELAYS[Math.min(index, LAYER_DELAYS.length - 1)] ?? ""}`}
             />
           ))}
 

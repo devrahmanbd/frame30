@@ -5389,6 +5389,7 @@ const BASE_CATALOG: CatalogEntry[] = [
         maxRows: 8,
         fields: [
           text("image", "Image URL", 200),
+          text("hoverImage", "Hover Image URL", 200),
           text("title", "Title", 80),
           // `href` renders raw into the tile anchor (heritage.tsx
           // DepartmentGrid), so it takes the `url` kind: the SAFE_HREF
