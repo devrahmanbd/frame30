@@ -1794,7 +1794,7 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
           )}
 
           {/* CENTER & RIGHT: Navigation columns */}
-          <div className="lg:col-span-8 grid grid-cols-1 min-[400px]:grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-4 lg:gap-12">
+          <div className="lg:col-span-8 grid grid-cols-1 min-[360px]:grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4 lg:gap-12">
             {sitemapColumns.map((col) => (
               <div key={col.title}>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)] mb-5 flex items-center gap-2">

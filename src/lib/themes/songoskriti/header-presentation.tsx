@@ -370,12 +370,18 @@ export function SongoskritiMobileDrawer({
   supportEmail,
   supportHours,
   policyDelivery,
+  custom = false,
+  slug,
+  wishlistCount = 0,
 }: SongoskritiNavProps & {
   defaultExpandedId?: string | null;
   onNavigate?: () => void;
   supportEmail?: string | null;
   supportHours?: string | null;
   policyDelivery?: string | null;
+  custom?: boolean;
+  slug?: string;
+  wishlistCount?: number;
 }) {
   let currentPath = "";
   try {
@@ -408,6 +414,79 @@ export function SongoskritiMobileDrawer({
       data-nav="songoskriti-drawer"
       className="flex flex-col"
     >
+      {/* Mobile Drawer Account & Wishlist Quick Access */}
+      <div className="grid grid-cols-2 gap-3 pb-4 mb-2 border-b border-[var(--theme-border)]">
+        {custom ? (
+          <Link
+            to="/account"
+            onClick={onNavigate}
+            className="flex items-center gap-2.5 px-3 py-2.5 border border-[var(--theme-border)] text-[var(--theme-ink)] hover:border-[var(--theme-accent)] transition-colors min-h-[44px]"
+            aria-label={locale === "bn" ? "আমার অ্যাকাউন্ট" : "My Account"}
+          >
+            <User className="size-[18px] text-[var(--theme-ink)]/70 shrink-0" strokeWidth={1.25} aria-hidden />
+            <span className="text-[11px] font-semibold uppercase tracking-wider truncate">
+              {locale === "bn" ? "অ্যাকাউন্ট" : "Account"}
+            </span>
+          </Link>
+        ) : (
+          <Link
+            to="/store/$slug/account"
+            params={{ slug: slug || base }}
+            onClick={onNavigate}
+            className="flex items-center gap-2.5 px-3 py-2.5 border border-[var(--theme-border)] text-[var(--theme-ink)] hover:border-[var(--theme-accent)] transition-colors min-h-[44px]"
+            aria-label={locale === "bn" ? "আমার অ্যাকাউন্ট" : "My Account"}
+          >
+            <User className="size-[18px] text-[var(--theme-ink)]/70 shrink-0" strokeWidth={1.25} aria-hidden />
+            <span className="text-[11px] font-semibold uppercase tracking-wider truncate">
+              {locale === "bn" ? "অ্যাকাউন্ট" : "Account"}
+            </span>
+          </Link>
+        )}
+
+        {custom ? (
+          <Link
+            to="/account"
+            search={{ tab: "wishlist" }}
+            onClick={onNavigate}
+            className="flex items-center justify-between px-3 py-2.5 border border-[var(--theme-border)] text-[var(--theme-ink)] hover:border-[var(--theme-accent)] transition-colors min-h-[44px]"
+            aria-label={`${locale === "bn" ? "উইশলিস্ট" : "Wishlist"}, ${wishlistCount ?? 0}`}
+          >
+            <div className="flex items-center gap-2 min-w-0">
+              <Heart className="size-[18px] text-[var(--theme-ink)]/70 shrink-0" strokeWidth={1.25} aria-hidden />
+              <span className="text-[11px] font-semibold uppercase tracking-wider truncate">
+                {locale === "bn" ? "উইশলিস্ট" : "Wishlist"}
+              </span>
+            </div>
+            {(wishlistCount ?? 0) > 0 && (
+              <span className="flex h-[18px] min-w-[18px] px-1 items-center justify-center rounded-full bg-[var(--theme-ink)] text-[10px] font-bold text-white shrink-0">
+                {wishlistCount}
+              </span>
+            )}
+          </Link>
+        ) : (
+          <Link
+            to="/store/$slug/account"
+            params={{ slug: slug || base }}
+            search={{ tab: "wishlist" }}
+            onClick={onNavigate}
+            className="flex items-center justify-between px-3 py-2.5 border border-[var(--theme-border)] text-[var(--theme-ink)] hover:border-[var(--theme-accent)] transition-colors min-h-[44px]"
+            aria-label={`${locale === "bn" ? "উইশলিস্ট" : "Wishlist"}, ${wishlistCount ?? 0}`}
+          >
+            <div className="flex items-center gap-2 min-w-0">
+              <Heart className="size-[18px] text-[var(--theme-ink)]/70 shrink-0" strokeWidth={1.25} aria-hidden />
+              <span className="text-[11px] font-semibold uppercase tracking-wider truncate">
+                {locale === "bn" ? "উইশলিস্ট" : "Wishlist"}
+              </span>
+            </div>
+            {(wishlistCount ?? 0) > 0 && (
+              <span className="flex h-[18px] min-w-[18px] px-1 items-center justify-center rounded-full bg-[var(--theme-ink)] text-[10px] font-bold text-white shrink-0">
+                {wishlistCount}
+              </span>
+            )}
+          </Link>
+        )}
+      </div>
+
       <ul>
         {items.map((item) => {
           const kids = item.children ?? [];
@@ -536,7 +615,7 @@ export const SongoskritiHeaderPresentation: WidgetComponent = (ctx) => {
       data-header-presentation="songoskriti"
       className="w-full border-b border-[var(--theme-border)] bg-[var(--theme-surface)]"
     >
-      <div className="mx-auto hidden max-w-[var(--fq-container,1440px)] items-center justify-center px-4 md:block">
+      <div className="mx-auto hidden max-w-[var(--fq-container,1440px)] items-center justify-center px-4 lg:block">
         <SongoskritiDesktopNav
           items={items}
           base=""
@@ -544,7 +623,7 @@ export const SongoskritiHeaderPresentation: WidgetComponent = (ctx) => {
           label={label}
         />
       </div>
-      <div className="md:hidden">
+      <div className="lg:hidden">
         <SongoskritiMobileDrawer
           items={items}
           base=""
@@ -682,6 +761,9 @@ export function SongoskritiHeaderShell({
       supportEmail={supportEmail ?? (slug === "flame-fashion-bd" ? "support@flamelancer.com" : null)}
       supportHours={supportHours}
       policyDelivery={policyDelivery}
+      custom={custom}
+      slug={slug}
+      wishlistCount={wishlistCount}
     />
   );
   const isFlameMerchant =
@@ -694,7 +776,7 @@ export function SongoskritiHeaderShell({
         className="h-[34px] w-auto object-contain transition-all duration-300"
       />
     ) : (
-      <span className="font-serif text-2xl font-light tracking-[0.15em] uppercase text-[var(--theme-ink)] block truncate">
+      <span className="font-serif text-xl sm:text-2xl font-light tracking-[0.12em] sm:tracking-[0.15em] uppercase text-[var(--theme-ink)] block truncate max-w-[210px] sm:max-w-none">
         {name}
       </span>
     );
@@ -735,7 +817,7 @@ export function SongoskritiHeaderShell({
                   : t("Open menu", "মেনু খুলুন")
               }
               onClick={() => setMobileOpen((open) => !open)}
-              className={`${shellIconLinkCls} md:hidden -ml-2`}
+              className={`${shellIconLinkCls} lg:hidden -ml-2`}
             >
               {mobileOpen ? (
                 <X className="size-[22px]" strokeWidth={1} aria-hidden />
@@ -760,7 +842,7 @@ export function SongoskritiHeaderShell({
           )}
         </div>
 
-        <div className="hidden md:flex flex-1 min-w-0 justify-center pointer-events-auto">
+        <div className="hidden lg:flex flex-1 min-w-0 justify-center pointer-events-auto">
           {HeaderPluginNav && headerPluginId ? (
             <PluginMenuBoundary
               pluginId={headerPluginId}
@@ -901,8 +983,11 @@ export function SongoskritiHeaderShell({
       {mobileOpen && mobileMenu.length > 0 && (
         <div
           id="store-mobile-menu"
-          className="border-t border-[var(--theme-border)] bg-[var(--theme-surface)] md:hidden overflow-y-auto max-h-[calc(100vh-[64px])] fixed left-0 w-full z-40 bottom-0"
-          style={{ top: scrolled ? "64px" : "108px" }}
+          className="border-t border-[var(--theme-border)] bg-[var(--theme-surface)] lg:hidden overflow-y-auto fixed left-0 w-full z-40 bottom-0"
+          style={{
+            top: scrolled ? "64px" : showAnnouncement ? "108px" : "72px",
+            maxHeight: `calc(100vh - ${scrolled ? "64px" : showAnnouncement ? "108px" : "72px"})`,
+          }}
         >
           <div className="px-4 py-2 pb-24">
             {DrawerPluginNav && drawerPluginId ? (

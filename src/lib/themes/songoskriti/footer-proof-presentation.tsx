@@ -60,7 +60,7 @@ export function SongoskritiFooterProof({
     >
       <div
         data-footer-presentation="songoskriti-proof"
-        className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:grid-cols-2 lg:grid-cols-4"
+        className="mx-auto grid max-w-6xl gap-12 px-4 py-16 grid-cols-1 min-[360px]:grid-cols-2 lg:grid-cols-4"
       >
         {data.columns.map((column) => (
           <section key={column.id} className="min-w-0">

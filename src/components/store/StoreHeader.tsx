@@ -489,6 +489,7 @@ export function HeaderDesktopNav({
   fallbackLabel,
   isLuxury,
   scrolled = false,
+  showAnnouncement = true,
   t,
 }: {
   headerMenu: readonly MenuNode[];
@@ -497,6 +498,7 @@ export function HeaderDesktopNav({
   fallbackLabel: (label: string) => string;
   isLuxury: boolean;
   scrolled?: boolean;
+  showAnnouncement?: boolean;
   t: (en: string, bn?: string) => string;
 }) {
   if (headerMenu.length === 0) return null;
@@ -513,8 +515,8 @@ export function HeaderDesktopNav({
             />
             {isLuxury && node.children && node.children.length > 0 && (
               <div
-                style={{ top: scrolled ? "64px" : "105px" }}
-                className="fixed left-0 w-full pt-0 hidden group-hover:block group-focus-within:block z-50"
+                style={{ top: scrolled ? "64px" : showAnnouncement ? "108px" : "72px" }}
+                className="fixed left-0 w-full pt-0 hidden group-hover:block group-focus-within:block z-50 before:absolute before:-top-4 before:left-0 before:right-0 before:h-4 before:content-['']"
               >
                 <div className="w-full bg-[var(--theme-surface)] shadow-2xl border-t border-[var(--theme-border)] max-h-[85vh] overflow-y-auto">
                   <div className="mx-auto flex max-w-[1440px] px-10 py-12 gap-16">
@@ -749,6 +751,10 @@ export function HeaderMobileDrawer({
   supportEmail,
   supportHours,
   policyDelivery,
+  custom,
+  slug,
+  wishlistCount,
+  showAnnouncement = true,
 }: {
   mobileMenu: readonly MenuNode[];
   base: string;
@@ -763,6 +769,10 @@ export function HeaderMobileDrawer({
   supportEmail?: string | null;
   supportHours?: string | null;
   policyDelivery?: string | null;
+  custom?: boolean;
+  slug?: string;
+  wishlistCount?: number;
+  showAnnouncement?: boolean;
 }) {
   return (
     <nav
@@ -771,6 +781,79 @@ export function HeaderMobileDrawer({
       className="border-t border-[var(--theme-border)] bg-[var(--theme-surface)] md:hidden overflow-y-auto max-h-[calc(100vh-[64px])] fixed left-0 w-full z-40 bottom-0"
       style={{ top: scrolled ? "64px" : "108px" }}
     >
+      {/* Mobile Drawer Account & Wishlist Quick Access */}
+      <div className="px-4 pt-3 pb-2 border-b border-[var(--theme-border)] grid grid-cols-2 gap-3">
+        {custom ? (
+          <Link
+            to="/account"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-2.5 px-3 py-2.5 border border-[var(--theme-border)] text-[var(--theme-ink)] hover:border-[var(--theme-accent)] transition-colors min-h-[44px]"
+            aria-label={t("Your account", "আপনার অ্যাকাউন্ট")}
+          >
+            <User className="size-[18px] text-[var(--theme-ink)]/70 shrink-0" strokeWidth={1.25} aria-hidden />
+            <span className="text-[11px] font-semibold uppercase tracking-wider truncate">
+              {t("Account", "অ্যাকাউন্ট")}
+            </span>
+          </Link>
+        ) : (
+          <Link
+            to="/store/$slug/account"
+            params={{ slug: slug || base }}
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-2.5 px-3 py-2.5 border border-[var(--theme-border)] text-[var(--theme-ink)] hover:border-[var(--theme-accent)] transition-colors min-h-[44px]"
+            aria-label={t("Your account", "আপনার অ্যাকাউন্ট")}
+          >
+            <User className="size-[18px] text-[var(--theme-ink)]/70 shrink-0" strokeWidth={1.25} aria-hidden />
+            <span className="text-[11px] font-semibold uppercase tracking-wider truncate">
+              {t("Account", "অ্যাকাউন্ট")}
+            </span>
+          </Link>
+        )}
+
+        {custom ? (
+          <Link
+            to="/account"
+            search={{ tab: "wishlist" }}
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center justify-between px-3 py-2.5 border border-[var(--theme-border)] text-[var(--theme-ink)] hover:border-[var(--theme-accent)] transition-colors min-h-[44px]"
+            aria-label={`${t("Wishlist", "উইশলিস্ট")}, ${wishlistCount ?? 0}`}
+          >
+            <div className="flex items-center gap-2 min-w-0">
+              <Heart className="size-[18px] text-[var(--theme-ink)]/70 shrink-0" strokeWidth={1.25} aria-hidden />
+              <span className="text-[11px] font-semibold uppercase tracking-wider truncate">
+                {t("Wishlist", "উইশলিস্ট")}
+              </span>
+            </div>
+            {(wishlistCount ?? 0) > 0 && (
+              <span className="flex h-[18px] min-w-[18px] px-1 items-center justify-center rounded-full bg-[var(--theme-ink)] text-[10px] font-bold text-white shrink-0">
+                {wishlistCount}
+              </span>
+            )}
+          </Link>
+        ) : (
+          <Link
+            to="/store/$slug/account"
+            params={{ slug: slug || base }}
+            search={{ tab: "wishlist" }}
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center justify-between px-3 py-2.5 border border-[var(--theme-border)] text-[var(--theme-ink)] hover:border-[var(--theme-accent)] transition-colors min-h-[44px]"
+            aria-label={`${t("Wishlist", "উইশলিস্ট")}, ${wishlistCount ?? 0}`}
+          >
+            <div className="flex items-center gap-2 min-w-0">
+              <Heart className="size-[18px] text-[var(--theme-ink)]/70 shrink-0" strokeWidth={1.25} aria-hidden />
+              <span className="text-[11px] font-semibold uppercase tracking-wider truncate">
+                {t("Wishlist", "উইশলিস্ট")}
+              </span>
+            </div>
+            {(wishlistCount ?? 0) > 0 && (
+              <span className="flex h-[18px] min-w-[18px] px-1 items-center justify-center rounded-full bg-[var(--theme-ink)] text-[10px] font-bold text-white shrink-0">
+                {wishlistCount}
+              </span>
+            )}
+          </Link>
+        )}
+      </div>
+
       <ul className="px-4 py-2 pb-12">
         {mobileMenu.map((node: MenuNode) => (
           <li key={node.id} className="border-b border-[var(--theme-border)]">
@@ -933,6 +1016,7 @@ export function GenericHeaderShell({
       fallbackLabel={data.fallbackLabel}
       isLuxury={isLuxury}
       scrolled={scrolled}
+      showAnnouncement={showAnnouncement}
       t={t}
     />
   );
@@ -951,6 +1035,10 @@ export function GenericHeaderShell({
       supportEmail={supportEmail}
       supportHours={supportHours}
       policyDelivery={policyDelivery}
+      custom={custom}
+      slug={slug}
+      wishlistCount={wishlistCount}
+      showAnnouncement={showAnnouncement}
     />
   );
   return (

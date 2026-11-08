@@ -35,15 +35,15 @@ export function ProductGallery({
   product: ProductPayload["product"];
 }) {
   return (
-    <div className="relative w-full overflow-hidden bg-[var(--theme-surface,#f5f3f0)] aspect-[3/4] sm:aspect-[4/5] md:aspect-auto md:h-[calc(100vh-6rem)] md:sticky md:top-24">
+    <div className="relative w-full overflow-hidden bg-[var(--theme-surface,#f5f3f0)] aspect-[3/4] sm:aspect-[4/5] lg:aspect-auto lg:h-[calc(100vh-6rem)] lg:sticky lg:top-24">
       <StoreImage
         image={product.image ?? null}
         fallbackSrc={product.image_url}
         alt={product.title}
         seed={product.id}
         priority
-        sizes="(max-width: 768px) 100vw, 60vw"
-        className="absolute inset-0 h-full w-full object-cover"
+        sizes="(max-width: 1024px) 100vw, 60vw"
+        className="absolute inset-0 h-full w-full object-cover object-[50%_20%]"
       />
     </div>
   );
@@ -69,7 +69,7 @@ export function ProductInfo({
     .filter((l) => l.trim().length > 0)[0];
   return (
     <div className="space-y-4">
-      <h1 className="font-serif text-[32px] sm:text-[40px] font-medium tracking-tight text-foreground leading-[1.1]">
+      <h1 className="font-serif text-[28px] sm:text-[36px] lg:text-[40px] font-medium tracking-tight text-foreground leading-[1.1] break-words">
         {product.title}
       </h1>
       {shortDesc && (
@@ -229,30 +229,39 @@ export function AddToCart({
             : t("Out of stock", "স্টক নেই")}
       </p>
 
-      <div className="flex flex-wrap gap-3 items-center">
-        {isPriced && stock > 0 && (
-          <div className="flex h-14 w-32 items-center border border-border">
-            <button
-              type="button"
-              className="flex-1 h-full text-muted-foreground hover:text-foreground text-lg"
-              onClick={() => setQty(Math.max(1, qty - 1))}
-              aria-label="Decrease quantity"
-            >
-              −
-            </button>
-            <span className="flex-1 text-center font-medium text-sm tabular-nums">
-              {qty}
-            </span>
-            <button
-              type="button"
-              className="flex-1 h-full text-muted-foreground hover:text-foreground text-lg"
-              onClick={() => setQty(Math.min(stock, qty + 1))}
-              aria-label="Increase quantity"
-            >
-              +
-            </button>
+      <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          {isPriced && stock > 0 && (
+            <div className="flex h-14 w-32 shrink-0 items-center border border-border">
+              <button
+                type="button"
+                className="flex-1 h-full text-muted-foreground hover:text-foreground text-lg min-h-[44px]"
+                onClick={() => setQty(Math.max(1, qty - 1))}
+                aria-label="Decrease quantity"
+              >
+                −
+              </button>
+              <span className="flex-1 text-center font-medium text-sm tabular-nums">
+                {qty}
+              </span>
+              <button
+                type="button"
+                className="flex-1 h-full text-muted-foreground hover:text-foreground text-lg min-h-[44px]"
+                onClick={() => setQty(Math.min(stock, qty + 1))}
+                aria-label="Increase quantity"
+              >
+                +
+              </button>
+            </div>
+          )}
+          <div className="sm:hidden h-14 w-14 shrink-0 flex items-center justify-center border border-border group/btn cursor-pointer hover:border-foreground transition-colors">
+            <WishlistHeart
+              storeSlug={merchant.slug}
+              variantId={variant?.id}
+              locale="en"
+            />
           </div>
-        )}
+        </div>
         <button
           type="button"
           disabled={!variant || !isPriced || stock <= 0}
@@ -261,11 +270,11 @@ export function AddToCart({
             add(variant.id, qty);
             setAdded(true);
           }}
-          className="h-14 flex-1 bg-foreground px-8 text-sm font-medium tracking-wider uppercase text-background disabled:opacity-50 hover:opacity-90 transition-opacity"
+          className="h-14 w-full sm:flex-1 bg-foreground px-8 text-sm font-medium tracking-wider uppercase text-background disabled:opacity-50 hover:opacity-90 transition-opacity min-h-[48px]"
         >
           {t("Add to cart", "কার্টে যোগ করুন")}
         </button>
-        <div className="h-14 w-14 flex items-center justify-center border border-border group/btn cursor-pointer hover:border-foreground transition-colors">
+        <div className="hidden sm:flex h-14 w-14 shrink-0 items-center justify-center border border-border group/btn cursor-pointer hover:border-foreground transition-colors">
           <WishlistHeart
             storeSlug={merchant.slug}
             variantId={variant?.id}
@@ -632,7 +641,7 @@ export function ProductView({ data }: { data: ProductPayload }) {
 
   const fallback = (
     <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 py-8 sm:px-6 lg:px-8">
-      <div className="grid gap-12 lg:gap-16 md:grid-cols-[60fr_40fr] items-start">
+      <div className="grid gap-12 lg:gap-16 lg:grid-cols-[60fr_40fr] items-start">
         {media}
         <div className="w-full max-w-xl">
           {breadcrumb}
