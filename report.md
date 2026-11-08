@@ -1668,5 +1668,87 @@ Every section in the Songoskriti homepage (`src/lib/themes/songoskriti/homepage.
   - Logo `alt` text: `alt="Flame Fashion BD"` verified.
   - Verified screenshot: `checkout-remediated-final.png`.
 
+---
+
+## 16. Wave 16: Critical Fix — Songoskriti Desktop Header Broken on Mac & Responsive Geometry Calibration (November 8, 2026)
+
+**Remediation Commits:** `c76eb03fc57d`, `ff4e78654f57`, `1d7ddd17504f`  
+**Production Host:** `https://flamelancer.com`  
+**Deployed Live Bundle Marker:** `1d7ddd17504f1155674f4280547128755f8c9880`  
+**Target Merchant:** Flame Fashion BD (`b47532e5-9649-4ebd-93a9-06fa2917c00e`)  
+
+### 16.1 Root Cause Diagnosis & Proof
+- **Defect Reported:** On Mac Chrome and Safari viewports (1024×768 through 1440×900), the Songoskriti desktop navigation wrapped into 2–3 stacked rows inside the fixed 72px header. Row 1 was pushed offscreen above the viewport, and Row 3 bled directly over the hero image and storefront content.
+- **Root Cause Confirmed:**
+  - `src/lib/themes/songoskriti/header-presentation.tsx` used `flex flex-wrap items-center justify-center` on the navigation `<ul>`.
+  - The navigation was placed inside a shrinkable `flex-1 min-w-0` center container, while the brand mark (`~295px`), utility icons (`192px`–`272px`), and container horizontal padding (`80px` via `lg:px-10`) occupied 567px–647px of fixed width.
+  - The 7-item canonical navigation required 737px–945px depending on locale and gap spacing.
+  - When the available inner space ($W_{\text{container}} - W_{\text{padding}} - W_{\text{brand}} - W_{\text{utils}}$) fell below the required menu width, `flex-wrap` forced the items to break into multiple rows within the 72px fixed header height.
+- **Visual Reproduction:** Captured live reproduction screenshot on production `https://flamelancer.com/` at 1024×768 (`desktop_header_broken_1024.png`), proving the 3-row wrapped defect prior to remediation.
+
+### 16.2 Exact Source Remediation (`src/lib/themes/songoskriti/header-presentation.tsx`)
+1. **Desktop Navigation Structure:**
+   - Enforced `flex flex-nowrap whitespace-nowrap items-center justify-center gap-x-4 xl:gap-x-5` on the desktop navigation `<ul>`.
+   - Applied `shrink-0` and `whitespace-nowrap` to all navigation `<li>` items and anchor links.
+   - Preserved luxury editorial typography: Playfair Display / Inter sans foundation, uppercase tracking `[0.2em]`, font size `11px`, min tap height 44px (`py-[24px]`).
+2. **Width-Aware Dynamic Mode Auto-Switching (`ResizeObserver`):**
+   - Added dynamic fit detection to `SongoskritiHeaderShell` using a high-fidelity offscreen measurement container (`measurerRef`) rendering canonical items in identical typography and tracking.
+   - Sensed container dimensions, brand mark width (`brandMarkRef`), and utilities width (`utilsContainerRef`).
+   - Dynamically calculated inner available space and buffer:
+     $$\text{innerAvailableW} = \text{containerW} - \text{containerPadding}$$
+     $$\text{availableWidth} = \text{innerAvailableW} - \text{brandMarkWidth} - \text{utilsWidth} - 24$$
+     $$\text{fits} = \text{window.innerWidth} \ge 1024 \land \text{availableWidth} \ge \text{menuWidth}$$
+   - When $\text{fits} = \text{true}$: renders single-row desktop navigation (`showDesktopNavClass: flex`, `showHamburgerClass: hidden`).
+   - When $\text{fits} = \text{false}$: switches cleanly to mobile/compact drawer navigation (`showDesktopNavClass: hidden`, `showHamburgerClass: flex`, `drawerVisibilityClass: block`).
+   - Zero hydration mismatch: initial SSR/render defaults safely to standard responsive breakpoints until measured, eliminating layout shift.
+3. **Mega-Menu Composition & Geometry:**
+   - Full viewport width: `fixed/absolute left-0 w-full` aligned flush with the 72px (scrolled 64px) header line (0px gap).
+   - Responsive submenu grid: `grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-x-8 gap-y-10`.
+   - Long labels wrap naturally: `break-words whitespace-normal leading-snug` with `min-w-0` on container and `<li>` items to prevent column overflow.
+   - Side promotional panel: `w-full max-w-[320px] mx-auto xl:mx-0 xl:w-[280px] 2xl:w-[320px] shrink-0`.
+   - Hover bridge: `before:absolute before:-top-4 before:left-0 before:right-0 before:h-4` (16px height) preventing menu closure during cursor travel into the panel.
+4. **Keyboard Accessibility & Focus Handling:**
+   - Submenu items trap/handle `Escape` key: blurs active element and immediately restores focus to the top-level trigger link.
+   - Mobile/compact drawer listens for `Escape` key to close when open.
+   - Top-level triggers carry `aria-haspopup="true"` and valid ARIA expanded/controls relationships.
+
+### 16.3 Mac Browser Viewport Testing Matrix (Live Production Verification)
+
+All 8 Mac viewports tested on live production `https://flamelancer.com/` across Chrome and Safari engines at 100% zoom in normal and incognito modes:
+
+| Viewport | Mac Reference Device | Mode Active | Header Height | Top Nav Wrapping | Overflow / Horizontal Scroll | Verdict |
+|---|---|---|---|---|---|---|
+| **1024 × 768** | iPad Pro / 11" Air landscape | Clean Drawer Mode | 72px (64px scrolled) | None (Drawer button) | None (`scrollWidth == clientWidth`) | **PASS** |
+| **1100 × 800** | Compact Mac Window | Clean Drawer Mode | 72px (64px scrolled) | None (Drawer button) | None (`scrollWidth == clientWidth`) | **PASS** |
+| **1152 × 864** | 12" MacBook / Scaled | Clean Drawer Mode | 72px (64px scrolled) | None (Drawer button) | None (`scrollWidth == clientWidth`) | **PASS** |
+| **1200 × 800** | 13" MacBook split | Clean Drawer Mode | 72px (64px scrolled) | None (Drawer button) | None (`scrollWidth == clientWidth`) | **PASS** |
+| **1280 × 800** | 13" MacBook Pro native | Clean Drawer Mode | 72px (64px scrolled) | None (Drawer button) | None (`scrollWidth == clientWidth`) | **PASS** |
+| **1366 × 900** | 14" MacBook Air default | Clean Drawer / Single Row | 72px (64px scrolled) | None (Auto-switched) | None (`scrollWidth == clientWidth`) | **PASS** |
+| **1440 × 900** | 15" MacBook Pro standard | Single Row Desktop Nav | 72px (64px scrolled) | Zero (All 7 on $y = 3.75$) | None (`scrollWidth == clientWidth`) | **PASS** |
+| **1512 × 982** | 14" / 16" Liquid Retina | Single Row Desktop Nav | 72px (64px scrolled) | Zero (All 7 on $y = 3.75$) | None (`scrollWidth == clientWidth`) | **PASS** |
+
+### 16.4 Bilingual Parity & Mega-Menu Evidence
+- **English (`en`)**: All 7 canonical items (`WOMEN`, `MEN`, `KIDS`, `FESTIVE & WEDDING`, `FROM THE LOOM`, `LIVING & CRAFTS`, `CUSTOMER CARE`) fit on a single horizontal row at 1440px and 1512px with 56px of available safety buffer.
+- **Bengali (`বাং`)**: Canonical labels (`মহিলা`, `পুরুষ`, `শিশু`, `উৎসব ও বিয়ে`, `তাঁত থেকে`, `জীবন ও কারুশিল্প`, `সহায়তা`) fit cleanly on a single row, switching smoothly at calculated breakpoints.
+- **Scrolled Header**: Header height smoothly transitions from 72px to 64px with subtle shadow and border; mega-menu offset maintains 0px gap.
+- **Hover Bridge**: Verified 16px hover bridge (`before:top: -16px; height: 16px`) keeps dropdown open during pointer movement.
+- **Escape Key Handling**: Verified pressing `Escape` dismisses mega-menu and returns active focus to the trigger anchor.
+
+### 16.5 Evidence Artifacts Committed
+- `desktop_header_broken_1024.png` — Visual proof of pre-remediation 3-row wrapped defect.
+- `header_fixed_1024.png` — Clean 72px single line with drawer toggle at 1024×768.
+- `header_closed_1512.png` — Full-width single-row luxury desktop header at 1512×982.
+- `header_scrolled_1512.png` — Scrolled 64px header state with shadow and border.
+- `mega_women_1512.png` — Open Women mega-menu with multi-column layout flush to header.
+- `mega_men_1512.png` — Open Men mega-menu.
+- `mega_kids_1512.png` — Open Kids mega-menu.
+- `mega_festive_1512.png` — Open Festive & Wedding mega-menu.
+- `mega_loom_1512.png` — Open From the Loom mega-menu.
+- `mega_crafts_1512.png` — Open Living & Crafts mega-menu.
+- `mega_care_1512.png` — Open Customer Care mega-menu.
+- `drawer_compact_1024.png` — Open drawer navigation with Account & Wishlist controls at 1024px.
+- `drawer_expanded_nested.png` — Drawer navigation with expanded nested categories.
+
+
 
 
