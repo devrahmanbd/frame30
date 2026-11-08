@@ -19,7 +19,7 @@
  * (type-only plus slot constants — never another theme's markup):
  * this module still names only its own key.
  */
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   Menu as MenuIcon,
@@ -193,27 +193,27 @@ function SongoskritiMegaChild({
   locale: string;
 }) {
   return (
-    <li>
-      <div className="flex items-center gap-2 pb-2.5 mb-3 border-b border-[var(--theme-border)]/60">
+    <li className="min-w-0">
+      <div className="flex items-center gap-2 pb-2.5 mb-3 border-b border-[var(--theme-border)]/60 min-w-0">
         <span className="h-1 w-1 rounded-full bg-[var(--theme-accent,#C05A3E)] shrink-0" />
         <SongoskritiLink
           item={item}
           base={base}
           locale={locale}
           activeClassName="text-[var(--theme-accent,#C05A3E)] font-semibold"
-          className="flex min-h-[40px] items-center text-left font-serif text-[15px] font-medium tracking-wide text-[var(--theme-ink)] motion-safe:transition-colors hover:text-[var(--theme-accent,#C05A3E)]"
+          className="flex min-h-[40px] items-center text-left font-serif text-[15px] font-medium tracking-wide text-[var(--theme-ink)] motion-safe:transition-colors hover:text-[var(--theme-accent,#C05A3E)] break-words whitespace-normal leading-snug"
         />
       </div>
       {item.children && item.children.length > 0 && (
         <ul className="space-y-1">
           {item.children.map((grandchild) => (
-            <li key={grandchild.id}>
+            <li key={grandchild.id} className="min-w-0">
               <SongoskritiLink
                 item={grandchild}
                 base={base}
                 locale={locale}
                 activeClassName="text-[var(--theme-accent,#C05A3E)] font-semibold"
-                className="group/link flex min-h-[38px] items-center text-left font-sans text-[13px] text-[var(--theme-ink)]/70 motion-safe:transition-all hover:text-[var(--theme-ink)] hover:translate-x-1"
+                className="group/link flex min-h-[38px] items-center text-left font-sans text-[13px] text-[var(--theme-ink)]/70 motion-safe:transition-all hover:text-[var(--theme-ink)] hover:translate-x-1 break-words whitespace-normal leading-snug"
               />
             </li>
           ))}
@@ -244,11 +244,12 @@ export function SongoskritiDesktopNav({
     <nav
       aria-label={label ?? (locale === "bn" ? "মেনু" : "Menu")}
       data-nav="songoskriti-desktop"
-      className="w-full"
+      className="w-full flex justify-center"
     >
-      <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 lg:gap-x-9">
+      <ul className="flex flex-nowrap whitespace-nowrap items-center justify-center gap-x-6 xl:gap-x-8">
         {items.map((item) => {
           const itemHref = canonicalHref(item, base);
+          const hasChildren = Boolean(item.children && item.children.length > 0);
           const isItemActive = Boolean(
             currentPath &&
               itemHref !== "#" &&
@@ -269,26 +270,39 @@ export function SongoskritiDesktopNav({
           );
 
           return (
-            <li key={item.id} className="group flex h-full items-center">
+            <li
+              key={item.id}
+              className="group flex h-full items-center shrink-0"
+              onKeyDown={(e) => {
+                if (e.key === "Escape") {
+                  const trigger = e.currentTarget.querySelector<HTMLAnchorElement>(":scope > a");
+                  (document.activeElement as HTMLElement)?.blur?.();
+                  trigger?.focus();
+                }
+              }}
+            >
               <SongoskritiLink
                 item={item}
                 base={base}
                 locale={locale}
-                className={`relative inline-flex items-center py-[24px] text-[11px] font-medium uppercase tracking-[0.2em] transition-colors ${
+                aria-haspopup={hasChildren ? "true" : undefined}
+                className={`relative inline-flex items-center py-[24px] text-[11px] font-medium uppercase tracking-[0.2em] transition-colors whitespace-nowrap shrink-0 ${
                   isItemActive
                     ? "text-[var(--theme-ink)] font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[var(--theme-accent,#C05A3E)]"
                     : "text-[var(--theme-ink)]/80 hover:text-[var(--theme-ink)]"
                 }`}
               />
-              {item.children && item.children.length > 0 && (
+              {hasChildren && (
                 <div
                   data-mega="songoskriti"
+                  role="region"
+                  aria-label={`${canonicalLabel(item, locale)} submenu`}
                   className="absolute left-0 top-full z-50 hidden w-full pt-0 group-hover:block group-focus-within:block pointer-events-auto before:absolute before:-top-4 before:left-0 before:right-0 before:h-4 before:content-['']"
                 >
                   <div className="max-h-[85vh] w-full overflow-y-auto border-t border-[var(--theme-border)] bg-[var(--theme-surface)] shadow-2xl">
-                    <div className="mx-auto flex max-w-[1440px] gap-16 px-10 py-12">
-                      <ul className="grid flex-1 grid-cols-4 gap-x-8 gap-y-10">
-                        {item.children.map((child) => (
+                    <div className="mx-auto flex flex-col xl:flex-row max-w-[1440px] gap-8 xl:gap-12 2xl:gap-16 px-6 lg:px-10 py-10 lg:py-12">
+                      <ul className="grid flex-1 min-w-0 grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-x-8 gap-y-10">
+                        {item.children!.map((child) => (
                           <SongoskritiMegaChild
                             key={child.id}
                             item={child}
@@ -299,7 +313,7 @@ export function SongoskritiDesktopNav({
                       </ul>
 
                       {(item.image || item.promo) && (
-                        <div className="w-[320px] shrink-0">
+                        <div className="w-full max-w-[320px] mx-auto xl:mx-0 xl:w-[280px] 2xl:w-[320px] shrink-0">
                           <SongoskritiPromoTile
                             item={item}
                             base={base}
@@ -724,6 +738,13 @@ export function SongoskritiHeaderShell({
 }: HeaderShellProps) {
   const { base, headerMenu, mobileMenu, headerChrome } = data;
   const { mobileOpen, setMobileOpen, scrolled, expandedMobileMenu } = behavior;
+  const [menuFits, setMenuFits] = useState<boolean | null>(null);
+
+  const headerContainerRef = useRef<HTMLDivElement>(null);
+  const brandContainerRef = useRef<HTMLDivElement>(null);
+  const utilsContainerRef = useRef<HTMLDivElement>(null);
+  const measurerRef = useRef<HTMLDivElement>(null);
+
   const navLabel = t("Store menu", "স্টোর মেনু");
   const headerItems = toShellItems(
     headerMenu,
@@ -733,6 +754,59 @@ export function SongoskritiHeaderShell({
     mobileMenu,
     data.mobileFallback ? data.fallbackLabel : null,
   );
+
+  useEffect(() => {
+    const checkFit = () => {
+      const container = headerContainerRef.current;
+      const measurer = measurerRef.current;
+      if (!container || !measurer) return;
+
+      const containerW = container.clientWidth;
+      const brandEl =
+        brandContainerRef.current?.querySelector("a") ||
+        brandContainerRef.current;
+      const brandW = brandEl ? brandEl.offsetWidth : 200;
+      const utilsW = utilsContainerRef.current?.offsetWidth ?? 200;
+      const menuW = measurer.scrollWidth;
+
+      // 32px safety padding between brand, menu, and utility controls
+      const availW = containerW - brandW - utilsW - 32;
+      const fits = window.innerWidth >= 1024 && availW >= menuW;
+      setMenuFits(fits);
+    };
+
+    checkFit();
+
+    let ro: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(() => {
+        checkFit();
+      });
+      if (headerContainerRef.current) {
+        ro.observe(headerContainerRef.current);
+      }
+      if (measurerRef.current) {
+        ro.observe(measurerRef.current);
+      }
+    }
+
+    window.addEventListener("resize", checkFit);
+    return () => {
+      ro?.disconnect();
+      window.removeEventListener("resize", checkFit);
+    };
+  }, [headerItems, locale]);
+
+  // Escape key dismisses mobile drawer when open
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [mobileOpen, setMobileOpen]);
+
   const HeaderPluginNav = selectPluginMenuRenderer(
     data.headerDecision,
     STORE_HEADER_MENU_SLOT,
@@ -788,6 +862,13 @@ export function SongoskritiHeaderShell({
         {name}
       </span>
     );
+
+  const showHamburgerClass =
+    menuFits === null ? "lg:hidden flex" : menuFits ? "hidden" : "flex";
+  const showDesktopNavClass =
+    menuFits === null ? "hidden lg:flex" : menuFits ? "flex" : "hidden";
+  const drawerVisibilityClass =
+    menuFits === null ? "lg:hidden" : menuFits ? "hidden" : "block";
   return (
     <header
       data-header-shell="songoskriti"
@@ -811,9 +892,10 @@ export function SongoskritiHeaderShell({
       )}
 
       <div
+        ref={headerContainerRef}
         className={`mx-auto flex transition-all duration-250 max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-10 ${scrolled ? "h-[64px]" : "h-[72px]"}`}
       >
-        <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1 sm:flex-initial">
+        <div ref={brandContainerRef} className="flex items-center gap-2 sm:gap-4 shrink-0 min-w-max">
           {mobileMenu.length > 0 && (
             <button
               type="button"
@@ -825,7 +907,7 @@ export function SongoskritiHeaderShell({
                   : t("Open menu", "মেনু খুলুন")
               }
               onClick={() => setMobileOpen((open) => !open)}
-              className={`${shellIconLinkCls} lg:hidden -ml-2 shrink-0`}
+              className={`${shellIconLinkCls} ${showHamburgerClass} -ml-2 shrink-0`}
             >
               {mobileOpen ? (
                 <X className="size-[22px]" strokeWidth={1} aria-hidden />
@@ -850,7 +932,7 @@ export function SongoskritiHeaderShell({
           )}
         </div>
 
-        <div className="hidden lg:flex flex-1 min-w-0 justify-center pointer-events-auto">
+        <div className={`${showDesktopNavClass} flex-1 min-w-0 justify-center pointer-events-auto`}>
           {HeaderPluginNav && headerPluginId ? (
             <PluginMenuBoundary
               pluginId={headerPluginId}
@@ -869,7 +951,7 @@ export function SongoskritiHeaderShell({
           )}
         </div>
 
-        <div className="flex items-center justify-end gap-1 shrink-0">
+        <div ref={utilsContainerRef} className="flex items-center justify-end gap-1 shrink-0 min-w-max">
           {custom ? (
             <Link
               to="/search"
@@ -993,13 +1075,13 @@ export function SongoskritiHeaderShell({
       {mobileOpen && mobileMenu.length > 0 && (
         <div
           id="store-mobile-menu"
-          className="border-t border-[var(--theme-border)] bg-[var(--theme-surface)] lg:hidden overflow-y-auto fixed left-0 w-full z-40 bottom-0"
+          className={`border-t border-[var(--theme-border)] bg-[var(--theme-surface)] ${drawerVisibilityClass} overflow-y-auto fixed left-0 w-full z-40 bottom-0`}
           style={{
             top: scrolled ? "64px" : showAnnouncement ? "108px" : "72px",
             maxHeight: `calc(100vh - ${scrolled ? "64px" : showAnnouncement ? "108px" : "72px"})`,
           }}
         >
-          <div className="px-4 py-2 pb-24">
+          <div className="mx-auto max-w-2xl px-4 sm:px-6 py-2 pb-24">
             {DrawerPluginNav && drawerPluginId ? (
               <PluginMenuBoundary
                 pluginId={drawerPluginId}
@@ -1019,6 +1101,22 @@ export function SongoskritiHeaderShell({
           </div>
         </div>
       )}
+
+      {/* Offscreen invisible measurement container to measure un-wrapped menu width */}
+      <div
+        ref={measurerRef}
+        aria-hidden="true"
+        className="pointer-events-none invisible absolute -left-[9999px] top-0 flex flex-nowrap whitespace-nowrap opacity-0"
+        style={{ position: "absolute", left: "-9999px", top: 0, visibility: "hidden" }}
+      >
+        <ul className="flex flex-nowrap whitespace-nowrap items-center gap-x-6 xl:gap-x-8 text-[11px] font-medium uppercase tracking-[0.2em]">
+          {headerItems.map((item) => (
+            <li key={item.id} className="shrink-0 px-2 py-6">
+              <span className="whitespace-nowrap">{canonicalLabel(item, locale)}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </header>
   );
 }
