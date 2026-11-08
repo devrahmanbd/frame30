@@ -246,7 +246,7 @@ export function SongoskritiDesktopNav({
       data-nav="songoskriti-desktop"
       className="w-full flex justify-center"
     >
-      <ul className="flex flex-nowrap whitespace-nowrap items-center justify-center gap-x-5 xl:gap-x-6">
+      <ul className="flex flex-nowrap whitespace-nowrap items-center justify-center gap-x-4 xl:gap-x-5">
         {items.map((item) => {
           const itemHref = canonicalHref(item, base);
           const hasChildren = Boolean(item.children && item.children.length > 0);
@@ -1115,7 +1115,7 @@ export function SongoskritiHeaderShell({
         className="pointer-events-none invisible absolute -left-[9999px] top-0 flex flex-nowrap whitespace-nowrap opacity-0"
         style={{ position: "absolute", left: "-9999px", top: 0, visibility: "hidden" }}
       >
-        <ul className="flex flex-nowrap whitespace-nowrap items-center gap-x-5 xl:gap-x-6 text-[11px] font-medium uppercase tracking-[0.2em]">
+        <ul className="flex flex-nowrap whitespace-nowrap items-center gap-x-4 xl:gap-x-5 text-[11px] font-medium uppercase tracking-[0.2em]">
           {headerItems.map((item) => (
             <li key={item.id} className="shrink-0">
               <span className="py-[24px] whitespace-nowrap">{canonicalLabel(item, locale)}</span>
