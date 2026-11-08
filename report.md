@@ -1825,3 +1825,17 @@ All 7 required viewports verified on live production `https://flamelancer.com/`:
 - `live_1440_hover_sarees_tile.png` — Crossfade hover on Sarees department tile (`prod-saree.png` → `cat-women.png`) at 1440×900.
 - `live_1440_hover_product.png` — Crossfade hover on Mirpur Katan Silk Saree (`hero-weaves.jpg` → `edit-festive-main.jpg`) at 1440×900.
 - `live_1920_megamenu_loom.png` — Centered floating From The Loom mega menu (constrained to 1140px) at 1920×1080.
+- `live_footer_clean.png` — Clean pre-footer transition on `https://flamelancer.com/` with redundant `01 CUSTOMER CARE` strip removed.
+
+### 17.7 Pre-Footer Customer Care Strip Removal (`trust_footer-19`)
+- **Diagnosis:** Flame Fashion BD homepage template contained an orphaned `trust_footer-19` node directly preceding the footer. Because no delivery or payment policy items were populated, it rendered a redundant single-item strip (`01 CUSTOMER CARE \n Email support: support@flamelancer.com`). The official footer sitemap immediately underneath already provides dedicated customer care contact links.
+- **Production Template Update:** Executed atomic JSONB deletion `templates #- '{index,main,18}'` on `framique-supabase-db` on production server `88.99.250.99`:
+  - `theme_versions` (`id = '7e446923-bf8a-4c53-88d2-e3fc8f322bdf'`): section count 19 → 18.
+  - `theme_drafts` (`theme_id = 'c9e9f286-67ad-44e2-86d3-71f2878bbd53'`): section count 19 → 18.
+  - The final section of `main` is now `split_feature-18` (THE FLAME FASHION BD JOURNAL).
+- **Service Restart:** `framique.service` restarted on `88.99.250.99:3200`. Health probe confirmed `HTTP 200 OK`.
+- **Live Verification:** Programmatic HTTP inspection and Chrome DevTools verification on `https://flamelancer.com/`:
+  - `hasTrustFooter: false`
+  - Zero occurrences of `"01 CUSTOMER CARE"` or `"Email support: support@flamelancer.com"` prior to the footer.
+  - Page transitions seamlessly from the journal split feature into the newsletter and footer sitemap.
+
