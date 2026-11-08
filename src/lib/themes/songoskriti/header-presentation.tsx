@@ -487,6 +487,14 @@ export function SongoskritiMobileDrawer({
         )}
       </div>
 
+      {/* Language Switcher in Drawer */}
+      <div className="flex items-center justify-between py-2 px-1 mb-2 border-b border-[var(--theme-border)] text-xs text-[var(--theme-ink)]/70">
+        <span className="font-semibold uppercase tracking-wider text-[11px]">
+          {locale === "bn" ? "ভাষা" : "Language"}
+        </span>
+        <LanguageToggle />
+      </div>
+
       <ul>
         {items.map((item) => {
           const kids = item.children ?? [];
@@ -776,7 +784,7 @@ export function SongoskritiHeaderShell({
         className="h-[34px] w-auto object-contain transition-all duration-300"
       />
     ) : (
-      <span className="font-serif text-xl sm:text-2xl font-light tracking-[0.12em] sm:tracking-[0.15em] uppercase text-[var(--theme-ink)] block truncate max-w-[210px] sm:max-w-none">
+      <span className="font-serif text-lg sm:text-2xl font-light tracking-[0.1em] sm:tracking-[0.15em] uppercase text-[var(--theme-ink)] block truncate max-w-[150px] min-[360px]:max-w-[200px] sm:max-w-none">
         {name}
       </span>
     );
@@ -805,7 +813,7 @@ export function SongoskritiHeaderShell({
       <div
         className={`mx-auto flex transition-all duration-250 max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-10 ${scrolled ? "h-[64px]" : "h-[72px]"}`}
       >
-        <div className="flex items-center gap-4 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1 sm:flex-initial">
           {mobileMenu.length > 0 && (
             <button
               type="button"
@@ -817,7 +825,7 @@ export function SongoskritiHeaderShell({
                   : t("Open menu", "মেনু খুলুন")
               }
               onClick={() => setMobileOpen((open) => !open)}
-              className={`${shellIconLinkCls} lg:hidden -ml-2`}
+              className={`${shellIconLinkCls} lg:hidden -ml-2 shrink-0`}
             >
               {mobileOpen ? (
                 <X className="size-[22px]" strokeWidth={1} aria-hidden />
@@ -828,14 +836,14 @@ export function SongoskritiHeaderShell({
           )}
 
           {custom ? (
-            <Link to="/" className="flex items-center">
+            <Link to="/" className="flex items-center min-w-0">
               {brandMark}
             </Link>
           ) : (
             <Link
               to="/store/$slug"
               params={{ slug }}
-              className="flex items-center"
+              className="flex items-center min-w-0"
             >
               {brandMark}
             </Link>
@@ -939,7 +947,7 @@ export function SongoskritiHeaderShell({
             </Link>
           )}
 
-          <LanguageToggle />
+          <LanguageToggle className="hidden sm:inline-flex" />
 
           {custom ? (
             <Link
