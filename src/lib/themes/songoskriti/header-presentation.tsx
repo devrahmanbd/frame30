@@ -246,7 +246,7 @@ export function SongoskritiDesktopNav({
       data-nav="songoskriti-desktop"
       className="w-full flex justify-center"
     >
-      <ul className="flex flex-nowrap whitespace-nowrap items-center justify-center gap-x-6 xl:gap-x-8">
+      <ul className="flex flex-nowrap whitespace-nowrap items-center justify-center gap-x-5 xl:gap-x-6">
         {items.map((item) => {
           const itemHref = canonicalHref(item, base);
           const hasChildren = Boolean(item.children && item.children.length > 0);
@@ -762,15 +762,21 @@ export function SongoskritiHeaderShell({
       if (!container || !measurer) return;
 
       const containerW = container.clientWidth;
+      const containerStyle = window.getComputedStyle(container);
+      const containerPadding =
+        parseFloat(containerStyle.paddingLeft || "0") +
+        parseFloat(containerStyle.paddingRight || "0");
+      const innerAvailableW = containerW - containerPadding;
+
       const brandEl =
         brandContainerRef.current?.querySelector("a") ||
         brandContainerRef.current;
       const brandW = brandEl ? brandEl.offsetWidth : 200;
       const utilsW = utilsContainerRef.current?.offsetWidth ?? 200;
-      const menuW = measurer.scrollWidth;
+      const menuW = measurer.scrollWidth || measurer.offsetWidth;
 
-      // 32px safety padding between brand, menu, and utility controls
-      const availW = containerW - brandW - utilsW - 32;
+      // 24px safety buffer between brand, menu, and utility controls
+      const availW = innerAvailableW - brandW - utilsW - 24;
       const fits = window.innerWidth >= 1024 && availW >= menuW;
       setMenuFits(fits);
     };
@@ -1109,10 +1115,10 @@ export function SongoskritiHeaderShell({
         className="pointer-events-none invisible absolute -left-[9999px] top-0 flex flex-nowrap whitespace-nowrap opacity-0"
         style={{ position: "absolute", left: "-9999px", top: 0, visibility: "hidden" }}
       >
-        <ul className="flex flex-nowrap whitespace-nowrap items-center gap-x-6 xl:gap-x-8 text-[11px] font-medium uppercase tracking-[0.2em]">
+        <ul className="flex flex-nowrap whitespace-nowrap items-center gap-x-5 xl:gap-x-6 text-[11px] font-medium uppercase tracking-[0.2em]">
           {headerItems.map((item) => (
-            <li key={item.id} className="shrink-0 px-2 py-6">
-              <span className="whitespace-nowrap">{canonicalLabel(item, locale)}</span>
+            <li key={item.id} className="shrink-0">
+              <span className="py-[24px] whitespace-nowrap">{canonicalLabel(item, locale)}</span>
             </li>
           ))}
         </ul>
