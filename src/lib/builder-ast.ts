@@ -5618,7 +5618,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["main"],
     heading: false,
     defaults: {
-      eyebrow: "Our craft",
+      eyebrow: "",
       heading: "From loom to wardrobe",
       body: "We work with weaving clusters across Bengal. Every piece carries the name of its maker.",
       ctaLabel: "Read our story",
