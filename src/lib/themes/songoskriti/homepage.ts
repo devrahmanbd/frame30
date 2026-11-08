@@ -132,8 +132,6 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     // 4. THE ART OF JAMDANI — full-bleed editorial campaign break
     // ────────────────────────────────────────────────────────────────────
     s("craft_story", {
-      eyebrow: "HERITAGE COLLECTION",
-      eyebrow_bn: "ঐতিহ্য সংগ্রহ",
       heading: "THE ART OF JAMDANI",
       heading_bn: "জামদানির শিল্পকলা",
       body: "Fine cotton and silk threads woven by hand on traditional wooden pit looms.",
@@ -252,6 +250,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       primaryImage: "/ph/songoskriti/campaign-men.jpg",
       secondaryImage: "/ph/songoskriti/cat-men.jpg",
       layout: "image_right",
+      connected: true,
     }),
 
     // ────────────────────────────────────────────────────────────────────
@@ -267,6 +266,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       collection: "panjabi",
       cardVariant: "compact",
       showRating: false,
+      connected: true,
     }),
 
     // ────────────────────────────────────────────────────────────────────
@@ -298,8 +298,9 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       ctaLabel2: "SHOP GROOM",
       ctaLabel2_bn: "বরের সংগ্রহ",
       ctaUrl2: `${c}/groom`,
-      primaryImage: "/ph/songoskriti/edit-festive-main.jpg",
-      secondaryImage: "/ph/songoskriti/prod-saree.png",
+      primaryImage: "/ph/songoskriti/prod-saree.png",
+      secondaryImage: "/ph/songoskriti/prod-necklace.png",
+      bgTone: "muted",
       layout: "image_left",
     }),
 
@@ -360,8 +361,6 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     // 15. ARTISAN STORY — the human behind the weave
     // ────────────────────────────────────────────────────────────────────
     s("craft_story", {
-      eyebrow: "HANDLOOM WEAVING",
-      eyebrow_bn: "তাঁত বুনন",
       heading: "Handcrafted Sarees & Attire",
       heading_bn: "হাতে তৈরি শাড়ি ও পোশাক",
       body: "Carefully woven fabrics and traditional attire crafted by Bangladeshi weavers.",

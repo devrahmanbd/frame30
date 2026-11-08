@@ -2367,6 +2367,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       skin: "editorial",
       subhead: "",
       badgeLabel: "",
+      connected: false,
     },
     fields: [
       text("heading", "Heading"),
@@ -2395,6 +2396,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       text("promise", "Delivery promise", 60),
       bool("showRating", "Show rating"),
       text("badgeLabel", "Card badge label", 40),
+      bool("connected", "Connect with adjacent section"),
       CARD_VARIANT,
       SKIN_FIELD("product_rail"),
     ],
@@ -3259,6 +3261,8 @@ const BASE_CATALOG: CatalogEntry[] = [
       ctaLabel2: "",
       ctaUrl2: "",
       layout: "image_left",
+      bgTone: "surface",
+      connected: false,
     },
     fields: [
       text("eyebrow", "Eyebrow", 60),
@@ -3284,6 +3288,8 @@ const BASE_CATALOG: CatalogEntry[] = [
           { value: "image_right", label: "Image right" },
         ],
       },
+      text("bgTone", "Background tone", 40),
+      bool("connected", "Connect with adjacent section"),
     ],
   },
   {

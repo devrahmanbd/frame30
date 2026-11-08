@@ -218,7 +218,7 @@ function HeroSkinSlide({
       <img
         src={slide.image}
         alt={slide.headline}
-        className="absolute inset-0 h-full w-full object-cover"
+        className="absolute inset-0 h-full w-full object-cover object-[50%_35%]"
         loading={isFirst ? "eager" : "lazy"}
         fetchPriority={isFirst ? "high" : undefined}
         decoding="async"
@@ -311,7 +311,7 @@ function HeroSkinSlide({
       role="group"
       aria-roledescription="slide"
       aria-label={slideLabel}
-      className="fq-enter-fade relative flex flex-col justify-end overflow-hidden h-[calc(100vh-105px)] min-h-[640px] sm:min-h-[720px] lg:min-h-[780px]"
+      className="fq-hero-crossfade relative flex flex-col justify-end overflow-hidden h-[calc(100vh-105px)] min-h-[640px] sm:min-h-[720px] lg:min-h-[780px]"
     >
       {/* Full-bleed background image */}
       <div data-hero-art className="absolute inset-0">
@@ -321,11 +321,11 @@ function HeroSkinSlide({
       {/* Multi-tier cinematic vignette overlay */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--theme-ink)]/90 via-[var(--theme-ink)]/40 to-transparent"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--theme-ink)]/95 via-[var(--theme-ink)]/50 to-transparent"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[var(--theme-ink)]/60 via-[var(--theme-ink)]/20 to-transparent"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[var(--theme-ink)]/70 via-[var(--theme-ink)]/25 to-transparent"
       />
 
       {/* LOWER CONTENT: Asymmetric editorial typography & slide timeline */}
@@ -351,7 +351,7 @@ function HeroSkinSlide({
             <Heading
               data-hero-headline
               {...(locale === "bn" && slide.headlineBn ? { lang: "bn" } : {})}
-              className="font-serif text-4xl sm:text-6xl lg:text-[5.25rem] font-light text-[var(--theme-surface)] leading-[1.04] tracking-[-0.015em]"
+              className="font-serif text-4xl sm:text-6xl lg:text-[5.25rem] font-light text-[var(--theme-surface)] leading-[1.04] tracking-[-0.015em] drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)]"
             >
               {locale === "bn" && slide.headlineBn
                 ? slide.headlineBn
@@ -361,7 +361,7 @@ function HeroSkinSlide({
             {slide.subhead && (
               <p
                 data-hero-sub
-                className="mt-4 sm:mt-5 max-w-xl font-serif text-base sm:text-lg font-light leading-relaxed text-[var(--theme-surface)]/85"
+                className="mt-4 sm:mt-5 max-w-xl font-serif text-base sm:text-lg font-light leading-relaxed text-[var(--theme-surface)]/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.4)]"
               >
                 {subhead}
               </p>

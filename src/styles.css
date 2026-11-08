@@ -1888,6 +1888,15 @@ html.dark,
   animation: fq-fade var(--fq-dur, 160ms) var(--fq-ease) both;
 }
 
+@utility fq-hero-crossfade {
+  animation: fq-fade 650ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fq-hero-crossfade {
+    animation: none !important;
+  }
+}
+
 /* Loading geometry: a moving sheen reads as "in flight" without a spinner. */
 @utility fq-shimmer {
   background-image: linear-gradient(

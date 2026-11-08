@@ -1312,8 +1312,12 @@ const SongoskritiProductRail: WidgetComponent = (ctx) => {
     </div>
   );
 
-  const sectionClassName =
-    "w-full bg-[var(--theme-surface)] py-16 sm:py-24 border-t border-[var(--theme-border)]";
+  const connected = bool("connected");
+  const sectionClassName = `w-full bg-[var(--theme-surface)] ${
+    connected
+      ? "pt-4 sm:pt-6 pb-16 sm:pb-24"
+      : "py-16 sm:py-24 border-t border-[var(--theme-border)]"
+  }`;
 
   if (rows !== undefined && rows.length === 0 && !data?.pending) return null;
   return (
@@ -2506,15 +2510,29 @@ const SongoskritiMegaMenu: WidgetComponent = ({
   );
 };
 
-const SongoskritiSplitFeature: WidgetComponent = ({ str, locale, link }) => {
+const SongoskritiSplitFeature: WidgetComponent = ({
+  str,
+  bool,
+  locale,
+  link,
+}) => {
   const layout = str("layout") || "image_left";
   const heading = str("heading");
   const body = str("body");
   const primaryImage = str("primaryImage");
   const secondaryImage = str("secondaryImage");
+  const bgTone = str("bgTone") || "surface";
+  const connected = bool("connected");
+  const bgClass =
+    bgTone === "muted"
+      ? "bg-[var(--theme-muted)]"
+      : "bg-[var(--theme-surface)]";
+  const paddingClass = connected
+    ? "pt-16 sm:pt-24 pb-6 sm:pb-8"
+    : "py-16 sm:py-24";
 
   return (
-    <section className="bg-[var(--theme-surface)] py-16 sm:py-24">
+    <section className={`${bgClass} ${paddingClass} w-full`}>
       <div
         className={`mx-auto flex flex-col md:flex-row max-w-[var(--fq-container,1440px)] gap-8 lg:gap-16 px-4 sm:px-8 items-center ${layout === "image_right" ? "md:flex-row-reverse" : ""}`}
       >

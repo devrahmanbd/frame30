@@ -2620,6 +2620,16 @@ const SONGOSKRITI: DemoCatalog = {
       name: "Fine Panjabis",
       description: "Tailored silk and khadi panjabis for celebration and everyday wear.",
     },
+    {
+      slug: "everyday",
+      name: "Everyday Heritage",
+      description: "Breathable cottons, light sarees, and everyday essentials.",
+    },
+    {
+      slug: "jewellery",
+      name: "Heritage Jewellery",
+      description: "Handcrafted brass, filigree, and festive accessories.",
+    },
   ],
   products: [
     {
@@ -2628,7 +2638,7 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Pure Rajshahi silk panjabi with subtle kantha stitch along the placket and mother-of-pearl buttons. Model is 182cm and wears size 40.",
       category: "men",
-      collections: ["new-in", "festive", "wedding", "rajshahi-silk", "panjabi"],
+      collections: ["panjabi", "festive", "wedding", "rajshahi-silk"],
       tags: ["panjabi", "silk", "festive", "mens", "rajshahi-silk"],
       image_url: "/ph/songoskriti/prod-panjabi.png",
       variants: [
@@ -2660,7 +2670,7 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Authentic Sonargaon Dhakai Jamdani with floral jall motifs in mulberry silk. Includes 80cm unstitched blouse piece. Model is 170cm.",
       category: "women",
-      collections: ["new-in", "festive", "wedding", "sarees", "jamdani"],
+      collections: ["sarees", "wedding", "festive", "jamdani"],
       tags: ["jamdani", "saree", "silk", "handloom"],
       image_url: "/ph/songoskriti/prod-saree.png",
       images: [
@@ -2704,7 +2714,7 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Ultra-lightweight fine muslin saree with delicate floral motifs woven directly into the fabric. Perfect for summer festivities.",
       category: "women",
-      collections: ["new-in", "festive"],
+      collections: ["new-in", "sarees", "festive"],
       tags: ["muslin", "saree", "cotton", "handloom"],
       image_url: "/ph/songoskriti/cat-women.png",
       variants: [
@@ -2723,7 +2733,7 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Authentic handspun Comilla khadi cotton with coconut-shell buttons. Breathable everyday cut. Model is 178cm and wears size 40.",
       category: "men",
-      collections: ["bestsellers", "festive"],
+      collections: ["everyday", "panjabi", "bestsellers", "festive"],
       tags: ["khadi", "kurta", "cotton", "handloom"],
       image_url: "/ph/songoskriti/cat-men.jpg",
       images: [
@@ -2775,7 +2785,7 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Hand-cut and engraved brass necklace with 22k antique gold plating by Dhamrai metalworkers.",
       category: "jewellery",
-      collections: ["festive", "wedding", "gifting"],
+      collections: ["jewellery", "wedding", "festive", "gifting"],
       tags: ["jewellery", "brass", "necklace", "artisan"],
       image_url: "/ph/songoskriti/prod-necklace.png",
       variants: [
@@ -2813,7 +2823,7 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Woven on a traditional wooden pit loom in Delduar, Tangail. 100% fine combed cotton with contrast zari border. Includes 80cm blouse piece.",
       category: "women",
-      collections: ["bestsellers", "festive", "tangail", "sarees"],
+      collections: ["sarees", "everyday", "tangail", "festive", "bestsellers"],
       tags: ["cotton", "handloom", "saree", "tangail"],
       image_url: "/ph/songoskriti/cat-women.png",
       variants: [
@@ -2851,7 +2861,7 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Modern fusion tunic in breathable handloom linen blend with side slit and contrast wood buttons. Model wears size S.",
       category: "women",
-      collections: ["new-in", "bestsellers"],
+      collections: ["everyday", "new-in", "bestsellers"],
       tags: ["taaga", "tunic", "contemporary", "linen"],
       image_url: "/ph/songoskriti/cat-newin.png",
       variants: [
@@ -2870,7 +2880,7 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Contemporary everyday cut in 100% handspun Comilla khadi with mandarin collar and roll-up sleeves.",
       category: "men",
-      collections: ["new-in", "bestsellers"],
+      collections: ["everyday", "new-in", "bestsellers"],
       tags: ["taaga-man", "shirt", "khadi", "mens"],
       image_url: "/ph/songoskriti/cat-men.jpg",
       variants: [
@@ -2908,7 +2918,7 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Intricate floral filigree work handcrafted by master silversmiths with delicate bell drops and pearl accents.",
       category: "jewellery",
-      collections: ["wedding", "festive", "gifting"],
+      collections: ["jewellery", "wedding", "festive", "gifting"],
       tags: ["jewellery", "silver", "filigree", "earrings"],
       image_url: "/ph/songoskriti/cat-jewelry.png",
       variants: [
