@@ -1749,6 +1749,79 @@ All 8 Mac viewports tested on live production `https://flamelancer.com/` across 
 - `drawer_compact_1024.png` — Open drawer navigation with Account & Wishlist controls at 1024px.
 - `drawer_expanded_nested.png` — Drawer navigation with expanded nested categories.
 
+---
 
+## 17. Wave 17: Songoskriti — Centered Floating Mega Menu, Department Hover Images, and Gallery Crossfade (November 8, 2026)
 
+**Remediation Commit:** `8696eb439c04e265d3a36fb2b1e21852afe575d8`  
+**Production Host:** `https://flamelancer.com/`  
+**Theme Preview Host:** `https://framique.qubickle.com/theme-preview/songoskriti`  
+**Deployed Live Bundle Marker:** `8696eb439c04e265d3a36fb2b1e21852afe575d8`  
+**Target Merchant:** Flame Fashion BD (`b47532e5-9649-4ebd-93a9-06fa2917c00e`)  
+**Published Theme Version:** `7e446923-bf8a-4c53-88d2-e3fc8f322bdf`  
 
+### 17.1 P0 — Mega-Menu Floating Panel & Dynamic Column Geometry
+- **Replaced Full-Width Overlay:** Migrated from `fixed/absolute left-0 w-full` backdrop to a contained, floating luxury panel centered under the header:
+  `w-[min(1140px,calc(100vw-32px))] left-1/2 -translate-x-1/2 top-full rounded-b-xl shadow-2xl`
+- **Terracotta Dot Purged:** Removed decorative terracotta dot (`w-1.5 h-1.5 rounded-full bg-[#C05A3E]`) preceding group headings in `SongoskritiMegaChild`.
+- **List Normalization:** Explicit `list-none marker:content-none m-0 p-0` resets applied across all navigation `<ul>` and `<li>` nodes to prevent browser bullet artifacts.
+- **Dynamic Group Columns:** Dynamic grid assignment eliminating empty 4th column defects:
+  - 3 groups (Kids, Living & Crafts): `grid-cols-1 sm:grid-cols-2 md:grid-cols-3` (3 evenly spaced columns)
+  - 4 groups (Men, Festive & Wedding, From the Loom, Customer Care): `grid-cols-1 sm:grid-cols-2 md:grid-cols-4` (4 evenly spaced columns)
+  - 6 groups (Women): `grid-cols-2 md:grid-cols-3 gap-y-8` (clean 3 columns × 2 rows)
+- **Conditional Promo Aside:** Eliminated unconditional `max-w-[320px]` aside reservation; promo aside only renders when promotional asset/copy is authored.
+- **Continuity & Accessibility:** Preserved 16px hover bridge (`before:absolute before:-top-4 before:h-4`), keyboard focus auto-expand (`group-focus-within:block`), and Escape dismiss.
+
+### 17.2 P1 — Shop the Collection Imagery & Aspect Ratio
+- **Hover Asset Crossfade:** Implemented authentic editorial secondary images for all 6 collection tiles:
+  - **Sarees:** primary `/ph/songoskriti/prod-saree.png`, hover `/ph/songoskriti/cat-women.png`
+  - **Panjabi:** primary `/ph/songoskriti/prod-panjabi.png`, hover `/ph/songoskriti/campaign-men.jpg`
+  - **Festive:** primary `/ph/songoskriti/hero-festive.jpg`, hover `/ph/songoskriti/edit-festive-main.jpg`
+  - **Wedding:** primary `/ph/songoskriti/edit-festive-main.jpg`, hover `/ph/songoskriti/hero-festive.jpg`
+  - **Jewellery:** primary `/ph/songoskriti/cat-jewelry.png`, hover `/ph/songoskriti/prod-necklace.png`
+  - **Heritage:** primary `/ph/songoskriti/hero-weaves.jpg`, hover `/ph/songoskriti/hero-artisans.jpg`
+- **Uniform Frame & Responsive Columns:**
+  - Standardized frame: `relative w-full aspect-[3/4] overflow-hidden bg-[var(--theme-muted)]`
+  - Responsive column scaling: `grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6`
+  - Touch preservation: `[@media(hover:none)]:opacity-100` on primary, `[@media(hover:none)]:opacity-0` on secondary image.
+- **Schema & Database Synchronization:**
+  - Added `hoverImage` field to `departments` repeater schema in `src/lib/builder-ast.ts` and `src/lib/studio/controls.ts` so properties survive `parseTemplates` sanitization.
+  - Synchronized Flame Fashion BD's live published version (`7e446923-bf8a-4c53-88d2-e3fc8f322bdf`) and draft (`c9e9f286-67ad-44e2-86d3-71f2878bbd53`) in production Postgres (`framique-supabase-db`).
+
+### 17.3 P1 — Signature Sarees and Product Card Crossfade
+- **Eliminated Synthetic Placeholders:** Removed `/api/public/ph/${id}hover` fake SVG tile generation.
+- **Gallery Image Resolution:** Card primary image renders from `imageUrls[0]` / `imageUrl`; secondary hover image renders authentic `imageUrls[1]`.
+- **Single-Image Resilience:** Single-image catalog items retain primary image with gentle scale (`group-hover:scale-105`) without disappearing or rendering missing image placeholders.
+- **Keyboard Focus & Touch:** Added `group-focus-within:opacity-100` and `[@media(hover:none)]:opacity-0` to secondary image stack.
+
+### 17.4 P2 — Campaign Backgrounds
+- Verified `THE ART OF JAMDANI` craft story (`imageUrl: "/ph/songoskriti/hero-weaves.jpg"`) and `THE FLAME FASHION BD JOURNAL` split feature (`primaryImage: "/ph/songoskriti/hero-weaves.jpg"`, `secondaryImage: "/ph/songoskriti/hero-artisans.jpg"`). Containers use `overflow-hidden` with `object-cover` and zero hover scale distortion.
+
+### 17.5 7-Viewport Testing Matrix (Live Production Verification)
+
+All 7 required viewports verified on live production `https://flamelancer.com/`:
+
+| Viewport | Device Archetype | Mega Menu State | Department Grid Layout | Product Card Hover | Status |
+|---|---|---|---|---|---|
+| **320 × 568** | Mobile Compact (iPhone SE) | Drawer Toggle | 2 cols, aspect-[3/4] | Touch-safe primary | **PASS** |
+| **390 × 844** | Mobile Standard (iPhone 13/14/15) | Drawer Toggle | 2 cols, aspect-[3/4] | Touch-safe primary | **PASS** |
+| **768 × 1024** | Tablet Portrait (iPad Mini/Air) | Drawer Toggle | 3 cols, aspect-[3/4] | Touch-safe primary | **PASS** |
+| **1024 × 768** | Tablet Landscape / Compact Laptop | Drawer Toggle | 4 cols, aspect-[3/4] | Crossfade active | **PASS** |
+| **1280 × 800** | Desktop Compact (MacBook 13") | Centered Floating Panel | 6 cols, aspect-[3/4] | Crossfade active | **PASS** |
+| **1440 × 900** | Desktop Standard (MacBook Pro 15") | Centered Floating Panel (1140px max) | 6 cols, aspect-[3/4] | Crossfade active | **PASS** |
+| **1920 × 1080** | Wide Desktop (FHD / External Monitor) | Centered Floating Panel (1140px max) | 6 cols, aspect-[3/4] | Crossfade active | **PASS** |
+
+### 17.6 Evidence Artifacts Committed (`docs/wave17-evidence/`)
+- `live_320_header.png` — Mobile header at 320×568.
+- `live_320_departments.png` — 2-column aspect-[3/4] portrait grid at 320×568.
+- `live_320_products.png` — Signature Sarees product cards at 320×568.
+- `live_390_departments.png` — 2-column aspect-[3/4] portrait grid at 390×844.
+- `live_768_departments.png` — 3-column aspect-[3/4] portrait grid at 768×1024.
+- `live_1024_departments.png` — 4-column aspect-[3/4] portrait grid at 1024×768.
+- `live_1440_megamenu_women.png` — Centered floating Women mega menu (3 cols × 2 rows, no terracotta dot) at 1440×900.
+- `live_1440_megamenu_kids.png` — Centered floating Kids mega menu (3 dynamic columns) at 1440×900.
+- `live_1440_megamenu_men.png` — Centered floating Men mega menu (4 dynamic columns) at 1440×900.
+- `live_1440_departments_grid.png` — 6-column department grid at 1440×900.
+- `live_1440_hover_sarees_tile.png` — Crossfade hover on Sarees department tile (`prod-saree.png` → `cat-women.png`) at 1440×900.
+- `live_1440_hover_product.png` — Crossfade hover on Mirpur Katan Silk Saree (`hero-weaves.jpg` → `edit-festive-main.jpg`) at 1440×900.
+- `live_1920_megamenu_loom.png` — Centered floating From The Loom mega menu (constrained to 1140px) at 1920×1080.
