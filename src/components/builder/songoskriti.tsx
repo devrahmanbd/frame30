@@ -1639,24 +1639,49 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
 
   const supportPhone =
     str("supportPhone") ||
-    (typeof dynamicMerchant.supportPhone === "string"
+    (typeof dynamicMerchant.supportPhone === "string" &&
+    dynamicMerchant.supportPhone
       ? (dynamicMerchant.supportPhone as string)
-      : "");
+      : typeof dynamicMerchant.support_phone === "string" &&
+          dynamicMerchant.support_phone
+        ? (dynamicMerchant.support_phone as string)
+        : typeof dynamic.supportPhone === "string" && dynamic.supportPhone
+          ? (dynamic.supportPhone as string)
+          : typeof dynamic.support_phone === "string" && dynamic.support_phone
+            ? (dynamic.support_phone as string)
+            : "");
   const supportEmail =
     str("supportEmail") ||
-    (typeof dynamicMerchant.supportEmail === "string"
+    (typeof dynamicMerchant.supportEmail === "string" &&
+    dynamicMerchant.supportEmail
       ? (dynamicMerchant.supportEmail as string)
-      : "");
+      : typeof dynamicMerchant.support_email === "string" &&
+          dynamicMerchant.support_email
+        ? (dynamicMerchant.support_email as string)
+        : typeof dynamic.supportEmail === "string" && dynamic.supportEmail
+          ? (dynamic.supportEmail as string)
+          : typeof dynamic.support_email === "string" && dynamic.support_email
+            ? (dynamic.support_email as string)
+            : "");
   const supportHours =
     str("supportHours") ||
-    (typeof dynamicMerchant.supportHours === "string"
+    (typeof dynamicMerchant.supportHours === "string" &&
+    dynamicMerchant.supportHours
       ? (dynamicMerchant.supportHours as string)
-      : "");
+      : typeof dynamicMerchant.support_hours === "string" &&
+          dynamicMerchant.support_hours
+        ? (dynamicMerchant.support_hours as string)
+        : typeof dynamic.supportHours === "string" && dynamic.supportHours
+          ? (dynamic.supportHours as string)
+          : "");
   const policyDelivery =
     str("policyDelivery") ||
-    (typeof dynamicMerchant.deliveryInfo === "string"
+    (typeof dynamicMerchant.deliveryInfo === "string" &&
+    dynamicMerchant.deliveryInfo
       ? (dynamicMerchant.deliveryInfo as string)
-      : "");
+      : typeof dynamic.deliveryInfo === "string" && dynamic.deliveryInfo
+        ? (dynamic.deliveryInfo as string)
+        : "");
   const instagramUrl = str("instagramUrl");
   const facebookUrl = str("facebookUrl");
 
