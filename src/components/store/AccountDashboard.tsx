@@ -44,6 +44,7 @@ import {
   AccountOrdersPanel,
   AccountOverviewPanel,
 } from "./account-widgets";
+import { CustomerAccountAccess } from "./CustomerAccountAccess";
 import {
   useAccountDashboardState,
   type AccountDashboardStatus,
@@ -73,6 +74,8 @@ export { OrderDetail } from "./account-widgets";
 export type AccountDashboardProps = {
   /** The store's slug — every link is a real route on this store. */
   slug: string;
+  /** Display name of the merchant for headers and notices. */
+  merchantName?: string;
   /** The shopper's own overview. Undefined while loading or signed out. */
   overview?: AccountOverview;
   /** Which state the surface is in. */
@@ -215,8 +218,17 @@ export function AccountDashboard(props: AccountDashboardProps) {
     panelRef.current?.focus();
   }, [tab]);
 
+  const merchantName = props.merchantName || slug;
+
   if (status === "unauthenticated") {
-    return <OrderLookup slug={slug} />;
+    return (
+      <CustomerAccountAccess
+        slug={slug}
+        merchantName={merchantName}
+        requestedTab={tab}
+        isStoreSlugRoute={true}
+      />
+    );
   }
 
   const panelId = "account-panel";

@@ -442,6 +442,7 @@ function AccountPage() {
   const dashboard = (
     <AccountDashboard
       slug={slug}
+      merchantName={chrome?.merchant?.name || slug}
       overview={overview}
       status={status}
       tab={tab}

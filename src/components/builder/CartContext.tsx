@@ -40,6 +40,8 @@ export type CartTotals = {
     variantId: string;
     productTitle: string;
     variantName: string;
+    imageUrl?: string | null;
+    productSlug?: string;
     unitPriceMinor: number;
     quantity: number;
     lineTotalMinor: number;
@@ -94,6 +96,8 @@ export const DEMO_CART: CartContextValue = {
         variantId: "demo-1",
         productTitle: "Sample product",
         variantName: "Default",
+        imageUrl: null,
+        productSlug: "sample-product",
         unitPriceMinor: 99000,
         quantity: 1,
         lineTotalMinor: 99000,
@@ -103,6 +107,8 @@ export const DEMO_CART: CartContextValue = {
         variantId: "demo-2",
         productTitle: "Second product",
         variantName: "Medium",
+        imageUrl: null,
+        productSlug: "second-product",
         unitPriceMinor: 75000,
         quantity: 2,
         lineTotalMinor: 150000,

@@ -86,7 +86,7 @@ describe("adaptThemeTemplatesForMerchant", () => {
 
     const footer = adapted.index?.footer as any[];
     expect(footer[0].props.contact).toContain("Email: support@flamelancer.com|mailto:support@flamelancer.com");
-    expect(footer[0].props.contact).toContain("Phone: +8801700000000|/pages/contact");
+    expect(footer[0].props.contact).toContain("Phone: +8801700000000|tel:+8801700000000");
   });
 
   it("prunes sample product disclaimer text from product template", () => {

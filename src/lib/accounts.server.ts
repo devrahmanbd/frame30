@@ -47,6 +47,7 @@ export type AccountOverview = {
     stock_quantity: number;
     product_title: string;
     product_slug: string;
+    image_url?: string | null;
   }[];
   consents: {
     channel: ConsentChannel;
@@ -101,7 +102,33 @@ export async function accountOverview(
   });
   if (error) throw error;
   const parsed = (data ?? {}) as unknown as Partial<AccountOverview>;
-  return { ...EMPTY, ...parsed };
+  const result: AccountOverview = { ...EMPTY, ...parsed };
+
+  if (result.wishlist && result.wishlist.length > 0) {
+    const slugs = [
+      ...new Set(
+        result.wishlist
+          .map((w) => w.product_slug)
+          .filter((s): s is string => Boolean(s)),
+      ),
+    ];
+    if (slugs.length > 0) {
+      const pub = publicClient();
+      const { data: prods } = await pub
+        .from("products")
+        .select("slug, image_url")
+        .in("slug", slugs);
+      if (prods && prods.length > 0) {
+        const imgMap = new Map(prods.map((p) => [p.slug, p.image_url]));
+        result.wishlist = result.wishlist.map((item) => ({
+          ...item,
+          image_url: imgMap.get(item.product_slug) ?? null,
+        }));
+      }
+    }
+  }
+
+  return result;
 }
 
 export async function upsertCustomer(
@@ -461,4 +488,85 @@ export async function ownOrderDetail(
       line_minor: number;
     }[];
   } | null;
+}
+
+export async function registerCustomer(input: {
+  slug: string;
+  email: string;
+  password: string;
+  fullName?: string;
+}) {
+  const store = await storeBySlug(input.slug);
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
+
+  const emailTrimmed = input.email.trim().toLowerCase();
+  const resolvedFullName =
+    input.fullName?.trim() || emailTrimmed.split("@")[0] || "Customer";
+
+  const { data, error } = await supabaseAdmin.auth.admin.createUser({
+    email: emailTrimmed,
+    password: input.password,
+    email_confirm: true,
+    user_metadata: {
+      full_name: resolvedFullName,
+      account_type: "customer",
+      store_slug: input.slug,
+    },
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  // Link customer in public.customers
+  const looseAdmin = supabaseAdmin as unknown as {
+    from: (tbl: string) => {
+      select: (cols: string) => {
+        eq: (
+          col: string,
+          val: string,
+        ) => {
+          ilike: (
+            col: string,
+            val: string,
+          ) => {
+            maybeSingle: () => Promise<{ data: { id: string } | null }>;
+          };
+        };
+      };
+      update: (vals: Record<string, unknown>) => {
+        eq: (col: string, val: string) => Promise<unknown>;
+      };
+      insert: (vals: Record<string, unknown>) => Promise<unknown>;
+    };
+  };
+
+  const { data: existingCust } = await looseAdmin
+    .from("customers")
+    .select("id")
+    .eq("merchant_id", store.id)
+    .ilike("email", emailTrimmed)
+    .maybeSingle();
+
+  if (existingCust) {
+    await looseAdmin
+      .from("customers")
+      .update({
+        auth_uid: data.user.id,
+        name: resolvedFullName,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", existingCust.id);
+  } else {
+    await looseAdmin.from("customers").insert({
+      merchant_id: store.id,
+      auth_uid: data.user.id,
+      name: resolvedFullName,
+      email: emailTrimmed,
+      locale: "en",
+    });
+  }
+
+  return { ok: true, userId: data.user.id };
 }

@@ -30,6 +30,8 @@ import {
 } from "@/components/icons/tabler";
 import { useLang } from "@/lib/i18n";
 import { fmtMinor } from "@/lib/money";
+import { toast } from "sonner";
+import { useCart } from "@/lib/cart";
 import type { AccountTab } from "@/lib/account-tab";
 import type { AccountOverview as AccountOverviewPayload } from "@/lib/accounts.server";
 import type { WidgetRow } from "@/lib/widget-data";
@@ -962,6 +964,7 @@ export function AccountDetailsPanel({
   heading?: string;
 }) {
   const { t } = useLang();
+  const cart = useCart(slug);
   const addresses = overview?.addresses ?? [];
   const wishlist = overview?.wishlist ?? [];
   const consents = overview?.consents ?? [];
@@ -1049,44 +1052,94 @@ export function AccountDetailsPanel({
           />
         ) : (
           <ul className="divide-y divide-border/60">
-            {wishlist.map((item) => (
-              <li
-                key={item.id}
-                className="flex items-center justify-between gap-4 py-6"
-              >
-                <Link
-                  to="/store/$slug/p/$productSlug"
-                  params={{ slug, productSlug: item.product_slug }}
-                  className="min-w-0"
+            {wishlist.map((item) => {
+              const inStock = item.stock_quantity > 0;
+              return (
+                <li
+                  key={item.id}
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-6"
                 >
-                  <span className="block truncate text-[14px] font-medium leading-relaxed">
-                    {item.product_title}
-                  </span>
-                  <span className="block text-[12px] font-medium tracking-wide text-muted-foreground mt-0.5">
-                    {item.variant_name}
-                  </span>
-                  <span className="money mt-2 block text-[13.5px] font-semibold tracking-wide">
-                    {fmtMinor(item.price_amount_minor_int, currency)}
-                  </span>
-                  <span
-                    className={`text-[11px] font-bold fq-caps tracking-widest block mt-2 ${item.stock_quantity > 0 ? "text-foreground" : "text-danger-foreground"}`}
-                  >
-                    {item.stock_quantity > 0
-                      ? t("In Stock", "স্টকে আছে")
-                      : t("Out of Stock", "স্টক নেই")}
-                  </span>
-                </Link>
-                {onToggleWishlist ? (
-                  <button
-                    type="button"
-                    onClick={() => onToggleWishlist(item.variant_id)}
-                    className="text-[11px] font-bold fq-caps tracking-widest text-muted-foreground hover:text-foreground transition-colors px-4 py-2"
-                  >
-                    {t("Remove", "সরান")}
-                  </button>
-                ) : null}
-              </li>
-            ))}
+                  <div className="flex items-center gap-4 min-w-0">
+                    <Link
+                      to="/store/$slug/p/$productSlug"
+                      params={{ slug, productSlug: item.product_slug }}
+                      className="relative size-16 sm:size-20 shrink-0 overflow-hidden rounded-xs bg-muted/40 border border-border/50 block"
+                    >
+                      {item.image_url ? (
+                        <img
+                          src={item.image_url}
+                          alt={item.product_title}
+                          className="size-full object-cover"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="flex size-full items-center justify-center text-muted-foreground/40">
+                          <Package className="size-6" />
+                        </div>
+                      )}
+                    </Link>
+                    <div className="min-w-0 flex-1">
+                      <Link
+                        to="/store/$slug/p/$productSlug"
+                        params={{ slug, productSlug: item.product_slug }}
+                        className="hover:underline"
+                      >
+                        <span className="block truncate text-[14px] font-medium leading-relaxed">
+                          {item.product_title}
+                        </span>
+                      </Link>
+                      {item.variant_name ? (
+                        <span className="block text-[12px] font-medium tracking-wide text-muted-foreground mt-0.5">
+                          {item.variant_name}
+                        </span>
+                      ) : null}
+                      <span className="money mt-1.5 block text-[13.5px] font-semibold tracking-wide">
+                        {fmtMinor(item.price_amount_minor_int, currency)}
+                      </span>
+                      <span
+                        className={`text-[11px] font-bold fq-caps tracking-widest block mt-1 ${inStock ? "text-foreground" : "text-danger-foreground"}`}
+                      >
+                        {inStock
+                          ? t("In Stock", "স্টকে আছে")
+                          : t("Out of Stock", "স্টক নেই")}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 self-end sm:self-center">
+                    <button
+                      type="button"
+                      disabled={!inStock}
+                      onClick={() => {
+                        cart.add(item.variant_id, 1);
+                        toast.success(
+                          t(
+                            `Added ${item.product_title} to bag`,
+                            `${item.product_title} ব্যাগে যোগ করা হয়েছে`,
+                          ),
+                        );
+                      }}
+                      className={`min-h-11 px-4 py-2 text-[11px] font-bold fq-caps tracking-widest transition-colors ${
+                        inStock
+                          ? "bg-foreground text-background hover:bg-foreground/90"
+                          : "bg-muted text-muted-foreground cursor-not-allowed opacity-60"
+                      }`}
+                    >
+                      {t("Add to Bag", "ব্যাগে যোগ করুন")}
+                    </button>
+                    {onToggleWishlist ? (
+                      <button
+                        type="button"
+                        onClick={() => onToggleWishlist(item.variant_id)}
+                        className="text-[11px] font-bold fq-caps tracking-widest text-muted-foreground hover:text-foreground transition-colors px-4 py-2 min-h-11 inline-flex items-center"
+                      >
+                        {t("Remove", "সরান")}
+                      </button>
+                    ) : null}
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         ))}
 

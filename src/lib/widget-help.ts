@@ -669,6 +669,10 @@ export const WIDGET_HELP: Record<SectionType, BiText> = {
 
 /** Exact prop-key hints. Keys are catalog `Field.key`s. */
 export const PROP_HINTS: Record<string, BiText> = {
+  connected: {
+    en: "Connect with the adjacent section by removing vertical spacing.",
+    bn: "উল্লম্ব ফাঁকা স্থান কমিয়ে সংলগ্ন সেকশনের সাথে সংযুক্ত করুন।",
+  },
   promoImage: {
     en: "Promo panel image in the menu dropdown. Blank hides the panel.",
     bn: "মেনু ড্রপডাউনে প্রোমো ছবি। খালি রাখলে প্যানেল লুকানো থাকে।",

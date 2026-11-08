@@ -81,8 +81,6 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
     links: [
       "Size Guide|/pages/size-guide",
       "Order Tracking|/pages/track-order",
-      "Shipping|/pages/shipping",
-      "Returns & Exchanges|/pages/returns",
       "Cancellation|/pages/cancellation",
       "FAQ|/pages/faq",
       "Contact|/pages/contact",
@@ -90,8 +88,6 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
     links_bn: [
       "সাইজ গাইড|/pages/size-guide",
       "অর্ডার ট্র্যাকিং|/pages/track-order",
-      "ডেলিভারি|/pages/shipping",
-      "রিটার্ন ও বদল|/pages/returns",
       "বাতিলকরণ|/pages/cancellation",
       "সাধারণ জিজ্ঞাসা|/pages/faq",
       "যোগাযোগ|/pages/contact",
@@ -164,45 +160,11 @@ export function buildSongoskritiFooter(
   const brandTagline = merchant?.tagline || "";
   const brandTaglineBn = merchant?.taglineBn || brandTagline;
 
-  let c4Title = FALLBACK_COLUMNS[3]!.title;
-  let c4TitleBn = FALLBACK_COLUMNS[3]!.title_bn;
-  let c4Links = FALLBACK_COLUMNS[3]!.links;
-  let c4LinksBn = FALLBACK_COLUMNS[3]!.links_bn;
-
-  if (
-    merchant?.supportEmail ||
-    merchant?.supportHours ||
-    merchant?.deliveryInfo
-  ) {
-    c4Title = "Contact";
-    c4TitleBn = "যোগাযোগ";
-    const lines: string[] = [];
-    const linesBn: string[] = [];
-
-    if (merchant.supportEmail) {
-      lines.push(
-        `Email: ${merchant.supportEmail}|mailto:${merchant.supportEmail}`,
-      );
-      linesBn.push(
-        `ইমেইল: ${merchant.supportEmail}|mailto:${merchant.supportEmail}`,
-      );
-    }
-    if (merchant.supportHours) {
-      lines.push(`Support: ${merchant.supportHours}|/pages/contact`);
-      linesBn.push(`সাপোর্ট: ${merchant.supportHours}|/pages/contact`);
-    }
-    lines.push("Track Your Order|/pages/track-order");
-    linesBn.push("অর্ডার অনুসন্ধান|/pages/track-order");
-    if (merchant.deliveryInfo) {
-      lines.push(`${merchant.deliveryInfo}|/pages/shipping`);
-      linesBn.push(
-        `${merchant.deliveryInfoBn || merchant.deliveryInfo}|/pages/shipping`,
-      );
-    }
-
-    c4Links = lines.join("\n");
-    c4LinksBn = linesBn.join("\n");
-  }
+  // Policies column is always preserved — contact details live in Customer Concierge
+  const c4Title = FALLBACK_COLUMNS[3]!.title;
+  const c4TitleBn = FALLBACK_COLUMNS[3]!.title_bn;
+  const c4Links = FALLBACK_COLUMNS[3]!.links;
+  const c4LinksBn = FALLBACK_COLUMNS[3]!.links_bn;
 
   let paymentsMarks = "";
   let paymentsMarksBn = "";
@@ -240,6 +202,10 @@ export function buildSongoskritiFooter(
       paymentsHeading_bn: paymentsMarksBn ? PAYMENTS_HEADING_BN : "",
       paymentsMarks,
       paymentsMarks_bn: paymentsMarksBn,
+      supportPhone: merchant?.supportPhone || "",
+      supportEmail: merchant?.supportEmail || "",
+      supportHours: merchant?.supportHours || "",
+      policyDelivery: merchant?.deliveryInfo || "",
       c1Title: FALLBACK_COLUMNS[0]!.title,
       c1Title_bn: FALLBACK_COLUMNS[0]!.title_bn,
       c1Links: FALLBACK_COLUMNS[0]!.links,

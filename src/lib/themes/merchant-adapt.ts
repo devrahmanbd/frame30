@@ -100,10 +100,11 @@ function adaptText(
         line.includes("+৮৮০ ৯৬ ১২৩৪ ৫৬৭৮")
       ) {
         if (merchant.supportPhone) {
+          const cleanTel = merchant.supportPhone.replace(/[^\d+]/g, "");
           filteredLines.push(
             isBn
-              ? `ফোন: ${merchant.supportPhone}|/pages/contact`
-              : `Phone: ${merchant.supportPhone}|/pages/contact`,
+              ? `ফোন: ${merchant.supportPhone}|tel:${cleanTel}`
+              : `Phone: ${merchant.supportPhone}|tel:${cleanTel}`,
           );
         }
         continue;

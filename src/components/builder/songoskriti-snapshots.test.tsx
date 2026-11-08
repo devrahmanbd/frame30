@@ -91,6 +91,10 @@ const FIXED_FOOTER_PROPS: Record<string, PropValue> = {
   paymentsHeading_bn: "",
   paymentsMarks: "",
   paymentsMarks_bn: "",
+  supportPhone: "",
+  supportEmail: "",
+  supportHours: "",
+  policyDelivery: "",
   c1Title: "Shop",
   c1Title_bn: "কেনাকাটা",
   c1Links: [
@@ -120,8 +124,6 @@ const FIXED_FOOTER_PROPS: Record<string, PropValue> = {
   c2Links: [
     "Size Guide|/pages/size-guide",
     "Order Tracking|/pages/track-order",
-    "Shipping|/pages/shipping",
-    "Returns & Exchanges|/pages/returns",
     "Cancellation|/pages/cancellation",
     "FAQ|/pages/faq",
     "Contact|/pages/contact",
@@ -129,8 +131,6 @@ const FIXED_FOOTER_PROPS: Record<string, PropValue> = {
   c2Links_bn: [
     "সাইজ গাইড|/pages/size-guide",
     "অর্ডার ট্র্যাকিং|/pages/track-order",
-    "ডেলিভারি|/pages/shipping",
-    "রিটার্ন ও বদল|/pages/returns",
     "বাতিলকরণ|/pages/cancellation",
     "সাধারণ জিজ্ঞাসা|/pages/faq",
     "যোগাযোগ|/pages/contact",

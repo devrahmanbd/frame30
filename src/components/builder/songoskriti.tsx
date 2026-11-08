@@ -1086,8 +1086,8 @@ const SongoskritiProductCard = ({
 
   const hasHoverImage = Boolean(
     rawSecondary &&
-      rawSecondary !== primaryImage &&
-      !rawSecondary.endsWith(".svg"),
+    rawSecondary !== primaryImage &&
+    !rawSecondary.endsWith(".svg"),
   );
   const secondaryImage = hasHoverImage ? rawSecondary : null;
 
@@ -1095,7 +1095,7 @@ const SongoskritiProductCard = ({
     <article className="group relative flex flex-col">
       <a
         href={row.href ?? "#"}
-        className="relative w-full aspect-[3/4] block overflow-hidden bg-[var(--theme-muted)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent,#C05A3E)]"
+        className="relative w-full aspect-[3/4] block overflow-hidden bg-[var(--theme-muted)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent)]"
       >
         <img
           src={primaryImage}
@@ -1637,9 +1637,26 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
   const paymentHeading =
     str("paymentsHeading") || t(locale, "Payment methods", "পেমেন্ট মাধ্যম");
 
-  const supportEmail = str("supportEmail");
-  const supportHours = str("supportHours");
-  const policyDelivery = str("policyDelivery");
+  const supportPhone =
+    str("supportPhone") ||
+    (typeof dynamicMerchant.supportPhone === "string"
+      ? (dynamicMerchant.supportPhone as string)
+      : "");
+  const supportEmail =
+    str("supportEmail") ||
+    (typeof dynamicMerchant.supportEmail === "string"
+      ? (dynamicMerchant.supportEmail as string)
+      : "");
+  const supportHours =
+    str("supportHours") ||
+    (typeof dynamicMerchant.supportHours === "string"
+      ? (dynamicMerchant.supportHours as string)
+      : "");
+  const policyDelivery =
+    str("policyDelivery") ||
+    (typeof dynamicMerchant.deliveryInfo === "string"
+      ? (dynamicMerchant.deliveryInfo as string)
+      : "");
   const instagramUrl = str("instagramUrl");
   const facebookUrl = str("facebookUrl");
 
@@ -1754,7 +1771,7 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
                   {brandTagline}
                 </p>
               )}
-              {(supportEmail || policyDelivery) && (
+              {(supportEmail || policyDelivery || supportPhone) && (
                 <div className="mb-6 space-y-1 text-[12px] text-[var(--theme-ink)]/70">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50">
                     {locale === "bn"
@@ -1765,6 +1782,14 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
                     <p className="text-[12px] text-[var(--theme-ink)]/85">
                       {policyDelivery}
                     </p>
+                  )}
+                  {supportPhone && (
+                    <a
+                      href={`tel:${supportPhone.replace(/[^\d+]/g, "")}`}
+                      className="inline-flex items-center gap-1.5 text-[var(--theme-accent)] font-medium text-[12px] min-h-[44px]"
+                    >
+                      <span>{supportPhone}</span>
+                    </a>
                   )}
                   {supportEmail && (
                     <a
@@ -1916,13 +1941,10 @@ const SongoskritiDepartmentGrid: WidgetComponent = ({
 }) => {
   const departments = rowsOf(section, "departments")
     .map((row) => ({
-      title:
-        readBn(row, "title", locale) || readBn(row, "name", locale),
+      title: readBn(row, "title", locale) || readBn(row, "name", locale),
       image: readString(row, "image"),
       hoverImage:
-        readString(row, "hoverImage") ||
-        readString(row, "hover_image") ||
-        null,
+        readString(row, "hoverImage") || readString(row, "hover_image") || null,
       href: readString(row, "href"),
     }))
     .filter((d) => d.title && d.href);
@@ -1960,7 +1982,7 @@ const SongoskritiDepartmentGrid: WidgetComponent = ({
             <a
               key={dept.title}
               href={link(dept.href)}
-              className="group block relative overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent,#C05A3E)]"
+              className="group block relative overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent)]"
             >
               <div className="relative w-full aspect-[3/4] overflow-hidden bg-[var(--theme-muted)]">
                 {dept.image ? (

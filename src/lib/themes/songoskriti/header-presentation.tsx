@@ -87,14 +87,15 @@ function SongoskritiLink({
 
   const isActive = Boolean(
     currentPath &&
-      href !== "#" &&
-      (currentPath === href ||
-        (href !== "/" &&
-          href !== `/store/${base}` &&
-          currentPath.startsWith(`${href}/`))),
+    href !== "#" &&
+    (currentPath === href ||
+      (href !== "/" &&
+        href !== `/store/${base}` &&
+        currentPath.startsWith(`${href}/`))),
   );
 
-  const appliedClass = `${className ?? ""} ${isActive && activeClassName ? activeClassName : ""}`.trim();
+  const appliedClass =
+    `${className ?? ""} ${isActive && activeClassName ? activeClassName : ""}`.trim();
 
   const isExternal =
     href.startsWith("http") ||
@@ -172,7 +173,8 @@ function SongoskritiPromoTile({
           className="mt-2.5 inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-accent,#C05A3E)] hover:text-[var(--theme-ink)] transition-colors min-h-[44px]"
         >
           <span>
-            {locale === "bn" ? "কেনাকাটা" : "Shop"} {canonicalLabel(item, locale)}
+            {locale === "bn" ? "কেনাকাটা" : "Shop"}{" "}
+            {canonicalLabel(item, locale)}
           </span>
           <span className="transition-transform duration-200 group-hover/lookbook:translate-x-1">
             →
@@ -185,17 +187,18 @@ function SongoskritiPromoTile({
 
 function getMegaMenuGridClass(groupCount: number, hasPromo: boolean): string {
   if (hasPromo) {
-    if (groupCount <= 2) return "grid-cols-1 sm:grid-cols-2";
-    if (groupCount === 3) return "grid-cols-1 sm:grid-cols-3";
+    if (groupCount <= 2) return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
+    if (groupCount === 3) return "grid-cols-1 sm:grid-cols-3 lg:grid-cols-4";
     if (groupCount === 4) return "grid-cols-2 lg:grid-cols-4";
-    return "grid-cols-2 lg:grid-cols-3";
+    return "grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
   }
-  if (groupCount <= 1) return "grid-cols-1 max-w-sm";
-  if (groupCount === 2) return "grid-cols-1 sm:grid-cols-2";
-  if (groupCount === 3) return "grid-cols-1 sm:grid-cols-2 md:grid-cols-3";
+  if (groupCount <= 1) return "grid-cols-1 lg:grid-cols-4 max-w-sm";
+  if (groupCount === 2) return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
+  if (groupCount === 3)
+    return "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
   if (groupCount === 4) return "grid-cols-1 sm:grid-cols-2 md:grid-cols-4";
-  if (groupCount === 5) return "grid-cols-2 md:grid-cols-3";
-  if (groupCount === 6) return "grid-cols-2 md:grid-cols-3";
+  if (groupCount === 5) return "grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
+  if (groupCount === 6) return "grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
   return "grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
 }
 
@@ -222,7 +225,10 @@ function SongoskritiMegaChild({
       {item.children && item.children.length > 0 && (
         <ul className="list-none marker:content-none m-0 p-0 space-y-1">
           {item.children.map((grandchild) => (
-            <li key={grandchild.id} className="min-w-0 list-none marker:content-none m-0 p-0">
+            <li
+              key={grandchild.id}
+              className="min-w-0 list-none marker:content-none m-0 p-0"
+            >
               <SongoskritiLink
                 item={grandchild}
                 base={base}
@@ -264,24 +270,26 @@ export function SongoskritiDesktopNav({
       <ul className="flex flex-nowrap whitespace-nowrap items-center justify-center gap-x-4 xl:gap-x-5">
         {items.map((item) => {
           const itemHref = canonicalHref(item, base);
-          const hasChildren = Boolean(item.children && item.children.length > 0);
+          const hasChildren = Boolean(
+            item.children && item.children.length > 0,
+          );
           const isItemActive = Boolean(
             currentPath &&
-              itemHref !== "#" &&
-              (currentPath === itemHref ||
-                (itemHref !== "/" &&
-                  itemHref !== `/store/${base}` &&
-                  currentPath.startsWith(`${itemHref}/`)) ||
-                item.children?.some((c) => {
-                  const cHref = canonicalHref(c, base);
-                  return (
-                    cHref !== "#" &&
-                    (currentPath === cHref ||
-                      c.children?.some(
-                        (gc) => canonicalHref(gc, base) === currentPath,
-                      ))
-                  );
-                })),
+            itemHref !== "#" &&
+            (currentPath === itemHref ||
+              (itemHref !== "/" &&
+                itemHref !== `/store/${base}` &&
+                currentPath.startsWith(`${itemHref}/`)) ||
+              item.children?.some((c) => {
+                const cHref = canonicalHref(c, base);
+                return (
+                  cHref !== "#" &&
+                  (currentPath === cHref ||
+                    c.children?.some(
+                      (gc) => canonicalHref(gc, base) === currentPath,
+                    ))
+                );
+              })),
           );
 
           return (
@@ -290,7 +298,10 @@ export function SongoskritiDesktopNav({
               className="group flex h-full items-center shrink-0"
               onKeyDown={(e) => {
                 if (e.key === "Escape") {
-                  const trigger = e.currentTarget.querySelector<HTMLAnchorElement>(":scope > a");
+                  const trigger =
+                    e.currentTarget.querySelector<HTMLAnchorElement>(
+                      ":scope > a",
+                    );
                   (document.activeElement as HTMLElement)?.blur?.();
                   trigger?.focus();
                 }
@@ -457,7 +468,11 @@ export function SongoskritiMobileDrawer({
             className="flex items-center gap-2.5 px-3 py-2.5 border border-[var(--theme-border)] text-[var(--theme-ink)] hover:border-[var(--theme-accent)] transition-colors min-h-[44px]"
             aria-label={locale === "bn" ? "আমার অ্যাকাউন্ট" : "My Account"}
           >
-            <User className="size-[18px] text-[var(--theme-ink)]/70 shrink-0" strokeWidth={1.25} aria-hidden />
+            <User
+              className="size-[18px] text-[var(--theme-ink)]/70 shrink-0"
+              strokeWidth={1.25}
+              aria-hidden
+            />
             <span className="text-[11px] font-semibold uppercase tracking-wider truncate">
               {locale === "bn" ? "অ্যাকাউন্ট" : "Account"}
             </span>
@@ -470,7 +485,11 @@ export function SongoskritiMobileDrawer({
             className="flex items-center gap-2.5 px-3 py-2.5 border border-[var(--theme-border)] text-[var(--theme-ink)] hover:border-[var(--theme-accent)] transition-colors min-h-[44px]"
             aria-label={locale === "bn" ? "আমার অ্যাকাউন্ট" : "My Account"}
           >
-            <User className="size-[18px] text-[var(--theme-ink)]/70 shrink-0" strokeWidth={1.25} aria-hidden />
+            <User
+              className="size-[18px] text-[var(--theme-ink)]/70 shrink-0"
+              strokeWidth={1.25}
+              aria-hidden
+            />
             <span className="text-[11px] font-semibold uppercase tracking-wider truncate">
               {locale === "bn" ? "অ্যাকাউন্ট" : "Account"}
             </span>
@@ -486,7 +505,11 @@ export function SongoskritiMobileDrawer({
             aria-label={`${locale === "bn" ? "উইশলিস্ট" : "Wishlist"}, ${wishlistCount ?? 0}`}
           >
             <div className="flex items-center gap-2 min-w-0">
-              <Heart className="size-[18px] text-[var(--theme-ink)]/70 shrink-0" strokeWidth={1.25} aria-hidden />
+              <Heart
+                className="size-[18px] text-[var(--theme-ink)]/70 shrink-0"
+                strokeWidth={1.25}
+                aria-hidden
+              />
               <span className="text-[11px] font-semibold uppercase tracking-wider truncate">
                 {locale === "bn" ? "উইশলিস্ট" : "Wishlist"}
               </span>
@@ -507,7 +530,11 @@ export function SongoskritiMobileDrawer({
             aria-label={`${locale === "bn" ? "উইশলিস্ট" : "Wishlist"}, ${wishlistCount ?? 0}`}
           >
             <div className="flex items-center gap-2 min-w-0">
-              <Heart className="size-[18px] text-[var(--theme-ink)]/70 shrink-0" strokeWidth={1.25} aria-hidden />
+              <Heart
+                className="size-[18px] text-[var(--theme-ink)]/70 shrink-0"
+                strokeWidth={1.25}
+                aria-hidden
+              />
               <span className="text-[11px] font-semibold uppercase tracking-wider truncate">
                 {locale === "bn" ? "উইশলিস্ট" : "Wishlist"}
               </span>
@@ -866,7 +893,10 @@ export function SongoskritiHeaderShell({
       label={navLabel}
       defaultExpandedId={expandedMobileMenu}
       onNavigate={() => setMobileOpen(false)}
-      supportEmail={supportEmail ?? (slug === "flame-fashion-bd" ? "support@flamelancer.com" : null)}
+      supportEmail={
+        supportEmail ??
+        (slug === "flame-fashion-bd" ? "support@flamelancer.com" : null)
+      }
       supportHours={supportHours}
       policyDelivery={policyDelivery}
       custom={custom}
@@ -921,7 +951,10 @@ export function SongoskritiHeaderShell({
         ref={headerContainerRef}
         className={`mx-auto flex transition-all duration-250 max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-10 ${scrolled ? "h-[64px]" : "h-[72px]"}`}
       >
-        <div ref={brandContainerRef} className="flex items-center gap-2 sm:gap-4 shrink-0 min-w-max">
+        <div
+          ref={brandContainerRef}
+          className="flex items-center gap-2 sm:gap-4 shrink-0 min-w-max"
+        >
           {mobileMenu.length > 0 && (
             <button
               type="button"
@@ -958,7 +991,9 @@ export function SongoskritiHeaderShell({
           )}
         </div>
 
-        <div className={`${showDesktopNavClass} flex-1 min-w-0 justify-center pointer-events-auto`}>
+        <div
+          className={`${showDesktopNavClass} flex-1 min-w-0 justify-center pointer-events-auto`}
+        >
           {HeaderPluginNav && headerPluginId ? (
             <PluginMenuBoundary
               pluginId={headerPluginId}
@@ -977,7 +1012,10 @@ export function SongoskritiHeaderShell({
           )}
         </div>
 
-        <div ref={utilsContainerRef} className="flex items-center justify-end gap-1 shrink-0 min-w-max">
+        <div
+          ref={utilsContainerRef}
+          className="flex items-center justify-end gap-1 shrink-0 min-w-max"
+        >
           {custom ? (
             <Link
               to="/search"
@@ -1133,12 +1171,19 @@ export function SongoskritiHeaderShell({
         ref={measurerRef}
         aria-hidden="true"
         className="pointer-events-none invisible absolute -left-[9999px] top-0 flex flex-nowrap whitespace-nowrap opacity-0"
-        style={{ position: "absolute", left: "-9999px", top: 0, visibility: "hidden" }}
+        style={{
+          position: "absolute",
+          left: "-9999px",
+          top: 0,
+          visibility: "hidden",
+        }}
       >
         <ul className="flex flex-nowrap whitespace-nowrap items-center gap-x-4 xl:gap-x-5 text-[11px] font-medium uppercase tracking-[0.2em]">
           {headerItems.map((item) => (
             <li key={item.id} className="shrink-0">
-              <span className="py-[24px] whitespace-nowrap">{canonicalLabel(item, locale)}</span>
+              <span className="py-[24px] whitespace-nowrap">
+                {canonicalLabel(item, locale)}
+              </span>
             </li>
           ))}
         </ul>

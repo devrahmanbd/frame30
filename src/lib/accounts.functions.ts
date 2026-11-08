@@ -147,3 +147,23 @@ export const accountSetConsentFn = createServerFn({ method: "POST" })
     );
     return { ok: true };
   });
+
+const registerCustomerSchema = slugInput.extend({
+  email: z.string().email().max(254),
+  password: z.string().min(8).max(128),
+  fullName: z.string().max(120).optional(),
+});
+
+export const accountRegisterCustomerFn = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) => registerCustomerSchema.parse(d))
+  .handler(async ({ data }) => {
+    const { enforceRateLimit } = await import("./rate-limit.server");
+    await enforceRateLimit("storefront.account", `${data.slug}:${data.email}`);
+    const { registerCustomer } = await import("./accounts.server");
+    return registerCustomer({
+      slug: data.slug,
+      email: data.email,
+      password: data.password,
+      fullName: data.fullName,
+    });
+  });

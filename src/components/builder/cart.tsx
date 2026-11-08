@@ -31,6 +31,7 @@ import {
 import { QtyStepper } from "./primitives/QtyStepper";
 import { StepTrail, type TrailStep } from "./primitives/StepTrail";
 import { OverlayHost } from "./primitives/OverlayHost";
+import { Package } from "@/components/icons/tabler";
 
 function t(locale: string, en: string, bn: string) {
   return locale === "bn" ? bn : en;
@@ -103,6 +104,8 @@ function LineRow({
     variantId: string;
     productTitle: string;
     variantName: string;
+    imageUrl?: string | null;
+    productSlug?: string;
     unitPriceMinor: number;
     quantity: number;
     lineTotalMinor: number;
@@ -116,105 +119,117 @@ function LineRow({
   const textParts = order.filter((part) =>
     (LINE_TEXT_PARTS as readonly string[]).includes(part),
   );
-  const children: ReactNode[] = [];
-  let textGroupDrawn = false;
-  order.forEach((part) => {
-    if ((LINE_TEXT_PARTS as readonly string[]).includes(part)) {
-      // The text parts share one flex child; it is drawn once, at the
-      // position of the first of them.
-      if (textGroupDrawn) return;
-      textGroupDrawn = true;
-      children.push(
-        <div key="line-text" className="min-w-0 flex-1 basis-40">
-          {textParts.map((text) => {
-            if (text === "title") {
-              return (
-                <p
-                  key="title"
-                  className="break-words text-[13.5px] font-medium leading-relaxed"
-                >
-                  {line.productTitle}
-                </p>
-              );
-            }
-            if (text === "variant") {
-              if (!line.variantName) return null;
-              return (
-                <p
-                  key="variant"
-                  className="mt-0.5 text-[12px] font-medium tracking-wide text-muted-foreground"
-                >
-                  {line.variantName}
-                </p>
-              );
-            }
-            return (
-              <p
-                key="unitPrice"
-                className="mt-2 text-[13.5px] font-semibold tracking-wide tabular-nums text-foreground"
-              >
-                {money(line.unitPriceMinor)}
-              </p>
-            );
-          })}
-        </div>,
-      );
-      return;
-    }
-    if (part === "quantity") {
-      children.push(
-        <QtyStepper
-          key="quantity"
-          value={line.quantity}
-          max={line.stock}
-          label={t(
-            locale,
-            `Quantity for ${line.productTitle}`,
-            `${line.productTitle} এর পরিমাণ`,
-          )}
-          locale={locale}
-          disabled={!cart.live}
-          onChange={(next) => cart.setQuantity(line.variantId, next)}
-        />,
-      );
-      return;
-    }
-    if (part === "lineTotal") {
-      children.push(
-        <p
-          key="lineTotal"
-          className="w-24 shrink-0 text-right text-[13.5px] font-semibold tracking-wide tabular-nums"
-        >
-          {money(line.lineTotalMinor)}
-        </p>,
-      );
-      return;
-    }
-    if (part === "remove" && !compact) {
-      children.push(
-        <button
-          key="remove"
-          type="button"
-          onClick={() => cart.remove(line.variantId)}
-          disabled={!cart.live}
-          className="inline-flex min-h-11 items-center px-4 py-2 text-[11px] font-bold fq-caps tracking-widest text-muted-foreground hover:text-foreground transition-colors"
-        >
-          {str("removeLabel") || t(locale, "Remove", "সরান")}
-          <span className="sr-only"> {line.productTitle}</span>
-        </button>,
-      );
-    }
-  });
+
+  const titleNode = textParts.includes("title") ? (
+    <p
+      key="title"
+      className="break-words text-[13.5px] sm:text-[14px] font-medium leading-snug"
+    >
+      {line.productTitle}
+    </p>
+  ) : null;
+
+  const variantNode =
+    textParts.includes("variant") && line.variantName ? (
+      <p
+        key="variant"
+        className="mt-0.5 text-[12px] font-medium tracking-wide text-muted-foreground"
+      >
+        {line.variantName}
+      </p>
+    ) : null;
+
+  const unitPriceNode = textParts.includes("unitPrice") ? (
+    <p
+      key="unitPrice"
+      className="mt-1 text-[13px] sm:text-[13.5px] font-semibold tracking-wide tabular-nums text-foreground"
+    >
+      {money(line.unitPriceMinor)}
+    </p>
+  ) : null;
+
+  const stepperNode = order.includes("quantity") ? (
+    <QtyStepper
+      key="quantity"
+      value={line.quantity}
+      max={line.stock}
+      label={t(
+        locale,
+        `Quantity for ${line.productTitle}`,
+        `${line.productTitle} এর পরিমাণ`,
+      )}
+      locale={locale}
+      disabled={!cart.live}
+      onChange={(next) => cart.setQuantity(line.variantId, next)}
+    />
+  ) : null;
+
+  const totalNode = order.includes("lineTotal") ? (
+    <p
+      key="lineTotal"
+      className="w-24 shrink-0 text-right text-[13.5px] sm:text-[14px] font-semibold tracking-wide tabular-nums"
+    >
+      {money(line.lineTotalMinor)}
+    </p>
+  ) : null;
+
+  const removeNode =
+    order.includes("remove") && !compact ? (
+      <button
+        key="remove"
+        type="button"
+        onClick={() => cart.remove(line.variantId)}
+        disabled={!cart.live}
+        className="inline-flex min-h-11 items-center px-4 py-2 text-[11px] font-bold fq-caps tracking-widest text-muted-foreground hover:text-foreground transition-colors"
+      >
+        {str("removeLabel") || t(locale, "Remove", "সরান")}
+        <span className="sr-only"> {line.productTitle}</span>
+      </button>
+    ) : null;
+
   const layout = layoutOf(ctx);
   return (
     <li
       className={
         layout === "card"
-          ? "flex flex-col items-stretch gap-3 border border-border/60 p-4"
-          : "flex flex-wrap items-center gap-x-4 gap-y-3 py-4"
+          ? "border border-border/60 p-4"
+          : "py-4 border-b border-border/60 last:border-b-0"
       }
     >
-      {children}
+      <div className="flex items-start gap-3 sm:gap-4">
+        {/* Product thumbnail with fallback */}
+        <div className="relative size-16 sm:size-20 shrink-0 overflow-hidden rounded-xs bg-muted/40 border border-border/50">
+          {line.imageUrl ? (
+            <img
+              src={line.imageUrl}
+              alt={line.productTitle}
+              className="size-full object-cover"
+              loading="lazy"
+            />
+          ) : (
+            <div className="flex size-full items-center justify-center text-muted-foreground/40">
+              <Package className="size-6" />
+            </div>
+          )}
+        </div>
+
+        {/* Product details & actions */}
+        <div className="flex-1 min-w-0 flex flex-col justify-between self-stretch gap-2">
+          <div className="min-w-0 flex-1">
+            {titleNode}
+            {variantNode}
+            {unitPriceNode}
+          </div>
+
+          <div className="flex items-center justify-between gap-2 pt-1 flex-wrap sm:flex-nowrap">
+            {stepperNode}
+            <div className="flex items-center gap-2">
+              {totalNode}
+              {removeNode}
+            </div>
+          </div>
+        </div>
+      </div>
     </li>
   );
 }

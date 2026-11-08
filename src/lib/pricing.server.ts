@@ -77,6 +77,8 @@ export type Totals = {
     productTitle: string;
     variantName: string;
     sku: string | null;
+    imageUrl?: string | null;
+    productSlug?: string;
     unitPriceMinor: number;
     quantity: number;
     lineTotalMinor: number;
@@ -146,7 +148,7 @@ export async function priceCart(
   const parentIds = [...new Set(fetched.map((r) => r.product_id))];
   const { data: parentProducts } = await db
     .from("products")
-    .select("id, title, status, merchant_id")
+    .select("id, title, slug, image_url, status, merchant_id")
     .in(
       "id",
       parentIds.length ? parentIds : ["00000000-0000-0000-0000-000000000000"],
@@ -171,6 +173,8 @@ export async function priceCart(
       variantId: v.id,
       productTitle: product.title,
       variantName: v.name,
+      productSlug: product.slug,
+      imageUrl: product.image_url ?? null,
       sku: v.sku,
       unitPriceMinor: Number(v.price_amount_minor_int),
       quantity,

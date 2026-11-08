@@ -23,6 +23,8 @@ import { toast } from "sonner";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { PluginLayer } from "@/components/store/PluginLayer";
 import { StoreHeader } from "@/components/store/StoreHeader";
+import { CustomerAccountAccess } from "@/components/store/CustomerAccountAccess";
+import { useCart } from "@/lib/cart";
 import { supabase } from "@/integrations/supabase/client";
 import { fmtMinor } from "@/lib/money";
 import { useLang } from "@/lib/i18n";
@@ -105,6 +107,8 @@ function AccountPage() {
   const [tab, setTab] = useState<Tab>(initialAccountTab(search.tab));
   const qc = useQueryClient();
   const overviewFn = useServerFn(accountOverviewFn);
+  const merchantName = chrome?.merchant?.name || slug;
+  const cart = useCart(slug);
 
   const session = useQuery({
     queryKey: ["auth-session"],
@@ -217,10 +221,20 @@ function AccountPage() {
       );
     }
     return out;
-  }, [chrome, account.data, account.isPending, lang, slug]);
+  }, [chrome, account.isPending, lang, slug, overview]);
 
   if (!signedIn) {
-    return <ShopperOrderLookup slug={slug} />;
+    return (
+      <div className="min-h-screen bg-background">
+        <StoreHeader slug={slug} name={merchantName} />
+        <CustomerAccountAccess
+          slug={slug}
+          merchantName={merchantName}
+          requestedTab={search.tab}
+          isStoreSlugRoute={false}
+        />
+      </div>
+    );
   }
 
   // Route's default body: used when the theme publishes no `account` main
@@ -382,49 +396,100 @@ function AccountPage() {
                 slug={slug}
               />
             ) : (
-              <ul className="grid gap-3 sm:grid-cols-2">
-                {data.wishlist.map((w) => (
-                  <li
-                    key={w.id}
-                    className="flex items-center justify-between gap-3 rounded-fq-lg border border-border bg-card p-4"
-                  >
-                    <Link
-                      to="/p/$productSlug"
-                      params={{ productSlug: w.product_slug }}
-                      className="min-w-0"
+              <ul className="grid gap-4 sm:grid-cols-2">
+                {data.wishlist.map((w) => {
+                  const inStock = w.stock_quantity > 0;
+                  return (
+                    <li
+                      key={w.id}
+                      className="flex gap-3.5 rounded-fq-lg border border-border bg-card p-4 items-start"
                     >
-                      <span className="block truncate text-sm font-medium">
-                        {w.product_title}
-                      </span>
-                      <span className="block text-xs text-muted-foreground">
-                        {w.variant_name}
-                      </span>
-                      <span className="money mt-1 block text-sm font-semibold">
-                        {fmtMinor(w.price_amount_minor_int, currency)}
-                      </span>
-                      <span
-                        className={`text-xs ${w.stock_quantity > 0 ? "text-success-foreground" : "text-warn-foreground"}`}
+                      <Link
+                        to="/p/$productSlug"
+                        params={{ productSlug: w.product_slug }}
+                        className="relative size-16 sm:size-20 shrink-0 overflow-hidden rounded-xs bg-muted/40 border border-border/50 block"
                       >
-                        {w.stock_quantity > 0
-                          ? t("In stock", "স্টকে আছে")
-                          : t("Out of stock", "স্টক নেই")}
-                      </span>
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        toggleWish.mutate({
-                          slug,
-                          variantId: w.variant_id,
-                          stockAlert: false,
-                        })
-                      }
-                      className="min-h-11 rounded-fq-md border border-border px-3 text-xs"
-                    >
-                      {t("Remove", "সরান")}
-                    </button>
-                  </li>
-                ))}
+                        {w.image_url ? (
+                          <img
+                            src={w.image_url}
+                            alt={w.product_title}
+                            className="size-full object-cover"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="flex size-full items-center justify-center text-muted-foreground/40">
+                            <Package className="size-6" />
+                          </div>
+                        )}
+                      </Link>
+
+                      <div className="flex-1 min-w-0 flex flex-col justify-between self-stretch">
+                        <div>
+                          <Link
+                            to="/p/$productSlug"
+                            params={{ productSlug: w.product_slug }}
+                            className="hover:underline block"
+                          >
+                            <span className="block truncate text-sm font-medium leading-snug">
+                              {w.product_title}
+                            </span>
+                          </Link>
+                          {w.variant_name ? (
+                            <span className="block text-xs text-muted-foreground mt-0.5 truncate">
+                              {w.variant_name}
+                            </span>
+                          ) : null}
+                          <span className="money mt-1.5 block text-sm font-semibold">
+                            {fmtMinor(w.price_amount_minor_int, currency)}
+                          </span>
+                          <span
+                            className={`text-xs block mt-1 font-medium ${inStock ? "text-success-foreground" : "text-danger-foreground"}`}
+                          >
+                            {inStock
+                              ? t("In stock", "স্টকে আছে")
+                              : t("Out of stock", "স্টক নেই")}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2 mt-3 pt-2 border-t border-border/40">
+                          <button
+                            type="button"
+                            disabled={!inStock}
+                            onClick={() => {
+                              cart.add(w.variant_id, 1);
+                              toast.success(
+                                t(
+                                  `Added ${w.product_title} to bag`,
+                                  `${w.product_title} ব্যাগে যোগ করা হয়েছে`,
+                                ),
+                              );
+                            }}
+                            className={`min-h-11 px-3.5 py-1.5 text-xs font-semibold rounded-fq-md transition-colors ${
+                              inStock
+                                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                                : "bg-muted text-muted-foreground cursor-not-allowed opacity-60"
+                            }`}
+                          >
+                            {t("Add to Bag", "ব্যাগে যোগ করুন")}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              toggleWish.mutate({
+                                slug,
+                                variantId: w.variant_id,
+                                stockAlert: false,
+                              })
+                            }
+                            className="min-h-11 rounded-fq-md border border-border px-3 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            {t("Remove", "সরান")}
+                          </button>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             ))}
 
@@ -718,7 +783,7 @@ function ProfileForm({
   );
 }
 
-function ShopperOrderLookup({ slug }: { slug: string }) {
+function ShopperOrderLookup({ slug, name }: { slug: string; name?: string }) {
   const { t } = useLang();
   const navigate = useNavigate();
   const [orderId, setOrderId] = useState("");
@@ -734,7 +799,7 @@ function ShopperOrderLookup({ slug }: { slug: string }) {
 
   return (
     <div className="min-h-screen bg-background">
-      <StoreHeader slug={slug} name={slug} />
+      <StoreHeader slug={slug} name={name || slug} />
       <main className="mx-auto max-w-md px-4 py-16 text-center">
         <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
           <Package className="size-6" />
