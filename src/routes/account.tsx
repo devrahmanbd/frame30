@@ -385,6 +385,8 @@ function AccountPage() {
           storeSlug={slug}
           themeKey={chrome?.themeKey ?? null}
           merchantId={chrome?.merchant.id ?? null}
+          merchant={chrome?.merchant ?? null}
+          settings={chrome?.settings ?? null}
           siteKit={chrome?.siteKit ?? null}
           ownsPrimary
           contentSlot="page_content"

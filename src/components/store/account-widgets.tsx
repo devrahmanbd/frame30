@@ -104,18 +104,20 @@ function Fact({
   detail?: string;
 }) {
   return (
-    <div className="border border-border/60 p-5 bg-transparent">
-      <p className="text-[11px] font-bold fq-caps tracking-widest text-muted-foreground">
+    <div className="border border-border/60 p-4 sm:p-5 bg-transparent">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/80">
         {label}
       </p>
-      <p className="money mt-2 truncate text-[15px] font-semibold tracking-wide text-foreground">
-        {value}
-      </p>
-      {detail ? (
-        <p className="mt-1 truncate text-[12px] font-medium tracking-wide text-muted-foreground">
-          {detail}
-        </p>
-      ) : null}
+      <div className="mt-2 flex items-baseline gap-2">
+        <span className="money font-serif text-[18px] sm:text-[20px] font-normal tracking-tight text-foreground truncate">
+          {value}
+        </span>
+        {detail ? (
+          <span className="truncate text-[11px] font-medium tracking-wide text-muted-foreground">
+            {detail}
+          </span>
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -246,7 +248,7 @@ export function AccountNavPanel({
       ) : null}
       <nav
         aria-label={t("Account sections", "অ্যাকাউন্ট বিভাগ")}
-        className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0 lg:gap-3"
+        className="-mx-4 flex gap-2 overflow-x-auto px-4 border-b border-border/60 sm:mx-0 sm:flex-wrap sm:px-0 lg:gap-3"
       >
         <div
           role="tablist"
@@ -281,7 +283,7 @@ export function AccountNavPanel({
                   event.preventDefault();
                   onTabChange(item.tab);
                 }}
-                className={`flex min-h-11 shrink-0 items-center gap-2 rounded-none border-b-2 px-3 sm:px-4 py-2 text-[12px] font-bold fq-caps tracking-widest transition-colors ${
+                className={`flex min-h-11 shrink-0 items-center gap-2 rounded-none border-b-2 px-3 sm:px-4 py-2.5 text-[11px] sm:text-[12px] font-semibold uppercase tracking-[0.15em] transition-colors -mb-px ${
                   selected
                     ? "border-[var(--theme-ink,#1A1A1A)] text-[var(--theme-ink,#1A1A1A)]"
                     : "border-transparent text-muted-foreground hover:text-[var(--theme-ink,#1A1A1A)]"

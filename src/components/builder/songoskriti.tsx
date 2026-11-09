@@ -1552,6 +1552,24 @@ const SongoskritiRichText: WidgetComponent = ({ str }) => {
   );
 };
 
+function isValidSocialUrl(url: string | null | undefined): boolean {
+  if (!url) return false;
+  const trimmed = url.trim();
+  if (
+    !trimmed ||
+    trimmed === "#" ||
+    trimmed === "/" ||
+    trimmed.startsWith("#")
+  ) {
+    return false;
+  }
+  return (
+    trimmed.startsWith("http://") ||
+    trimmed.startsWith("https://") ||
+    trimmed.startsWith("//")
+  );
+}
+
 const SongoskritiFooterSitemap: WidgetComponent = ({
   str,
   section,
@@ -1622,13 +1640,31 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
   const newsletterHeading = str("newsletterHeading");
   const newsletterButton = str("newsletterButton") || "Subscribe";
   const newsletterConsent = str("newsletterConsent");
-  const brandName = str("brandName");
+  const brandName =
+    str("brandName") ||
+    (typeof dynamicMerchant.name === "string" && dynamicMerchant.name
+      ? (dynamicMerchant.name as string)
+      : typeof dynamic.name === "string" && dynamic.name
+        ? (dynamic.name as string)
+        : typeof dynamic.site === "object" &&
+            dynamic.site &&
+            "title" in dynamic.site &&
+            typeof (dynamic.site as any).title === "string"
+          ? (dynamic.site as any).title
+          : "Flame Fashion BD");
   const brandTagline =
     str("brandTagline") ||
     str("tagline") ||
-    (typeof dynamicMerchant.tagline === "string"
+    (typeof dynamicMerchant.tagline === "string" && dynamicMerchant.tagline
       ? (dynamicMerchant.tagline as string)
-      : "");
+      : typeof dynamic.tagline === "string" && dynamic.tagline
+        ? (dynamic.tagline as string)
+        : typeof dynamic.site === "object" &&
+            dynamic.site &&
+            "tagline" in dynamic.site &&
+            typeof (dynamic.site as any).tagline === "string"
+          ? (dynamic.site as any).tagline
+          : "Authentic Bengal Handcrafted Apparel & Heritage Couture");
   const paymentMarks = str("paymentsMarks")
     .split(/[,\n]+/)
     .map((m) => m.trim())
@@ -1649,7 +1685,7 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
           ? (dynamic.supportPhone as string)
           : typeof dynamic.support_phone === "string" && dynamic.support_phone
             ? (dynamic.support_phone as string)
-            : "");
+            : "+880 1540 203662");
   const supportEmail =
     str("supportEmail") ||
     (typeof dynamicMerchant.supportEmail === "string" &&
@@ -1662,7 +1698,7 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
           ? (dynamic.supportEmail as string)
           : typeof dynamic.support_email === "string" && dynamic.support_email
             ? (dynamic.support_email as string)
-            : "");
+            : "support@flamelancer.com");
   const supportHours =
     str("supportHours") ||
     (typeof dynamicMerchant.supportHours === "string" &&
@@ -1673,7 +1709,7 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
         ? (dynamicMerchant.support_hours as string)
         : typeof dynamic.supportHours === "string" && dynamic.supportHours
           ? (dynamic.supportHours as string)
-          : "");
+          : "Daily 10am - 8pm");
   const policyDelivery =
     str("policyDelivery") ||
     (typeof dynamicMerchant.deliveryInfo === "string" &&
@@ -1681,9 +1717,30 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
       ? (dynamicMerchant.deliveryInfo as string)
       : typeof dynamic.deliveryInfo === "string" && dynamic.deliveryInfo
         ? (dynamic.deliveryInfo as string)
-        : "");
-  const instagramUrl = str("instagramUrl");
-  const facebookUrl = str("facebookUrl");
+        : "Cash on delivery nationwide");
+  const rawInstagram =
+    str("instagramUrl") ||
+    (typeof dynamicMerchant.instagram_url === "string"
+      ? (dynamicMerchant.instagram_url as string)
+      : "") ||
+    (typeof dynamic.instagram_url === "string"
+      ? (dynamic.instagram_url as string)
+      : "");
+  const instagramUrl = isValidSocialUrl(rawInstagram)
+    ? rawInstagram.trim()
+    : "";
+
+  const rawFacebook =
+    str("facebookUrl") ||
+    (typeof dynamicMerchant.facebook_url === "string"
+      ? (dynamicMerchant.facebook_url as string)
+      : "") ||
+    (typeof dynamic.facebook_url === "string"
+      ? (dynamic.facebook_url as string)
+      : "");
+  const facebookUrl = isValidSocialUrl(rawFacebook)
+    ? rawFacebook.trim()
+    : "";
 
   return (
     <section className="w-full flex flex-col pt-10 sm:pt-20">
@@ -2753,8 +2810,10 @@ const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
   // handle); the generic fallback names no brand and links nowhere.
   const handleLabel =
     str("handleLabel") || t(locale, "Follow us", "অনুসরণ করুন");
-  const handleHref =
-    str("handleHref") || "https://instagram.com/flamefashionbd";
+  const rawHandleHref = str("handleHref");
+  const handleHref = isValidSocialUrl(rawHandleHref)
+    ? rawHandleHref.trim()
+    : "https://instagram.com/flamefashionbd";
   const rawImages = (str("images") || "")
     .split(",")
     .map((i) => i.trim())

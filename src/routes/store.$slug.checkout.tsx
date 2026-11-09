@@ -337,6 +337,8 @@ export function CheckoutShell({
       storeSlug={slug}
       themeKey={themeKey}
       merchantId={merchant.id}
+      merchant={merchant as any}
+      settings={(store as any).settings ?? null}
       ast={ast}
       tokens={tokens}
       siteKit={siteKit}

@@ -34,7 +34,7 @@
  * the platform's — a theme presentation changes how a surface reads, never
  * what it says or what it costs.
  */
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Package } from "lucide-react";
 import type { SectionType } from "@/lib/builder-ast";
 import { partOrder } from "@/lib/widget-parts";
@@ -160,11 +160,11 @@ export const SongoskritiCartLines: WidgetComponent = (ctx) => {
               children.push(
                 <span key="line-text" className="min-w-0 flex-1 basis-40">
                   {order.includes("title") ? (
-                    <span className="block break-words text-[14px] font-semibold tracking-wide">
+                    <span className="block break-words font-serif text-[15px] sm:text-[17px] font-normal tracking-tight text-foreground">
                       {line.productSlug && ctx.storeSlug ? (
                         <a
                           href={ctx.link(`/p/${line.productSlug}`)}
-                          className="hover:underline transition-colors"
+                          className="hover:text-[var(--theme-accent,#8B4513)] transition-colors"
                         >
                           {line.productTitle}
                         </a>
@@ -223,7 +223,7 @@ export const SongoskritiCartLines: WidgetComponent = (ctx) => {
                   type="button"
                   onClick={() => cart.remove(line.variantId)}
                   disabled={!cart.live}
-                  className={`min-h-11 shrink-0 px-3 text-[11px] font-bold fq-caps tracking-widest text-muted-foreground transition-colors hover:text-foreground ${RULE}`}
+                  className="min-h-11 shrink-0 px-3 text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground transition-colors hover:text-[var(--theme-accent,#8B4513)] border-b border-transparent hover:border-[var(--theme-accent,#8B4513)] cursor-pointer"
                 >
                   {str("removeLabel") || t(locale, "Remove", "সরান")}
                   <span className="sr-only"> {line.productTitle}</span>
@@ -236,11 +236,11 @@ export const SongoskritiCartLines: WidgetComponent = (ctx) => {
               key={line.variantId}
               className={
                 layout === "card"
-                  ? "flex flex-col items-stretch gap-3 border border-border/60 p-4"
-                  : "flex flex-wrap items-center gap-x-4 gap-y-3 py-5"
+                  ? "flex flex-col items-stretch gap-4 border border-border/60 p-5 bg-transparent"
+                  : "flex flex-wrap items-center gap-x-6 gap-y-4 py-6"
               }
             >
-              <div className="relative size-16 sm:size-20 shrink-0 overflow-hidden rounded-none bg-muted/40 border border-border/50">
+              <div className="relative aspect-[3/4] w-16 sm:w-20 shrink-0 overflow-hidden rounded-none bg-muted/40 border border-border/50">
                 {line.imageUrl ? (
                   line.productSlug && ctx.storeSlug ? (
                     <a
@@ -289,6 +289,7 @@ export const SongoskritiCartLines: WidgetComponent = (ctx) => {
 export const SongoskritiCartSummary: WidgetComponent = (ctx) => {
   const { str, bool, locale, money, Heading } = ctx;
   const cart = useCartContext();
+  const [draftCoupon, setDraftCoupon] = useState(cart.couponCode || "");
   const order = partOrder(str("parts"), "cart_summary");
   const heading = str("heading");
   const totals = cart.totals;
@@ -392,6 +393,50 @@ export const SongoskritiCartSummary: WidgetComponent = (ctx) => {
           );
         })}
       </dl>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          cart.setCouponCode(draftCoupon.trim());
+        }}
+        className="mt-6 flex flex-wrap items-center gap-2"
+      >
+        <label htmlFor="songoskriti-coupon" className="sr-only">
+          {str("couponLabel") || t(locale, "Coupon code", "কুপন কোড")}
+        </label>
+        <input
+          id="songoskriti-coupon"
+          value={draftCoupon}
+          onChange={(event) => setDraftCoupon(event.target.value)}
+          placeholder={
+            str("couponLabel") || t(locale, "Coupon code", "কুপন কোড")
+          }
+          className="h-11 min-w-0 flex-1 rounded-none border border-border/80 bg-transparent px-3 text-[13px] text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-[var(--theme-accent,#8B4513)]"
+        />
+        <button
+          type="submit"
+          disabled={!cart.live}
+          className="inline-flex h-11 items-center justify-center rounded-none bg-[var(--theme-ink,#1A1A1A)] px-5 text-[11px] font-semibold uppercase tracking-[0.15em] text-[var(--theme-surface,#FAF9F7)] transition-colors hover:bg-[var(--theme-accent,#8B4513)] cursor-pointer disabled:opacity-50"
+        >
+          {str("couponApplyLabel") || t(locale, "Apply", "প্রয়োগ")}
+        </button>
+        {totals.coupon && (
+          <div className="mt-1 flex w-full items-center justify-between text-[11px] text-[var(--theme-accent,#8B4513)]">
+            <span>
+              {totals.coupon.code} · -{money(totals.coupon.discountMinor)}
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                setDraftCoupon("");
+                cart.setCouponCode("");
+              }}
+              className="text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground underline cursor-pointer"
+            >
+              {t(locale, "Remove", "মুছুন")}
+            </button>
+          </div>
+        )}
+      </form>
       {bool("showCta") ? (
         <a
           href={ctx.link("/checkout")}

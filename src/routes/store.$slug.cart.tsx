@@ -72,8 +72,16 @@ function CartMissing() {
 function CartPage() {
   const { t } = useLang();
   const { slug } = Route.useParams();
-  const { merchant, ast, tokens, siteKit, menus, installedPlugins, themeKey } =
-    Route.useLoaderData();
+  const {
+    merchant,
+    settings,
+    ast,
+    tokens,
+    siteKit,
+    menus,
+    installedPlugins,
+    themeKey,
+  } = Route.useLoaderData();
 
   return (
     <PluginLayer plugins={installedPlugins}>
@@ -82,6 +90,8 @@ function CartPage() {
         storeSlug={slug}
         themeKey={themeKey ?? null}
         merchantId={merchant.id}
+        merchant={merchant}
+        settings={settings}
         ast={ast}
         tokens={tokens}
         siteKit={siteKit}

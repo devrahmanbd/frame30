@@ -560,11 +560,11 @@ function SummaryBody({ ctx }: { ctx: WidgetCtx }) {
             placeholder={
               str("couponLabel") || t(locale, "Coupon code", "কুপন কোড")
             }
-            className="h-11 min-w-0 flex-1 rounded-fq-md border border-border bg-background px-3 text-sm"
+            className="h-11 min-w-0 flex-1 rounded-none border border-border bg-background px-3 text-sm"
           />
           <button
             type="submit"
-            className="inline-flex h-11 items-center rounded-fq-md border border-border px-4 text-sm font-medium"
+            className="inline-flex h-11 items-center rounded-none border border-border px-4 text-sm font-medium"
           >
             {str("couponApplyLabel") || t(locale, "Apply", "প্রয়োগ")}
           </button>

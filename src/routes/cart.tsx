@@ -86,6 +86,8 @@ function CartPage() {
         storeSlug={slug}
         themeKey={data.themeKey ?? null}
         merchantId={merchant.id}
+        merchant={merchant}
+        settings={data.settings}
         ast={data.ast}
         tokens={data.tokens}
         siteKit={data.siteKit}
@@ -108,8 +110,8 @@ function CartPage() {
           payment_methods: null,
         }}
         fallback={
-          <section className="rounded-fq-lg border border-border bg-card p-8 text-center">
-            <h1 className="font-bangla-display text-2xl font-bold">
+          <section className="rounded-none border border-border/60 bg-transparent p-8 text-center">
+            <h1 className="font-serif text-2xl font-normal tracking-tight">
               {t("Your cart", "আপনার কার্ট")}
             </h1>
             <p className="mt-2 text-sm text-muted-foreground">
@@ -120,7 +122,7 @@ function CartPage() {
             </p>
             <Link
               to="/checkout"
-              className="mt-4 inline-block min-h-11 rounded-fq-md bg-primary px-5 text-sm font-medium leading-[2.75rem] text-primary-foreground"
+              className="mt-6 inline-flex min-h-12 items-center justify-center rounded-none bg-[var(--theme-ink,#1A1A1A)] px-8 text-xs font-semibold uppercase tracking-widest text-[var(--theme-surface,#FAF9F7)] hover:bg-[var(--theme-accent,#8B4513)] transition-colors"
             >
               {t("Go to checkout", "চেকআউটে যান")}
             </Link>

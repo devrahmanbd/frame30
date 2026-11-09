@@ -6,12 +6,16 @@
  * `contextSlots`; when a theme publishes no main sections the route's default
  * body is used, so a store is never blank because a template is missing.
  */
-import type { ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { SectionRenderer } from "@/components/builder/SectionRenderer";
 import type { DevThemeBinding } from "@/components/builder/SectionRenderer";
 import type { UnifiedRegistry } from "@/lib/unified-widget-registry";
 import { CartProvider, useLiveCart } from "@/components/builder/CartContext";
+import {
+  DynamicContextProvider,
+  useDynamicContext,
+} from "@/components/builder/DynamicContext";
 import { VitalsReporter } from "@/components/store/VitalsReporter";
 import { TrafficReporter } from "@/components/store/TrafficReporter";
 import {
@@ -68,6 +72,14 @@ type Props = {
    * pollute a merchant's real-user data.
    */
   merchantId?: string | null;
+  merchant?: { id?: string; name?: string; slug?: string } | null;
+  settings?: {
+    tagline?: string | null;
+    support_email?: string | null;
+    support_phone?: string | null;
+    cod_enabled?: boolean | null;
+    [key: string]: unknown;
+  } | null;
   /** Set when a context slot renders the page h1, so no section claims it. */
   /**
    * Phase 5: verification metas and the consent-gated analytics plan. Mounted
@@ -234,6 +246,8 @@ export function ThemeChrome({
   themeKey,
   storeName,
   merchantId,
+  merchant,
+  settings,
   siteKit,
   fallback,
   contentSlot,
@@ -256,6 +270,85 @@ export function ThemeChrome({
   } catch {
     pathname = "";
   }
+
+  const parentDynamic = useDynamicContext();
+  const dynamicValues = useMemo(() => {
+    const pMerc = (parentDynamic?.merchant || {}) as Record<string, unknown>;
+    const resolvedName =
+      storeName ??
+      merchant?.name ??
+      (typeof pMerc.name === "string" ? pMerc.name : null) ??
+      storeSlug ??
+      "";
+    const resolvedSlug =
+      storeSlug ??
+      merchant?.slug ??
+      (typeof pMerc.slug === "string" ? pMerc.slug : null) ??
+      "";
+    const resolvedEmail =
+      settings?.support_email ??
+      (typeof pMerc.support_email === "string" ? pMerc.support_email : null) ??
+      (typeof parentDynamic?.support_email === "string"
+        ? parentDynamic.support_email
+        : null) ??
+      (typeof parentDynamic?.supportEmail === "string"
+        ? parentDynamic.supportEmail
+        : null) ??
+      "";
+    const resolvedPhone =
+      settings?.support_phone ??
+      (typeof pMerc.support_phone === "string" ? pMerc.support_phone : null) ??
+      (typeof parentDynamic?.support_phone === "string"
+        ? parentDynamic.support_phone
+        : null) ??
+      (typeof parentDynamic?.supportPhone === "string"
+        ? parentDynamic.supportPhone
+        : null) ??
+      "";
+    const resolvedTagline =
+      settings?.tagline ??
+      (typeof pMerc.tagline === "string" ? pMerc.tagline : null) ??
+      (typeof parentDynamic?.tagline === "string"
+        ? parentDynamic.tagline
+        : null) ??
+      "";
+    const resolvedCod =
+      settings?.cod_enabled ??
+      (typeof pMerc.cod_enabled === "boolean" ? pMerc.cod_enabled : null) ??
+      Boolean(parentDynamic?.cod_enabled);
+
+    return {
+      ...parentDynamic,
+      site: {
+        title: resolvedName,
+        tagline: resolvedTagline,
+        ...(parentDynamic?.site || {}),
+      },
+      merchant: {
+        id:
+          merchantId ??
+          merchant?.id ??
+          (typeof pMerc.id === "string" ? pMerc.id : ""),
+        name: resolvedName,
+        slug: resolvedSlug,
+        support_email: resolvedEmail,
+        support_phone: resolvedPhone,
+        tagline: resolvedTagline,
+        cod_enabled: resolvedCod,
+      },
+      policy: {
+        cod_enabled: resolvedCod,
+        support_email: resolvedEmail,
+        support_phone: resolvedPhone,
+      },
+      support_email: resolvedEmail,
+      support_phone: resolvedPhone,
+      supportEmail: resolvedEmail,
+      supportPhone: resolvedPhone,
+      tagline: resolvedTagline,
+      cod_enabled: resolvedCod,
+    };
+  }, [storeName, merchant, parentDynamic, storeSlug, merchantId, settings]);
   if (storeSlug && isThemeless(ast, tokens)) {
     return (
       <StoreWelcome
@@ -485,8 +578,14 @@ export function ThemeChrome({
   // NOTE: plugin rendering lives in `PluginLayer`, never here — this file
   // is theme territory and must not import plugin modules.
   return storeSlug ? (
-    <LiveCartScope slug={storeSlug}>{body}</LiveCartScope>
+    <LiveCartScope slug={storeSlug}>
+      <DynamicContextProvider value={dynamicValues}>
+        {body}
+      </DynamicContextProvider>
+    </LiveCartScope>
   ) : (
-    body
+    <DynamicContextProvider value={dynamicValues}>
+      {body}
+    </DynamicContextProvider>
   );
 }

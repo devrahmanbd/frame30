@@ -404,7 +404,7 @@ export async function loadStoreChrome(slug: string, template: TemplateKey) {
     .maybeSingle();
   if (!merchant) return null;
 
-  const [theme, siteKit, menus] = await Promise.all([
+  const [theme, siteKit, menus, { data: settings }] = await Promise.all([
     loadPublished(merchant.id, template),
     import("./search-console.server").then((m) =>
       m.storefrontSiteKit(merchant.id),
@@ -412,6 +412,11 @@ export async function loadStoreChrome(slug: string, template: TemplateKey) {
     // Phase 16 T4: dashboard-designed nav menus ride every chrome payload so
     // the header/footer render the merchant's menus on every template.
     import("./menus/menu.server").then((m) => m.loadStoreMenus(merchant.id)),
+    db
+      .from("merchant_settings")
+      .select("tagline, support_email, support_phone, cod_enabled")
+      .eq("merchant_id", merchant.id)
+      .maybeSingle(),
   ]);
 
   // Installed plugins for footer mounts + placed app-blocks (fail-safe
@@ -421,6 +426,7 @@ export async function loadStoreChrome(slug: string, template: TemplateKey) {
 
   return {
     merchant,
+    settings: settings ?? null,
     ast: theme?.ast ?? null,
     tokens: theme?.tokens ?? null,
     themeKey: theme?.themeKey ?? null,

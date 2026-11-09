@@ -494,6 +494,8 @@ function AccountPage() {
           storeSlug={slug}
           themeKey={chrome?.themeKey ?? null}
           merchantId={chrome?.merchant.id ?? null}
+          merchant={chrome?.merchant ?? null}
+          settings={chrome?.settings ?? null}
           siteKit={chrome?.siteKit ?? null}
           ownsPrimary
           // The theme's account body is composed AROUND the dashboard: the
