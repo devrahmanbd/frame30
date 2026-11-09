@@ -1797,7 +1797,7 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
                 </p>
               )}
               {(supportEmail || policyDelivery || supportPhone) && (
-                <div className="mb-6 space-y-1 text-[12px] text-[var(--theme-ink)]/70">
+                <div className="mb-6 flex flex-col space-y-1.5 text-[12px] text-[var(--theme-ink)]/70">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-ink)]/50">
                     {locale === "bn"
                       ? "অনলাইন সেবা ও সহায়তা"

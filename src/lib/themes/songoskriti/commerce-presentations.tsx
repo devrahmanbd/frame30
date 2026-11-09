@@ -35,6 +35,7 @@
  * what it says or what it costs.
  */
 import type { ReactNode } from "react";
+import { Package } from "lucide-react";
 import type { SectionType } from "@/lib/builder-ast";
 import { partOrder } from "@/lib/widget-parts";
 import { useCartContext } from "@/components/builder/CartContext";
@@ -160,7 +161,16 @@ export const SongoskritiCartLines: WidgetComponent = (ctx) => {
                 <span key="line-text" className="min-w-0 flex-1 basis-40">
                   {order.includes("title") ? (
                     <span className="block break-words text-[14px] font-semibold tracking-wide">
-                      {line.productTitle}
+                      {line.productSlug && ctx.storeSlug ? (
+                        <a
+                          href={ctx.link(`/p/${line.productSlug}`)}
+                          className="hover:underline transition-colors"
+                        >
+                          {line.productTitle}
+                        </a>
+                      ) : (
+                        line.productTitle
+                      )}
                     </span>
                   ) : null}
                   {order.includes("variant") && line.variantName ? (
@@ -230,6 +240,34 @@ export const SongoskritiCartLines: WidgetComponent = (ctx) => {
                   : "flex flex-wrap items-center gap-x-4 gap-y-3 py-5"
               }
             >
+              <div className="relative size-16 sm:size-20 shrink-0 overflow-hidden rounded-xs bg-muted/40 border border-border/50">
+                {line.imageUrl ? (
+                  line.productSlug && ctx.storeSlug ? (
+                    <a
+                      href={ctx.link(`/p/${line.productSlug}`)}
+                      className="block size-full"
+                    >
+                      <img
+                        src={line.imageUrl}
+                        alt={line.productTitle}
+                        className="size-full object-cover"
+                        loading="lazy"
+                      />
+                    </a>
+                  ) : (
+                    <img
+                      src={line.imageUrl}
+                      alt={line.productTitle}
+                      className="size-full object-cover"
+                      loading="lazy"
+                    />
+                  )
+                ) : (
+                  <div className="flex size-full items-center justify-center text-muted-foreground/40">
+                    <Package className="size-6" />
+                  </div>
+                )}
+              </div>
               {children}
             </li>
           );

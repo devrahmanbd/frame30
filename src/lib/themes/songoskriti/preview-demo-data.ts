@@ -73,6 +73,8 @@ function demoLine(slug: string): DemoLine {
     quantity,
     lineTotalMinor: unitPriceMinor * quantity,
     stock: variant.stock ?? 0,
+    imageUrl: product.image_url ?? product.images?.[0] ?? null,
+    productSlug: product.slug,
   };
 }
 
