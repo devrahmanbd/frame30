@@ -302,24 +302,23 @@ function LineList({
     return (
       <div className="rounded-none border border-border/60 bg-transparent p-8 sm:p-14 text-center">
         <h2 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-foreground">
-          {str("emptyText") ||
-            t(locale, "Your Shopping Bag is Empty", "আপনার শপিং ব্যাগ খালি")}
+          {str("emptyText") && str("emptyText") !== "Your cart is empty."
+            ? str("emptyText")
+            : t(locale, "Your bag is empty.", "আপনার ব্যাগ খালি।")}
         </h2>
         <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
           {t(
             locale,
-            "Explore our collection and discover handcrafted luxury garments.",
-            "আমাদের কালেকশন দেখুন এবং পছন্দের পোশাক সংগ্রহ করুন।",
+            "Browse the collection to find something you love.",
+            "পছন্দের পণ্য খুঁজে নিতে আমাদের কালেকশন দেখুন।",
           )}
         </p>
-        {storeSlug && (
-          <a
-            href={`${base}/`}
-            className="mt-6 inline-flex min-h-12 items-center justify-center rounded-none bg-foreground px-8 text-xs font-semibold fq-caps tracking-widest text-background hover:bg-foreground/90 transition-colors motion-safe:active:scale-[0.98]"
-          >
-            {t(locale, "Continue shopping", "কেনাকাটা চালিয়ে যান")}
-          </a>
-        )}
+        <a
+          href={storeSlug ? `${base}/` : "/"}
+          className="mt-6 inline-flex min-h-12 items-center justify-center rounded-none bg-foreground px-8 text-xs font-semibold fq-caps tracking-widest text-background hover:bg-foreground/90 transition-colors motion-safe:active:scale-[0.98] cursor-pointer"
+        >
+          {t(locale, "Continue shopping", "কেনাকাটা চালিয়ে যান")}
+        </a>
       </div>
     );
   }
@@ -358,19 +357,21 @@ const CartLines: WidgetComponent = (ctx) => {
   const heading = str("heading");
   return (
     <section aria-label={heading || "Cart"}>
-      <div className="mb-6 flex items-baseline justify-between border-b border-border/60 pb-3">
-        <Heading className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-foreground">
-          {heading || t(locale, "YOUR SHOPPING BAG", "আপনার শপিং ব্যাগ")}
-        </Heading>
-        {cart.count > 0 && (
-          <span className="text-xs font-medium fq-caps tracking-widest text-muted-foreground tabular-nums">
-            {cart.count}{" "}
-            {cart.count === 1
-              ? t(locale, "item", "টি পণ্য")
-              : t(locale, "items", "টি পণ্য")}
-          </span>
-        )}
-      </div>
+      {heading ? (
+        <div className="mb-6 flex items-baseline justify-between border-b border-border/60 pb-3">
+          <Heading className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-foreground">
+            {heading}
+          </Heading>
+          {cart.count > 0 && (
+            <span className="text-xs font-medium fq-caps tracking-widest text-muted-foreground tabular-nums">
+              {cart.count}{" "}
+              {cart.count === 1
+                ? t(locale, "item", "টি পণ্য")
+                : t(locale, "items", "টি পণ্য")}
+            </span>
+          )}
+        </div>
+      ) : null}
       <LineList ctx={ctx} />
     </section>
   );
@@ -633,6 +634,9 @@ function SummaryBody({ ctx }: { ctx: WidgetCtx }) {
 const CartSummary: WidgetComponent = (ctx) => {
   const { str, Heading, slot } = ctx;
   const cart = useCartContext();
+  if (cart.count === 0 || ((cart.totals?.lines?.length ?? 0) === 0 && cart.lines.length === 0)) {
+    return null;
+  }
   if (!cart.live && slot) return <>{slot}</>;
   const heading = str("heading");
   return (

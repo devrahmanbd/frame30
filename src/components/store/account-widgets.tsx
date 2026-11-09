@@ -18,7 +18,7 @@
  * them renders exactly what it rendered before — and a theme that places one
  * of them gets that panel, while the dashboard's fallback skips it.
  */
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { isCustomHostPath } from "@/lib/storefront-url";
 import {
@@ -196,12 +196,36 @@ export function AccountNavPanel({
   const tabRefs = useRef<Partial<Record<AccountTab, HTMLAnchorElement | null>>>(
     {},
   );
+  const navRef = useRef<HTMLElement | null>(null);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
   const panelId = "account-panel";
   const tabId = (key: AccountTab) => `account-tab-${key}`;
 
+  const checkScroll = useCallback(() => {
+    const el = navRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  }, []);
+
   useEffect(() => {
     setFocusedTab(tab);
+    const activeEl = tabRefs.current[tab];
+    if (activeEl && typeof activeEl.scrollIntoView === "function") {
+      activeEl.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+    }
   }, [tab]);
+
+  useEffect(() => {
+    checkScroll();
+    window.addEventListener("resize", checkScroll);
+    return () => window.removeEventListener("resize", checkScroll);
+  }, [checkScroll, tab]);
 
   const onTabKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
     const index = ACCOUNT_TAB_ITEMS.findIndex(
@@ -251,56 +275,72 @@ export function AccountNavPanel({
           {heading}
         </h2>
       ) : null}
-      <nav
-        aria-label={t("Account sections", "অ্যাকাউন্ট বিভাগ")}
-        className="-mx-4 flex gap-2 overflow-x-auto px-4 border-b border-border/60 sm:mx-0 sm:flex-wrap sm:px-0 lg:gap-3"
-      >
-        <div
-          role="tablist"
-          onKeyDown={onTabKeyDown}
-          className="flex gap-2 sm:flex-wrap lg:gap-3"
+      <div className="relative">
+        {canScrollLeft && (
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-background to-transparent sm:hidden z-10"
+          />
+        )}
+        {canScrollRight && (
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-background to-transparent sm:hidden z-10"
+          />
+        )}
+        <nav
+          ref={navRef}
+          onScroll={checkScroll}
+          aria-label={t("Account sections", "অ্যাকাউন্ট বিভাগ")}
+          className="-mx-4 flex gap-1.5 overflow-x-auto px-4 border-b border-border/60 sm:mx-0 sm:flex-wrap sm:px-0 lg:gap-3"
         >
-          {ACCOUNT_TAB_ITEMS.map((item) => {
-            const selected = item.tab === tab;
-            return (
-              <Link
-                key={item.tab}
-                id={tabId(item.tab)}
-                ref={(element: HTMLAnchorElement | null) => {
-                  tabRefs.current[item.tab] = element;
-                }}
-                to="/store/$slug/account"
-                params={{ slug }}
-                search={{ tab: item.tab }}
-                role="tab"
-                aria-selected={selected}
-                aria-controls={panelId}
-                tabIndex={focusedTab === item.tab ? 0 : -1}
-                onFocus={() => setFocusedTab(item.tab)}
-                onKeyDown={(event) => {
-                  if (event.key !== " " && event.key !== "Spacebar") return;
-                  event.preventDefault();
-                  activateTab(item.tab);
-                }}
-                onClick={(event) => {
-                  if (item.tab !== tab) onActivate?.();
-                  if (!onTabChange) return;
-                  event.preventDefault();
-                  onTabChange(item.tab);
-                }}
-                className={`flex min-h-11 shrink-0 items-center gap-2 rounded-none border-b-2 px-3 sm:px-4 py-2.5 text-[11px] sm:text-[12px] font-semibold uppercase tracking-[0.15em] transition-colors -mb-px ${
-                  selected
-                    ? "border-[var(--theme-ink,#1A1A1A)] text-[var(--theme-ink,#1A1A1A)]"
-                    : "border-transparent text-muted-foreground hover:text-[var(--theme-ink,#1A1A1A)]"
-                }`}
-              >
-                <TabIcon icon={item.icon} />
-                <span>{t(item.en, item.bn)}</span>
-              </Link>
-            );
-          })}
-        </div>
-      </nav>
+          <div
+            role="tablist"
+            onKeyDown={onTabKeyDown}
+            className="flex gap-1.5 sm:flex-wrap lg:gap-3 shrink-0"
+          >
+            {ACCOUNT_TAB_ITEMS.map((item) => {
+              const selected = item.tab === tab;
+              return (
+                <Link
+                  key={item.tab}
+                  id={tabId(item.tab)}
+                  ref={(element: HTMLAnchorElement | null) => {
+                    tabRefs.current[item.tab] = element;
+                  }}
+                  to="/store/$slug/account"
+                  params={{ slug }}
+                  search={{ tab: item.tab }}
+                  role="tab"
+                  aria-selected={selected}
+                  aria-controls={panelId}
+                  tabIndex={focusedTab === item.tab ? 0 : -1}
+                  onFocus={() => setFocusedTab(item.tab)}
+                  onKeyDown={(event) => {
+                    if (event.key !== " " && event.key !== "Spacebar") return;
+                    event.preventDefault();
+                    activateTab(item.tab);
+                  }}
+                  onClick={(event) => {
+                    if (item.tab !== tab) onActivate?.();
+                    if (!onTabChange) return;
+                    event.preventDefault();
+                    onTabChange(item.tab);
+                  }}
+                  className={`flex min-h-11 min-w-[44px] shrink-0 items-center gap-2 rounded-none border-b-2 px-3 sm:px-4 py-2.5 text-[11px] sm:text-[12px] font-semibold uppercase tracking-[0.15em] transition-colors -mb-px ${
+                    selected
+                      ? "border-[var(--theme-ink,#1A1A1A)] text-[var(--theme-ink,#1A1A1A)]"
+                      : "border-transparent text-muted-foreground hover:text-[var(--theme-ink,#1A1A1A)]"
+                  }`}
+                >
+                  <TabIcon icon={item.icon} />
+                  <span>{t(item.en, item.bn)}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
+      </div>
     </>
   );
 }
@@ -1073,7 +1113,7 @@ export function AccountDetailsPanel({
         (wishlist.length === 0 ? (
           <div className="py-16 text-center border border-border/60 p-8">
             <h3 className="font-serif text-2xl font-normal tracking-tight text-[var(--theme-ink,#1A1A1A)]">
-              {t("Your Wishlist is Empty", "আপনার উইশলিস্ট খালি")}
+              {t("Your wishlist is empty.", "আপনার উইশলিস্ট খালি।")}
             </h3>
             <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
               {t(
@@ -1085,9 +1125,9 @@ export function AccountDetailsPanel({
               to="/store/$slug"
               params={{ slug }}
               search={{ preview_token: undefined }}
-              className="mt-6 inline-flex min-h-12 items-center justify-center rounded-none bg-[var(--theme-ink,#1A1A1A)] px-8 text-xs font-semibold uppercase tracking-widest text-[var(--theme-surface,#FAF9F7)] hover:bg-[var(--theme-accent,#8B4513)] transition-colors"
+              className="mt-6 inline-flex min-h-12 items-center justify-center rounded-none bg-[var(--theme-ink,#1A1A1A)] px-8 text-xs font-semibold uppercase tracking-widest text-[var(--theme-surface,#FAF9F7)] hover:bg-[var(--theme-accent,#8B4513)] transition-colors cursor-pointer"
             >
-              {t("Explore Collection", "কালেকশন দেখুন")}
+              {t("Continue shopping", "কেনাকাটা চালিয়ে যান")}
             </Link>
           </div>
         ) : (
@@ -1177,7 +1217,7 @@ export function AccountDetailsPanel({
                           ),
                         );
                       }}
-                      className={`min-h-11 w-full rounded-none px-3 py-2 text-[11px] font-bold uppercase tracking-widest transition-colors cursor-pointer ${
+                      className={`min-h-12 w-full rounded-none px-3 py-2 text-[11px] font-bold uppercase tracking-widest transition-colors cursor-pointer ${
                         inStock
                           ? "bg-[var(--theme-ink,#1A1A1A)] text-[var(--theme-surface,#FAF9F7)] hover:bg-[var(--theme-accent,#8B4513)] hover:text-white"
                           : "bg-muted text-muted-foreground cursor-not-allowed opacity-60"
@@ -1185,6 +1225,15 @@ export function AccountDetailsPanel({
                     >
                       {t("Add to Bag", "ব্যাগে যোগ করুন")}
                     </button>
+                    {onToggleWishlist && (
+                      <button
+                        type="button"
+                        onClick={() => onToggleWishlist(item.variant_id)}
+                        className="mt-2 min-h-11 w-full text-center text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/80 hover:text-[var(--theme-ink,#1A1A1A)] transition-colors cursor-pointer"
+                      >
+                        {t("Remove", "মুছুন")}
+                      </button>
+                    )}
                   </div>
                 </div>
               );

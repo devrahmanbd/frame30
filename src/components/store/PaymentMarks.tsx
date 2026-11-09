@@ -485,7 +485,9 @@ export function matchPaymentMark(mark: string): string | null {
  * text chip for marks without artwork (Cash on Delivery, Upay, …).
  */
 export function PaymentMark({ mark }: { mark: string }) {
-  const key = matchPaymentMark(mark);
+  const trimmed = mark.trim();
+  if (!trimmed) return null;
+  const key = matchPaymentMark(trimmed);
   if (key && ART[key]) {
     const { label, art } = ART[key]!;
     return (
@@ -493,15 +495,15 @@ export function PaymentMark({ mark }: { mark: string }) {
         role="img"
         aria-label={label}
         title={label}
-        className="inline-flex h-8 items-center rounded-md border border-border bg-white px-2"
+        className="inline-flex h-8 items-center rounded-md border border-border bg-white px-2.5 shadow-2xs"
       >
         {art}
       </span>
     );
   }
   return (
-    <span className="rounded-fq-sm border border-border bg-card px-2 py-1 text-xs text-muted-foreground">
-      {mark}
+    <span className="inline-flex h-8 items-center rounded-md border border-border bg-white px-2.5 text-xs font-semibold tracking-wide text-zinc-900 shadow-2xs">
+      {trimmed}
     </span>
   );
 }

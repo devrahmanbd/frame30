@@ -19,6 +19,7 @@ import {
   type FlowStep,
 } from "@/lib/flow-machine";
 import { quoteBundle } from "@/lib/bundle-quote.functions";
+import { useCartContext } from "./CartContext";
 import { ConsentChip } from "./primitives/ConsentChip";
 import { Countdown } from "./primitives/Countdown";
 import { Disclosure, Tabs } from "./primitives/Disclosure";
@@ -1202,13 +1203,30 @@ const BASE_WIDGETS: Partial<Record<SectionType, WidgetComponent>> = {
 
   heading: ({ str, primary, editing, inlineEdit, locale }) => {
     const Tag = primary ? "h1" : str("level") === "h3" ? "h3" : "h2";
+    const cart = useCartContext();
+    const rawText = str("text");
+    const isCartHeading =
+      rawText.toLowerCase().includes("your bag") ||
+      rawText.toLowerCase().includes("your shopping bag") ||
+      rawText.toLowerCase().includes("your cart");
+    const countSuffix =
+      isCartHeading && cart && cart.live && cart.count > 0
+        ? ` (${cart.count})`
+        : "";
+    const displayText = isCartHeading
+      ? locale === "bn"
+        ? `আপনার শপিং ব্যাগ${countSuffix}`
+        : `Your shopping bag${countSuffix}`
+      : rawText;
     return (
       <Editable
         as={Tag}
         field="text"
-        value={str("text")}
+        value={displayText}
         ctx={{ editing, inlineEdit, locale }}
-        className={`font-bangla-display block text-2xl font-semibold ${
+        className={`font-bangla-display font-serif block ${
+          isCartHeading ? "text-3xl sm:text-4xl font-normal tracking-tight" : "text-2xl font-semibold"
+        } text-foreground ${
           str("align") === "center" ? "text-center" : ""
         }`}
       />

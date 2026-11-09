@@ -93,6 +93,7 @@ function FooterMount({
       <div
         data-plugin={plugin.manifest.id}
         data-plugin-widget={widget.key}
+        data-plugin-floating={floating ? "true" : undefined}
         style={floating ? frameStyle : { height }}
         aria-hidden="true"
       />
@@ -102,6 +103,7 @@ function FooterMount({
     <div
       data-plugin={plugin.manifest.id}
       data-plugin-widget={widget.key}
+      data-plugin-floating={floating ? "true" : undefined}
       style={frameStyle}
     >
       <WidgetSandbox

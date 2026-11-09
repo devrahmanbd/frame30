@@ -131,24 +131,23 @@ export const SongoskritiCartLines: WidgetComponent = (ctx) => {
       <section aria-label={heading || "Cart"}>
         <div className="rounded-none border border-border/60 bg-transparent p-8 sm:p-14 text-center">
           <h2 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-foreground">
-            {str("emptyText") ||
-              t(locale, "Your Shopping Bag is Empty", "আপনার শপিং ব্যাগ খালি")}
+            {str("emptyText") && str("emptyText") !== "Your cart is empty."
+              ? str("emptyText")
+              : t(locale, "Your bag is empty.", "আপনার ব্যাগ খালি।")}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
             {t(
               locale,
-              "Explore our collection and discover handcrafted luxury garments.",
-              "আমাদের কালেকশন দেখুন এবং পছন্দের পোশাক সংগ্রহ করুন।",
+              "Browse the collection to find something you love.",
+              "পছন্দের পণ্য খুঁজে নিতে আমাদের কালেকশন দেখুন।",
             )}
           </p>
-          {ctx.storeSlug && (
-            <a
-              href={ctx.link("/")}
-              className="mt-6 inline-flex min-h-12 items-center justify-center rounded-none bg-[var(--theme-ink,#1A1A1A)] px-8 text-xs font-semibold uppercase tracking-widest text-[var(--theme-surface,#FAF9F7)] hover:bg-[var(--theme-accent,#8B4513)] hover:text-white transition-colors"
-            >
-              {t(locale, "Continue shopping", "কেনাকাটা চালিয়ে যান")}
-            </a>
-          )}
+          <a
+            href={ctx.storeSlug ? ctx.link("/") : "/"}
+            className="mt-6 inline-flex min-h-12 items-center justify-center rounded-none bg-[var(--theme-ink,#1A1A1A)] px-8 text-xs font-semibold uppercase tracking-widest text-[var(--theme-surface,#FAF9F7)] hover:bg-[var(--theme-accent,#8B4513)] hover:text-white transition-colors cursor-pointer"
+          >
+            {t(locale, "Continue shopping", "কেনাকাটা চালিয়ে যান")}
+          </a>
         </div>
       </section>
     );
@@ -156,19 +155,21 @@ export const SongoskritiCartLines: WidgetComponent = (ctx) => {
 
   return (
     <section aria-label={heading || "Cart"}>
-      <div className="mb-6 flex items-baseline justify-between border-b border-border/60 pb-3">
-        <Heading className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-foreground">
-          {heading || t(locale, "YOUR SHOPPING BAG", "আপনার শপিং ব্যাগ")}
-        </Heading>
-        {cart.count > 0 && (
-          <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground tabular-nums">
-            {cart.count}{" "}
-            {cart.count === 1
-              ? t(locale, "item", "টি পণ্য")
-              : t(locale, "items", "টি পণ্য")}
-          </span>
-        )}
-      </div>
+      {heading ? (
+        <div className="mb-6 flex items-baseline justify-between border-b border-border/60 pb-3">
+          <Heading className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-foreground">
+            {heading}
+          </Heading>
+          {cart.count > 0 && (
+            <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground tabular-nums">
+              {cart.count}{" "}
+              {cart.count === 1
+                ? t(locale, "item", "টি পণ্য")
+                : t(locale, "items", "টি পণ্য")}
+            </span>
+          )}
+        </div>
+      ) : null}
       <ul className="m-0 list-none divide-y divide-border/60 p-0">
         {rows.map((line) => {
           const children: ReactNode[] = [];
@@ -317,6 +318,10 @@ export const SongoskritiCartSummary: WidgetComponent = (ctx) => {
   const order = partOrder(str("parts"), "cart_summary");
   const heading = str("heading");
   const totals = cart.totals;
+
+  if (cart.count === 0 || ((totals?.lines?.length ?? 0) === 0 && cart.lines.length === 0)) {
+    return null;
+  }
 
   if (!totals) {
     return (

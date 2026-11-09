@@ -213,7 +213,18 @@ export function CustomerAccountAccess({
   };
 
   return (
-    <div className="mx-auto w-full max-w-md px-4 py-12 sm:py-16">
+    <div
+      data-account-auth="true"
+      className="mx-auto w-full max-w-md px-4 pt-12 pb-28 sm:py-16"
+    >
+      <style>{`
+        @media (max-width: 767px) {
+          [data-plugin-floating="true"],
+          [data-plugin="whatsapp-chat"] {
+            display: none !important;
+          }
+        }
+      `}</style>
       {/* Brand & Context Header */}
       <div className="text-center mb-8">
         <div className="mx-auto mb-4 flex size-12 items-center justify-center text-[var(--theme-ink,#1A1A1A)]">
