@@ -503,6 +503,7 @@ export function PaymentMark({ mark }: { mark: string }) {
   }
   return (
     <span
+      data-payment-mark="true"
       style={{ color: "#1A1A1A", backgroundColor: "#FFFFFF" }}
       className="inline-flex h-8 items-center rounded-none border border-border bg-white px-2.5 text-xs font-semibold tracking-wide text-[#1A1A1A] shadow-2xs"
     >

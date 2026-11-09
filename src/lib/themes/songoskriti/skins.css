@@ -470,8 +470,13 @@ footer p,
 footer h1,
 footer h2,
 footer h3,
-footer span {
+footer span:not([data-payment-mark]) {
   color: var(--theme-surface) !important;
+}
+
+footer [data-payment-mark] {
+  color: #1A1A1A !important;
+  background-color: #FFFFFF !important;
 }
 
 footer a {
