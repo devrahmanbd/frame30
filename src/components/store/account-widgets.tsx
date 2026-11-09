@@ -19,7 +19,8 @@
  * of them gets that panel, while the dashboard's fallback skips it.
  */
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { isCustomHostPath } from "@/lib/storefront-url";
 import {
   Heart,
   MapPin,
@@ -136,6 +137,14 @@ function Empty({ text, slug }: { text: string; slug: string }) {
   );
 }
 
+function useSafePathname(): string {
+  try {
+    return useRouterState({ select: (s) => s.location.pathname });
+  } catch {
+    return "/";
+  }
+}
+
 /* ------------------------------------------------------------------ the nav */
 
 /**
@@ -174,6 +183,8 @@ export function AccountNavPanel({
 }) {
   const { t } = useLang();
   const navigate = useNavigate();
+  const pathname = useSafePathname();
+  const isCustom = isCustomHostPath(pathname);
   const [focusedTab, setFocusedTab] = useState<AccountTab>(tab);
   const tabRefs = useRef<Partial<Record<AccountTab, HTMLAnchorElement | null>>>(
     {},
@@ -212,11 +223,18 @@ export function AccountNavPanel({
       onTabChange(next);
       return;
     }
-    void navigate({
-      to: "/store/$slug/account",
-      params: { slug },
-      search: { tab: next },
-    });
+    if (isCustom) {
+      void navigate({
+        to: "/account",
+        search: { tab: next },
+      });
+    } else {
+      void navigate({
+        to: "/store/$slug/account",
+        params: { slug },
+        search: { tab: next },
+      });
+    }
   };
 
   return (
@@ -250,11 +268,9 @@ export function AccountNavPanel({
                 role="tab"
                 aria-selected={selected}
                 aria-controls={panelId}
-                // The ROVING tabindex: one tab stop for the whole tablist.
                 tabIndex={focusedTab === item.tab ? 0 : -1}
                 onFocus={() => setFocusedTab(item.tab)}
                 onKeyDown={(event) => {
-                  // Space activates a tab (Enter is the link's own).
                   if (event.key !== " " && event.key !== "Spacebar") return;
                   event.preventDefault();
                   activateTab(item.tab);
@@ -265,10 +281,10 @@ export function AccountNavPanel({
                   event.preventDefault();
                   onTabChange(item.tab);
                 }}
-                className={`flex min-h-11 shrink-0 items-center gap-2 border-b-2 px-3 py-2 text-[13px] font-bold fq-caps tracking-widest transition-colors ${
+                className={`flex min-h-11 shrink-0 items-center gap-2 rounded-none border-b-2 px-3 sm:px-4 py-2 text-[12px] font-bold fq-caps tracking-widest transition-colors ${
                   selected
-                    ? "border-foreground text-foreground"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
+                    ? "border-[var(--theme-ink,#1A1A1A)] text-[var(--theme-ink,#1A1A1A)]"
+                    : "border-transparent text-muted-foreground hover:text-[var(--theme-ink,#1A1A1A)]"
                 }`}
               >
                 <TabIcon icon={item.icon} />
@@ -965,6 +981,8 @@ export function AccountDetailsPanel({
 }) {
   const { t } = useLang();
   const cart = useCart(slug);
+  const pathname = useSafePathname();
+  const isCustom = isCustomHostPath(pathname);
   const addresses = overview?.addresses ?? [];
   const wishlist = overview?.wishlist ?? [];
   const consents = overview?.consents ?? [];
@@ -999,7 +1017,7 @@ export function AccountDetailsPanel({
                       <p className="text-[13.5px] font-bold text-foreground">
                         {address.label}
                         {address.is_default && (
-                          <span className="ml-3 inline-block rounded-full bg-foreground/10 px-2.5 py-1 text-[10px] font-bold fq-caps tracking-widest text-foreground">
+                          <span className="ml-3 inline-block rounded-none border border-foreground/30 px-2 py-0.5 text-[10px] font-bold fq-caps tracking-widest text-foreground">
                             {t("Default", "ডিফল্ট")}
                           </span>
                         )}
@@ -1046,67 +1064,100 @@ export function AccountDetailsPanel({
 
       {tab === "wishlist" &&
         (wishlist.length === 0 ? (
-          <Empty
-            text={t("Nothing saved yet.", "এখনও কিছু সংরক্ষিত নেই।")}
-            slug={slug}
-          />
+          <div className="py-16 text-center border border-border/60 p-8">
+            <h3 className="font-serif text-2xl font-normal tracking-tight text-[var(--theme-ink,#1A1A1A)]">
+              {t("Your Wishlist is Empty", "আপনার উইশলিস্ট খালি")}
+            </h3>
+            <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
+              {t(
+                "Explore our collection and save your favorite pieces to find them easily later.",
+                "আমাদের কালেকশন দেখুন এবং আপনার পছন্দের পোশাকগুলো সংরক্ষণ করুন।",
+              )}
+            </p>
+            <Link
+              to="/store/$slug"
+              params={{ slug }}
+              search={{ preview_token: undefined }}
+              className="mt-6 inline-flex min-h-12 items-center justify-center rounded-none bg-[var(--theme-ink,#1A1A1A)] px-8 text-xs font-semibold uppercase tracking-widest text-[var(--theme-surface,#FAF9F7)] hover:bg-[var(--theme-accent,#8B4513)] transition-colors"
+            >
+              {t("Explore Collection", "কালেকশন দেখুন")}
+            </Link>
+          </div>
         ) : (
-          <ul className="divide-y divide-border/60">
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
             {wishlist.map((item) => {
               const inStock = item.stock_quantity > 0;
+              const productHref = isCustom
+                ? `/p/${item.product_slug}`
+                : `/store/${slug}/p/${item.product_slug}`;
+
               return (
-                <li
+                <div
                   key={item.id}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-6"
+                  className="group flex flex-col justify-between border border-border/60 bg-transparent p-3 sm:p-4 transition-all hover:border-[var(--theme-ink,#1A1A1A)]/40"
                 >
-                  <div className="flex items-center gap-4 min-w-0">
-                    <Link
-                      to="/store/$slug/p/$productSlug"
-                      params={{ slug, productSlug: item.product_slug }}
-                      className="relative size-16 sm:size-20 shrink-0 overflow-hidden rounded-xs bg-muted/40 border border-border/50 block"
-                    >
-                      {item.image_url ? (
-                        <img
-                          src={item.image_url}
-                          alt={item.product_title}
-                          className="size-full object-cover"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="flex size-full items-center justify-center text-muted-foreground/40">
-                          <Package className="size-6" />
-                        </div>
-                      )}
-                    </Link>
-                    <div className="min-w-0 flex-1">
-                      <Link
-                        to="/store/$slug/p/$productSlug"
-                        params={{ slug, productSlug: item.product_slug }}
-                        className="hover:underline"
-                      >
-                        <span className="block truncate text-[14px] font-medium leading-relaxed">
-                          {item.product_title}
-                        </span>
-                      </Link>
-                      {item.variant_name ? (
-                        <span className="block text-[12px] font-medium tracking-wide text-muted-foreground mt-0.5">
-                          {item.variant_name}
-                        </span>
+                  <div>
+                    {/* 4:5 Portrait Image Card */}
+                    <div className="relative aspect-[4/5] w-full overflow-hidden bg-muted/30 border border-border/40">
+                      <a href={productHref} className="block size-full">
+                        {item.image_url ? (
+                          <img
+                            src={item.image_url}
+                            alt={item.product_title}
+                            className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="flex size-full items-center justify-center text-muted-foreground/40">
+                            <Package className="size-8" />
+                          </div>
+                        )}
+                      </a>
+                      {onToggleWishlist ? (
+                        <button
+                          type="button"
+                          onClick={() => onToggleWishlist(item.variant_id)}
+                          aria-label={t(
+                            `Remove ${item.product_title} from wishlist`,
+                            `উইশলিস্ট থেকে ${item.product_title} সরান`,
+                          )}
+                          className="absolute right-2 top-2 flex size-8 items-center justify-center rounded-none bg-background/80 text-muted-foreground backdrop-blur-xs transition-colors hover:bg-background hover:text-danger cursor-pointer"
+                        >
+                          <Trash2 className="size-4" />
+                        </button>
                       ) : null}
-                      <span className="money mt-1.5 block text-[13.5px] font-semibold tracking-wide">
+                    </div>
+
+                    {/* Product Meta */}
+                    <div className="mt-3 space-y-1">
+                      <a
+                        href={productHref}
+                        className="block truncate font-serif text-[14px] sm:text-[15px] font-normal leading-snug text-[var(--theme-ink,#1A1A1A)] hover:text-[var(--theme-accent,#8B4513)] transition-colors"
+                      >
+                        {item.product_title}
+                      </a>
+                      {item.variant_name ? (
+                        <p className="truncate text-[11px] font-medium tracking-wide text-muted-foreground">
+                          {item.variant_name}
+                        </p>
+                      ) : null}
+                      <p className="money text-[13.5px] sm:text-[14px] font-semibold tracking-wide text-[var(--theme-ink,#1A1A1A)] tabular-nums pt-0.5">
                         {fmtMinor(item.price_amount_minor_int, currency)}
-                      </span>
-                      <span
-                        className={`text-[11px] font-bold fq-caps tracking-widest block mt-1 ${inStock ? "text-foreground" : "text-danger-foreground"}`}
+                      </p>
+                      <p
+                        className={`text-[10px] font-bold uppercase tracking-widest pt-0.5 ${
+                          inStock ? "text-emerald-700 dark:text-emerald-400" : "text-danger"
+                        }`}
                       >
                         {inStock
                           ? t("In Stock", "স্টকে আছে")
                           : t("Out of Stock", "স্টক নেই")}
-                      </span>
+                      </p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 self-end sm:self-center">
+                  {/* Add to Bag CTA */}
+                  <div className="mt-4 pt-3 border-t border-border/40">
                     <button
                       type="button"
                       disabled={!inStock}
@@ -1119,28 +1170,19 @@ export function AccountDetailsPanel({
                           ),
                         );
                       }}
-                      className={`min-h-11 px-4 py-2 text-[11px] font-bold fq-caps tracking-widest transition-colors ${
+                      className={`min-h-11 w-full rounded-none px-3 py-2 text-[11px] font-bold uppercase tracking-widest transition-colors cursor-pointer ${
                         inStock
-                          ? "bg-foreground text-background hover:bg-foreground/90"
+                          ? "bg-[var(--theme-ink,#1A1A1A)] text-[var(--theme-surface,#FAF9F7)] hover:bg-[var(--theme-accent,#8B4513)] hover:text-white"
                           : "bg-muted text-muted-foreground cursor-not-allowed opacity-60"
                       }`}
                     >
                       {t("Add to Bag", "ব্যাগে যোগ করুন")}
                     </button>
-                    {onToggleWishlist ? (
-                      <button
-                        type="button"
-                        onClick={() => onToggleWishlist(item.variant_id)}
-                        className="text-[11px] font-bold fq-caps tracking-widest text-muted-foreground hover:text-foreground transition-colors px-4 py-2 min-h-11 inline-flex items-center"
-                      >
-                        {t("Remove", "সরান")}
-                      </button>
-                    ) : null}
                   </div>
-                </li>
+                </div>
               );
             })}
-          </ul>
+          </div>
         ))}
 
       {tab === "profile" && (

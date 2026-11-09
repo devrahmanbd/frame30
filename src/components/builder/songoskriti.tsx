@@ -1690,18 +1690,18 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
       {/* ZONE 1: Brand closing statement (theme-authored, skipped when empty) */}
       {statementHeading && (
         <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 mb-16 sm:mb-24 flex flex-col md:flex-row items-start justify-between gap-8">
-          <h2 className="font-serif text-[40px] sm:text-[56px] lg:text-[72px] font-light leading-[1.2] tracking-normal text-[var(--theme-surface)] max-w-3xl">
+          <h2 className="font-serif text-[40px] sm:text-[56px] lg:text-[72px] font-light leading-[1.2] tracking-normal text-[var(--theme-ink)] max-w-3xl">
             {statementHeading}
           </h2>
           <div className="flex flex-col md:items-end text-left md:text-right max-w-xs mt-2 md:mt-4">
             {statementBody && (
-              <p className="font-serif text-[15px] sm:text-[18px] font-light leading-relaxed text-[var(--theme-surface)]/80 mb-4">
+              <p className="font-serif text-[15px] sm:text-[18px] font-light leading-relaxed text-[var(--theme-ink)]/80 mb-4">
                 {statementBody}
               </p>
             )}
             <a
               href={link(storyHref)}
-              className="text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--theme-surface)] hover:text-[var(--theme-accent)] transition-colors"
+              className="text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--theme-ink)] hover:text-[var(--theme-accent)] transition-colors"
             >
               {storyLabel}
             </a>
@@ -1722,7 +1722,7 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
                     : "New Drops & Updates"}
                 </p>
               </div>
-              <h3 className="font-serif text-[22px] sm:text-[30px] font-light tracking-[0.01em] text-[var(--theme-surface)] leading-snug">
+              <h3 className="font-serif text-[22px] sm:text-[30px] font-light tracking-[0.01em] text-[var(--theme-ink)] leading-snug">
                 {newsletterHeading}
               </h3>
             </div>
@@ -1736,20 +1736,20 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
                   name="email"
                   type="email"
                   required
-                  className="h-12 w-full flex-1 rounded-none border-b border-[var(--theme-border)]/80 bg-transparent px-2 py-2 text-[13px] text-[var(--theme-surface)] outline-none transition-colors placeholder:text-[var(--theme-surface)]/40 focus:border-[var(--theme-accent)]"
+                  className="h-12 w-full flex-1 rounded-none border-b border-[var(--theme-border)]/80 bg-transparent px-2 py-2 text-[13px] text-[var(--theme-ink)] outline-none transition-colors placeholder:text-[var(--theme-ink)]/40 focus:border-[var(--theme-accent)]"
                   placeholder={
                     locale === "bn" ? "ইমেইল লিখুন" : "Enter your email"
                   }
                 />
                 <button
                   type="submit"
-                  className="h-12 w-full sm:w-auto px-8 bg-[var(--theme-surface)] text-[var(--theme-ink)] text-[11px] font-semibold uppercase tracking-[0.2em] hover:bg-[var(--theme-accent)] hover:text-[var(--theme-surface)] transition-colors flex-shrink-0 shadow-xs cursor-pointer"
+                  className="h-12 w-full sm:w-auto px-8 bg-[var(--theme-ink)] text-[var(--theme-surface)] text-[11px] font-semibold uppercase tracking-[0.2em] hover:bg-[var(--theme-accent)] hover:text-white transition-colors flex-shrink-0 shadow-xs cursor-pointer"
                 >
                   {newsletterButton}
                 </button>
               </form>
               {newsletterConsent && (
-                <p className="mt-3.5 text-[10px] text-[var(--theme-surface)]/60 uppercase tracking-widest text-left">
+                <p className="mt-3.5 text-[10px] text-[var(--theme-ink)]/60 uppercase tracking-widest text-left">
                   {newsletterConsent}
                 </p>
               )}

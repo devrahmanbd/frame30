@@ -188,29 +188,29 @@ export function CustomerAccountAccess({
     <div className="mx-auto w-full max-w-md px-4 py-12 sm:py-16">
       {/* Brand & Context Header */}
       <div className="text-center mb-8">
-        <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
-          {mode === "signin" && <User className="size-7" />}
-          {mode === "register" && <UserPlus className="size-7" />}
-          {mode === "track" && <Package className="size-7" />}
+        <div className="mx-auto mb-4 flex size-12 items-center justify-center text-[var(--theme-ink,#1A1A1A)]">
+          {mode === "signin" && <User className="size-6" />}
+          {mode === "register" && <UserPlus className="size-6" />}
+          {mode === "track" && <Package className="size-6" />}
         </div>
-        <h1 className="font-bangla-display text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+        <h1 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight text-[var(--theme-ink,#1A1A1A)]">
           {mode === "signin" &&
             t("Sign in to your account", "আপনার অ্যাকাউন্টে সাইন ইন")}
           {mode === "register" &&
             t("Create your customer account", "নতুন অ্যাকাউন্ট তৈরি করুন")}
           {mode === "track" && t("Track guest order", "অর্ডার অনুসন্ধান")}
         </h1>
-        <p className="mt-2 text-xs sm:text-sm text-muted-foreground">
+        <p className="mt-2 text-xs sm:text-sm uppercase tracking-widest text-muted-foreground font-medium">
           {merchantName}
         </p>
       </div>
 
       {/* Wishlist contextual banner */}
       {isWishlistIntent && (
-        <div className="mb-6 flex items-start gap-3 rounded-fq-md border border-primary/20 bg-primary/5 p-4 text-xs sm:text-sm text-foreground">
-          <Heart className="size-5 shrink-0 text-primary mt-0.5" />
+        <div className="mb-6 flex items-start gap-3 rounded-none border border-[var(--theme-accent,#8B4513)]/40 bg-[var(--theme-accent,#8B4513)]/5 p-4 text-xs sm:text-sm text-[var(--theme-ink,#1A1A1A)]">
+          <Heart className="size-5 shrink-0 text-[var(--theme-accent,#8B4513)] mt-0.5" />
           <div>
-            <p className="font-medium">
+            <p className="font-semibold text-[var(--theme-accent,#8B4513)]">
               {t("Wishlist access", "উইশলিস্টে প্রবেশ")}
             </p>
             <p className="text-muted-foreground mt-0.5">
@@ -227,7 +227,7 @@ export function CustomerAccountAccess({
       <div
         role="tablist"
         aria-label={t("Account access options", "অ্যাকাউন্ট অপশন")}
-        className="mb-8 grid grid-cols-3 gap-1 rounded-fq-lg bg-muted/60 p-1 text-center"
+        className="mb-8 flex border-b border-border/60 text-center"
       >
         <button
           type="button"
@@ -237,10 +237,10 @@ export function CustomerAccountAccess({
             setMode("signin");
             setErrorMsg(null);
           }}
-          className={`min-h-11 rounded-fq-md text-xs sm:text-sm font-semibold transition-all ${
+          className={`flex-1 min-h-12 border-b-2 text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all cursor-pointer ${
             mode === "signin"
-              ? "bg-card text-foreground shadow-xs"
-              : "text-muted-foreground hover:text-foreground"
+              ? "border-[var(--theme-ink,#1A1A1A)] text-[var(--theme-ink,#1A1A1A)]"
+              : "border-transparent text-muted-foreground hover:text-foreground"
           }`}
         >
           {t("Sign In", "সাইন ইন")}
@@ -253,10 +253,10 @@ export function CustomerAccountAccess({
             setMode("register");
             setErrorMsg(null);
           }}
-          className={`min-h-11 rounded-fq-md text-xs sm:text-sm font-semibold transition-all ${
+          className={`flex-1 min-h-12 border-b-2 text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all cursor-pointer ${
             mode === "register"
-              ? "bg-card text-foreground shadow-xs"
-              : "text-muted-foreground hover:text-foreground"
+              ? "border-[var(--theme-ink,#1A1A1A)] text-[var(--theme-ink,#1A1A1A)]"
+              : "border-transparent text-muted-foreground hover:text-foreground"
           }`}
         >
           {t("Register", "নিবন্ধন")}
@@ -269,10 +269,10 @@ export function CustomerAccountAccess({
             setMode("track");
             setErrorMsg(null);
           }}
-          className={`min-h-11 rounded-fq-md text-xs sm:text-sm font-semibold transition-all ${
+          className={`flex-1 min-h-12 border-b-2 text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all cursor-pointer ${
             mode === "track"
-              ? "bg-card text-foreground shadow-xs"
-              : "text-muted-foreground hover:text-foreground"
+              ? "border-[var(--theme-ink,#1A1A1A)] text-[var(--theme-ink,#1A1A1A)]"
+              : "border-transparent text-muted-foreground hover:text-foreground"
           }`}
         >
           {t("Track Your Order", "অর্ডার অনুসন্ধান")}
@@ -282,7 +282,7 @@ export function CustomerAccountAccess({
       {errorMsg && (
         <div
           role="alert"
-          className="mb-6 rounded-fq-md border border-danger/40 bg-danger/10 p-3 text-xs sm:text-sm text-danger-foreground"
+          className="mb-6 rounded-none border border-danger/40 bg-danger/10 p-3 text-xs sm:text-sm text-danger-foreground"
         >
           {errorMsg}
         </div>
@@ -309,7 +309,7 @@ export function CustomerAccountAccess({
             onChange={(e) => setEmail(e.target.value)}
             placeholder="customer@example.com"
             required
-            className="min-h-12 w-full rounded-fq-md border border-border bg-background px-3.5 text-sm text-foreground focus:border-primary focus:outline-none transition-colors"
+            className="min-h-12 w-full rounded-none border border-border/70 bg-background px-3.5 text-sm text-foreground focus:border-[var(--theme-ink,#1A1A1A)] focus:outline-none transition-colors"
           />
         </div>
 
@@ -328,14 +328,14 @@ export function CustomerAccountAccess({
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
             required
-            className="min-h-12 w-full rounded-fq-md border border-border bg-background px-3.5 text-sm text-foreground focus:border-primary focus:outline-none transition-colors"
+            className="min-h-12 w-full rounded-none border border-border/70 bg-background px-3.5 text-sm text-foreground focus:border-[var(--theme-ink,#1A1A1A)] focus:outline-none transition-colors"
           />
         </div>
 
         <button
           type="submit"
           disabled={busy}
-          className="mt-6 min-h-12 w-full rounded-fq-md bg-primary px-6 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/95 active:scale-[0.99] disabled:opacity-60 cursor-pointer"
+          className="mt-6 min-h-12 w-full rounded-none bg-[var(--theme-ink,#1A1A1A)] px-6 text-xs sm:text-sm font-semibold uppercase tracking-widest text-[var(--theme-surface,#FAF9F7)] transition-all hover:bg-[var(--theme-accent,#8B4513)] hover:text-white active:scale-[0.99] disabled:opacity-60 cursor-pointer"
         >
           {busy
             ? t("Signing in…", "সাইন ইন হচ্ছে…")
@@ -349,7 +349,7 @@ export function CustomerAccountAccess({
               setMode("register");
               setErrorMsg(null);
             }}
-            className="min-h-11 text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center"
+            className="min-h-11 text-xs sm:text-sm text-muted-foreground hover:text-[var(--theme-ink,#1A1A1A)] hover:underline underline-offset-4 transition-colors inline-flex items-center"
           >
             {t(
               "Don't have an account? Create one",
@@ -379,7 +379,7 @@ export function CustomerAccountAccess({
             onChange={(e) => setFullName(e.target.value)}
             placeholder={t("e.g. John Doe", "যেমন: আপনার নাম")}
             required
-            className="min-h-12 w-full rounded-fq-md border border-border bg-background px-3.5 text-sm text-foreground focus:border-primary focus:outline-none transition-colors"
+            className="min-h-12 w-full rounded-none border border-border/70 bg-background px-3.5 text-sm text-foreground focus:border-[var(--theme-ink,#1A1A1A)] focus:outline-none transition-colors"
           />
         </div>
 
@@ -399,7 +399,7 @@ export function CustomerAccountAccess({
             onChange={(e) => setEmail(e.target.value)}
             placeholder="customer@example.com"
             required
-            className="min-h-12 w-full rounded-fq-md border border-border bg-background px-3.5 text-sm text-foreground focus:border-primary focus:outline-none transition-colors"
+            className="min-h-12 w-full rounded-none border border-border/70 bg-background px-3.5 text-sm text-foreground focus:border-[var(--theme-ink,#1A1A1A)] focus:outline-none transition-colors"
           />
         </div>
 
@@ -419,14 +419,14 @@ export function CustomerAccountAccess({
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
             required
-            className="min-h-12 w-full rounded-fq-md border border-border bg-background px-3.5 text-sm text-foreground focus:border-primary focus:outline-none transition-colors"
+            className="min-h-12 w-full rounded-none border border-border/70 bg-background px-3.5 text-sm text-foreground focus:border-[var(--theme-ink,#1A1A1A)] focus:outline-none transition-colors"
           />
         </div>
 
         <button
           type="submit"
           disabled={busy}
-          className="mt-6 min-h-12 w-full rounded-fq-md bg-primary px-6 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/95 active:scale-[0.99] disabled:opacity-60 cursor-pointer"
+          className="mt-6 min-h-12 w-full rounded-none bg-[var(--theme-ink,#1A1A1A)] px-6 text-xs sm:text-sm font-semibold uppercase tracking-widest text-[var(--theme-surface,#FAF9F7)] transition-all hover:bg-[var(--theme-accent,#8B4513)] hover:text-white active:scale-[0.99] disabled:opacity-60 cursor-pointer"
         >
           {busy
             ? t("Creating account…", "অ্যাকাউন্ট তৈরি হচ্ছে…")
@@ -440,7 +440,7 @@ export function CustomerAccountAccess({
               setMode("signin");
               setErrorMsg(null);
             }}
-            className="min-h-11 text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center"
+            className="min-h-11 text-xs sm:text-sm text-muted-foreground hover:text-[var(--theme-ink,#1A1A1A)] hover:underline underline-offset-4 transition-colors inline-flex items-center"
           >
             {t(
               "Already have an account? Sign in",
@@ -479,7 +479,7 @@ export function CustomerAccountAccess({
             onChange={(e) => setOrderId(e.target.value)}
             placeholder={t("e.g. ord_01j7...", "যেমন: ord_01j7...")}
             required
-            className="min-h-12 w-full rounded-fq-md border border-border bg-background px-3.5 text-sm text-foreground focus:border-primary focus:outline-none transition-colors"
+            className="min-h-12 w-full rounded-none border border-border/70 bg-background px-3.5 text-sm text-foreground focus:border-[var(--theme-ink,#1A1A1A)] focus:outline-none transition-colors"
           />
         </div>
 
@@ -499,13 +499,13 @@ export function CustomerAccountAccess({
               "The code in your confirmation link",
               "কনফার্মেশন লিংকের কোড",
             )}
-            className="min-h-12 w-full rounded-fq-md border border-border bg-background px-3.5 text-sm text-foreground focus:border-primary focus:outline-none transition-colors"
+            className="min-h-12 w-full rounded-none border border-border/70 bg-background px-3.5 text-sm text-foreground focus:border-[var(--theme-ink,#1A1A1A)] focus:outline-none transition-colors"
           />
         </div>
 
         <button
           type="submit"
-          className="mt-6 min-h-12 w-full rounded-fq-md bg-primary px-6 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/95 active:scale-[0.99] cursor-pointer"
+          className="mt-6 min-h-12 w-full rounded-none bg-[var(--theme-ink,#1A1A1A)] px-6 text-xs sm:text-sm font-semibold uppercase tracking-widest text-[var(--theme-surface,#FAF9F7)] transition-all hover:bg-[var(--theme-accent,#8B4513)] hover:text-white active:scale-[0.99] cursor-pointer"
         >
           {t("View Order Status", "অর্ডার স্ট্যাটাস দেখুন")}
         </button>
@@ -517,7 +517,7 @@ export function CustomerAccountAccess({
               setMode("signin");
               setErrorMsg(null);
             }}
-            className="min-h-11 text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center"
+            className="min-h-11 text-xs sm:text-sm text-muted-foreground hover:text-[var(--theme-ink,#1A1A1A)] hover:underline underline-offset-4 transition-colors inline-flex items-center"
           >
             {t("Back to Sign In", "সাইন ইন-এ ফিরে যান")}
           </button>

@@ -198,7 +198,7 @@ function LineRow({
     >
       <div className="flex items-start gap-3 sm:gap-4">
         {/* Product thumbnail with fallback */}
-        <div className="relative size-16 sm:size-20 shrink-0 overflow-hidden rounded-xs bg-muted/40 border border-border/50">
+        <div className="relative size-16 sm:size-20 shrink-0 overflow-hidden rounded-none bg-muted/40 border border-border/50">
           {line.imageUrl ? (
             <img
               src={line.imageUrl}
@@ -585,7 +585,7 @@ function SummaryBody({ ctx }: { ctx: WidgetCtx }) {
       {bool("showCta") && (
         <a
           href={storeSlug ? `${base}/checkout` : "#"}
-          className="inline-flex min-h-14 mt-4 w-full items-center justify-center bg-foreground px-8 text-[13px] font-bold fq-caps tracking-widest text-background motion-safe:transition-transform hover:bg-foreground/90 motion-safe:active:scale-[0.98]"
+          className="inline-flex min-h-14 mt-4 w-full items-center justify-center rounded-none bg-foreground px-8 text-[13px] font-bold fq-caps tracking-widest text-background motion-safe:transition-transform hover:bg-foreground/90 motion-safe:active:scale-[0.98]"
         >
           {str("ctaLabel") || t(locale, "Checkout Now", "চেকআউট")}
         </a>

@@ -339,20 +339,6 @@ function AccountPage() {
     ],
   );
 
-  if (!signedIn) {
-    return (
-      <div className="min-h-screen bg-background">
-        <StoreHeader slug={slug} name={merchantName} />
-        <CustomerAccountAccess
-          slug={slug}
-          merchantName={merchantName}
-          requestedTab={search.tab}
-          isStoreSlugRoute={false}
-        />
-      </div>
-    );
-  }
-
   const dashboard = (
     <AccountDashboard
       slug={slug}
@@ -361,6 +347,7 @@ function AccountPage() {
       overview={overview}
       tab={tab}
       currency={currency}
+      isStoreSlugRoute={false}
       profileSlot={profileSlot}
       onLoadOrder={(orderId) => setOpenOrderId(orderId)}
       orderDetail={

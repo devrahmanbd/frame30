@@ -240,7 +240,7 @@ export const SongoskritiCartLines: WidgetComponent = (ctx) => {
                   : "flex flex-wrap items-center gap-x-4 gap-y-3 py-5"
               }
             >
-              <div className="relative size-16 sm:size-20 shrink-0 overflow-hidden rounded-xs bg-muted/40 border border-border/50">
+              <div className="relative size-16 sm:size-20 shrink-0 overflow-hidden rounded-none bg-muted/40 border border-border/50">
                 {line.imageUrl ? (
                   line.productSlug && ctx.storeSlug ? (
                     <a
@@ -395,7 +395,7 @@ export const SongoskritiCartSummary: WidgetComponent = (ctx) => {
       {bool("showCta") ? (
         <a
           href={ctx.link("/checkout")}
-          className="mt-6 inline-flex min-h-14 w-full items-center justify-center border border-foreground px-8 text-[12px] font-bold fq-caps tracking-widest transition-colors hover:bg-muted/40"
+          className="mt-6 inline-flex min-h-14 w-full items-center justify-center rounded-none bg-[var(--theme-ink,#1A1A1A)] px-8 text-[12px] font-bold fq-caps tracking-widest text-[var(--theme-surface,#FAF9F7)] transition-colors hover:bg-[var(--theme-accent,#8B4513)] hover:text-white"
         >
           {str("ctaLabel") || t(locale, "Checkout Now", "চেকআউট")}
         </a>

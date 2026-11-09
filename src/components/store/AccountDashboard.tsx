@@ -131,6 +131,8 @@ export type AccountDashboardProps = {
     consent?: boolean;
     wishlist?: boolean;
   };
+  /** Whether the route is under `/store/$slug/account` or a custom-host `/account`. Defaults to true. */
+  isStoreSlugRoute?: boolean;
 };
 
 /**
@@ -226,7 +228,7 @@ export function AccountDashboard(props: AccountDashboardProps) {
         slug={slug}
         merchantName={merchantName}
         requestedTab={tab}
-        isStoreSlugRoute={true}
+        isStoreSlugRoute={props.isStoreSlugRoute ?? true}
       />
     );
   }
@@ -237,7 +239,7 @@ export function AccountDashboard(props: AccountDashboardProps) {
   if (status === "loading") {
     return (
       <section className="py-16" aria-live="polite">
-        <h1 className="font-bangla-display text-3xl font-medium tracking-wide text-foreground/90 sm:text-4xl">
+        <h1 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight text-foreground/90">
           {t("Your Account", "আপনার অ্যাকাউন্ট")}
         </h1>
         <p className="mt-4 text-sm text-muted-foreground">
@@ -250,12 +252,12 @@ export function AccountDashboard(props: AccountDashboardProps) {
   if (status === "error") {
     return (
       <section className="py-16">
-        <h1 className="font-bangla-display text-3xl font-medium tracking-wide text-foreground/90 sm:text-4xl">
+        <h1 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight text-foreground/90">
           {t("Your Account", "আপনার অ্যাকাউন্ট")}
         </h1>
         <p
           role="alert"
-          className="mt-6 rounded-fq-md border border-danger bg-danger/10 p-4 text-sm text-danger-foreground"
+          className="mt-6 rounded-none border border-danger bg-danger/10 p-4 text-sm text-danger-foreground"
         >
           {t(
             "We could not load your account right now.",
@@ -272,7 +274,7 @@ export function AccountDashboard(props: AccountDashboardProps) {
   return (
     <div className="space-y-10">
       <header className="space-y-3">
-        <h1 className="font-bangla-display text-3xl font-medium tracking-wide text-foreground/90 sm:text-4xl">
+        <h1 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight text-foreground/90">
           {t("Your Account", "আপনার অ্যাকাউন্ট")}
         </h1>
         <p className="text-[13.5px] text-muted-foreground">
