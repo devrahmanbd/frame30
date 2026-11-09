@@ -2,49 +2,49 @@ import {
   getStoreChrome,
   resolveStorefrontHostFn,
 } from "@/lib/storefront.functions";
-import {
-  createFileRoute,
-  Link,
-  notFound,
-  useNavigate,
-} from "@tanstack/react-router";
-import { useMemo, useState, type ReactNode } from "react";
+import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
+import { useCallback, useMemo, useState, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import {
-  Heart,
-  MapPin,
-  Package,
-  ShieldCheck,
-  Trash2,
-  User,
-} from "@/components/icons/tabler";
 import { toast } from "sonner";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { PluginLayer } from "@/components/store/PluginLayer";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { CustomerAccountAccess } from "@/components/store/CustomerAccountAccess";
-import { useCart } from "@/lib/cart";
 import { supabase } from "@/integrations/supabase/client";
-import { fmtMinor } from "@/lib/money";
 import { useLang } from "@/lib/i18n";
-import { flattenAst } from "@/lib/builder-ast";
+import { flattenAst, type Section } from "@/lib/builder-ast";
+import {
+  themePlacesAccountPanel,
+  themePlacesAccountProfile,
+} from "@/lib/theme-shell-slots";
 import { OrdersList, ProfileCard } from "@/components/builder/account";
+import {
+  AccountDashboardProvider,
+  type AccountAddressValues,
+  type AccountPanelType,
+} from "@/components/store/AccountDashboardContext";
 import {
   accountSlotCtx,
   mapOrdersToRows,
   mapProfileToRow,
 } from "@/components/store/account-slots";
 import {
+  AccountDashboard,
+  type AccountDashboardStatus,
+} from "@/components/store/AccountDashboard";
+import {
   accountDeleteAddressFn,
+  accountOrderFn,
   accountOverviewFn,
   accountSaveAddressFn,
   accountSetConsentFn,
   accountToggleWishlistFn,
   accountUpsertSelfFn,
 } from "@/lib/accounts.functions";
+import { accountSlotsPending, accountStatus } from "@/lib/account-status";
+import { accountRemovedPanelsFn } from "@/lib/account-panel-survival";
 import {
-  ACCOUNT_TABS as TABS,
   initialAccountTab,
   isAccountTab,
   type AccountTab,
@@ -63,13 +63,16 @@ export const Route = createFileRoute("/account")({
     }
     if (!host) throw notFound();
     const slug = host.merchantSlug;
-    // The published `account` template, when the merchant has one. Rejected
-    // by the storefront validator until the template-key track extends it —
-    // caught to null so the page renders the built-in dashboard regardless.
     const chrome = await getStoreChrome({
       data: { slug, template: "account" },
     }).catch(() => null);
-    return { slug, chrome };
+    return {
+      slug,
+      chrome,
+      removedPanels: await accountRemovedPanelsFn({
+        data: { themeKey: chrome?.themeKey ?? null, ast: chrome?.ast ?? null },
+      }).catch(() => [] as readonly AccountPanelType[]),
+    };
   },
   head: ({ loaderData }) => {
     const title = `Your account — ${loaderData?.slug ?? "store"}`;
@@ -91,24 +94,22 @@ export const Route = createFileRoute("/account")({
   component: AccountPage,
 });
 
-type Tab = AccountTab;
-
-const CONSENTS = [
-  { channel: "email", purpose: "marketing" },
-  { channel: "sms", purpose: "marketing" },
-  { channel: "email", purpose: "cart_recovery" },
-  { channel: "email", purpose: "stock_alerts" },
-] as const;
+const ACCOUNT_PANEL_TYPES: readonly AccountPanelType[] = [
+  "account_nav",
+  "account_overview",
+  "account_orders",
+  "account_details",
+];
 
 function AccountPage() {
   const { t, lang } = useLang();
-  const { slug, chrome } = Route.useLoaderData();
+  const { slug, chrome, removedPanels } = Route.useLoaderData();
   const search = Route.useSearch();
-  const [tab, setTab] = useState<Tab>(initialAccountTab(search.tab));
   const qc = useQueryClient();
   const overviewFn = useServerFn(accountOverviewFn);
-  const merchantName = chrome?.merchant?.name || slug;
-  const cart = useCart(slug);
+  const navigate = useNavigate();
+
+  const tab = initialAccountTab(search.tab);
 
   const session = useQuery({
     queryKey: ["auth-session"],
@@ -122,6 +123,14 @@ function AccountPage() {
     queryFn: () => overviewFn({ data: { slug } }),
     enabled: signedIn,
     staleTime: 15_000,
+  });
+
+  const orderFn = useServerFn(accountOrderFn);
+  const [openOrderId, setOpenOrderId] = useState<string | null>(null);
+  const orderDetail = useQuery({
+    queryKey: ["store-order-detail", slug, openOrderId],
+    queryFn: () => orderFn({ data: { slug, orderId: openOrderId! } }),
+    enabled: Boolean(openOrderId) && signedIn,
   });
 
   const invalidate = () =>
@@ -172,25 +181,36 @@ function AccountPage() {
   );
 
   const store = account.data?.store;
-  const data = account.data?.overview;
-  const currency = store?.currency_code ?? "BDT";
-  const consentMap = useMemo(() => {
-    const m = new Map<string, boolean>();
-    for (const c of data?.consents ?? [])
-      m.set(`${c.channel}:${c.purpose}`, c.granted);
-    return m;
-  }, [data?.consents]);
-
   const overview = account.data?.overview;
-  // Theme account template: feed merchant orders_list / profile_card
-  // sections live session rows. The widgets fall back to their sign-in
-  // prompt when signed out (rows undefined, not pending).
-  // (Above the signed-out early return so hooks run unconditionally in the
-  // same order on every render; rendered output is unchanged.)
+  const currency = store?.currency_code ?? "BDT";
+  const merchantName = chrome?.merchant?.name || slug;
+
+  const pending = accountSlotsPending({
+    signedIn,
+    queryPending: account.isPending,
+  });
+
+  const placedPanels = useMemo(() => {
+    const out: AccountPanelType[] = [];
+    for (const panel of ACCOUNT_PANEL_TYPES) {
+      if (themePlacesAccountPanel(chrome?.ast, panel)) out.push(panel);
+    }
+    return out;
+  }, [chrome?.ast]);
+
+  const setTab = useCallback(
+    (next: AccountTab) => {
+      void navigate({
+        to: "/account",
+        search: { tab: next },
+      });
+    },
+    [navigate],
+  );
+
   const accountSlots = useMemo(() => {
     const sections = chrome?.ast ? flattenAst(chrome.ast) : [];
     const out: Partial<Record<string, ReactNode>> = {};
-    const pending = account.isPending;
     const o = sections.find((s) => s.type === "orders_list");
     if (o) {
       out.orders_list = (
@@ -205,10 +225,10 @@ function AccountPage() {
       );
     }
     const p = sections.find((s) => s.type === "profile_card");
-    if (p) {
-      const row = overview?.profile
-        ? mapProfileToRow(overview.profile)
-        : undefined;
+    const row = overview?.profile
+      ? mapProfileToRow(overview.profile)
+      : undefined;
+    if (p && signedIn) {
       out.profile_card = (
         <ProfileCard
           {...accountSlotCtx(p, {
@@ -220,8 +240,104 @@ function AccountPage() {
         />
       );
     }
+    if (placedPanels.includes("account_nav")) out.account_nav = null;
+    if (placedPanels.includes("account_overview")) out.account_overview = null;
+    if (placedPanels.includes("account_orders")) out.account_orders = null;
+    if (placedPanels.includes("account_details")) out.account_details = null;
     return out;
-  }, [chrome, account.isPending, lang, slug, overview]);
+  }, [chrome, overview, pending, lang, slug, signedIn, placedPanels]);
+
+  const themePlacesProfile = themePlacesAccountProfile(chrome?.ast);
+  const profileSlot = useMemo(() => {
+    if (themePlacesProfile) return undefined;
+    const row = overview?.profile
+      ? mapProfileToRow(overview.profile)
+      : undefined;
+    if (!row) return undefined;
+    const section: Section = {
+      id: "account-profile-slot",
+      type: "profile_card",
+      props: {},
+    };
+    return (
+      <ProfileCard
+        {...accountSlotCtx(section, {
+          rows: [row],
+          pending,
+          locale: lang,
+          storeSlug: slug,
+        })}
+      />
+    );
+  }, [themePlacesProfile, overview, pending, lang, slug]);
+
+  const status: AccountDashboardStatus = accountStatus({
+    sessionPending: session.isPending,
+    signedIn,
+    queryPending: account.isPending,
+    queryError: account.isError,
+  });
+
+  const accountState = useMemo(
+    () => ({
+      slug,
+      currency,
+      status,
+      overview,
+      orders: overview ? mapOrdersToRows(overview.orders ?? []) : [],
+      tab,
+      setTab,
+      openOrderId,
+      setOpenOrderId,
+      orderDetail:
+        orderDetail.data && openOrderId
+          ? { orderId: openOrderId, detail: orderDetail.data }
+          : null,
+      orderDetailPending: orderDetail.isFetching,
+      orderDetailError: orderDetail.isError,
+      onLoadOrder: (orderId: string) => setOpenOrderId(orderId),
+      onSaveAddress: (values: AccountAddressValues) =>
+        saveAddress.mutate({ slug, ...values }),
+      onDeleteAddress: (addressId: string) =>
+        delAddress.mutate({ slug, addressId }),
+      onSaveProfile: (values: { name: string; email: string; phone: string }) =>
+        saveProfile.mutate({ slug, ...values, locale: "bn" }),
+      onSetConsent: (consent: {
+        channel: "email" | "sms";
+        purpose: "marketing" | "cart_recovery" | "stock_alerts";
+        granted: boolean;
+      }) => setConsent.mutate({ slug, ...consent }),
+      onToggleWishlist: (variantId: string) =>
+        toggleWish.mutate({ slug, variantId, stockAlert: false }),
+      busy: {
+        address: saveAddress.isPending || delAddress.isPending,
+        profile: saveProfile.isPending,
+        consent: setConsent.isPending,
+        wishlist: toggleWish.isPending,
+      },
+      placed: placedPanels,
+      removed: removedPanels,
+    }),
+    [
+      slug,
+      currency,
+      status,
+      overview,
+      tab,
+      setTab,
+      openOrderId,
+      orderDetail.data,
+      orderDetail.isFetching,
+      orderDetail.isError,
+      saveAddress,
+      delAddress,
+      saveProfile,
+      setConsent,
+      toggleWish,
+      placedPanels,
+      removedPanels,
+    ],
+  );
 
   if (!signedIn) {
     return (
@@ -237,609 +353,67 @@ function AccountPage() {
     );
   }
 
-  // Route's default body: used when the theme publishes no `account` main
-  // sections, so the page is never blank. (The `defaultAccountAst` fallback
-  // takes the `ast` slot once the widget registry knows its section types.)
   const dashboard = (
-    <>
-      <h1 className="font-bangla-display text-2xl font-bold sm:text-3xl">
-        {t("Your account", "আপনার অ্যাকাউন্ট")}
-      </h1>
-
-      <div
-        role="tablist"
-        aria-label={t("Account sections", "অ্যাকাউন্ট বিভাগ")}
-        className="mt-4 flex flex-wrap gap-2"
-      >
-        {TABS.map((key) => (
-          <button
-            key={key}
-            role="tab"
-            type="button"
-            aria-selected={tab === key}
-            onClick={() => setTab(key)}
-            className={`inline-flex min-h-11 items-center gap-2 rounded-fq-md border px-3 text-sm font-medium ${
-              tab === key
-                ? "border-bd-teal-700 bg-bd-teal-700 text-background"
-                : "border-border bg-card text-muted-foreground hover:bg-muted"
-            }`}
-          >
-            {key === "orders" && <Package className="size-4" aria-hidden />}
-            {key === "addresses" && <MapPin className="size-4" aria-hidden />}
-            {key === "wishlist" && <Heart className="size-4" aria-hidden />}
-            {key === "profile" && <User className="size-4" aria-hidden />}
-            {key === "privacy" && (
-              <ShieldCheck className="size-4" aria-hidden />
-            )}
-            {key === "orders"
-              ? t("Orders", "অর্ডার")
-              : key === "addresses"
-                ? t("Addresses", "ঠিকানা")
-                : key === "wishlist"
-                  ? t("Wishlist", "উইশলিস্ট")
-                  : key === "profile"
-                    ? t("Profile", "প্রোফাইল")
-                    : t("Privacy", "গোপনীয়তা")}
-          </button>
-        ))}
-      </div>
-
-      {account.isPending && (
-        <p className="mt-6 text-sm text-muted-foreground" aria-live="polite">
-          {t("Loading your account…", "আপনার অ্যাকাউন্ট লোড হচ্ছে…")}
-        </p>
-      )}
-
-      {account.isError && (
-        <p className="mt-6 rounded-fq-md border border-danger bg-danger/10 p-4 text-sm text-danger-foreground">
-          {t(
-            "We could not load your account right now.",
-            "এখন আপনার অ্যাকাউন্ট লোড করা যায়নি।",
-          )}
-        </p>
-      )}
-
-      {data && (
-        <section role="tabpanel" className="mt-6">
-          {tab === "orders" &&
-            (data.orders.length === 0 ? (
-              <Empty
-                text={t("No orders yet.", "এখনও কোনো অর্ডার নেই।")}
-                slug={slug}
-              />
-            ) : (
-              <ul className="space-y-2">
-                {data.orders.map((o) => (
-                  <li key={o.id}>
-                    <Link
-                      to="/store/$slug/order/$orderId"
-                      params={{ slug, orderId: o.id }}
-                      className="flex flex-wrap items-center justify-between gap-2 rounded-fq-lg border border-border bg-card p-4 hover:bg-muted"
-                    >
-                      <span>
-                        <span className="money block text-sm font-semibold">
-                          {o.order_number}
-                        </span>
-                        <time
-                          dateTime={o.created_at}
-                          className="money text-xs text-muted-foreground"
-                        >
-                          {new Date(o.created_at).toLocaleDateString("en-GB")}
-                        </time>
-                      </span>
-                      <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                        {o.status}
-                      </span>
-                      <span className="money text-sm font-semibold">
-                        {fmtMinor(o.total_minor_int, o.currency_code)}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            ))}
-
-          {tab === "addresses" && (
-            <div className="space-y-4">
-              <ul className="grid gap-3 sm:grid-cols-2">
-                {data.addresses.map((a) => (
-                  <li
-                    key={a.id}
-                    className="rounded-fq-lg border border-border bg-card p-4"
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <p className="text-sm font-semibold">
-                          {a.label}
-                          {a.is_default && (
-                            <span className="ml-2 rounded-full bg-success/15 px-2 py-0.5 text-xs text-success-foreground">
-                              {t("Default", "ডিফল্ট")}
-                            </span>
-                          )}
-                        </p>
-                        <p className="mt-1 text-sm text-muted-foreground">
-                          {a.full_name} ·{" "}
-                          <span className="money">{a.phone}</span>
-                          <br />
-                          {a.line1}
-                          {a.line2 ? `, ${a.line2}` : ""}
-                          <br />
-                          {a.city}, {a.district}{" "}
-                          <span className="money">{a.postcode ?? ""}</span>
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        aria-label={t(`Remove ${a.label}`, `${a.label} মুছুন`)}
-                        onClick={() =>
-                          delAddress.mutate({ slug, addressId: a.id })
-                        }
-                        className="rounded-fq-md p-2 text-danger-foreground hover:bg-danger/10"
-                      >
-                        <Trash2 className="size-4" aria-hidden />
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-              <AddressForm
-                busy={saveAddress.isPending}
-                onSubmit={(v) => saveAddress.mutate({ slug, ...v })}
-              />
-            </div>
-          )}
-
-          {tab === "wishlist" &&
-            (data.wishlist.length === 0 ? (
-              <Empty
-                text={t("Nothing saved yet.", "এখনও কিছু সংরক্ষিত নেই।")}
-                slug={slug}
-              />
-            ) : (
-              <ul className="grid gap-4 sm:grid-cols-2">
-                {data.wishlist.map((w) => {
-                  const inStock = w.stock_quantity > 0;
-                  return (
-                    <li
-                      key={w.id}
-                      className="flex gap-3.5 rounded-fq-lg border border-border bg-card p-4 items-start"
-                    >
-                      <Link
-                        to="/p/$productSlug"
-                        params={{ productSlug: w.product_slug }}
-                        className="relative size-16 sm:size-20 shrink-0 overflow-hidden rounded-xs bg-muted/40 border border-border/50 block"
-                      >
-                        {w.image_url ? (
-                          <img
-                            src={w.image_url}
-                            alt={w.product_title}
-                            className="size-full object-cover"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div className="flex size-full items-center justify-center text-muted-foreground/40">
-                            <Package className="size-6" />
-                          </div>
-                        )}
-                      </Link>
-
-                      <div className="flex-1 min-w-0 flex flex-col justify-between self-stretch">
-                        <div>
-                          <Link
-                            to="/p/$productSlug"
-                            params={{ productSlug: w.product_slug }}
-                            className="hover:underline block"
-                          >
-                            <span className="block truncate text-sm font-medium leading-snug">
-                              {w.product_title}
-                            </span>
-                          </Link>
-                          {w.variant_name ? (
-                            <span className="block text-xs text-muted-foreground mt-0.5 truncate">
-                              {w.variant_name}
-                            </span>
-                          ) : null}
-                          <span className="money mt-1.5 block text-sm font-semibold">
-                            {fmtMinor(w.price_amount_minor_int, currency)}
-                          </span>
-                          <span
-                            className={`text-xs block mt-1 font-medium ${inStock ? "text-success-foreground" : "text-danger-foreground"}`}
-                          >
-                            {inStock
-                              ? t("In stock", "স্টকে আছে")
-                              : t("Out of stock", "স্টক নেই")}
-                          </span>
-                        </div>
-
-                        <div className="flex items-center gap-2 mt-3 pt-2 border-t border-border/40">
-                          <button
-                            type="button"
-                            disabled={!inStock}
-                            onClick={() => {
-                              cart.add(w.variant_id, 1);
-                              toast.success(
-                                t(
-                                  `Added ${w.product_title} to bag`,
-                                  `${w.product_title} ব্যাগে যোগ করা হয়েছে`,
-                                ),
-                              );
-                            }}
-                            className={`min-h-11 px-3.5 py-1.5 text-xs font-semibold rounded-fq-md transition-colors ${
-                              inStock
-                                ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                                : "bg-muted text-muted-foreground cursor-not-allowed opacity-60"
-                            }`}
-                          >
-                            {t("Add to Bag", "ব্যাগে যোগ করুন")}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              toggleWish.mutate({
-                                slug,
-                                variantId: w.variant_id,
-                                stockAlert: false,
-                              })
-                            }
-                            className="min-h-11 rounded-fq-md border border-border px-3 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
-                          >
-                            {t("Remove", "সরান")}
-                          </button>
-                        </div>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-            ))}
-
-          {tab === "profile" && (
-            <ProfileForm
-              busy={saveProfile.isPending}
-              initial={{
-                name: data.profile?.name ?? "",
-                email: data.profile?.email ?? "",
-                phone: data.profile?.phone ?? "",
-              }}
-              onSubmit={(v) => saveProfile.mutate({ slug, ...v, locale: "bn" })}
-            />
-          )}
-
-          {tab === "privacy" && (
-            <div className="max-w-xl space-y-3">
-              <p className="text-sm text-muted-foreground">
-                {t(
-                  "You choose which messages this store may send you. Turning one off applies everywhere immediately.",
-                  "এই দোকান আপনাকে কোন বার্তা পাঠাতে পারবে তা আপনি ঠিক করবেন। বন্ধ করলে সব জায়গায় সাথে সাথে প্রযোজ্য হবে।",
-                )}
-              </p>
-              {CONSENTS.map((c) => {
-                const key = `${c.channel}:${c.purpose}`;
-                const on = consentMap.get(key) ?? false;
-                return (
-                  <label
-                    key={key}
-                    className="flex items-center justify-between gap-3 rounded-fq-lg border border-border bg-card p-4 text-sm"
-                  >
-                    <span>
-                      <span className="font-medium capitalize">
-                        {c.purpose.replace("_", " ")}
-                      </span>
-                      <span className="block text-xs uppercase tracking-wide text-muted-foreground">
-                        {c.channel}
-                      </span>
-                    </span>
-                    <input
-                      type="checkbox"
-                      checked={on}
-                      onChange={(e) =>
-                        setConsent.mutate({
-                          slug,
-                          channel: c.channel,
-                          purpose: c.purpose,
-                          granted: e.target.checked,
-                        })
-                      }
-                      className="size-5 accent-[var(--bd-teal-700)]"
-                    />
-                  </label>
-                );
-              })}
-            </div>
-          )}
-        </section>
-      )}
-    </>
+    <AccountDashboard
+      slug={slug}
+      merchantName={merchantName}
+      status={status}
+      overview={overview}
+      tab={tab}
+      currency={currency}
+      profileSlot={profileSlot}
+      onLoadOrder={(orderId) => setOpenOrderId(orderId)}
+      orderDetail={
+        orderDetail.data && openOrderId
+          ? { orderId: openOrderId, detail: orderDetail.data }
+          : null
+      }
+      orderDetailPending={orderDetail.isFetching}
+      orderDetailError={orderDetail.isError}
+      onSaveAddress={(values) => saveAddress.mutate({ slug, ...values })}
+      onDeleteAddress={(addressId) => delAddress.mutate({ slug, addressId })}
+      onSaveProfile={(values) =>
+        saveProfile.mutate({ slug, ...values, locale: "bn" })
+      }
+      onSetConsent={(consent) => setConsent.mutate({ slug, ...consent })}
+      onToggleWishlist={(variantId) =>
+        toggleWish.mutate({ slug, variantId, stockAlert: false })
+      }
+      busy={{
+        address: saveAddress.isPending || delAddress.isPending,
+        profile: saveProfile.isPending,
+        consent: setConsent.isPending,
+        wishlist: toggleWish.isPending,
+      }}
+    />
   );
 
   return (
     <PluginLayer plugins={chrome?.installedPlugins ?? []}>
-      <ThemeChrome
-        template="account"
-        ast={chrome?.ast ?? null}
-        tokens={chrome?.tokens ?? null}
-        storeSlug={slug}
-        themeKey={chrome?.themeKey ?? null}
-        merchantId={chrome?.merchant.id ?? null}
-        siteKit={chrome?.siteKit ?? null}
-        ownsPrimary
-        contextSlots={accountSlots}
-        chrome={
-          <StoreHeader
-            slug={slug}
-            name={chrome?.merchant.name ?? store?.name ?? slug}
-            themeKey={chrome?.themeKey ?? null}
-            showAnnouncement={false}
-          />
-        }
-        containerClassName="mx-auto max-w-5xl px-4 py-8"
-        fallback={dashboard}
-      />
-    </PluginLayer>
-  );
-}
-
-function Empty({ text, slug }: { text: string; slug: string }) {
-  const { t } = useLang();
-  return (
-    <div className="rounded-fq-lg border border-border bg-card p-6">
-      <p className="text-sm text-muted-foreground">{text}</p>
-      <Link
-        to="/store/$slug"
-        search={{ preview_token: undefined }}
-        params={{ slug }}
-        className="mt-3 inline-block text-sm text-primary underline"
-      >
-        {t("Start shopping", "কেনাকাটা শুরু করুন")}
-      </Link>
-    </div>
-  );
-}
-
-type AddressValues = {
-  label: string;
-  fullName: string;
-  phone: string;
-  line1: string;
-  line2: string;
-  city: string;
-  district: string;
-  postcode: string;
-  isDefault: boolean;
-  addressType: "shipping" | "billing";
-};
-
-function AddressForm({
-  busy,
-  onSubmit,
-}: {
-  busy: boolean;
-  onSubmit: (v: AddressValues) => void;
-}) {
-  const { t } = useLang();
-  const [v, setV] = useState<AddressValues>({
-    label: "",
-    fullName: "",
-    phone: "",
-    line1: "",
-    line2: "",
-    city: "",
-    district: "",
-    postcode: "",
-    isDefault: false,
-    addressType: "shipping",
-  });
-  const set =
-    (k: keyof AddressValues) => (e: React.ChangeEvent<HTMLInputElement>) =>
-      setV((p) => ({
-        ...p,
-        [k]: k === "isDefault" ? e.target.checked : e.target.value,
-      }));
-
-  const fields: [keyof AddressValues, string, string][] = [
-    ["label", t("Label", "লেবেল"), t("Home", "বাসা")],
-    ["fullName", t("Full name", "পুরো নাম"), ""],
-    ["phone", t("Phone", "ফোন"), "01XXXXXXXXX"],
-    ["line1", t("Address line 1", "ঠিকানা ১"), ""],
-    ["line2", t("Address line 2", "ঠিকানা ২"), ""],
-    ["city", t("City", "শহর"), ""],
-    ["district", t("District", "জেলা"), ""],
-    ["postcode", t("Postcode", "পোস্টকোড"), ""],
-  ];
-
-  return (
-    <form
-      className="rounded-fq-lg border border-border bg-card p-4"
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit(v);
-      }}
-    >
-      <h2 className="font-bangla-display text-lg font-semibold">
-        {t("Add an address", "ঠিকানা যোগ করুন")}
-      </h2>
-      <div className="mt-3 grid gap-3 sm:grid-cols-2">
-        {fields.map(([key, label, placeholder]) => (
-          <label
-            key={key}
-            htmlFor={`addr-${key}`}
-            className="text-xs text-muted-foreground"
-          >
-            {label}
-            <input
-              id={`addr-${key}`}
-              value={String(v[key])}
-              onChange={set(key)}
-              placeholder={placeholder}
-              required={[
-                "label",
-                "fullName",
-                "phone",
-                "line1",
-                "city",
-                "district",
-              ].includes(key)}
-              className="mt-1 block min-h-11 w-full rounded-fq-md border border-border bg-background px-3 text-sm"
+      <AccountDashboardProvider value={accountState}>
+        <ThemeChrome
+          template="account"
+          ast={chrome?.ast ?? null}
+          tokens={chrome?.tokens ?? null}
+          storeSlug={slug}
+          themeKey={chrome?.themeKey ?? null}
+          merchantId={chrome?.merchant.id ?? null}
+          siteKit={chrome?.siteKit ?? null}
+          ownsPrimary
+          contentSlot="page_content"
+          contextSlots={{ ...accountSlots, page_content: dashboard }}
+          chrome={
+            <StoreHeader
+              slug={slug}
+              name={merchantName}
+              themeKey={chrome?.themeKey ?? null}
+              showAnnouncement={false}
             />
-          </label>
-        ))}
-      </div>
-      <label className="mt-3 flex items-center gap-2 text-sm">
-        <input
-          type="checkbox"
-          checked={v.isDefault}
-          onChange={set("isDefault")}
-          className="size-4 accent-[var(--bd-teal-700)]"
+          }
+          containerClassName="mx-auto max-w-[var(--fq-container,1280px)] px-4 py-12 sm:px-6 lg:px-8"
+          fallback={dashboard}
         />
-        {t("Use as my default address", "এটিকে ডিফল্ট ঠিকানা করুন")}
-      </label>
-      <button
-        type="submit"
-        disabled={busy}
-        className="mt-4 min-h-11 rounded-fq-md bg-primary px-5 text-sm font-medium text-primary-foreground disabled:opacity-60"
-      >
-        {busy
-          ? t("Saving…", "সংরক্ষণ হচ্ছে…")
-          : t("Save address", "ঠিকানা সংরক্ষণ")}
-      </button>
-    </form>
-  );
-}
-
-function ProfileForm({
-  busy,
-  initial,
-  onSubmit,
-}: {
-  busy: boolean;
-  initial: { name: string; email: string; phone: string };
-  onSubmit: (v: { name: string; email: string; phone: string }) => void;
-}) {
-  const { t } = useLang();
-  const [v, setV] = useState(initial);
-  return (
-    <form
-      className="max-w-md rounded-fq-lg border border-border bg-card p-4"
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit(v);
-      }}
-    >
-      <h2 className="font-bangla-display text-lg font-semibold">
-        {t("Your details", "আপনার তথ্য")}
-      </h2>
-      <div className="mt-3 space-y-3">
-        <label
-          htmlFor="pf-name"
-          className="block text-xs text-muted-foreground"
-        >
-          {t("Full name", "পুরো নাম")}
-          <input
-            id="pf-name"
-            value={v.name}
-            required
-            onChange={(e) => setV((p) => ({ ...p, name: e.target.value }))}
-            className="mt-1 block min-h-11 w-full rounded-fq-md border border-border bg-background px-3 text-sm"
-          />
-        </label>
-        <label
-          htmlFor="pf-phone"
-          className="block text-xs text-muted-foreground"
-        >
-          {t("Phone", "ফোন")}
-          <input
-            id="pf-phone"
-            value={v.phone}
-            required
-            inputMode="tel"
-            onChange={(e) => setV((p) => ({ ...p, phone: e.target.value }))}
-            className="money mt-1 block min-h-11 w-full rounded-fq-md border border-border bg-background px-3 text-sm"
-          />
-        </label>
-        <label
-          htmlFor="pf-email"
-          className="block text-xs text-muted-foreground"
-        >
-          {t("Email (optional)", "ইমেইল (ঐচ্ছিক)")}
-          <input
-            id="pf-email"
-            type="email"
-            value={v.email}
-            onChange={(e) => setV((p) => ({ ...p, email: e.target.value }))}
-            className="mt-1 block min-h-11 w-full rounded-fq-md border border-border bg-background px-3 text-sm"
-          />
-        </label>
-      </div>
-      <button
-        type="submit"
-        disabled={busy}
-        className="mt-4 min-h-11 rounded-fq-md bg-primary px-5 text-sm font-medium text-primary-foreground disabled:opacity-60"
-      >
-        {busy
-          ? t("Saving…", "সংরক্ষণ হচ্ছে…")
-          : t("Save details", "তথ্য সংরক্ষণ")}
-      </button>
-    </form>
-  );
-}
-
-function ShopperOrderLookup({ slug, name }: { slug: string; name?: string }) {
-  const { t } = useLang();
-  const navigate = useNavigate();
-  const [orderId, setOrderId] = useState("");
-
-  const handleLookup = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!orderId.trim()) return;
-    void navigate({
-      to: "/store/$slug/order/$orderId",
-      params: { slug, orderId: orderId.trim() },
-    });
-  };
-
-  return (
-    <div className="min-h-screen bg-background">
-      <StoreHeader slug={slug} name={name || slug} />
-      <main className="mx-auto max-w-md px-4 py-16 text-center">
-        <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-          <Package className="size-6" />
-        </div>
-        <h1 className="font-bangla-display text-2xl font-bold">
-          {t("Track Your Order", "আপনার অর্ডার খুঁজুন")}
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {t(
-            "Enter your Order ID from your confirmation message or receipt to check its status.",
-            "আপনার অর্ডার আইডি দিয়ে অর্ডারের বর্তমান অবস্থা এবং বিস্তারিত তথ্য দেখুন।",
-          )}
-        </p>
-        <form
-          onSubmit={handleLookup}
-          className="mt-6 flex flex-col gap-3 text-left"
-        >
-          <label
-            htmlFor="order-lookup-input"
-            className="text-xs font-medium text-muted-foreground"
-          >
-            {t("Order ID", "অর্ডার আইডি")}
-          </label>
-          <input
-            id="order-lookup-input"
-            type="text"
-            value={orderId}
-            onChange={(e) => setOrderId(e.target.value)}
-            placeholder={t("e.g. ord_01j7...", "যেমন: ord_01j7...")}
-            required
-            className="min-h-11 rounded-fq-md border border-border bg-background px-4 text-sm text-foreground focus:border-primary focus:outline-none"
-          />
-          <button
-            type="submit"
-            className="mt-2 min-h-11 rounded-fq-md bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            {t("View Order Status", "অর্ডার স্ট্যাটাস দেখুন")}
-          </button>
-        </form>
-      </main>
-    </div>
+      </AccountDashboardProvider>
+    </PluginLayer>
   );
 }
