@@ -123,9 +123,18 @@ function LineRow({
   const titleNode = textParts.includes("title") ? (
     <p
       key="title"
-      className="break-words text-[13.5px] sm:text-[14px] font-medium leading-snug"
+      className="break-words font-serif text-[15px] sm:text-[17px] font-normal leading-snug tracking-tight text-foreground"
     >
-      {line.productTitle}
+      {line.productSlug && ctx.storeSlug ? (
+        <a
+          href={ctx.link(`/p/${line.productSlug}`)}
+          className="hover:text-primary transition-colors"
+        >
+          {line.productTitle}
+        </a>
+      ) : (
+        line.productTitle
+      )}
     </p>
   ) : null;
 
@@ -167,7 +176,7 @@ function LineRow({
   const totalNode = order.includes("lineTotal") ? (
     <p
       key="lineTotal"
-      className="w-24 shrink-0 text-right text-[13.5px] sm:text-[14px] font-semibold tracking-wide tabular-nums"
+      className="w-24 shrink-0 text-right text-[13.5px] sm:text-[14px] font-semibold tracking-wide tabular-nums text-foreground"
     >
       {money(line.lineTotalMinor)}
     </p>
@@ -180,7 +189,7 @@ function LineRow({
         type="button"
         onClick={() => cart.remove(line.variantId)}
         disabled={!cart.live}
-        className="inline-flex min-h-11 items-center px-4 py-2 text-[11px] font-bold fq-caps tracking-widest text-muted-foreground hover:text-foreground transition-colors"
+        className="inline-flex min-h-11 shrink-0 items-center px-3 py-2 text-[11px] font-semibold fq-caps tracking-[0.15em] text-muted-foreground hover:text-primary transition-colors cursor-pointer border-b border-transparent hover:border-primary"
       >
         {str("removeLabel") || t(locale, "Remove", "সরান")}
         <span className="sr-only"> {line.productTitle}</span>
@@ -192,20 +201,31 @@ function LineRow({
     <li
       className={
         layout === "card"
-          ? "border border-border/60 p-4"
-          : "py-4 border-b border-border/60 last:border-b-0"
+          ? "border border-border/60 p-4 sm:p-5 bg-transparent"
+          : "py-6 border-b border-border/60 last:border-b-0"
       }
     >
-      <div className="flex items-start gap-3 sm:gap-4">
-        {/* Product thumbnail with fallback */}
-        <div className="relative size-16 sm:size-20 shrink-0 overflow-hidden rounded-none bg-muted/40 border border-border/50">
+      <div className="flex items-start gap-4 sm:gap-6">
+        {/* Product thumbnail with 4:5 fashion portrait frame */}
+        <div className="relative aspect-[4/5] shrink-0 w-20 sm:w-24 overflow-hidden rounded-none bg-muted/30 border border-border/50">
           {line.imageUrl ? (
-            <img
-              src={line.imageUrl}
-              alt={line.productTitle}
-              className="size-full object-cover"
-              loading="lazy"
-            />
+            line.productSlug && ctx.storeSlug ? (
+              <a href={ctx.link(`/p/${line.productSlug}`)} className="block size-full">
+                <img
+                  src={line.imageUrl}
+                  alt={line.productTitle}
+                  className="size-full object-cover transition-transform duration-500 hover:scale-105"
+                  loading="lazy"
+                />
+              </a>
+            ) : (
+              <img
+                src={line.imageUrl}
+                alt={line.productTitle}
+                className="size-full object-cover"
+                loading="lazy"
+              />
+            )
           ) : (
             <div className="flex size-full items-center justify-center text-muted-foreground/40">
               <Package className="size-6" />
@@ -214,16 +234,16 @@ function LineRow({
         </div>
 
         {/* Product details & actions */}
-        <div className="flex-1 min-w-0 flex flex-col justify-between self-stretch gap-2">
-          <div className="min-w-0 flex-1">
+        <div className="flex-1 min-w-0 flex flex-col justify-between self-stretch gap-3">
+          <div className="min-w-0 flex-1 space-y-1">
             {titleNode}
             {variantNode}
             {unitPriceNode}
           </div>
 
-          <div className="flex items-center justify-between gap-2 pt-1 flex-wrap sm:flex-nowrap">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2 border-t border-border/40">
             {stepperNode}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
               {totalNode}
               {removeNode}
             </div>
@@ -280,22 +300,22 @@ function LineList({
   }
   if (rows.length === 0) {
     return (
-      <div className="rounded-fq-md border border-border bg-card p-6 text-center">
-        <p className="text-sm font-medium">
+      <div className="rounded-none border border-border/60 bg-transparent p-8 sm:p-14 text-center">
+        <h2 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-foreground">
           {str("emptyText") ||
-            t(locale, "Your cart is empty.", "আপনার কার্ট খালি।")}
-        </p>
-        <p className="mt-1 text-xs text-muted-foreground">
+            t(locale, "Your Shopping Bag is Empty", "আপনার শপিং ব্যাগ খালি")}
+        </h2>
+        <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
           {t(
             locale,
-            "Add items to see them here.",
-            "এখানে দেখতে পণ্য যোগ করুন।",
+            "Explore our collection and discover handcrafted luxury garments.",
+            "আমাদের কালেকশন দেখুন এবং পছন্দের পোশাক সংগ্রহ করুন।",
           )}
         </p>
         {storeSlug && (
           <a
             href={`${base}/`}
-            className="mt-4 inline-flex min-h-11 items-center justify-center rounded-fq-md border border-border px-4 text-sm font-medium"
+            className="mt-6 inline-flex min-h-12 items-center justify-center rounded-none bg-foreground px-8 text-xs font-semibold fq-caps tracking-widest text-background hover:bg-foreground/90 transition-colors motion-safe:active:scale-[0.98]"
           >
             {t(locale, "Continue shopping", "কেনাকাটা চালিয়ে যান")}
           </a>
@@ -316,7 +336,7 @@ function LineList({
         </p>
       )}
       <ul
-        className="m-0 list-none divide-y divide-border p-0"
+        className="m-0 list-none divide-y divide-border/60 p-0"
         aria-busy={cart.pending || undefined}
       >
         {rows.map((line) => (
@@ -333,13 +353,24 @@ function LineList({
 }
 
 const CartLines: WidgetComponent = (ctx) => {
-  const { str, Heading } = ctx;
+  const { str, Heading, locale } = ctx;
+  const cart = useCartContext();
   const heading = str("heading");
   return (
     <section aria-label={heading || "Cart"}>
-      {heading && (
-        <Heading className="mb-3 text-lg font-semibold">{heading}</Heading>
-      )}
+      <div className="mb-6 flex items-baseline justify-between border-b border-border/60 pb-3">
+        <Heading className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-foreground">
+          {heading || t(locale, "YOUR SHOPPING BAG", "আপনার শপিং ব্যাগ")}
+        </Heading>
+        {cart.count > 0 && (
+          <span className="text-xs font-medium fq-caps tracking-widest text-muted-foreground tabular-nums">
+            {cart.count}{" "}
+            {cart.count === 1
+              ? t(locale, "item", "টি পণ্য")
+              : t(locale, "items", "টি পণ্য")}
+          </span>
+        )}
+      </div>
       <LineList ctx={ctx} />
     </section>
   );
@@ -548,7 +579,7 @@ function SummaryBody({ ctx }: { ctx: WidgetCtx }) {
             event.preventDefault();
             cart.setCouponCode(draftCoupon.trim());
           }}
-          className="flex flex-wrap items-center gap-2"
+          className="flex flex-wrap items-center gap-2 pt-2"
         >
           <label htmlFor="fq-coupon" className="sr-only">
             {str("couponLabel") || t(locale, "Coupon code", "কুপন কোড")}
@@ -560,11 +591,11 @@ function SummaryBody({ ctx }: { ctx: WidgetCtx }) {
             placeholder={
               str("couponLabel") || t(locale, "Coupon code", "কুপন কোড")
             }
-            className="h-11 min-w-0 flex-1 rounded-none border border-border bg-background px-3 text-sm"
+            className="h-11 min-w-0 flex-1 rounded-none border border-border/80 bg-background px-3 text-sm focus:border-primary outline-none"
           />
           <button
             type="submit"
-            className="inline-flex h-11 items-center rounded-none border border-border px-4 text-sm font-medium"
+            className="inline-flex h-11 items-center rounded-none bg-foreground px-5 text-xs font-semibold fq-caps tracking-wider text-background hover:bg-foreground/90 transition-colors cursor-pointer motion-safe:active:scale-[0.98]"
           >
             {str("couponApplyLabel") || t(locale, "Apply", "প্রয়োগ")}
           </button>
@@ -585,7 +616,7 @@ function SummaryBody({ ctx }: { ctx: WidgetCtx }) {
       {bool("showCta") && (
         <a
           href={storeSlug ? `${base}/checkout` : "#"}
-          className="inline-flex min-h-14 mt-4 w-full items-center justify-center rounded-none bg-foreground px-8 text-[13px] font-bold fq-caps tracking-widest text-background motion-safe:transition-transform hover:bg-foreground/90 motion-safe:active:scale-[0.98]"
+          className="inline-flex min-h-14 mt-4 w-full items-center justify-center rounded-none bg-foreground px-8 text-[12px] font-semibold fq-caps tracking-[0.2em] text-background hover:bg-foreground/90 transition-colors cursor-pointer motion-safe:active:scale-[0.98]"
         >
           {str("ctaLabel") || t(locale, "Checkout Now", "চেকআউট")}
         </a>
@@ -607,10 +638,10 @@ const CartSummary: WidgetComponent = (ctx) => {
   return (
     <section
       aria-label={heading || "Order summary"}
-      className="p-6 bg-muted/20"
+      className="rounded-none border border-border/60 p-6 sm:p-8 bg-card/40"
     >
       {heading && (
-        <Heading className="mb-6 text-[11px] font-bold fq-caps tracking-widest text-foreground border-b border-border/60 pb-3">
+        <Heading className="mb-6 text-[12px] font-semibold fq-caps tracking-[0.2em] text-foreground border-b border-border/60 pb-3">
           {heading}
         </Heading>
       )}

@@ -141,7 +141,12 @@ function Empty({ text, slug }: { text: string; slug: string }) {
 
 function useSafePathname(): string {
   try {
-    return useRouterState({ select: (s) => s.location.pathname });
+    const res = useRouterState({ select: (s) => s.location.pathname });
+    if (typeof res === "string") return res;
+    if (res && typeof (res as any).location?.pathname === "string") {
+      return (res as any).location.pathname;
+    }
+    return "/";
   } catch {
     return "/";
   }

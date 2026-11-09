@@ -1640,6 +1640,15 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
   const newsletterHeading = str("newsletterHeading");
   const newsletterButton = str("newsletterButton") || "Subscribe";
   const newsletterConsent = str("newsletterConsent");
+  const merchantLogoUrl =
+    str("logoUrl") ||
+    (typeof dynamicMerchant.logo_url === "string" && dynamicMerchant.logo_url
+      ? dynamicMerchant.logo_url
+      : typeof dynamicMerchant.logoUrl === "string" && dynamicMerchant.logoUrl
+        ? dynamicMerchant.logoUrl
+        : typeof dynamic.logo_url === "string" && dynamic.logo_url
+          ? dynamic.logo_url
+          : "");
   const brandName =
     str("brandName") ||
     (typeof dynamicMerchant.name === "string" && dynamicMerchant.name
@@ -1651,20 +1660,22 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
             "title" in dynamic.site &&
             typeof (dynamic.site as any).title === "string"
           ? (dynamic.site as any).title
-          : "Flame Fashion BD");
-  const brandTagline =
+          : "");
+  const rawTagline =
     str("brandTagline") ||
     str("tagline") ||
     (typeof dynamicMerchant.tagline === "string" && dynamicMerchant.tagline
       ? (dynamicMerchant.tagline as string)
       : typeof dynamic.tagline === "string" && dynamic.tagline
         ? (dynamic.tagline as string)
-        : typeof dynamic.site === "object" &&
-            dynamic.site &&
-            "tagline" in dynamic.site &&
-            typeof (dynamic.site as any).tagline === "string"
-          ? (dynamic.site as any).tagline
-          : "Authentic Bengal Handcrafted Apparel & Heritage Couture");
+        : "");
+  // Omit generic AI-generated default tagline
+  const brandTagline =
+    rawTagline &&
+    !rawTagline.toLowerCase().includes("authentic bengal") &&
+    !rawTagline.toLowerCase().includes("heritage couture")
+      ? rawTagline
+      : "";
   const paymentMarks = str("paymentsMarks")
     .split(/[,\n]+/)
     .map((m) => m.trim())
@@ -1685,7 +1696,7 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
           ? (dynamic.supportPhone as string)
           : typeof dynamic.support_phone === "string" && dynamic.support_phone
             ? (dynamic.support_phone as string)
-            : "+880 1540 203662");
+            : "");
   const supportEmail =
     str("supportEmail") ||
     (typeof dynamicMerchant.supportEmail === "string" &&
@@ -1698,8 +1709,8 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
           ? (dynamic.supportEmail as string)
           : typeof dynamic.support_email === "string" && dynamic.support_email
             ? (dynamic.support_email as string)
-            : "support@flamelancer.com");
-  const supportHours =
+            : "");
+  const rawHours =
     str("supportHours") ||
     (typeof dynamicMerchant.supportHours === "string" &&
     dynamicMerchant.supportHours
@@ -1709,15 +1720,26 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
         ? (dynamicMerchant.support_hours as string)
         : typeof dynamic.supportHours === "string" && dynamic.supportHours
           ? (dynamic.supportHours as string)
-          : "Daily 10am - 8pm");
-  const policyDelivery =
+          : "");
+  // Missing hours: omit the hours (never fall back to unverified defaults)
+  const supportHours =
+    rawHours && !rawHours.toLowerCase().includes("daily 10am")
+      ? rawHours
+      : "";
+  const rawDelivery =
     str("policyDelivery") ||
     (typeof dynamicMerchant.deliveryInfo === "string" &&
     dynamicMerchant.deliveryInfo
       ? (dynamicMerchant.deliveryInfo as string)
       : typeof dynamic.deliveryInfo === "string" && dynamic.deliveryInfo
         ? (dynamic.deliveryInfo as string)
-        : "Cash on delivery nationwide");
+        : "");
+  // Missing delivery policy: omit the promise (never fall back to unverified claims)
+  const policyDelivery =
+    rawDelivery &&
+    !rawDelivery.toLowerCase().includes("nationwide")
+      ? rawDelivery
+      : "";
   const rawInstagram =
     str("instagramUrl") ||
     (typeof dynamicMerchant.instagram_url === "string"
@@ -1800,7 +1822,7 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
                 />
                 <button
                   type="submit"
-                  className="h-12 w-full sm:w-auto px-8 bg-[var(--theme-ink)] text-[var(--theme-surface)] text-[11px] font-semibold uppercase tracking-[0.2em] hover:bg-[var(--theme-accent)] hover:text-white transition-colors flex-shrink-0 shadow-xs cursor-pointer"
+                  className="h-12 w-full sm:w-auto px-8 bg-[var(--theme-ink)] text-[var(--theme-surface)] text-[11px] font-semibold uppercase tracking-[0.2em] hover:bg-[var(--theme-accent)] hover:text-[var(--theme-surface)] transition-colors flex-shrink-0 shadow-xs cursor-pointer"
                 >
                   {newsletterButton}
                 </button>
@@ -1821,32 +1843,18 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
           {/* LEFT: Brand identity & concierge (theme-authored, skipped when empty) */}
           {brandName && (
             <div className="lg:col-span-4 flex flex-col pb-8 lg:pb-0 border-b border-[var(--theme-border)] lg:border-none">
-              <div className="flex items-center gap-3 mb-4">
-                <svg
-                  width="26"
-                  height="26"
-                  viewBox="0 0 32 32"
-                  fill="none"
-                  aria-hidden="true"
-                  className="text-[var(--theme-accent)]"
-                >
-                  <path
-                    d="M16 2L2 16L16 30L30 16L16 2Z"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinejoin="round"
+              <div className="mb-4">
+                {merchantLogoUrl ? (
+                  <img
+                    src={merchantLogoUrl}
+                    alt={brandName}
+                    className="h-8 sm:h-9 max-w-[220px] w-auto object-contain"
                   />
-                  <path
-                    d="M16 8L8 16L16 24L24 16L16 8Z"
-                    stroke="currentColor"
-                    strokeWidth="1.2"
-                    strokeLinejoin="round"
-                  />
-                  <circle cx="16" cy="16" r="2.5" fill="currentColor" />
-                </svg>
-                <span className="font-serif text-[26px] sm:text-[32px] text-[var(--theme-ink)] tracking-wider">
-                  {brandName}
-                </span>
+                ) : (
+                  <span className="font-serif text-[26px] sm:text-[32px] font-normal text-[var(--theme-ink)] tracking-wider">
+                    {brandName}
+                  </span>
+                )}
               </div>
               {brandTagline && (
                 <p className="font-serif text-[13px] leading-relaxed text-[var(--theme-ink)]/70 mb-5 max-w-sm">

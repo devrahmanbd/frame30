@@ -7,7 +7,8 @@
  * are never custom-host paths — without this guard dashboard/API routes
  * would be misclassified as storefront root paths and link bases break.
  */
-export function isCustomHostPath(pathname: string): boolean {
+export function isCustomHostPath(pathname: string | undefined | null): boolean {
+  if (typeof pathname !== "string") return true;
   if (pathname === "/store" || pathname.startsWith("/store/")) return false;
   if (pathname === "/dashboard" || pathname.startsWith("/dashboard/"))
     return false;

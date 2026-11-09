@@ -129,22 +129,46 @@ export const SongoskritiCartLines: WidgetComponent = (ctx) => {
   if (rows.length === 0) {
     return (
       <section aria-label={heading || "Cart"}>
-        {heading ? (
-          <Heading className={`mb-4 ${LABEL}`}>{heading}</Heading>
-        ) : null}
-        <p className="text-[13.5px] text-muted-foreground">
-          {str("emptyText") ||
-            t(locale, "Your cart is empty.", "আপনার কার্ট খালি।")}
-        </p>
+        <div className="rounded-none border border-border/60 bg-transparent p-8 sm:p-14 text-center">
+          <h2 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-foreground">
+            {str("emptyText") ||
+              t(locale, "Your Shopping Bag is Empty", "আপনার শপিং ব্যাগ খালি")}
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
+            {t(
+              locale,
+              "Explore our collection and discover handcrafted luxury garments.",
+              "আমাদের কালেকশন দেখুন এবং পছন্দের পোশাক সংগ্রহ করুন।",
+            )}
+          </p>
+          {ctx.storeSlug && (
+            <a
+              href={ctx.link("/")}
+              className="mt-6 inline-flex min-h-12 items-center justify-center rounded-none bg-[var(--theme-ink,#1A1A1A)] px-8 text-xs font-semibold uppercase tracking-widest text-[var(--theme-surface,#FAF9F7)] hover:bg-[var(--theme-accent,#8B4513)] hover:text-white transition-colors"
+            >
+              {t(locale, "Continue shopping", "কেনাকাটা চালিয়ে যান")}
+            </a>
+          )}
+        </div>
       </section>
     );
   }
 
   return (
     <section aria-label={heading || "Cart"}>
-      {heading ? (
-        <Heading className={`mb-4 ${LABEL}`}>{heading}</Heading>
-      ) : null}
+      <div className="mb-6 flex items-baseline justify-between border-b border-border/60 pb-3">
+        <Heading className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-foreground">
+          {heading || t(locale, "YOUR SHOPPING BAG", "আপনার শপিং ব্যাগ")}
+        </Heading>
+        {cart.count > 0 && (
+          <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground tabular-nums">
+            {cart.count}{" "}
+            {cart.count === 1
+              ? t(locale, "item", "টি পণ্য")
+              : t(locale, "items", "টি পণ্য")}
+          </span>
+        )}
+      </div>
       <ul className="m-0 list-none divide-y divide-border/60 p-0">
         {rows.map((line) => {
           const children: ReactNode[] = [];
@@ -240,7 +264,7 @@ export const SongoskritiCartLines: WidgetComponent = (ctx) => {
                   : "flex flex-wrap items-center gap-x-6 gap-y-4 py-6"
               }
             >
-              <div className="relative aspect-[3/4] w-16 sm:w-20 shrink-0 overflow-hidden rounded-none bg-muted/40 border border-border/50">
+              <div className="relative aspect-[4/5] w-20 sm:w-24 shrink-0 overflow-hidden rounded-none bg-muted/40 border border-border/50">
                 {line.imageUrl ? (
                   line.productSlug && ctx.storeSlug ? (
                     <a
@@ -405,6 +429,7 @@ export const SongoskritiCartSummary: WidgetComponent = (ctx) => {
         </label>
         <input
           id="songoskriti-coupon"
+          type="text"
           value={draftCoupon}
           onChange={(event) => setDraftCoupon(event.target.value)}
           placeholder={

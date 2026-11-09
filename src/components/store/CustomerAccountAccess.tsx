@@ -85,6 +85,20 @@ export function CustomerAccountAccess({
         await qc.invalidateQueries({ queryKey: ["auth-session"] });
         await qc.invalidateQueries({ queryKey: ["store-account", slug] });
       }
+      if (requestedTab) {
+        if (isStoreSlugRoute) {
+          void navigate({
+            to: "/store/$slug/account",
+            params: { slug },
+            search: { tab: requestedTab },
+          });
+        } else {
+          void navigate({
+            to: "/account",
+            search: { tab: requestedTab },
+          });
+        }
+      }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Sign in failed";
       setErrorMsg(msg);
@@ -146,6 +160,20 @@ export function CustomerAccountAccess({
       if (qc) {
         await qc.invalidateQueries({ queryKey: ["auth-session"] });
         await qc.invalidateQueries({ queryKey: ["store-account", slug] });
+      }
+      if (requestedTab) {
+        if (isStoreSlugRoute) {
+          void navigate({
+            to: "/store/$slug/account",
+            params: { slug },
+            search: { tab: requestedTab },
+          });
+        } else {
+          void navigate({
+            to: "/account",
+            search: { tab: requestedTab },
+          });
+        }
       }
     } catch (err: unknown) {
       const msg =
