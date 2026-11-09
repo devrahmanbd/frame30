@@ -1839,3 +1839,48 @@ All 7 required viewports verified on live production `https://flamelancer.com/`:
   - Zero occurrences of `"01 CUSTOMER CARE"` or `"Email support: support@flamelancer.com"` prior to the footer.
   - Page transitions seamlessly from the journal split feature into the newsletter and footer sitemap.
 
+## 18. Songoskriti Final Commerce & Footer Visual Consistency Pass (Wave 18)
+
+**Scope:** Footer branding & fallback claims, Songoskriti cart skin & thumbnail hierarchy, wishlist navigation return, and account visual refinement.
+
+### 18.1 Summary of Changes
+
+1. **P0 — Dedicated Songoskriti Cart Treatment (`src/components/builder/cart.tsx` & `src/lib/themes/songoskriti/commerce-presentations.tsx`):**
+   - **Aspect Ratio & Frame:** Product thumbnails upgraded to portrait 4:5 fashion frame (`aspect-[4/5] shrink-0 w-20 sm:w-24`) preventing garment detail cropping.
+   - **Serif Product Title:** Product titles rendered in Playfair Display serif linking directly to the product detail page (`/p/:slug`).
+   - **Quiet Remove Action:** Replaced generic button with quiet text-based `REMOVE` action featuring uppercase tracking (`fq-caps tracking-[0.15em]`) and underline hover.
+   - **Non-Overlapping Mobile Layout:** Stepper controls (`- 1 +`), line totals, and remove action cleanly decoupled into vertical stacking on mobile and flex-row on desktop.
+   - **Editorial Headings & Counters:** Header styled as `YOUR SHOPPING BAG` with visible item counter (`2 ITEMS`).
+   - **Sharp Surfaces:** All buttons and inputs feature 0px border radius (`rounded-none`).
+   - **Editorial Empty State:** Centered serif heading `Your Shopping Bag is Empty` with `Explore our collection and discover handcrafted luxury garments.` and rectangular charcoal `CONTINUE SHOPPING` CTA.
+   - **Semantic Design Tokens:** All styling strictly adheres to semantic tokens (`bg-foreground`, `text-background`, `hover:text-primary`, `focus:border-primary`) with 0 raw hex values.
+   - **Preserved Commerce Calculations:** Minor integer calculations (`amount_minor_int`), coupons, taxes, and shipping untouched.
+
+2. **P1 — Merchant Wordmark & Unverified Claims Removal (`src/components/builder/songoskriti.tsx` & `src/lib/themes/songoskriti/footer.ts`):**
+   - **Fabricated Diamond Icon Removed:** Removed generic diamond SVG icon (`M16 2L2 16L16 30L30 16L16 2Z`) entirely.
+   - **Merchant Wordmark:** Renders merchant's approved logo image if configured, or a clean Playfair Display serif text wordmark (`Flame Fashion BD`).
+   - **Unverified Fallback Claims Eliminated:** Omitted unverified fallback taglines (`Authentic Bengal...`), delivery promises (`Cash on delivery nationwide`), and support hours (`Daily 10am - 8pm`). Missing metadata safely omits lines rather than fabricating claims.
+   - **DB Sanitization:** Sanitized `theme_versions` template (`id = 7e446923-bf8a-4c53-88d2-e3fc8f322bdf`) removing residual unverified strings.
+   - **Navigation Blueprint:** Preserved 21-link contract across Shop, Customer Care, About Us, Policies, and dedicated Customer Concierge section.
+
+3. **P2 — Account Navigation & Destination Return (`CustomerAccountAccess.tsx` & `account-widgets.tsx`):**
+   - **Wishlist Return Intent:** When an unauthenticated shopper enters `/account?tab=wishlist`, `CustomerAccountAccess` navigates directly back to `search: { tab: requestedTab }` upon sign-in or registration.
+   - **Safe Pathname Extraction:** Hardened `useSafePathname` and `isCustomHostPath` to safely handle non-string router states during testing.
+   - **Theme Shell:** Both signed-in and signed-out account views share the same Songoskriti `ThemeChrome` shell with warm ivory surfaces and baseline active indicators.
+
+### 18.2 Verification & Test Results
+- `bun run typecheck` — **PASS** (0 errors).
+- `bun run test:contracts` — **PASS** (13 contract suites, 258 tests passed).
+- `bun run test` — **PASS** (642 test files passed, 9,079 tests passed).
+- Live deployed SHA: `9e295d6507c05b78a384352d5b7c387c20230d7c`.
+- Live bundle marker verified on `88.99.250.99:3200`.
+
+### 18.3 Evidence Artifacts (`docs/wave18-evidence/`)
+- `live_1440_footer.png` / `live_390_footer.png` — Footer on desktop and mobile showing text wordmark without diamond icon and clean customer care.
+- `live_1440_cart_multi.png` / `live_390_cart_multi.png` — Populated cart showing 4:5 portrait frames, serif product titles, non-overlapping controls, and visible item counts.
+- `live_1440_cart_empty.png` / `live_390_cart_empty.png` — Editorial empty shopping bag state with Continue Shopping CTA.
+- `live_1440_account_signed_out.png` / `live_390_account_signed_out.png` — Account login/register in theme shell.
+- `live_1440_account_wishlist_intent.png` — Account access with prefilled wishlist intent.
+- `live_1440_account_dashboard.png` — Signed-in account dashboard with understated hairline stats.
+- `live_1440_account_wishlist_items.png` / `live_390_account_wishlist_items.png` — Wishlist view with baseline tab indicator.
+- `viewport_{320x740, 360x800, 390x844, 430x932, 768x1024, 1024x768, 1440x900}_cart.png` — Full 7-viewport responsive matrix.
