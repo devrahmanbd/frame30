@@ -502,7 +502,10 @@ export function PaymentMark({ mark }: { mark: string }) {
     );
   }
   return (
-    <span className="inline-flex h-8 items-center rounded-md border border-border bg-white px-2.5 text-xs font-semibold tracking-wide text-zinc-900 shadow-2xs">
+    <span
+      style={{ color: "#1A1A1A", backgroundColor: "#FFFFFF" }}
+      className="inline-flex h-8 items-center rounded-none border border-border bg-white px-2.5 text-xs font-semibold tracking-wide text-[#1A1A1A] shadow-2xs"
+    >
       {trimmed}
     </span>
   );
