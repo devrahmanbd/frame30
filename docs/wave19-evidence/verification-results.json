@@ -1,0 +1,72 @@
+{
+  "defects": {
+    "defect1_payment_badge": {
+      "passed": true,
+      "styles": {
+        "color": "rgb(26, 26, 26)",
+        "backgroundColor": "rgb(255, 255, 255)",
+        "border": "1px solid color(srgb 0.980392 0.976471 0.968627 / 0.1)",
+        "text": "Cash on Delivery"
+      }
+    },
+    "defect5_empty_cart_copy": {
+      "passed": true,
+      "h1Text": "Your shopping bag",
+      "emptyHeading": true,
+      "supportingCopy": true,
+      "continueCta": true
+    },
+    "defect6_hide_empty_order_summary": {
+      "passed": true,
+      "orderSummaryVisible": false
+    },
+    "defect4_duplicate_headings": {
+      "passed": true,
+      "populatedH1": "Your shopping bag (2)",
+      "duplicateH2": false
+    },
+    "defect3_whatsapp_overlap": {
+      "passed": true,
+      "overlapDetected": false
+    },
+    "defect7_mobile_account_tabs": {
+      "passed": true,
+      "allTabsMeet44": true,
+      "tabCount": 5
+    },
+    "defect2_wishlist": {
+      "passed": true,
+      "cardCount": 3,
+      "cardCountAfterRemove": 2,
+      "cardCountPersisted": 2,
+      "emptyWishlistTitle": true,
+      "emptyWishlistCta": true
+    }
+  },
+  "screenshots": [
+    "live_1440_footer.png",
+    "live_390_footer.png",
+    "live_1440_cart_empty.png",
+    "live_390_cart_empty.png",
+    "live_1440_cart_multi.png",
+    "live_390_cart_multi.png",
+    "viewport_320x740_cart.png",
+    "viewport_360x800_cart.png",
+    "viewport_390x844_cart.png",
+    "viewport_430x932_cart.png",
+    "viewport_768x1024_cart.png",
+    "viewport_1024x768_cart.png",
+    "viewport_1280x800_cart.png",
+    "viewport_1440x900_cart.png",
+    "live_320_account_signed_out.png",
+    "live_360_account_signed_out.png",
+    "live_390_account_signed_out.png",
+    "live_430_account_signed_out.png",
+    "live_1440_account_wishlist_items.png",
+    "live_1440_account_dashboard.png",
+    "live_390_account_wishlist_items.png",
+    "live_1440_account_wishlist_empty.png",
+    "live_390_account_wishlist_empty.png"
+  ],
+  "viewports": {}
+}
