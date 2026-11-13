@@ -457,9 +457,11 @@ function useMockProductSlots(
     category_id: demoProduct.category ?? null,
   };
 
+  const merchantBrand =
+    blueprintKey === "songoskriti" ? "Flame Fashion BD" : themeName;
   const merchantPayload = {
     id: "demo",
-    name: themeName,
+    name: merchantBrand,
     slug: blueprintKey,
     currency_code: "BDT",
   };
@@ -480,7 +482,7 @@ function useMockProductSlots(
   const breadcrumb = (
     <nav className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-6">
       <span className="hover:text-foreground transition-colors cursor-pointer">
-        {themeName}
+        {merchantBrand}
       </span>
       <span aria-hidden className="mx-2">
         {" "}
@@ -1338,7 +1340,11 @@ export function ThemePreviewFrame({
                 <>
                   <StoreHeader
                     slug={blueprintKey}
-                    name={themeName}
+                    name={
+                      blueprintKey === "songoskriti"
+                        ? "Flame Fashion BD"
+                        : themeName
+                    }
                     menus={null}
                     themeKey={blueprintKey}
                   />

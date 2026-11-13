@@ -1,43 +1,36 @@
 # Frame30 / Flame Fashion BD & Songoskriti Production Remediation
 
-**Date:** 2026-11-07 · **Branch:** `frame30` / `main` · **Commit SHA:** `d2f50a2d` · **Status:** Verified & Released  
+**Date:** 2026-11-13 · **Branch:** `frame30` / `main` · **Commit SHA:** `1ae82512` · **Status:** Verified & Released  
 **Live Production Host:** `https://flamelancer.com` · **Preview Host:** `https://framique.qubickle.com/theme-preview/songoskriti`  
 **Target Merchant:** `b47532e5-9649-4ebd-93a9-06fa2917c00e` (Flame Fashion BD)  
 **Production Server:** `88.99.250.99:3200` (`framique.service`, OpenResty edge, Postgres `framique-supabase-db`, Redis `deploy-redis-1`)  
 
-### Punch List Remediation & Audit Resolution:
-1. **P0 Release Integrity**:
-   - `e2e-seven-templates` workflow green on GitHub Actions (runs #42360578886 and #42360559065).
-   - Authoritative release branch confirmed as `main` (with fast-forward synchronization from `frame30`).
-   - All release gates verified locally (TypeScript `tsgo --noEmit`, 258/258 contract tests, 9,079 Vitest tests across 642 files passed).
-2. **P1 Kids Navigation**:
-   - Replaced old hierarchy with 3-tier taxonomy: `Children's Wear` -> `Girls Festive Wear`, `Boys Ethnic Wear`, `All Children's Wear` pointing to published `/c/kids`.
-   - Removed adult Panjabi, saree, jewellery, and wedding links from Kids navigation.
+### Wave 20 Remediation & Audit Resolution:
+1. **P0 Release & Production State Reconciled**:
+   - Production bundle marker verified against current deployed commit.
+   - Merchant configuration alignment between Preview and Production: Production serves live Postgres tenant catalog (`merchants`, `products`, `collections`, `store_themes`, `theme_versions`), whereas public preview serves the theme blueprint with demo catalog (`demo-catalog.ts`, `preview-demo-data.ts`) now synchronized with Flame Fashion BD brand identity, distinct Kids taxonomy (`/c/girls`, `/c/boys`, `/c/kids`), and strict category affinity.
+2. **P1 Kids Navigation Destinations**:
+   - Fixed all 3 distinct destinations in `nav_menu_items` (Postgres DB) and `header-copy.ts`:
+     - `Girls Festive Wear` -> `/c/girls` (collection contains `girls-embroidered-silk-ghagra-choli`)
+     - `Boys Ethnic Wear` -> `/c/boys` (collection contains newly inserted `boys-silk-panjabi-pajama-set`)
+     - `All Children's Wear` -> `/c/kids` (contains both girls and boys garments)
+   - Redundant/duplicate links returning to the same view eliminated.
 3. **P1 Recommendation Relevance**:
-   - Category and tag affinity RPC `product_recommendations` active in production Postgres and tracked in repo migration `20261107190000_product_recommendations_category_affinity.sql`.
-   - Kids products return zero recommendations (rail suppressed cleanly instead of cross-contaminating). Sarees only recommend sarees/women's apparel. Mens only recommend mens apparel.
-4. **P1 Everyday Heritage Collection**:
-   - Populated exclusively with authentic cotton and linen apparel (`tangail-taant-cotton-saree`, `comilla-handspun-khadi-kurta`, `casual-cotton-summer-fotua`, etc.).
-   - Children's festive clothing, jewellery, and home products strictly excluded.
-5. **P1 Product Detail & Merchandising**:
-   - Scoped Flame Fashion BD serif wordmark in header for the merchant store.
-   - Fixed stock scarcity display: shows "In stock" alongside "Only X left" without duplicating count integers.
-   - Empty reviews and complete-the-look widgets cleanly suppressed when zero items exist.
-   - Replaced generic filler copy with authentic artisan handloom craft attributes.
-6. **P2 Navigation & Editorial Cleanup**:
-   - Handled platform preview host redirects for `/search` and `/pages/$pageSlug` to prevent 404 errors.
-   - Deduplicated redundant "All Sarees" / "Signature Sarees" links in the header navigation.
-### 10-Issue Follow-Up Audit Resolution Summary:
-1. **Announcement Bar**: Gated and suppressed on Songoskriti collection & storefront pages; returns null with zero residual wrapper or height.
-2. **Navigation Taxonomy**: Restored complete 3-tier Kids taxonomy (`Girls Festive Wear`, `Boys Ethnic Wear`, `All Children's Wear`) pointing to published `/c/kids`.
-3. **Homepage Copy & Craft Integrity**: Replaced generic slogans with authentic Bengal handloom craft narratives (Jamdani, Mulberry Silk, Tangail, Nakshi Kantha).
-4. **Trust Claims & Outlets**: Removed hardcoded mobile drawer fallbacks ("7-Day Exchange" and "10am-8pm"); gated delivery strictly to merchant flat rate microcopy without unverified "Nationwide" claims; fictional outlets purged.
-5. **UGC Attribution**: Clean lookbook defaults scoped to `@flamefashionbd` and seasonal lookbooks without fabricated claims.
-6. **Collection Filters**: Live horizontal filter toolbar with tags, materials, BDT price ranges, availability toggles, active count, and sort order. Multi-facet counts calculated dynamically with conjunctive filtering.
-7. **Brand Identity & Header**: Merchant brand name displayed in editorial wordmark decoupled from the theme SVG logo.
-8. **Collection Presentation**: Clean editorial layout; breadcrumbs suppressed for Songoskriti; dedicated Sarees and Tangail archetypes restored.
-9. **Merchandising Accuracy**: Skincare soap archived; fashion collections populated exclusively with authentic handloom apparel; broken footer `/pages/locations` link removed.
-10. **Product Policies & Care**: Dynamic VAT display gated strictly to `prices_include_vat`; COD gated to `cod_enabled === true`; return policy linked to `/pages/returns`.
+   - Restricted "More to explore" on `/c/sarees` exclusively to authentic women's handloom apparel (`tangail-taant-cotton-saree`, `dhakai-jamdani-silk-saree`, `mirpur-katan-silk-saree`, etc.) — men's khadi kurta and living quilt strictly excluded.
+   - Related products on Jamdani PDP (`/p/dhakai-jamdani-silk-saree` and preview) powered by `product_recommendations` category-affinity RPC returning exclusively genuine sarees and salwar suits (`mirpur-katan-silk-saree`, `hand-painted-silk-festive-saree`, `tangail-taant-cotton-saree`, `embroidered-silk-salwar-suit`, `artisan-block-print-muslin-dupatta`, `bohemian-hand-embroidered-kurti`).
+4. **P1 Collection Merchandising Cleaned**:
+   - `new-in` (New Festive Arrivals): curated exclusively with genuine Flame Fashion BD pieces (`dhakai-jamdani-silk-saree`, `mirpur-katan-silk-saree`, `hand-painted-silk-festive-saree`, `pure-silk-embroidered-panjabi`, `tussar-silk-festive-koti`, `artisan-block-print-muslin-dupatta`, `embroidered-silk-salwar-suit`).
+   - Former Taaga products: `bohemian-hand-embroidered-kurti` reassigned to `womens`, `relaxed-linen-mandarin-shirt` reassigned to `mens`; removed from `new-in` and tags cleaned.
+   - Quilt (`handcrafted-nakshi-kantha-quilt`): confined strictly to `living`, `nakshi-kantha`, `gifting`, and `heritage`; purged from `groom`, `jamdani`, `mehendi`, `sangeet`, `family`, `rajshahi-silk`.
+   - Groom collection: purged of dupatta, earrings, and quilt; populated with authentic groom pieces (`pure-silk-embroidered-panjabi`, `tussar-silk-festive-koti`, `fine-poplin-formal-pajama`).
+5. **P1 Internal Theme Identity Removed from Customer-Facing PDP**:
+   - Customer-facing PDP breadcrumb displays `Flame Fashion BD / [Product Title]`, replacing internal theme name `Songoskriti`.
+6. **P2 Trust Information & Craft Claims Verified**:
+   - Artisan & product-origin statements confirmed against authentic regional clusters (Tangail cotton pit looms, Sonargaon Jamdani master weavers, Mirpur Benarasi Katan, Jessore Nakshi Kantha running-stitch).
+   - Support contact verified: `support@flamelancer.com`, `+880 1540 203662`.
+   - Payment configuration: Cash on Delivery (`cod_enabled: true`), verified against `merchant_settings`.
+7. **P2 Product Page Content Cleanup**:
+   - Removed repeated product titles from recommendation rail headings.
 
 ---
 

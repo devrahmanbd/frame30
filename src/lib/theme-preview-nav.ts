@@ -702,11 +702,19 @@ export function resolveDemoFocus(
   }
   if (template === "product") {
     const match = catalog.products.find((p) => p.slug === slug);
+    let relatedCol = "womens";
+    if (match) {
+      if (match.category === "mens") relatedCol = "mens";
+      else if (match.category === "kids") relatedCol = "kids";
+      else if (match.category === "living") relatedCol = "living";
+      else if (match.category === "jewelry") relatedCol = "jewelry";
+      else relatedCol = "womens";
+    }
     return {
       template,
       slug,
       title: match ? match.title : humanizeSlug(slug),
-      collection: "new-in",
+      collection: relatedCol,
       image: match?.image_url,
       images: match?.images,
     };
@@ -765,12 +773,16 @@ export function applyDemoFocus(
         (next.type === "product_rail" && next.props["source"] === "collection");
       if (!rail && isCollectionBound) {
         rail = true;
+        const railHeading =
+          focus!.template === "product"
+            ? (next.props["heading"] || "Complete the look")
+            : focus!.title;
         next = {
           ...next,
           props: {
             ...next.props,
             collection: focus!.collection,
-            heading: focus!.title,
+            heading: railHeading,
           },
         };
       } else if (
@@ -781,14 +793,14 @@ export function applyDemoFocus(
       ) {
         const col = focus!.collection.toLowerCase();
         let relatedCol = col;
-        if (col === "kids") {
-          relatedCol = "kids-related";
+        if (col === "kids" || col === "girls" || col === "boys") {
+          relatedCol = "kids";
         } else if (col === "sarees" || col === "jamdani" || col === "tangail") {
-          relatedCol = "heritage-handloom";
+          relatedCol = "womens";
         } else if (col === "mens" || col === "panjabi") {
-          relatedCol = "artisan-essentials";
+          relatedCol = "mens";
         } else if (col === "women" || col === "womens") {
-          relatedCol = "heritage-handloom";
+          relatedCol = "womens";
         }
         next = {
           ...next,

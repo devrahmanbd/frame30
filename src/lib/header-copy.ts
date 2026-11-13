@@ -149,8 +149,8 @@ export const HEADER_FALLBACK_MENU = [
         label: "Children's Wear",
         url: "/c/kids",
         children: [
-          { id: "kf-girls", label: "Girls Festive Wear", url: "/c/kids" },
-          { id: "kf-boys", label: "Boys Ethnic Wear", url: "/c/kids" },
+          { id: "kf-girls", label: "Girls Festive Wear", url: "/c/girls" },
+          { id: "kf-boys", label: "Boys Ethnic Wear", url: "/c/boys" },
           { id: "kf-all", label: "All Children's Wear", url: "/c/kids" },
         ],
       },

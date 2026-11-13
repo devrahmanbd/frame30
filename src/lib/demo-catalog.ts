@@ -725,6 +725,16 @@ const HANDLOOM_APPAREL: DemoCatalog = {
       description: "Authentic Tangail and Jamdani weaves.",
     },
     {
+      slug: "girls",
+      name: "Girls Festive Wear",
+      description: "Embroidered festive sets and silk ensembles for girls.",
+    },
+    {
+      slug: "boys",
+      name: "Boys Ethnic Wear",
+      description: "Handloom silk panjabis and ethnic sets for boys.",
+    },
+    {
       slug: "eid-festive",
       name: "Eid & Festive Collection",
       description: "Celebrate occasions in timeless elegance.",
@@ -990,7 +1000,6 @@ const HANDLOOM_APPAREL: DemoCatalog = {
       category: "living",
       collections: [
         "nakshi-kantha",
-        "heritage-handloom",
         "festive-sale",
         "home-decor",
         "living",
@@ -1402,7 +1411,7 @@ const HANDLOOM_APPAREL: DemoCatalog = {
       description:
         "Festive three-piece ensemble for young celebrations. Pure silk choli with delicate threadwork, flared ghagra skirt with metallic lace border, and a contrast featherlight dupatta.",
       category: "kids",
-      collections: ["eid-festive", "new-in", "festive-sale", "kids", "wedding"],
+      collections: ["eid-festive", "festive-sale", "kids", "girls", "wedding"],
       tags: ["kids", "ghagra", "choli", "silk", "girls", "festive"],
       image_url: "/api/public/ph/kids/girls-embroidered-silk-ghagra-choli.svg",
       variants: [
@@ -2766,7 +2775,7 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Hand-stitched running-stitch kantha on layered natural cotton by Jessore craftswomen. Queen size, 88 x 96 in.",
       category: "living",
-      collections: ["bestsellers", "gifting", "new-in", "nakshi-kantha"],
+      collections: ["bestsellers", "gifting", "nakshi-kantha", "living"],
       tags: ["kantha", "quilt", "handloom", "living", "nakshi-kantha"],
       image_url: "/ph/songoskriti/cat-living.png",
       variants: [
@@ -2804,7 +2813,7 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Three-piece festive set in pure silk with a threadwork choli, flared ghagra skirt and contrast dupatta.",
       category: "kids",
-      collections: ["new-in", "festive", "gifting"],
+      collections: ["festive", "gifting", "kids", "girls"],
       tags: ["kids", "silk", "festive", "ghagra"],
       image_url: "/ph/songoskriti/cat-kids.jpg",
       variants: [
@@ -2842,7 +2851,7 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Classic handloom silk festive panjabi with mother-of-pearl buttons and fine cotton pajama set for boys.",
       category: "kids",
-      collections: ["new-in", "festive"],
+      collections: ["festive", "kids", "boys"],
       tags: ["kids", "panjabi", "silk", "festive"],
       image_url: "/ph/songoskriti/cat-kids.jpg",
       variants: [
