@@ -34,15 +34,47 @@ describe("previewDemoMap collection filtering", () => {
     ).toBe(true);
   });
 
-  it("resolves a collection slug to its rows", () => {
-    const rows = rowsFor("festive");
-    expect(rows.length).toBeGreaterThan(0);
+  it("resolves girls and boys to distinct non-overlapping assortments", () => {
+    const girlsRows = rowsFor("girls");
+    const boysRows = rowsFor("boys");
+    const kidsRows = rowsFor("kids");
+
+    expect(girlsRows.length).toBeGreaterThan(0);
+    expect(boysRows.length).toBeGreaterThan(0);
+    expect(kidsRows.length).toBeGreaterThanOrEqual(girlsRows.length + boysRows.length);
+
+    // Girls contains girls ghagra choli, no panjabi or sarees
+    expect(girlsRows.map((r) => r.id)).toContain("girls-silk-festive-ghagra-choli");
+    expect(girlsRows.map((r) => r.id)).not.toContain("boys-silk-panjabi-pajama-set");
+    expect(girlsRows.map((r) => r.id)).not.toContain("muslin-floral-festive-saree");
+    expect(girlsRows.map((r) => r.id)).not.toContain("taaga-contemporary-linen-tunic");
+
+    // Boys contains boys panjabi, no ghagra choli or sarees
+    expect(boysRows.map((r) => r.id)).toContain("boys-silk-panjabi-pajama-set");
+    expect(boysRows.map((r) => r.id)).not.toContain("girls-silk-festive-ghagra-choli");
+    expect(boysRows.map((r) => r.id)).not.toContain("muslin-floral-festive-saree");
+    expect(boysRows.map((r) => r.id)).not.toContain("taaga-man-relaxed-khadi-shirt");
   });
 
-  it("falls back to the full base rows for unknown slugs", () => {
-    const rows = rowsFor("nope-xyz");
-    const festive = rowsFor("festive");
-    expect(rows.length).toBeGreaterThan(festive.length);
-    expect(rows.map((r) => r.id)).toContain("rajshahi-silk-festive-panjabi");
+  it("filters out excluded product from recommendation rails", () => {
+    const section = {
+      ...newSection("product_rail"),
+      props: {
+        source: "collection",
+        collection: "sarees",
+        exclude: "dhakai-jamdani-heritage-saree",
+        limit: 24,
+      },
+    };
+    const bundle = collectWidgetRequests({
+      header: [],
+      main: [section],
+      footer: [],
+    } as never);
+    const map = previewDemoMap(bundle, "songoskriti");
+    const rows = map[bundle.byNode[section.id]!] ?? [];
+
+    expect(rows.length).toBeGreaterThan(0);
+    expect(rows.map((r) => r.id)).not.toContain("dhakai-jamdani-heritage-saree");
   });
 });

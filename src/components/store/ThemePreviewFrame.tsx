@@ -721,6 +721,31 @@ export function ThemePreviewFrame({
       // focused sections — otherwise rows would not match the heading.
       const bundle = collectWidgetRequests({ ...ast, main: focusedMain });
       const map = previewDemoMap(bundle, blueprintKey);
+      if (demoFocus && demoFocus.template === "product" && demoFocus.slug) {
+        const excludeSlug = demoFocus.slug.toLowerCase();
+        const excludeAliases = new Set(
+          [
+            excludeSlug,
+            excludeSlug === "dhakai-jamdani-silk-saree"
+              ? "dhakai-jamdani-heritage-saree"
+              : "",
+            excludeSlug === "dhakai-jamdani-heritage-saree"
+              ? "dhakai-jamdani-silk-saree"
+              : "",
+            excludeSlug === "girls-embroidered-silk-ghagra-choli"
+              ? "girls-silk-festive-ghagra-choli"
+              : "",
+            excludeSlug === "girls-silk-festive-ghagra-choli"
+              ? "girls-embroidered-silk-ghagra-choli"
+              : "",
+          ].filter(Boolean),
+        );
+        for (const k of Object.keys(map)) {
+          map[k] = (map[k] || []).filter(
+            (row) => !excludeAliases.has(row.id.toLowerCase()),
+          );
+        }
+      }
       if (isSongoskriti) {
         // The theme's own rows replace the studio's generic ones for the
         // two sources the Songoskriti compositions need: the `facets` rows
@@ -736,7 +761,7 @@ export function ThemePreviewFrame({
         }
       }
       return { bundle, map };
-    }, [ast, focusedMain, blueprintKey, isSongoskriti]);
+    }, [ast, focusedMain, blueprintKey, isSongoskriti, demoFocus]);
 
   const { lang, t } = useLang();
   // Account center is context-gated: feed the merchant sections demo rows

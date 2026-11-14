@@ -122,7 +122,19 @@ export function previewDemoMap(
           if (target === "jewelry" || target === "jewellery") return c === "jewelry" || c === "jewellery";
           return false;
         };
+        const excludeParam = (req.params as Record<string, unknown>)["exclude"];
+        const excludeSlug = typeof excludeParam === "string" ? excludeParam.trim().toLowerCase() : undefined;
         const filtered = base.filter((p) => {
+          if (excludeSlug) {
+            const pid = p.id.toLowerCase();
+            if (pid === excludeSlug) return false;
+            if (
+              (excludeSlug.includes("jamdani") && pid.includes("jamdani")) ||
+              (excludeSlug.includes("ghagra") && pid.includes("ghagra"))
+            ) {
+              return false;
+            }
+          }
           const prod = catalog.products.find((item) => item.slug === p.id);
           return (
             prod?.collections?.includes(slug) ||
@@ -140,6 +152,9 @@ export function previewDemoMap(
           slug === "women" ||
           slug === "mens" ||
           slug === "men" ||
+          slug === "kids" ||
+          slug === "girls" ||
+          slug === "boys" ||
           slug === "sarees";
         if (isKnown) {
           rows = filtered;

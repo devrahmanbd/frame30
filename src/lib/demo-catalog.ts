@@ -2639,6 +2639,21 @@ const SONGOSKRITI: DemoCatalog = {
       name: "Heritage Jewellery",
       description: "Handcrafted brass, filigree, and festive accessories.",
     },
+    {
+      slug: "kids",
+      name: "Kids & Children",
+      description: "Festive silk ensembles and traditional attire for children.",
+    },
+    {
+      slug: "girls",
+      name: "Girls Festive Wear",
+      description: "Beautifully embroidered festive sets and silk ensembles for girls, crafted by Bengali artisans.",
+    },
+    {
+      slug: "boys",
+      name: "Boys Ethnic Wear",
+      description: "Handloom silk Panjabis and traditional ethnic sets for boys — perfect for Eid, Puja, and family celebrations.",
+    },
   ],
   products: [
     {
@@ -2647,7 +2662,7 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Pure Rajshahi silk panjabi with subtle kantha stitch along the placket and mother-of-pearl buttons. Model is 182cm and wears size 40.",
       category: "men",
-      collections: ["panjabi", "festive", "wedding", "rajshahi-silk"],
+      collections: ["new-in", "panjabi", "festive", "wedding", "rajshahi-silk"],
       tags: ["panjabi", "silk", "festive", "mens", "rajshahi-silk"],
       image_url: "/ph/songoskriti/prod-panjabi.png",
       variants: [
@@ -2679,7 +2694,7 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Authentic Sonargaon Dhakai Jamdani with floral jall motifs in mulberry silk. Includes 80cm unstitched blouse piece. Model is 170cm.",
       category: "women",
-      collections: ["sarees", "wedding", "festive", "jamdani"],
+      collections: ["new-in", "sarees", "wedding", "festive", "jamdani"],
       tags: ["jamdani", "saree", "silk", "handloom"],
       image_url: "/ph/songoskriti/prod-saree.png",
       images: [
@@ -2832,7 +2847,7 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Woven on a traditional wooden pit loom in Delduar, Tangail. 100% fine combed cotton with contrast zari border. Includes 80cm blouse piece.",
       category: "women",
-      collections: ["sarees", "everyday", "tangail", "festive", "bestsellers"],
+      collections: ["new-in", "sarees", "everyday", "tangail", "festive", "bestsellers"],
       tags: ["cotton", "handloom", "saree", "tangail"],
       image_url: "/ph/songoskriti/cat-women.png",
       variants: [
@@ -2870,7 +2885,7 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Modern fusion tunic in breathable handloom linen blend with side slit and contrast wood buttons. Model wears size S.",
       category: "women",
-      collections: ["everyday", "new-in", "bestsellers"],
+      collections: ["everyday", "bestsellers"],
       tags: ["taaga", "tunic", "contemporary", "linen"],
       image_url: "/ph/songoskriti/cat-newin.png",
       variants: [
@@ -2889,7 +2904,7 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Contemporary everyday cut in 100% handspun Comilla khadi with mandarin collar and roll-up sleeves.",
       category: "men",
-      collections: ["everyday", "new-in", "bestsellers"],
+      collections: ["everyday", "bestsellers"],
       tags: ["taaga-man", "shirt", "khadi", "mens"],
       image_url: "/ph/songoskriti/cat-men.jpg",
       variants: [

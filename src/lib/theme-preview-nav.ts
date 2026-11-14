@@ -690,6 +690,15 @@ export function resolveDemoFocus(
   if (!slug) return null;
   const catalog = demoCatalogFor(themeKey);
   if (template === "collection") {
+    if (slug === "girls") {
+      return { template, slug, title: "Girls Festive Wear", collection: "girls" };
+    }
+    if (slug === "boys") {
+      return { template, slug, title: "Boys Ethnic Wear", collection: "boys" };
+    }
+    if (slug === "kids") {
+      return { template, slug, title: "Kids & Children", collection: "kids" };
+    }
     const match = catalog.collections.find((c) => c.slug === slug);
     if (match) return { template, slug, title: match.name, collection: slug };
     // Category slugs (e.g. /c/women) carry no dedicated collection: reuse
@@ -707,6 +716,9 @@ export function resolveDemoFocus(
     }
     if (!match && slug === "dhakai-jamdani-heritage-saree") {
       match = catalog.products.find((p) => p.slug === "dhakai-jamdani-silk-saree");
+    }
+    if (!match && (slug === "girls-embroidered-silk-ghagra-choli" || slug === "girls-silk-festive-ghagra-choli")) {
+      match = catalog.products.find((p) => p.slug === "girls-silk-festive-ghagra-choli" || p.slug === "girls-embroidered-silk-ghagra-choli");
     }
     let relatedCol = "womens";
     if (match) {
@@ -771,6 +783,7 @@ export function applyDemoFocus(
 
       if (
         !head &&
+        focus!.template !== "product" &&
         (section.type === "heading" || section.type === "category_header")
       ) {
         head = true;
@@ -801,6 +814,7 @@ export function applyDemoFocus(
             ...next.props,
             collection: focus!.collection,
             heading: railHeading,
+            exclude: focus!.template === "product" ? focus!.slug : "",
           },
         };
       } else if (
