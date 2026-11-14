@@ -701,14 +701,32 @@ export function resolveDemoFocus(
     return { template, slug, title: humanizeSlug(slug), collection: "new-in" };
   }
   if (template === "product") {
-    const match = catalog.products.find((p) => p.slug === slug);
+    let match = catalog.products.find((p) => p.slug === slug);
+    if (!match && slug === "dhakai-jamdani-silk-saree") {
+      match = catalog.products.find((p) => p.slug === "dhakai-jamdani-heritage-saree");
+    }
+    if (!match && slug === "dhakai-jamdani-heritage-saree") {
+      match = catalog.products.find((p) => p.slug === "dhakai-jamdani-silk-saree");
+    }
     let relatedCol = "womens";
     if (match) {
-      if (match.category === "mens") relatedCol = "mens";
-      else if (match.category === "kids") relatedCol = "kids";
-      else if (match.category === "living") relatedCol = "living";
-      else if (match.category === "jewelry") relatedCol = "jewelry";
-      else relatedCol = "womens";
+      if (
+        match.collections?.includes("sarees") ||
+        match.tags?.includes("saree") ||
+        match.tags?.includes("sarees")
+      ) {
+        relatedCol = "sarees";
+      } else if (match.category === "mens" || match.category === "men") {
+        relatedCol = "mens";
+      } else if (match.category === "kids") {
+        relatedCol = "kids";
+      } else if (match.category === "living") {
+        relatedCol = "living";
+      } else if (match.category === "jewelry" || match.category === "jewellery") {
+        relatedCol = "jewellery";
+      } else {
+        relatedCol = "womens";
+      }
     }
     return {
       template,
