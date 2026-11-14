@@ -1,6 +1,6 @@
 # Frame30 / Flame Fashion BD & Songoskriti Production Remediation
 
-**Date:** 2026-11-14 · **Branch:** `frame30` / `main` · **Commit SHA:** `65ab06cc` · **Status:** Verified & Released  
+**Date:** 2026-11-14 · **Branch:** `frame30` / `main` · **Status:** Verified & Released  
 **Live Production Host:** `https://flamelancer.com` · **Preview Host:** `https://framique.qubickle.com/theme-preview/songoskriti`  
 **Target Merchant:** `b47532e5-9649-4ebd-93a9-06fa2917c00e` (Flame Fashion BD)  
 **Production Server:** `88.99.250.99:3200` (`framique.service`, OpenResty edge, Postgres `framique-supabase-db`, Redis `deploy-redis-1`)  
