@@ -2853,7 +2853,7 @@ const SONGOSKRITI: DemoCatalog = {
       category: "kids",
       collections: ["festive", "kids", "boys"],
       tags: ["kids", "panjabi", "silk", "festive"],
-      image_url: "/ph/songoskriti/cat-kids.jpg",
+      image_url: "/ph/songoskriti/prod-panjabi.png",
       variants: [
         {
           name: "Age 6-8 Yrs - Golden Beige",

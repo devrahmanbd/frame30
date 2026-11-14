@@ -56,7 +56,7 @@ SELECT
   'boys-silk-panjabi-pajama-set',
   'Boys Handloom Silk Panjabi & Pajama Set',
   'A heritage occasion set for boys, handwoven in Tangail with fine mulberry silk. The classic collarless Panjabi with matching fine-cotton Pajama is a staple of Bengali festive dress — Eid, Puja, and family celebrations. Lightweight and breathable, tailored for comfort without sacrificing ceremony.',
-  '/ph/songoskriti/cat-kids.jpg',
+  '/ph/songoskriti/prod-panjabi.png',
   cat.id,
   'active',
   ARRAY['kids', 'boys', 'panjabi', 'festive', 'handloom', 'silk', 'bengal'],
