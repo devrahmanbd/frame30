@@ -1,12 +1,20 @@
 # Frame30 / Flame Fashion BD & Songoskriti Production Remediation
 
-**Date:** 2026-11-14 · **Branch:** `frame30` / `main` · **Status:** Verified & Released · **Wave:** 20  
+**Date:** 2026-11-15 · **Branch:** `frame30` / `main` · **Status:** Verified & Released · **Wave:** 20  
 **Live Production Host:** `https://flamelancer.com` · **Preview Host:** `https://framique.qubickle.com/theme-preview/songoskriti`  
 **Target Merchant:** `b47532e5-9649-4ebd-93a9-06fa2917c00e` (Flame Fashion BD)  
 **Production Server:** `88.99.250.99:3200` (`framique.service`, OpenResty edge, Postgres `framique-supabase-db`, Redis `deploy-redis-1`)  
 **Deployment Tool:** `ops/deploy-from-git.sh --steal frame30 root`  
-**Service Status:** `framique.service` active (running)  
-**Readiness Health Check:** `http://127.0.0.1:3200/api/healthz?type=readiness` -> `HTTP 200 OK`  
+
+### Authoritative Release & Production Reconciliation Receipt:
+```
+Authoritative source commit: c36be6bc777796ae07bcdbe9be5f1e99ad8f6bb8
+Production .output/DEPLOYED_SHA: c36be6bc777796ae07bcdbe9be5f1e99ad8f6bb8
+Equality: PASS
+Deployment timestamp: 2026-11-15T15:03:57Z
+Production service: ACTIVE
+Readiness: HTTP 200
+```
 
 ### Production Route Verification Receipts:
 - `GET https://flamelancer.com/` -> `HTTP/2 200 OK`
@@ -18,33 +26,34 @@
 
 ### Wave 20 Test Results:
 - `bun run typecheck` — **PASS** (0 errors)
-- `bun test src/lib/preview-demo-data.test.ts` — **PASS** (3/3 tests passed)
-- `bun test src/lib/themes/songoskriti/preview.test.ts` — **PASS** (3/3 tests passed)
+- `bun test src/lib/preview-demo-data.test.ts src/lib/themes/songoskriti/preview.test.ts` — **PASS** (9/9 tests passed)
+- `bunx vitest run src/components/store/songoskriti-preview-compositions.test.tsx` — **PASS** (11/11 tests passed, including DOM single H1 and category recommendation assertions)
 - `bun run test:contracts` — **PASS** (13 contract suites, 258 tests passed)
 
 ### Evidence Screenshot Artifacts Inventory:
-| # | Requirement | Artifact Path | Verified Status |
+| # | Requirement | Artifact Link | Verified Status |
 |---|-------------|---------------|:---------------:|
-| 1 | Kids menu leading to distinct destinations (`/c/girls`, `/c/boys`, `/c/kids`) | `proof_1_kids_menu_destinations.png`<br>`proof_kids_girls.png`<br>`proof_kids_boys.png`<br>`proof_kids_kids.png` | **VERIFIED** |
-| 2 | `/c/sarees` with no irrelevant products in "More to explore" | `proof_2_sarees_more_to_explore.png` | **VERIFIED** |
-| 3 | Jamdani PDP showing genuinely related category recommendations without self-recommendations | `proof_3_jamdani_pdp_recs.png`<br>`proof_preview_jamdani_pdp.png` | **VERIFIED** |
-| 4 | New Arrivals with verified catalog membership (Taaga items purged) | `proof_4_new_arrivals_assortment.png` | **VERIFIED** |
-| 5 | Customer-facing PDP displaying Flame Fashion BD (not Songoskriti) | `proof_5_pdp_merchant_identity.png` | **VERIFIED** |
-| 6 | Production desktop and mobile homepages | `proof_6_production_desktop.png`<br>`proof_6_production_mobile.png` | **VERIFIED** |
+| 1 | Kids menu leading to distinct destinations (`/c/girls`, `/c/boys`, `/c/kids`) | [proof_1_kids_menu_destinations.png](file:///Users/rahman/.gemini/antigravity/brain/4ff2c469-59fd-4a26-a989-4a6f76451eea/proof_1_kids_menu_destinations.png)<br>[proof_kids_girls.png](file:///Users/rahman/.gemini/antigravity/brain/4ff2c469-59fd-4a26-a989-4a6f76451eea/proof_kids_girls.png)<br>[proof_kids_girls_cross_sell.png](file:///Users/rahman/.gemini/antigravity/brain/4ff2c469-59fd-4a26-a989-4a6f76451eea/proof_kids_girls_cross_sell.png)<br>[proof_kids_boys.png](file:///Users/rahman/.gemini/antigravity/brain/4ff2c469-59fd-4a26-a989-4a6f76451eea/proof_kids_boys.png)<br>[proof_kids_kids.png](file:///Users/rahman/.gemini/antigravity/brain/4ff2c469-59fd-4a26-a989-4a6f76451eea/proof_kids_kids.png) | **VERIFIED** |
+| 2 | `/c/sarees` with no irrelevant products in "More to explore" (strictly sarees) | [proof_2_sarees_more_to_explore.png](file:///Users/rahman/.gemini/antigravity/brain/4ff2c469-59fd-4a26-a989-4a6f76451eea/proof_2_sarees_more_to_explore.png) | **VERIFIED** |
+| 3 | Jamdani PDP showing genuinely related category recommendations without self-recommendations, with single H1 | [proof_3_jamdani_pdp_recs.png](file:///Users/rahman/.gemini/antigravity/brain/4ff2c469-59fd-4a26-a989-4a6f76451eea/proof_3_jamdani_pdp_recs.png)<br>[proof_preview_jamdani_pdp.png](file:///Users/rahman/.gemini/antigravity/brain/4ff2c469-59fd-4a26-a989-4a6f76451eea/proof_preview_jamdani_pdp.png) | **VERIFIED** |
+| 4 | New Arrivals with verified catalog membership (Taaga items purged) | [proof_4_new_arrivals_assortment.png](file:///Users/rahman/.gemini/antigravity/brain/4ff2c469-59fd-4a26-a989-4a6f76451eea/proof_4_new_arrivals_assortment.png) | **VERIFIED** |
+| 5 | Customer-facing PDP displaying Flame Fashion BD (not Songoskriti) | [proof_5_pdp_merchant_identity.png](file:///Users/rahman/.gemini/antigravity/brain/4ff2c469-59fd-4a26-a989-4a6f76451eea/proof_5_pdp_merchant_identity.png) | **VERIFIED** |
+| 6 | Production desktop and mobile homepages | [proof_6_production_desktop.png](file:///Users/rahman/.gemini/antigravity/brain/4ff2c469-59fd-4a26-a989-4a6f76451eea/proof_6_production_desktop.png)<br>[proof_6_production_mobile.png](file:///Users/rahman/.gemini/antigravity/brain/4ff2c469-59fd-4a26-a989-4a6f76451eea/proof_6_production_mobile.png) | **VERIFIED** |
 
 ### Wave 20 Remediation & Audit Resolution Summary:
 1. **P0 Release & Production State Reconciled**:
-   - Production bundle marker verified against deployed commit SHA in `.output/DEPLOYED_SHA`.
-   - Complete Wave 20 deployment evidence recorded with database verification and route receipts.
-2. **P1 Kids Navigation Destinations**:
+   - Full SHA equality confirmed between authoritative git commit `c36be6bc777796ae07bcdbe9be5f1e99ad8f6bb8` and `.output/DEPLOYED_SHA`.
+   - Production service `framique.service` ACTIVE and readiness endpoint HTTP 200.
+2. **P1 Kids Navigation Destinations & Intentional Cross-Selling**:
    - Fixed all 3 distinct destinations in `nav_menu_items` (Postgres DB), `src/lib/demo-catalog.ts`, and `header-copy.ts`:
      - `Girls Festive Wear` -> `/c/girls` (displays `girls-silk-festive-ghagra-choli` / `girls-embroidered-silk-ghagra-choli`)
      - `Boys Ethnic Wear` -> `/c/boys` (displays `boys-silk-panjabi-pajama-set`)
      - `All Children's Wear` -> `/c/kids` (displays both kids products)
    - Strict category and collection filtering eliminates sarees and adult wear from children's collections.
-3. **P1 Recommendation Relevance & Exclusion**:
+   - Secondary rail in `/c/girls` and `/c/boys` is explicitly titled "More Children's Wear" ("আরও শিশুদের পোশাক") with collection `kids`, making family discovery intentional and transparent.
+3. **P1 Recommendation Relevance & Strict Saree Isolation**:
    - Excluded the currently viewed product from its own recommendations rail across PDP templates (`exclude` parameter in `product_rail` and `previewDemoMap`).
-   - "More to explore" on `/c/sarees` restricted strictly to authentic sarees and drapes.
+   - "More to explore" on `/c/sarees` mapped strictly to `collection: "sarees"` (previously `"womens"`), eliminating `taaga-contemporary-linen-tunic`.
    - Jamdani PDP recommendations powered by category-affinity RPC on production and demo affinity in preview without self-recommendations.
 4. **P1 Collection Merchandising Cleaned**:
    - Purged `taaga-contemporary-linen-tunic` and `taaga-man-relaxed-khadi-shirt` from `new-in`. Retained in `everyday` and `bestsellers` under `women` and `men`.
@@ -52,11 +61,13 @@
    - Quilt (`handcrafted-nakshi-kantha-quilt`) confined strictly to `living`, `nakshi-kantha`, `gifting`, and `heritage`.
 5. **P1 Customer-Facing PDP Merchant Identity**:
    - Customer-facing PDP breadcrumb displays `Flame Fashion BD / [Product Title]`, replacing internal theme name `Songoskriti`.
-6. **P2 Verifiable Trust Information & Craft Claims**:
+6. **P2 Verifiable Trust Information & Provenance Boundary**:
    - Exact production DB output verified for `merchant_settings` (`support@flamelancer.com`, `+880 1540 203662`, `cod_enabled = true`).
    - Artisan and regional weaving origins verified against production `products` catalog.
-7. **P2 Product Page Content Cleanup**:
-   - Enforced single primary H1 heading on product pages. In `applyDemoFocus`, headings are no longer overwritten with the product title on product templates, eliminating the duplicate heading after returns info.
+   - Boundary clearly documented: verified as merchant-entered database records in Postgres, distinct from third-party physical supply chain audit.
+7. **P2 Product Page DOM Single H1 Cleanup**:
+   - Enforced single primary `<h1>` heading on product pages (`document.querySelectorAll("h1").length === 1`).
+   - Guarded `primaryId` in `ThemePreviewFrame.tsx` for `baseTemplate === "product"`, ensuring "Product Details & Craft" renders with its authored `level: "h2"` (`<h2>`) rather than being promoted to `<h1>`.
 
 ---
 
@@ -1910,7 +1921,15 @@ All 7 required viewports verified on live production `https://flamelancer.com/`:
 
 **Scope:** Production & preview reconciliation, distinct Kids collections and merchandise, recommendation exclusion and category affinity, Taaga elimination from New Arrivals, single H1 product heading enforcement, and verifiable trust data evidence.
 
-### 20.1 P0 — Release & Production Reconciliation Receipt
+### 20.1 P0 — Authoritative Release & Production Reconciliation Receipt
+```
+Authoritative source commit: c36be6bc777796ae07bcdbe9be5f1e99ad8f6bb8
+Production .output/DEPLOYED_SHA: c36be6bc777796ae07bcdbe9be5f1e99ad8f6bb8
+Equality: PASS
+Deployment timestamp: 2026-11-15T15:03:57Z
+Production service: ACTIVE
+Readiness: HTTP 200
+```
 - **Target Merchant:** `b47532e5-9649-4ebd-93a9-06fa2917c00e` (`Flame Fashion BD`, slug `flame-fashion-bd`)
 - **Published Theme Version:** `7e446923-bf8a-4c53-88d2-e3fc8f322bdf` (Songoskriti v12)
 - **Production Server:** `88.99.250.99:3200` (`framique.service`, OpenResty edge on 80/4443, HAProxy on 443)
@@ -1918,21 +1937,28 @@ All 7 required viewports verified on live production `https://flamelancer.com/`:
 - **Readiness Probe:** `http://127.0.0.1:3200/api/healthz?type=readiness` -> `200 OK`
 - **Synchronized Tracking Branches:** `main` and `frame30`
 
-### 20.2 P1 — Kids Navigation & Destinations
+### 20.2 P1 — Kids Navigation, Destinations & Intentional Cross-Selling
 - **Distinct Collection Slugs & Titles:**
   - `/c/girls` -> "Girls Festive Wear" (catalog product: `girls-silk-festive-ghagra-choli` / `girls-embroidered-silk-ghagra-choli`)
   - `/c/boys` -> "Boys Ethnic Wear" (catalog product: `boys-silk-panjabi-pajama-set`)
   - `/c/kids` -> "Kids & Children" (all children's wear, includes both items)
-- **Reconciliation of Slugs & Category Isolation:**
+- **Category Isolation & Intentional Secondary Rail:**
   - Added `kids`, `girls`, `boys` to `SONGOSKRITI.collections` in `src/lib/demo-catalog.ts` and `resolveDemoFocus` in `src/lib/theme-preview-nav.ts`.
   - Reconciled Girls slug in demo catalog and DB (`girls-silk-festive-ghagra-choli` alias supported alongside `girls-embroidered-silk-ghagra-choli`).
-  - Strict filtering in `previewDemoMap` ensures `/c/girls` and `/c/boys` only return relevant children's apparel — sarees and adult Taaga wear are completely excluded.
+  - Strict filtering in `previewDemoMap` ensures primary grids for `/c/girls` and `/c/boys` only return relevant children's apparel — sarees and adult Taaga wear are completely excluded.
+  - Secondary rail for `/c/girls` and `/c/boys` is explicitly titled **"More Children's Wear"** (`heading_bn: "আরও শিশুদের পোশাক"`) with `collection: "kids"`. This provides intentional, transparent family wardrobe discovery rather than ambiguous generic exploration.
 
-### 20.3 P1 — Recommendation Relevance & Exclusion of Viewed Product
+### 20.3 P1 — Recommendation Relevance, Exclusion & Saree Rail Isolation
 - **Self-Recommendation Eliminated:**
   - Added `exclude` parameter support to `product_rail` in `WIDGET_REGISTRY` and `previewDemoMap`.
   - In `applyDemoFocus` (`src/lib/theme-preview-nav.ts`) and `ThemePreviewFrame.tsx`, the currently viewed product slug (and its aliases) is passed to `exclude` and filtered out from all recommendation rails.
   - When viewing Dhakai Jamdani Saree, the recommendation rail strictly recommends related pieces (`muslin-floral-festive-saree`, `tangail-handloom-cotton-saree`), never itself.
+- **Strict Saree Isolation in "More to explore":**
+  - In `applyDemoFocus` (`src/lib/theme-preview-nav.ts`), saree collection views (`sarees`, `jamdani`, `tangail`) map secondary rail `collection` strictly to `"sarees"` (previously `"womens"`).
+  - This eliminates `taaga-contemporary-linen-tunic` from the sarees recommendation rail.
+  - Rendered-preview regression test in `songoskriti-preview-compositions.test.tsx` strictly validates:
+    - Allowed: `dhakai-jamdani-heritage-saree`, `muslin-floral-festive-saree`, `tangail-handloom-cotton-saree`.
+    - Prohibited & absent: `taaga-contemporary-linen-tunic`, panjabi, kurta, quilt, jewellery, and children's apparel.
 - **Section Naming & Category Affinity:**
   - Production PDP: Rendered by `ProductConversion` via `product_recommendations` RPC ("YOU MAY ALSO LIKE", uppercase Playfair Display) returning 6 regional artisan textiles.
   - Theme Preview PDP: Rendered by theme rail ("Complete the look" / "লুক সম্পূর্ণ করুন") powered by demo category affinity. Both strictly omit self-recommendations.
@@ -1945,11 +1971,13 @@ All 7 required viewports verified on live production `https://flamelancer.com/`:
     2. `muslin-floral-festive-saree` (৳ 9,500)
     3. `rajshahi-silk-festive-panjabi` (৳ 4,950)
     4. `tangail-handloom-cotton-saree` (৳ 3,450)
+- **Quilt Containment:**
+  - `handcrafted-nakshi-kantha-quilt` confined strictly to `living`, `nakshi-kantha`, `gifting`, and `heritage`.
 
 ### 20.5 P1 — Customer-Facing PDP Merchant Identity
 - Breadcrumb and header dynamically project `Flame Fashion BD` via `merchantBrand` in `ThemePreviewFrame.tsx`. Internal theme blueprint name `Songoskriti` is never exposed in customer-facing breadcrumbs.
 
-### 20.6 P2 — Verifiable Trust Claims, Support Settings, and COD Configuration
+### 20.6 P2 — Verifiable Trust Claims, Support Settings, and Provenance Boundary
 Independent database verification against production Postgres `framique-supabase-db`:
 
 **1. Merchant Operational Settings (`merchant_settings`):**
@@ -1979,12 +2007,20 @@ Output:
  tangail-taant-cotton-saree      | Tangail Taant Handloom Cotton Saree | Woven on a traditional wooden pit loom in Delduar, Tangail. 100% fine combed cotton with contrast zari border. Includes 80cm unstitched blouse piece. Model is 168cm.                | {saree,handloom,cotton,tangail}
 ```
 
-### 20.7 P2 — Product-Page Content Cleanup
-- **Single Primary H1 Enforced:** In `src/lib/theme-preview-nav.ts`, `applyDemoFocus` no longer overwrites `heading` widgets with `focus.title` on product templates (`focus!.template !== "product"`). The duplicate product title heading after product returns is eliminated, preserving the authentic "Product Details & Craft" section title.
-- **Clean Rail Headings:** Editorial cross-sell heading "Complete the look" preserved.
+> [!NOTE]
+> **Audit Boundary Clarification:** The above records establish verifiable catalog data integrity within the Framique hosting platform and production Postgres database for merchant `Flame Fashion BD`. While these database assertions confirm that the digital storefront is correctly configured to display these claims without software or schema anomalies, an independent physical supply-chain audit (such as on-site verification of master weaver cooperatives in Sonargaon, Delduar, or Jessore) is a distinct physical operations process outside the software platform boundary.
+
+### 20.7 P2 — Product-Page Content Cleanup & DOM Single H1 Enforcement
+- **Single Primary H1 Enforced:**
+  - On product page templates, `ProductInfo` (`product_meta`) authors the unique `<h1>` element displaying `{product.title}`.
+  - In `src/components/store/ThemePreviewFrame.tsx`, `primaryId` is guarded: `const primaryId = baseTemplate === "product" ? null : primarySectionId(...)`. This prevents Section 2 ("Product Details & Craft") from being dynamically promoted to `<h1>`.
+  - In `src/lib/theme-preview-nav.ts`, `applyDemoFocus` preserves the authored section heading "Product Details & Craft" as an `<h2>`.
+  - DOM validation confirms: `document.querySelectorAll("h1").length === 1` and `document.querySelectorAll("h2")` contains "Product Details & Craft".
+- **Clean Rail Headings:** Editorial cross-sell heading "Complete the look" / "লুক সম্পূর্ণ করুন" preserved.
 
 ### 20.8 Verification & Test Results
 - `bun run typecheck` — **PASS** (0 errors)
-- `bun test src/lib/preview-demo-data.test.ts` — **PASS** (3/3 tests passed, covering girls/boys distinctness and recommendation exclusions)
-- `bun test src/lib/themes/songoskriti/preview.test.ts` — **PASS** (3/3 tests passed)
+- `bun test src/lib/preview-demo-data.test.ts src/lib/themes/songoskriti/preview.test.ts` — **PASS** (9/9 tests passed)
+- `bunx vitest run src/components/store/songoskriti-preview-compositions.test.tsx` — **PASS** (11/11 tests passed, verifying single H1, Saree rail exclusions, and intentional Kids cross-sell)
+- `bun run test:contracts` — **PASS** (13 contract suites, 258 tests passed)
 
