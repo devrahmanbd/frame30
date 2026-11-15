@@ -688,8 +688,12 @@ export function ThemePreviewFrame({
       ? applyDemoFocus(ast.main, demoFocus)
       : ast.main;
   // The preview has no route to supply the h1, so the elected primary
-  // section owns it — same election the storefront host runs.
-  const primaryId = primarySectionId({ ...ast, main: focusedMain });
+  // section owns it — same election the storefront host runs. On product
+  // template, `product_meta` (via ProductInfo) already renders the single H1.
+  const primaryId =
+    baseTemplate === "product"
+      ? null
+      : primarySectionId({ ...ast, main: focusedMain });
   // Lane B2-1: per-page skin sheets. Keys come from the RENDERED page
   // (header + focused main + footer, so a clicked collection's rails count);
   // only matching sheets inline, inside ThemeSurface. Fail-open: any failure

@@ -77,4 +77,71 @@ describe("previewDemoMap collection filtering", () => {
     expect(rows.length).toBeGreaterThan(0);
     expect(rows.map((r) => r.id)).not.toContain("dhakai-jamdani-heritage-saree");
   });
+
+  it("resolves sarees More to explore to exclusively authentic sarees, rejecting all other categories", () => {
+    const rows = rowsFor("sarees");
+    const ids = rows.map((r) => r.id);
+
+    // Allowed:
+    expect(ids).toContain("dhakai-jamdani-heritage-saree");
+    expect(ids).toContain("muslin-floral-festive-saree");
+    expect(ids).toContain("tangail-handloom-cotton-saree");
+
+    // Rejected:
+    expect(ids).not.toContain("taaga-contemporary-linen-tunic");
+    expect(ids).not.toContain("taaga-man-relaxed-khadi-shirt");
+    expect(ids).not.toContain("rajshahi-silk-festive-panjabi");
+    expect(ids).not.toContain("comilla-handspun-khadi-kurta");
+    expect(ids).not.toContain("handcrafted-nakshi-kantha-quilt");
+    expect(ids).not.toContain("dhamrai-brass-necklace");
+    expect(ids).not.toContain("rongpur-silver-filigree-earrings");
+    expect(ids).not.toContain("girls-silk-festive-ghagra-choli");
+    expect(ids).not.toContain("boys-silk-panjabi-pajama-set");
+  });
+
+  it("applies demo focus on /c/sarees such that More to explore is mapped to sarees, not womens", async () => {
+    const { applyDemoFocus, resolveDemoFocus } = await import("./theme-preview-nav");
+    const focus = resolveDemoFocus("songoskriti", "collection", "sarees");
+    expect(focus).not.toBeNull();
+    const authoredGrid = {
+      ...newSection("product_grid"),
+      props: { source: "collection", collection: "new-in", heading: "New Arrivals" },
+    };
+    const authoredSecondaryRail = {
+      ...newSection("product_rail"),
+      props: { source: "collection", collection: "festive", heading: "More to explore" },
+    };
+    const focused = applyDemoFocus([authoredGrid, authoredSecondaryRail], focus!);
+    expect(focused[1].props["collection"]).toBe("sarees");
+    expect(focused[1].props["collection"]).not.toBe("womens");
+
+    // Resolving requests for focused[1] yields strictly sarees
+    const bundle = collectWidgetRequests({
+      header: [],
+      main: [focused[1]],
+      footer: [],
+    } as never);
+    const map = previewDemoMap(bundle, "songoskriti");
+    const recRows = map[bundle.byNode[focused[1].id]!] ?? [];
+    const recIds = recRows.map((r) => r.id);
+    expect(recIds).toContain("dhakai-jamdani-heritage-saree");
+    expect(recIds).not.toContain("taaga-contemporary-linen-tunic");
+  });
+
+  it("renames secondary rail to More Children's Wear for girls and boys collections", async () => {
+    const { applyDemoFocus, resolveDemoFocus } = await import("./theme-preview-nav");
+    const girlsFocus = resolveDemoFocus("songoskriti", "collection", "girls");
+    const authoredGrid = {
+      ...newSection("product_grid"),
+      props: { source: "collection", collection: "new-in", heading: "New Arrivals" },
+    };
+    const authoredSecondaryRail = {
+      ...newSection("product_rail"),
+      props: { source: "collection", collection: "festive", heading: "More to explore" },
+    };
+    const focused = applyDemoFocus([authoredGrid, authoredSecondaryRail], girlsFocus!);
+    expect(focused[0].props["heading"]).toBe("Girls Festive Wear");
+    expect(focused[1].props["heading"]).toBe("More Children's Wear");
+    expect(focused[1].props["collection"]).toBe("kids");
+  });
 });

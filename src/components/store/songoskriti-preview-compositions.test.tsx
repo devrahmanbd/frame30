@@ -34,6 +34,7 @@
  */
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { TemplateKey, ThemeAst } from "@/lib/builder-ast";
 import { LanguageProvider } from "@/lib/i18n";
 import { formatDisplayMoney } from "@/lib/money-display";
@@ -128,19 +129,29 @@ function themeTemplates(): Record<TemplateKey, ThemeAst> {
   };
 }
 
-function render(template: TemplateKey): string {
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+});
+
+function render(
+  template: TemplateKey,
+  initialFocus?: string,
+): string {
   return renderToStaticMarkup(
-    <LanguageProvider initialLang="en">
-      <ThemePreviewFrame
-        themeName={source.themeName}
-        author={source.author}
-        blueprintKey={source.key}
-        tokens={source.tokens}
-        templates={themeTemplates()}
-        initialTemplate={template}
-        onClose={() => {}}
-      />
-    </LanguageProvider>,
+    <QueryClientProvider client={queryClient}>
+      <LanguageProvider initialLang="en">
+        <ThemePreviewFrame
+          themeName={source.themeName}
+          author={source.author}
+          blueprintKey={source.key}
+          tokens={source.tokens}
+          templates={themeTemplates()}
+          initialTemplate={template}
+          initialFocus={initialFocus}
+          onClose={() => {}}
+        />
+      </LanguageProvider>
+    </QueryClientProvider>,
   );
 }
 
@@ -311,3 +322,45 @@ describe("songoskriti preview — the checkout composition", () => {
     expect(html).not.toContain("৳ 4,500");
   });
 });
+
+describe("songoskriti preview — product composition DOM H1 count & heading levels", () => {
+  it("renders the product page with exactly one H1 and Product Details & Craft as H2", () => {
+    const html = render("product", "dhakai-jamdani-heritage-saree");
+    // Exactly one <h1> on the entire page (the product title)
+    expect(html.match(/<h1/g)?.length ?? 0).toBe(1);
+    expect(html).toMatch(/<h1[^>]*>Dhakai Jamdani Heritage Saree<\/h1>/);
+    // Product Details & Craft is rendered as <h2>, not <h1>
+    expect(html).toContain("Product Details &amp; Craft");
+    expect(html).not.toMatch(/<h1[^>]*>Product Details &amp; Craft<\/h1>/);
+    expect(html).toMatch(/<h2[^>]*>Product Details &amp; Craft<\/h2>/);
+  });
+});
+
+describe("songoskriti preview — collection composition /c/sarees recommendations", () => {
+  it("renders More to explore on /c/sarees with strictly authentic sarees and rejects Taaga tunic", () => {
+    const html = render("collection", "sarees");
+    // Authentic sarees are present in the rendered HTML
+    expect(html).toContain("Dhakai Jamdani Heritage Saree");
+    expect(html).toContain("Handwoven Muslin Floral Saree");
+    expect(html).toContain("Tangail Taant Handloom Cotton Saree");
+
+    // Strictly rejected from /c/sarees:
+    expect(html).not.toContain("Taaga Contemporary Asymmetric Linen Tunic");
+    expect(html).not.toContain("Taaga Man Relaxed Fit Khadi Shirt");
+    expect(html).not.toContain("Rajshahi Silk Festive Panjabi");
+    expect(html).not.toContain("Comilla Handspun Khadi Kurta");
+    expect(html).not.toContain("Handcrafted Nakshi Kantha Quilt");
+    expect(html).not.toContain("Dhamrai Brass Heritage Necklace");
+    expect(html).not.toContain("Girls Silk Festive Ghagra Choli Set");
+    expect(html).not.toContain("Boys Handloom Silk Panjabi &amp; Pajama");
+  });
+
+  it("renders More Children's Wear intentional cross-sell on /c/girls", () => {
+    const html = render("collection", "girls");
+    expect(html).toContain("Girls Festive Wear");
+    expect(html).toContain("Girls Silk Festive Ghagra Choli Set");
+    expect(html).toContain("More Children&#x27;s Wear");
+    expect(html).toContain("Boys Handloom Silk Panjabi &amp; Pajama");
+  });
+});
+

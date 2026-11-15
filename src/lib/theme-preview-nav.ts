@@ -825,10 +825,14 @@ export function applyDemoFocus(
       ) {
         const col = focus!.collection.toLowerCase();
         let relatedCol = col;
+        let secondaryHeading = next.props["heading"];
+        let secondaryHeadingBn = next.props["heading_bn"];
         if (col === "kids" || col === "girls" || col === "boys") {
           relatedCol = "kids";
+          secondaryHeading = "More Children's Wear";
+          secondaryHeadingBn = "আরও শিশুদের পোশাক";
         } else if (col === "sarees" || col === "jamdani" || col === "tangail") {
-          relatedCol = "womens";
+          relatedCol = "sarees";
         } else if (col === "mens" || col === "panjabi") {
           relatedCol = "mens";
         } else if (col === "women" || col === "womens") {
@@ -838,6 +842,8 @@ export function applyDemoFocus(
           ...next,
           props: {
             ...next.props,
+            heading: secondaryHeading,
+            heading_bn: secondaryHeadingBn,
             collection: relatedCol,
           },
         };
