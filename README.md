@@ -16,6 +16,9 @@ is held to.
 - `.e2e/` — Playwright loops (`public_loop`, `store_loop`, `admin_loop`) — see `.e2e/README.md`
 
 - `SYSTEM.md` — architecture truth (stack, tenants, RLS, money/currency rules)
+- `report.md` — active release record & Wave 20 production verification audit
+- `walkthrough.md` — Wave 20 production remediation walkthrough and evidence
+- `docs/wave20-evidence/` — publicly accessible Wave 20 visual screenshots and verification artifacts
 - `plan.md` — S1–S8 slice roadmap
 - `docs/00-meta/` — PLAN, design system, conventions
 - `docs/01-…/` — per-area plans and specs (`README.md` per area + depth specs)
