@@ -115,7 +115,7 @@ export function heroTimelinePlan(
       {
         target: "[data-hero-art]",
         position: "hero-art",
-        from: { x: 24, autoAlpha: 0 },
+        from: { x: 12 },
       },
     ],
   };
@@ -359,6 +359,8 @@ export function useHeroMotion(
         ) => {
           for (const step of plan.steps) {
             if (step.target === "[data-hero-art]") continue;
+            const targetEl = scope.querySelector(step.target);
+            if (!targetEl) continue;
             if (step.splitWords && splitWords && splitWords.length > 0) {
               parent.add(
                 gsap.from(splitWords, {
@@ -374,7 +376,7 @@ export function useHeroMotion(
               );
             } else {
               parent.add(
-                gsap.from(step.target, {
+                gsap.from(targetEl, {
                   ...(step.from.x !== undefined ? { x: step.from.x } : {}),
                   ...(step.from.y !== undefined ? { y: step.from.y } : {}),
                   autoAlpha: 0,
@@ -390,17 +392,19 @@ export function useHeroMotion(
         };
 
         const buildArt = (parent: GsapTimeline) => {
-          const art = plan.steps.find((s) => s.target === "[data-hero-art]")!;
+          const art = plan.steps.find((s) => s.target === "[data-hero-art]");
+          if (!art) return;
+          const targetEl = scope.querySelector<HTMLElement>(art.target);
+          if (!targetEl) return;
           parent.add(
-            gsap.from(art.target, {
+            gsap.from(targetEl, {
               x: art.from.x ?? 0,
-              autoAlpha: 0,
               duration: plan.defaults.duration,
               ease: plan.defaults.ease,
               overwrite: "auto",
-              clearProps: "transform,opacity,visibility",
+              clearProps: "transform",
             }),
-            art.position,
+            "hero-art",
           );
         };
 
@@ -411,6 +415,8 @@ export function useHeroMotion(
             defaults: { ...plan.defaults },
           });
           tl.addLabel("hero-start", 0);
+          tl.addLabel("hero-art", 0);
+          tl.addLabel("hero-copy", 0.15);
           // SplitText chunk is best-effort: failure degrades to the
           // whole-headline tween built by buildCopyTimeline(null).
           void import("gsap/SplitText")
@@ -472,6 +478,8 @@ export function useHeroMotion(
             defaults: { ...plan.defaults },
           });
           tl.addLabel("hero-start", 0);
+          tl.addLabel("hero-art", 0);
+          tl.addLabel("hero-copy", 0.15);
           buildCopyTimeline(tl, null);
           buildArt(tl);
           return undefined;

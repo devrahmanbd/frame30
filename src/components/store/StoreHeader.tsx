@@ -468,7 +468,7 @@ export function HeaderBrandMark({
 
   const textLogoNode = (
     <span
-      className={`font-bangla-display block truncate text-xl font-semibold tracking-tight ${isLuxury ? "hidden" : ""} text-[var(--theme-ink)]`}
+      className={`font-bangla-display block truncate text-base sm:text-lg lg:text-xl font-semibold tracking-tight ${isLuxury ? "hidden" : ""} text-[var(--theme-ink)]`}
     >
       {name}
     </span>

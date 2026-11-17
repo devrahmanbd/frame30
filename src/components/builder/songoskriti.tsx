@@ -1411,7 +1411,7 @@ const SongoskritiProductGrid: WidgetComponent = (ctx) => {
     return (
       <section className="w-full bg-[var(--theme-surface)] py-4">
         <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-6 lg:px-10">
-          {heading && (
+          {template !== "collection" && heading && (
             <div className="mb-6 flex flex-col items-center text-center">
               {badgeLabel && (
                 <span className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-accent)]">
@@ -1460,7 +1460,17 @@ const SongoskritiProductGrid: WidgetComponent = (ctx) => {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-12 sm:gap-x-8 sm:gap-y-16">
+            <div
+              className={
+                rows.length === 1
+                  ? "grid grid-cols-1 max-w-sm sm:max-w-md mx-auto gap-y-12"
+                  : rows.length === 2
+                    ? "grid grid-cols-1 sm:grid-cols-2 max-w-2xl sm:max-w-3xl mx-auto gap-x-8 gap-y-12 sm:gap-y-16"
+                    : rows.length === 3
+                      ? "grid grid-cols-2 sm:grid-cols-3 max-w-5xl mx-auto gap-x-4 sm:gap-x-8 gap-y-12 sm:gap-y-16"
+                      : "grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-12 sm:gap-x-8 sm:gap-y-16"
+              }
+            >
               {rows.map((row) => (
                 <SongoskritiProductCard
                   key={row.id}

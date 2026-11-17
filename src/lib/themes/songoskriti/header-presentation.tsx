@@ -914,7 +914,7 @@ export function SongoskritiHeaderShell({
         className="h-[34px] w-auto object-contain transition-all duration-300"
       />
     ) : (
-      <span className="font-serif text-lg sm:text-2xl font-light tracking-[0.1em] sm:tracking-[0.15em] uppercase text-[var(--theme-ink)] block truncate max-w-[150px] min-[360px]:max-w-[200px] sm:max-w-none">
+      <span className="font-serif text-[14.5px] min-[360px]:text-[16.5px] min-[390px]:text-lg sm:text-2xl font-light tracking-[0.05em] min-[360px]:tracking-[0.08em] sm:tracking-[0.15em] uppercase text-[var(--theme-ink)] block whitespace-nowrap">
         {name}
       </span>
     );

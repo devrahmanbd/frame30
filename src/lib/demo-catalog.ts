@@ -1439,6 +1439,32 @@ const HANDLOOM_APPAREL: DemoCatalog = {
       ],
     },
     {
+      slug: "boys-handloom-silk-panjabi-set",
+      title: "Boys Handloom Silk Panjabi Set",
+      description:
+        "Traditional handloom silk panjabi with tonal embroidery along the collar and fine cotton pajama set for boys. Tailored for comfort during celebrations.",
+      category: "kids",
+      collections: ["eid-festive", "festive-sale", "kids", "boys", "wedding"],
+      tags: ["kids", "panjabi", "silk", "boys", "festive"],
+      image_url: "/api/public/ph/kids/boys-silk-panjabi-pajama-set.svg",
+      variants: [
+        {
+          name: "Age 6-8 Yrs - Festive Crimson",
+          sku: "HRT-BOY-06CR",
+          price: 385000,
+          compare_at: 450000,
+          stock: 15,
+        },
+        {
+          name: "Age 8-10 Yrs - Festive Crimson",
+          sku: "HRT-BOY-08CR",
+          price: 420000,
+          compare_at: 480000,
+          stock: 18,
+        },
+      ],
+    },
+    {
       slug: "hand-carved-brass-incense-burner",
       title: "Hand-Carved Brass Incense Burner & Candle Set",
       description:
@@ -2653,6 +2679,11 @@ const SONGOSKRITI: DemoCatalog = {
       slug: "boys",
       name: "Boys Ethnic Wear",
       description: "Handloom silk Panjabis and traditional ethnic sets for boys — perfect for Eid, Puja, and family celebrations.",
+    },
+    {
+      slug: "living",
+      name: "Home & Living",
+      description: "Nakshi kantha quilts, ceramics and artisan home textiles.",
     },
   ],
   products: [

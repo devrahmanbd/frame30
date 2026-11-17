@@ -475,8 +475,8 @@ footer span:not([data-payment-mark]) {
 }
 
 footer [data-payment-mark] {
-  color: #1A1A1A !important;
-  background-color: #FFFFFF !important;
+  color: var(--theme-ink) !important;
+  background-color: var(--theme-surface) !important;
 }
 
 footer a {

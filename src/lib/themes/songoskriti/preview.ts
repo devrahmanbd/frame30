@@ -148,8 +148,8 @@ export function songoskritiPreviewSource(
               sortDefault: "Featured",
             }),
             s("product_grid", {
-              heading: "New Arrivals",
-              heading_bn: "নতুন এসেছে",
+              heading: "",
+              heading_bn: "",
               source: "collection",
               collection: "new-in",
               promise: "In stock · Dispatched in 24h",

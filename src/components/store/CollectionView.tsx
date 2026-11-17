@@ -1610,7 +1610,17 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
             </div>
           ) : (
             <>
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-6 sm:gap-y-12">
+              <ul
+                className={
+                  displayedProducts.length === 1
+                    ? "grid grid-cols-1 max-w-sm sm:max-w-md mx-auto gap-y-10"
+                    : displayedProducts.length === 2
+                      ? "grid grid-cols-1 sm:grid-cols-2 max-w-2xl sm:max-w-3xl mx-auto gap-x-6 gap-y-10 sm:gap-y-12"
+                      : displayedProducts.length === 3
+                        ? "grid grid-cols-2 sm:grid-cols-3 max-w-5xl mx-auto gap-x-4 sm:gap-x-6 gap-y-10 sm:gap-y-12"
+                        : "grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-x-6 sm:gap-y-12"
+                }
+              >
                 {displayedProducts.map((p) => {
                   const info = resolveProductPricingAndStock(p);
                   const min = info.priceMinMinor;
@@ -1780,14 +1790,20 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
   const cleanAst = dynamicAst
     ? {
         ...dynamicAst,
-        main: dynamicAst.main.filter(
-          (s) =>
-            s.type !== "category_header" &&
-            s.type !== "result_toolbar" &&
-            s.type !== "announcement_bar" &&
-            s.type !== "breadcrumb" &&
-            s.type !== "product_rail",
-        ),
+        main: dynamicAst.main
+          .filter(
+            (s) =>
+              s.type !== "category_header" &&
+              s.type !== "result_toolbar" &&
+              s.type !== "announcement_bar" &&
+              s.type !== "breadcrumb" &&
+              s.type !== "product_rail",
+          )
+          .map((s) =>
+            s.type === "product_grid"
+              ? { ...s, props: { ...s.props, heading: "", heading_bn: "" } }
+              : s,
+          ),
       }
     : dynamicAst;
 

@@ -787,7 +787,15 @@ export function applyDemoFocus(
         (section.type === "heading" || section.type === "category_header")
       ) {
         head = true;
-        next = { ...section, props: { ...section.props, text: focus!.title } };
+        next = {
+          ...section,
+          props: {
+            ...section.props,
+            text: focus!.title,
+            heading: focus!.title,
+            title: focus!.title,
+          },
+        };
       }
 
       if (
