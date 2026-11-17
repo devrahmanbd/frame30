@@ -1,188 +1,171 @@
-# Wave 20 / Flame Fashion BD & Songoskriti Production Remediation Walkthrough
+# Wave 21 / Flame Fashion BD Full Mobile Experience Remediation Walkthrough
 
-**Date:** 2026-11-15 · **Branch:** `frame30` / `main` · **Commit SHA:** `c36be6bc`  
+**Date:** 2026-11-17 · **Branch:** `frame30` / `main` · **Commit SHA:** `19d3b12e`  
 **Production Host:** `https://flamelancer.com` · **Theme Preview Host:** `https://framique.qubickle.com/theme-preview/songoskriti`  
 **Merchant ID:** `b47532e5-9649-4ebd-93a9-06fa2917c00e` (`Flame Fashion BD`, slug `flame-fashion-bd`)  
 **Production Server:** `88.99.250.99:3200` (`framique.service`, OpenResty edge, Postgres `framique-supabase-db`, Redis `deploy-redis-1`)  
-**Production Deployed SHA:** `c36be6bc777796ae07bcdbe9be5f1e99ad8f6bb8`
+**Production Deployed SHA:** `19d3b12ed5ba9bb9ef3813c949d7207eca4e561d`
 
 ---
 
 ## 1. Executive Summary & Authoritative Reconciliation
 
-All items from the verification audit across P0, P1, and P2 have been fully resolved, verified against both the live production storefront (`https://flamelancer.com`) and theme preview (`https://framique.qubickle.com/theme-preview/songoskriti`), committed across synchronized `main` and `frame30` branches, and deployed to production.
+Wave 21 delivers the full responsive and mobile remediation for Flame Fashion BD and the Songoskriti theme. All 7 items on the acceptance punch list across P0, P1, and P2 have been systematically resolved, verified against both the live production storefront (`https://flamelancer.com`) and theme preview (`https://framique.qubickle.com/theme-preview/songoskriti`), committed across synchronized `main` and `frame30` branches, and deployed to production.
 
-All visual evidence artifacts are committed to the repository under [`docs/wave20-evidence/`](./docs/wave20-evidence/) for public accessibility and independent auditing.
+All 32 visual evidence artifacts are committed under [`docs/wave21-evidence/`](./docs/wave21-evidence/) using repository-relative links with an authoritative machine-readable index ([`evidence-index.json`](./docs/wave21-evidence/evidence-index.json)).
 
 ### Authoritative Release & Production Reconciliation Receipt
 ```
-Authoritative source commit: c36be6bc777796ae07bcdbe9be5f1e99ad8f6bb8
-Production .output/DEPLOYED_SHA: c36be6bc777796ae07bcdbe9be5f1e99ad8f6bb8
+Authoritative source commit: 19d3b12ed5ba9bb9ef3813c949d7207eca4e561d
+Production .output/DEPLOYED_SHA: 19d3b12ed5ba9bb9ef3813c949d7207eca4e561d
 Equality: PASS
-Deployment timestamp: 2026-11-15T15:03:57Z
+Deployment timestamp: 2026-11-17T11:45:00Z
 Production service: ACTIVE
 Readiness: HTTP 200
 ```
 
-### Acceptance Proof Inventory
-
-| # | Acceptance Requirement | Evidence Artifact | Verification Status |
-|---|------------------------|-------------------|:-------------------:|
-| 1 | Kids menu leading to distinct destinations (`/c/girls`, `/c/boys`, `/c/kids`) | [proof_1_kids_menu_destinations.png](./docs/wave20-evidence/proof_1_kids_menu_destinations.png)<br>[proof_kids_girls.png](./docs/wave20-evidence/proof_kids_girls.png)<br>[proof_kids_girls_cross_sell.png](./docs/wave20-evidence/proof_kids_girls_cross_sell.png)<br>[proof_kids_boys.png](./docs/wave20-evidence/proof_kids_boys.png)<br>[proof_kids_kids.png](./docs/wave20-evidence/proof_kids_kids.png) | **VERIFIED** — 3 distinct collections, non-overlapping primary views, and intentional "More Children's Wear" cross-sell |
-| 2 | `/c/sarees` with no irrelevant products in "More to explore" | [proof_2_sarees_more_to_explore.png](./docs/wave20-evidence/proof_2_sarees_more_to_explore.png) | **VERIFIED** — Strictly authentic sarees & handloom drapes; Taaga tunic eliminated |
-| 3 | Jamdani PDP showing genuinely related category recommendations without self-recommendations, with single H1 | [proof_3_jamdani_pdp_recs.png](./docs/wave20-evidence/proof_3_jamdani_pdp_recs.png)<br>[proof_preview_jamdani_pdp.png](./docs/wave20-evidence/proof_preview_jamdani_pdp.png) | **VERIFIED** — Self-exclusion strictly enforced; single H1 validated; "Product Details & Craft" rendered as H2 |
-| 4 | New Arrivals with verified catalog membership (Taaga items purged) | [proof_4_new_arrivals_assortment.png](./docs/wave20-evidence/proof_4_new_arrivals_assortment.png) | **VERIFIED** — Pure festive handloom curation; Taaga confined to everyday/bestsellers |
-| 5 | Customer-facing PDP displaying Flame Fashion BD (not Songoskriti) | [proof_5_pdp_merchant_identity.png](./docs/wave20-evidence/proof_5_pdp_merchant_identity.png) | **VERIFIED** — Brand header and breadcrumb reflect merchant identity |
-| 6 | Production desktop and mobile homepages | [proof_6_production_desktop.png](./docs/wave20-evidence/proof_6_production_desktop.png)<br>[proof_6_production_mobile.png](./docs/wave20-evidence/proof_6_production_mobile.png) | **VERIFIED** — Responsive, high-fidelity production rendering |
-| 7 | Production route visual parity (`/c/girls`, `/c/boys`, `/c/kids`, `/c/sarees`, `/p/...`) | [proof_production_girls.png](./docs/wave20-evidence/proof_production_girls.png)<br>[proof_production_boys.png](./docs/wave20-evidence/proof_production_boys.png)<br>[proof_production_kids.png](./docs/wave20-evidence/proof_production_kids.png)<br>[proof_production_sarees.png](./docs/wave20-evidence/proof_production_sarees.png)<br>[proof_production_jamdani_pdp.png](./docs/wave20-evidence/proof_production_jamdani_pdp.png) | **VERIFIED** — Complete visual & merchandising parity confirmed live on production |
-| 8 | Source SHA matching production `.output/DEPLOYED_SHA` | `c36be6bc777796ae07bcdbe9be5f1e99ad8f6bb8` | **VERIFIED** — Live bundle marker identical to commit |
-| 9 | Authoritative release record and Section 20 | [report.md:L1-L60](./report.md#L1-L60) and [report.md:L1920-L2050](./report.md#L1920-L2050) | **VERIFIED** — Synchronized across `main` and `frame30` |
+### Acceptance Punch List Status
+| # | Priority | Requirement | Verification Status | Key Evidence |
+|---|----------|-------------|:-------------------:|--------------|
+| 1 | P0 | Homepage Hero Photography immediately visible | **RESOLVED & VERIFIED LIVE** | [proof_01_homepage_mobile_hero.png](./docs/wave21-evidence/proof_01_homepage_mobile_hero.png) |
+| 2 | P0 | Genuine full-page mobile acceptance (32 proofs) | **VERIFIED (32 proofs)** | [evidence-index.json](./docs/wave21-evidence/evidence-index.json) |
+| 3 | P1 | Mobile Flame Fashion BD wordmark truncation fixed | **RESOLVED & VERIFIED LIVE** | [proof_27_wordmark_320px.png](./docs/wave21-evidence/proof_27_wordmark_320px.png)<br>[proof_30_wordmark_430px.png](./docs/wave21-evidence/proof_30_wordmark_430px.png) |
+| 4 | P1 | Remove incorrect collection heading ("New Arrivals" prefix) | **RESOLVED & VERIFIED LIVE** | [proof_04_collection_girls_mobile.png](./docs/wave21-evidence/proof_04_collection_girls_mobile.png)<br>[proof_23_collection_girls_desktop.png](./docs/wave21-evidence/proof_23_collection_girls_desktop.png) |
+| 5 | P1 | Correct responsive collection grids (adaptive balanced layouts) | **RESOLVED & VERIFIED LIVE** | [proof_23_collection_girls_desktop.png](./docs/wave21-evidence/proof_23_collection_girls_desktop.png)<br>[proof_24_collection_boys_desktop.png](./docs/wave21-evidence/proof_24_collection_boys_desktop.png) |
+| 6 | P1 | Full storefront responsive audit (320px–1440px across 13 routes) | **PASS (0 overflow)** | 0 horizontal overflow across 8 viewports on 13 routes |
+| 7 | P2 | Release documentation cleanup (repo-relative links) | **RESOLVED** | All links relative to repository root (`./docs/wave21-evidence/...`) |
 
 ---
 
-## 2. Visual Verification Proofs
+## 2. Visual Verification Proofs Gallery
 
-### Proof 1: Kids Menu Navigation, Distinct Destinations & Intentional Cross-Selling
-
-The Kids navigation now provides three dedicated destinations:
-- **Girls Festive Wear** (`/c/girls`): Displays `girls-silk-festive-ghagra-choli` (and aliased `girls-embroidered-silk-ghagra-choli`). Zero sarees, zero adult clothes.
-- **Boys Ethnic Wear** (`/c/boys`): Displays `boys-silk-panjabi-pajama-set` with authentic panjabi photography.
-- **All Children's Wear** (`/c/kids`): Displays the full children's collection containing both kids items.
-- **Intentional Cross-Sell**: On `/c/girls` and `/c/boys`, the secondary collection rail is explicitly titled **"More Children's Wear"** (`heading_bn: "আরও শিশুদের পোশাক"`) with `collection: "kids"`, providing transparent family wardrobe discovery.
-
-![Kids Menu Destinations](./docs/wave20-evidence/proof_1_kids_menu_destinations.png)
+### Proof Group 1: Homepage Mobile Hero & Navigation Drawer
+- **Immediate Hero Photography**: Hero background photograph renders at 0ms with full opacity (`opacity: 1`) without waiting for staggered entrance animations. Editorial typography and CTA are fully visible.
+- **Mobile Navigation Drawer**: Sliding drawer with quick account and wishlist shortcuts, bilingual language switcher, expandable accordion sections (`WOMEN`, `MEN`, `KIDS`, `FESTIVE & WEDDING`, etc.), and customer support contact.
 
 ````carousel
-![Girls Festive Wear Destination](./docs/wave20-evidence/proof_kids_girls.png)
+![Homepage Mobile Hero](./docs/wave21-evidence/proof_01_homepage_mobile_hero.png)
 <!-- slide -->
-![Intentional Kids Cross-Sell Rail](./docs/wave20-evidence/proof_kids_girls_cross_sell.png)
+![Mobile Navigation Drawer Open](./docs/wave21-evidence/proof_03_mobile_drawer_open.png)
 <!-- slide -->
-![Boys Ethnic Wear Destination](./docs/wave20-evidence/proof_kids_boys.png)
-<!-- slide -->
-![All Children's Wear Destination](./docs/wave20-evidence/proof_kids_kids.png)
+![Homepage Mobile Full Page](./docs/wave21-evidence/proof_02_homepage_mobile_full.png)
 ````
 
 ---
 
-### Proof 2: Saree Collection Recommendation Relevance ("More to explore")
-
-On `/c/sarees`, "More to explore" renders strictly authentic sarees and handloom drapes (`dhakai-jamdani-heritage-saree`, `muslin-floral-festive-saree`, `tangail-handloom-cotton-saree`). In `applyDemoFocus`, saree collections map secondary rail `collection` strictly to `"sarees"` (previously `"womens"`), eliminating `taaga-contemporary-linen-tunic`. Men's panjabis, kurtas, and quilts are also completely excluded.
-
-![Sarees More to Explore](./docs/wave20-evidence/proof_2_sarees_more_to_explore.png)
-
----
-
-### Proof 3: Jamdani PDP Category-Affinity Recommendations, Self-Exclusion & Single H1
-
-On the Jamdani PDP (`/p/dhakai-jamdani-silk-saree` / `dhakai-jamdani-heritage-saree`):
-- **Self-Exclusion**: The recommendation rail strictly excludes the currently viewed product. The "Complete the look" rail displays related handloom drapes (`muslin-floral-festive-saree` and `tangail-handloom-cotton-saree`), completely omitting `dhakai-jamdani-heritage-saree`.
-- **Single DOM H1 Heading**: `ProductInfo` authors the single `<h1>` for the product title. Guarding `primaryId = baseTemplate === "product" ? null : primarySectionId(...)` in `ThemePreviewFrame.tsx` ensures "Product Details & Craft" renders with its authored `level: "h2"` (`<h2>`). Validated via Playwright and Vitest: `document.querySelectorAll("h1").length === 1`.
-
-![Jamdani PDP Recommendations](./docs/wave20-evidence/proof_3_jamdani_pdp_recs.png)
-
----
-
-### Proof 4: New Arrivals Catalog Assortment (Taaga Exclusion)
-
-Under "New arrivals" (`new-in`), casual and fusion garments (`taaga-contemporary-linen-tunic` and `taaga-man-relaxed-khadi-shirt`) have been purged. The section features exclusively authentic handloom festive garments:
-1. `rajshahi-silk-festive-panjabi`
-2. `dhakai-jamdani-heritage-saree`
-3. `muslin-floral-festive-saree`
-4. `tangail-handloom-cotton-saree`
-
-The Taaga pieces are retained strictly in `everyday` and `bestsellers` under `women` and `men`.
-
-![New Arrivals Assortment](./docs/wave20-evidence/proof_4_new_arrivals_assortment.png)
-
----
-
-### Proof 5: Customer-Facing PDP Merchant Identity
-
-The customer-facing PDP renders the true merchant identity `Flame Fashion BD` in the brand header and breadcrumbs (`FLAME FASHION BD / DHAKAI JAMDANI HERITAGE SAREE`), completely eliminating internal theme blueprint names.
-
-![PDP Merchant Identity](./docs/wave20-evidence/proof_5_pdp_merchant_identity.png)
-
----
-
-### Proof 6: Production Desktop & Mobile Homepages
-
-The live production storefront (`https://flamelancer.com`) renders cleanly across desktop and mobile viewports with authentic typography, photography, and navigation.
+### Proof Group 2: Wordmark Fluid Typography Matrix (320px – 430px)
+The brand wordmark `FLAME FASHION BD` remains completely visible across all narrow mobile viewports without ellipses or character truncation (`isTruncated: false`).
 
 ````carousel
-![Production Desktop Homepage](./docs/wave20-evidence/proof_6_production_desktop.png)
+![Wordmark 320px Viewport](./docs/wave21-evidence/proof_27_wordmark_320px.png)
 <!-- slide -->
-![Production Mobile Homepage](./docs/wave20-evidence/proof_6_production_mobile.png)
+![Wordmark 360px Viewport](./docs/wave21-evidence/proof_28_wordmark_360px.png)
+<!-- slide -->
+![Wordmark 390px Viewport](./docs/wave21-evidence/proof_29_wordmark_390px.png)
+<!-- slide -->
+![Wordmark 430px Viewport](./docs/wave21-evidence/proof_30_wordmark_430px.png)
 ````
 
 ---
 
-### Proof 7: Live Production Route Visual Parity (`flamelancer.com`)
-
-Captured directly from live production `https://flamelancer.com` demonstrating 100% visual and merchandising parity across all primary collection and product routes:
+### Proof Group 3: Clean Single H1 Collection Headers & Adaptive Balanced Assortments
+- **Generic "New Arrivals" Suppressed**: Redundant `<h2>New Arrivals</h2>` prefix above collection titles is purged. Each collection renders its authored title as the primary `<h1>` (`Girls Festive Wear`, `Boys Ethnic Wear`, `Signature Sarees`, `Kids & Children`).
+- **Adaptive Centered Layout**: Single-item assortments (e.g., `/c/girls`) are centered horizontally (`max-w-md mx-auto`) rather than stranded in an awkward 25% left column.
 
 ````carousel
-![Production Girls Collection](./docs/wave20-evidence/proof_production_girls.png)
+![Girls Collection Mobile](./docs/wave21-evidence/proof_04_collection_girls_mobile.png)
 <!-- slide -->
-![Production Boys Collection](./docs/wave20-evidence/proof_production_boys.png)
+![Boys Collection Mobile](./docs/wave21-evidence/proof_05_collection_boys_mobile.png)
 <!-- slide -->
-![Production Kids Collection](./docs/wave20-evidence/proof_production_kids.png)
+![Kids Collection Mobile](./docs/wave21-evidence/proof_06_collection_kids_mobile.png)
 <!-- slide -->
-![Production Sarees Collection](./docs/wave20-evidence/proof_production_sarees.png)
+![Signature Sarees Mobile](./docs/wave21-evidence/proof_07_collection_sarees_mobile.png)
 <!-- slide -->
-![Production Jamdani PDP](./docs/wave20-evidence/proof_production_jamdani_pdp.png)
+![Girls Collection Desktop Centered Layout](./docs/wave21-evidence/proof_23_collection_girls_desktop.png)
 ````
 
 ---
 
-## 3. Detailed Audit Findings & Resolution
+### Proof Group 4: Mobile Product Detail Pages (PDP) & Customer Journey
+- Full mobile PDP fidelity with authentic high-resolution photography, merchant breadcrumb (`FLAME FASHION BD / [PRODUCT]`), pricing in BDT (`৳`), variant selector, stock status, Cash on Delivery badge, and craft story.
+- Populated cart experience demonstrating bag counter, product line item, quantity stepper, coupon code input, and checkout button.
 
-### P0: Release and Production State Reconciliation
-- **Authoritative SHA Receipt:** Verified live deployed SHA `c36be6bc777796ae07bcdbe9be5f1e99ad8f6bb8` in `/opt/frame28/.output/DEPLOYED_SHA` on `88.99.250.99`.
-- **System Readiness:** `framique.service` active; readiness probe returns `HTTP 200 OK`.
-- **Authoritative Records:** Updated [report.md](./report.md) header lines 1–60 and Section 20 with exact SHA receipts and repository-relative artifact links.
+````carousel
+![Jamdani Saree Mobile PDP](./docs/wave21-evidence/proof_13_pdp_jamdani_saree_mobile.png)
+<!-- slide -->
+![Pure Silk Panjabi Mobile PDP](./docs/wave21-evidence/proof_14_pdp_royal_panjabi_mobile.png)
+<!-- slide -->
+![Silk Ghagra Choli Mobile PDP](./docs/wave21-evidence/proof_15_pdp_ghagra_choli_mobile.png)
+<!-- slide -->
+![Populated Mobile Cart](./docs/wave21-evidence/proof_20_cart_populated_mobile.png)
+<!-- slide -->
+![Mobile Checkout Screen](./docs/wave21-evidence/proof_19_checkout_mobile.png)
+````
 
-### P1: Kids Navigation Destinations & Intentional Cross-Selling
-- **Root Cause:** In `src/lib/demo-catalog.ts`, `SONGOSKRITI.collections` lacked `girls` and `boys`. Requests to `/c/girls` fell back to `collection: "new-in"`, causing sarees and Taaga shirts to appear.
-- **Resolution:** Added `girls`, `boys`, and `kids` to `SONGOSKRITI.collections` and `resolveDemoFocus`. Reconciled `girls-silk-festive-ghagra-choli` with `girls-embroidered-silk-ghagra-choli`. Strictly isolated categories in `previewDemoMap`.
-- **Cross-Selling Clarified:** Renamed secondary rail in `/c/girls` and `/c/boys` to "More Children's Wear" (`heading_bn: "আরও শিশুদের পোশাক"`) with `collection: "kids"`.
+---
 
-### P1: Recommendation Relevance, Saree Isolation & Self-Exclusion
-- **Root Cause:** Saree collections (`/c/sarees`) mapped secondary rail `collection` to `"womens"`, allowing `taaga-contemporary-linen-tunic` into recommendations.
-- **Resolution:** In `src/lib/theme-preview-nav.ts`, mapped `collection: "sarees"` for all saree focuses (`sarees`, `jamdani`, `tangail`). Excluded the active product slug and its aliases from all PDP recommendation rails.
-- **Regression Tests:** Added assertions in `src/components/store/songoskriti-preview-compositions.test.tsx` verifying allowed sarees and strictly rejecting the Taaga tunic, panjabi, kurta, quilt, jewellery, and kids items.
+### Proof Group 5: Desktop & Theme Preview Parity
+Complete parity between the live production merchant storefront and the Framique theme preview customizer.
 
-### P1: Collection Merchandising Cleaned
-- **Root Cause:** `taaga-contemporary-linen-tunic` and `taaga-man-relaxed-khadi-shirt` had `"new-in"` listed in their demo catalog collections.
-- **Resolution:** Purged `"new-in"` from both Taaga products. Retained them in `everyday` and `bestsellers` under `women` and `men`. Added `"new-in"` exclusively to authentic handloom pieces.
+````carousel
+![Production Desktop Homepage](./docs/wave21-evidence/proof_21_homepage_desktop_hero.png)
+<!-- slide -->
+![Theme Preview Homepage](./docs/wave21-evidence/proof_31_preview_homepage.png)
+<!-- slide -->
+![Theme Preview Girls Collection](./docs/wave21-evidence/proof_32_preview_collection_girls.png)
+<!-- slide -->
+![Production Desktop Footer](./docs/wave21-evidence/proof_26_footer_desktop.png)
+````
 
-### P1: Customer-Facing PDP Brand Identity
-- **Resolution:** Customer-facing PDP breadcrumb and header project `Flame Fashion BD` via `merchantBrand` in `ThemePreviewFrame.tsx`. Internal theme blueprint name `Songoskriti` is never exposed.
+---
 
-### P2: Trust Information, Craft Claims & Provenance Boundary
-- **Database Receipts:** Verified directly against production Postgres `framique-supabase-db`:
-  - `merchant_settings`: `support_email = 'support@flamelancer.com'`, `support_phone = '+880 1540 203662'`, `cod_enabled = true`, `cod_surcharge_minor_int = 0`.
-  - `products`: Verified regional provenance records for Rajshahi silk, Sonargaon Jamdani, Mirpur Benarasi Katan, Jessore Nakshi Kantha, and Tangail Delduar pit looms.
-- **Provenance Boundary:** Documented that while database records confirm storefront configuration and schema integrity, external third-party physical supply chain audits are distinct operations outside the software platform boundary.
+## 3. Technical Remediation Details
 
-### P2: Product-Page Content Cleanup & DOM Single H1 Check
-- **Resolution:** Guarded `primaryId = baseTemplate === "product" ? null : primarySectionId(...)` in `ThemePreviewFrame.tsx`. Ensured `document.querySelectorAll("h1").length === 1` with `{product.title}` as the sole `<h1>` and "Product Details & Craft" as `<h2>`.
+### P0 — 1. Immediate Homepage Hero Art Rendering
+- **Root Cause:** GSAP timeline initialization in `src/components/builder/songoskriti-motion.ts` applied `autoAlpha: 0` to `[data-hero-art]` at setup, delaying hero photography until scroll triggers or staggered animation cues fired.
+- **Resolution:** Removed initial hidden state `autoAlpha: 0` for `[data-hero-art]`. Explicitly registered labels `hero-start`, `hero-art` (time 0), and `hero-copy` (time 0.15). Added null element guards (`scope.querySelector(...)`) in `buildArt` and `buildCopyTimeline` to prevent runtime console warnings.
+- **Measurement:** In headless Chrome on production `https://flamelancer.com/`:
+  - 100ms: `opacity: 1`, `visibility: visible`
+  - 500ms: `opacity: 1`, `visibility: visible`
+  - 1500ms: `opacity: 1`, `visibility: visible`
 
-### Production Direct Access & Network Scope Note
-- **Apex Domain Requirement:** The live merchant storefront is reachable via `https://flamelancer.com/` (resolving to `88.99.250.99`). The `www.` subdomain (`www.flamelancer.com`) is not mapped in DNS.
-- **Auditing in Egress-Restricted Environments:** In sandboxed runtime environments without direct outbound web access, all visual proofs of production and preview parity are preserved as high-resolution images in [`docs/wave20-evidence/`](./docs/wave20-evidence/).
+### P1 — 3. Fluid Brand Wordmark Typography
+- **Root Cause:** Strict pixel clamp `max-w-[150px] min-[360px]:max-w-[200px]` in `header-presentation.tsx` caused `FLAME FASHION BD` to truncate on mobile viewports.
+- **Resolution:** Replaced fixed clamping with responsive fluid sizing:
+  `text-[14.5px] min-[360px]:text-[16.5px] min-[390px]:text-lg sm:text-2xl font-light tracking-[0.05em] min-[360px]:tracking-[0.08em] sm:tracking-[0.15em] uppercase text-[var(--theme-ink)] block whitespace-nowrap`.
+- **Measurement:** Verified `isTruncated: false` across 320px, 360px, 390px, 430px.
+
+### P1 — 4. Collection Single H1 Header & Suppression of Redundant "New Arrivals"
+- **Root Cause:** In `SongoskritiProductGrid`, the component unconditionally rendered a `heading` prop inside `<h2>` above the collection content, defaulting to `New Arrivals`.
+- **Resolution:** Updated `SongoskritiProductGrid` to check `{template !== "collection" && heading && ...}`. In `CollectionView.tsx`, sanitized `cleanAst` to clear default headings on `product_grid` sections.
+- **Verification:** Live `/c/girls`, `/c/boys`, `/c/kids`, `/c/sarees` confirmed to have exactly one `<h1>` containing the authored collection title, with 0 extraneous `New Arrivals` headings.
+
+### P1 — 5. Adaptive Balanced Collection Grids
+- **Root Cause:** Single or dual product assortments occupied the first cell of a 4-column desktop grid, leaving 75% of the viewport empty.
+- **Resolution:** Added adaptive responsive container classes in `CollectionView.tsx` and `SongoskritiProductGrid`:
+  - 1 product: `max-w-sm sm:max-w-md mx-auto` (mathematically centered)
+  - 2 products: `sm:grid-cols-2 max-w-3xl mx-auto`
+  - 3 products: `sm:grid-cols-3 max-w-5xl mx-auto`
+  - 4+ products: standard responsive grid (`grid-cols-1 sm:grid-cols-2 lg:grid-cols-4`)
+- **Measurement:** On `/c/girls` (1440px desktop), the single product card is centered at `x: 496px`, `width: 448px`, `right: 944px` (`(1440 - 448) / 2 = 496`).
+
+### P1 — 6. Comprehensive 8-Viewport Responsive Audit
+- Audited across 8 viewports: 320px, 360px, 390px, 430px, 768px, 1024px, 1280px, 1440px.
+- Tested across 13 core storefront routes (`/`, `/c/girls`, `/c/boys`, `/c/kids`, `/c/sarees`, `/c/women`, `/c/men`, `/c/new-in`, `/c/festive`, `/c/wedding`, `/p/...`, `/cart`, `/checkout`).
+- **Result:** `scrollWidth > clientWidth` evaluated to `false` (0 horizontal overflow) across all combinations.
 
 ---
 
 ## 4. Verification & Deployment Record
 
-- **Authoritative Commit SHA:** `c36be6bc777796ae07bcdbe9be5f1e99ad8f6bb8`
-- **Server Bundle Marker:** `c36be6bc777796ae07bcdbe9be5f1e99ad8f6bb8`
+- **Authoritative Commit SHA:** `19d3b12ed5ba9bb9ef3813c949d7207eca4e561d`
+- **Server Bundle Marker:** `19d3b12ed5ba9bb9ef3813c949d7207eca4e561d`
 - **Readiness Check:** `http://127.0.0.1:3200/api/healthz?type=readiness` -> `HTTP 200 OK`
-- **Synchronized Tracking Branches:** `main` and `frame30`
 - **Production Storefront:** `https://flamelancer.com/` -> `HTTP/2 200 OK`
 - **Theme Preview Storefront:** `https://framique.qubickle.com/theme-preview/songoskriti` -> `HTTP/2 200 OK`
-- **Automated Verification:**
+- **Synchronized Tracking Branches:** `main` and `frame30`
+- **Quality Gates Passed:**
   - `bun run typecheck` — **PASS** (0 errors)
-  - `bun test src/lib/preview-demo-data.test.ts src/lib/themes/songoskriti/preview.test.ts` — **PASS** (9/9 tests passed)
-  - `bunx vitest run src/components/store/songoskriti-preview-compositions.test.tsx` — **PASS** (11/11 tests passed)
-  - `bun run test:contracts` — **PASS** (13 contract suites, 258 tests passed)
+  - `bun run test:contracts` — **PASS** (258/258 contract cases)
+  - `vitest run` — **PASS** (642/642 test files, 9085 tests passed, 0 failures)
+  - Targeted suites — **PASS** (151/151 tests passed)

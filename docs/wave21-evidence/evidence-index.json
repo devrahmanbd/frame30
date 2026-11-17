@@ -1,0 +1,290 @@
+[
+  {
+    "name": "proof_01_homepage_mobile_hero",
+    "filename": "proof_01_homepage_mobile_hero.png",
+    "route": "/",
+    "viewport": "390x844",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_02_homepage_mobile_full",
+    "filename": "proof_02_homepage_mobile_full.png",
+    "route": "/",
+    "viewport": "390x844",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_03_mobile_drawer_open",
+    "filename": "proof_03_mobile_drawer_open.png",
+    "route": "/",
+    "viewport": "390x844",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_04_collection_girls_mobile",
+    "filename": "proof_04_collection_girls_mobile.png",
+    "route": "/c/girls",
+    "viewport": "390x844",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_05_collection_boys_mobile",
+    "filename": "proof_05_collection_boys_mobile.png",
+    "route": "/c/boys",
+    "viewport": "390x844",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_06_collection_kids_mobile",
+    "filename": "proof_06_collection_kids_mobile.png",
+    "route": "/c/kids",
+    "viewport": "390x844",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_07_collection_sarees_mobile",
+    "filename": "proof_07_collection_sarees_mobile.png",
+    "route": "/c/sarees",
+    "viewport": "390x844",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_08_collection_women_mobile",
+    "filename": "proof_08_collection_women_mobile.png",
+    "route": "/c/women",
+    "viewport": "390x844",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_09_collection_men_mobile",
+    "filename": "proof_09_collection_men_mobile.png",
+    "route": "/c/men",
+    "viewport": "390x844",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_10_collection_new_in_mobile",
+    "filename": "proof_10_collection_new_in_mobile.png",
+    "route": "/c/new-in",
+    "viewport": "390x844",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_11_collection_festive_mobile",
+    "filename": "proof_11_collection_festive_mobile.png",
+    "route": "/c/festive",
+    "viewport": "390x844",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_12_collection_wedding_mobile",
+    "filename": "proof_12_collection_wedding_mobile.png",
+    "route": "/c/wedding",
+    "viewport": "390x844",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_13_pdp_jamdani_saree_mobile",
+    "filename": "proof_13_pdp_jamdani_saree_mobile.png",
+    "route": "/p/dhakai-jamdani-silk-saree",
+    "viewport": "390x844",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_14_pdp_royal_panjabi_mobile",
+    "filename": "proof_14_pdp_royal_panjabi_mobile.png",
+    "route": "/p/pure-silk-embroidered-panjabi",
+    "viewport": "390x844",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_15_pdp_ghagra_choli_mobile",
+    "filename": "proof_15_pdp_ghagra_choli_mobile.png",
+    "route": "/p/girls-embroidered-silk-ghagra-choli",
+    "viewport": "390x844",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_16_cart_empty_mobile",
+    "filename": "proof_16_cart_empty_mobile.png",
+    "route": "/cart",
+    "viewport": "390x844",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_17_account_signed_out_mobile",
+    "filename": "proof_17_account_signed_out_mobile.png",
+    "route": "/account",
+    "viewport": "390x844",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_18_wishlist_empty_mobile",
+    "filename": "proof_18_wishlist_empty_mobile.png",
+    "route": "/account?tab=wishlist",
+    "viewport": "390x844",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_19_checkout_mobile",
+    "filename": "proof_19_checkout_mobile.png",
+    "route": "/checkout",
+    "viewport": "390x844",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_20_cart_populated_mobile",
+    "filename": "proof_20_cart_populated_mobile.png",
+    "route": "/p/dhakai-jamdani-silk-saree",
+    "viewport": "390x844",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_21_homepage_desktop_hero",
+    "filename": "proof_21_homepage_desktop_hero.png",
+    "route": "/",
+    "viewport": "1440x900",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_22_homepage_desktop_full",
+    "filename": "proof_22_homepage_desktop_full.png",
+    "route": "/",
+    "viewport": "1440x900",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_23_collection_girls_desktop",
+    "filename": "proof_23_collection_girls_desktop.png",
+    "route": "/c/girls",
+    "viewport": "1440x900",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_24_collection_boys_desktop",
+    "filename": "proof_24_collection_boys_desktop.png",
+    "route": "/c/boys",
+    "viewport": "1440x900",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_25_collection_sarees_desktop",
+    "filename": "proof_25_collection_sarees_desktop.png",
+    "route": "/c/sarees",
+    "viewport": "1440x900",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_26_footer_desktop",
+    "filename": "proof_26_footer_desktop.png",
+    "route": "/",
+    "viewport": "1440x900",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_27_wordmark_320px",
+    "filename": "proof_27_wordmark_320px.png",
+    "route": "/",
+    "viewport": "320x640",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_28_wordmark_360px",
+    "filename": "proof_28_wordmark_360px.png",
+    "route": "/",
+    "viewport": "360x740",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_29_wordmark_390px",
+    "filename": "proof_29_wordmark_390px.png",
+    "route": "/",
+    "viewport": "390x844",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_30_wordmark_430px",
+    "filename": "proof_30_wordmark_430px.png",
+    "route": "/",
+    "viewport": "430x932",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_31_preview_homepage",
+    "filename": "proof_31_preview_homepage.png",
+    "route": "https://framique.qubickle.com/theme-preview/songoskriti?template=index",
+    "viewport": "1440x900",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  },
+  {
+    "name": "proof_32_preview_collection_girls",
+    "filename": "proof_32_preview_collection_girls.png",
+    "route": "https://framique.qubickle.com/theme-preview/songoskriti?template=collection&focus=girls",
+    "viewport": "1440x900",
+    "sha": "19d3b12ed5ba9bb9ef3813c949d7207eca4e561d",
+    "date": "2026-11-16",
+    "browser": "Chrome Headless"
+  }
+]

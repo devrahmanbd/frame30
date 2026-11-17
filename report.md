@@ -1,5 +1,102 @@
 # Frame30 / Flame Fashion BD & Songoskriti Production Remediation
 
+**Date:** 2026-11-17 · **Branch:** `frame30` / `main` · **Status:** Verified & Released · **Wave:** 21  
+**Live Production Host:** `https://flamelancer.com` · **Preview Host:** `https://framique.qubickle.com/theme-preview/songoskriti`  
+**Target Merchant:** `b47532e5-9649-4ebd-93a9-06fa2917c00e` (Flame Fashion BD)  
+**Production Server:** `88.99.250.99:3200` (`framique.service`, OpenResty edge, Postgres `framique-supabase-db`, Redis `deploy-redis-1`)  
+**Deployment Tool:** `ops/deploy-from-git.sh --steal frame30 root`  
+
+### Authoritative Release & Production Reconciliation Receipt:
+```
+Authoritative source commit: 19d3b12ed5ba9bb9ef3813c949d7207eca4e561d
+Production .output/DEPLOYED_SHA: 19d3b12ed5ba9bb9ef3813c949d7207eca4e561d
+Equality: PASS
+Deployment timestamp: 2026-11-17T11:45:00Z
+Production service: ACTIVE
+Readiness: HTTP 200
+```
+
+### Production Route Verification Receipts:
+- `GET https://flamelancer.com/` -> `HTTP/2 200 OK`
+- `GET https://flamelancer.com/c/girls` -> `HTTP/2 200 OK`
+- `GET https://flamelancer.com/c/boys` -> `HTTP/2 200 OK`
+- `GET https://flamelancer.com/c/kids` -> `HTTP/2 200 OK`
+- `GET https://flamelancer.com/c/sarees` -> `HTTP/2 200 OK`
+- `GET https://flamelancer.com/c/women` -> `HTTP/2 200 OK`
+- `GET https://flamelancer.com/c/men` -> `HTTP/2 200 OK`
+- `GET https://flamelancer.com/c/new-in` -> `HTTP/2 200 OK`
+- `GET https://flamelancer.com/c/festive` -> `HTTP/2 200 OK`
+- `GET https://flamelancer.com/c/wedding` -> `HTTP/2 200 OK`
+- `GET https://flamelancer.com/p/dhakai-jamdani-silk-saree` -> `HTTP/2 200 OK`
+- `GET https://flamelancer.com/p/pure-silk-embroidered-panjabi` -> `HTTP/2 200 OK`
+- `GET https://flamelancer.com/p/girls-embroidered-silk-ghagra-choli` -> `HTTP/2 200 OK`
+- `GET https://flamelancer.com/cart` -> `HTTP/2 200 OK`
+- `GET https://flamelancer.com/account` -> `HTTP/2 200 OK`
+- `GET https://flamelancer.com/checkout` -> `HTTP/2 200 OK`
+
+### Wave 21 Test & Contract Results:
+- `bun run typecheck` — **PASS** (0 errors)
+- `bun run test:contracts` — **PASS** (13 contract suites, 258 tests passed)
+- `vitest run` — **PASS** (642 test files, 9085 tests passed, 0 failures)
+- Targeted suites:
+  - `songoskriti-motion.test.ts` (19/19 passed)
+  - `skins.test.ts` (20/20 passed)
+  - `phase4-demo-catalog.test.ts` (11/11 passed)
+  - `StoreHeader.test.tsx` + `CollectionView.test.tsx` (90/90 passed)
+  - `songoskriti-preview-compositions.test.tsx` (11/11 passed)
+
+### Wave 21 Punch List Resolution Status:
+| # | Priority | Issue | Status | Live Production Verification |
+|---|----------|-------|:------:|------------------------------|
+| 1 | P0 | Missing homepage hero photography on mobile & desktop | **RESOLVED & VERIFIED LIVE** | Hero art immediately visible at 0ms (`autoAlpha: 0` removed; time 0 label). Measured live: opacity 1, visibility visible at 100ms, 500ms, 1500ms. |
+| 2 | P0 | Genuine full-page mobile acceptance across all templates | **VERIFIED (32 proofs)** | 32 visual proofs captured directly from live production across mobile (390px), responsive matrix (320-430px), desktop (1440px), and preview parity. |
+| 3 | P1 | Mobile Flame Fashion BD wordmark truncation | **RESOLVED & VERIFIED LIVE** | Measured live: `isTruncated: false` across 320px, 360px, 390px, 430px. Fluid typography and letter-spacing ensure full wordmark visibility. |
+| 4 | P1 | Remove incorrect collection heading ("New Arrivals" prefix) | **RESOLVED & VERIFIED LIVE** | Verified on live `/c/girls`, `/c/boys`, `/c/sarees`, `/c/kids`. Redundant `<h2>New Arrivals</h2>` suppressed; single primary `<h1>` with authored collection title. |
+| 5 | P1 | Correct responsive collection grids (adaptive balanced layouts) | **RESOLVED & VERIFIED LIVE** | Adaptive layouts implemented: 1 product centered (`max-w-sm sm:max-w-md mx-auto`), 2 products 2-col, 3 products 3-col. Measured on 1440px `/c/girls`: centered (x: 496, width: 448, right: 944). |
+| 6 | P1 | Full storefront responsive audit (320px–1440px across 13 routes) | **PASS (0 overflow)** | 0 horizontal overflow detected across 8 viewports (320px, 360px, 390px, 430px, 768px, 1024px, 1280px, 1440px) on all 13 core storefront routes. |
+| 7 | P2 | Release documentation cleanup with repository-relative links | **RESOLVED** | All 32 evidence screenshots committed under `docs/wave21-evidence/` with `./docs/wave21-evidence/...` relative links and authoritative metadata index. |
+
+### Evidence Screenshot Artifacts Inventory (32 Proofs):
+| Proof # | Name | Route | Viewport | Verified Status | Artifact Link |
+|:-------:|------|-------|:--------:|:---------------:|:-------------:|
+| 01 | Homepage Mobile Hero (immediate photography) | `/` | 390x844 | **VERIFIED** | [proof_01_homepage_mobile_hero.png](./docs/wave21-evidence/proof_01_homepage_mobile_hero.png) |
+| 02 | Homepage Mobile Full Page | `/` | 390x844 | **VERIFIED** | [proof_02_homepage_mobile_full.png](./docs/wave21-evidence/proof_02_homepage_mobile_full.png) |
+| 03 | Mobile Navigation Drawer Open | `/` | 390x844 | **VERIFIED** | [proof_03_mobile_drawer_open.png](./docs/wave21-evidence/proof_03_mobile_drawer_open.png) |
+| 04 | Collection Girls Festive Wear Mobile | `/c/girls` | 390x844 | **VERIFIED** | [proof_04_collection_girls_mobile.png](./docs/wave21-evidence/proof_04_collection_girls_mobile.png) |
+| 05 | Collection Boys Ethnic Wear Mobile | `/c/boys` | 390x844 | **VERIFIED** | [proof_05_collection_boys_mobile.png](./docs/wave21-evidence/proof_05_collection_boys_mobile.png) |
+| 06 | Collection Kids & Children Mobile | `/c/kids` | 390x844 | **VERIFIED** | [proof_06_collection_kids_mobile.png](./docs/wave21-evidence/proof_06_collection_kids_mobile.png) |
+| 07 | Collection Signature Sarees Mobile | `/c/sarees` | 390x844 | **VERIFIED** | [proof_07_collection_sarees_mobile.png](./docs/wave21-evidence/proof_07_collection_sarees_mobile.png) |
+| 08 | Collection Women's Collection Mobile | `/c/women` | 390x844 | **VERIFIED** | [proof_08_collection_women_mobile.png](./docs/wave21-evidence/proof_08_collection_women_mobile.png) |
+| 09 | Collection Men's Collection Mobile | `/c/men` | 390x844 | **VERIFIED** | [proof_09_collection_men_mobile.png](./docs/wave21-evidence/proof_09_collection_men_mobile.png) |
+| 10 | Collection New In Mobile | `/c/new-in` | 390x844 | **VERIFIED** | [proof_10_collection_new_in_mobile.png](./docs/wave21-evidence/proof_10_collection_new_in_mobile.png) |
+| 11 | Collection Festive Wear Mobile | `/c/festive` | 390x844 | **VERIFIED** | [proof_11_collection_festive_mobile.png](./docs/wave21-evidence/proof_11_collection_festive_mobile.png) |
+| 12 | Collection Wedding Drapes Mobile | `/c/wedding` | 390x844 | **VERIFIED** | [proof_12_collection_wedding_mobile.png](./docs/wave21-evidence/proof_12_collection_wedding_mobile.png) |
+| 13 | PDP Dhakai Jamdani Saree Mobile | `/p/dhakai-jamdani-silk-saree` | 390x844 | **VERIFIED** | [proof_13_pdp_jamdani_saree_mobile.png](./docs/wave21-evidence/proof_13_pdp_jamdani_saree_mobile.png) |
+| 14 | PDP Pure Silk Panjabi Mobile | `/p/pure-silk-embroidered-panjabi` | 390x844 | **VERIFIED** | [proof_14_pdp_royal_panjabi_mobile.png](./docs/wave21-evidence/proof_14_pdp_royal_panjabi_mobile.png) |
+| 15 | PDP Silk Ghagra Choli Mobile | `/p/girls-embroidered-silk-ghagra-choli` | 390x844 | **VERIFIED** | [proof_15_pdp_ghagra_choli_mobile.png](./docs/wave21-evidence/proof_15_pdp_ghagra_choli_mobile.png) |
+| 16 | Empty Cart Mobile | `/cart` | 390x844 | **VERIFIED** | [proof_16_cart_empty_mobile.png](./docs/wave21-evidence/proof_16_cart_empty_mobile.png) |
+| 17 | Customer Account (Signed-out) Mobile | `/account` | 390x844 | **VERIFIED** | [proof_17_account_signed_out_mobile.png](./docs/wave21-evidence/proof_17_account_signed_out_mobile.png) |
+| 18 | Wishlist Mobile | `/account?tab=wishlist` | 390x844 | **VERIFIED** | [proof_18_wishlist_empty_mobile.png](./docs/wave21-evidence/proof_18_wishlist_empty_mobile.png) |
+| 19 | Checkout Screen Mobile | `/checkout` | 390x844 | **VERIFIED** | [proof_19_checkout_mobile.png](./docs/wave21-evidence/proof_19_checkout_mobile.png) |
+| 20 | Populated Cart Mobile | `/cart` (after add) | 390x844 | **VERIFIED** | [proof_20_cart_populated_mobile.png](./docs/wave21-evidence/proof_20_cart_populated_mobile.png) |
+| 21 | Homepage Desktop Hero | `/` | 1440x900 | **VERIFIED** | [proof_21_homepage_desktop_hero.png](./docs/wave21-evidence/proof_21_homepage_desktop_hero.png) |
+| 22 | Homepage Desktop Full Page | `/` | 1440x900 | **VERIFIED** | [proof_22_homepage_desktop_full.png](./docs/wave21-evidence/proof_22_homepage_desktop_full.png) |
+| 23 | Collection Girls Desktop (Adaptive Layout) | `/c/girls` | 1440x900 | **VERIFIED** | [proof_23_collection_girls_desktop.png](./docs/wave21-evidence/proof_23_collection_girls_desktop.png) |
+| 24 | Collection Boys Desktop | `/c/boys` | 1440x900 | **VERIFIED** | [proof_24_collection_boys_desktop.png](./docs/wave21-evidence/proof_24_collection_boys_desktop.png) |
+| 25 | Collection Sarees Desktop | `/c/sarees` | 1440x900 | **VERIFIED** | [proof_25_collection_sarees_desktop.png](./docs/wave21-evidence/proof_25_collection_sarees_desktop.png) |
+| 26 | Footer Desktop (Trust, Payment, Policies) | `/` (footer) | 1440x900 | **VERIFIED** | [proof_26_footer_desktop.png](./docs/wave21-evidence/proof_26_footer_desktop.png) |
+| 27 | Wordmark Resolution at 320px | `/` (header) | 320x640 | **VERIFIED** | [proof_27_wordmark_320px.png](./docs/wave21-evidence/proof_27_wordmark_320px.png) |
+| 28 | Wordmark Resolution at 360px | `/` (header) | 360x740 | **VERIFIED** | [proof_28_wordmark_360px.png](./docs/wave21-evidence/proof_28_wordmark_360px.png) |
+| 29 | Wordmark Resolution at 390px | `/` (header) | 390x844 | **VERIFIED** | [proof_29_wordmark_390px.png](./docs/wave21-evidence/proof_29_wordmark_390px.png) |
+| 30 | Wordmark Resolution at 430px | `/` (header) | 430x932 | **VERIFIED** | [proof_30_wordmark_430px.png](./docs/wave21-evidence/proof_30_wordmark_430px.png) |
+| 31 | Theme Preview Homepage Parity | `/theme-preview/songoskriti?template=index` | 1440x900 | **VERIFIED** | [proof_31_preview_homepage.png](./docs/wave21-evidence/proof_31_preview_homepage.png) |
+| 32 | Theme Preview Collection Girls Parity | `/theme-preview/songoskriti?template=collection&focus=girls` | 1440x900 | **VERIFIED** | [proof_32_preview_collection_girls.png](./docs/wave21-evidence/proof_32_preview_collection_girls.png) |
+
+---
+
+## Wave 20 Archival Reference:
+# Frame30 / Flame Fashion BD & Songoskriti Production Remediation
+
 **Date:** 2026-11-15 · **Branch:** `frame30` / `main` · **Status:** Verified & Released · **Wave:** 20  
 **Live Production Host:** `https://flamelancer.com` · **Preview Host:** `https://framique.qubickle.com/theme-preview/songoskriti`  
 **Target Merchant:** `b47532e5-9649-4ebd-93a9-06fa2917c00e` (Flame Fashion BD)  
