@@ -25,6 +25,11 @@ def calculateDiscount (subtotal : Nat) : Coupon → Nat
 def finalTotal (subtotal : Nat) (c : Coupon) : Nat :=
   subtotal - calculateDiscount subtotal c
 
+def finalOrderTotal (subtotal shipping : Nat) (c : Coupon) : Nat :=
+  match c with
+  | Coupon.freeShipping => subtotal
+  | _ => subtotal - calculateDiscount subtotal c + shipping
+
 /-- Theorem 1: Discount is always strictly bounded by the eligible subtotal across all coupon types. -/
 theorem discount_le_subtotal (s : Nat) (c : Coupon) :
     calculateDiscount s c <= s := by
@@ -66,4 +71,15 @@ theorem bogo_discount_bounded (s totalQty buy get cheapest : Nat) :
   simp [calculateDiscount]
   apply Nat.min_le_right
 
+/-- Theorem 6: Free shipping coupon waives shipping fee entirely from final order total. -/
+theorem free_shipping_waives_fee (s ship : Nat) :
+    finalOrderTotal s ship Coupon.freeShipping = s := by
+  simp [finalOrderTotal]
+
+/-- Theorem 7: BOGO with zero cheapest price yields zero discount. -/
+theorem bogo_zero_cheapest_yields_zero (s totalQty buy get : Nat) :
+    calculateDiscount s (Coupon.bogo totalQty buy get 0) = 0 := by
+  simp [calculateDiscount]
+
 end Framique
+

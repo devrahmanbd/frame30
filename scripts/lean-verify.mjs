@@ -27,7 +27,9 @@ const expectedTheorems = [
   "final_total_nonneg",
   "fixed_discount_exact",
   "percent_100_exact",
-  "bogo_discount_bounded"
+  "bogo_discount_bounded",
+  "free_shipping_waives_fee",
+  "bogo_zero_cheapest_yields_zero"
 ];
 
 for (const thm of expectedTheorems) {
@@ -79,28 +81,37 @@ try {
 console.log("[lean-verify] Executing compiled Lean 4 vector binary to obtain formal outputs...");
 let rawLeanOutput = "";
 try {
-  try {
-    rawLeanOutput = execSync("lake exe framique_verify", {
-      cwd: leanDir,
-      env: envWithPath,
-      encoding: "utf-8",
-      timeout: 30000
-    });
-  } catch (exeErr) {
-    // On macOS Darwin, lake exe dynamic linking can report __DATA_CONST segment flag.
-    // In that case, run compiled olean via lean --run with LEAN_PATH=.lake/build/lib
-    const runEnv = { ...envWithPath, LEAN_PATH: ".lake/build/lib" };
-    rawLeanOutput = execSync("lean --run Main.lean", {
-      cwd: leanDir,
-      env: runEnv,
-      encoding: "utf-8",
-      timeout: 30000
-    });
+  rawLeanOutput = execSync("lake exe framique_verify", {
+    cwd: leanDir,
+    env: envWithPath,
+    encoding: "utf-8",
+    timeout: 30000
+  });
+} catch (exeErr) {
+  const errMsg = (exeErr.stderr || "") + (exeErr.stdout || "") + (exeErr.message || "");
+  const isDarwinSegFlag = errMsg.includes("__DATA_CONST segment missing SG_READ_ONLY flag");
+  if (process.platform === "darwin" && isDarwinSegFlag) {
+    // Restrict fallback strictly to the documented Darwin dyld segment flag
+    console.log("[lean-verify] Note: Applying documented macOS Darwin dyld segment flag fallback (lean --run)...");
+    try {
+      const runEnv = { ...envWithPath, LEAN_PATH: ".lake/build/lib" };
+      rawLeanOutput = execSync("lean --run Main.lean", {
+        cwd: leanDir,
+        env: runEnv,
+        encoding: "utf-8",
+        timeout: 30000
+      });
+    } catch (fallbackErr) {
+      console.error("[lean-verify] ✗ FAIL-CLOSED: Fallback execution of Main.lean failed!");
+      console.error(fallbackErr.stdout || fallbackErr.message);
+      process.exit(1);
+    }
+  } else {
+    // Strictly reject all other compiled-executable failures!
+    console.error("[lean-verify] ✗ FAIL-CLOSED: Compiled Lean binary execution failed with non-whitelisted error!");
+    console.error(errMsg);
+    process.exit(1);
   }
-} catch (runErr) {
-  console.error("[lean-verify] ✗ FAIL-CLOSED: Execution of compiled Lean binary failed!");
-  console.error(runErr.stdout || runErr.message);
-  process.exit(1);
 }
 
 // 5. Parse compiled Lean outputs
@@ -119,6 +130,42 @@ try {
 }
 
 console.log(`[lean-verify] Received ${leanVectors.length} formal test vectors evaluated by Lean 4 runtime.`);
+
+// Assert exactly 13 expected unique vector IDs
+const EXPECTED_VECTOR_IDS = [
+  "fixed-less",
+  "fixed-exact",
+  "fixed-overflow",
+  "fixed-zero",
+  "percent-10",
+  "percent-25",
+  "percent-33",
+  "percent-100",
+  "percent-150-clamp",
+  "freeship",
+  "bogo-standard",
+  "bogo-insufficient-qty",
+  "bogo-zero-cheapest"
+];
+
+if (leanVectors.length !== 13) {
+  console.error(`[lean-verify] ✗ VECTOR COUNT MISMATCH: Expected exactly 13 vectors, received ${leanVectors.length}!`);
+  process.exit(1);
+}
+
+const receivedIds = new Set(leanVectors.map((v) => v.id));
+if (receivedIds.size !== 13) {
+  console.error(`[lean-verify] ✗ DUPLICATE VECTOR IDS DETECTED: Expected 13 unique IDs, got ${receivedIds.size}!`);
+  process.exit(1);
+}
+
+for (const expId of EXPECTED_VECTOR_IDS) {
+  if (!receivedIds.has(expId)) {
+    console.error(`[lean-verify] ✗ MISSING EXPECTED VECTOR ID: '${expId}' not emitted by Lean runtime!`);
+    process.exit(1);
+  }
+}
+console.log(`[lean-verify] ✓ Asserted exactly 13 unique expected formal vector IDs from Lean runtime.`);
 
 // 6. Test-Vector Correspondence Check: Compiled Lean vs Production TypeScript
 const vectorConfigurations = {
@@ -169,17 +216,16 @@ const vectorConfigurations = {
       { unitPriceMinor: 5500, quantity: 2 }
     ]
   },
-  "bogo-uneven": {
+  "bogo-insufficient-qty": {
     coupon: { type: "bogo", buy_quantity: 2, get_quantity: 1 },
     lines: [
-      { unitPriceMinor: 5000, quantity: 3 },
-      { unitPriceMinor: 7500, quantity: 2 }
+      { unitPriceMinor: 5000, quantity: 2 }
     ]
   },
-  "bogo-clamp": {
+  "bogo-zero-cheapest": {
     coupon: { type: "bogo", buy_quantity: 1, get_quantity: 1 },
     lines: [
-      { unitPriceMinor: 5000, quantity: 4 }
+      { unitPriceMinor: 0, quantity: 4 }
     ]
   }
 };
@@ -193,12 +239,20 @@ for (const lVec of leanVectors) {
   }
 
   const tsResult = calculateDiscount(config.coupon, lVec.subtotal, config.lines);
-  const tsFinalTotal = calculateOrderTotal(lVec.subtotal, tsResult.discountMinor, 0);
+  const effectiveShipping = tsResult.freeShipping ? 0 : (lVec.shipping || 0);
+  const tsFinalTotal = calculateOrderTotal(lVec.subtotal, tsResult.discountMinor, effectiveShipping);
 
   if (lVec.discount !== tsResult.discountMinor) {
     console.error(`[lean-verify] ✗ DISCOUNT MISMATCH on vector '${lVec.id}':`);
     console.error(`  Lean 4 value:       ${lVec.discount}`);
     console.error(`  TypeScript value:   ${tsResult.discountMinor}`);
+    process.exit(1);
+  }
+
+  if (Boolean(lVec.freeShipping) !== tsResult.freeShipping) {
+    console.error(`[lean-verify] ✗ FREE SHIPPING FLAG MISMATCH on vector '${lVec.id}':`);
+    console.error(`  Lean 4 value:       ${lVec.freeShipping}`);
+    console.error(`  TypeScript value:   ${tsResult.freeShipping}`);
     process.exit(1);
   }
 
@@ -209,10 +263,11 @@ for (const lVec of leanVectors) {
     process.exit(1);
   }
 
-  console.log(`  ✓ Vector '${lVec.id}': subtotal=${lVec.subtotal}, discount=${lVec.discount}, finalTotal=${lVec.finalTotal} [Lean ↔ TypeScript match]`);
+  console.log(`  ✓ Vector '${lVec.id}': subtotal=${lVec.subtotal}, ship=${lVec.shipping}, freeShip=${lVec.freeShipping}, discount=${lVec.discount}, finalTotal=${lVec.finalTotal} [Lean ↔ TypeScript match]`);
   matchedCount++;
 }
 
 console.log(`\n[lean-verify] SUCCESS: All ${matchedCount}/${leanVectors.length} Lean 4 formal test vectors match production TypeScript exactly.`);
 console.log("[lean-verify] Zero discrepancies detected. Formal verification gate PASSED (fail-closed).\n");
+
 

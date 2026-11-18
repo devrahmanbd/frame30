@@ -1,13 +1,29 @@
+=============================================================================
+TLA+ TLC FORMAL MODEL CHECKING STATE-SPACE PROOF RECEIPT (WAVE 23.2)
+=============================================================================
+Date: 2026-11-18T21:36:56.516Z
+Model File: specs/tla/CheckoutInventory.tla
+Model SHA-256:  7f8f41bbfa06f8e17cf546280a7beb3e006874a37b897f5685bf3bd88da35194
+Config File: specs/tla/CheckoutInventory.cfg
+Config SHA-256: f57180f0cfa0e348ec3234547a64f6c7967d09ae597099a216e46e9b8701a72c
+TLC JAR SHA-256: 7e53aa636dac8a3cb0533f343115c0548e03fc0ce5edc7739becf58d3d0fb84f
+Invariants Verified: 11 (TypeOK, StockNonNegative, InventoryConservation,
+  UniqueOrderIds, MaxActiveOrderPerShopper, AtMostOneCapturePerPayment,
+  AtMostOneSuccessfulRefundPerPayment, OrderSettlementConsistency,
+  RefundRequiresCapture, NoRefundOnFailedPayment,
+  RefundAmountBoundedByCapture, ExplicitRefundFailureRepresented)
+-----------------------------------------------------------------------------
+
 TLC2 Version 2026.11.15.002146 (rev: bc1b506)
-Running breadth-first search Model-Checking with fp 2 and seed -2459259062514423771 with 1 worker on 8 cores with 2048MB heap and 64MB offheap memory [pid: 57057] (Mac OS X 26.3 aarch64, Homebrew 21.0.13.1 64bit, MSBDiskFPSet, DiskStateQueue).
+Running breadth-first search Model-Checking with fp 114 and seed -3803164952464357880 with 1 worker on 8 cores with 2048MB heap and 64MB offheap memory [pid: 976] (Mac OS X 26.3 aarch64, Homebrew 21.0.13.1 64bit, MSBDiskFPSet, DiskStateQueue).
 Parsing file /Users/rahman/Documents/frame30/specs/tla/CheckoutInventory.tla
-Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-16549820223230089349/Integers.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/Integers.tla)
-Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-16549820223230089349/FiniteSets.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
-Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-16549820223230089349/_TLCTrace.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/_TLCTrace.tla)
-Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-16549820223230089349/Naturals.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
-Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-16549820223230089349/Sequences.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
-Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-16549820223230089349/TLC.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
-Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-16549820223230089349/TLCExt.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/TLCExt.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13720945806154387289/Integers.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/Integers.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13720945806154387289/FiniteSets.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13720945806154387289/_TLCTrace.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/_TLCTrace.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13720945806154387289/Naturals.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13720945806154387289/Sequences.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13720945806154387289/TLC.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13720945806154387289/TLCExt.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/TLCExt.tla)
 Semantic processing of module Naturals
 Semantic processing of module Integers
 Semantic processing of module Sequences
@@ -19,14 +35,18 @@ Semantic processing of module CheckoutInventory
 Linting of module TLCExt
 Linting of module _TLCTrace
 Linting of module CheckoutInventory
-Starting... (2026-11-19 01:02:20)
+Starting... (2026-11-19 03:36:49)
 Computing initial states...
-Finished computing initial states: 1 distinct state generated at 2026-11-19 01:02:20.
+Finished computing initial states: 1 distinct state generated at 2026-11-19 03:36:50.
+Progress(10) at 2026-11-19 03:36:53: 971,236 states generated (971,236 s/min), 32,227 distinct states found (32,227 ds/min), 12,947 states left on queue.
 Model checking completed. No error has been found.
   Estimates of the probability that TLC did not check all reachable states
   because two distinct states had the same fingerprint:
-  calculated (optimistic):  val = 8.1E-11
-169413 states generated, 9348 distinct states found, 0 states left on queue.
-The depth of the complete state graph search is 11.
-The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 20 and the 95th percentile is 4).
-Finished in 01s at (2026-11-19 01:02:21)
+  calculated (optimistic):  val = 5.2E-9
+  based on the actual fingerprints:  val = 2.6E-11
+2206513 states generated, 44048 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 12.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 31 and the 95th percentile is 5).
+Finished in 06s at (2026-11-19 03:36:56)
+
+=============================================================================

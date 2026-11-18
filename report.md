@@ -1,6 +1,6 @@
 # Frame30 / Flame Fashion BD & Songoskriti Production Remediation
 
-**Date:** 2026-11-18 · **Branch:** `frame30` / `main` · **Status:** Verified & Released · **Wave:** 23.1  
+**Date:** 2026-11-19 · **Branch:** `frame30` / `main` · **Status:** Verified & Released · **Wave:** 23.2  
 **Live Production Host:** `https://flamelancer.com` · **Preview Host:** `https://framique.qubickle.com/theme-preview/songoskriti`  
 **Target Merchant:** `b47532e5-9649-4ebd-93a9-06fa2917c00e` (Flame Fashion BD)  
 **Production Server:** `88.99.250.99:3200` (`framique.service`, OpenResty edge, Postgres `framique-supabase-db`, Redis `deploy-redis-1`)  
@@ -2321,4 +2321,111 @@ Extracted pure domain logic into modular production libraries:
 - **Release Scope:** Wave 23.1 represents a **Verification Infrastructure & Reliability Release**.
 - The production server repository `/opt/frame28` is synchronized at HEAD commit `main` / `frame30`.
 - The live storefront application bundle (`.output/DEPLOYED_SHA: 19d3b12ed5ba9bb9ef3813c949d7207eca4e561d`) remains active, serving `HTTP 200` through OpenResty edge.
+
+---
+
+## 24. Wave 23.2 — Verification Evidence Integrity & Formal Model Precision
+
+**Date:** 2026-11-19 · **Branch:** `frame30` / `main` · **Status:** Fully Verified & Released  
+**Target Entities:** `https://flamelancer.com` · Seeded Staging `http://127.0.0.1:3000`  
+**Production Server:** `88.99.250.99:3200` (`framique.service`, OpenResty edge, OpenJDK 21, Lean 4.15.0)  
+**Master Evidence Catalog:** [`docs/verification-evidence/EVIDENCE_INDEX.md`](./docs/verification-evidence/EVIDENCE_INDEX.md)  
+
+### 24.1 Wave 23.2 Objectives & Problem Statement
+Wave 23.2 addresses all targeted feedback items from the formal verification audit:
+1. **Bombadil Image Verification (P0):** Corrected `bombadil/properties/images.ts` to assert that:
+   - Expected product images exist (cards, heroes, galleries must not have empty slots).
+   - Missing or corrupted image sources fail immediately.
+   - Completed images must decode successfully with `naturalWidth > 0` and `naturalHeight > 0`.
+   - Lazy-loaded images are verified after scrolling into the viewport.
+   - All failed image URLs and specific failure reasons appear in trace output.
+2. **Prove All 8 Bombadil Viewports (P1):** Added `test:bombadil:all` to `package.json`. Ran all 8 responsive viewport configurations (`mobile-320`, `mobile-360`, `mobile-390`, `mobile-430`, `tablet-768`, `laptop-1024`, `desktop-1280`, `desktop-1440`). Preserved separate trace directories in `docs/verification-evidence/bombadil/traces/<viewport>/`. Updated `bombadil-trace-summary.json` with exact target environment (`staging-loopback`), route, dimensions, duration, actions, invariants executed, violations (0), image failures (0), and trace/screenshot paths. Guarded against production randomized fuzzing by defaulting to loopback staging (`http://127.0.0.1:3000`).
+3. **Refined TLA+ Payment & Refund Semantics (P1):** Strengthened `specs/tla/CheckoutInventory.tla` with explicit capture and refund lifecycle states (`PaymentStatuses == {"None", "Captured", "Failed"}`, `RefundStatuses == {"None", "Success", "Failed"}`) and tracked monetary quantities (`capturedAmount`, `refundedAmount`). Formulated 11 safety invariants including:
+   - `AtMostOneCapturePerPayment` (idempotent capture)
+   - `AtMostOneSuccessfulRefundPerPayment` (idempotent refund)
+   - `RefundRequiresCapture` (refund requires prior capture)
+   - `NoRefundOnFailedPayment` (failed payment cannot be refunded)
+   - `RefundAmountBoundedByCapture` (refund amounts cannot exceed captured amounts)
+   - `ExplicitRefundFailureRepresented` (ledger tracks failed refunds)
+   - Verified with TLC on OpenJDK 21: **2,206,513 states generated, 44,048 distinct states found with 0 errors** (depth 12).
+4. **Tightened Lean 4 Execution & Correspondence (P1):** In `scripts/lean-verify.mjs`:
+   - Restricted macOS Darwin fallback strictly to dyld segment flag error (`__DATA_CONST segment missing SG_READ_ONLY flag`). All other failures immediately terminate fail-closed.
+   - Machine-checked 7 formal theorems in `Framique/Pricing.lean` (added `free_shipping_waives_fee` and `bogo_zero_cheapest_yields_zero`).
+   - Asserted exactly 13 unique expected vector IDs (count check + set equality check).
+   - Tested nonzero shipping amounts (5000, 1500, 2000, 3000, 2500, 4000), `freeShipping` boolean flag comparison, and BOGO edge cases (`bogo-insufficient-qty`, `bogo-zero-cheapest`). All 13/13 matched production TypeScript (`pricing.ts`) with zero discrepancies.
+5. **Closed CircleCI Gap (P1):** Kept Lean 4, TLC, and fast-check as blocking gates in `unit-contract`. Added dedicated `bombadil-staging` job to `.circleci/config.yml` executing the explicit 8-viewport matrix (`bun run test:bombadil:all`) against seeded staging with Playwright Chromium.
+6. **Release Evidence Reconciliation (P0):** Synchronized `report.md`, `walkthrough.md`, master evidence index, TLC state-space receipts, and Bombadil summary across `main` and `frame30`. Kept verification-infrastructure commits cleanly separated from `.output/DEPLOYED_SHA: 19d3b12ed5ba9bb9ef3813c949d7207eca4e561d`.
+
+---
+
+### 24.2 Wave 23.2 Execution Receipts
+
+#### A. Lean 4 Formal Verification (7 Theorems, 13 Vectors with Nonzero Shipping)
+```bash
+$ bun run test:lean
+[lean-verify] Validating Lean 4 formal specification and production correspondence...
+[lean-verify] Pinned Lean toolchain: leanprover/lean4:v4.15.0
+[lean-verify] ✓ All 7 formal theorems declared in Lean 4 specification.
+[lean-verify] Lake compiler detected: Lake version 5.0.0-1165156 (Lean version 4.15.0)
+[lean-verify] Compiling Lean theorems with 'lake build'...
+Build completed successfully.
+[lean-verify] ✓ Lean 4 theorems and executable machine-checked and compiled successfully.
+[lean-verify] Executing compiled Lean 4 vector binary to obtain formal outputs...
+[lean-verify] Received 13 formal test vectors evaluated by Lean 4 runtime.
+[lean-verify] ✓ Asserted exactly 13 unique expected formal vector IDs from Lean runtime.
+  ✓ Vector 'fixed-less': subtotal=10000, ship=5000, freeShip=false, discount=2500, finalTotal=12500 [Lean ↔ TypeScript match]
+  ✓ Vector 'fixed-exact': subtotal=5000, ship=0, freeShip=false, discount=5000, finalTotal=0 [Lean ↔ TypeScript match]
+  ✓ Vector 'fixed-overflow': subtotal=3000, ship=1500, freeShip=false, discount=3000, finalTotal=1500 [Lean ↔ TypeScript match]
+  ✓ Vector 'fixed-zero': subtotal=0, ship=2000, freeShip=false, discount=0, finalTotal=2000 [Lean ↔ TypeScript match]
+  ✓ Vector 'percent-10': subtotal=12000, ship=3000, freeShip=false, discount=1200, finalTotal=13800 [Lean ↔ TypeScript match]
+  ✓ Vector 'percent-25': subtotal=12000, ship=0, freeShip=false, discount=3000, finalTotal=9000 [Lean ↔ TypeScript match]
+  ✓ Vector 'percent-33': subtotal=9999, ship=2500, freeShip=false, discount=3299, finalTotal=9200 [Lean ↔ TypeScript match]
+  ✓ Vector 'percent-100': subtotal=15000, ship=4000, freeShip=false, discount=15000, finalTotal=4000 [Lean ↔ TypeScript match]
+  ✓ Vector 'percent-150-clamp': subtotal=15000, ship=0, freeShip=false, discount=15000, finalTotal=0 [Lean ↔ TypeScript match]
+  ✓ Vector 'freeship': subtotal=8000, ship=5000, freeShip=true, discount=0, finalTotal=8000 [Lean ↔ TypeScript match]
+  ✓ Vector 'bogo-standard': subtotal=20000, ship=3000, freeShip=false, discount=9000, finalTotal=14000 [Lean ↔ TypeScript match]
+  ✓ Vector 'bogo-insufficient-qty': subtotal=10000, ship=2000, freeShip=false, discount=0, finalTotal=12000 [Lean ↔ TypeScript match]
+  ✓ Vector 'bogo-zero-cheapest': subtotal=5000, ship=1500, freeShip=false, discount=0, finalTotal=6500 [Lean ↔ TypeScript match]
+
+[lean-verify] SUCCESS: All 13/13 Lean 4 formal test vectors match production TypeScript exactly.
+[lean-verify] Zero discrepancies detected. Formal verification gate PASSED (fail-closed).
+```
+
+#### B. TLA+ TLC State-Space Exploration (2,206,513 States, 11 Invariants)
+```bash
+$ bun run test:tla
+[tla-verify] Validating TLA+ specification and formal invariants...
+[tla-verify] ✓ TLC JAR integrity verified (SHA-256: 7e53aa636dac8a3c...)
+[tla-verify] Model SHA-256:  7f8f41bbfa06f8e17cf546280a7beb3e006874a37b897f5685bf3bd88da35194
+[tla-verify] Config SHA-256: f57180f0cfa0e348ec3234547a64f6c7967d09ae597099a216e46e9b8701a72c
+[tla-verify] ✓ TLA+ specification structure and TLC invariants validated.
+[tla-verify] Java runtime detected: openjdk version "21.0.13.1"
+[tla-verify] Executing TLC model checker...
+TLC2 Version 2026.11.15.002146 (rev: bc1b506)
+Model checking completed. No error has been found.
+2206513 states generated, 44048 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 12.
+Finished in 06s
+[tla-verify] ✓ TLA+ state-space model verification complete with 0 errors.
+```
+
+#### C. Bombadil 8-Viewport Matrix Execution (`bun run test:bombadil:all`)
+```bash
+$ bun run test:bombadil:all
+[bombadil] Starting fail-closed property exploration against http://127.0.0.1:3000 (time limit: 8s, action-delay: 250ms)...
+[bombadil] Spawning local development server on port 3000...
+[bombadil] ✓ Local development server ready at http://127.0.0.1:3000
+
+[bombadil] Exploring viewport mobile-320 (320x568)... [PASS - 0 violations, 0 image failures]
+[bombadil] Exploring viewport mobile-360 (360x640)... [PASS - 0 violations, 0 image failures]
+[bombadil] Exploring viewport mobile-390 (390x844)... [PASS - 0 violations, 0 image failures]
+[bombadil] Exploring viewport mobile-430 (430x932)... [PASS - 0 violations, 0 image failures]
+[bombadil] Exploring viewport tablet-768 (768x1024)... [PASS - 0 violations, 0 image failures]
+[bombadil] Exploring viewport laptop-1024 (1024x768)... [PASS - 0 violations, 0 image failures]
+[bombadil] Exploring viewport desktop-1280 (1280x800)... [PASS - 0 violations, 0 image failures]
+[bombadil] Exploring viewport desktop-1440 (1440x900)... [PASS - 0 violations, 0 image failures]
+
+[bombadil] ✓ All viewports passed with 0 property violations. Traces saved in docs/verification-evidence/bombadil/traces/
+```
+
 

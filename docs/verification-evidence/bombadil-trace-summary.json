@@ -2,29 +2,236 @@
   "testRun": {
     "tool": "@antithesishq/bombadil",
     "version": "0.7.10",
-    "date": "2026-11-18T07:07:00Z",
-    "target": "https://flamelancer.com",
+    "date": "2026-11-18T21:27:50.936Z",
+    "target": "http://127.0.0.1:3000",
+    "targetEnvironment": "staging-loopback",
+    "route": "http://127.0.0.1:3000",
     "runnerMode": "fail-closed",
+    "actionDelayMs": 250,
     "viewports": [
       {
-        "name": "mobile-390",
-        "width": 390,
-        "height": 844,
-        "durationSeconds": 10.0,
-        "actionsExecuted": 15,
-        "actionTypes": ["ScrollDown", "Click", "ScrollUp", "Back"],
-        "invariantsChecked": [
+        "name": "mobile-320",
+        "width": 320,
+        "height": 568,
+        "durationSeconds": 8.3,
+        "actionsExecuted": 12,
+        "actionTypes": [
+          "ScrollDown",
+          "Click",
+          "ScrollUp",
+          "Back",
+          "Reload"
+        ],
+        "invariantsExecuted": [
           "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
           "no_server_error_pages (no 5xx titles or headings)",
           "page_has_title_or_heading (asserts accessible title/header present)",
           "single_primary_h1 (at most 1 H1 per rendered page)",
+          "all_images_loaded (missing src, load completion, natural dimensions, decode check)",
           "noUncaughtExceptions",
           "noUnhandledPromiseRejections"
         ],
         "violations": 0,
+        "imageFailures": 0,
+        "verdict": "PASS",
+        "tracePath": "docs/verification-evidence/bombadil/traces/mobile-320/trace.jsonl",
+        "screenshotPath": "docs/verification-evidence/bombadil/traces/mobile-320/"
+      },
+      {
+        "name": "mobile-360",
+        "width": 360,
+        "height": 640,
+        "durationSeconds": 8.3,
+        "actionsExecuted": 12,
+        "actionTypes": [
+          "ScrollDown",
+          "Click",
+          "ScrollUp",
+          "Back",
+          "Reload"
+        ],
+        "invariantsExecuted": [
+          "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
+          "no_server_error_pages (no 5xx titles or headings)",
+          "page_has_title_or_heading (asserts accessible title/header present)",
+          "single_primary_h1 (at most 1 H1 per rendered page)",
+          "all_images_loaded (missing src, load completion, natural dimensions, decode check)",
+          "noUncaughtExceptions",
+          "noUnhandledPromiseRejections"
+        ],
+        "violations": 0,
+        "imageFailures": 0,
+        "verdict": "PASS",
+        "tracePath": "docs/verification-evidence/bombadil/traces/mobile-360/trace.jsonl",
+        "screenshotPath": "docs/verification-evidence/bombadil/traces/mobile-360/"
+      },
+      {
+        "name": "mobile-390",
+        "width": 390,
+        "height": 844,
+        "durationSeconds": 8.2,
+        "actionsExecuted": 12,
+        "actionTypes": [
+          "ScrollDown",
+          "Click",
+          "ScrollUp",
+          "Back",
+          "Reload"
+        ],
+        "invariantsExecuted": [
+          "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
+          "no_server_error_pages (no 5xx titles or headings)",
+          "page_has_title_or_heading (asserts accessible title/header present)",
+          "single_primary_h1 (at most 1 H1 per rendered page)",
+          "all_images_loaded (missing src, load completion, natural dimensions, decode check)",
+          "noUncaughtExceptions",
+          "noUnhandledPromiseRejections"
+        ],
+        "violations": 0,
+        "imageFailures": 0,
         "verdict": "PASS",
         "tracePath": "docs/verification-evidence/bombadil/traces/mobile-390/trace.jsonl",
-        "screenshotsSampled": 6
+        "screenshotPath": "docs/verification-evidence/bombadil/traces/mobile-390/"
+      },
+      {
+        "name": "mobile-430",
+        "width": 430,
+        "height": 932,
+        "durationSeconds": 8.3,
+        "actionsExecuted": 12,
+        "actionTypes": [
+          "ScrollDown",
+          "Click",
+          "ScrollUp",
+          "Back",
+          "Reload"
+        ],
+        "invariantsExecuted": [
+          "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
+          "no_server_error_pages (no 5xx titles or headings)",
+          "page_has_title_or_heading (asserts accessible title/header present)",
+          "single_primary_h1 (at most 1 H1 per rendered page)",
+          "all_images_loaded (missing src, load completion, natural dimensions, decode check)",
+          "noUncaughtExceptions",
+          "noUnhandledPromiseRejections"
+        ],
+        "violations": 0,
+        "imageFailures": 0,
+        "verdict": "PASS",
+        "tracePath": "docs/verification-evidence/bombadil/traces/mobile-430/trace.jsonl",
+        "screenshotPath": "docs/verification-evidence/bombadil/traces/mobile-430/"
+      },
+      {
+        "name": "tablet-768",
+        "width": 768,
+        "height": 1024,
+        "durationSeconds": 8.4,
+        "actionsExecuted": 13,
+        "actionTypes": [
+          "ScrollDown",
+          "Click",
+          "ScrollUp",
+          "Back",
+          "Reload"
+        ],
+        "invariantsExecuted": [
+          "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
+          "no_server_error_pages (no 5xx titles or headings)",
+          "page_has_title_or_heading (asserts accessible title/header present)",
+          "single_primary_h1 (at most 1 H1 per rendered page)",
+          "all_images_loaded (missing src, load completion, natural dimensions, decode check)",
+          "noUncaughtExceptions",
+          "noUnhandledPromiseRejections"
+        ],
+        "violations": 0,
+        "imageFailures": 0,
+        "verdict": "PASS",
+        "tracePath": "docs/verification-evidence/bombadil/traces/tablet-768/trace.jsonl",
+        "screenshotPath": "docs/verification-evidence/bombadil/traces/tablet-768/"
+      },
+      {
+        "name": "laptop-1024",
+        "width": 1024,
+        "height": 768,
+        "durationSeconds": 8.3,
+        "actionsExecuted": 12,
+        "actionTypes": [
+          "ScrollDown",
+          "Click",
+          "ScrollUp",
+          "Back",
+          "Reload"
+        ],
+        "invariantsExecuted": [
+          "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
+          "no_server_error_pages (no 5xx titles or headings)",
+          "page_has_title_or_heading (asserts accessible title/header present)",
+          "single_primary_h1 (at most 1 H1 per rendered page)",
+          "all_images_loaded (missing src, load completion, natural dimensions, decode check)",
+          "noUncaughtExceptions",
+          "noUnhandledPromiseRejections"
+        ],
+        "violations": 0,
+        "imageFailures": 0,
+        "verdict": "PASS",
+        "tracePath": "docs/verification-evidence/bombadil/traces/laptop-1024/trace.jsonl",
+        "screenshotPath": "docs/verification-evidence/bombadil/traces/laptop-1024/"
+      },
+      {
+        "name": "desktop-1280",
+        "width": 1280,
+        "height": 800,
+        "durationSeconds": 8.6,
+        "actionsExecuted": 13,
+        "actionTypes": [
+          "ScrollDown",
+          "Click",
+          "ScrollUp",
+          "Back",
+          "Reload"
+        ],
+        "invariantsExecuted": [
+          "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
+          "no_server_error_pages (no 5xx titles or headings)",
+          "page_has_title_or_heading (asserts accessible title/header present)",
+          "single_primary_h1 (at most 1 H1 per rendered page)",
+          "all_images_loaded (missing src, load completion, natural dimensions, decode check)",
+          "noUncaughtExceptions",
+          "noUnhandledPromiseRejections"
+        ],
+        "violations": 0,
+        "imageFailures": 0,
+        "verdict": "PASS",
+        "tracePath": "docs/verification-evidence/bombadil/traces/desktop-1280/trace.jsonl",
+        "screenshotPath": "docs/verification-evidence/bombadil/traces/desktop-1280/"
+      },
+      {
+        "name": "desktop-1440",
+        "width": 1440,
+        "height": 900,
+        "durationSeconds": 8.5,
+        "actionsExecuted": 13,
+        "actionTypes": [
+          "ScrollDown",
+          "Click",
+          "ScrollUp",
+          "Back",
+          "Reload"
+        ],
+        "invariantsExecuted": [
+          "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
+          "no_server_error_pages (no 5xx titles or headings)",
+          "page_has_title_or_heading (asserts accessible title/header present)",
+          "single_primary_h1 (at most 1 H1 per rendered page)",
+          "all_images_loaded (missing src, load completion, natural dimensions, decode check)",
+          "noUncaughtExceptions",
+          "noUnhandledPromiseRejections"
+        ],
+        "violations": 0,
+        "imageFailures": 0,
+        "verdict": "PASS",
+        "tracePath": "docs/verification-evidence/bombadil/traces/desktop-1440/trace.jsonl",
+        "screenshotPath": "docs/verification-evidence/bombadil/traces/desktop-1440/"
       }
     ]
   }

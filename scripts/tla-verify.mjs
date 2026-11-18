@@ -47,11 +47,15 @@ const requiredSymbols = [
   "InventoryConservation",
   "UniqueOrderIds",
   "MaxActiveOrderPerShopper",
-  "AtMostOneSettlementPerPayment",
+  "AtMostOneCapturePerPayment",
+  "AtMostOneSuccessfulRefundPerPayment",
   "OrderSettlementConsistency",
+  "RefundRequiresCapture",
   "NoRefundOnFailedPayment",
-  "RefundRequiresCapturedPayment",
-  "ReceivePaymentWebhook",
+  "RefundAmountBoundedByCapture",
+  "ExplicitRefundFailureRepresented",
+  "ProcessPaymentCapture",
+  "ProcessRefund",
   "AcquireHold"
 ];
 
@@ -69,10 +73,13 @@ const requiredInvariants = [
   "InventoryConservation",
   "UniqueOrderIds",
   "MaxActiveOrderPerShopper",
-  "AtMostOneSettlementPerPayment",
+  "AtMostOneCapturePerPayment",
+  "AtMostOneSuccessfulRefundPerPayment",
   "OrderSettlementConsistency",
+  "RefundRequiresCapture",
   "NoRefundOnFailedPayment",
-  "RefundRequiresCapturedPayment"
+  "RefundAmountBoundedByCapture",
+  "ExplicitRefundFailureRepresented"
 ];
 
 for (const inv of requiredInvariants) {
@@ -82,6 +89,11 @@ for (const inv of requiredInvariants) {
   }
 }
 
+const tlaHash = createHash("sha256").update(tlaContent).digest("hex");
+const cfgHash = createHash("sha256").update(cfgContent).digest("hex");
+
+console.log(`[tla-verify] Model SHA-256:  ${tlaHash}`);
+console.log(`[tla-verify] Config SHA-256: ${cfgHash}`);
 console.log("[tla-verify] ✓ TLA+ specification structure and TLC invariants validated.");
 
 // 4. Fail-closed Java runtime verification
@@ -129,7 +141,28 @@ try {
 
   // Write verified receipt to proof file
   try {
-    writeFileSync(proofFile, tlcOutput, "utf-8");
+    const fullProofContent = [
+      "=============================================================================",
+      "TLA+ TLC FORMAL MODEL CHECKING STATE-SPACE PROOF RECEIPT (WAVE 23.2)",
+      "=============================================================================",
+      `Date: ${new Date().toISOString()}`,
+      `Model File: specs/tla/CheckoutInventory.tla`,
+      `Model SHA-256:  ${tlaHash}`,
+      `Config File: specs/tla/CheckoutInventory.cfg`,
+      `Config SHA-256: ${cfgHash}`,
+      `TLC JAR SHA-256: ${PINNED_JAR_SHA256}`,
+      "Invariants Verified: 11 (TypeOK, StockNonNegative, InventoryConservation,",
+      "  UniqueOrderIds, MaxActiveOrderPerShopper, AtMostOneCapturePerPayment,",
+      "  AtMostOneSuccessfulRefundPerPayment, OrderSettlementConsistency,",
+      "  RefundRequiresCapture, NoRefundOnFailedPayment,",
+      "  RefundAmountBoundedByCapture, ExplicitRefundFailureRepresented)",
+      "-----------------------------------------------------------------------------",
+      "",
+      tlcOutput.trim(),
+      "",
+      "============================================================================="
+    ].join("\n");
+    writeFileSync(proofFile, fullProofContent + "\n", "utf-8");
   } catch {
     // Optional receipt write
   }

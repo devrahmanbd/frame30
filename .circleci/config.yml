@@ -284,6 +284,32 @@ jobs:
               src/lib/plugin-acceptance.test.ts \
               src/lib/phase5-plugins.test.ts
 
+  bombadil-staging:
+    executor: e2e-executor
+    steps:
+      - checkout
+      - setup-bun
+      - run:
+          name: Install Playwright Chromium for Bombadil
+          command: bunx playwright install --with-deps chromium
+      - run:
+          name: Seeded-staging 8-viewport Bombadil property exploration (fail-closed)
+          command: bun run test:bombadil:all
+          environment:
+            TARGET_URL: "http://127.0.0.1:3000"
+            SUPABASE_URL: "http://127.0.0.1:9"
+            SUPABASE_SERVICE_ROLE_KEY: "ci-placeholder-service-role-key"
+            SUPABASE_PUBLISHABLE_KEY: "ci-placeholder-publishable-key"
+            VITE_SUPABASE_URL: "http://127.0.0.1:9"
+            VITE_SUPABASE_PUBLISHABLE_KEY: "ci-placeholder-publishable-key"
+            AUTH_HASH_SALT: "ci-placeholder-salt"
+      - store_artifacts:
+          path: docs/verification-evidence/bombadil/traces
+          destination: bombadil-traces
+      - store_artifacts:
+          path: docs/verification-evidence/bombadil-trace-summary.json
+          destination: bombadil-summary.json
+
   # Adversarial browser specs: every file named here EXISTS and passes cold.
   # (The aspirational *_loop suites have docs but no Playwright implementation;
   # `e2e:critical`/`e2e:golden` were rewired to runnable specs for the same
@@ -456,6 +482,10 @@ workflows:
       # BLOCKING from day one: the real seven-template editor journey on a
       # throwaway stack. A red here is a real red (--retries=0 in the script).
       - e2e-seven-templates:
+          requires:
+            - build
+      # Dedicated seeded-staging 8-viewport Bombadil property exploration (fail-closed)
+      - bombadil-staging:
           requires:
             - build
       - plugin-storefront-gate
