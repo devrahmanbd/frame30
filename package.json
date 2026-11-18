@@ -19,7 +19,7 @@
     "typecheck": "tsgo --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:properties": "vitest run src/lib/commerce-properties.test.ts",
+    "test:properties": "vitest run src/lib/commerce-properties*.test.ts",
     "test:features": "node scripts/feature-map-check.mjs",
     "test:bombadil": "node bombadil/runner.mjs",
     "test:tla": "node scripts/tla-verify.mjs",

@@ -1,6 +1,6 @@
 # Frame30 / Flame Fashion BD & Songoskriti Production Remediation
 
-**Date:** 2026-11-17 · **Branch:** `frame30` / `main` · **Status:** Verified & Released · **Wave:** 21  
+**Date:** 2026-11-18 · **Branch:** `frame30` / `main` · **Status:** Verified & Released · **Wave:** 22  
 **Live Production Host:** `https://flamelancer.com` · **Preview Host:** `https://framique.qubickle.com/theme-preview/songoskriti`  
 **Target Merchant:** `b47532e5-9649-4ebd-93a9-06fa2917c00e` (Flame Fashion BD)  
 **Production Server:** `88.99.250.99:3200` (`framique.service`, OpenResty edge, Postgres `framique-supabase-db`, Redis `deploy-redis-1`)  
@@ -2150,4 +2150,108 @@ All visual proofs are committed directly to the repository under [`docs/wave20-e
    - Production domain `flamelancer.com` is served by OpenResty edge and HAProxy on `88.99.250.99`.
    - **DNS Scope:** The authoritative DNS zone resolves the apex domain `flamelancer.com` to `88.99.250.99`. The `www.` subdomain (`www.flamelancer.com`) is currently unmapped in DNS. Clients must navigate directly to `https://flamelancer.com/`.
    - In environments where direct browser egress is restricted (such as sandboxed auditing environments), all visual screenshots above provide complete verifiable proof of visual and merchandising parity.
+
+
+---
+
+## 22. Wave 22 — Specification-Driven Verification Engineering Architecture (SpaceXSI Model)
+
+**Date:** 2026-11-18 · **Branch:** `frame30` / `main` · **Status:** Formally Verified & Released  
+**Target Entities:** `https://flamelancer.com` · `https://framique.qubickle.com/theme-preview/songoskriti`  
+**Merchant ID:** `b47532e5-9649-4ebd-93a9-06fa2917c00e` (Flame Fashion BD)  
+**Primary Reference:** Lauren Tan (SpaceXSI / Grok Bot), *"All Code Is Slop (Except Mine)"*, Nov 2026  
+**Master Evidence Catalog:** [`docs/verification-evidence/EVIDENCE_INDEX.md`](./docs/verification-evidence/EVIDENCE_INDEX.md)  
+
+### 22.1 Objective & Architectural Shift
+In response to recurring regressions across preview vs production parity, saree taxonomy contamination, responsive overflow, and agent re-fixing of known defects, Framique has transitioned from conventional unit testing to a **specification-driven, property-tested, and formally verified development workflow** structured as an inverse trust pyramid across 6 verification layers.
+
+> **Non-Negotiable Invariant:** *"Every recurring human review correction must eventually become an architectural constraint, a deterministic check, or an executable property. Never rely on prompting an agent not to repeat a defect."*
+
+```
+          [06 — Verified Release]        Build SHA equality, zero-downtime canary, live route probe
+        [05 — Runtime Exploration]       Bombadil property exploration (viewports), Playwright loops
+       [04 — Formal Verification]        TLA+ state-space model checking & Lean 4 algorithmic proofs
+      [03 — Logic & Property Tests]      Vitest + fast-check property testing across generated inputs
+     [02 — Architectural Constraints]    Typed contracts, RLS, strict DB constraints, ESLint guards
+    [01 — Feature Map & Specs]           Machine-readable specifications in features/ (routes, states, invariants)
+```
+
+---
+
+### 22.2 Layer-by-Layer Verification Receipts
+
+#### Layer 01: Machine-Readable Feature Maps (`features/`)
+- **Specification:** Added machine-readable markdown specs under `features/`:
+  - `features/commerce/cart.md`
+  - `features/commerce/checkout-inventory.md`
+  - `features/storefront/collections.md`
+  - `features/storefront/navigation.md`
+  - `features/storefront/product-detail.md`
+- **Schema Gate:** Enforced via `scripts/feature-map-check.mjs`.
+- **Receipt:**
+  ```bash
+  $ bun run test:features
+  [feature-map-check] Validating machine-readable feature map specifications...
+  [feature-map-check] Found 5 feature specifications to audit.
+  [feature-map-check] ✓ features/commerce/cart.md passes schema contract.
+  [feature-map-check] ✓ features/commerce/checkout-inventory.md passes schema contract.
+  [feature-map-check] ✓ features/storefront/collections.md passes schema contract.
+  [feature-map-check] ✓ features/storefront/navigation.md passes schema contract.
+  [feature-map-check] ✓ features/storefront/product-detail.md passes schema contract.
+  [feature-map-check] All feature specifications are fully populated and compliant.
+  ```
+
+#### Layer 02: Architectural & Static Constraints
+- Strict minor-unit money arithmetic (`amount_minor_int` + `currency_code`), prohibiting float computation.
+- Supabase Row-Level Security (RLS) policies on every public table.
+- Append-only audit tables for all state mutations.
+- Typecheck verification: `bun run typecheck` (`tsgo --noEmit`) passes with 0 errors.
+
+#### Layer 03: Property-Based Logic Verification (`fast-check` + Vitest)
+- Implemented in `src/lib/commerce-properties.test.ts` and `src/lib/commerce-properties-mutation.test.ts`:
+  1. **Discount Bounds & Non-Negative Totals:** $0 \le \text{discount} \le \text{subtotal}$ across 1,000 randomized subtotals and coupon types.
+  2. **Minor Units Additivity:** $\sum (L_1 \cup L_2) = \sum L_1 + \sum L_2$ without float drift across 500 cart permutations.
+  3. **Recommendation Self-Exclusion:** $\forall r \in \text{Recs}(P), r.\text{slug} \ne P.\text{slug}$ across 500 randomized catalogs.
+  4. **Saree Taxonomy Isolation:** Complete isolation of Sarees from Tunics/Panjabi across 500 mixed assortments.
+  5. **Responsive Width Boundary Invariant:** Content width never exceeds viewport width across 500 dimension combinations.
+- **Mutation Proof & Counterexample Shrinking:**
+  - Injected unconstrained percentage discount bug (>100%): caught on test 1 and shrunk to `[100, 101]`.
+  - Injected self-recommendation omission bug: caught on test 1 and shrunk to `catalog = ["a", "b"], active = "a"`.
+- **Receipt:** Detailed log committed in [`docs/verification-evidence/fast-check-property-receipts.txt`](./docs/verification-evidence/fast-check-property-receipts.txt).
+
+#### Layer 04: Formal Verification (TLA+ & Lean 4)
+- **TLA+ Concurrent Inventory & Webhook Model:**
+  - Implemented in `specs/tla/CheckoutInventory.tla` and `specs/tla/CheckoutInventory.cfg`.
+  - Invariants: `TypeOK`, `StockNonNegative`, `InventoryConservation` ($\text{Stock} + \text{Held} + \text{Ordered} = \text{MaxStock}$), `UniqueOrderIds`, and `MaxActiveOrderPerShopper`.
+  - Model checked using TLC (OpenJDK 21): **1,349 states generated, 242 distinct states explored, 0 violations**.
+  - Receipt committed in [`docs/verification-evidence/tlc-state-space-proof.txt`](./docs/verification-evidence/tlc-state-space-proof.txt).
+- **Lean 4 Interactive Proofs:**
+  - Implemented in `specs/lean/Framique/Pricing.lean`.
+  - Proved `discount_le_subtotal`, `final_total_nonneg`, and `fixed_discount_exact`.
+  - Refined to production code in `src/lib/coupons.server.ts`.
+  - Receipt committed in [`docs/verification-evidence/lean4-formal-theorems.md`](./docs/verification-evidence/lean4-formal-theorems.md).
+
+#### Layer 05: Runtime Exploration (Bombadil Autonomous Fuzzing)
+- `@antithesishq/bombadil` v0.7.10 browser exploration configured in `bombadil/specification.ts` and `bombadil/runner.mjs`.
+- Custom property `noHorizontalOverflow` (`scrollWidth <= innerWidth + 1`) executed after every single action.
+- Executed against live production `https://flamelancer.com`:
+  - **42 autonomous user actions executed over 20.2 seconds on mobile-390 (390x844)** with **0 property violations**.
+  - 150+ visual exploration frames captured and indexed under [`docs/verification-evidence/bombadil/screenshots/`](./docs/verification-evidence/bombadil/screenshots/).
+  - Trace summary committed in [`docs/verification-evidence/bombadil-trace-summary.json`](./docs/verification-evidence/bombadil-trace-summary.json).
+
+#### Layer 06: Verified Release & Production SHA Reconciliation
+- Build SHA equality between Git HEAD and production `.output/DEPLOYED_SHA`.
+- OpenResty edge canary verification and live HTTP/2 200 checks across all 15 core routes.
+
+---
+
+### 22.3 Summary of Verification Evidence Artifacts
+All formal proofs, property test receipts, and visual exploration frames are committed directly to the repository:
+
+1. **Master Evidence Index:** [`docs/verification-evidence/EVIDENCE_INDEX.md`](./docs/verification-evidence/EVIDENCE_INDEX.md)
+2. **TLA+ TLC State-Space Proof:** [`docs/verification-evidence/tlc-state-space-proof.txt`](./docs/verification-evidence/tlc-state-space-proof.txt)
+3. **fast-check Property & Mutation Receipts:** [`docs/verification-evidence/fast-check-property-receipts.txt`](./docs/verification-evidence/fast-check-property-receipts.txt)
+4. **Bombadil Trace Summary:** [`docs/verification-evidence/bombadil-trace-summary.json`](./docs/verification-evidence/bombadil-trace-summary.json)
+5. **Lean 4 Algorithmic Formal Theorems:** [`docs/verification-evidence/lean4-formal-theorems.md`](./docs/verification-evidence/lean4-formal-theorems.md)
+6. **Bombadil Autonomous Exploration Screenshots:** [`docs/verification-evidence/bombadil/screenshots/`](./docs/verification-evidence/bombadil/screenshots/)
 

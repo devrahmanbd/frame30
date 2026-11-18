@@ -14,13 +14,15 @@ EXTENDS Integers, FiniteSets
 
 CONSTANTS 
     Shoppers,       \* Set of customer identifiers, e.g. {s1, s2}
-    MaxStock        \* Initial variant inventory units, e.g. 2
+    MaxStock,       \* Initial variant inventory units, e.g. 2
+    OrderIds,       \* Set of unique order IDs, e.g. {ord1, ord2}
+    EventIds        \* Set of webhook event IDs, e.g. {evt1, evt2}
 
 VARIABLES
     availableStock,     \* Integer: 0..MaxStock
     holds,              \* Function: Shoppers -> 0..MaxStock
-    orders,             \* Set of [shopper: Shoppers, qty: 1..MaxStock, status: Statuses]
-    processedEvents     \* Set of webhook/event IDs already settled
+    orders,             \* Set of [id: OrderIds, shopper: Shoppers, qty: 1..MaxStock, status: Statuses]
+    processedEvents     \* Set of EventIds already settled
 
 vars == <<availableStock, holds, orders, processedEvents>>
 
@@ -32,6 +34,7 @@ TypeOK ==
     /\ availableStock \in 0..MaxStock
     /\ holds \in [Shoppers -> 0..MaxStock]
     /\ \A o \in orders :
+        /\ o.id \in OrderIds
         /\ o.shopper \in Shoppers
         /\ o.qty \in 1..MaxStock
         /\ o.status \in Statuses
@@ -79,29 +82,30 @@ ExpireOrReleaseHold(s) ==
     /\ UNCHANGED <<orders, processedEvents>>
 
 (* Shopper places order from active hold *)
-PlaceOrder(s) ==
+PlaceOrder(s, ordId) ==
     /\ holds[s] > 0
+    /\ ~ \E o \in orders : o.id = ordId
     /\ ~ \E o \in orders : o.shopper = s /\ o.status \in {"Pending", "Paid"}
-    /\ orders' = orders \cup {[shopper |-> s, qty |-> holds[s], status |-> "Pending"]}
+    /\ orders' = orders \cup {[id |-> ordId, shopper |-> s, qty |-> holds[s], status |-> "Pending"]}
     /\ holds' = [holds EXCEPT ![s] = 0]
     /\ UNCHANGED <<availableStock, processedEvents>>
 
-(* Webhook received from payment gateway *)
-ReceivePaymentWebhook(eventId, s) ==
+(* Webhook received from payment gateway for specific order *)
+ReceivePaymentWebhook(eventId, ordId) ==
     IF eventId \in processedEvents
     THEN \* Idempotent replay: already settled, strictly no state mutation
          UNCHANGED vars
-    ELSE \* First delivery: settle the order
+    ELSE \* First delivery: settle the order if currently Pending
          /\ processedEvents' = processedEvents \cup {eventId}
-         /\ orders' = {IF o.shopper = s /\ o.status = "Pending"
+         /\ orders' = {IF o.id = ordId /\ o.status = "Pending"
                        THEN [o EXCEPT !.status = "Paid"]
                        ELSE o : o \in orders}
          /\ UNCHANGED <<availableStock, holds>>
 
 (* Merchant fulfills paid order *)
-FulfillOrder(s) ==
-    /\ \E o \in orders : o.shopper = s /\ o.status = "Paid"
-    /\ orders' = {IF o.shopper = s /\ o.status = "Paid"
+FulfillOrder(ordId) ==
+    /\ \E o \in orders : o.id = ordId /\ o.status = "Paid"
+    /\ orders' = {IF o.id = ordId /\ o.status = "Paid"
                   THEN [o EXCEPT !.status = "Fulfilled"]
                   ELSE o : o \in orders}
     /\ UNCHANGED <<availableStock, holds, processedEvents>>
@@ -111,16 +115,16 @@ FulfillOrder(s) ==
 Next ==
     \/ \E s \in Shoppers, q \in 1..MaxStock : AcquireHold(s, q)
     \/ \E s \in Shoppers : ExpireOrReleaseHold(s)
-    \/ \E s \in Shoppers : PlaceOrder(s)
-    \/ \E s \in Shoppers, e \in {"evt_1", "evt_2"} : ReceivePaymentWebhook(e, s)
-    \/ \E s \in Shoppers : FulfillOrder(s)
+    \/ \E s \in Shoppers, ordId \in OrderIds : PlaceOrder(s, ordId)
+    \/ \E e \in EventIds, ordId \in OrderIds : ReceivePaymentWebhook(e, ordId)
+    \/ \E ordId \in OrderIds : FulfillOrder(ordId)
 
 Spec == Init /\ [][Next]_vars
 
 -----------------------------------------------------------------------------
 (* Critical Invariants to Verify with TLC *)
 
-(* 1. Stock never drops below 0 *)
+(* 1. Stock never drops below 0 under concurrent contention *)
 StockNonNegative ==
     availableStock >= 0
 
@@ -128,10 +132,14 @@ StockNonNegative ==
 InventoryConservation ==
     availableStock + SumHeld + SumOrdered = MaxStock
 
-(* 3. No order can be simultaneously Pending and Fulfilled *)
-NoContradictoryOrders ==
+(* 3. Unique order identifiers: no order id duplicated *)
+UniqueOrderIds ==
+    \A o1, o2 \in orders : o1.id = o2.id => o1 = o2
+
+(* 4. Active order bound per shopper *)
+MaxActiveOrderPerShopper ==
     \A s \in Shoppers :
-        LET sOrders == {o \in orders : o.shopper = s}
-        IN Cardinality({o \in sOrders : o.status \in {"Pending", "Paid", "Fulfilled"}}) <= 1
+        LET active == {o \in orders : o.shopper = s /\ o.status \in {"Pending", "Paid"}}
+        IN Cardinality(active) <= 1
 
 =============================================================================

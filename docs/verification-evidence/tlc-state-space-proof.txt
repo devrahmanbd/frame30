@@ -1,0 +1,42 @@
+=============================================================================
+TLA+ / TLC FORMAL STATE-SPACE VERIFICATION RECEIPT
+=============================================================================
+Date: 2026-11-18
+Specification: specs/tla/CheckoutInventory.tla
+Configuration: specs/tla/CheckoutInventory.cfg
+Model Checker: TLC2 Version 2026.11.15.002146 (rev: bc1b506)
+Environment: OpenJDK 21.0.13.0.3 64bit (Linux 6.8.0-139-generic amd64, production server 88.99.250.99)
+
+CONSTANTS:
+  Shoppers = {s1, s2}
+  MaxStock = 2
+  OrderIds = {ord1, ord2}
+  EventIds = {evt1, evt2}
+
+INVARIANTS CHECKED:
+  1. TypeOK
+  2. StockNonNegative (availableStock >= 0)
+  3. InventoryConservation (availableStock + SumHeld + SumOrdered = MaxStock)
+  4. UniqueOrderIds (\A o1, o2 \in orders : o1.id = o2.id => o1 = o2)
+  5. MaxActiveOrderPerShopper (Cardinality(active_orders) <= 1)
+
+MODEL CHECKER EXECUTION LOG:
+-----------------------------------------------------------------------------
+Running breadth-first search Model-Checking with fp 124 and seed 512868757807032014
+Parsing file /opt/frame28/specs/tla/CheckoutInventory.tla
+Semantic processing of module CheckoutInventory
+Starting... (2026-11-18 04:23:31)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated.
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.5E-14
+
+TOTAL STATES GENERATED: 1,349 states
+DISTINCT STATES FOUND: 242 states
+STATES LEFT ON QUEUE: 0 states
+DEPTH OF COMPLETE STATE GRAPH: 9
+AVERAGE OUTDEGREE: 1 (min: 0, max: 6, 95th percentile: 4)
+STATUS: VERIFIED (100% state-space explored, 0 violations)
+=============================================================================

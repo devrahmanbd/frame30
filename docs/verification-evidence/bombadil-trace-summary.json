@@ -1,0 +1,48 @@
+{
+  "testRun": {
+    "tool": "@antithesishq/bombadil",
+    "version": "0.7.10",
+    "date": "2026-11-18T03:25:00Z",
+    "target": "https://flamelancer.com",
+    "viewports": [
+      {
+        "name": "mobile-390",
+        "width": 390,
+        "height": 844,
+        "durationSeconds": 20.2,
+        "actionsExecuted": 42,
+        "actionTypes": ["Click", "ScrollDown", "ScrollUp", "Back", "Type", "Reload"],
+        "invariantsChecked": [
+          "no_horizontal_overflow (scrollWidth <= innerWidth + 1)",
+          "no_server_error_pages (no 5xx titles or headings)",
+          "noUncaughtExceptions",
+          "noUnhandledPromiseRejections",
+          "noConsoleErrors"
+        ],
+        "violations": 0,
+        "verdict": "PASS",
+        "tracePath": "artifacts/bombadil/mobile-390/trace.jsonl",
+        "screenshotsSampled": 42
+      },
+      {
+        "name": "desktop-1440",
+        "width": 1440,
+        "height": 900,
+        "durationSeconds": 9.1,
+        "actionsExecuted": 28,
+        "invariantsChecked": [
+          "no_horizontal_overflow",
+          "no_server_error_pages",
+          "noUncaughtExceptions",
+          "noUnhandledPromiseRejections"
+        ],
+        "rateLimitTriggered": {
+          "status": 429,
+          "property": "noHttpErrorCodes",
+          "meaning": "High-frequency autonomous action generation triggered production edge rate limiter as expected under aggressive fuzzing."
+        },
+        "tracePath": "artifacts/bombadil/desktop-1440/trace.jsonl"
+      }
+    ]
+  }
+}
