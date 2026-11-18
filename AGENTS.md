@@ -64,8 +64,12 @@ bun install && bun run dev        # dev server (port 3000)
 bun run lint                      # ESLint
 bun run format                    # Prettier
 bun run typecheck                 # tsgo --noEmit
-bun run test                      # Vitest (unit + contract)
+bun run test                      # Vitest (unit + contract + property)
 bun run test:contracts            # contract gate only
+bun run test:properties           # fast-check property suites
+bun run test:features             # feature map integrity gate
+bun run test:bombadil             # Bombadil property-based UI exploration
+bun run test:tla                  # TLA+ specification validation
 bun run e2e                       # Playwright (all suites)
 bun run e2e:critical              # Playwright (critical suites only)
 bun run schema:check              # repo migrations vs live schema
@@ -75,7 +79,49 @@ bun run gates:release             # perf, seo, a11y, vitals, responsive
 bun run a11y:gate                 # axe-core, >= 90 score
 ```
 
-**Verification order**: `typecheck` → `test` → `test:contracts` → `schema:check` → `gates:release`
+**Verification order**: `typecheck` → `test:features` → `test:properties` → `test` → `test:contracts` → `schema:check` → `gates:release`
+
+## Verification Engineering Architecture (Spec-Driven / SpaceXSI Model)
+
+> **Core Principle:** Every recurring human review correction must eventually become an architectural constraint, a deterministic check, or an executable property. Never rely on prompting an agent not to repeat a defect.
+
+Framique enforces an inverse trust pyramid across six complementary verification layers:
+
+```
+          [06 — Verified Release]        Build SHA equality, zero-downtime canary, live route probe
+        [05 — Runtime Exploration]       Bombadil property exploration (viewports), Playwright loops
+       [04 — Formal Verification]        TLA+ state-space model checking & Lean 4 algorithmic proofs
+      [03 — Logic & Property Tests]      Vitest + fast-check property testing across generated inputs
+     [02 — Architectural Constraints]    Typed contracts, RLS, strict DB constraints, ESLint guards
+    [01 — Feature Map & Specs]           Machine-readable specifications in features/ (routes, states, invariants)
+```
+
+### The 6 Verification Layers
+
+1. **Layer 01 — Feature Map & Machine-Readable Spec (`features/`)**:
+   - Central directory of record for all storefront, commerce, customer, and merchant workflows.
+   - Every feature file defines: entry route, preconditions, supported actions, state transitions, domain invariants, and verification commands.
+   - Coding agents MUST consult and update the feature map when implementing or altering workflows.
+2. **Layer 02 — Architectural & Static Constraints**:
+   - Constrain the framework and APIs so incorrect implementations become impossible or difficult to write.
+   - Strong TypeScript types, integer-only minor units (`amount_minor_int`), Supabase RLS policies, append-only audit tables, and directory conventions (`*.server.ts`).
+3. **Layer 03 — Logic Verification & Property Testing (`fast-check` + Vitest)**:
+   - Universal property assertions tested against thousands of randomized inputs with automated shrinking.
+   - Mandatory for commerce algorithms (discounts bounded by subtotal, integer rounding, line-item summation, recommendation self-exclusion, taxonomy isolation).
+4. **Layer 04 — Formal Verification (TLA+ & Lean 4)**:
+   - **TLA+ (`specs/tla/`)**: State-space model checking (via TLC) for concurrent, multi-party, or distributed workflows: stock hold reservations, concurrent checkout, and payment webhook idempotency.
+   - **Lean 4 (`specs/lean/`)**: Interactive theorem proving for pure mathematical algorithms (minor-unit arithmetic, non-negative totals, discount bounds) with documented refinement to production code.
+5. **Layer 05 — Runtime Exploration (`Bombadil` & Playwright)**:
+   - **Bombadil (`@antithesishq/bombadil`)**: Property-based web UI testing exploring live DOM states across responsive viewports (320px–1440px). Validates invariants: `scrollWidth <= clientWidth`, zero uncaught exceptions, zero console errors, valid navigation targets.
+   - **Playwright**: Deterministic regression suites for critical user journeys.
+6. **Layer 06 — Verified Release & Production Reconciliation**:
+   - Zero-trust deployment pipeline: exact commit SHA equality between Git HEAD and production `.output/DEPLOYED_SHA`.
+   - Live HTTP readiness verification before traffic shift; automated rollback on invariant failure.
+
+### Agent Workflow Rules
+- **No Prompt-Only Fixes**: If a review catches a regression (e.g. wordmark truncation, saree cross-contamination, self-recommendations), you MUST add an architectural constraint, a deterministic check, or a property test preventing it.
+- **Reference Feature Maps**: Read the relevant file in `features/` before starting work; update it if the feature contract changes.
+- **Run Property Checks**: When modifying commerce calculations or collection rules, execute `bun run test:properties` and ensure zero shrinkable counterexamples.
 
 ## File Conventions
 

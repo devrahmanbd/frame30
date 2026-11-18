@@ -19,6 +19,10 @@
     "typecheck": "tsgo --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:properties": "vitest run src/lib/commerce-properties.test.ts",
+    "test:features": "node scripts/feature-map-check.mjs",
+    "test:bombadil": "node bombadil/runner.mjs",
+    "test:tla": "node scripts/tla-verify.mjs",
     "e2e": "playwright test -c .e2e/playwright.config.ts",
     "e2e:critical": "playwright test -c .e2e/playwright.config.ts smoke theme-preview-isolation real-frames storefront-resilience",
     "e2e:gates": "playwright test -c .e2e/playwright.config.ts smoke theme-preview-isolation",
@@ -138,6 +142,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@antithesishq/bombadil": "^0.7.10",
     "@eslint/js": "^9.32.0",
     "@playwright/test": "1.56.0",
     "@types/node": "^22.16.5",
@@ -152,6 +157,7 @@
     "eslint-plugin-prettier": "^5.2.6",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
+    "fast-check": "^4.10.2",
     "globals": "^15.15.0",
     "nitro": "3.0.260603-beta",
     "prettier": "^3.7.3",

@@ -13,3 +13,4 @@ playwright-report/
 ops/backup/rehearsals.jsonl
 .opencode/
 harness/traces/
+artifacts/

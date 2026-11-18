@@ -69,6 +69,15 @@ jobs:
       - checkout
       - setup-bun
       - run:
+          name: Feature map schema gate
+          command: bun run test:features
+      - run:
+          name: Property-based tests (fast-check)
+          command: bun run test:properties
+      - run:
+          name: TLA+ specification validation
+          command: bun run test:tla
+      - run:
           name: Unit + contract tests (Vitest)
           command: bun run test
       - run:
