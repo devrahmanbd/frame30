@@ -2,6 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { incr, withSpan } from "./observability.server";
 import { enforceRateLimit } from "./rate-limit.server";
+import { calculateDiscount } from "./commerce/pricing";
 
 type Client = SupabaseClient<Database>;
 type CouponRow = Database["public"]["Tables"]["coupons"]["Row"];
@@ -46,34 +47,7 @@ export function discountFor(
   subtotalMinor: number,
   lines: CouponLine[],
 ) {
-  if (coupon.type === "fixed") {
-    return {
-      discountMinor: Math.min(Number(coupon.amount_minor_int), subtotalMinor),
-      freeShipping: false,
-    };
-  }
-  if (coupon.type === "percent") {
-    return {
-      discountMinor: Math.floor(
-        (subtotalMinor * Math.min(100, coupon.percent_off)) / 100,
-      ),
-      freeShipping: false,
-    };
-  }
-  if (coupon.type === "free_shipping")
-    return { discountMinor: 0, freeShipping: true };
-
-  const buy = Math.max(1, coupon.buy_quantity);
-  const get = Math.max(1, coupon.get_quantity);
-  const totalQty = lines.reduce((s, l) => s + l.quantity, 0);
-  const cheapest = lines.length
-    ? Math.min(...lines.map((l) => l.unitPriceMinor))
-    : 0;
-  const freeUnits = Math.floor(totalQty / (buy + get)) * get;
-  return {
-    discountMinor: Math.min(freeUnits * cheapest, subtotalMinor),
-    freeShipping: false,
-  };
+  return calculateDiscount(coupon, subtotalMinor, lines);
 }
 
 export async function validateCoupon(

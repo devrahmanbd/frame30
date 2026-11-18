@@ -3,7 +3,7 @@ import type { State } from "@antithesishq/bombadil/browser";
 
 /**
  * Extracts horizontal dimensions of document and viewport.
- * Invariant: document.documentElement.scrollWidth <= window.innerWidth
+ * Invariant: document.documentElement.scrollWidth <= window.innerWidth + 1
  */
 const dimensions = extract((state: State) => {
   const doc = state.document?.documentElement;
@@ -17,7 +17,10 @@ const dimensions = extract((state: State) => {
 
 export const no_horizontal_overflow = always(() => {
   const { scrollWidth, innerWidth } = dimensions.current;
-  if (!innerWidth || !scrollWidth) return true;
+  // Fail closed: Missing or zero dimensions indicate DOM extraction failure
+  if (!innerWidth || !scrollWidth) {
+    return false;
+  }
   // Allow a 1px subpixel rendering margin
   return scrollWidth <= innerWidth + 1;
 });

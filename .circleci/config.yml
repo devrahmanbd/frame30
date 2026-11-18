@@ -69,13 +69,19 @@ jobs:
       - checkout
       - setup-bun
       - run:
+          name: Install OpenJDK 21 for TLA+ TLC model checker
+          command: |
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq openjdk-21-jre-headless
+            java -version
+      - run:
           name: Feature map schema gate
           command: bun run test:features
       - run:
           name: Property-based tests (fast-check)
           command: bun run test:properties
       - run:
-          name: TLA+ specification validation
+          name: TLA+ specification validation (fail-closed TLC model checking)
           command: bun run test:tla
       - run:
           name: Unit + contract tests (Vitest)

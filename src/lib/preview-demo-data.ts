@@ -9,6 +9,10 @@
 import { demoCatalogFor } from "./demo-catalog";
 import { placeholderSeed } from "./placeholder";
 import type { WidgetDataBundle, WidgetDataMap, WidgetRow } from "./widget-data";
+import {
+  filterCollectionProducts,
+  matchesCategory,
+} from "./commerce/collection-filters";
 
 /**
  * Demo rows for the account template (shopper-scoped in production).
@@ -113,36 +117,19 @@ export function previewDemoMap(
       const colParam = (req.params as Record<string, unknown>)["collection"];
       if (typeof colParam === "string" && colParam.trim()) {
         const slug = colParam.trim().toLowerCase();
-        const matchesCategory = (category: string | undefined, target: string) => {
-          if (!category) return false;
-          const c = category.toLowerCase();
-          if (c === target) return true;
-          if (target === "womens" || target === "women") return c === "women" || c === "womens";
-          if (target === "mens" || target === "men") return c === "men" || c === "mens";
-          if (target === "jewelry" || target === "jewellery") return c === "jewelry" || c === "jewellery";
-          return false;
-        };
         const excludeParam = (req.params as Record<string, unknown>)["exclude"];
-        const excludeSlug = typeof excludeParam === "string" ? excludeParam.trim().toLowerCase() : undefined;
-        const filtered = base.filter((p) => {
-          if (excludeSlug) {
-            const pid = p.id.toLowerCase();
-            if (pid === excludeSlug) return false;
-            if (
-              (excludeSlug.includes("jamdani") && pid.includes("jamdani")) ||
-              (excludeSlug.includes("ghagra") && pid.includes("ghagra"))
-            ) {
-              return false;
-            }
-          }
-          const prod = catalog.products.find((item) => item.slug === p.id);
-          return (
-            prod?.collections?.includes(slug) ||
-            matchesCategory(prod?.category, slug) ||
-            prod?.tags?.includes(slug) ||
-            ((slug === "sarees" || slug === "women" || slug === "womens") && prod?.tags?.includes("saree"))
-          );
-        });
+        const excludeSlug =
+          typeof excludeParam === "string" ? excludeParam.trim() : undefined;
+
+        // Delegate to pure production commerce filter
+        const matchingCatalogProds = filterCollectionProducts(
+          catalog.products,
+          slug,
+          { excludeSlug },
+        );
+        const matchingSlugs = new Set(matchingCatalogProds.map((p) => p.slug));
+        const filtered = base.filter((p) => matchingSlugs.has(p.id));
+
         const isKnown =
           catalog.collections.some((c) => c.slug === slug) ||
           catalog.products.some(
@@ -156,6 +143,7 @@ export function previewDemoMap(
           slug === "girls" ||
           slug === "boys" ||
           slug === "sarees";
+
         if (isKnown) {
           rows = filtered;
         } else {

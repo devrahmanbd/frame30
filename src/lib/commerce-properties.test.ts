@@ -1,84 +1,63 @@
 import { describe, it, expect } from "vitest";
 import fc from "fast-check";
-import { discountFor } from "./coupons.server";
-import type { Database } from "@/integrations/supabase/types";
 
-type CouponRow = Database["public"]["Tables"]["coupons"]["Row"];
+// Direct production commerce module imports
+import { calculateDiscount, calculateOrderTotal } from "./commerce/pricing";
+import { sumMinorUnits, sumCartLines, calculateLineTotal } from "./commerce/money";
+import {
+  excludeActiveProduct,
+  filterCrossSellRecommendations,
+} from "./commerce/recommendations";
+import {
+  isSareeCategory,
+  isDisallowedInSarees,
+  assertSareeTaxonomyIsolation,
+  SAREE_CATEGORIES,
+  DISALLOWED_APPAREL_IN_SAREES,
+} from "./commerce/taxonomy";
+import { filterCollectionProducts } from "./commerce/collection-filters";
 
-describe("Property-Based Verification (fast-check) — Commerce & Taxonomy Invariants", () => {
-  // ── Property 1: Discount Bounds & Non-Negativity ──
-  describe("Discount Invariants", () => {
-    it("never discounts more than subtotal and preserves non-negative minor units", () => {
+describe("Property-Based Verification (fast-check) — Production Commerce Modules", () => {
+  // ── Property 1: Pricing & Discount Bounds ──
+  describe("Production Pricing (pricing.ts)", () => {
+    it("guarantees 0 <= discountMinor <= subtotal and non-negative final total", () => {
       fc.assert(
         fc.property(
-          fc.integer({ min: 0, max: 100_000_000 }), // subtotal up to 1,000,000 BDT in paisa
+          fc.integer({ min: 0, max: 100_000_000 }), // subtotal up to 1,000,000 BDT in minor units
           fc.oneof(
             // Fixed discount
             fc.record({
               type: fc.constant("fixed" as const),
               amount_minor_int: fc.integer({ min: 0, max: 200_000_000 }),
-              percent_off: fc.constant(0),
-              buy_quantity: fc.constant(0),
-              get_quantity: fc.constant(0),
             }),
             // Percent discount
             fc.record({
               type: fc.constant("percent" as const),
-              amount_minor_int: fc.constant(0),
-              percent_off: fc.integer({ min: 0, max: 150 }), // test beyond 100%
-              buy_quantity: fc.constant(0),
-              get_quantity: fc.constant(0),
+              percent_off: fc.integer({ min: -50, max: 200 }), // includes edge cases <0 and >100
             }),
             // Free shipping
             fc.record({
               type: fc.constant("free_shipping" as const),
-              amount_minor_int: fc.constant(0),
-              percent_off: fc.constant(0),
-              buy_quantity: fc.constant(0),
-              get_quantity: fc.constant(0),
             }),
             // BOGO
             fc.record({
-              type: fc.constant("buy_x_get_y" as const),
-              amount_minor_int: fc.constant(0),
-              percent_off: fc.constant(0),
+              type: fc.constant("bogo" as const),
               buy_quantity: fc.integer({ min: 1, max: 10 }),
               get_quantity: fc.integer({ min: 1, max: 10 }),
             })
           ),
           fc.array(
             fc.record({
-              variantId: fc.uuid(),
+              unitPriceMinor: fc.integer({ min: 0, max: 500_000 }),
               quantity: fc.integer({ min: 1, max: 20 }),
-              unitPriceMinor: fc.integer({ min: 100, max: 500_000 }),
             }),
             { maxLength: 10 }
           ),
-          (subtotalMinor, couponBase, lines) => {
-            const coupon = {
-              ...couponBase,
-              id: "coupon-test",
-              merchant_id: "merchant-test",
-              code: "TEST-CODE",
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-              starts_at: null,
-              expires_at: null,
-              status: "active" as const,
-              min_subtotal_minor_int: 0,
-              max_discount_minor_int: null,
-              usage_limit: null,
-              redeemed_count: 0,
-              per_customer_limit: null,
-              allow_combine: true,
-              one_per_order: false,
-              priority: 0,
-              batch_label: null,
-            } as unknown as CouponRow;
+          fc.integer({ min: 0, max: 50_000 }), // shipping fee
+          (subtotalMinor, coupon, lines, shippingMinor) => {
+            const { discountMinor } = calculateDiscount(coupon, subtotalMinor, lines);
 
-            const { discountMinor } = discountFor(coupon, subtotalMinor, lines);
-
-            // Invariant 1: discount is an integer
+            // Invariant 1: discount is strictly an integer
             expect(Number.isInteger(discountMinor)).toBe(true);
 
             // Invariant 2: discount is non-negative
@@ -87,9 +66,11 @@ describe("Property-Based Verification (fast-check) — Commerce & Taxonomy Invar
             // Invariant 3: discount never exceeds subtotal
             expect(discountMinor).toBeLessThanOrEqual(subtotalMinor);
 
-            // Invariant 4: final total is non-negative
-            const finalTotal = subtotalMinor - discountMinor;
+            // Invariant 4: order total calculation preserves non-negativity
+            const finalTotal = calculateOrderTotal(subtotalMinor, discountMinor, shippingMinor);
+            expect(Number.isInteger(finalTotal)).toBe(true);
             expect(finalTotal).toBeGreaterThanOrEqual(0);
+            expect(finalTotal).toBe(subtotalMinor - discountMinor + shippingMinor);
           }
         ),
         { numRuns: 1000 }
@@ -97,37 +78,49 @@ describe("Property-Based Verification (fast-check) — Commerce & Taxonomy Invar
     });
   });
 
-  // ── Property 2: Integer Minor Units Arithmetic & Additivity ──
-  describe("Minor Units Additivity", () => {
-    it("satisfies strict summation additivity without floating point drift", () => {
+  // ── Property 2: Integer Minor Units Arithmetic & Cart Line Summation ──
+  describe("Production Money Arithmetic (money.ts)", () => {
+    it("guarantees strict integer additivity, associativity, and line total correctness", () => {
       fc.assert(
         fc.property(
           fc.array(
             fc.record({
-              unitPrice: fc.integer({ min: 0, max: 10_000_000 }),
-              quantity: fc.integer({ min: 1, max: 50 }),
+              unitPriceMinor: fc.integer({ min: 0, max: 10_000_000 }),
+              quantity: fc.integer({ min: 0, max: 50 }),
             }),
             { minLength: 0, maxLength: 20 }
           ),
           fc.array(
             fc.record({
-              unitPrice: fc.integer({ min: 0, max: 10_000_000 }),
-              quantity: fc.integer({ min: 1, max: 50 }),
+              unitPriceMinor: fc.integer({ min: 0, max: 10_000_000 }),
+              quantity: fc.integer({ min: 0, max: 50 }),
             }),
             { minLength: 0, maxLength: 20 }
           ),
-          (listA, listB) => {
-            const sumLines = (lines: Array<{ unitPrice: number; quantity: number }>) =>
-              lines.reduce((acc, item) => acc + item.unitPrice * item.quantity, 0);
-
-            const totalA = sumLines(listA);
-            const totalB = sumLines(listB);
-            const combinedTotal = sumLines([...listA, ...listB]);
+          (linesA, linesB) => {
+            // Test production sumCartLines
+            const totalA = sumCartLines(linesA);
+            const totalB = sumCartLines(linesB);
+            const combinedTotal = sumCartLines([...linesA, ...linesB]);
 
             // Additivity invariant
             expect(combinedTotal).toBe(totalA + totalB);
             expect(Number.isInteger(combinedTotal)).toBe(true);
             expect(combinedTotal).toBeGreaterThanOrEqual(0);
+
+            // Test line item multiplier
+            for (const line of linesA) {
+              const lineTotal = calculateLineTotal(line.unitPriceMinor, line.quantity);
+              expect(lineTotal).toBe(line.unitPriceMinor * line.quantity);
+              expect(Number.isInteger(lineTotal)).toBe(true);
+            }
+
+            // Test sumMinorUnits
+            const amountsA = linesA.map((l) => l.unitPriceMinor);
+            const amountsB = linesB.map((l) => l.unitPriceMinor);
+            expect(sumMinorUnits([...amountsA, ...amountsB])).toBe(
+              sumMinorUnits(amountsA) + sumMinorUnits(amountsB)
+            );
           }
         ),
         { numRuns: 500 }
@@ -136,29 +129,40 @@ describe("Property-Based Verification (fast-check) — Commerce & Taxonomy Invar
   });
 
   // ── Property 3: Recommendation Self-Exclusion Invariant ──
-  describe("Recommendation Self-Exclusion", () => {
-    it("guarantees active product slug is never present in recommendation results", () => {
+  describe("Production Recommendations (recommendations.ts)", () => {
+    it("guarantees active product slug and aliases are never present in recommendations", () => {
       fc.assert(
         fc.property(
-          // List of unique product slugs
           fc.uniqueArray(
-            fc.stringMatching(/^[a-z0-9]+(-[a-z0-9]+)*$/).filter((s) => s.length >= 3),
-            { minLength: 1, maxLength: 30 }
+            fc.record({
+              slug: fc.stringMatching(/^[a-z0-9]+(-[a-z0-9]+)*$/).filter((s) => s.length >= 3),
+              category: fc.constantFrom("sarees", "jamdani", "panjabi", "tunics", "jewelry"),
+            }),
+            { selector: (item) => item.slug, minLength: 2, maxLength: 30 }
           ),
           fc.nat(),
-          (slugs, seed) => {
-            const activeIndex = seed % slugs.length;
-            const activeSlug = slugs[activeIndex];
+          fc.integer({ min: 1, max: 10 }),
+          (catalog, seed, limit) => {
+            const activeIndex = seed % catalog.length;
+            const activeProduct = catalog[activeIndex];
 
-            // Filter function matching production preview rail recommendation logic:
-            // exclude active product and its alias
-            const recommendations = slugs.filter(
-              (candidateSlug) => candidateSlug !== activeSlug
+            // 1. Test production excludeActiveProduct
+            const filtered = excludeActiveProduct(catalog, activeProduct.slug);
+            expect(filtered.some((p) => p.slug === activeProduct.slug)).toBe(false);
+            expect(filtered.length).toBeLessThanOrEqual(catalog.length - 1);
+
+            // 2. Test production filterCrossSellRecommendations
+            const recommendations = filterCrossSellRecommendations(
+              catalog,
+              activeProduct,
+              limit
             );
 
-            // Invariant: active slug is strictly absent
-            expect(recommendations.includes(activeSlug)).toBe(false);
-            expect(recommendations.length).toBe(slugs.length - 1);
+            // Invariant 1: active product is strictly absent
+            expect(recommendations.some((p) => p.slug === activeProduct.slug)).toBe(false);
+
+            // Invariant 2: output length is bounded by requested limit
+            expect(recommendations.length).toBeLessThanOrEqual(limit);
           }
         ),
         { numRuns: 500 }
@@ -167,38 +171,40 @@ describe("Property-Based Verification (fast-check) — Commerce & Taxonomy Invar
   });
 
   // ── Property 4: Collection Taxonomy & Category Isolation Invariant ──
-  describe("Collection Taxonomy Isolation", () => {
+  describe("Production Taxonomy & Collection Filters (taxonomy.ts & collection-filters.ts)", () => {
     it("ensures saree collections contain strictly sarees and reject fusion/tunics/panjabis", () => {
-      const allowedCategories = ["sarees", "jamdani", "tangail", "katan"] as const;
-      const prohibitedCategories = ["tunics", "panjabi", "mens", "kids", "quilts"] as const;
-
       fc.assert(
         fc.property(
           fc.array(
             fc.record({
-              id: fc.uuid(),
-              slug: fc.stringMatching(/^[a-z0-9-]+$/),
-              category: fc.constantFrom(...allowedCategories, ...prohibitedCategories),
-              isSaree: fc.boolean(),
+              slug: fc.stringMatching(/^[a-z0-9-]+$/).filter((s) => s.length >= 3),
+              category: fc.constantFrom(...SAREE_CATEGORIES, ...DISALLOWED_APPAREL_IN_SAREES),
+              collections: fc.array(fc.constantFrom("sarees", "women", "festive", "new-in"), {
+                maxLength: 3,
+              }),
+              tags: fc.array(fc.constantFrom("saree", "handloom", "silk", "panjabi", "tunic"), {
+                maxLength: 4,
+              }),
             }),
-            { minLength: 1, maxLength: 50 }
+            { minLength: 1, maxLength: 40 }
           ),
           (catalog) => {
-            // Saree filter rule enforced in store
-            const sareeAssortment = catalog.filter((product) =>
-              allowedCategories.includes(product.category as (typeof allowedCategories)[number])
-            );
+            // Test production filterCollectionProducts for 'sarees'
+            const sareeAssortment = filterCollectionProducts(catalog, "sarees");
 
-            // Invariant 1: No prohibited categories in saree assortment
+            // Invariant 1: No product in saree assortment is disallowed
             for (const item of sareeAssortment) {
-              expect(prohibitedCategories.includes(item.category as (typeof prohibitedCategories)[number])).toBe(false);
+              expect(isDisallowedInSarees(item.category, item.tags)).toBe(false);
+              expect(assertSareeTaxonomyIsolation(item.category, item.tags)).toBe(true);
             }
 
-            // Invariant 2: Assortment size is exact
-            const expectedCount = catalog.filter((p) =>
-              allowedCategories.includes(p.category as (typeof allowedCategories)[number])
-            ).length;
-            expect(sareeAssortment.length).toBe(expectedCount);
+            // Invariant 2: Every product recognized as saree is valid saree category or carries saree tag
+            for (const item of sareeAssortment) {
+              const valid =
+                isSareeCategory(item.category) ||
+                (item.tags && item.tags.some((t) => t.toLowerCase().includes("saree")));
+              expect(valid).toBe(true);
+            }
           }
         ),
         { numRuns: 500 }
@@ -207,8 +213,8 @@ describe("Property-Based Verification (fast-check) — Commerce & Taxonomy Invar
   });
 
   // ── Property 5: Responsive Width Invariant ──
-  describe("Responsive Layout Constraints", () => {
-    it("guarantees content width remains strictly within viewport across all widths", () => {
+  describe("Responsive Layout Width Arithmetic", () => {
+    it("guarantees layout dimensions never exceed viewport boundary", () => {
       const viewports = [320, 360, 390, 430, 768, 1024, 1280, 1440] as const;
 
       fc.assert(

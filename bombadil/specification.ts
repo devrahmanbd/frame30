@@ -7,4 +7,8 @@
  */
 export * from "@antithesishq/bombadil/browser/defaults";
 export { no_horizontal_overflow } from "./properties/responsive.ts";
-export { no_server_error_pages } from "./properties/navigation.ts";
+export {
+  no_server_error_pages,
+  page_has_title_or_heading,
+  single_primary_h1,
+} from "./properties/navigation.ts";

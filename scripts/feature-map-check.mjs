@@ -3,7 +3,7 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
 const FEATURES_DIR = join(process.cwd(), "features");
-console.log("[feature-map-check] Validating machine-readable feature map specifications...");
+console.log("[feature-map-check] Validating machine-readable feature specs and executable test linkages...");
 
 if (!existsSync(FEATURES_DIR)) {
   console.error("[feature-map-check] ✗ features/ directory not found!");
@@ -45,19 +45,40 @@ console.log(`[feature-map-check] Found ${featureFiles.length} feature specificat
 let failed = false;
 
 for (const file of featureFiles) {
+  const relPath = file.replace(process.cwd() + "/", "");
   const content = readFileSync(file, "utf-8");
+
+  // 1. Verify required sections
   const missing = requiredSections.filter((section) => !content.includes(section));
   if (missing.length > 0) {
-    console.error(`[feature-map-check] ✗ ${file} is missing required sections: ${missing.join(", ")}`);
+    console.error(`[feature-map-check] ✗ ${relPath} is missing required sections: ${missing.join(", ")}`);
+    failed = true;
+    continue;
+  }
+
+  // 2. Validate executable file linkages (e.g. src/... or specs/...)
+  const referencedFiles = content.match(/`?(src\/[a-zA-Z0-9_\-\.\/]+|specs\/[a-zA-Z0-9_\-\.\/]+)`?/g) || [];
+  let deadReferences = [];
+  for (let ref of referencedFiles) {
+    ref = ref.replace(/`/g, "").trim();
+    // Ignore general directories or wildcards
+    if (ref.endsWith("/") || ref.includes("*")) continue;
+    if (!existsSync(join(process.cwd(), ref))) {
+      deadReferences.push(ref);
+    }
+  }
+
+  if (deadReferences.length > 0) {
+    console.error(`[feature-map-check] ✗ ${relPath} references non-existent files: ${deadReferences.join(", ")}`);
     failed = true;
   } else {
-    console.log(`[feature-map-check] ✓ ${file.replace(process.cwd() + "/", "")} passes schema contract.`);
+    console.log(`[feature-map-check] ✓ ${relPath} passes schema contract with verified file linkages.`);
   }
 }
 
 if (failed) {
-  console.error("[feature-map-check] Schema validation failed for one or more features.");
+  console.error("[feature-map-check] Feature map validation failed.");
   process.exit(1);
 }
 
-console.log("[feature-map-check] All feature specifications are fully populated and compliant.\n");
+console.log("[feature-map-check] All feature specifications are fully populated, linked, and compliant.\n");

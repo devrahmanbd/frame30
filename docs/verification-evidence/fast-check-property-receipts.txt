@@ -1,33 +1,39 @@
 =============================================================================
-FAST-CHECK PROPERTY-BASED LOGIC VERIFICATION RECEIPT
+FAST-CHECK PROPERTY-BASED LOGIC VERIFICATION RECEIPT (WAVE 23)
 =============================================================================
 Date: 2026-11-18
 Suite: src/lib/commerce-properties.test.ts
 Runner: Vitest v4.1.11 + fast-check v4.10.2
+Scope: Direct verification of production commerce modules in src/lib/commerce/
 
-PROPERTIES VERIFIED:
+PRODUCTION MODULES & INVARIANTS TESTED:
 -----------------------------------------------------------------------------
-1. Discount Invariants:
+1. Pricing & Discount Bounds (src/lib/commerce/pricing.ts):
+   - Function: calculateDiscount(coupon, subtotalMinor, lines) & calculateOrderTotal(...)
    - Invariant: 0 <= discountMinor <= subtotalMinor
-   - Invariant: finalTotal = subtotalMinor - discountMinor >= 0
+   - Invariant: finalTotal = subtotalMinor - discountMinor + shippingMinor >= 0
    - Invariant: discountMinor is strictly integer minor units
-   - Samples generated: 1,000 randomized subtotals & coupon combinations (fixed, percent, bogo)
+   - Samples generated: 1,000 randomized subtotals, coupon inputs (fixed, percent, bogo, free_shipping), and line items
    - Status: PASS (0 violations, 1,000 runs)
 
-2. Minor Units Additivity:
-   - Invariant: sum(L1 ++ L2) === sum(L1) + sum(L2)
-   - Invariant: No floating-point roundoff or drift
+2. Minor Units Additivity & Cart Totals (src/lib/commerce/money.ts):
+   - Functions: sumCartLines(lines), sumMinorUnits(amounts), calculateLineTotal(price, qty)
+   - Invariant: sumCartLines(L1 ++ L2) === sumCartLines(L1) + sumCartLines(L2)
+   - Invariant: No floating-point roundoff or drift across integer arithmetic
    - Samples generated: 500 randomized cart line permutations
    - Status: PASS (0 violations, 500 runs)
 
-3. Recommendation Self-Exclusion Invariant:
+3. Recommendation Engine Self-Exclusion (src/lib/commerce/recommendations.ts):
+   - Functions: excludeActiveProduct(items, activeSlug), filterCrossSellRecommendations(...)
    - Invariant: \A r \in Recommendations(P) : r.slug != P.slug
+   - Invariant: Output length strictly bounded by requested limit
    - Samples generated: 500 randomized catalog assortments & seed selections
    - Status: PASS (0 violations, 500 runs)
 
-4. Collection Taxonomy & Category Isolation:
-   - Invariant: \A p \in SareeAssortment : p.category \in {"sarees", "jamdani", "tangail", "katan"}
-   - Invariant: |SareeAssortment \cap {"tunics", "panjabi", "mens", "kids", "quilts"}| == 0
+4. Collection Taxonomy & Category Isolation (src/lib/commerce/taxonomy.ts & collection-filters.ts):
+   - Functions: filterCollectionProducts(catalog, "sarees"), assertSareeTaxonomyIsolation(...)
+   - Invariant: \A p \in SareeAssortment : assertSareeTaxonomyIsolation(p.category, p.tags) == true
+   - Invariant: |SareeAssortment \cap {"tunics", "panjabi", "mens", "kids", "quilts", "ghagra"}| == 0
    - Samples generated: 500 randomized mixed product catalogs
    - Status: PASS (0 violations, 500 runs)
 
@@ -37,7 +43,7 @@ PROPERTIES VERIFIED:
    - Samples generated: 500 randomized dimension combinations
    - Status: PASS (0 violations, 500 runs)
 
-MUTATION TESTING & COUNTEREXAMPLE SHIRNKING PROOF:
+MUTATION TESTING & COUNTEREXAMPLE SHRINKING PROOF:
 -----------------------------------------------------------------------------
 Suite: src/lib/commerce-properties-mutation.test.ts
 Test 1: Uncapped discount (> 100%)
