@@ -1,9 +1,10 @@
-# Lean 4 Algorithmic Formal Verification & Test-Vector Correspondence (Wave 23)
+# Lean 4 Algorithmic Formal Verification & Test-Vector Correspondence (Wave 23.1)
 
 **Date:** 2026-11-18  
 **Toolchain:** `leanprover/lean4:v4.15.0` (pinned in `specs/lean/lean-toolchain`)  
 **Source Specification:** [`specs/lean/Framique/Pricing.lean`](../../specs/lean/Framique/Pricing.lean)  
-**Refinement Target:** [`src/lib/commerce/pricing.ts`](../../src/lib/commerce/pricing.ts) (`calculateDiscount`)  
+**Main Executable Generator:** [`specs/lean/Main.lean`](../../specs/lean/Main.lean)  
+**Refinement Target:** [`src/lib/commerce/pricing.ts`](../../src/lib/commerce/pricing.ts) (`calculateDiscount`, `calculateOrderTotal`)  
 **Correspondence Gate:** `bun run test:lean` ([`scripts/lean-verify.mjs`](../../scripts/lean-verify.mjs))
 
 ---
@@ -20,26 +21,37 @@ theorem discount_le_subtotal (s : Nat) (c : Coupon) :
   cases c with
   | fixed a =>
     simp [calculateDiscount]
-    exact Nat.min_le_right a s
+    apply Nat.min_le_right
   | percent r =>
     simp [calculateDiscount]
-    have h1 : Nat.min 100 r <= 100 := Nat.min_le_left 100 r
-    have h2 : (s * Nat.min 100 r) <= s * 100 := Nat.mul_le_mul_left s h1
-    have h3 : (s * 100) / 100 = s := Nat.mul_div_right s (by decide)
-    have h4 : (s * Nat.min 100 r) / 100 <= (s * 100) / 100 := Nat.div_le_div_right h2
-    rw [h3] at h4
-    exact h4
-  | bogo _ _ cheapest =>
+    apply Nat.div_le_of_le_mul
+    rw [Nat.mul_comm 100 s]
+    have h : Nat.min 100 r <= 100 := Nat.min_le_left 100 r
+    exact Nat.mul_le_mul_left s h
+  | bogo totalQty buy get cheapest =>
     simp [calculateDiscount]
-    exact Nat.min_le_right cheapest s
+    apply Nat.min_le_right
   | freeShipping =>
     simp [calculateDiscount]
-    exact Nat.zero_le s
 ```
 
 ---
 
-## 2. Theorem 2: Exact Fixed Discount Bound (`fixed_discount_exact`)
+## 2. Theorem 2: Non-Negative Final Customer Charge (`final_total_nonneg`)
+
+### Mathematical Statement:
+$$\forall s \in \mathbb{N},\, \forall c \in \text{Coupon},\quad 0 \le \text{finalTotal}(s, c)$$
+
+### Formal Lean 4 Proof:
+```lean
+theorem final_total_nonneg (s : Nat) (c : Coupon) :
+    0 <= finalTotal s c := by
+  exact Nat.zero_le (finalTotal s c)
+```
+
+---
+
+## 3. Theorem 3: Exact Fixed Discount Bound (`fixed_discount_exact`)
 
 ### Mathematical Statement:
 $$\forall s, a \in \mathbb{N},\, a \le s \implies \text{calculateDiscount}(s, \text{Coupon.fixed}(a)) = a$$
@@ -54,7 +66,7 @@ theorem fixed_discount_exact (s a : Nat) (h : a <= s) :
 
 ---
 
-## 3. Theorem 3: 100% Percentage Discount Equality (`percent_100_exact`)
+## 4. Theorem 4: 100% Percentage Discount Equality (`percent_100_exact`)
 
 ### Mathematical Statement:
 $$\forall s \in \mathbb{N},\quad \text{calculateDiscount}(s, \text{Coupon.percent}(100)) = s$$
@@ -68,23 +80,40 @@ theorem percent_100_exact (s : Nat) :
 
 ---
 
-## 4. Test-Vector Correspondence Proof: Lean Model vs Production TypeScript
+## 5. Theorem 5: General BOGO Discount Bounded by Subtotal (`bogo_discount_bounded`)
 
-Executed via `scripts/lean-verify.mjs` comparing the formal model semantics against `src/lib/commerce/pricing.ts`:
+### Mathematical Statement:
+$$\forall s, \text{totalQty}, \text{buy}, \text{get}, \text{cheapest} \in \mathbb{N},\quad \text{calculateDiscount}(s, \text{Coupon.bogo}(\text{totalQty}, \text{buy}, \text{get}, \text{cheapest})) \le s$$
 
-| Test Vector # | Subtotal | Coupon Spec | Formal Lean Semantics | Production TS Output | Correspondence |
+### Formal Lean 4 Proof:
+```lean
+theorem bogo_discount_bounded (s totalQty buy get cheapest : Nat) :
+    calculateDiscount s (Coupon.bogo totalQty buy get cheapest) <= s := by
+  simp [calculateDiscount]
+  apply Nat.min_le_right
+```
+
+---
+
+## 6. Test-Vector Correspondence Proof: Compiled Lean 4 Runtime vs Production TypeScript
+
+Executed via `scripts/lean-verify.mjs` comparing the **actual compiled Lean 4 runtime execution output** (via `lake exe framique_verify` / `lean --run Main.lean`) against `src/lib/commerce/pricing.ts`:
+
+| Vector ID | Subtotal | Coupon Definition | Compiled Lean Output | Production TS Output | Result |
 |---|---|---|---|---|:---:|
-| 1 | 10,000 | fixed(2500) | 2,500 | 2,500 | **MATCH** |
-| 2 | 5,000 | fixed(5000) | 5,000 | 5,000 | **MATCH** |
-| 3 | 3,000 | fixed(7500) | 3,000 (clamped) | 3,000 (clamped) | **MATCH** |
-| 4 | 0 | fixed(1000) | 0 | 0 | **MATCH** |
-| 5 | 12,000 | percent(10) | 1,200 | 1,200 | **MATCH** |
-| 6 | 12,000 | percent(25) | 3,000 | 3,000 | **MATCH** |
-| 7 | 9,999 | percent(33) | 3,299 | 3,299 | **MATCH** |
-| 8 | 15,000 | percent(100) | 15,000 | 15,000 | **MATCH** |
-| 9 | 15,000 | percent(150) | 15,000 (clamped) | 15,000 (clamped) | **MATCH** |
-| 10 | 8,000 | freeShipping | 0 | 0 | **MATCH** |
-| 11 | 20,000 | bogo(1, 1, cheapest=4500) | 4,500 | 4,500 | **MATCH** |
-| 12 | 3,000 | bogo(1, 1, cheapest=5000) | 3,000 (clamped) | 3,000 (clamped) | **MATCH** |
+| `fixed-less` | 10,000 | fixed(2500) | discount=2,500, finalTotal=7,500 | discount=2,500, finalTotal=7,500 | **MATCH** |
+| `fixed-exact` | 5,000 | fixed(5000) | discount=5,000, finalTotal=0 | discount=5,000, finalTotal=0 | **MATCH** |
+| `fixed-overflow` | 3,000 | fixed(7500) | discount=3,000, finalTotal=0 | discount=3,000, finalTotal=0 | **MATCH** |
+| `fixed-zero` | 0 | fixed(1000) | discount=0, finalTotal=0 | discount=0, finalTotal=0 | **MATCH** |
+| `percent-10` | 12,000 | percent(10) | discount=1,200, finalTotal=10,800 | discount=1,200, finalTotal=10,800 | **MATCH** |
+| `percent-25` | 12,000 | percent(25) | discount=3,000, finalTotal=9,000 | discount=3,000, finalTotal=9,000 | **MATCH** |
+| `percent-33` | 9,999 | percent(33) | discount=3,299, finalTotal=6,700 | discount=3,299, finalTotal=6,700 | **MATCH** |
+| `percent-100` | 15,000 | percent(100) | discount=15,000, finalTotal=0 | discount=15,000, finalTotal=0 | **MATCH** |
+| `percent-150-clamp` | 15,000 | percent(150) | discount=15,000, finalTotal=0 | discount=15,000, finalTotal=0 | **MATCH** |
+| `freeship` | 8,000 | freeShipping | discount=0, finalTotal=8,000 | discount=0, finalTotal=8,000 | **MATCH** |
+| `bogo-standard` | 20,000 | bogo(qty=4, buy=1, get=1, cheapest=4500) | discount=9,000, finalTotal=11,000 | discount=9,000, finalTotal=11,000 | **MATCH** |
+| `bogo-uneven` | 30,000 | bogo(qty=5, buy=2, get=1, cheapest=5000) | discount=5,000, finalTotal=25,000 | discount=5,000, finalTotal=25,000 | **MATCH** |
+| `bogo-clamp` | 3,000 | bogo(qty=4, buy=1, get=1, cheapest=5000) | discount=3,000, finalTotal=0 | discount=3,000, finalTotal=0 | **MATCH** |
 
-**Status:** 12/12 formal test vectors matched production TypeScript exactly.
+**Status:** All 13/13 formal test vectors matched production TypeScript exactly with zero discrepancies. Verification gate is strictly fail-closed.
+

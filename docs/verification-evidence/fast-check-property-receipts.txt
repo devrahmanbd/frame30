@@ -1,10 +1,13 @@
 =============================================================================
-FAST-CHECK PROPERTY-BASED LOGIC VERIFICATION RECEIPT (WAVE 23)
+FAST-CHECK PROPERTY-BASED LOGIC VERIFICATION RECEIPT (WAVE 23.1)
 =============================================================================
 Date: 2026-11-18
 Suite: src/lib/commerce-properties.test.ts
 Runner: Vitest v4.1.11 + fast-check v4.10.2
 Scope: Direct verification of production commerce modules in src/lib/commerce/
+Total Runs: 3,000 randomized executions (2,500 production domain logic runs + 500 responsive layout runs)
+Demonstration: Counterexample shrinking proofs in src/lib/commerce-properties-mutation.test.ts
+
 
 PRODUCTION MODULES & INVARIANTS TESTED:
 -----------------------------------------------------------------------------

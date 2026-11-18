@@ -49,6 +49,8 @@ const requiredSymbols = [
   "MaxActiveOrderPerShopper",
   "AtMostOneSettlementPerPayment",
   "OrderSettlementConsistency",
+  "NoRefundOnFailedPayment",
+  "RefundRequiresCapturedPayment",
   "ReceivePaymentWebhook",
   "AcquireHold"
 ];
@@ -68,7 +70,9 @@ const requiredInvariants = [
   "UniqueOrderIds",
   "MaxActiveOrderPerShopper",
   "AtMostOneSettlementPerPayment",
-  "OrderSettlementConsistency"
+  "OrderSettlementConsistency",
+  "NoRefundOnFailedPayment",
+  "RefundRequiresCapturedPayment"
 ];
 
 for (const inv of requiredInvariants) {
@@ -81,25 +85,40 @@ for (const inv of requiredInvariants) {
 console.log("[tla-verify] ✓ TLA+ specification structure and TLC invariants validated.");
 
 // 4. Fail-closed Java runtime verification
+const javaCandidates = [
+  "java",
+  "/opt/homebrew/opt/openjdk@21/bin/java",
+  "/opt/homebrew/opt/openjdk/bin/java",
+  "/usr/lib/jvm/java-21-openjdk-amd64/bin/java"
+];
+
+let javaBin = null;
 let javaVersion = "";
-try {
-  const javaCheck = execSync("java -version 2>&1", { encoding: "utf-8" });
-  if (javaCheck.includes("Runtime") || javaCheck.includes("version") || javaCheck.includes("OpenJDK")) {
-    javaVersion = javaCheck.trim().split("\n")[0];
-  } else {
-    throw new Error("Invalid java output");
+
+for (const candidate of javaCandidates) {
+  try {
+    const javaCheck = execSync(`${candidate} -version 2>&1`, { encoding: "utf-8" });
+    if (javaCheck.includes("Runtime") || javaCheck.includes("version") || javaCheck.includes("OpenJDK")) {
+      javaBin = candidate;
+      javaVersion = javaCheck.trim().split("\n")[0];
+      break;
+    }
+  } catch {
+    // Continue checking candidates
   }
-} catch {
+}
+
+if (!javaBin) {
   console.error("[tla-verify] ✗ FAIL-CLOSED: Java runtime is required to execute TLC formal model checking!");
   console.error("[tla-verify] Please install OpenJDK 21 (e.g. 'sudo apt-get install openjdk-21-jre-headless' or brew install openjdk@21).");
   process.exit(1);
 }
 
-console.log(`[tla-verify] Java runtime detected: ${javaVersion}`);
+console.log(`[tla-verify] Java runtime detected (${javaBin}): ${javaVersion}`);
 console.log("[tla-verify] Executing TLC model checker...");
 
 try {
-  const cmd = `java -cp "${jarFile}" tlc2.TLC -config "${cfgFile}" -nowarning "${tlaFile}"`;
+  const cmd = `"${javaBin}" -cp "${jarFile}" tlc2.TLC -config "${cfgFile}" -nowarning "${tlaFile}"`;
   const tlcOutput = execSync(cmd, { encoding: "utf-8", timeout: 45000 });
   console.log(tlcOutput);
 

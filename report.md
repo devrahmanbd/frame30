@@ -1,6 +1,6 @@
 # Frame30 / Flame Fashion BD & Songoskriti Production Remediation
 
-**Date:** 2026-11-18 · **Branch:** `frame30` / `main` · **Status:** Verified & Released · **Wave:** 23  
+**Date:** 2026-11-18 · **Branch:** `frame30` / `main` · **Status:** Verified & Released · **Wave:** 23.1  
 **Live Production Host:** `https://flamelancer.com` · **Preview Host:** `https://framique.qubickle.com/theme-preview/songoskriti`  
 **Target Merchant:** `b47532e5-9649-4ebd-93a9-06fa2917c00e` (Flame Fashion BD)  
 **Production Server:** `88.99.250.99:3200` (`framique.service`, OpenResty edge, Postgres `framique-supabase-db`, Redis `deploy-redis-1`)  
@@ -2258,26 +2258,26 @@ All formal proofs, property test receipts, and visual exploration frames are com
 
 ---
 
-## 23. Wave 23 — Formal Verification Rigor & Fail-Closed Testing Architecture
+## 23. Wave 23 & Wave 23.1 — Formal Verification Rigor & Fail-Closed Testing Architecture
 
 **Date:** 2026-11-18 · **Branch:** `frame30` / `main` · **Status:** Fully Verified & Released  
 **Target Entities:** `https://flamelancer.com` · `https://framique.qubickle.com/theme-preview/songoskriti`  
 **Merchant ID:** `b47532e5-9649-4ebd-93a9-06fa2917c00e` (Flame Fashion BD)  
-**Production Server:** `88.99.250.99:3200` (`framique.service`, OpenResty edge, OpenJDK 21)  
+**Production Server:** `88.99.250.99:3200` (`framique.service`, OpenResty edge, OpenJDK 21, Lean 4.15.0)  
 **Master Evidence Catalog:** [`docs/verification-evidence/EVIDENCE_INDEX.md`](./docs/verification-evidence/EVIDENCE_INDEX.md)  
 
 ### 23.1 Objectives & Problem Statement
-In response to deep verification audit findings from Wave 22, Wave 23 systematically corrects critical false-positive failure modes:
-1. **Fail-Closed Verification Gates (P0):** Eliminated runner code that logged errors while returning code 0. Both Bombadil and TLA+ runners are now strictly fail-closed.
-2. **Production Code Property Testing (P0):** Replaced test-local mock implementations in `commerce-properties.test.ts` with direct imports from real production modules in `src/lib/commerce/`.
-3. **Refined Payment Settlement TLA+ Model (P1):** Upgraded the TLA+ checkout model to include external payment reference IDs, payment settlement ledgers, duplicate delivery handling, cancelled order race conditions, and duplicate fulfillment protection.
-4. **Lean 4 Toolchain Pinning & Test Vector Correspondence (P1):** Pinned `leanprover/lean4:v4.15.0`, added BOGO coupon modeling, and proved 1:1 mathematical correspondence against production TypeScript across 12 test vectors.
-5. **Bombadil Quality & Trace Preservation (P1):** Asserted heading/title presence, enforced single primary H1, made responsive dimension extraction fail-closed, and preserved traces directly into repository evidence (`docs/verification-evidence/bombadil/traces/`).
-6. **Release Boundary Clarification (P2):** Formally distinguished between verification-infrastructure releases and production application bundle `.output/DEPLOYED_SHA` receipts.
+In response to deep verification audit findings from Wave 22 and Wave 23, Wave 23.1 systematically addresses all audit points with strict fail-closed rigor:
+1. **Lean 4 Fail-Closed Compilation & Binary Execution (P0):** Completely eliminated JavaScript mock fallback references. The Lake compiler (`lake build`) is now mandatory; if Lean is missing or build fails, the runner immediately terminates with non-zero exit code. An executable vector binary evaluates 13 formal vectors in the Lean runtime and compares directly with production TypeScript (`src/lib/commerce/pricing.ts`).
+2. **Production Code Property Testing (P0):** Tested real production commerce modules in `src/lib/commerce/` across 3,000 qualified runs (2,500 production domain runs + 500 responsive layout runs) with demonstration counterexample shrinking proofs.
+3. **Corrected Late-Webhook TLA+ Model (P1):** Fixed `specs/tla/CheckoutInventory.tla` where a cancelled order previously recorded a refund on failed webhook events. Corrected logic to ensure refunds only occur when `isSuccess = TRUE`, and added invariants `NoRefundOnFailedPayment` and `RefundRequiresCapturedPayment`. TLC model checker verified 169,413 states and 9,348 distinct states with 0 errors.
+4. **Bombadil 8-Viewport Matrix & Image Integrity (P1):** Expanded to full 8 viewports (320px, 360px, 390px, 430px, 768px, 1024px, 1280px, 1440px). Added `all_images_loaded` property (`img.complete && img.naturalWidth > 0`). Added staging target safeguard requiring `--allow-production-target` flag to touch production. Paced exploration with 250ms action delay.
+5. **CircleCI Integration (P1):** Added `elan` installation (`leanprover/lean4:v4.15.0`) and wired `bun run test:lean` as a blocking gate into the `unit-contract` CI job.
+6. **Documentation & Release Distinction (P2):** Formally distinguished verification-infrastructure releases from application deployment bundle receipts (`.output/DEPLOYED_SHA: 19d3b12ed5ba9bb9ef3813c949d7207eca4e561d`).
 
 ---
 
-### 23.2 Wave 23 Resolution Details & Receipts
+### 23.2 Wave 23.1 Resolution Details & Receipts
 
 #### 1. Production Commerce Modules (`src/lib/commerce/`)
 Extracted pure domain logic into modular production libraries:
@@ -2290,30 +2290,35 @@ Extracted pure domain logic into modular production libraries:
 **Production Integration:**
 - `src/lib/coupons.server.ts` delegates `discountFor` directly to `calculateDiscount`.
 - `src/lib/preview-demo-data.ts` delegates collection and recommendation filtering directly to `filterCollectionProducts`.
-- `src/lib/commerce-properties.test.ts` tests these exact production functions across 3,000+ randomized runs.
+- `src/lib/commerce-properties.test.ts` tests these exact production functions across 3,000 runs (2,500 production domain logic runs + 500 responsive layout runs).
 
-#### 2. Refined TLA+ Payment Settlement Model (`specs/tla/`)
+#### 2. Verified TLA+ Payment Settlement Model (`specs/tla/`)
 - Modeled external gateway transaction references `PaymentRefs = {pay1, pay2}` and settlement state records `[paymentRef, ordId, status]`.
-- Handled idempotency on identical event IDs, distinct event IDs for the same payment reference, late payment arrivals for cancelled orders, and duplicate fulfillment attempts.
+- Corrected cancelled order webhook logic: refunds only recorded when `isSuccess = TRUE`; failed webhooks record `Failed` status.
 - Invariants verified with TLC2 (OpenJDK 21):
-  - `AtMostOneSettlementPerPayment`: $\forall p \in \text{PaymentRefs}, \text{Cardinality}(\{s \in \text{settlements} : s.\text{paymentRef} = p \land s.\text{status} = \text{"Success"}\}) \le 1$.
-  - `OrderSettlementConsistency`: $\forall o \in \text{orders}, o.\text{status} \in \{\text{"Paid"}, \text{"Fulfilled"}\} \implies \exists s \in \text{settlements} : s.\text{ordId} = o.\text{id} \land s.\text{status} = \text{"Success"}$.
-  - `StockNonNegative`, `InventoryConservation`, `UniqueOrderIds`, `MaxActiveOrderPerShopper`.
+  - `NoRefundOnFailedPayment`: $\forall s \in \text{settlements}, s.\text{status} = \text{"Failed"} \implies \neg \exists r \in \text{settlements} : r.\text{paymentRef} = s.\text{paymentRef} \land r.\text{status} = \text{"Refunded"}$.
+  - `RefundRequiresCapturedPayment`: $\forall s \in \text{settlements}, s.\text{status} = \text{"Refunded"} \implies \neg \exists f \in \text{settlements} : f.\text{paymentRef} = s.\text{paymentRef} \land f.\text{status} = \text{"Failed"}$.
+  - `AtMostOneSettlementPerPayment`, `OrderSettlementConsistency`, `StockNonNegative`, `InventoryConservation`, `UniqueOrderIds`, `MaxActiveOrderPerShopper`.
 - **TLC Model Checker Results:** **169,413 states generated, 9,348 distinct states explored with 0 violations** (depth 11).
 - Full receipt committed in [`docs/verification-evidence/tlc-state-space-proof.txt`](./docs/verification-evidence/tlc-state-space-proof.txt).
 
-#### 3. Fail-Closed Bombadil Exploration & Trace Preservation
-- In `bombadil/runner.mjs`, child process failure codes now explicitly cause the entire runner to terminate with non-zero exit codes.
-- Added assertion of accessible heading/title via `page_has_title_or_heading` and single H1 via `single_primary_h1`.
-- Made `no_horizontal_overflow` fail-closed: missing or zero dimensions now evaluate to `false` (failure), preventing false-positive passes.
-- Output traces and screenshots are stored directly under [`docs/verification-evidence/bombadil/traces/`](./docs/verification-evidence/bombadil/traces/).
-
-#### 4. Lean 4 Formal Verification & Correspondence Gate
+#### 3. Fail-Closed Lean 4 Compilation & Runtime Verification
 - Pinned toolchain `leanprover/lean4:v4.15.0` in [`specs/lean/lean-toolchain`](./specs/lean/lean-toolchain).
-- Formulated Lean theorems in [`specs/lean/Framique/Pricing.lean`](./specs/lean/Framique/Pricing.lean): `discount_le_subtotal`, `fixed_discount_exact`, `percent_100_exact`.
-- Executed correspondence test via `bun run test:lean` ([`scripts/lean-verify.mjs`](./scripts/lean-verify.mjs)): 12/12 formal test vectors matched `src/lib/commerce/pricing.ts` with 100% precision.
+- Formulated and machine-checked 5 Lean theorems in [`specs/lean/Framique/Pricing.lean`](./specs/lean/Framique/Pricing.lean): `discount_le_subtotal`, `final_total_nonneg`, `fixed_discount_exact`, `percent_100_exact`, and `bogo_discount_bounded`.
+- Compiled Lean executable `framique_verify` via `lake build`.
+- Evaluated 13 formal test vectors directly in the Lean runtime and verified 100% exact match against `src/lib/commerce/pricing.ts` with zero discrepancies.
+- Zero mock JS fallbacks. Gate is strictly fail-closed.
+
+#### 4. Fail-Closed Bombadil Exploration & Staging Safeguards
+- In `bombadil/runner.mjs`, child process failure codes now explicitly cause the entire runner to terminate with non-zero exit codes.
+- Added assertion of image decoding integrity via `all_images_loaded` (`img.complete && img.naturalWidth > 0`).
+- Added accessible heading/title presence (`page_has_title_or_heading`) and single primary H1 (`single_primary_h1`).
+- Added staging target safeguard requiring `--allow-production-target` flag to touch production.
+- Paced exploration with 250ms action delay.
+- Traces and logs preserved under [`docs/verification-evidence/bombadil/traces/`](./docs/verification-evidence/bombadil/traces/).
 
 #### 5. Audit Boundary & Infrastructure Distinction
-- **Release Scope:** Wave 23 represents a **Verification Infrastructure & Reliability Release**.
+- **Release Scope:** Wave 23.1 represents a **Verification Infrastructure & Reliability Release**.
 - The production server repository `/opt/frame28` is synchronized at HEAD commit `main` / `frame30`.
 - The live storefront application bundle (`.output/DEPLOYED_SHA: 19d3b12ed5ba9bb9ef3813c949d7207eca4e561d`) remains active, serving `HTTP 200` through OpenResty edge.
+

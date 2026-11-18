@@ -1,14 +1,3 @@
-/-
-  Frame30 Algorithmic Formal Verification: Pricing & Discount Theorems
-  
-  Formal model of integer minor-unit monetary arithmetic and coupon discount bounds.
-  Proves that:
-    1. Calculated discount never exceeds the eligible subtotal (discount <= subtotal).
-    2. Final charge satisfies arithmetic conservation (finalTotal + discount = subtotal).
-    3. Fixed discounts deliver exact amount when within subtotal bounds.
-    4. 100% percentage discounts cap exactly at the full subtotal.
--/
-
 namespace Framique
 
 def MinorUnits := Nat
@@ -16,40 +5,44 @@ def MinorUnits := Nat
 inductive Coupon where
   | fixed (amount : Nat)
   | percent (rate : Nat)
-  | bogo (buy : Nat) (get : Nat) (cheapest : Nat)
+  | bogo (totalQty : Nat) (buy : Nat) (get : Nat) (cheapest : Nat)
   | freeShipping
 deriving Repr
+
+def calculateBogoUnits (totalQty buy get : Nat) : Nat :=
+  let b := Nat.max 1 buy
+  let g := Nat.max 1 get
+  (totalQty / (b + g)) * g
 
 def calculateDiscount (subtotal : Nat) : Coupon → Nat
   | Coupon.fixed a => Nat.min a subtotal
   | Coupon.percent r => (subtotal * Nat.min 100 r) / 100
-  | Coupon.bogo _ _ cheapest => Nat.min cheapest subtotal
+  | Coupon.bogo totalQty buy get cheapest =>
+      let freeUnits := calculateBogoUnits totalQty buy get
+      Nat.min (freeUnits * cheapest) subtotal
   | Coupon.freeShipping => 0
 
 def finalTotal (subtotal : Nat) (c : Coupon) : Nat :=
   subtotal - calculateDiscount subtotal c
 
-/-- Theorem 1: Discount is always strictly bounded by the eligible subtotal. -/
+/-- Theorem 1: Discount is always strictly bounded by the eligible subtotal across all coupon types. -/
 theorem discount_le_subtotal (s : Nat) (c : Coupon) :
     calculateDiscount s c <= s := by
   cases c with
   | fixed a =>
     simp [calculateDiscount]
-    exact Nat.min_le_right a s
+    apply Nat.min_le_right
   | percent r =>
     simp [calculateDiscount]
-    have h1 : Nat.min 100 r <= 100 := Nat.min_le_left 100 r
-    have h2 : (s * Nat.min 100 r) <= s * 100 := Nat.mul_le_mul_left s h1
-    have h3 : (s * 100) / 100 = s := Nat.mul_div_right s (by decide)
-    have h4 : (s * Nat.min 100 r) / 100 <= (s * 100) / 100 := Nat.div_le_div_right h2
-    rw [h3] at h4
-    exact h4
-  | bogo _ _ cheapest =>
+    apply Nat.div_le_of_le_mul
+    rw [Nat.mul_comm 100 s]
+    have h : Nat.min 100 r <= 100 := Nat.min_le_left 100 r
+    exact Nat.mul_le_mul_left s h
+  | bogo totalQty buy get cheapest =>
     simp [calculateDiscount]
-    exact Nat.min_le_right cheapest s
+    apply Nat.min_le_right
   | freeShipping =>
     simp [calculateDiscount]
-    exact Nat.zero_le s
 
 /-- Theorem 2: Non-negative final customer charge. -/
 theorem final_total_nonneg (s : Nat) (c : Coupon) :
@@ -66,5 +59,11 @@ theorem fixed_discount_exact (s a : Nat) (h : a <= s) :
 theorem percent_100_exact (s : Nat) :
     calculateDiscount s (Coupon.percent 100) = s := by
   simp [calculateDiscount]
+
+/-- Theorem 5: General BOGO discount is strictly bounded by subtotal. -/
+theorem bogo_discount_bounded (s totalQty buy get cheapest : Nat) :
+    calculateDiscount s (Coupon.bogo totalQty buy get cheapest) <= s := by
+  simp [calculateDiscount]
+  apply Nat.min_le_right
 
 end Framique

@@ -12,3 +12,4 @@ export {
   page_has_title_or_heading,
   single_primary_h1,
 } from "./properties/navigation.ts";
+export { all_images_loaded } from "./properties/images.ts";

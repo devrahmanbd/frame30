@@ -1,51 +1,32 @@
-=============================================================================
-TLA+ / TLC FORMAL STATE-SPACE VERIFICATION RECEIPT (WAVE 23)
-=============================================================================
-Date: 2026-11-18
-Specification: specs/tla/CheckoutInventory.tla
-Configuration: specs/tla/CheckoutInventory.cfg
-Model Checker: TLC2 Version 2026.11.15.002146 (rev: bc1b506)
-Environment: OpenJDK 21.0.13.0.3 64bit (Linux 6.8.0-139-generic amd64, production server 88.99.250.99)
-JAR Integrity Check: SHA-256 7e53aa636dac8a3cb0533f343115c0548e03fc0ce5edc7739becf58d3d0fb84f (MATCHED)
-
-BOUNDED MODEL ASSUMPTIONS:
-  Shoppers = {s1, s2}
-  MaxStock = 2
-  OrderIds = {ord1, ord2}
-  EventIds = {evt1, evt2}
-  PaymentRefs = {pay1, pay2}
-
-INVARIANTS VERIFIED (FAIL-CLOSED):
-  1. TypeOK
-  2. StockNonNegative (availableStock >= 0)
-  3. InventoryConservation (availableStock + SumHeld + SumOrdered = MaxStock)
-  4. UniqueOrderIds (\A o1, o2 \in orders : o1.id = o2.id => o1 = o2)
-  5. MaxActiveOrderPerShopper (Cardinality(active_orders) <= 1)
-  6. AtMostOneSettlementPerPayment (\A p \in PaymentRefs : Cardinality(success_settlements) <= 1)
-  7. OrderSettlementConsistency (\A o \in Paid/Fulfilled : \E s \in settlements : s.ordId = o.id /\ s.status = "Success")
-
-MODEL CHECKER EXECUTION LOG:
------------------------------------------------------------------------------
 TLC2 Version 2026.11.15.002146 (rev: bc1b506)
-Running breadth-first search Model-Checking with fp 126 and seed 6497933637004250245 with 1 worker on 8 cores with 16024MB heap and 64MB offheap memory [pid: 2257943] (Linux 6.8.0-139-generic amd64, Ubuntu 21.0.13.0.3 64bit, MSBDiskFPSet, DiskStateQueue).
-Parsing file /opt/frame28/specs/tla/CheckoutInventory.tla
+Running breadth-first search Model-Checking with fp 2 and seed -2459259062514423771 with 1 worker on 8 cores with 2048MB heap and 64MB offheap memory [pid: 57057] (Mac OS X 26.3 aarch64, Homebrew 21.0.13.1 64bit, MSBDiskFPSet, DiskStateQueue).
+Parsing file /Users/rahman/Documents/frame30/specs/tla/CheckoutInventory.tla
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-16549820223230089349/Integers.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/Integers.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-16549820223230089349/FiniteSets.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-16549820223230089349/_TLCTrace.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/_TLCTrace.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-16549820223230089349/Naturals.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-16549820223230089349/Sequences.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-16549820223230089349/TLC.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-16549820223230089349/TLCExt.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/TLCExt.tla)
+Semantic processing of module Naturals
+Semantic processing of module Integers
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module TLCExt
+Semantic processing of module _TLCTrace
 Semantic processing of module CheckoutInventory
-Starting... (2026-11-18 08:02:07)
+Linting of module TLCExt
+Linting of module _TLCTrace
+Linting of module CheckoutInventory
+Starting... (2026-11-19 01:02:20)
 Computing initial states...
-Finished computing initial states: 1 distinct state generated at 2026-11-18 08:02:07.
+Finished computing initial states: 1 distinct state generated at 2026-11-19 01:02:20.
 Model checking completed. No error has been found.
   Estimates of the probability that TLC did not check all reachable states
   because two distinct states had the same fingerprint:
   calculated (optimistic):  val = 8.1E-11
 169413 states generated, 9348 distinct states found, 0 states left on queue.
 The depth of the complete state graph search is 11.
-The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 18 and the 95th percentile is 4).
-Finished in 01s at (2026-11-18 08:02:08)
-
-SUMMARY:
-TOTAL STATES GENERATED: 169,413 states
-DISTINCT STATES FOUND: 9,348 states
-STATES LEFT ON QUEUE: 0 states
-DEPTH OF COMPLETE STATE GRAPH: 11
-STATUS: VERIFIED (100% exhaustive state-space explored, 0 violations)
-=============================================================================
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 20 and the 95th percentile is 4).
+Finished in 01s at (2026-11-19 01:02:21)

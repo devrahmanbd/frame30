@@ -6,3 +6,7 @@ package "framique_verification" where
 
 lean_lib «Framique» where
   roots := #[`Framique.Pricing]
+
+@[default_target]
+lean_exe «framique_verify» where
+  root := `Main

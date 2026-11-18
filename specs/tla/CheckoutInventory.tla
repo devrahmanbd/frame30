@@ -129,9 +129,12 @@ ReceivePaymentWebhook(eventId, payRef, ordId, isSuccess) ==
                       ELSE /\ settlements' = settlements \cup {[paymentRef |-> payRef, ordId |-> ordId, status |-> "Failed"]}
                            /\ UNCHANGED <<availableStock, holds, orders>>
                  ELSE IF \E o \in orders : o.id = ordId /\ o.status = "Cancelled"
-                      THEN \* Late webhook for cancelled order: record refund, order stays cancelled, stock untouched
-                           /\ settlements' = settlements \cup {[paymentRef |-> payRef, ordId |-> ordId, status |-> "Refunded"]}
-                           /\ UNCHANGED <<availableStock, holds, orders>>
+                      THEN \* Late webhook for cancelled order: refund if captured, otherwise record failed
+                           IF isSuccess
+                           THEN /\ settlements' = settlements \cup {[paymentRef |-> payRef, ordId |-> ordId, status |-> "Refunded"]}
+                                /\ UNCHANGED <<availableStock, holds, orders>>
+                           ELSE /\ settlements' = settlements \cup {[paymentRef |-> payRef, ordId |-> ordId, status |-> "Failed"]}
+                                /\ UNCHANGED <<availableStock, holds, orders>>
                       ELSE \* Unknown or already paid/fulfilled order: no mutation
                            UNCHANGED <<availableStock, holds, orders, settlements>>
 
@@ -187,5 +190,15 @@ OrderSettlementConsistency ==
     \A o \in orders :
         (o.status \in {"Paid", "Fulfilled"}) =>
             \E s \in settlements : s.ordId = o.id /\ s.status = "Success"
+
+(* 7. Failed payments are never refunded *)
+NoRefundOnFailedPayment ==
+    \A s \in settlements :
+        s.status = "Failed" => ~ \E r \in settlements : r.paymentRef = s.paymentRef /\ r.status = "Refunded"
+
+(* 8. Refunds strictly require captured payments *)
+RefundRequiresCapturedPayment ==
+    \A s \in settlements :
+        s.status = "Refunded" => ~ \E f \in settlements : f.paymentRef = s.paymentRef /\ f.status = "Failed"
 
 =============================================================================

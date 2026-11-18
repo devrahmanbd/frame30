@@ -3,7 +3,7 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
 const FEATURES_DIR = join(process.cwd(), "features");
-console.log("[feature-map-check] Validating machine-readable feature specs and executable test linkages...");
+console.log("[feature-map-check] Documentation completeness and source-reference validation check...");
 
 if (!existsSync(FEATURES_DIR)) {
   console.error("[feature-map-check] ✗ features/ directory not found!");
