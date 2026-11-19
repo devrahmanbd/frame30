@@ -71,6 +71,14 @@ function CartMissing() {
       <h1 className="text-2xl font-semibold">
         {t("Store not found", "দোকান পাওয়া যায়নি")}
       </h1>
+      <p className="mt-4">
+        <Link
+          to="/"
+          className="inline-flex min-h-11 items-center justify-center rounded-fq-md bg-primary px-6 text-sm font-medium text-primary-foreground hover:opacity-90"
+        >
+          {t("Return to shop", "দোকানে ফিরে যান")}
+        </Link>
+      </p>
     </main>
   );
 }

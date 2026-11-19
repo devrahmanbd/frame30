@@ -19,6 +19,9 @@ import {
   validateThemeManifest,
   validateSectionSettings,
   validateThemeCompatibility,
+  validateThemeAst,
+  loadAuthoritativeThemeAst,
+  compareSemver,
   resolveMediaUrl,
   resolveMediaAlt,
   migrateSectionSettings,
@@ -33,8 +36,10 @@ import {
   buildCollectionHead,
   buildStoreHead,
   buildProductHead,
+  buildSearchHead,
   GENERIC_SEO_TEMPLATES,
 } from "../theme-seo";
+import { coerceProp, parseAst } from "../builder-ast";
 import { builtinThemeKeys, builtinThemeMeta } from "./builtin-themes";
 import { resolveWidgetComponent } from "@/components/builder/theme-widgets";
 
@@ -113,12 +118,20 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
       expect(SONGOSKRITI_SECTION_KEYS).toHaveLength(31);
 
       // Verify the 2 presentation primitives
-      const headerPrimitive = SONGOSKRITI_THEME_MANIFEST.sections.find((s) => s.id === "header");
-      const ornamentPrimitive = SONGOSKRITI_THEME_MANIFEST.sections.find((s) => s.id === "ornament");
+      const headerPrimitive = SONGOSKRITI_THEME_MANIFEST.sections.find(
+        (s) => s.id === "header",
+      );
+      const ornamentPrimitive = SONGOSKRITI_THEME_MANIFEST.sections.find(
+        (s) => s.id === "ornament",
+      );
       expect(headerPrimitive).toBeDefined();
-      expect(headerPrimitive?.dynamicBindings).toContain("theme-presentation-primitive");
+      expect(headerPrimitive?.dynamicBindings).toContain(
+        "theme-presentation-primitive",
+      );
       expect(ornamentPrimitive).toBeDefined();
-      expect(ornamentPrimitive?.dynamicBindings).toContain("theme-presentation-primitive");
+      expect(ornamentPrimitive?.dynamicBindings).toContain(
+        "theme-presentation-primitive",
+      );
 
       // Verify manifest validation passes schema
       const manifestRes = validateThemeManifest(SONGOSKRITI_THEME_MANIFEST);
@@ -144,7 +157,10 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
         sections: [],
         tokens: {},
         defaultSettings: {},
-        localization: { defaultLocale: "en" as const, supportedLocales: ["en" as const] },
+        localization: {
+          defaultLocale: "en" as const,
+          supportedLocales: ["en" as const],
+        },
         responsiveViewports: ["1024"], // Missing 320, 768, 1440
       };
 
@@ -214,13 +230,21 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
     });
 
     it("repeater sections enforce type: 'image' for nested item image fields", () => {
-      const repeaterAudits: { section: string; repeaterKey: string; itemKey: string }[] = [
+      const repeaterAudits: {
+        section: string;
+        repeaterKey: string;
+        itemKey: string;
+      }[] = [
         { section: "lookbook", repeaterKey: "items", itemKey: "image" },
         { section: "hero", repeaterKey: "items", itemKey: "image" },
         { section: "textile_showcase", repeaterKey: "items", itemKey: "image" },
         { section: "story_trunk", repeaterKey: "items", itemKey: "image" },
         { section: "hero_carousel", repeaterKey: "slides", itemKey: "image" },
-        { section: "testimonials", repeaterKey: "testimonials", itemKey: "image" },
+        {
+          section: "testimonials",
+          repeaterKey: "testimonials",
+          itemKey: "image",
+        },
       ];
 
       for (const audit of repeaterAudits) {
@@ -245,26 +269,34 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
         height: 800,
         focalPoint: { x: 50, y: 35 },
       };
-      expect(StructuredMediaValueSchema.safeParse(validComplete).success).toBe(true);
+      expect(StructuredMediaValueSchema.safeParse(validComplete).success).toBe(
+        true,
+      );
 
       const validRelative = {
         url: "/ph/songoskriti/prod-saree.png",
       };
-      expect(StructuredMediaValueSchema.safeParse(validRelative).success).toBe(true);
+      expect(StructuredMediaValueSchema.safeParse(validRelative).success).toBe(
+        true,
+      );
 
       // Out of bounds focal point
       const invalidFocal = {
         url: "https://cdn.framique.com/artisan.jpg",
         focalPoint: { x: 150, y: 50 },
       };
-      expect(StructuredMediaValueSchema.safeParse(invalidFocal).success).toBe(false);
+      expect(StructuredMediaValueSchema.safeParse(invalidFocal).success).toBe(
+        false,
+      );
 
       // Empty URL
       const invalidUrl = {
         url: "",
         alt: "Test",
       };
-      expect(StructuredMediaValueSchema.safeParse(invalidUrl).success).toBe(false);
+      expect(StructuredMediaValueSchema.safeParse(invalidUrl).success).toBe(
+        false,
+      );
     });
   });
 
@@ -294,13 +326,15 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
         width: 1200,
         height: 800,
       };
-      expect(resolveMediaUrl(structured)).toBe("https://cdn.framique.com/loom.jpg");
+      expect(resolveMediaUrl(structured)).toBe(
+        "https://cdn.framique.com/loom.jpg",
+      );
     });
 
     it("resolveMediaAlt returns explicit alt text or falls back cleanly", () => {
-      expect(resolveMediaAlt({ url: "foo.jpg", alt: "Silk saree" }, "Fallback")).toBe(
-        "Silk saree",
-      );
+      expect(
+        resolveMediaAlt({ url: "foo.jpg", alt: "Silk saree" }, "Fallback"),
+      ).toBe("Silk saree");
       expect(resolveMediaAlt({ url: "foo.jpg" }, "Fallback")).toBe("Fallback");
       expect(resolveMediaAlt("https://foo.jpg", "Fallback")).toBe("Fallback");
       expect(resolveMediaAlt(null, "Default alt")).toBe("Default alt");
@@ -358,6 +392,100 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
       expect(modernRes.success).toBe(true);
     });
 
+    it("coerceProp accepts valid legacy string URLs and StructuredMediaValue objects", () => {
+      const imgField = { key: "image", kind: "image" as const, label: "Image" };
+
+      // Valid string URL
+      expect(coerceProp(imgField, "/ph/prod.png")).toBe("/ph/prod.png");
+      expect(coerceProp(imgField, "https://cdn.framique.com/img.jpg")).toBe(
+        "https://cdn.framique.com/img.jpg",
+      );
+
+      // Valid StructuredMediaValue
+      const validMedia = {
+        url: "https://cdn.framique.com/artisan.jpg",
+        alt: "Artisan weaving",
+        width: 1200,
+        height: 800,
+        focalPoint: { x: 40, y: 60 },
+      };
+      const coerced = coerceProp(imgField, validMedia);
+      expect(coerced).toEqual(validMedia);
+    });
+
+    it("coerceProp rejects invalid structured media values and does not convert them to empty strings", () => {
+      const imgField = { key: "image", kind: "image" as const, label: "Image" };
+
+      // Out of range focal point
+      expect(
+        coerceProp(imgField, {
+          url: "https://cdn.framique.com/artisan.jpg",
+          focalPoint: { x: 150, y: 50 },
+        }),
+      ).toBeNull();
+
+      // Empty URL
+      expect(coerceProp(imgField, { url: "", alt: "Test" })).toBeNull();
+
+      // Unsafe protocol
+      expect(
+        coerceProp(imgField, {
+          url: "javascript:alert(1)",
+          alt: "Malicious",
+        }),
+      ).toBeNull();
+    });
+
+    it("structured media values round trip through canonical AST and remain intact after persistence reload simulation", () => {
+      const structuredMedia = {
+        url: "https://cdn.framique.com/featured.jpg",
+        alt: "Featured Jamdani",
+        width: 1600,
+        height: 900,
+        focalPoint: { x: 50, y: 30 },
+      };
+
+      const sourceAst = {
+        header: [],
+        main: [
+          {
+            id: "hero_1",
+            type: "hero",
+            props: {
+              image: structuredMedia,
+              heading: "Heritage Sarees",
+            },
+          },
+        ],
+        footer: [],
+      };
+
+      // 1. Initial parse through canonical AST
+      const parsed = parseAst(sourceAst);
+      const heroSection = parsed.main.find((s) => s.id === "hero_1");
+      expect(heroSection).toBeDefined();
+      expect(heroSection?.props["image"]).toEqual(structuredMedia);
+
+      // 2. Persistence simulation (JSON serialize & deserialize)
+      const serialized = JSON.stringify(parsed);
+      const reloadedDoc = JSON.parse(serialized);
+
+      // 3. Reload back into AST
+      const reloadedAst = parseAst(reloadedDoc);
+      const reloadedSection = reloadedAst.main.find((s) => s.id === "hero_1");
+      expect(reloadedSection).toBeDefined();
+      expect(reloadedSection?.props["image"]).toEqual(structuredMedia);
+      const imgVal = reloadedSection?.props["image"];
+      expect(
+        typeof imgVal === "object" && imgVal !== null && "focalPoint" in imgVal
+          ? (imgVal as { focalPoint?: { x: number; y: number } }).focalPoint
+          : null,
+      ).toEqual({
+        x: 50,
+        y: 30,
+      });
+    });
+
     it("validateSectionSettings fails closed on undeclared settings keys", () => {
       const sectionDef: ThemeSectionDefinition = {
         id: "department_grid",
@@ -365,7 +493,12 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
         category: "commerce",
         controls: [
           { key: "heading", label: "Heading", type: "text" },
-          { key: "layout", label: "Layout", type: "select", options: [{ label: "Grid", value: "grid" }] },
+          {
+            key: "layout",
+            label: "Layout",
+            type: "select",
+            options: [{ label: "Grid", value: "grid" }],
+          },
         ],
         defaultSettings: {},
       };
@@ -377,7 +510,11 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
       });
 
       expect(res.success).toBe(false);
-      expect(res.errors.some((e) => e.includes("Undeclared setting key 'unauthorizedKey'"))).toBe(true);
+      expect(
+        res.errors.some((e) =>
+          e.includes("Undeclared setting key 'unauthorizedKey'"),
+        ),
+      ).toBe(true);
     });
 
     it("validateSectionSettings enforces control type constraints for text, number, switch, and select", () => {
@@ -411,10 +548,20 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
 
       const res = validateSectionSettings(sectionDef, invalidPayload);
       expect(res.success).toBe(false);
-      expect(res.errors.some((e) => e.includes("title' expected string"))).toBe(true);
-      expect(res.errors.some((e) => e.includes("columns' expected number"))).toBe(true);
-      expect(res.errors.some((e) => e.includes("enabled' expected boolean"))).toBe(true);
-      expect(res.errors.some((e) => e.includes("skin' value 'neon_blue' is not one of allowed options"))).toBe(true);
+      expect(res.errors.some((e) => e.includes("title' expected string"))).toBe(
+        true,
+      );
+      expect(
+        res.errors.some((e) => e.includes("columns' expected number")),
+      ).toBe(true);
+      expect(
+        res.errors.some((e) => e.includes("enabled' expected boolean")),
+      ).toBe(true);
+      expect(
+        res.errors.some((e) =>
+          e.includes("skin' value 'neon_blue' is not one of allowed options"),
+        ),
+      ).toBe(true);
     });
 
     it("validateSectionSettings recursively validates repeaters and rejects undeclared nested fields", () => {
@@ -439,13 +586,21 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
       const invalidRepeater = {
         slides: [
           { image: "/ph/slide1.jpg", alt: "First" },
-          { image: "/ph/slide2.jpg", alt: "Second", undeclaredProp: "injection" },
+          {
+            image: "/ph/slide2.jpg",
+            alt: "Second",
+            undeclaredProp: "injection",
+          },
         ],
       };
 
       const res = validateSectionSettings(sectionDef, invalidRepeater);
       expect(res.success).toBe(false);
-      expect(res.errors.some((e) => e.includes("has undeclared field 'undeclaredProp'"))).toBe(true);
+      expect(
+        res.errors.some((e) =>
+          e.includes("has undeclared field 'undeclaredProp'"),
+        ),
+      ).toBe(true);
     });
 
     it("migrateSectionSettings upgrades legacy string image URLs to structured MediaValues", () => {
@@ -472,9 +627,7 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
       const legacyData = {
         image: "/ph/hero.jpg",
         alt: "Hero Banner",
-        items: [
-          { image: "/ph/item1.jpg", alt: "Item 1" },
-        ],
+        items: [{ image: "/ph/item1.jpg", alt: "Item 1" }],
       };
 
       const migrated = migrateSectionSettings(sectionDef, legacyData);
@@ -482,7 +635,7 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
         url: "/ph/hero.jpg",
         alt: "Hero Banner",
       });
-      const items = migrated.items as any[];
+      const items = migrated.items as Record<string, unknown>[];
       expect(items[0].image).toEqual({
         url: "/ph/item1.jpg",
         alt: "Item 1",
@@ -497,17 +650,136 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
             id: "node_1",
             type: "hero_carousel",
             settings: {
+              slides: [{ image: "/ph/slide1.jpg", alt: "Slide 1" }],
+            },
+          },
+        ],
+      };
+
+      const { ast: migratedAst, migratedCount } = migrateThemeAst(
+        legacyAst,
+        SONGOSKRITI_THEME_MANIFEST,
+      );
+      expect((migratedAst as Record<string, unknown>).schemaVersion).toBe(
+        THEME_CONTRACT_VERSION,
+      );
+      expect(migratedCount).toBe(1);
+    });
+
+    it("migrateThemeAst rejects future schema versions without modifying input data", () => {
+      const futureAst = {
+        schemaVersion: "2.0.0",
+        sections: [
+          {
+            id: "node_2",
+            type: "hero_carousel",
+            settings: { slides: [] },
+          },
+        ],
+      };
+
+      // Future version must throw error and reject unconditional downgrade
+      expect(() =>
+        migrateThemeAst(futureAst, SONGOSKRITI_THEME_MANIFEST),
+      ).toThrowError(/Unsupported future schema version/);
+
+      // Input object remains untouched
+      expect(futureAst.schemaVersion).toBe("2.0.0");
+    });
+
+    it("validateThemeAst validates complete theme AST against manifest controls", () => {
+      const validAst = {
+        schemaVersion: "1.0.0",
+        sections: [
+          {
+            id: "node_1",
+            type: "hero_carousel",
+            settings: {
               slides: [
-                { image: "/ph/slide1.jpg", alt: "Slide 1" },
+                {
+                  image: {
+                    url: "https://cdn.framique.com/slide1.jpg",
+                    alt: "Slide 1",
+                  },
+                },
               ],
             },
           },
         ],
       };
 
-      const { ast: migratedAst, migratedCount } = migrateThemeAst(legacyAst, SONGOSKRITI_THEME_MANIFEST);
-      expect((migratedAst as any).schemaVersion).toBe(THEME_CONTRACT_VERSION);
-      expect(migratedCount).toBe(1);
+      const res = validateThemeAst(validAst, SONGOSKRITI_THEME_MANIFEST);
+      expect(res.valid).toBe(true);
+      expect(res.errors).toHaveLength(0);
+
+      const invalidAst = {
+        schemaVersion: "1.0.0",
+        sections: [
+          {
+            id: "node_2",
+            type: "hero_carousel",
+            settings: {
+              slides: [
+                {
+                  image: {
+                    url: "https://cdn.framique.com/slide1.jpg",
+                    focalPoint: { x: 200, y: 50 }, // Out of bounds
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      };
+
+      const invalidRes = validateThemeAst(
+        invalidAst,
+        SONGOSKRITI_THEME_MANIFEST,
+      );
+      expect(invalidRes.valid).toBe(false);
+      expect(invalidRes.errors.length).toBeGreaterThan(0);
+    });
+
+    it("loadAuthoritativeThemeAst executes complete 7-step loading pipeline", () => {
+      const legacyDoc = {
+        schemaVersion: "0.9.0",
+        sections: [
+          {
+            id: "node_3",
+            type: "hero_carousel",
+            settings: {
+              slides: [{ image: "/ph/slide.jpg", alt: "Legacy Slide" }],
+            },
+          },
+        ],
+      };
+
+      const result = loadAuthoritativeThemeAst(
+        legacyDoc,
+        SONGOSKRITI_THEME_MANIFEST,
+        (ast) => ast,
+      );
+
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect((result.ast as Record<string, unknown>).schemaVersion).toBe(
+          THEME_CONTRACT_VERSION,
+        );
+      }
+
+      // Future version document rejection
+      const futureDoc = { schemaVersion: "3.1.0", sections: [] };
+      const futureResult = loadAuthoritativeThemeAst(
+        futureDoc,
+        SONGOSKRITI_THEME_MANIFEST,
+        (ast) => ast,
+      );
+      expect(futureResult.success).toBe(false);
+      if (!futureResult.success) {
+        expect(futureResult.error).toContain(
+          "Unsupported future schema version",
+        );
+      }
     });
   });
 
@@ -515,6 +787,40 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
   /* Pillar 4: Dynamic Data Isolation & Anti-Fabrication              */
   /* ---------------------------------------------------------------- */
   describe("Pillar 4: Dynamic Data Isolation & Anti-Fabrication", () => {
+    it("buildProductHead and buildSearchHead contain zero unverified payment promises or delivery claims in fallbacks", () => {
+      const productHead = buildProductHead({
+        themeKey: "songoskriti",
+        origin: "https://artisan.framique.com",
+        path: "/p/jamdani-saree",
+        storePath: "/store/artisan",
+        storeName: "Artisan Store",
+        currency: "BDT",
+        priceMinor: 500000,
+        inStock: true,
+        product: {
+          title: "Jamdani Saree",
+          slug: "jamdani-saree",
+        },
+      });
+
+      const productDesc =
+        productHead.meta.find((m) => m.name === "description")?.content ?? "";
+      expect(productDesc.toLowerCase()).not.toContain("cash on delivery");
+      expect(productDesc.toLowerCase()).not.toContain("mobile payment");
+
+      const searchHead = buildSearchHead({
+        themeKey: "songoskriti",
+        origin: "https://artisan.framique.com",
+        path: "/search",
+        storePath: "/store/artisan",
+        storeName: "Artisan Store",
+      });
+
+      const searchDesc =
+        searchHead.meta.find((m) => m.name === "description")?.content ?? "";
+      expect(searchDesc.toLowerCase()).not.toContain("cash on delivery");
+      expect(searchDesc.toLowerCase()).not.toContain("mobile payment");
+    });
     it("section controls do not embed hardcoded vendor phone numbers or external brand handles in defaults", () => {
       for (const [sectionKey, controls] of Object.entries(SECTION_CONTROLS)) {
         for (const ctrl of controls) {
@@ -561,7 +867,8 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
       collection: {
         name: "Handloom Sarees",
         slug: "sarees",
-        description: "Finest handwoven Jamdani and silk sarees from artisans across Bangladesh.",
+        description:
+          "Finest handwoven Jamdani and silk sarees from artisans across Bangladesh.",
         image_url: "https://cdn.framique.com/collections/sarees.jpg",
       },
       products: [
@@ -597,10 +904,14 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
       expect(descTag?.content).toContain("Finest handwoven Jamdani");
 
       const ogImage = head.meta.find((m) => m.property === "og:image");
-      expect(ogImage?.content).toBe("https://cdn.framique.com/collections/sarees.jpg");
+      expect(ogImage?.content).toBe(
+        "https://cdn.framique.com/collections/sarees.jpg",
+      );
 
       const ogUrl = head.meta.find((m) => m.property === "og:url");
-      expect(ogUrl?.content).toBe("https://store.framique.com/store/heritage/c/sarees");
+      expect(ogUrl?.content).toBe(
+        "https://store.framique.com/store/heritage/c/sarees",
+      );
 
       const twitterCard = head.meta.find((m) => m.name === "twitter:card");
       expect(twitterCard?.content).toBe("summary_large_image");
@@ -708,9 +1019,13 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
         logoUrl: null,
       });
 
-      const ldJsonScripts = headWithoutLogo.scripts.filter((s) => s.type === "application/ld+json");
+      const ldJsonScripts = headWithoutLogo.scripts.filter(
+        (s) => s.type === "application/ld+json",
+      );
       expect(ldJsonScripts.length).toBeGreaterThan(0);
-      const orgSchema = ldJsonScripts.map((s) => JSON.parse(s.children)).find((s) => s["@type"] === "Organization");
+      const orgSchema = ldJsonScripts
+        .map((s) => JSON.parse(s.children))
+        .find((s) => s["@type"] === "Organization");
       expect(orgSchema).toBeDefined();
       expect(orgSchema.logo).toBeUndefined();
 
@@ -723,10 +1038,16 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
         logoUrl: "https://cdn.framique.com/artisan-logo.png",
       });
 
-      const ldJsonWithLogo = headWithLogo.scripts.filter((s) => s.type === "application/ld+json");
-      const orgWithLogoSchema = ldJsonWithLogo.map((s) => JSON.parse(s.children)).find((s) => s["@type"] === "Organization");
+      const ldJsonWithLogo = headWithLogo.scripts.filter(
+        (s) => s.type === "application/ld+json",
+      );
+      const orgWithLogoSchema = ldJsonWithLogo
+        .map((s) => JSON.parse(s.children))
+        .find((s) => s["@type"] === "Organization");
       expect(orgWithLogoSchema).toBeDefined();
-      expect(orgWithLogoSchema.logo).toBe("https://cdn.framique.com/artisan-logo.png");
+      expect(orgWithLogoSchema.logo).toBe(
+        "https://cdn.framique.com/artisan-logo.png",
+      );
     });
 
     it("buildProductHead dynamically omits return policy unless verified merchantReturnPolicy is configured", () => {
@@ -746,10 +1067,16 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
         },
       });
 
-      const scriptsWithout = headWithoutReturnPolicy.scripts.filter((s) => s.type === "application/ld+json");
-      const productSchemaWithout = scriptsWithout.map((s) => JSON.parse(s.children)).find((s) => s["@type"] === "Product");
+      const scriptsWithout = headWithoutReturnPolicy.scripts.filter(
+        (s) => s.type === "application/ld+json",
+      );
+      const productSchemaWithout = scriptsWithout
+        .map((s) => JSON.parse(s.children))
+        .find((s) => s["@type"] === "Product");
       expect(productSchemaWithout).toBeDefined();
-      expect(productSchemaWithout.offers.hasMerchantReturnPolicy).toBeUndefined();
+      expect(
+        productSchemaWithout.offers.hasMerchantReturnPolicy,
+      ).toBeUndefined();
 
       const headWithReturnPolicy = buildProductHead({
         origin: "https://store.framique.com",
@@ -771,11 +1098,17 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
         },
       });
 
-      const scriptsWith = headWithReturnPolicy.scripts.filter((s) => s.type === "application/ld+json");
-      const productSchemaWith = scriptsWith.map((s) => JSON.parse(s.children)).find((s) => s["@type"] === "Product");
+      const scriptsWith = headWithReturnPolicy.scripts.filter(
+        (s) => s.type === "application/ld+json",
+      );
+      const productSchemaWith = scriptsWith
+        .map((s) => JSON.parse(s.children))
+        .find((s) => s["@type"] === "Product");
       expect(productSchemaWith).toBeDefined();
       expect(productSchemaWith.offers.hasMerchantReturnPolicy).toBeDefined();
-      expect(productSchemaWith.offers.hasMerchantReturnPolicy.merchantReturnDays).toBe(7);
+      expect(
+        productSchemaWith.offers.hasMerchantReturnPolicy.merchantReturnDays,
+      ).toBe(7);
       expect(productSchemaWith.offers.hasMerchantReturnPolicy.returnFees).toBe(
         "https://schema.org/ReturnShippingFees",
       );
@@ -818,7 +1151,13 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
   /* ---------------------------------------------------------------- */
   describe("Pillar 8: Verification & Lifecycle Invariants", () => {
     it("validates theme certification state transitions", () => {
-      const validStates = ["draft", "validating", "failed", "passed", "released"];
+      const validStates = [
+        "draft",
+        "validating",
+        "failed",
+        "passed",
+        "released",
+      ];
       for (const st of validStates) {
         const manifest = {
           id: "theme-test",

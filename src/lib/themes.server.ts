@@ -48,6 +48,7 @@ import {
 } from "./theme-variations";
 import { previewSourceFor } from "./preview-sources";
 import { SONGOSKRITI_WIDGET_DEFAULTS } from "./themes/songoskriti/skins";
+import { migrateThemeAst, SONGOSKRITI_THEME_MANIFEST } from "./theme-contract";
 import { PRESET_API_RANGE, checkApiCompatibility } from "./registry-version";
 import { translationGate } from "./builder-guardrails";
 import { translationCoverage } from "./translation-coverage";
@@ -2187,12 +2188,25 @@ export async function publishedTheme(
       // Variation follow-through: the persisted key rides the version's
       // settings document — shoppers see the active variation, not the base.
       const live = resolveLiveVariation(row.tokens, themeKey);
+      let rawTemplates =
+        row.templates && Object.keys(row.templates as object).length
+          ? row.templates
+          : { index: parseAst(row.ast) };
+      if (themeKey === "songoskriti" && rawTemplates) {
+        try {
+          const migrated = migrateThemeAst(
+            rawTemplates,
+            SONGOSKRITI_THEME_MANIFEST,
+          );
+          rawTemplates = migrated.ast as Record<string, unknown>;
+        } catch (e) {
+          log("warn", "theme.published_migration_failed", {
+            error: String(e),
+          });
+        }
+      }
       const templates = fillVariationSkins(
-        parseTemplates(
-          row.templates && Object.keys(row.templates as object).length
-            ? row.templates
-            : { index: parseAst(row.ast) },
-        ),
+        parseTemplates(rawTemplates),
         live.variation,
         VARIATION_BASE_DEFAULTS[themeKey ?? ""] ?? {},
       );
@@ -2304,8 +2318,22 @@ export async function previewTheme(
   // Draft preview follows the persisted pick so the merchant previews what
   // shoppers would see; explicit `?variation=` stays on the blueprint path.
   const live = resolveLiveVariation(draft.tokens, themeKey);
+  let rawTemplates = draft.templates;
+  if (themeKey === "songoskriti" && rawTemplates) {
+    try {
+      const migrated = migrateThemeAst(
+        rawTemplates,
+        SONGOSKRITI_THEME_MANIFEST,
+      );
+      rawTemplates = migrated.ast as Record<string, unknown>;
+    } catch (e) {
+      log("warn", "theme.draft_migration_failed", {
+        error: String(e),
+      });
+    }
+  }
   return {
-    templates: parseTemplates(draft.templates),
+    templates: parseTemplates(rawTemplates),
     tokens: live.tokens,
     themeKey,
     variationKey: live.variationKey,

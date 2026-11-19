@@ -349,9 +349,7 @@ export function buildStoreHead(input: StoreHeadInput): HeadOutput {
     "Online store",
     input.storeName,
   );
-  const description =
-    input.tagline?.trim() ||
-    `Shop ${input.storeName}.`;
+  const description = input.tagline?.trim() || `Shop ${input.storeName}.`;
   const hero =
     input.image ?? input.products?.find((p) => p.image_url)?.image_url ?? null;
   const head = baseHead(
@@ -461,7 +459,7 @@ export function buildProductHead(input: ProductHeadInput): HeadOutput {
   );
   const description =
     input.product.description?.trim() ||
-    `Buy ${input.product.title} from ${input.storeName} with cash on delivery or mobile payment.`;
+    `Buy ${input.product.title} online from ${input.storeName}.`;
   const image = input.image ?? input.product.image_url ?? null;
   const head = baseHead(
     { ...input, image },
@@ -606,7 +604,7 @@ export function buildSearchHead(input: SearchHeadInput): HeadOutput {
   const title = applyTemplate(profile.titleTemplate, page, input.storeName);
   const description = q
     ? `${input.total ?? 0} results for “${q}” at ${input.storeName}.`
-    : `Browse every product available at ${input.storeName}, with cash on delivery and mobile payments.`;
+    : `Browse products available at ${input.storeName}.`;
   const head = baseHead(
     {
       ...input,
@@ -657,7 +655,11 @@ export function buildCollectionHead(input: CollectionHeadInput): HeadOutput {
   const profile = seoProfileFor(input.themeKey);
   const title =
     input.collection.meta_title?.trim() ||
-    applyTemplate(profile.titleTemplate, input.collection.name, input.storeName);
+    applyTemplate(
+      profile.titleTemplate,
+      input.collection.name,
+      input.storeName,
+    );
   const description =
     input.collection.meta_description?.trim() ||
     input.collection.description?.trim() ||
@@ -665,7 +667,8 @@ export function buildCollectionHead(input: CollectionHeadInput): HeadOutput {
   const image =
     input.image ??
     input.collection.image_url ??
-    (input.products?.[0]?.image_url ?? null);
+    input.products?.[0]?.image_url ??
+    null;
 
   const head = baseHead(
     { ...input, image },
@@ -739,4 +742,3 @@ export function buildCollectionHead(input: CollectionHeadInput): HeadOutput {
   head.links.push(...performanceLinks(profile, { heroImage: image }));
   return head;
 }
-

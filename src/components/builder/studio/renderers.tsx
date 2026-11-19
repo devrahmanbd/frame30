@@ -1532,11 +1532,15 @@ export function StudioWidget({
     }
 
     case "product_grid": {
-      // PILOT (frame30): delegate to the shared product_grid widget.
-      // Studio has no data layer, so `data` stays undefined and the shared
-      // skeleton branch renders (storefront first-paint parity). Known
-      // delta: the "renders on the storefront" placeholder is replaced by
-      // the single-sourced skeleton grid.
+      const shared = renderSharedThemeSection(
+        node,
+        "product_grid",
+        themeKey,
+        device,
+        editing,
+      );
+      if (shared) return shared;
+
       const section: Section = {
         id: node.id,
         type: "product_grid",
@@ -1574,8 +1578,24 @@ export function StudioWidget({
       );
       if (shared) return shared;
       return (
+        <Placeholder label="Live product rail — renders on the storefront" />
+      );
+    }
+    case "cart_lines":
+    case "cart_summary":
+    case "checkout_steps":
+    case "result_toolbar": {
+      const shared = renderSharedThemeSection(
+        node,
+        node.el as SectionType,
+        themeKey,
+        device,
+        editing,
+      );
+      if (shared) return shared;
+      return (
         <Placeholder
-          label="Live product rail — renders on the storefront"
+          label={`Live ${node.el.replace(/_/g, " ")} — renders on the storefront`}
         />
       );
     }
@@ -1584,13 +1604,9 @@ export function StudioWidget({
     case "collection_grid":
     case "account_cart":
     case "cart_drawer":
-    case "cart_lines":
-    case "cart_summary":
-    case "checkout_steps":
     case "search_command":
     case "facet_sidebar":
     case "pagination":
-    case "result_toolbar":
     case "blog_archive":
     case "blog_pager":
     case "blog_terms":
@@ -1682,6 +1698,15 @@ export function StudioWidget({
     }
 
     case "trust_bar": {
+      const shared = renderSharedThemeSection(
+        node,
+        "trust_bar",
+        themeKey,
+        device,
+        editing,
+      );
+      if (shared) return shared;
+
       const fromItems = rows(s, "items")
         .map((row) => ({
           icon: String(row.icon ?? ""),
@@ -1722,6 +1747,15 @@ export function StudioWidget({
     }
 
     case "announcement_bar": {
+      const shared = renderSharedThemeSection(
+        node,
+        "announcement_bar",
+        themeKey,
+        device,
+        editing,
+      );
+      if (shared) return shared;
+
       const fromItems = rows(s, "items")
         .map((row) => String(row.text ?? "").trim())
         .filter(Boolean);
@@ -2155,6 +2189,15 @@ export function StudioWidget({
     }
 
     case "hero_carousel": {
+      const shared = renderSharedThemeSection(
+        node,
+        "hero_carousel",
+        themeKey,
+        device,
+        editing,
+      );
+      if (shared) return shared;
+
       const slides = rows(s, "slides");
       if (slides.length === 0)
         return <Placeholder label="Add carousel slides" />;
@@ -2294,6 +2337,15 @@ export function StudioWidget({
     }
 
     case "footer_sitemap": {
+      const shared = renderSharedThemeSection(
+        node,
+        "footer_sitemap",
+        themeKey,
+        device,
+        editing,
+      );
+      if (shared) return shared;
+
       const fromItems = rows(s, "items")
         .map((row) => ({
           title: String(row.title ?? ""),
@@ -3025,6 +3077,15 @@ export function StudioWidget({
     }
 
     case "category_header": {
+      const shared = renderSharedThemeSection(
+        node,
+        "category_header",
+        themeKey,
+        device,
+        editing,
+      );
+      if (shared) return shared;
+
       const title = str(s, "heading", "All products");
       const image = str(s, "imageUrl");
       return (
@@ -3764,12 +3825,30 @@ export function StudioWidget({
       );
     }
 
-    case "payment_methods":
+    case "payment_methods": {
+      const shared = renderSharedThemeSection(
+        node,
+        "payment_methods",
+        themeKey,
+        device,
+        editing,
+      );
+      if (shared) return shared;
       return (
         <Placeholder label="Live payment methods — renders on the storefront" />
       );
+    }
 
     case "payment_icons": {
+      const shared = renderSharedThemeSection(
+        node,
+        "payment_icons",
+        themeKey,
+        device,
+        editing,
+      );
+      if (shared) return shared;
+
       const marks = str(s, "marks")
         .split(",")
         .map((m) => m.trim())
@@ -3962,6 +4041,15 @@ export function StudioWidget({
     }
 
     case "rich_text": {
+      const shared = renderSharedThemeSection(
+        node,
+        "rich_text",
+        themeKey,
+        device,
+        editing,
+      );
+      if (shared) return shared;
+
       return (
         <section className="rounded-fq-lg border border-border bg-card p-6">
           {str(s, "heading") && (
@@ -4077,6 +4165,15 @@ export function StudioWidget({
     }
 
     case "newsletter": {
+      const shared = renderSharedThemeSection(
+        node,
+        "newsletter",
+        themeKey,
+        device,
+        editing,
+      );
+      if (shared) return shared;
+
       return (
         <section className="rounded-fq-lg border border-border bg-card p-6">
           <h3 className="text-lg font-semibold">
@@ -4125,6 +4222,15 @@ export function StudioWidget({
     }
 
     case "mega_menu": {
+      const shared = renderSharedThemeSection(
+        node,
+        "mega_menu",
+        themeKey,
+        device,
+        editing,
+      );
+      if (shared) return shared;
+
       // Widget→menu binding: a bound menu previews its top-level entries;
       // unbound keeps the live-taxonomy placeholder from before.
       const bound = resolveMenuItems(node, menus);
@@ -4290,6 +4396,15 @@ export function StudioWidget({
     }
 
     case "store_locator": {
+      const shared = renderSharedThemeSection(
+        node,
+        "store_locator",
+        themeKey,
+        device,
+        editing,
+      );
+      if (shared) return shared;
+
       const stores = [1, 2, 3]
         .map((n) => ({
           name: str(s, `s${n}Name`),

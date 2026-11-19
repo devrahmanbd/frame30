@@ -202,8 +202,7 @@ export const Route = createFileRoute("/store/$slug/checkout")({
       { name: "robots", content: "noindex, nofollow" },
       {
         name: "description",
-        content:
-          "Review your cart and place your order with cash on delivery or mobile payment.",
+        content: "Review your cart and proceed to checkout.",
       },
       { property: "og:title", content: "Checkout" },
       {

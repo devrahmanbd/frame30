@@ -4,10 +4,10 @@ import { cn } from "@/lib/utils";
 import { TESTIMONIALS } from "@/lib/marketing/testimonials.content";
 
 const IMAGES = [
-  "https://images.unsplash.com/photo-1556761175-5973dc0f32b7?q=80&w=800&auto=format&fit=crop", // Business man standing
-  "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop", // Business woman standing
-  "https://images.unsplash.com/photo-1556760544-74068565f05c?q=80&w=800&auto=format&fit=crop", // Business team/man
-  "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=800&auto=format&fit=crop", // Business woman crossed arms
+  "/ph/songoskriti/campaign-men.jpg",
+  "/ph/songoskriti/hero-artisans.jpg",
+  "/ph/songoskriti/hero-festive.jpg",
+  "/ph/songoskriti/hero-weaves.jpg",
 ];
 
 const CARD_COLORS = [

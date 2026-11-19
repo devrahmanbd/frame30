@@ -258,17 +258,17 @@ export function StorefrontPage({ data }: { data: StorefrontPayload }) {
       <p className="mt-2 max-w-xl text-muted-foreground">
         {settings?.tagline ??
           t(
-            "Fast delivery across Bangladesh — cash on delivery and mobile payments.",
-            "বাংলাদেশজুড়ে দ্রুত ডেলিভারি — ক্যাশ অন ডেলিভারি ও মোবাইল পেমেন্ট।",
+            `${merchant.name} — Online Store.`,
+            `${merchant.name} — অনলাইন স্টোর।`,
           )}
       </p>
       <ul className="mt-4 flex flex-wrap gap-2 text-xs">
-        {(settings?.cod_enabled ?? true) && (
+        {Boolean(settings?.cod_enabled) && (
           <li className="rounded-full bg-warning-soft px-3 py-1 text-warning-foreground">
             {t("Cash on delivery", "ক্যাশ অন ডেলিভারি")}
           </li>
         )}
-        {(settings?.mfs_enabled ?? true) && (
+        {Boolean(settings?.mfs_enabled) && (
           <li className="rounded-full bg-success-soft px-3 py-1 text-success-foreground">
             bKash / Nagad
           </li>

@@ -36,7 +36,8 @@ export const THEME_CERTIFICATION_STATES = [
   "released",
 ] as const;
 
-export type ThemeCertificationState = (typeof THEME_CERTIFICATION_STATES)[number];
+export type ThemeCertificationState =
+  (typeof THEME_CERTIFICATION_STATES)[number];
 
 /* ------------------------------------------------------------------ */
 /* Supported Control Types & Schema                                   */
@@ -116,25 +117,19 @@ export const ThemeControlSchema: z.ZodType<ThemeControl> = z.lazy(() =>
 /* Media Value Contract (Backward Compatible)                         */
 /* ------------------------------------------------------------------ */
 
-export const StructuredMediaValueSchema = z.object({
-  url: z.string().min(1, "Media URL is required"),
-  alt: z.string().optional(),
-  width: z.number().positive().optional(),
-  height: z.number().positive().optional(),
-  focalPoint: z
-    .object({
-      x: z.number().min(0).max(100),
-      y: z.number().min(0).max(100),
-    })
-    .optional(),
-});
-export type StructuredMediaValue = z.infer<typeof StructuredMediaValueSchema>;
-
-export const MediaValueSchema = z.union([
-  z.string(),
+import {
   StructuredMediaValueSchema,
-]);
-export type MediaValue = z.infer<typeof MediaValueSchema>;
+  type StructuredMediaValue,
+  MediaValueSchema,
+  type MediaValue,
+} from "./media";
+
+export {
+  StructuredMediaValueSchema,
+  type StructuredMediaValue,
+  MediaValueSchema,
+  type MediaValue,
+};
 
 /**
  * Extracts a clean string URL from either a legacy string or a structured MediaValue.
@@ -172,7 +167,12 @@ export function resolveMediaAlt(value: unknown, fallback = ""): string {
 /* ------------------------------------------------------------------ */
 
 export const ThemeSectionDefinitionSchema = z.object({
-  id: z.string().regex(/^[a-z0-9_-]+$/, "Section ID must be lowercase alphanumeric with underscores/hyphens"),
+  id: z
+    .string()
+    .regex(
+      /^[a-z0-9_-]+$/,
+      "Section ID must be lowercase alphanumeric with underscores/hyphens",
+    ),
   label: z.string().min(1, "Section label is required"),
   category: z.string().min(1, "Section category is required"),
   controls: z.array(ThemeControlSchema),
@@ -180,7 +180,9 @@ export const ThemeSectionDefinitionSchema = z.object({
   dynamicBindings: z.array(z.string()).optional(),
   description: z.string().optional(),
 });
-export type ThemeSectionDefinition = z.infer<typeof ThemeSectionDefinitionSchema>;
+export type ThemeSectionDefinition = z.infer<
+  typeof ThemeSectionDefinitionSchema
+>;
 
 /* ------------------------------------------------------------------ */
 /* Theme Manifest Schema (v1.0.0)                                     */
@@ -189,8 +191,15 @@ export type ThemeSectionDefinition = z.infer<typeof ThemeSectionDefinitionSchema
 export const SemVerRegex = /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/;
 
 export const ThemeManifestSchema = z.object({
-  id: z.string().regex(/^[a-z0-9_-]+$/, "Theme ID must be lowercase alphanumeric with underscores/hyphens"),
-  version: z.string().regex(SemVerRegex, "Version must follow SemVer (e.g. 1.0.0)"),
+  id: z
+    .string()
+    .regex(
+      /^[a-z0-9_-]+$/,
+      "Theme ID must be lowercase alphanumeric with underscores/hyphens",
+    ),
+  version: z
+    .string()
+    .regex(SemVerRegex, "Version must follow SemVer (e.g. 1.0.0)"),
   name: z.object({
     en: z.string().min(1, "English theme name is required"),
     bn: z.string().optional(),
@@ -239,7 +248,9 @@ export type ValidationResult<T> = {
   errors?: string[];
 };
 
-export function validateThemeManifest(input: unknown): ValidationResult<ThemeManifest> {
+export function validateThemeManifest(
+  input: unknown,
+): ValidationResult<ThemeManifest> {
   const result = ThemeManifestSchema.safeParse(input);
   if (result.success) {
     return { success: true, data: result.data };
@@ -250,7 +261,9 @@ export function validateThemeManifest(input: unknown): ValidationResult<ThemeMan
   };
 }
 
-export function validateSectionDefinition(input: unknown): ValidationResult<ThemeSectionDefinition> {
+export function validateSectionDefinition(
+  input: unknown,
+): ValidationResult<ThemeSectionDefinition> {
   const result = ThemeSectionDefinitionSchema.safeParse(input);
   if (result.success) {
     return { success: true, data: result.data };
@@ -276,7 +289,9 @@ export function validateSectionSettings(
   // 1. Fail closed on undeclared settings keys
   for (const key of Object.keys(s)) {
     if (!allowedKeys.has(key)) {
-      errors.push(`Undeclared setting key '${key}' not defined in section schema`);
+      errors.push(
+        `Undeclared setting key '${key}' not defined in section schema`,
+      );
     }
   }
 
@@ -298,14 +313,18 @@ export function validateSectionSettings(
       case "link":
       case "icon": {
         if (typeof val !== "string") {
-          errors.push(`Control '${path}' expected string, received ${typeof val}`);
+          errors.push(
+            `Control '${path}' expected string, received ${typeof val}`,
+          );
         }
         break;
       }
 
       case "color": {
         if (typeof val !== "string") {
-          errors.push(`Control '${path}' expected color string, received ${typeof val}`);
+          errors.push(
+            `Control '${path}' expected color string, received ${typeof val}`,
+          );
         }
         break;
       }
@@ -313,13 +332,19 @@ export function validateSectionSettings(
       case "number":
       case "slider": {
         if (typeof val !== "number" || isNaN(val)) {
-          errors.push(`Control '${path}' expected number, received ${typeof val}`);
+          errors.push(
+            `Control '${path}' expected number, received ${typeof val}`,
+          );
         } else {
           if (control.min !== undefined && val < control.min) {
-            errors.push(`Control '${path}' value ${val} is below minimum ${control.min}`);
+            errors.push(
+              `Control '${path}' value ${val} is below minimum ${control.min}`,
+            );
           }
           if (control.max !== undefined && val > control.max) {
-            errors.push(`Control '${path}' value ${val} exceeds maximum ${control.max}`);
+            errors.push(
+              `Control '${path}' value ${val} exceeds maximum ${control.max}`,
+            );
           }
         }
         break;
@@ -327,7 +352,9 @@ export function validateSectionSettings(
 
       case "switch": {
         if (typeof val !== "boolean") {
-          errors.push(`Control '${path}' expected boolean, received ${typeof val}`);
+          errors.push(
+            `Control '${path}' expected boolean, received ${typeof val}`,
+          );
         }
         break;
       }
@@ -335,7 +362,9 @@ export function validateSectionSettings(
       case "select":
       case "choice": {
         if (typeof val !== "string" && typeof val !== "number") {
-          errors.push(`Control '${path}' expected string or number choice, received ${typeof val}`);
+          errors.push(
+            `Control '${path}' expected string or number choice, received ${typeof val}`,
+          );
         } else if (control.options && control.options.length > 0) {
           const allowedOptions = control.options.map((o) => o.value);
           if (!allowedOptions.includes(String(val)) && val !== "") {
@@ -353,14 +382,21 @@ export function validateSectionSettings(
           typeof val !== "number" &&
           (typeof val !== "object" || val === null)
         ) {
-          errors.push(`Control '${path}' expected dimensions value, received ${typeof val}`);
+          errors.push(
+            `Control '${path}' expected dimensions value, received ${typeof val}`,
+          );
         }
         break;
       }
 
       case "heading": {
-        if (typeof val !== "string" && (typeof val !== "object" || val === null)) {
-          errors.push(`Control '${path}' expected heading value, received ${typeof val}`);
+        if (
+          typeof val !== "string" &&
+          (typeof val !== "object" || val === null)
+        ) {
+          errors.push(
+            `Control '${path}' expected heading value, received ${typeof val}`,
+          );
         }
         break;
       }
@@ -380,14 +416,18 @@ export function validateSectionSettings(
             );
           }
         } else {
-          errors.push(`Control '${path}' expected valid image URL string or MediaValue object`);
+          errors.push(
+            `Control '${path}' expected valid image URL string or MediaValue object`,
+          );
         }
         break;
       }
 
       case "repeater": {
         if (!Array.isArray(val)) {
-          errors.push(`Control '${path}' expected array for repeater, received ${typeof val}`);
+          errors.push(
+            `Control '${path}' expected array for repeater, received ${typeof val}`,
+          );
         } else if (control.fields && control.fields.length > 0) {
           const repeaterAllowedKeys = new Set(control.fields.map((f) => f.key));
           for (let i = 0; i < val.length; i++) {
@@ -401,12 +441,18 @@ export function validateSectionSettings(
             // Fail closed on undeclared repeater item fields
             for (const itemKey of Object.keys(itemObj)) {
               if (!repeaterAllowedKeys.has(itemKey)) {
-                errors.push(`Repeater item at ${itemPath} has undeclared field '${itemKey}'`);
+                errors.push(
+                  `Repeater item at ${itemPath} has undeclared field '${itemKey}'`,
+                );
               }
             }
             // Recursively validate child controls
             for (const field of control.fields) {
-              validateControlValue(field, itemObj[field.key], `${itemPath}.${field.key}`);
+              validateControlValue(
+                field,
+                itemObj[field.key],
+                `${itemPath}.${field.key}`,
+              );
             }
           }
         }
@@ -436,9 +482,15 @@ export function migrateSectionSettings(
   if (!settings || typeof settings !== "object" || Array.isArray(settings)) {
     return {};
   }
-  const result: Record<string, unknown> = structuredClone(settings) as Record<string, unknown>;
+  const result: Record<string, unknown> = structuredClone(settings) as Record<
+    string,
+    unknown
+  >;
 
-  function migrateControls(controls: ThemeControl[], target: Record<string, unknown>) {
+  function migrateControls(
+    controls: ThemeControl[],
+    target: Record<string, unknown>,
+  ) {
     for (const ctrl of controls) {
       const val = target[ctrl.key];
       if (ctrl.type === "image") {
@@ -448,7 +500,11 @@ export function migrateSectionSettings(
             alt: typeof target.alt === "string" ? target.alt : "",
           };
         }
-      } else if (ctrl.type === "repeater" && Array.isArray(val) && ctrl.fields) {
+      } else if (
+        ctrl.type === "repeater" &&
+        Array.isArray(val) &&
+        ctrl.fields
+      ) {
         for (let i = 0; i < val.length; i++) {
           const row = val[i];
           if (row && typeof row === "object" && !Array.isArray(row)) {
@@ -463,8 +519,22 @@ export function migrateSectionSettings(
   return result;
 }
 
+function parseSemver(v: string): [number, number, number] {
+  const parts = v.split(".").map((p) => parseInt(p, 10));
+  return [parts[0] || 0, parts[1] || 0, parts[2] || 0];
+}
+
+export function compareSemver(a: string, b: string): number {
+  const [majA, minA, patchA] = parseSemver(a);
+  const [majB, minB, patchB] = parseSemver(b);
+  if (majA !== majB) return majA - majB;
+  if (minA !== minB) return minA - minB;
+  return patchA - patchB;
+}
+
 /**
  * Upgrades a full Theme AST to the current schemaVersion, migrating media values across all sections.
+ * Rejects future schema versions without modifying saved data.
  */
 export function migrateThemeAst(
   ast: unknown,
@@ -472,6 +542,17 @@ export function migrateThemeAst(
 ): { ast: unknown; migratedCount: number } {
   if (!ast || typeof ast !== "object") {
     return { ast, migratedCount: 0 };
+  }
+
+  const rawVersion =
+    typeof (ast as Record<string, unknown>).schemaVersion === "string"
+      ? ((ast as Record<string, unknown>).schemaVersion as string)
+      : "0.0.0";
+
+  if (compareSemver(rawVersion, THEME_CONTRACT_VERSION) > 0) {
+    throw new Error(
+      `Unsupported future schema version '${rawVersion}'; current supported version is '${THEME_CONTRACT_VERSION}'`,
+    );
   }
 
   const cloned = structuredClone(ast) as Record<string, unknown>;
@@ -484,8 +565,8 @@ export function migrateThemeAst(
 
   cloned.schemaVersion = THEME_CONTRACT_VERSION;
 
-  if (Array.isArray(cloned.sections)) {
-    for (const section of cloned.sections) {
+  function migrateSectionList(sectionsList: unknown[]): void {
+    for (const section of sectionsList) {
       if (section && typeof section === "object") {
         const type = (section as { type?: unknown }).type;
         if (typeof type === "string") {
@@ -494,7 +575,10 @@ export function migrateThemeAst(
             const propsKey = "props" in section ? "props" : "settings";
             const currentProps = (section as Record<string, unknown>)[propsKey];
             if (currentProps && typeof currentProps === "object") {
-              const migratedProps = migrateSectionSettings(def, currentProps);
+              const migratedProps = migrateSectionSettings(
+                def,
+                currentProps as Record<string, unknown>,
+              );
               (section as Record<string, unknown>)[propsKey] = migratedProps;
               migratedCount++;
             }
@@ -504,7 +588,167 @@ export function migrateThemeAst(
     }
   }
 
+  if (Array.isArray(cloned.sections)) {
+    migrateSectionList(cloned.sections);
+  }
+  for (const slot of ["header", "main", "footer"] as const) {
+    if (Array.isArray(cloned[slot])) {
+      migrateSectionList(cloned[slot] as unknown[]);
+    }
+  }
+  if (cloned.templates && typeof cloned.templates === "object") {
+    for (const tplVal of Object.values(
+      cloned.templates as Record<string, unknown>,
+    )) {
+      if (tplVal && typeof tplVal === "object") {
+        const tplObj = tplVal as Record<string, unknown>;
+        if (Array.isArray(tplObj.sections)) {
+          migrateSectionList(tplObj.sections);
+        }
+        for (const slot of ["header", "main", "footer"] as const) {
+          if (Array.isArray(tplObj[slot])) {
+            migrateSectionList(tplObj[slot] as unknown[]);
+          }
+        }
+      }
+    }
+  }
+
   return { ast: cloned, migratedCount };
+}
+
+/**
+ * Validates a full Theme AST against a ThemeManifest's section controls and constraints.
+ */
+export function validateThemeAst(
+  ast: unknown,
+  manifest: ThemeManifest,
+): { valid: boolean; errors: string[] } {
+  if (!ast || typeof ast !== "object") {
+    return { valid: false, errors: ["AST must be a valid non-null object"] };
+  }
+
+  const errors: string[] = [];
+  const sectionMap = new Map<string, ThemeSectionDefinition>();
+  for (const def of manifest.sections) {
+    sectionMap.set(def.id, def);
+  }
+
+  function validateSectionList(sectionsList: unknown[], context: string): void {
+    for (let i = 0; i < sectionsList.length; i++) {
+      const section = sectionsList[i];
+      if (!section || typeof section !== "object") {
+        errors.push(`${context}[${i}]: Section is not an object`);
+        continue;
+      }
+      const type = (section as { type?: unknown }).type;
+      if (typeof type !== "string" || !type) {
+        errors.push(`${context}[${i}]: Section is missing a valid type string`);
+        continue;
+      }
+      const def = sectionMap.get(type);
+      if (def) {
+        const propsKey = "props" in section ? "props" : "settings";
+        const currentProps = ((section as Record<string, unknown>)[propsKey] ??
+          {}) as Record<string, unknown>;
+        const sectionRes = validateSectionSettings(def, currentProps);
+        if (!sectionRes.success) {
+          for (const err of sectionRes.errors) {
+            errors.push(`${context}[${i}] (${type}): ${err}`);
+          }
+        }
+      }
+    }
+  }
+
+  const obj = ast as Record<string, unknown>;
+  if (Array.isArray(obj.sections)) {
+    validateSectionList(obj.sections, "sections");
+  }
+  for (const slot of ["header", "main", "footer"] as const) {
+    if (Array.isArray(obj[slot])) {
+      validateSectionList(obj[slot] as unknown[], slot);
+    }
+  }
+  if (obj.templates && typeof obj.templates === "object") {
+    for (const [tplKey, tplVal] of Object.entries(
+      obj.templates as Record<string, unknown>,
+    )) {
+      if (tplVal && typeof tplVal === "object") {
+        const tplObj = tplVal as Record<string, unknown>;
+        if (Array.isArray(tplObj.sections)) {
+          validateSectionList(tplObj.sections, `templates.${tplKey}.sections`);
+        }
+        for (const slot of ["header", "main", "footer"] as const) {
+          if (Array.isArray(tplObj[slot])) {
+            validateSectionList(
+              tplObj[slot] as unknown[],
+              `templates.${tplKey}.${slot}`,
+            );
+          }
+        }
+      }
+    }
+  }
+
+  return { valid: errors.length === 0, errors };
+}
+
+/**
+ * Authoritative 7-step document / configuration loader:
+ * (1) Load persisted raw doc
+ * (2) Identify/validate schema version
+ * (3) Reject unsupported future versions without modifying saved data
+ * (4) Apply known migrations sequentially
+ * (5) Validate migrated config
+ * (6) Parse and normalize resulting AST
+ * (7) Return result for rendering
+ */
+export function loadAuthoritativeThemeAst(
+  rawDoc: unknown,
+  manifest: ThemeManifest,
+  parseAstFn: (raw: unknown) => unknown,
+):
+  | { success: true; ast: unknown; migratedCount: number }
+  | { success: false; error: string; errors?: string[] } {
+  if (!rawDoc || typeof rawDoc !== "object") {
+    return { success: false, error: "Theme document is empty or malformed" };
+  }
+
+  const docObj = rawDoc as Record<string, unknown>;
+  const rawVersion =
+    typeof docObj.schemaVersion === "string" ? docObj.schemaVersion : "0.0.0";
+  if (compareSemver(rawVersion, THEME_CONTRACT_VERSION) > 0) {
+    return {
+      success: false,
+      error: `Unsupported future schema version '${rawVersion}'; current supported version is '${THEME_CONTRACT_VERSION}'`,
+    };
+  }
+
+  let migratedAst: unknown;
+  let migratedCount = 0;
+  try {
+    const res = migrateThemeAst(rawDoc, manifest);
+    migratedAst = res.ast;
+    migratedCount = res.migratedCount;
+  } catch (err: unknown) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : String(err),
+    };
+  }
+
+  const validation = validateThemeAst(migratedAst, manifest);
+  if (!validation.valid) {
+    return {
+      success: false,
+      error: `Theme AST validation failed with ${validation.errors.length} error(s)`,
+      errors: validation.errors,
+    };
+  }
+
+  const parsedAst = parseAstFn(migratedAst);
+  return { success: true, ast: parsedAst, migratedCount };
 }
 
 export function validateThemeCompatibility(manifest: ThemeManifest): {
@@ -517,7 +761,9 @@ export function validateThemeCompatibility(manifest: ThemeManifest): {
   const required = ["320", "768", "1440"];
   for (const vp of required) {
     if (!manifest.responsiveViewports.includes(vp)) {
-      issues.push(`Theme manifest missing required responsive viewport: ${vp}px`);
+      issues.push(
+        `Theme manifest missing required responsive viewport: ${vp}px`,
+      );
     }
   }
 

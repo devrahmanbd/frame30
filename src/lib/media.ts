@@ -5,7 +5,28 @@
  * `${key}_alt` (bilingual alt text) and `${key}_sizes` (a layout preset), so
  * the AST shape, autosave, versioning and the sanitiser stay unchanged.
  */
+import { z } from "zod";
 import { isAllowedSource } from "./image-transform";
+
+export const StructuredMediaValueSchema = z.object({
+  url: z.string().min(1, "Media URL is required"),
+  alt: z.string().optional(),
+  width: z.number().positive().optional(),
+  height: z.number().positive().optional(),
+  focalPoint: z
+    .object({
+      x: z.number().min(0).max(100),
+      y: z.number().min(0).max(100),
+    })
+    .optional(),
+});
+export type StructuredMediaValue = z.infer<typeof StructuredMediaValueSchema>;
+
+export const MediaValueSchema = z.union([
+  z.string(),
+  StructuredMediaValueSchema,
+]);
+export type MediaValue = z.infer<typeof MediaValueSchema>;
 
 export type SizesPreset = "full" | "half" | "third" | "thumb";
 

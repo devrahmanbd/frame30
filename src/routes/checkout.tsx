@@ -105,8 +105,7 @@ export const Route = createFileRoute("/checkout")({
       { title: "Checkout — secure order placement" },
       {
         name: "description",
-        content:
-          "Review your cart and place your order with cash on delivery or mobile payment.",
+        content: "Review your cart and proceed to checkout.",
       },
       { property: "og:title", content: "Checkout" },
       {

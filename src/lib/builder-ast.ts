@@ -10,7 +10,14 @@
  * are the server-side shape guards, and an unknown or malformed widget is kept
  * as a placeholder instead of breaking the whole page render.
  */
-import { SIZES_LABEL, SIZES_PRESETS, altKey, sizesKey } from "./media";
+import {
+  SIZES_LABEL,
+  SIZES_PRESETS,
+  altKey,
+  sizesKey,
+  StructuredMediaValueSchema,
+  type StructuredMediaValue,
+} from "./media";
 import { ADVANCED_FIELDS } from "./builder-advanced";
 import { biTextState, bnKey, readBiText, type Locale } from "./bitext";
 import { isTaxonomyValue, type TaxonomySource } from "./taxonomy";
@@ -408,7 +415,7 @@ export type SectionType =
   // id/handle at render-data time (never stored inline, never migrated).
   | "global_ref";
 
-export type PropScalar = string | number | boolean;
+export type PropScalar = string | number | boolean | StructuredMediaValue;
 /** A repeatable row (Phase 3.2 `array` fields). Always JSON-safe. */
 export type PropRow = Record<string, PropScalar>;
 export type PropValue = PropScalar | PropRow[];
@@ -7757,7 +7764,18 @@ function coerceRow(schema: Field[], value: unknown): PropRow | null {
   for (const sub of schema) {
     if (sub.kind === "array" || sub.kind === "group") continue;
     const coerced = coerceProp(sub, source[sub.key]);
-    if (coerced === null || Array.isArray(coerced)) continue;
+    if (coerced === null || Array.isArray(coerced)) {
+      if (
+        sub.kind === "image" &&
+        source[sub.key] &&
+        typeof source[sub.key] === "object" &&
+        !Array.isArray(source[sub.key])
+      ) {
+        // Retain malformed structured media for validation rather than dropping silently
+        row[sub.key] = source[sub.key] as PropScalar;
+      }
+      continue;
+    }
     row[sub.key] = coerced;
     if (sub.kind === "bitext") {
       const bn = coerceProp(
@@ -7770,7 +7788,7 @@ function coerceRow(schema: Field[], value: unknown): PropRow | null {
   return row;
 }
 
-function coerceProp(field: Field, value: unknown): PropValue | null {
+export function coerceProp(field: Field, value: unknown): PropValue | null {
   if (field.kind === "array") {
     if (!Array.isArray(value)) return null;
     const schema = field.fields ?? field.children ?? [];
@@ -7797,9 +7815,28 @@ function coerceProp(field: Field, value: unknown): PropValue | null {
       : clampNumber(field, n);
   }
   if (field.kind === "boolean") return value === true || value === "true";
+  if (field.kind === "image") {
+    if (typeof value === "string") {
+      const trimmed = value.trim().slice(0, field.max ?? 500);
+      if (trimmed === "") return "";
+      if (SAFE_HREF.test(trimmed)) return trimmed;
+      sanitiserRejects += 1;
+      return null;
+    }
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      const parsed = StructuredMediaValueSchema.safeParse(value);
+      if (!parsed.success) return null;
+      if (!SAFE_HREF.test(parsed.data.url)) {
+        sanitiserRejects += 1;
+        return null;
+      }
+      return parsed.data;
+    }
+    return null;
+  }
   if (typeof value !== "string") return null;
   if (field.kind === "embed") return safeEmbedUrl(value);
-  if (field.kind === "url" || field.kind === "image") {
+  if (field.kind === "url") {
     const trimmed = value.trim().slice(0, field.max ?? 500);
     if (trimmed === "") return "";
     if (SAFE_HREF.test(trimmed)) return trimmed;
@@ -7994,7 +8031,12 @@ function parseSection(node: unknown, ctx: ParseCtx): Section | null {
     const coerced = coerceProp(field, value);
     props[field.key] =
       coerced === null
-        ? (entry.defaults[field.key] ?? (field.kind === "array" ? [] : ""))
+        ? field.kind === "image" &&
+          value &&
+          typeof value === "object" &&
+          !Array.isArray(value)
+          ? (value as StructuredMediaValue)
+          : (entry.defaults[field.key] ?? (field.kind === "array" ? [] : ""))
         : coerced;
     // Phase 1.1: the বাংলা sibling rides along, sanitised by the same rules.
     if (field.kind === "bitext") {
@@ -8966,6 +9008,32 @@ export function lintTemplate(
           sectionId: section.id,
           message: `${label}: no বাংলা translation — English will be shown.`,
         });
+      }
+    }
+
+    // Phase 3.3: Structured media validation — ensure image props are not malformed
+    const catFields = CATALOG.get(section.type)?.fields;
+    if (catFields) {
+      for (const field of flattenFields(catFields)) {
+        if (field.kind === "image") {
+          const val = section.props[field.key];
+          if (val && typeof val === "object" && !Array.isArray(val)) {
+            const parsed = StructuredMediaValueSchema.safeParse(val);
+            if (!parsed.success) {
+              issues.push({
+                level: "error",
+                sectionId: section.id,
+                message: `${field.label || field.key}: Invalid structured media value (${parsed.error.errors.map((e) => e.message).join(", ")}).`,
+              });
+            } else if (!SAFE_HREF.test(parsed.data.url)) {
+              issues.push({
+                level: "error",
+                sectionId: section.id,
+                message: `${field.label || field.key}: Unsafe image URL in structured media.`,
+              });
+            }
+          }
+        }
       }
     }
   }
