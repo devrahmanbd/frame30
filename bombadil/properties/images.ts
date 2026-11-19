@@ -1,4 +1,5 @@
 import { always, extract } from "@antithesishq/bombadil";
+import { registerCustomAction } from "@antithesishq/bombadil/browser";
 import type { State } from "@antithesishq/bombadil/browser";
 
 export interface ImageFailureRecord {
@@ -8,48 +9,146 @@ export interface ImageFailureRecord {
     | "invalid-src"
     | "incomplete-loading"
     | "zero-natural-dimensions"
-    | "product-container-missing-img";
+    | "product-container-missing-img"
+    | "hero-container-missing-img"
+    | "gallery-container-missing-img"
+    | "missing-document-state"
+    | "decode-failed";
   selector?: string;
 }
+
+/**
+ * Custom browser action that explicitly awaits decode() on all completed images in the DOM,
+ * setting data-decoded or data-decode-error attributes to verify decoding completed without stalls.
+ */
+export const await_image_decodes = registerCustomAction(
+  "await_image_decodes",
+  async (document: Document, _window: Window) => {
+    const images = Array.from(document.querySelectorAll("img"));
+    await Promise.allSettled(
+      images.map(async (img) => {
+        if (img.complete && typeof img.decode === "function") {
+          try {
+            await img.decode();
+            img.setAttribute("data-decoded", "true");
+          } catch (err: any) {
+            img.setAttribute(
+              "data-decode-error",
+              err?.message || "decode-failure"
+            );
+          }
+        }
+      })
+    );
+  }
+);
 
 /**
  * Extracts comprehensive image load, decode, dimension, and DOM presence integrity across DOM states.
  *
  * Invariants:
- *  1. Expected product images exist (cards, heroes, galleries must not have empty image slots).
+ *  1. Expected product and hero images exist (homepage hero, collection cards, PDP gallery).
  *  2. Every image has a valid, non-empty, non-corrupt src attribute.
  *  3. Every image finishes loading (complete === true).
- *  4. Every image decodes successfully with naturalWidth > 0 and naturalHeight > 0.
+ *  4. Every image decodes successfully via explicit img.decode() check and positive natural dimensions.
  *  5. Lazy-loaded images that enter or approach viewport trigger loading without stalls.
  *  6. Any failed image URLs and specific failure reasons are captured directly for trace reporting.
+ *  7. Missing document state fails closed.
  */
 const imageInspection = extract((state: State) => {
   const doc = state.document;
   if (!doc) {
     return {
       totalImages: 0,
-      brokenCount: 0,
-      failedUrls: [] as string[],
-      failureDetails: [] as ImageFailureRecord[],
+      brokenCount: 1,
+      failedUrls: ["<document-missing> [missing-document-state]"],
+      failureDetails: [
+        {
+          url: "<document-missing>",
+          reason: "missing-document-state" as const,
+          selector: "document",
+        },
+      ],
     };
   }
 
   const failures: ImageFailureRecord[] = [];
 
-  // 1. Verify expected images in product containers (cards, hero, gallery)
-  const productContainers = Array.from(
-    doc.querySelectorAll(
-      "[data-product-card], [data-testid='product-card'], article.product-card, .product-card, [data-hero-image], [data-gallery-image]"
-    )
-  );
+  // Determine current page route to apply page-type specific container requirements
+  const currentUrl =
+    state.navigationHistory?.current?.url ||
+    state.window?.location?.href ||
+    "";
+  let pathname = "";
+  try {
+    pathname = new URL(currentUrl, "http://127.0.0.1:3000").pathname.toLowerCase();
+  } catch {
+    pathname = (state.window?.location?.pathname || "").toLowerCase();
+  }
 
-  for (const container of productContainers) {
-    const containedImg = container.querySelector("img");
-    if (!containedImg) {
+  // 1. Page-type specific required containers
+  if (pathname === "/" || pathname === "" || pathname === "/index.html") {
+    // Homepage must contain hero image and valid hero visual
+    const heroImage = doc.querySelector(
+      "[data-hero-image] img, [data-hero-image], [data-testid='hero-image'] img, [data-testid='hero-image'], section[aria-label*='hero' i] img, .hero-section img, .hero-visual img, img[alt='Dashboard'], .fq-halo ~ img, .fq-halo + img"
+    );
+    if (!heroImage) {
       failures.push({
-        url: `<container:${container.tagName.toLowerCase()}.${container.className || "unnamed"}>`,
-        reason: "product-container-missing-img",
-        selector: container.getAttribute("data-testid") || container.className || container.tagName,
+        url: "<missing-hero-image>",
+        reason: "hero-container-missing-img",
+        selector: "hero-container",
+      });
+    }
+  } else if (
+    pathname.startsWith("/c/") ||
+    pathname.includes("/collections/") ||
+    pathname.includes("/c/")
+  ) {
+    // Collections page must have product cards with images
+    const productContainers = Array.from(
+      doc.querySelectorAll(
+        "[data-product-card], [data-testid='product-card'], article.product-card, .product-card, li:has(a[href*='/p/'])"
+      )
+    );
+    for (const container of productContainers) {
+      const containedImg = container.querySelector("img");
+      if (!containedImg) {
+        failures.push({
+          url: `<container:${container.tagName.toLowerCase()}.${container.className || "unnamed"}>`,
+          reason: "product-container-missing-img",
+          selector:
+            container.getAttribute("data-testid") ||
+            container.className ||
+            container.tagName,
+        });
+      }
+    }
+  } else if (
+    pathname.startsWith("/p/") ||
+    pathname.includes("/products/") ||
+    pathname.includes("/p/")
+  ) {
+    // PDP must have product gallery image
+    const galleryContainer = doc.querySelector(
+      "[data-gallery-image], [data-hero-image], .product-gallery, div[class*='aspect-'][class*='sticky'], main img"
+    );
+    if (!galleryContainer) {
+      failures.push({
+        url: "<missing-gallery-container>",
+        reason: "gallery-container-missing-img",
+        selector: "gallery-container",
+      });
+    } else if (
+      galleryContainer.tagName.toLowerCase() !== "img" &&
+      !galleryContainer.querySelector("img")
+    ) {
+      failures.push({
+        url: `<container:${galleryContainer.tagName.toLowerCase()}.${galleryContainer.className || "gallery"}>`,
+        reason: "gallery-container-missing-img",
+        selector:
+          galleryContainer.getAttribute("data-testid") ||
+          galleryContainer.className ||
+          galleryContainer.tagName,
       });
     }
   }
@@ -75,7 +174,9 @@ const imageInspection = extract((state: State) => {
     if (
       effectiveSrc.includes("undefined") ||
       effectiveSrc.includes("null") ||
-      (!effectiveSrc.startsWith("data:image/svg+xml") && effectiveSrc.length < 5)
+      (!effectiveSrc.startsWith("data:image/") &&
+        !effectiveSrc.startsWith("blob:") &&
+        effectiveSrc.length < 5)
     ) {
       failures.push({
         url: effectiveSrc,
@@ -85,12 +186,23 @@ const imageInspection = extract((state: State) => {
       continue;
     }
 
+    // Explicit image decode check
+    const decodeError = img.getAttribute("data-decode-error");
+    if (decodeError) {
+      failures.push({
+        url: effectiveSrc,
+        reason: "decode-failed",
+        selector: `${img.className || img.alt || "img"} [${decodeError}]`,
+      });
+      continue;
+    }
+
     const isLazy = img.getAttribute("loading") === "lazy";
     const win = state.window;
 
     // Incomplete loading and natural dimension verification
     if (img.complete) {
-      // Completed image MUST have valid positive natural dimensions (proves decode completed and not broken 404)
+      // Completed image MUST have valid positive natural dimensions
       if (img.naturalWidth <= 0 || img.naturalHeight <= 0) {
         failures.push({
           url: effectiveSrc,
@@ -148,9 +260,11 @@ const imageInspection = extract((state: State) => {
   }
 
   if (failures.length > 0) {
-    // Log failed URLs and reasons to stderr/stdout so they are preserved in Bombadil trace output
+    // Log failed URLs and reasons so they appear in trace output
     for (const f of failures) {
-      console.error(`[bombadil:image-failure] Failed image: ${f.url} (reason: ${f.reason}, selector: ${f.selector || "unknown"})`);
+      console.error(
+        `[bombadil:image-failure] Failed image: ${f.url} (reason: ${f.reason}, selector: ${f.selector || "unknown"})`
+      );
     }
   }
 

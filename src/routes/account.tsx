@@ -2,7 +2,7 @@ import {
   getStoreChrome,
   resolveStorefrontHostFn,
 } from "@/lib/storefront.functions";
-import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, notFound, redirect, useNavigate } from "@tanstack/react-router";
 import { useCallback, useMemo, useState, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -61,7 +61,22 @@ export const Route = createFileRoute("/account")({
     } catch {
       host = null;
     }
-    if (!host) throw notFound();
+    if (!host) {
+      // No merchant on this host (platform domain): render the theme demo
+      // instead of a dead end. Demo data, blocked actions, noindex.
+      const { defaultPreviewKey } = await import("@/lib/preview-sources");
+      throw redirect({
+        to: "/theme-preview/$key",
+        params: { key: defaultPreviewKey() },
+        search: {
+          template: "account",
+          focus: undefined,
+          q: undefined,
+          max: undefined,
+        },
+        replace: true,
+      });
+    }
     const slug = host.merchantSlug;
     const chrome = await getStoreChrome({
       data: { slug, template: "account" },

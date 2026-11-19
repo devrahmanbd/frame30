@@ -3,6 +3,14 @@
 (* Formal TLA+ specification of Frame30's stock hold, checkout order      *)
 (* lifecycle, payment capture, and refund lifecycle settlement engine.     *)
 (*                                                                         *)
+(* Model features:                                                         *)
+(*  - Physical inventory units (qty, availableStock, holds) separated from *)
+(*    monetary amounts in explicit integer minor units (orderTotalMinor,   *)
+(*    capturedAmountMinor, refundedAmountMinor).                           *)
+(*  - Payment captures use modeled order totals, never physical quantity.  *)
+(*  - Refund engine models cumulative partial and full refunds up to the   *)
+(*    captured amount, with explicit failure states.                       *)
+(*                                                                         *)
 (* Proves that under arbitrary concurrency, hold expiration, duplicate     *)
 (* deliveries, distinct event IDs for the same payment, cancelled order    *)
 (* race conditions, and duplicate fulfillment attempts:                   *)
@@ -10,7 +18,8 @@
 (*  2. Total physical units are conserved (InventoryConservation)          *)
 (*  3. Refund requires prior successful capture (RefundRequiresCapture)    *)
 (*  4. Failed payments cannot be refunded (NoRefundOnFailedPayment)        *)
-(*  5. Refund amounts never exceed captured amounts (RefundAmountBounded)  *)
+(*  5. Cumulative refunds never exceed captured amounts                    *)
+(*     (RefundAmountBoundedByCapture)                                      *)
 (*  6. Refund failures are represented explicitly (ExplicitRefundFailure)  *)
 (*  7. Duplicate captures & refunds are idempotent                         *)
 (*  8. Paid orders are strictly backed by captured settlements             *)
@@ -25,12 +34,15 @@ CONSTANTS
     EventIds,       \* Set of webhook event IDs, e.g. {evt1, evt2, evt3}
     PaymentRefs     \* Set of payment gateway transaction IDs, e.g. {pay1, pay2}
 
+ItemPriceMinor == 1000
+MaxOrderTotalMinor == MaxStock * ItemPriceMinor
+
 VARIABLES
-    availableStock,     \* Integer: 0..MaxStock
-    holds,              \* Function: Shoppers -> 0..MaxStock
-    orders,             \* Set of [id: OrderIds, shopper: Shoppers, qty: 1..MaxStock, status: Statuses]
+    availableStock,     \* Integer: 0..MaxStock (physical units)
+    holds,              \* Function: Shoppers -> 0..MaxStock (physical units)
+    orders,             \* Set of [id, shopper, qty, orderTotalMinor, status]
     processedEvents,    \* Set of EventIds already delivered/processed
-    settlements         \* Set of [paymentRef, ordId, capturedAmount, refundedAmount, paymentStatus, refundStatus]
+    settlements         \* Set of [paymentRef, ordId, capturedAmountMinor, refundedAmountMinor, paymentStatus, refundStatus]
 
 vars == <<availableStock, holds, orders, processedEvents, settlements>>
 
@@ -47,12 +59,13 @@ TypeOK ==
         /\ o.id \in OrderIds
         /\ o.shopper \in Shoppers
         /\ o.qty \in 1..MaxStock
+        /\ o.orderTotalMinor \in 1000..MaxOrderTotalMinor
         /\ o.status \in Statuses
     /\ \A s \in settlements :
         /\ s.paymentRef \in PaymentRefs
         /\ s.ordId \in OrderIds
-        /\ s.capturedAmount \in 0..MaxStock
-        /\ s.refundedAmount \in 0..MaxStock
+        /\ s.capturedAmountMinor \in 0..MaxOrderTotalMinor
+        /\ s.refundedAmountMinor \in 0..MaxOrderTotalMinor
         /\ s.paymentStatus \in PaymentStatuses
         /\ s.refundStatus \in RefundStatuses
 
@@ -65,7 +78,7 @@ Init ==
     /\ settlements = {}
 
 -----------------------------------------------------------------------------
-(* Helper: Calculate total active units held or ordered *)
+(* Helper: Calculate total active physical units held or ordered *)
 SumHeld ==
     LET SumFn[S \in SUBSET Shoppers] ==
         IF S = {} THEN 0
@@ -104,7 +117,13 @@ PlaceOrder(s, ordId) ==
     /\ holds[s] > 0
     /\ ~ \E o \in orders : o.id = ordId
     /\ ~ \E o \in orders : o.shopper = s /\ o.status \in {"Pending", "Paid"}
-    /\ orders' = orders \cup {[id |-> ordId, shopper |-> s, qty |-> holds[s], status |-> "Pending"]}
+    /\ orders' = orders \cup {[
+         id |-> ordId,
+         shopper |-> s,
+         qty |-> holds[s],
+         orderTotalMinor |-> holds[s] * ItemPriceMinor,
+         status |-> "Pending"
+       ]}
     /\ holds' = [holds EXCEPT ![s] = 0]
     /\ UNCHANGED <<availableStock, processedEvents, settlements>>
 
@@ -117,7 +136,7 @@ CancelPendingOrder(ordId) ==
           /\ orders' = (orders \ {target}) \cup {[target EXCEPT !.status = "Cancelled"]}
     /\ UNCHANGED <<holds, processedEvents, settlements>>
 
-(* Payment gateway capture event *)
+(* Payment gateway capture event: captures modeled order total minor units, not physical quantity *)
 ProcessPaymentCapture(eventId, payRef, ordId, isSuccess) ==
     IF eventId \in processedEvents
     THEN \* Idempotent replay of already-processed event
@@ -134,8 +153,8 @@ ProcessPaymentCapture(eventId, payRef, ordId, isSuccess) ==
                               /\ settlements' = settlements \cup {[
                                    paymentRef |-> payRef,
                                    ordId |-> ordId,
-                                   capturedAmount |-> target.qty,
-                                   refundedAmount |-> 0,
+                                   capturedAmountMinor |-> target.orderTotalMinor,
+                                   refundedAmountMinor |-> 0,
                                    paymentStatus |-> "Captured",
                                    refundStatus |-> "None"
                                  ]}
@@ -143,8 +162,8 @@ ProcessPaymentCapture(eventId, payRef, ordId, isSuccess) ==
                          ELSE /\ settlements' = settlements \cup {[
                                    paymentRef |-> payRef,
                                    ordId |-> ordId,
-                                   capturedAmount |-> 0,
-                                   refundedAmount |-> 0,
+                                   capturedAmountMinor |-> 0,
+                                   refundedAmountMinor |-> 0,
                                    paymentStatus |-> "Failed",
                                    refundStatus |-> "None"
                                  ]}
@@ -156,8 +175,8 @@ ProcessPaymentCapture(eventId, payRef, ordId, isSuccess) ==
                                    /\ settlements' = settlements \cup {[
                                         paymentRef |-> payRef,
                                         ordId |-> ordId,
-                                        capturedAmount |-> target.qty,
-                                        refundedAmount |-> 0,
+                                        capturedAmountMinor |-> target.orderTotalMinor,
+                                        refundedAmountMinor |-> 0,
                                         paymentStatus |-> "Captured",
                                         refundStatus |-> "None"
                                       ]}
@@ -165,16 +184,16 @@ ProcessPaymentCapture(eventId, payRef, ordId, isSuccess) ==
                               ELSE /\ settlements' = settlements \cup {[
                                         paymentRef |-> payRef,
                                         ordId |-> ordId,
-                                        capturedAmount |-> 0,
-                                        refundedAmount |-> 0,
+                                        capturedAmountMinor |-> 0,
+                                        refundedAmountMinor |-> 0,
                                         paymentStatus |-> "Failed",
                                         refundStatus |-> "None"
                                       ]}
                                    /\ UNCHANGED <<availableStock, holds, orders>>
                       ELSE UNCHANGED <<availableStock, holds, orders, settlements>>
 
-(* Gateway refund event with explicit capture check and failure state *)
-ProcessRefund(eventId, payRef, refundAmount, isRefundSuccess) ==
+(* Gateway refund event: supports cumulative partial and full refunds up to captured amount *)
+ProcessRefund(eventId, payRef, refundAmountMinor, isRefundSuccess) ==
     IF eventId \in processedEvents
     THEN \* Idempotent delivery of already-processed refund event
          UNCHANGED vars
@@ -184,20 +203,20 @@ ProcessRefund(eventId, payRef, refundAmount, isRefundSuccess) ==
             THEN \* No settlement exists for this payment reference: cannot refund!
                  UNCHANGED <<availableStock, holds, orders, settlements>>
             ELSE LET target == CHOOSE s \in settlements : s.paymentRef = payRef
-                 IN IF target.paymentStatus # "Captured" \/ target.capturedAmount = 0
+                 IN IF target.paymentStatus # "Captured" \/ target.capturedAmountMinor = 0
                     THEN \* Failed or uncaptured payments CANNOT be refunded!
                          UNCHANGED <<availableStock, holds, orders, settlements>>
-                    ELSE IF target.refundStatus = "Success"
-                    THEN \* Duplicate refund attempt for already refunded payment: idempotent no-op!
+                    ELSE IF target.refundedAmountMinor = target.capturedAmountMinor
+                    THEN \* Already fully refunded: idempotent no-op
                          UNCHANGED <<availableStock, holds, orders, settlements>>
-                    ELSE IF refundAmount <= 0 \/ refundAmount > target.capturedAmount
-                    THEN \* Refund amounts cannot exceed captured amounts!
+                    ELSE IF refundAmountMinor <= 0 \/ (target.refundedAmountMinor + refundAmountMinor > target.capturedAmountMinor)
+                    THEN \* Cumulative refund amounts cannot exceed captured amounts!
                          UNCHANGED <<availableStock, holds, orders, settlements>>
                     ELSE IF isRefundSuccess
-                         THEN \* Successful refund of captured funds
+                         THEN \* Successful cumulative partial or full refund of captured funds
                               /\ settlements' = (settlements \ {target}) \cup {[
                                    target EXCEPT
-                                     !.refundedAmount = refundAmount,
+                                     !.refundedAmountMinor = target.refundedAmountMinor + refundAmountMinor,
                                      !.refundStatus = "Success"
                                  ]}
                               /\ UNCHANGED <<availableStock, holds, orders>>
@@ -225,7 +244,7 @@ Next ==
     \/ \E ordId \in OrderIds : CancelPendingOrder(ordId)
     \/ \E e \in EventIds, p \in PaymentRefs, ordId \in OrderIds, succ \in {TRUE, FALSE} :
          ProcessPaymentCapture(e, p, ordId, succ)
-    \/ \E e \in EventIds, p \in PaymentRefs, amt \in 1..MaxStock, succ \in {TRUE, FALSE} :
+    \/ \E e \in EventIds, p \in PaymentRefs, amt \in {500, 1000, 2000}, succ \in {TRUE, FALSE} :
          ProcessRefund(e, p, amt, succ)
     \/ \E ordId \in OrderIds : FulfillOrder(ordId)
 
@@ -257,7 +276,7 @@ AtMostOneCapturePerPayment ==
     \A p \in PaymentRefs :
         Cardinality({s \in settlements : s.paymentRef = p /\ s.paymentStatus = "Captured"}) <= 1
 
-(* 6. Explicit Refund Idempotency: at most one successful refund per payment reference *)
+(* 6. Explicit Refund Idempotency: at most one settlement record per payment reference *)
 AtMostOneSuccessfulRefundPerPayment ==
     \A p \in PaymentRefs :
         Cardinality({s \in settlements : s.paymentRef = p /\ s.refundStatus = "Success"}) <= 1
@@ -271,22 +290,22 @@ OrderSettlementConsistency ==
 (* 8. Refund requires prior successful capture *)
 RefundRequiresCapture ==
     \A s \in settlements :
-        s.refundStatus = "Success" => (s.paymentStatus = "Captured" /\ s.capturedAmount > 0)
+        s.refundStatus = "Success" => (s.paymentStatus = "Captured" /\ s.capturedAmountMinor > 0)
 
 (* 9. Failed payments cannot be refunded *)
 NoRefundOnFailedPayment ==
     \A s \in settlements :
-        s.paymentStatus = "Failed" => (s.refundStatus = "None" /\ s.refundedAmount = 0)
+        s.paymentStatus = "Failed" => (s.refundStatus = "None" /\ s.refundedAmountMinor = 0)
 
-(* 10. Refund amounts cannot exceed captured amounts *)
+(* 10. Refund amounts cannot exceed captured amounts: 0 <= refundedAmountMinor <= capturedAmountMinor *)
 RefundAmountBoundedByCapture ==
     \A s \in settlements :
-        s.refundedAmount <= s.capturedAmount
+        0 <= s.refundedAmountMinor /\ s.refundedAmountMinor <= s.capturedAmountMinor
 
 (* 11. Explicit refund failure is represented in settlement state *)
 ExplicitRefundFailureRepresented ==
     \A s \in settlements :
-        s.refundStatus = "Failed" => (s.paymentStatus = "Captured" /\ s.refundedAmount = 0)
+        s.refundStatus = "Failed" => s.paymentStatus = "Captured"
 
 =============================================================================
 

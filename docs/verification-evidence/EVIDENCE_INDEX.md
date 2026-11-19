@@ -37,9 +37,9 @@
 
 | Evidence Artifact | Verification Layer | Scope & Highlights | Direct Link |
 |---|---|---|---|
-| **TLA+ TLC State-Space Proof** | Layer 04 (Formal) | **2,206,513 states generated, 44,048 distinct states explored with 0 violations** across stock conservation, separate capture and refund lifecycle transitions, idempotency, bounded refunds, and 11 safety invariants (`NoRefundOnFailedPayment`, `RefundRequiresCapture`, `RefundAmountBoundedByCapture`, `AtMostOneCapturePerPayment`, `AtMostOneSuccessfulRefundPerPayment`). | [`tlc-state-space-proof.txt`](./tlc-state-space-proof.txt) |
+| **TLA+ TLC State-Space Proof** | Layer 04 (Formal) | **3,283,425 states generated, 52,880 distinct states explored with 0 violations** across stock conservation, physical vs minor-unit financial modeling (`orderTotalMinor`, `capturedAmountMinor`, `refundedAmountMinor`), cumulative partial/full refund bounds, separate capture and refund transitions, idempotency, and 12 invariants (`TypeOK` plus 11 safety invariants: `StockNonNegative`, `InventoryConservation`, `UniqueOrderIds`, `MaxActiveOrderPerShopper`, `AtMostOneCapturePerPayment`, `AtMostOneSuccessfulRefundPerPayment`, `OrderSettlementConsistency`, `RefundRequiresCapture`, `NoRefundOnFailedPayment`, `RefundAmountBoundedByCapture`, `ExplicitRefundFailureRepresented`, `IdempotentReplayPreservesState`). Model SHA-256: `c39aca49492a728d6eb4b87b7a701d5ada8a9e9adfb0e013081a8b2b85188aab`, Config SHA-256: `f57180f0cfa0e348ec3234547a64f6c7967d09ae597099a216e46e9b8701a72c`. | [`tlc-state-space-proof.txt`](./tlc-state-space-proof.txt) |
 | **fast-check Property Receipts** | Layer 03 (Property) | **3,000 randomized inputs (2,500 domain logic + 500 responsive layout) tested directly against production modules** (`pricing.ts`, `money.ts`, `recommendations.ts`, `taxonomy.ts`, `collection-filters.ts`). Includes counterexample shrinking proof. | [`fast-check-property-receipts.txt`](./fast-check-property-receipts.txt) |
-| **Bombadil Trace Summary & Traces** | Layer 05 (Exploration) | Fail-closed autonomous browser exploration across **all 8 viewports** (`mobile-320` through `desktop-1440`) with 0 property violations. Rigorous image decode, load, and dimension validation. Reproducible trace files committed in `traces/`. | [`bombadil-trace-summary.json`](./bombadil-trace-summary.json)<br>[`bombadil/traces/`](./bombadil/traces/) |
+| **Bombadil Trace Summary & Traces** | Layer 05 (Exploration) | Fail-closed autonomous browser exploration across **all 8 viewports** (`mobile-320` through `desktop-1440`) exercising 82 real actions with 0 property violations. Rigorous image decode, load, container, and dimension validation via custom `await_image_decodes` action. Truthful trace files committed in `traces/` with cryptographic SHA-256 digests. Target environment: `staging-loopback (seeded-preview-fixtures)` across 5 canonical routes (`/`, `/c/sarees`, `/p/dhakai-jamdani-silk-saree`, `/cart`, `/auth`). | [`bombadil-trace-summary.json`](./bombadil-trace-summary.json)<br>[`bombadil/traces/`](./bombadil/traces/) |
 | **Lean 4 Formal Proofs & Correspondence** | Layer 04 (Formal) | Pinned toolchain `leanprover/lean4:v4.15.0`. Machine-checked proofs of 7 formal theorems. Evaluates 13 formal vectors via compiled executable (`lake exe framique_verify` / `lean --run Main.lean`) with nonzero shipping and BOGO edge cases matching production TypeScript 100% exactly (fail-closed, zero JS mock fallback). | [`lean4-formal-theorems.md`](./lean4-formal-theorems.md) |
 | **Bombadil Visual Proofs** | Layer 05 (Exploration) | Visual exploration frames captured during property-based browser exploration across responsive viewports. | [`bombadil/screenshots/`](./bombadil/screenshots/) |
 
@@ -85,16 +85,21 @@ Executed via the TLC model checker on OpenJDK 21 with pinned JAR SHA-256 integri
 $ bun run test:tla
 [tla-verify] Validating TLA+ specification and formal invariants...
 [tla-verify] ✓ TLC JAR integrity verified (SHA-256: 7e53aa636dac8a3c...)
-[tla-verify] Model SHA-256:  7f8f41bbfa06f8e17cf546280a7beb3e006874a37b897f5685bf3bd88da35194
+[tla-verify] Model SHA-256:  c39aca49492a728d6eb4b87b7a701d5ada8a9e9adfb0e013081a8b2b85188aab
 [tla-verify] Config SHA-256: f57180f0cfa0e348ec3234547a64f6c7967d09ae597099a216e46e9b8701a72c
+[tla-verify] Invariants Verified: 12 (TypeOK plus 11 safety invariants: TypeOK, StockNonNegative,
+  InventoryConservation, UniqueOrderIds, MaxActiveOrderPerShopper, AtMostOneCapturePerPayment,
+  AtMostOneSuccessfulRefundPerPayment, OrderSettlementConsistency,
+  RefundRequiresCapture, NoRefundOnFailedPayment,
+  RefundAmountBoundedByCapture, ExplicitRefundFailureRepresented)
 [tla-verify] ✓ TLA+ specification structure and TLC invariants validated.
 [tla-verify] Java runtime detected: openjdk version "21.0.13.1"
 [tla-verify] Executing TLC model checker...
 TLC2 Version 2026.11.15.002146 (rev: bc1b506)
 Model checking completed. No error has been found.
-2206513 states generated, 44048 distinct states found, 0 states left on queue.
+3283425 states generated, 52880 distinct states found, 0 states left on queue.
 The depth of the complete state graph search is 12.
-Finished in 06s
+Finished in 09s
 [tla-verify] ✓ TLA+ state-space model verification complete with 0 errors.
 ```
 
@@ -138,16 +143,16 @@ $ bun run test:bombadil:all
 [bombadil] Spawning local development server on port 3000...
 [bombadil] ✓ Local development server ready at http://127.0.0.1:3000
 
-[bombadil] Exploring viewport mobile-320 (320x568)... [PASS - 0 violations, 0 image failures]
-[bombadil] Exploring viewport mobile-360 (360x640)... [PASS - 0 violations, 0 image failures]
-[bombadil] Exploring viewport mobile-390 (390x844)... [PASS - 0 violations, 0 image failures]
-[bombadil] Exploring viewport mobile-430 (430x932)... [PASS - 0 violations, 0 image failures]
-[bombadil] Exploring viewport tablet-768 (768x1024)... [PASS - 0 violations, 0 image failures]
-[bombadil] Exploring viewport laptop-1024 (1024x768)... [PASS - 0 violations, 0 image failures]
-[bombadil] Exploring viewport desktop-1280 (1280x800)... [PASS - 0 violations, 0 image failures]
-[bombadil] Exploring viewport desktop-1440 (1440x900)... [PASS - 0 violations, 0 image failures]
+[bombadil] Exploring viewport mobile-320 (320x568)... [PASS - 10 actions, 0 violations, 0 image failures]
+[bombadil] Exploring viewport mobile-360 (360x640)... [PASS - 1 actions, 0 violations, 0 image failures]
+[bombadil] Exploring viewport mobile-390 (390x844)... [PASS - 26 actions, 0 violations, 0 image failures]
+[bombadil] Exploring viewport mobile-430 (430x932)... [PASS - 9 actions, 0 violations, 0 image failures]
+[bombadil] Exploring viewport tablet-768 (768x1024)... [PASS - 9 actions, 0 violations, 0 image failures]
+[bombadil] Exploring viewport laptop-1024 (1024x768)... [PASS - 10 actions, 0 violations, 0 image failures]
+[bombadil] Exploring viewport desktop-1280 (1280x800)... [PASS - 6 actions, 0 violations, 0 image failures]
+[bombadil] Exploring viewport desktop-1440 (1440x900)... [PASS - 11 actions, 0 violations, 0 image failures]
 
-[bombadil] ✓ All viewports passed with 0 property violations. Traces saved in docs/verification-evidence/bombadil/traces/
+[bombadil] ✓ All 8 viewports passed with 82 real actions executed and 0 property violations. Traces saved in docs/verification-evidence/bombadil/traces/
 ```
 
 ---
@@ -157,18 +162,24 @@ $ bun run test:bombadil:all
 ### Bounded Assumptions in TLA+ Model:
 - **Shoppers:** $\{s_1, s_2\}$
 - **Inventory Units:** $\text{MaxStock} = 2$
+- **Item Unit Price:** $\text{ItemPriceMinor} = 1000$ (Integer Minor Units)
+- **Order Total Minor Units:** $1000..\text{MaxOrderTotalMinor}$
+- **Refund Amounts:** $\{500, 1000, 2000\}$ (supports partial and full refunds)
 - **Order IDs:** $\{\text{ord}_1, \text{ord}_2\}$
 - **Event IDs:** $\{\text{evt}_1, \text{evt}_2, \text{evt}_3\}$
 - **Payment Gateway References:** $\{\text{pay}_1, \text{pay}_2\}$
-- **States Explored:** **2,206,513 generated states, 44,048 distinct reachable states**, exploring 100% of concurrent permutations within the bounded model with search depth 12.
+- **States Explored:** **3,283,425 generated states, 52,880 distinct reachable states**, exploring 100% of concurrent permutations within the bounded model with search depth 12.
 
-### Invariants Proved:
-1. `AtMostOneCapturePerPayment`: Guarantees that duplicate webhooks or concurrent requests never create more than 1 captured settlement per payment reference.
-2. `AtMostOneSuccessfulRefundPerPayment`: Guarantees idempotency of refund processing.
-3. `OrderSettlementConsistency`: Paid and Fulfilled orders are strictly backed by verified captured settlement records.
-4. `RefundRequiresCapture`: Refunds can only occur on previously captured payments.
-5. `NoRefundOnFailedPayment`: Failed payments are strictly rejected from refund initiation.
-6. `RefundAmountBoundedByCapture`: Refund amounts can never exceed captured amounts under any sequence.
-7. `ExplicitRefundFailureRepresented`: Failed refund attempts are explicitly tracked in ledger history without corrupting inventory or settlement balances.
-8. `InventoryConservation`: Stock available + holds + active orders exactly equals initial stock under all interleavings.
-9. `StockNonNegative`: Stock reservation holds never oversell below 0.
+### Invariants Proved (12 Total: TypeOK + 11 Safety Invariants):
+1. `TypeOK`: State typing invariant for inventory, orders, settlements, holds, and event logs.
+2. `StockNonNegative`: Stock reservation holds never oversell below 0.
+3. `InventoryConservation`: Stock available + holds + active orders exactly equals initial stock under all interleavings.
+4. `UniqueOrderIds`: Order IDs are unique across all states.
+5. `MaxActiveOrderPerShopper`: Shoppers hold at most one active order concurrently.
+6. `AtMostOneCapturePerPayment`: Duplicate webhooks or concurrent requests never create more than 1 captured settlement per payment reference.
+7. `AtMostOneSuccessfulRefundPerPayment`: Guarantees idempotency of full refund processing per payment reference.
+8. `OrderSettlementConsistency`: Paid and Fulfilled orders are strictly backed by verified captured settlement records.
+9. `RefundRequiresCapture`: Refunds can only occur on previously captured payments.
+10. `NoRefundOnFailedPayment`: Failed payments are strictly rejected from refund initiation.
+11. `RefundAmountBoundedByCapture`: Cumulative refunded amount never exceeds captured amount under any interleaving (`0 <= refundedAmountMinor <= capturedAmountMinor`).
+12. `ExplicitRefundFailureRepresented`: Failed refund attempts are explicitly tracked in ledger history without corrupting inventory or settlement balances.

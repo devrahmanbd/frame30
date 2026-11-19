@@ -15,3 +15,5 @@ ops/backup/rehearsals.jsonl
 harness/traces/
 artifacts/
 .lake/
+downloads/
+*.crdownload

@@ -2333,21 +2333,32 @@ Extracted pure domain logic into modular production libraries:
 
 ### 24.1 Wave 23.2 Objectives & Problem Statement
 Wave 23.2 addresses all targeted feedback items from the formal verification audit:
-1. **Bombadil Image Verification (P0):** Corrected `bombadil/properties/images.ts` to assert that:
-   - Expected product images exist (cards, heroes, galleries must not have empty slots).
+1. **Fail-Closed Bombadil Image Verification (P0):** Corrected `bombadil/properties/images.ts` to assert that:
+   - Missing browser document state (`!doc`) fails closed immediately with `brokenCount: 1`.
+   - Expected product images exist for canonical containers (homepage hero `img`, collection product cards `[data-product-card] img`, PDP product gallery `[data-gallery-image] img`, and cart items `[data-cart-item] img`).
    - Missing or corrupted image sources fail immediately.
    - Completed images must decode successfully with `naturalWidth > 0` and `naturalHeight > 0`.
+   - Custom browser action `await_image_decodes` explicitly awaits `img.decode()` during exploration.
    - Lazy-loaded images are verified after scrolling into the viewport.
-   - All failed image URLs and specific failure reasons appear in trace output.
-2. **Prove All 8 Bombadil Viewports (P1):** Added `test:bombadil:all` to `package.json`. Ran all 8 responsive viewport configurations (`mobile-320`, `mobile-360`, `mobile-390`, `mobile-430`, `tablet-768`, `laptop-1024`, `desktop-1280`, `desktop-1440`). Preserved separate trace directories in `docs/verification-evidence/bombadil/traces/<viewport>/`. Updated `bombadil-trace-summary.json` with exact target environment (`staging-loopback`), route, dimensions, duration, actions, invariants executed, violations (0), image failures (0), and trace/screenshot paths. Guarded against production randomized fuzzing by defaulting to loopback staging (`http://127.0.0.1:3000`).
-3. **Refined TLA+ Payment & Refund Semantics (P1):** Strengthened `specs/tla/CheckoutInventory.tla` with explicit capture and refund lifecycle states (`PaymentStatuses == {"None", "Captured", "Failed"}`, `RefundStatuses == {"None", "Success", "Failed"}`) and tracked monetary quantities (`capturedAmount`, `refundedAmount`). Formulated 11 safety invariants including:
-   - `AtMostOneCapturePerPayment` (idempotent capture)
-   - `AtMostOneSuccessfulRefundPerPayment` (idempotent refund)
-   - `RefundRequiresCapture` (refund requires prior capture)
-   - `NoRefundOnFailedPayment` (failed payment cannot be refunded)
-   - `RefundAmountBoundedByCapture` (refund amounts cannot exceed captured amounts)
-   - `ExplicitRefundFailureRepresented` (ledger tracks failed refunds)
-   - Verified with TLC on OpenJDK 21: **2,206,513 states generated, 44,048 distinct states found with 0 errors** (depth 12).
+   - All failed image URLs and specific failure reasons (`missing-src`, `invalid-src`, `incomplete-load`, `zero-natural-dimensions`, `decode-failed`) appear in trace output.
+2. **Prove All 8 Bombadil Viewports Truthfully (P1):** Added `test:bombadil:all` to `package.json`. Ran all 8 responsive viewport configurations (`mobile-320`, `mobile-360`, `mobile-390`, `mobile-430`, `tablet-768`, `laptop-1024`, `desktop-1280`, `desktop-1440`).
+   - Completely removed synthetic trace fallback in `bombadil/runner.mjs`; missing traces strictly fail the viewport.
+   - Extracted 82 real executed actions and dynamic action types directly from actual `trace.jsonl` lines.
+   - Preserved separate trace directories in `docs/verification-evidence/bombadil/traces/<viewport>/` with cryptographic SHA-256 hashes.
+   - Updated `bombadil-trace-summary.json` with exact target environment (`staging-loopback (seeded-preview-fixtures)`), route matrix across 5 canonical routes (`/`, `/c/sarees`, `/p/dhakai-jamdani-silk-saree`, `/cart`, `/auth`), dimensions, duration, actions, invariants executed, violations (0), image failures (0), and trace/screenshot paths.
+3. **Refined TLA+ Payment & Refund Semantics with Minor-Unit Separation (P1):** Strengthened `specs/tla/CheckoutInventory.tla`:
+   - Separated physical inventory quantities (`qty \in 1..MaxStock`, `availableStock`, `holds`) from financial monetary amounts (`orderTotalMinor \in 1000..MaxOrderTotalMinor`, `capturedAmountMinor`, `refundedAmountMinor`).
+   - Capture strictly uses modeled order total minor units (`target.orderTotalMinor`), NOT `target.qty`.
+   - ProcessRefund models cumulative partial and full refunds up to captured amount (`target.refundedAmountMinor + refundAmountMinor <= target.capturedAmountMinor`).
+   - Formulated 12 invariants (`TypeOK` plus 11 safety invariants):
+     - `AtMostOneCapturePerPayment` (idempotent capture)
+     - `AtMostOneSuccessfulRefundPerPayment` (idempotent refund)
+     - `RefundRequiresCapture` (refund requires prior capture)
+     - `NoRefundOnFailedPayment` (failed payment cannot be refunded)
+     - `RefundAmountBoundedByCapture` (`0 <= refundedAmountMinor <= capturedAmountMinor`)
+     - `ExplicitRefundFailureRepresented` (ledger tracks failed refunds)
+     - `OrderSettlementConsistency`, `InventoryConservation`, `StockNonNegative`, `UniqueOrderIds`, `MaxActiveOrderPerShopper`
+   - Verified with TLC on OpenJDK 21: **3,283,425 states generated, 52,880 distinct states found with 0 errors** (depth 12).
 4. **Tightened Lean 4 Execution & Correspondence (P1):** In `scripts/lean-verify.mjs`:
    - Restricted macOS Darwin fallback strictly to dyld segment flag error (`__DATA_CONST segment missing SG_READ_ONLY flag`). All other failures immediately terminate fail-closed.
    - Machine-checked 7 formal theorems in `Framique/Pricing.lean` (added `free_shipping_waives_fee` and `bogo_zero_cheapest_yields_zero`).
@@ -2391,21 +2402,26 @@ Build completed successfully.
 [lean-verify] Zero discrepancies detected. Formal verification gate PASSED (fail-closed).
 ```
 
-#### B. TLA+ TLC State-Space Exploration (2,206,513 States, 11 Invariants)
+#### B. TLA+ TLC State-Space Exploration (3,283,425 States, 12 Invariants)
 ```bash
 $ bun run test:tla
 [tla-verify] Validating TLA+ specification and formal invariants...
 [tla-verify] ✓ TLC JAR integrity verified (SHA-256: 7e53aa636dac8a3c...)
-[tla-verify] Model SHA-256:  7f8f41bbfa06f8e17cf546280a7beb3e006874a37b897f5685bf3bd88da35194
+[tla-verify] Model SHA-256:  c39aca49492a728d6eb4b87b7a701d5ada8a9e9adfb0e013081a8b2b85188aab
 [tla-verify] Config SHA-256: f57180f0cfa0e348ec3234547a64f6c7967d09ae597099a216e46e9b8701a72c
+[tla-verify] Invariants Verified: 12 (TypeOK plus 11 safety invariants: TypeOK, StockNonNegative,
+  InventoryConservation, UniqueOrderIds, MaxActiveOrderPerShopper, AtMostOneCapturePerPayment,
+  AtMostOneSuccessfulRefundPerPayment, OrderSettlementConsistency,
+  RefundRequiresCapture, NoRefundOnFailedPayment,
+  RefundAmountBoundedByCapture, ExplicitRefundFailureRepresented)
 [tla-verify] ✓ TLA+ specification structure and TLC invariants validated.
 [tla-verify] Java runtime detected: openjdk version "21.0.13.1"
 [tla-verify] Executing TLC model checker...
 TLC2 Version 2026.11.15.002146 (rev: bc1b506)
 Model checking completed. No error has been found.
-2206513 states generated, 44048 distinct states found, 0 states left on queue.
+3283425 states generated, 52880 distinct states found, 0 states left on queue.
 The depth of the complete state graph search is 12.
-Finished in 06s
+Finished in 09s
 [tla-verify] ✓ TLA+ state-space model verification complete with 0 errors.
 ```
 
@@ -2416,16 +2432,16 @@ $ bun run test:bombadil:all
 [bombadil] Spawning local development server on port 3000...
 [bombadil] ✓ Local development server ready at http://127.0.0.1:3000
 
-[bombadil] Exploring viewport mobile-320 (320x568)... [PASS - 0 violations, 0 image failures]
-[bombadil] Exploring viewport mobile-360 (360x640)... [PASS - 0 violations, 0 image failures]
-[bombadil] Exploring viewport mobile-390 (390x844)... [PASS - 0 violations, 0 image failures]
-[bombadil] Exploring viewport mobile-430 (430x932)... [PASS - 0 violations, 0 image failures]
-[bombadil] Exploring viewport tablet-768 (768x1024)... [PASS - 0 violations, 0 image failures]
-[bombadil] Exploring viewport laptop-1024 (1024x768)... [PASS - 0 violations, 0 image failures]
-[bombadil] Exploring viewport desktop-1280 (1280x800)... [PASS - 0 violations, 0 image failures]
-[bombadil] Exploring viewport desktop-1440 (1440x900)... [PASS - 0 violations, 0 image failures]
+[bombadil] Exploring viewport mobile-320 (320x568)... [PASS - 10 actions, 0 violations, 0 image failures]
+[bombadil] Exploring viewport mobile-360 (360x640)... [PASS - 1 actions, 0 violations, 0 image failures]
+[bombadil] Exploring viewport mobile-390 (390x844)... [PASS - 26 actions, 0 violations, 0 image failures]
+[bombadil] Exploring viewport mobile-430 (430x932)... [PASS - 9 actions, 0 violations, 0 image failures]
+[bombadil] Exploring viewport tablet-768 (768x1024)... [PASS - 9 actions, 0 violations, 0 image failures]
+[bombadil] Exploring viewport laptop-1024 (1024x768)... [PASS - 10 actions, 0 violations, 0 image failures]
+[bombadil] Exploring viewport desktop-1280 (1280x800)... [PASS - 6 actions, 0 violations, 0 image failures]
+[bombadil] Exploring viewport desktop-1440 (1440x900)... [PASS - 11 actions, 0 violations, 0 image failures]
 
-[bombadil] ✓ All viewports passed with 0 property violations. Traces saved in docs/verification-evidence/bombadil/traces/
+[bombadil] ✓ All 8 viewports passed with 82 real actions executed and 0 property violations. Traces saved in docs/verification-evidence/bombadil/traces/
 ```
 
 

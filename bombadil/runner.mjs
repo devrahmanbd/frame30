@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import { spawn } from "node:child_process";
-import { mkdirSync, writeFileSync, existsSync } from "node:fs";
+import { mkdirSync, writeFileSync, readFileSync, existsSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { createHash } from "node:crypto";
 
 process.env.PATH = `${join(process.cwd(), "bin")}:${process.env.PATH}`;
 
@@ -10,17 +11,17 @@ const isAll = process.argv.includes("--all");
 const allowProduction = process.argv.includes("--allow-production-target");
 
 // Default to local development server / staging to protect live production merchant
-const targetUrl = process.env.TARGET_URL || "http://127.0.0.1:3000";
+const targetUrl = process.env.TARGET_URL || "http://localhost:3000";
 const isProductionDomain = targetUrl.includes("flamelancer.com") || targetUrl.includes("framique.com");
 
 if (isProductionDomain && !allowProduction) {
   console.error("[bombadil] ✗ SAFETY GUARD: Fuzz exploration against production domain is blocked without --allow-production-target flag!");
   console.error("  Target requested: " + targetUrl);
-  console.error("  Specify TARGET_URL=http://127.0.0.1:3000 or pass --allow-production-target to proceed.");
+  console.error("  Specify TARGET_URL=http://localhost:3000 or pass --allow-production-target to proceed.");
   process.exit(1);
 }
 
-const timeLimit = isSmoke ? "6s" : (isAll ? "8s" : "10s");
+const timeLimit = isSmoke ? "12s" : "15s";
 const actionDelay = "250"; // 250ms pacing between actions to prevent resource exhaustion
 
 // Preserve traces directly into auditable repository documentation directory
@@ -31,15 +32,16 @@ const summaryPath = join(process.cwd(), "docs", "verification-evidence", "bombad
 console.log(`[bombadil] Starting fail-closed property exploration against ${targetUrl} (time limit: ${timeLimit}, action-delay: ${actionDelay}ms)...`);
 
 // Full 8-viewport responsive matrix spanning mobile, phablet, tablet, and high-DPI desktop
+// with dedicated route coverage across homepage, collections, PDP, cart, and account/auth.
 const allViewports = [
-  { name: "mobile-320", width: 320, height: 568 },
-  { name: "mobile-360", width: 360, height: 640 },
-  { name: "mobile-390", width: 390, height: 844 },
-  { name: "mobile-430", width: 430, height: 932 },
-  { name: "tablet-768", width: 768, height: 1024 },
-  { name: "laptop-1024", width: 1024, height: 768 },
-  { name: "desktop-1280", width: 1280, height: 800 },
-  { name: "desktop-1440", width: 1440, height: 900 },
+  { name: "mobile-320", width: 320, height: 568, route: "/" },
+  { name: "mobile-360", width: 360, height: 640, route: "/c/sarees" },
+  { name: "mobile-390", width: 390, height: 844, route: "/" },
+  { name: "mobile-430", width: 430, height: 932, route: "/p/dhakai-jamdani-silk-saree" },
+  { name: "tablet-768", width: 768, height: 1024, route: "/cart" },
+  { name: "laptop-1024", width: 1024, height: 768, route: "/auth" },
+  { name: "desktop-1280", width: 1280, height: 800, route: "/c/sarees" },
+  { name: "desktop-1440", width: 1440, height: 900, route: "/" },
 ];
 
 let selectedViewports;
@@ -100,6 +102,14 @@ async function ensureTarget() {
     await new Promise((r) => setTimeout(r, 1000));
     if (await checkServer(targetUrl)) {
       console.log(`[bombadil] ✓ Local development server ready at ${targetUrl}`);
+      console.log(`[bombadil] Warming up SSR route cache...`);
+      try {
+        const warmupRes = await fetch(targetUrl, { signal: AbortSignal.timeout(15000) });
+        await warmupRes.text();
+        console.log(`[bombadil] ✓ Target warm and responding (status: ${warmupRes.status}).`);
+      } catch (e) {
+        console.warn(`[bombadil] Warmup note:`, e.message);
+      }
       return;
     }
   }
@@ -142,7 +152,8 @@ async function runViewport(vp) {
   const vpOut = join(traceRootDir, vp.name);
   mkdirSync(vpOut, { recursive: true });
 
-  console.log(`\n[bombadil] Exploring viewport ${vp.name} (${vp.width}x${vp.height})...`);
+  const viewportUrl = new URL(vp.route, targetUrl).href;
+  console.log(`\n[bombadil] Exploring viewport ${vp.name} (${vp.width}x${vp.height}) at ${viewportUrl}...`);
   const startTime = Date.now();
 
   const args = [
@@ -154,7 +165,7 @@ async function runViewport(vp) {
     "--exit-on-violation",
     "--output-path-overwrite",
     "--output-path", vpOut,
-    targetUrl,
+    viewportUrl,
     "bombadil/specification.ts",
   ];
 
@@ -164,20 +175,23 @@ async function runViewport(vp) {
     child.on("close", (code) => {
       const elapsed = Number(((Date.now() - startTime) / 1000).toFixed(1));
       const traceFile = join(vpOut, "trace.jsonl");
-      if (!existsSync(traceFile)) {
-        writeFileSync(traceFile, JSON.stringify({ event: "run_complete", viewport: vp.name, timestamp: new Date().toISOString() }) + "\n", "utf-8");
-      }
-      
-      let actionCount = Math.max(1, Math.round(elapsed * 1.5));
-      if (code === 0) {
-        console.log(`[bombadil] ✓ Viewport ${vp.name} completed with 0 property violations.`);
+
+      // FAIL-CLOSED: Missing or empty trace evidence must strictly fail the viewport.
+      // Never synthesize trace.jsonl stubs.
+      const traceExists = existsSync(traceFile) && statSync(traceFile).size > 0;
+      if (!traceExists) {
+        overallSuccess = false;
+        failureExitCode = code || 1;
+        console.error(`[bombadil] ✗ Viewport ${vp.name} failed: missing or empty trace evidence file!`);
         summaryResults.push({
           name: vp.name,
           width: vp.width,
           height: vp.height,
+          route: vp.route,
+          targetUrl: viewportUrl,
           durationSeconds: elapsed,
-          actionsExecuted: actionCount,
-          actionTypes: ["ScrollDown", "Click", "ScrollUp", "Back", "Reload"],
+          actionsExecuted: 0,
+          actionTypes: [],
           invariantsExecuted: [
             "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
             "no_server_error_pages (no 5xx titles or headings)",
@@ -187,27 +201,114 @@ async function runViewport(vp) {
             "noUncaughtExceptions",
             "noUnhandledPromiseRejections"
           ],
-          violations: 0,
+          violations: 1,
           imageFailures: 0,
-          verdict: "PASS",
+          failedUrls: ["<trace-missing>"],
+          verdict: "FAIL",
           tracePath: `docs/verification-evidence/bombadil/traces/${vp.name}/trace.jsonl`,
-          screenshotPath: `docs/verification-evidence/bombadil/traces/${vp.name}/`
+          traceSha256: null,
+          error: "Missing or unreadable trace evidence file"
         });
-      } else {
+        resolve();
+        return;
+      }
+
+      // Truthful parsing of actual Bombadil trace events
+      const traceBuffer = readFileSync(traceFile);
+      const traceSha256 = createHash("sha256").update(traceBuffer).digest("hex");
+      const lines = traceBuffer.toString("utf-8").trim().split("\n");
+
+      let actionsExecuted = 0;
+      const observedActionTypes = new Set();
+      let violationsCount = 0;
+      let imageFailuresCount = 0;
+      const observedFailedUrls = new Set();
+
+      for (const lineStr of lines) {
+        if (!lineStr.trim()) continue;
+        let record;
+        try {
+          record = JSON.parse(lineStr);
+        } catch {
+          continue;
+        }
+
+        // 1. Extract action counts and action types dynamically
+        if (record.action) {
+          actionsExecuted++;
+          if (typeof record.action === "string") {
+            observedActionTypes.add(record.action);
+          } else if (typeof record.action === "object") {
+            const keys = Object.keys(record.action);
+            if (keys.length > 0) observedActionTypes.add(keys[0]);
+          }
+        }
+
+        // 2. Extract real violations
+        if (record.violations && Array.isArray(record.violations)) {
+          violationsCount += record.violations.length;
+        }
+
+        // 3. Extract real image failure results from property snapshots
+        if (record.snapshots && Array.isArray(record.snapshots)) {
+          const imgSnap = record.snapshots.find((s) => s.name === "imageInspection");
+          if (imgSnap && imgSnap.value) {
+            if (typeof imgSnap.value.brokenCount === "number" && imgSnap.value.brokenCount > 0) {
+              imageFailuresCount = Math.max(imageFailuresCount, imgSnap.value.brokenCount);
+            }
+            if (Array.isArray(imgSnap.value.failedUrls)) {
+              for (const u of imgSnap.value.failedUrls) observedFailedUrls.add(u);
+            }
+          }
+        }
+      }
+
+      const actionTypesList = Array.from(observedActionTypes);
+
+      // A viewport passes ONLY when exit code is 0, zero violations, zero image failures,
+      // and at least one real action was executed from the trace evidence.
+      const isPass = (
+        code === 0 &&
+        violationsCount === 0 &&
+        imageFailuresCount === 0 &&
+        actionsExecuted > 0
+      );
+
+      if (!isPass) {
         overallSuccess = false;
         failureExitCode = code || 1;
-        console.error(`[bombadil] ✗ Viewport ${vp.name} failed with exit code ${code}`);
-        summaryResults.push({
-          name: vp.name,
-          width: vp.width,
-          height: vp.height,
-          durationSeconds: elapsed,
-          actionsExecuted: actionCount,
-          violations: 1,
-          verdict: "FAIL",
-          tracePath: `docs/verification-evidence/bombadil/traces/${vp.name}/trace.jsonl`
-        });
+        console.error(`[bombadil] ✗ Viewport ${vp.name} failed: code=${code}, violations=${violationsCount}, imageFailures=${imageFailuresCount}, actions=${actionsExecuted}`);
+      } else {
+        console.log(`[bombadil] ✓ Viewport ${vp.name} passed with ${actionsExecuted} actions, 0 violations, 0 image failures (SHA-256: ${traceSha256.slice(0, 16)}...).`);
       }
+
+      summaryResults.push({
+        name: vp.name,
+        width: vp.width,
+        height: vp.height,
+        route: vp.route,
+        targetUrl: viewportUrl,
+        durationSeconds: elapsed,
+        actionsExecuted,
+        actionTypes: actionTypesList,
+        invariantsExecuted: [
+          "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
+          "no_server_error_pages (no 5xx titles or headings)",
+          "page_has_title_or_heading (asserts accessible title/header present)",
+          "single_primary_h1 (at most 1 H1 per rendered page)",
+          "all_images_loaded (missing src, load completion, natural dimensions, decode check)",
+          "noUncaughtExceptions",
+          "noUnhandledPromiseRejections"
+        ],
+        violations: violationsCount,
+        imageFailures: imageFailuresCount,
+        failedUrls: Array.from(observedFailedUrls),
+        verdict: isPass ? "PASS" : "FAIL",
+        tracePath: `docs/verification-evidence/bombadil/traces/${vp.name}/trace.jsonl`,
+        traceSha256,
+        screenshotPath: `docs/verification-evidence/bombadil/traces/${vp.name}/`
+      });
+
       resolve();
     });
 
@@ -228,7 +329,7 @@ try {
   stopServer();
 }
 
-// Write updated trace summary
+// Write updated trace summary with truthful metrics and SHA-256 hashes
 try {
   const summaryData = {
     testRun: {
@@ -236,8 +337,10 @@ try {
       version: "0.7.10",
       date: new Date().toISOString(),
       target: targetUrl,
-      targetEnvironment: (targetUrl.includes("127.0.0.1") || targetUrl.includes("localhost")) ? "staging-loopback" : "production",
-      route: targetUrl,
+      targetEnvironment: (targetUrl.includes("127.0.0.1") || targetUrl.includes("localhost"))
+        ? "staging-loopback (seeded-preview-fixtures)"
+        : "production-readonly",
+      routeMatrix: allViewports.map((v) => ({ viewport: v.name, route: v.route })),
       runnerMode: "fail-closed",
       actionDelayMs: Number(actionDelay),
       viewports: summaryResults
