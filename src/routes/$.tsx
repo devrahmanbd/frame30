@@ -152,7 +152,21 @@ export const Route = createFileRoute("/$")({
         priceMinor: cheapest ?? 0,
         inStock: variants.some((v) => Number(v.stock_quantity ?? 0) > 0),
         reviews: data.reviews ?? [],
-        returnPolicy: { days: 7, fees: "shopper" },
+        returnPolicy:
+          Number(
+            (data.settings as Record<string, unknown> | undefined)
+              ?.return_policy_days ?? 0,
+          ) > 0
+            ? {
+                days: Number(
+                  (data.settings as Record<string, unknown>)
+                    .return_policy_days,
+                ),
+                fees:
+                  ((data.settings as Record<string, unknown>)
+                    .return_fees as "free" | "shopper") ?? "shopper",
+              }
+            : undefined,
         shipping: {
           flatMinor: Number(data.settings?.shipping_flat_minor_int ?? 0),
           freeThresholdMinor:

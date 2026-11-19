@@ -263,6 +263,12 @@ export const Route = createFileRoute("/store/$slug/")({
       storeName: loaderData.merchant.name,
       themeKey: loaderData.themeKey,
       tagline: loaderData.settings?.tagline ?? null,
+      logoUrl:
+        (loaderData.settings as { logo_url?: string | null } | undefined)
+          ?.logo_url ??
+        (loaderData.merchant as { logo_url?: string | null } | undefined)
+          ?.logo_url ??
+        null,
       seo: loaderData.seo,
       products: loaderData.products.map((p) => ({
         title: p.title,

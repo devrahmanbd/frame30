@@ -84,18 +84,16 @@ export type PresetSeoTemplate = {
   descriptionTemplate: string;
 };
 
-const GENERIC_SEO_TEMPLATES: PresetSeoTemplate[] = [
+export const GENERIC_SEO_TEMPLATES: PresetSeoTemplate[] = [
   {
     entityType: "product",
     titleTemplate: "{{title}} — {{store}}",
-    descriptionTemplate:
-      "Buy {{title}} from {{store}} at {{price}}. Cash on delivery, bKash and Nagad.",
+    descriptionTemplate: "Buy {{title}} from {{store}} at {{price}}.",
   },
   {
     entityType: "collection",
     titleTemplate: "{{title}} — {{store}}",
-    descriptionTemplate:
-      "Shop {{title}} at {{store}} with nationwide delivery across Bangladesh.",
+    descriptionTemplate: "Shop {{title}} at {{store}}.",
   },
   {
     entityType: "page",
@@ -132,10 +130,14 @@ export function applyTemplate(
 /** Absolute URL, or null when no trustworthy origin is known. */
 export function absUrl(
   origin: string | null | undefined,
-  path: string,
+  path: string | null | undefined,
 ): string | null {
+  if (!path || typeof path !== "string") return null;
+  const trimmed = path.trim();
+  if (!trimmed) return null;
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
   if (!origin || !/^https?:\/\//.test(origin)) return null;
-  return `${origin.replace(/\/+$/, "")}${path.startsWith("/") ? path : `/${path}`}`;
+  return `${origin.replace(/\/+$/, "")}${trimmed.startsWith("/") ? trimmed : `/${trimmed}`}`;
 }
 
 /** Minor units → schema.org decimal string. Integer in, string out, no floats. */
@@ -336,6 +338,7 @@ export type StoreHeadInput = BaseInput & {
   tagline?: string | null;
   products?: { title: string; slug: string; image_url?: string | null }[];
   searchPath?: string;
+  logoUrl?: string | null;
 };
 
 /** Storefront home: Organization + WebSite(SearchAction) + ItemList. */
@@ -348,7 +351,7 @@ export function buildStoreHead(input: StoreHeadInput): HeadOutput {
   );
   const description =
     input.tagline?.trim() ||
-    `Shop ${input.storeName} with cash on delivery, bKash, Nagad and nationwide courier across Bangladesh.`;
+    `Shop ${input.storeName}.`;
   const hero =
     input.image ?? input.products?.find((p) => p.image_url)?.image_url ?? null;
   const head = baseHead(
@@ -359,6 +362,7 @@ export function buildStoreHead(input: StoreHeadInput): HeadOutput {
     profile,
   );
   const site = absUrl(input.origin, input.path);
+  const logo = input.logoUrl ? absUrl(input.origin, input.logoUrl) : null;
 
   if (profile.jsonld.organization) {
     head.scripts.push(
@@ -367,7 +371,7 @@ export function buildStoreHead(input: StoreHeadInput): HeadOutput {
         "@type": "Organization",
         name: input.storeName,
         ...(site ? { url: site } : {}),
-        ...(hero ? { logo: hero } : {}),
+        ...(logo ? { logo } : {}),
         areaServed: "BD",
       }),
     );
@@ -657,7 +661,7 @@ export function buildCollectionHead(input: CollectionHeadInput): HeadOutput {
   const description =
     input.collection.meta_description?.trim() ||
     input.collection.description?.trim() ||
-    `Shop ${input.collection.name} at ${input.storeName} with nationwide delivery across Bangladesh.`;
+    `Shop ${input.collection.name} at ${input.storeName}.`;
   const image =
     input.image ??
     input.collection.image_url ??

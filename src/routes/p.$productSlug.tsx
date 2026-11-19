@@ -104,7 +104,21 @@ export const Route = createFileRoute("/p/$productSlug")({
       priceMinor: cheapest ?? 0,
       inStock: variants.some((v) => Number(v.stock_quantity ?? 0) > 0),
       reviews: loaderData.reviews ?? [],
-      returnPolicy: { days: 7, fees: "shopper" },
+      returnPolicy:
+        Number(
+          (loaderData.settings as Record<string, unknown> | undefined)
+            ?.return_policy_days ?? 0,
+        ) > 0
+          ? {
+              days: Number(
+                (loaderData.settings as Record<string, unknown>)
+                  .return_policy_days,
+              ),
+              fees:
+                ((loaderData.settings as Record<string, unknown>)
+                  .return_fees as "free" | "shopper") ?? "shopper",
+            }
+          : undefined,
       shipping: {
         flatMinor: Number(loaderData.settings?.shipping_flat_minor_int ?? 0),
         freeThresholdMinor:

@@ -19,6 +19,8 @@
  */
 
 import { z } from "zod";
+import { catalogEntry, type SectionType } from "./builder-ast";
+import { SECTION_CONTROLS } from "./studio/controls";
 
 export const THEME_CONTRACT_VERSION = "1.0.0" as const;
 
@@ -115,7 +117,7 @@ export const ThemeControlSchema: z.ZodType<ThemeControl> = z.lazy(() =>
 /* ------------------------------------------------------------------ */
 
 export const StructuredMediaValueSchema = z.object({
-  url: z.string(),
+  url: z.string().min(1, "Media URL is required"),
   alt: z.string().optional(),
   width: z.number().positive().optional(),
   height: z.number().positive().optional(),
@@ -264,54 +266,245 @@ export function validateSectionSettings(
   settings: unknown,
 ): { success: boolean; errors: string[] } {
   const errors: string[] = [];
-  if (!settings || typeof settings !== "object") {
+  if (!settings || typeof settings !== "object" || Array.isArray(settings)) {
     return { success: false, errors: ["Settings must be an object"] };
   }
 
   const s = settings as Record<string, unknown>;
+  const allowedKeys = new Set(sectionDef.controls.map((c) => c.key));
 
-  for (const control of sectionDef.controls) {
-    const val = s[control.key];
+  // 1. Fail closed on undeclared settings keys
+  for (const key of Object.keys(s)) {
+    if (!allowedKeys.has(key)) {
+      errors.push(`Undeclared setting key '${key}' not defined in section schema`);
+    }
+  }
 
-    // Check repeater
-    if (control.type === "repeater") {
-      if (val !== undefined && !Array.isArray(val)) {
-        errors.push(`Control '${control.key}' expected array for repeater`);
-      } else if (Array.isArray(val) && control.fields) {
-        for (let i = 0; i < val.length; i++) {
-          const item = val[i];
-          if (!item || typeof item !== "object") {
-            errors.push(`Repeater '${control.key}' item at index ${i} must be an object`);
-            continue;
+  // Helper to validate single control against a value
+  function validateControlValue(
+    control: ThemeControl,
+    val: unknown,
+    path: string,
+  ) {
+    if (val === undefined || val === null) {
+      return; // Optional/unspecified values are allowed
+    }
+
+    switch (control.type) {
+      case "text":
+      case "textarea":
+      case "richtext":
+      case "code":
+      case "link":
+      case "icon": {
+        if (typeof val !== "string") {
+          errors.push(`Control '${path}' expected string, received ${typeof val}`);
+        }
+        break;
+      }
+
+      case "color": {
+        if (typeof val !== "string") {
+          errors.push(`Control '${path}' expected color string, received ${typeof val}`);
+        }
+        break;
+      }
+
+      case "number":
+      case "slider": {
+        if (typeof val !== "number" || isNaN(val)) {
+          errors.push(`Control '${path}' expected number, received ${typeof val}`);
+        } else {
+          if (control.min !== undefined && val < control.min) {
+            errors.push(`Control '${path}' value ${val} is below minimum ${control.min}`);
           }
-          for (const field of control.fields) {
-            const itemVal = (item as Record<string, unknown>)[field.key];
-            if (field.type === "image" && itemVal !== undefined) {
-              const url = resolveMediaUrl(itemVal);
-              if (itemVal && !url && typeof itemVal !== "string") {
-                errors.push(
-                  `Repeater '${control.key}'[${i}].${field.key} is an invalid image value`,
-                );
+          if (control.max !== undefined && val > control.max) {
+            errors.push(`Control '${path}' value ${val} exceeds maximum ${control.max}`);
+          }
+        }
+        break;
+      }
+
+      case "switch": {
+        if (typeof val !== "boolean") {
+          errors.push(`Control '${path}' expected boolean, received ${typeof val}`);
+        }
+        break;
+      }
+
+      case "select":
+      case "choice": {
+        if (typeof val !== "string" && typeof val !== "number") {
+          errors.push(`Control '${path}' expected string or number choice, received ${typeof val}`);
+        } else if (control.options && control.options.length > 0) {
+          const allowedOptions = control.options.map((o) => o.value);
+          if (!allowedOptions.includes(String(val)) && val !== "") {
+            errors.push(
+              `Control '${path}' value '${val}' is not one of allowed options: ${allowedOptions.join(", ")}`,
+            );
+          }
+        }
+        break;
+      }
+
+      case "dimensions": {
+        if (
+          typeof val !== "string" &&
+          typeof val !== "number" &&
+          (typeof val !== "object" || val === null)
+        ) {
+          errors.push(`Control '${path}' expected dimensions value, received ${typeof val}`);
+        }
+        break;
+      }
+
+      case "heading": {
+        if (typeof val !== "string" && (typeof val !== "object" || val === null)) {
+          errors.push(`Control '${path}' expected heading value, received ${typeof val}`);
+        }
+        break;
+      }
+
+      case "image": {
+        if (val === "") break;
+        if (typeof val === "string") {
+          const url = resolveMediaUrl(val);
+          if (!url) {
+            errors.push(`Control '${path}' has empty or invalid image URL`);
+          }
+        } else if (typeof val === "object" && val !== null) {
+          const parsed = StructuredMediaValueSchema.safeParse(val);
+          if (!parsed.success) {
+            errors.push(
+              `Control '${path}' is not a valid StructuredMediaValue: ${parsed.error.errors.map((e) => e.message).join(", ")}`,
+            );
+          }
+        } else {
+          errors.push(`Control '${path}' expected valid image URL string or MediaValue object`);
+        }
+        break;
+      }
+
+      case "repeater": {
+        if (!Array.isArray(val)) {
+          errors.push(`Control '${path}' expected array for repeater, received ${typeof val}`);
+        } else if (control.fields && control.fields.length > 0) {
+          const repeaterAllowedKeys = new Set(control.fields.map((f) => f.key));
+          for (let i = 0; i < val.length; i++) {
+            const item = val[i];
+            const itemPath = `${path}[${i}]`;
+            if (!item || typeof item !== "object" || Array.isArray(item)) {
+              errors.push(`Repeater item at ${itemPath} must be an object`);
+              continue;
+            }
+            const itemObj = item as Record<string, unknown>;
+            // Fail closed on undeclared repeater item fields
+            for (const itemKey of Object.keys(itemObj)) {
+              if (!repeaterAllowedKeys.has(itemKey)) {
+                errors.push(`Repeater item at ${itemPath} has undeclared field '${itemKey}'`);
               }
+            }
+            // Recursively validate child controls
+            for (const field of control.fields) {
+              validateControlValue(field, itemObj[field.key], `${itemPath}.${field.key}`);
             }
           }
         }
+        break;
       }
     }
+  }
 
-    // Check image
-    if (control.type === "image" && val !== undefined && val !== null && val !== "") {
-      const url = resolveMediaUrl(val);
-      if (!url && typeof val !== "string") {
-        errors.push(`Control '${control.key}' expected valid image URL or MediaValue object`);
-      }
-    }
+  // 2. Validate declared controls
+  for (const control of sectionDef.controls) {
+    validateControlValue(control, s[control.key], control.key);
   }
 
   return {
     success: errors.length === 0,
     errors,
   };
+}
+
+/**
+ * Migrates legacy string image URLs in section settings to structured MediaValue objects.
+ */
+export function migrateSectionSettings(
+  sectionDef: ThemeSectionDefinition,
+  settings: unknown,
+): Record<string, unknown> {
+  if (!settings || typeof settings !== "object" || Array.isArray(settings)) {
+    return {};
+  }
+  const result: Record<string, unknown> = structuredClone(settings) as Record<string, unknown>;
+
+  function migrateControls(controls: ThemeControl[], target: Record<string, unknown>) {
+    for (const ctrl of controls) {
+      const val = target[ctrl.key];
+      if (ctrl.type === "image") {
+        if (typeof val === "string" && val.trim().length > 0) {
+          target[ctrl.key] = {
+            url: val.trim(),
+            alt: typeof target.alt === "string" ? target.alt : "",
+          };
+        }
+      } else if (ctrl.type === "repeater" && Array.isArray(val) && ctrl.fields) {
+        for (let i = 0; i < val.length; i++) {
+          const row = val[i];
+          if (row && typeof row === "object" && !Array.isArray(row)) {
+            migrateControls(ctrl.fields, row as Record<string, unknown>);
+          }
+        }
+      }
+    }
+  }
+
+  migrateControls(sectionDef.controls, result);
+  return result;
+}
+
+/**
+ * Upgrades a full Theme AST to the current schemaVersion, migrating media values across all sections.
+ */
+export function migrateThemeAst(
+  ast: unknown,
+  manifest: ThemeManifest,
+): { ast: unknown; migratedCount: number } {
+  if (!ast || typeof ast !== "object") {
+    return { ast, migratedCount: 0 };
+  }
+
+  const cloned = structuredClone(ast) as Record<string, unknown>;
+  let migratedCount = 0;
+
+  const sectionMap = new Map<string, ThemeSectionDefinition>();
+  for (const def of manifest.sections) {
+    sectionMap.set(def.id, def);
+  }
+
+  cloned.schemaVersion = THEME_CONTRACT_VERSION;
+
+  if (Array.isArray(cloned.sections)) {
+    for (const section of cloned.sections) {
+      if (section && typeof section === "object") {
+        const type = (section as { type?: unknown }).type;
+        if (typeof type === "string") {
+          const def = sectionMap.get(type);
+          if (def) {
+            const propsKey = "props" in section ? "props" : "settings";
+            const currentProps = (section as Record<string, unknown>)[propsKey];
+            if (currentProps && typeof currentProps === "object") {
+              const migratedProps = migrateSectionSettings(def, currentProps);
+              (section as Record<string, unknown>)[propsKey] = migratedProps;
+              migratedCount++;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return { ast: cloned, migratedCount };
 }
 
 export function validateThemeCompatibility(manifest: ThemeManifest): {
@@ -332,6 +525,7 @@ export function validateThemeCompatibility(manifest: ThemeManifest): {
   for (const section of manifest.sections) {
     for (const ctrl of section.controls) {
       if (
+        !ctrl.key.toLowerCase().includes("alt") &&
         (ctrl.key.toLowerCase().includes("image") ||
           ctrl.key.toLowerCase().includes("banner") ||
           ctrl.key.toLowerCase().includes("photo")) &&
@@ -344,6 +538,7 @@ export function validateThemeCompatibility(manifest: ThemeManifest): {
       if (ctrl.type === "repeater" && ctrl.fields) {
         for (const child of ctrl.fields) {
           if (
+            !child.key.toLowerCase().includes("alt") &&
             (child.key.toLowerCase().includes("image") ||
               child.key.toLowerCase().includes("photo")) &&
             child.type === "text"
@@ -362,3 +557,111 @@ export function validateThemeCompatibility(manifest: ThemeManifest): {
     issues,
   };
 }
+
+/* ------------------------------------------------------------------ */
+/* Songoskriti Canonical Manifest (All 33 Sections)                  */
+/* ------------------------------------------------------------------ */
+
+export const SONGOSKRITI_SECTION_KEYS = [
+  "hero_carousel",
+  "department_grid",
+  "product_rail",
+  "product_grid",
+  "split_feature",
+  "collection_story",
+  "craft_story",
+  "ugc_gallery",
+  "testimonials",
+  "finder_row",
+  "trust_footer",
+  "store_locator",
+  "newsletter",
+  "footer_sitemap",
+  "rich_text",
+  "payment_icons",
+  "category_header",
+  "result_toolbar",
+  "announcement_bar",
+  "trust_bar",
+  "mega_menu",
+  "cart_lines",
+  "cart_summary",
+  "payment_methods",
+  "checkout_steps",
+  "orders_list",
+  "profile_card",
+  "account_nav",
+  "account_overview",
+  "account_orders",
+  "account_details",
+] as const satisfies readonly SectionType[];
+
+export const SONGOSKRITI_THEME_MANIFEST: ThemeManifest = {
+  id: "songoskriti",
+  version: "1.1.0",
+  name: { en: "Songoskriti", bn: "সংস্কৃতি" },
+  summary: {
+    en: "Official Framique heritage theme: jamdani, panjabi and festive craft.",
+    bn: "অফিসিয়াল ফ্রামিক হেরিটেজ থিম।",
+  },
+  author: {
+    name: "Framique Core Team",
+    url: "https://framique.com",
+    supportEmail: "themes@framique.com",
+  },
+  builderVersion: "^2.0.0",
+  certificationState: "released",
+  templates: {
+    index: ["hero_carousel", "department_grid", "featured_products"],
+    collection: ["category_header", "product_grid"],
+    product: ["product_detail"],
+  },
+  sections: [
+    ...SONGOSKRITI_SECTION_KEYS.map((key) => {
+      const entry = catalogEntry(key);
+      return {
+        id: key,
+        label: entry?.label ?? key.replace(/_/g, " "),
+        category: entry?.group ?? "content",
+        controls: (SECTION_CONTROLS[key] ?? []) as ThemeControl[],
+        defaultSettings: (entry?.defaults ?? {}) as Record<string, unknown>,
+      };
+    }),
+    {
+      id: "header",
+      label: "Theme Header",
+      category: "header",
+      controls: [],
+      defaultSettings: {},
+      dynamicBindings: ["theme-presentation-primitive"],
+      description:
+        "Theme presentation primitive for live storefront header and mega menu",
+    },
+    {
+      id: "ornament",
+      label: "Theme Ornament",
+      category: "presentation",
+      controls: [],
+      defaultSettings: {},
+      dynamicBindings: ["theme-presentation-primitive"],
+      description:
+        "Theme presentation primitive for cultural motifs, borders, and decorative filigree",
+    },
+  ],
+  tokens: {},
+  defaultSettings: {},
+  localization: {
+    defaultLocale: "en",
+    supportedLocales: ["en", "bn"],
+  },
+  responsiveViewports: [
+    "320",
+    "360",
+    "390",
+    "430",
+    "768",
+    "1024",
+    "1280",
+    "1440",
+  ],
+};

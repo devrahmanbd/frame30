@@ -2053,9 +2053,9 @@ const SongoskritiDepartmentGrid: WidgetComponent = ({
       alt: readString(row, "alt") || null,
       hoverImage:
         readString(row, "hoverImage") || readString(row, "hover_image") || null,
-      href: readString(row, "href"),
+      href: readString(row, "href") || "#",
     }))
-    .filter((d) => d.title && d.href);
+    .filter((d) => d.title);
 
   const scope = useRef<HTMLElement | null>(null);
   useScrollReveals(scope, true);
@@ -2672,13 +2672,17 @@ const SongoskritiSplitFeature: WidgetComponent = ({
   locale,
   link,
 }) => {
-  const layout = str("layout") || "image_left";
+  const layout = str("layout") || (bool("flip") ? "image_right" : "image_left");
   const heading = str("heading");
   const body = str("body");
-  const primaryImage = str("primaryImage");
+  const primaryImage = str("primaryImage") || str("imageUrl");
+  const primaryAlt = str("primaryAlt") || str("imageAlt") || "";
   const secondaryImage = str("secondaryImage");
+  const secondaryAlt = str("secondaryAlt") || "";
   const bgTone = str("bgTone") || "surface";
   const connected = bool("connected");
+  const ctaUrl = str("ctaUrl") || str("ctaHref");
+  const ctaUrl2 = str("ctaUrl2") || str("ctaHref2");
   const bgClass =
     bgTone === "muted"
       ? "bg-[var(--theme-muted)]"
@@ -2699,7 +2703,7 @@ const SongoskritiSplitFeature: WidgetComponent = ({
                 src={primaryImage}
                 className="w-full h-full object-cover"
                 loading="lazy"
-                alt=""
+                alt={primaryAlt}
               />
             )}
           </div>
@@ -2710,7 +2714,7 @@ const SongoskritiSplitFeature: WidgetComponent = ({
                   src={secondaryImage}
                   className="w-full h-full object-cover"
                   loading="lazy"
-                  alt=""
+                  alt={secondaryAlt}
                 />
               )}
             </div>
@@ -2730,7 +2734,7 @@ const SongoskritiSplitFeature: WidgetComponent = ({
           <div className="flex gap-6 flex-wrap justify-center md:justify-start">
             {str("ctaLabel") && (
               <a
-                href={link(str("ctaUrl") || "#")}
+                href={link(ctaUrl || "#")}
                 className="inline-flex items-center min-h-11 border-b-2 border-[var(--theme-ink)]/40 pb-1 text-[11px] font-medium tracking-[0.25em] uppercase text-[var(--theme-ink)] hover:border-[var(--theme-ink)] transition-all duration-300"
               >
                 {str("ctaLabel")}
@@ -2738,7 +2742,7 @@ const SongoskritiSplitFeature: WidgetComponent = ({
             )}
             {str("ctaLabel2") && (
               <a
-                href={link(str("ctaUrl2") || "#")}
+                href={link(ctaUrl2 || "#")}
                 className="inline-flex items-center min-h-11 border-b-2 border-[var(--theme-ink)]/40 pb-1 text-[11px] font-medium tracking-[0.25em] uppercase text-[var(--theme-ink)] hover:border-[var(--theme-ink)] transition-all duration-300"
               >
                 {str("ctaLabel2")}
@@ -2763,6 +2767,7 @@ const SongoskritiCollectionStory: WidgetComponent = ({
     .map((row) => ({
       title: readString(row, "title"),
       image: readString(row, "image"),
+      alt: readString(row, "alt") || readString(row, "title") || "",
       href: readString(row, "href"),
       subtitle: readString(row, "subtitle"),
     }))
@@ -2792,7 +2797,7 @@ const SongoskritiCollectionStory: WidgetComponent = ({
                   {c.image && (
                     <img
                       src={c.image}
-                      alt={c.title}
+                      alt={c.alt || c.title}
                       className={`w-full h-full object-cover transition-transform duration-1000 ${hasLink ? "group-hover:scale-105" : ""}`}
                       loading="lazy"
                     />

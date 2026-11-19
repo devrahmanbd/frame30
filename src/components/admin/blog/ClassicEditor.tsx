@@ -804,7 +804,11 @@ export function ClassicEditor({
             value=""
             sizesPreset="full"
             disabled={disabled}
-            onPick={(url) => void insertImage(url)}
+            onPick={(picked) =>
+              void insertImage(
+                typeof picked === "string" ? picked : picked.url,
+              )
+            }
             onSizes={() => {}}
           />
         </div>

@@ -2358,6 +2358,9 @@ const BASE_CATALOG: CatalogEntry[] = [
     heading: false,
     defaults: {
       heading: "Trending now",
+      heading_bn: "",
+      subhead_bn: "",
+      promise_bn: "",
       limit: 12,
       source: "collection",
       collection: "",
@@ -3301,6 +3304,8 @@ const BASE_CATALOG: CatalogEntry[] = [
     defaults: {
       eyebrow: "",
       heading: "The story",
+      heading_bn: "",
+      subhead_bn: "",
       body: "",
       ctaLabel: "",
       ctaHref: "",
@@ -3331,6 +3336,7 @@ const BASE_CATALOG: CatalogEntry[] = [
         fields: [
           text("title", "Title", 80),
           text("image", "Image URL", 200),
+          text("alt", "Alt text", 200),
           url("href", "Link URL"),
           text("subtitle", "Subtitle", 80),
         ],
@@ -5377,7 +5383,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "content",
     slots: ["main"],
     heading: false,
-    defaults: { heading: "", columns: 4, departments: [] },
+    defaults: { heading: "", heading_bn: "", columns: 4, departments: [] },
     fields: [
       text("heading", "Heading", 80),
       {
@@ -5390,6 +5396,7 @@ const BASE_CATALOG: CatalogEntry[] = [
         fields: [
           text("image", "Image URL", 200),
           text("hoverImage", "Hover Image URL", 200),
+          text("alt", "Alternative text", 200),
           text("title", "Title", 80),
           // `href` renders raw into the tile anchor (heritage.tsx
           // DepartmentGrid), so it takes the `url` kind: the SAFE_HREF
@@ -5666,6 +5673,7 @@ const BASE_CATALOG: CatalogEntry[] = [
           text("role", "Role", 80),
           text("role_bn", "Role (বাংলা)", 80),
           { key: "image", label: "Avatar", kind: "image", panel: "content" },
+          text("alt", "Avatar alt", 120),
         ],
       },
       num("autoAdvanceMs", "Auto-advance (ms)"),

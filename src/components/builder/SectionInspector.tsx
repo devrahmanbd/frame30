@@ -39,6 +39,10 @@ import {
 import type { VisibilityRule } from "@/lib/visibility";
 import { ArrayFieldEditor } from "./ArrayFieldEditor";
 import { MediaPicker } from "./MediaPicker";
+import {
+  resolveMediaUrl,
+  type StructuredMediaValue,
+} from "@/lib/theme-contract";
 import { VisibilityRules } from "./VisibilityRules";
 
 /**
@@ -802,16 +806,17 @@ function LegacySectionInspector({
         kind: "bitext",
         max: 200,
       };
-      const imageUrl = typeof value === "string" ? value : "";
+      const imageUrl =
+        resolveMediaUrl(value) || (typeof value === "string" ? value : "");
       return (
         <div key={field.key} className="space-y-2">
           <span className="block text-xs font-medium">{field.label}</span>
           <MediaPicker
-            value={imageUrl}
+            value={value as string | StructuredMediaValue}
             sizesPreset={String(section.props[sizesKey(field.key)] ?? "full")}
             disabled={!editable}
-            onPick={(url, meta) => {
-              onChange(field.key, url, "desktop");
+            onPick={(urlOrValue, meta) => {
+              onChange(field.key, urlOrValue as PropValue, "desktop");
               /* Inherit the library's alt text, but never over an author's. */
               const existing = section.props[altKey(field.key)];
               if (

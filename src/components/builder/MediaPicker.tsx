@@ -18,6 +18,11 @@ import {
   type MediaItem,
 } from "@/lib/media";
 import { useLang } from "@/lib/i18n";
+import {
+  resolveMediaUrl,
+  resolveMediaAlt,
+  type StructuredMediaValue,
+} from "@/lib/theme-contract";
 
 type Tab = "library" | "url";
 
@@ -34,23 +39,26 @@ export function MediaPicker({
   value,
   sizesPreset,
   disabled,
+  focalPoint: initialFocalPoint,
   onPick,
   onSizes,
 }: {
-  value: string;
+  value: string | StructuredMediaValue | null | undefined;
   sizesPreset: string;
   disabled?: boolean;
+  focalPoint?: { x: number; y: number } | null;
   /**
    * The second argument carries what the library knows about the object: alt
-   * text the merchant already wrote, and the intrinsic size. Callers that only
+   * text the merchant already wrote, intrinsic size, and focal point. Callers that only
    * store a URL can ignore it.
    */
   onPick: (
-    url: string,
+    urlOrValue: string | StructuredMediaValue,
     meta?: {
       altText?: string | null;
       width?: number | null;
       height?: number | null;
+      focalPoint?: { x: number; y: number } | null;
     },
   ) => void;
 
@@ -63,6 +71,16 @@ export function MediaPicker({
   const [tab, setTab] = useState<Tab>("library");
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+  const currentUrl =
+    resolveMediaUrl(value) || (typeof value === "string" ? value : "");
+  const currentFocal =
+    typeof value === "object" && value && "focalPoint" in value
+      ? (value as StructuredMediaValue).focalPoint ?? null
+      : initialFocalPoint ?? null;
+  const [focal, setFocal] = useState<{ x: number; y: number } | null>(
+    currentFocal,
+  );
 
   const library = useQuery({
     queryKey: ["builder", "media"],
@@ -80,7 +98,16 @@ export function MediaPicker({
     },
     onSuccess: (result) => {
       setError(null);
-      onPick(result.item.url);
+      const url = result.item.url;
+      const nextValue = focal
+        ? { url, focalPoint: focal }
+        : url;
+      onPick(nextValue, {
+        altText: result.item.altText,
+        width: result.item.width,
+        height: result.item.height,
+        focalPoint: focal,
+      });
       void qc.invalidateQueries({ queryKey: ["builder", "media"] });
     },
     onError: (e: Error) =>
@@ -95,24 +122,87 @@ export function MediaPicker({
 
   return (
     <div className="space-y-2">
-      {value ? (
-        <div className="flex items-center gap-2 rounded-fq-md border border-border p-2">
-          <img
-            src={value}
-            alt=""
-            className="size-12 shrink-0 rounded-fq-sm object-cover"
-          />
-          <span className="min-w-0 flex-1 truncate text-[0.65rem] text-muted-foreground">
-            {value}
-          </span>
-          <button
-            type="button"
-            disabled={disabled}
-            onClick={() => onPick("")}
-            className="rounded-fq-sm border border-border px-1.5 text-[0.65rem]"
-          >
-            {t("Clear", "মুছুন")}
-          </button>
+      {currentUrl ? (
+        <div className="space-y-1.5 rounded-fq-md border border-border p-2">
+          <div className="flex items-center gap-2">
+            <span className="min-w-0 flex-1 truncate text-[0.65rem] text-muted-foreground">
+              {currentUrl}
+            </span>
+            <button
+              type="button"
+              disabled={disabled}
+              onClick={() => onPick("")}
+              className="rounded-fq-sm border border-border px-1.5 text-[0.65rem] hover:bg-muted"
+            >
+              {t("Clear", "মুছুন")}
+            </button>
+          </div>
+          <div className="relative inline-block overflow-hidden rounded-fq-sm border border-border/60 bg-muted/20">
+            <img
+              src={currentUrl}
+              alt={resolveMediaAlt(value, "")}
+              onClick={(e) => {
+                if (disabled) return;
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = Math.round(
+                  Math.max(
+                    0,
+                    Math.min(100, ((e.clientX - rect.left) / rect.width) * 100),
+                  ),
+                );
+                const y = Math.round(
+                  Math.max(
+                    0,
+                    Math.min(100, ((e.clientY - rect.top) / rect.height) * 100),
+                  ),
+                );
+                const nextFocal = { x, y };
+                setFocal(nextFocal);
+                const nextValue: StructuredMediaValue =
+                  typeof value === "object" && value !== null
+                    ? { ...value, url: currentUrl, focalPoint: nextFocal }
+                    : { url: currentUrl, focalPoint: nextFocal };
+                onPick(nextValue, { focalPoint: nextFocal });
+              }}
+              className="max-h-36 w-auto cursor-crosshair object-contain"
+            />
+            {focal && (
+              <div
+                className="pointer-events-none absolute size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-primary shadow flex items-center justify-center"
+                style={{ left: `${focal.x}%`, top: `${focal.y}%` }}
+                aria-hidden="true"
+              >
+                <span className="size-1 rounded-full bg-white" />
+              </div>
+            )}
+          </div>
+          <div className="flex items-center justify-between text-[0.65rem] text-muted-foreground">
+            <span>
+              {focal
+                ? `${t("Focal point", "ফোকাল পয়েন্ট")}: ${focal.x}%, ${focal.y}%`
+                : t(
+                    "Click image to set focal point",
+                    "ফোকাল পয়েন্ট সেট করতে ছবিতে ক্লিক করুন",
+                  )}
+            </span>
+            {focal && (
+              <button
+                type="button"
+                disabled={disabled}
+                onClick={() => {
+                  setFocal(null);
+                  const nextValue =
+                    typeof value === "object" && value !== null
+                      ? { ...value, url: currentUrl, focalPoint: undefined }
+                      : currentUrl;
+                  onPick(nextValue, { focalPoint: null });
+                }}
+                className="text-[0.65rem] text-muted-foreground hover:text-foreground"
+              >
+                {t("Reset focal point", "রিসেট")}
+              </button>
+            )}
+          </div>
         </div>
       ) : (
         <p className="text-[0.65rem] text-muted-foreground">

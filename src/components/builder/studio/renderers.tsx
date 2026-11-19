@@ -99,6 +99,7 @@ import {
   ownerForWidgetKey,
   type Breakpoint,
   type Section,
+  type SectionType,
 } from "@/lib/builder-ast";
 import type { UnifiedRegistry } from "@/lib/unified-widget-registry";
 import {
@@ -128,6 +129,7 @@ import {
 } from "@/lib/studio/responsive";
 import type { PropValue } from "@/lib/builder-ast";
 import { WIDGET_COMPONENTS, widgetReader } from "@/components/builder/widgets";
+import { resolveWidgetComponent } from "../theme-widgets";
 import { cn } from "@/lib/utils";
 
 const ICON_REGISTRY: Record<
@@ -452,6 +454,36 @@ function studioDeviceToBreakpoint(device: DeviceKey): Breakpoint {
   if (device === "tablet") return "tablet";
   if (device === "mobile" || device === "mobileLandscape") return "mobile";
   return "desktop";
+}
+
+function renderSharedThemeSection(
+  node: StudioNode,
+  type: SectionType,
+  themeKey: string | null | undefined,
+  device: DeviceKey,
+  editing?: boolean,
+): ReactNode | null {
+  const Component = resolveWidgetComponent(themeKey, type);
+  if (!Component) return null;
+  const section: Section = {
+    id: node.id,
+    type,
+    props: (node.settings ?? {}) as Record<string, PropValue>,
+  };
+  const reader = widgetReader(section, undefined, "en");
+  return (
+    <Component
+      section={section}
+      {...reader}
+      Heading="h2"
+      primary={false}
+      editing={editing ?? false}
+      device={studioDeviceToBreakpoint(device)}
+      locale="en"
+      link={(href: string) => href}
+      renderChildren={() => null}
+    />
+  );
 }
 
 /**
@@ -1532,7 +1564,21 @@ export function StudioWidget({
         />
       );
     }
-    case "product_rail":
+    case "product_rail": {
+      const shared = renderSharedThemeSection(
+        node,
+        "product_rail",
+        themeKey,
+        device,
+        editing,
+      );
+      if (shared) return shared;
+      return (
+        <Placeholder
+          label="Live product rail — renders on the storefront"
+        />
+      );
+    }
     case "product_media":
     case "product_meta":
     case "collection_grid":
@@ -1982,6 +2028,14 @@ export function StudioWidget({
     }
 
     case "department_grid": {
+      const shared = renderSharedThemeSection(
+        node,
+        "department_grid",
+        themeKey,
+        device,
+        editing,
+      );
+      if (shared) return shared;
       const departments = rows(s, "departments");
       if (departments.length === 0)
         return <Placeholder label="Add departments" />;
@@ -2386,6 +2440,14 @@ export function StudioWidget({
     }
 
     case "split_feature": {
+      const shared = renderSharedThemeSection(
+        node,
+        "split_feature",
+        themeKey,
+        device,
+        editing,
+      );
+      if (shared) return shared;
       const heading = str(s, "heading");
       const flip = s.flip === true;
       const visual = str(s, "imageUrl") ? (
@@ -3017,6 +3079,14 @@ export function StudioWidget({
     }
 
     case "collection_story": {
+      const shared = renderSharedThemeSection(
+        node,
+        "collection_story",
+        themeKey,
+        device,
+        editing,
+      );
+      if (shared) return shared;
       const heading = str(s, "heading");
       if (!heading && !str(s, "body"))
         return <Placeholder label="Add a story heading" />;
@@ -4144,6 +4214,14 @@ export function StudioWidget({
       );
 
     case "ugc_gallery": {
+      const shared = renderSharedThemeSection(
+        node,
+        "ugc_gallery",
+        themeKey,
+        device,
+        editing,
+      );
+      if (shared) return shared;
       const limit = Math.min(12, Math.max(2, num(s, "limit", 6, device)));
       return (
         <section>
@@ -4329,8 +4407,41 @@ export function StudioWidget({
       );
     }
 
-    default:
+    case "testimonials": {
+      const shared = renderSharedThemeSection(
+        node,
+        "testimonials",
+        themeKey,
+        device,
+        editing,
+      );
+      if (shared) return shared;
+      return <Placeholder label="Add testimonials" />;
+    }
+
+    case "craft_story": {
+      const shared = renderSharedThemeSection(
+        node,
+        "craft_story",
+        themeKey,
+        device,
+        editing,
+      );
+      if (shared) return shared;
+      return <Placeholder label="Add craft story" />;
+    }
+
+    default: {
+      const shared = renderSharedThemeSection(
+        node,
+        node.el as SectionType,
+        themeKey,
+        device,
+        editing,
+      );
+      if (shared) return shared;
       return <Placeholder label={node.el} />;
+    }
   }
 }
 

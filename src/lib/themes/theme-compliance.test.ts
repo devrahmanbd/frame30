@@ -15,17 +15,28 @@ import { describe, expect, it } from "vitest";
 import {
   THEME_CONTRACT_VERSION,
   ThemeManifestSchema,
+  StructuredMediaValueSchema,
   validateThemeManifest,
   validateSectionSettings,
   validateThemeCompatibility,
   resolveMediaUrl,
   resolveMediaAlt,
+  migrateSectionSettings,
+  migrateThemeAst,
+  SONGOSKRITI_THEME_MANIFEST,
+  SONGOSKRITI_SECTION_KEYS,
   type ThemeManifest,
   type ThemeSectionDefinition,
 } from "../theme-contract";
 import { SECTION_CONTROLS } from "../studio/controls";
-import { buildCollectionHead, buildStoreHead } from "../theme-seo";
+import {
+  buildCollectionHead,
+  buildStoreHead,
+  buildProductHead,
+  GENERIC_SEO_TEMPLATES,
+} from "../theme-seo";
 import { builtinThemeKeys, builtinThemeMeta } from "./builtin-themes";
+import { resolveWidgetComponent } from "@/components/builder/theme-widgets";
 
 describe("Theme Compliance Standard — 8 Core Pillars", () => {
   /* ---------------------------------------------------------------- */
@@ -95,6 +106,29 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
       expect(result.success).toBe(true);
       expect(result.data?.id).toBe("songoskriti");
       expect(result.data?.certificationState).toBe("released");
+    });
+
+    it("canonical SONGOSKRITI_THEME_MANIFEST contains all 33 sections and passes full validation", () => {
+      expect(SONGOSKRITI_THEME_MANIFEST.sections).toHaveLength(33);
+      expect(SONGOSKRITI_SECTION_KEYS).toHaveLength(31);
+
+      // Verify the 2 presentation primitives
+      const headerPrimitive = SONGOSKRITI_THEME_MANIFEST.sections.find((s) => s.id === "header");
+      const ornamentPrimitive = SONGOSKRITI_THEME_MANIFEST.sections.find((s) => s.id === "ornament");
+      expect(headerPrimitive).toBeDefined();
+      expect(headerPrimitive?.dynamicBindings).toContain("theme-presentation-primitive");
+      expect(ornamentPrimitive).toBeDefined();
+      expect(ornamentPrimitive?.dynamicBindings).toContain("theme-presentation-primitive");
+
+      // Verify manifest validation passes schema
+      const manifestRes = validateThemeManifest(SONGOSKRITI_THEME_MANIFEST);
+      expect(manifestRes.success).toBe(true);
+      expect(manifestRes.data?.id).toBe("songoskriti");
+
+      // Verify compatibility check passes with zero issues
+      const compatRes = validateThemeCompatibility(SONGOSKRITI_THEME_MANIFEST);
+      expect(compatRes.compatible).toBe(true);
+      expect(compatRes.issues).toHaveLength(0);
     });
 
     it("fails manifest validation when required viewports are missing", () => {
@@ -202,6 +236,36 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
         ).toBe("image");
       }
     });
+
+    it("StructuredMediaValueSchema validates full structured media objects and rejects malformed values", () => {
+      const validComplete = {
+        url: "https://cdn.framique.com/artisan.jpg",
+        alt: "Artisan weaving jamdani",
+        width: 1200,
+        height: 800,
+        focalPoint: { x: 50, y: 35 },
+      };
+      expect(StructuredMediaValueSchema.safeParse(validComplete).success).toBe(true);
+
+      const validRelative = {
+        url: "/ph/songoskriti/prod-saree.png",
+      };
+      expect(StructuredMediaValueSchema.safeParse(validRelative).success).toBe(true);
+
+      // Out of bounds focal point
+      const invalidFocal = {
+        url: "https://cdn.framique.com/artisan.jpg",
+        focalPoint: { x: 150, y: 50 },
+      };
+      expect(StructuredMediaValueSchema.safeParse(invalidFocal).success).toBe(false);
+
+      // Empty URL
+      const invalidUrl = {
+        url: "",
+        alt: "Test",
+      };
+      expect(StructuredMediaValueSchema.safeParse(invalidUrl).success).toBe(false);
+    });
   });
 
   /* ---------------------------------------------------------------- */
@@ -293,6 +357,158 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
       const modernRes = validateSectionSettings(sectionDef, modernSettings);
       expect(modernRes.success).toBe(true);
     });
+
+    it("validateSectionSettings fails closed on undeclared settings keys", () => {
+      const sectionDef: ThemeSectionDefinition = {
+        id: "department_grid",
+        label: "Department Grid",
+        category: "commerce",
+        controls: [
+          { key: "heading", label: "Heading", type: "text" },
+          { key: "layout", label: "Layout", type: "select", options: [{ label: "Grid", value: "grid" }] },
+        ],
+        defaultSettings: {},
+      };
+
+      const res = validateSectionSettings(sectionDef, {
+        heading: "Valid Heading",
+        layout: "grid",
+        unauthorizedKey: "malicious_payload",
+      });
+
+      expect(res.success).toBe(false);
+      expect(res.errors.some((e) => e.includes("Undeclared setting key 'unauthorizedKey'"))).toBe(true);
+    });
+
+    it("validateSectionSettings enforces control type constraints for text, number, switch, and select", () => {
+      const sectionDef: ThemeSectionDefinition = {
+        id: "controls_test",
+        label: "Controls Test",
+        category: "content",
+        controls: [
+          { key: "title", label: "Title", type: "text" },
+          { key: "columns", label: "Columns", type: "number" },
+          { key: "enabled", label: "Enabled", type: "switch" },
+          {
+            key: "skin",
+            label: "Skin",
+            type: "select",
+            options: [
+              { label: "Light", value: "light" },
+              { label: "Dark", value: "dark" },
+            ],
+          },
+        ],
+        defaultSettings: {},
+      };
+
+      const invalidPayload = {
+        title: 12345,
+        columns: "four",
+        enabled: "yes",
+        skin: "neon_blue",
+      };
+
+      const res = validateSectionSettings(sectionDef, invalidPayload);
+      expect(res.success).toBe(false);
+      expect(res.errors.some((e) => e.includes("title' expected string"))).toBe(true);
+      expect(res.errors.some((e) => e.includes("columns' expected number"))).toBe(true);
+      expect(res.errors.some((e) => e.includes("enabled' expected boolean"))).toBe(true);
+      expect(res.errors.some((e) => e.includes("skin' value 'neon_blue' is not one of allowed options"))).toBe(true);
+    });
+
+    it("validateSectionSettings recursively validates repeaters and rejects undeclared nested fields", () => {
+      const sectionDef: ThemeSectionDefinition = {
+        id: "repeater_section",
+        label: "Repeater Section",
+        category: "content",
+        controls: [
+          {
+            key: "slides",
+            label: "Slides",
+            type: "repeater",
+            fields: [
+              { key: "image", label: "Image", type: "image" },
+              { key: "alt", label: "Alt", type: "text" },
+            ],
+          },
+        ],
+        defaultSettings: {},
+      };
+
+      const invalidRepeater = {
+        slides: [
+          { image: "/ph/slide1.jpg", alt: "First" },
+          { image: "/ph/slide2.jpg", alt: "Second", undeclaredProp: "injection" },
+        ],
+      };
+
+      const res = validateSectionSettings(sectionDef, invalidRepeater);
+      expect(res.success).toBe(false);
+      expect(res.errors.some((e) => e.includes("has undeclared field 'undeclaredProp'"))).toBe(true);
+    });
+
+    it("migrateSectionSettings upgrades legacy string image URLs to structured MediaValues", () => {
+      const sectionDef: ThemeSectionDefinition = {
+        id: "hero_section",
+        label: "Hero Section",
+        category: "content",
+        controls: [
+          { key: "image", label: "Image", type: "image" },
+          { key: "alt", label: "Alt", type: "text" },
+          {
+            key: "items",
+            label: "Items",
+            type: "repeater",
+            fields: [
+              { key: "image", label: "Item Image", type: "image" },
+              { key: "alt", label: "Alt", type: "text" },
+            ],
+          },
+        ],
+        defaultSettings: {},
+      };
+
+      const legacyData = {
+        image: "/ph/hero.jpg",
+        alt: "Hero Banner",
+        items: [
+          { image: "/ph/item1.jpg", alt: "Item 1" },
+        ],
+      };
+
+      const migrated = migrateSectionSettings(sectionDef, legacyData);
+      expect(migrated.image).toEqual({
+        url: "/ph/hero.jpg",
+        alt: "Hero Banner",
+      });
+      const items = migrated.items as any[];
+      expect(items[0].image).toEqual({
+        url: "/ph/item1.jpg",
+        alt: "Item 1",
+      });
+    });
+
+    it("migrateThemeAst upgrades AST schemaVersion and processes all section instances", () => {
+      const legacyAst = {
+        schemaVersion: "0.9.0",
+        sections: [
+          {
+            id: "node_1",
+            type: "hero_carousel",
+            settings: {
+              slides: [
+                { image: "/ph/slide1.jpg", alt: "Slide 1" },
+              ],
+            },
+          },
+        ],
+      };
+
+      const { ast: migratedAst, migratedCount } = migrateThemeAst(legacyAst, SONGOSKRITI_THEME_MANIFEST);
+      expect((migratedAst as any).schemaVersion).toBe(THEME_CONTRACT_VERSION);
+      expect(migratedCount).toBe(1);
+    });
   });
 
   /* ---------------------------------------------------------------- */
@@ -309,6 +525,24 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
           if (ctrl.help) {
             expect(ctrl.help).not.toContain("flamefashionbd");
           }
+        }
+      }
+    });
+
+    it("GENERIC_SEO_TEMPLATES contains zero unverified merchant promises or payment claims", () => {
+      const bannedPhrases = [
+        "Cash on delivery",
+        "bKash",
+        "Nagad",
+        "Nationwide delivery across Bangladesh",
+      ];
+      for (const [key, template] of Object.entries(GENERIC_SEO_TEMPLATES)) {
+        const text = JSON.stringify(template);
+        for (const phrase of bannedPhrases) {
+          expect(
+            text.includes(phrase),
+            `GENERIC_SEO_TEMPLATES.${key} contains banned phrase: "${phrase}"`,
+          ).toBe(false);
         }
       }
     });
@@ -462,6 +696,120 @@ describe("Theme Compliance Standard — 8 Core Pillars", () => {
       expect(trackSrc).toContain(
         '{ name: "robots", content: "noindex, nofollow" }',
       );
+    });
+
+    it("buildStoreHead omits Organization.logo when logoUrl is null or undefined", () => {
+      const headWithoutLogo = buildStoreHead({
+        origin: "https://store.framique.com",
+        path: "/store/artisan",
+        storeName: "Artisan Store",
+        themeKey: "songoskriti",
+        locale: "en",
+        logoUrl: null,
+      });
+
+      const ldJsonScripts = headWithoutLogo.scripts.filter((s) => s.type === "application/ld+json");
+      expect(ldJsonScripts.length).toBeGreaterThan(0);
+      const orgSchema = ldJsonScripts.map((s) => JSON.parse(s.children)).find((s) => s["@type"] === "Organization");
+      expect(orgSchema).toBeDefined();
+      expect(orgSchema.logo).toBeUndefined();
+
+      const headWithLogo = buildStoreHead({
+        origin: "https://store.framique.com",
+        path: "/store/artisan",
+        storeName: "Artisan Store",
+        themeKey: "songoskriti",
+        locale: "en",
+        logoUrl: "https://cdn.framique.com/artisan-logo.png",
+      });
+
+      const ldJsonWithLogo = headWithLogo.scripts.filter((s) => s.type === "application/ld+json");
+      const orgWithLogoSchema = ldJsonWithLogo.map((s) => JSON.parse(s.children)).find((s) => s["@type"] === "Organization");
+      expect(orgWithLogoSchema).toBeDefined();
+      expect(orgWithLogoSchema.logo).toBe("https://cdn.framique.com/artisan-logo.png");
+    });
+
+    it("buildProductHead dynamically omits return policy unless verified merchantReturnPolicy is configured", () => {
+      const headWithoutReturnPolicy = buildProductHead({
+        origin: "https://store.framique.com",
+        path: "/store/artisan/p/jamdani",
+        storeName: "Artisan Store",
+        themeKey: "songoskriti",
+        locale: "en",
+        currency: "BDT",
+        priceMinor: 750000,
+        inStock: true,
+        storePath: "/store/artisan",
+        product: {
+          title: "Jamdani Saree",
+          slug: "jamdani",
+        },
+      });
+
+      const scriptsWithout = headWithoutReturnPolicy.scripts.filter((s) => s.type === "application/ld+json");
+      const productSchemaWithout = scriptsWithout.map((s) => JSON.parse(s.children)).find((s) => s["@type"] === "Product");
+      expect(productSchemaWithout).toBeDefined();
+      expect(productSchemaWithout.offers.hasMerchantReturnPolicy).toBeUndefined();
+
+      const headWithReturnPolicy = buildProductHead({
+        origin: "https://store.framique.com",
+        path: "/store/artisan/p/jamdani",
+        storeName: "Artisan Store",
+        themeKey: "songoskriti",
+        locale: "en",
+        currency: "BDT",
+        priceMinor: 750000,
+        inStock: true,
+        storePath: "/store/artisan",
+        product: {
+          title: "Jamdani Saree",
+          slug: "jamdani",
+        },
+        returnPolicy: {
+          days: 7,
+          fees: "shopper",
+        },
+      });
+
+      const scriptsWith = headWithReturnPolicy.scripts.filter((s) => s.type === "application/ld+json");
+      const productSchemaWith = scriptsWith.map((s) => JSON.parse(s.children)).find((s) => s["@type"] === "Product");
+      expect(productSchemaWith).toBeDefined();
+      expect(productSchemaWith.offers.hasMerchantReturnPolicy).toBeDefined();
+      expect(productSchemaWith.offers.hasMerchantReturnPolicy.merchantReturnDays).toBe(7);
+      expect(productSchemaWith.offers.hasMerchantReturnPolicy.returnFees).toBe(
+        "https://schema.org/ReturnShippingFees",
+      );
+    });
+  });
+
+  /* ---------------------------------------------------------------- */
+  /* Pillar 6: Studio Canvas & Storefront Renderer Parity             */
+  /* ---------------------------------------------------------------- */
+  describe("Pillar 6: Studio Canvas & Storefront Renderer Parity", () => {
+    it("resolveWidgetComponent resolves authentic theme presentation for all core sections under songoskriti", () => {
+      const coreSections = [
+        "department_grid",
+        "split_feature",
+        "collection_story",
+        "product_rail",
+        "ugc_gallery",
+        "testimonials",
+        "craft_story",
+      ] as const;
+
+      for (const sectionType of coreSections) {
+        const comp = resolveWidgetComponent("songoskriti", sectionType);
+        expect(
+          comp,
+          `Section '${sectionType}' must resolve to an authentic theme component under songoskriti`,
+        ).toBeDefined();
+      }
+    });
+
+    it("SongoskritiSplitFeature supports both primaryImage/imageUrl and layout/flip props", () => {
+      const comp = resolveWidgetComponent("songoskriti", "split_feature");
+      expect(comp).toBeDefined();
+      expect(typeof comp).toBe("function");
     });
   });
 

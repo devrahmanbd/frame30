@@ -152,7 +152,8 @@ export function DocumentPanel({
             <MediaPicker
               value={doc.featuredImage}
               sizesPreset="hero"
-              onPick={(url) => {
+              onPick={(picked) => {
+                const url = typeof picked === "string" ? picked : picked.url;
                 update({ featuredImage: url }, "featured");
                 setMediaOpen(false);
               }}

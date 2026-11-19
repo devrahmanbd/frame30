@@ -35,6 +35,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { MediaPicker } from "@/components/builder/MediaPicker";
+import {
+  resolveMediaUrl,
+  resolveMediaAlt,
+  type StructuredMediaValue,
+} from "@/lib/theme-contract";
 import type { Control } from "@/lib/studio/controls";
 import type { NodeSettings, SettingValue } from "@/lib/studio/model";
 import {
@@ -404,9 +409,9 @@ export function ControlField(props: FieldProps) {
         return (
           <ImageField
             id={id}
-            value={typeof value === "string" ? value : ""}
+            value={value as string | StructuredMediaValue}
             label={control.label}
-            onChange={(next) => set(next)}
+            onChange={(next) => set(next as SettingValue)}
             /* Alt text written once in the media library follows the image
              * into every placement. An alt the editor already typed wins — we
              * never overwrite an author's words. */
@@ -575,24 +580,41 @@ function ImageField({
   onInherit,
 }: {
   id: string;
-  value: string;
+  value: unknown;
   label: string;
-  onChange: (next: string) => void;
+  onChange: (next: unknown) => void;
   onInherit?: (meta: {
     altText?: string | null;
     width?: number | null;
     height?: number | null;
+    focalPoint?: { x: number; y: number } | null;
   }) => void;
 }) {
   const [open, setOpen] = useState(false);
+  const displayUrl =
+    resolveMediaUrl(value) || (typeof value === "string" ? value : "");
+  const focalPoint =
+    typeof value === "object" && value && "focalPoint" in value
+      ? (value as StructuredMediaValue).focalPoint
+      : undefined;
+
   return (
     <div className="flex flex-col gap-2">
-      {value ? (
-        <img
-          src={value}
-          alt=""
-          className="h-24 w-full rounded-fq-sm border border-border object-cover"
-        />
+      {displayUrl ? (
+        <div className="relative h-24 w-full overflow-hidden rounded-fq-sm border border-border">
+          <img
+            src={displayUrl}
+            alt={resolveMediaAlt(value, "")}
+            style={
+              focalPoint
+                ? {
+                    objectPosition: `${focalPoint.x}% ${focalPoint.y}%`,
+                  }
+                : undefined
+            }
+            className="h-full w-full object-cover"
+          />
+        </div>
       ) : (
         <div className="grid h-24 w-full place-items-center rounded-fq-sm border border-dashed border-border text-[11px] text-muted-foreground">
           No image selected
@@ -605,9 +627,9 @@ function ImageField({
           onClick={() => setOpen(true)}
           className="min-h-9 flex-1 rounded-fq-sm border border-border text-xs font-medium hover:bg-muted"
         >
-          {value ? "Replace image" : "Select image"}
+          {displayUrl ? "Replace image" : "Select image"}
         </button>
-        {value && (
+        {displayUrl && (
           <button
             type="button"
             onClick={() => onChange("")}
@@ -624,14 +646,13 @@ function ImageField({
             <DialogTitle>{label}</DialogTitle>
           </DialogHeader>
           <MediaPicker
-            value={value}
+            value={value as string | StructuredMediaValue}
             sizesPreset="full"
-            onPick={(url, meta) => {
-              onChange(url);
+            onPick={(picked, meta) => {
+              onChange(picked);
               if (meta) onInherit?.(meta);
-              if (url) setOpen(false);
+              if (picked) setOpen(false);
             }}
-
             onSizes={() => undefined}
           />
         </DialogContent>

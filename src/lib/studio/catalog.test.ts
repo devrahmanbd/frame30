@@ -1135,8 +1135,10 @@ describe("builder capability discovery (T4.2)", () => {
 
   it("funnels theme presentation options through closed schema only", () => {
     const rail = presentationControlsFor("product_rail");
-    expect(rail.map((c) => c.key)).toEqual(["skin"]);
-    expect(rail[0]!.options?.map((o) => o.value)).toEqual([
+    expect(rail.map((c) => c.key)).toContain("cardVariant");
+    expect(rail.map((c) => c.key)).toContain("skin");
+    const skinCtrl = rail.find((c) => c.key === "skin");
+    expect(skinCtrl!.options?.map((o) => o.value)).toEqual([
       "editorial",
       "compact",
       "minimal",
