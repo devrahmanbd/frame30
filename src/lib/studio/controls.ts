@@ -663,7 +663,7 @@ const CONTAINER_CONTROLS: Control[] = [
 /* Widget content controls                                             */
 /* ------------------------------------------------------------------ */
 
-const CONTENT: Record<string, Control[]> = {
+export const CONTENT: Record<string, Control[]> = {
   container: CONTAINER_CONTROLS,
   grid: CONTAINER_CONTROLS,
   heading: [
@@ -1743,8 +1743,8 @@ const CONTENT: Record<string, Control[]> = {
   heritage_story: [
     c({
       key: "image",
-      label: "Image URL",
-      type: "text",
+      label: "Image",
+      type: "image",
       tab: "content",
       section: "Story",
     }),
@@ -1792,8 +1792,8 @@ const CONTENT: Record<string, Control[]> = {
   editorial_banner: [
     c({
       key: "image",
-      label: "Image URL",
-      type: "text",
+      label: "Image",
+      type: "image",
       tab: "content",
       section: "Banner",
     }),
@@ -1864,8 +1864,8 @@ const CONTENT: Record<string, Control[]> = {
     }),
     c({
       key: "imageUrl",
-      label: "Image URL",
-      type: "text",
+      label: "Image",
+      type: "image",
       tab: "content",
       section: "Hero",
     }),
@@ -1905,8 +1905,8 @@ const CONTENT: Record<string, Control[]> = {
       fields: [
         c({
           key: "image",
-          label: "Image URL",
-          type: "text",
+          label: "Image",
+          type: "image",
           tab: "content",
           section: "Lookbook",
         }),
@@ -1951,7 +1951,14 @@ const CONTENT: Record<string, Control[]> = {
         }),
         c({
           key: "image",
-          label: "Image URL",
+          label: "Image",
+          type: "image",
+          tab: "content",
+          section: "Slides",
+        }),
+        c({
+          key: "alt",
+          label: "Alt text",
           type: "text",
           tab: "content",
           section: "Slides",
@@ -2008,7 +2015,14 @@ const CONTENT: Record<string, Control[]> = {
       fields: [
         c({
           key: "image",
-          label: "Image URL",
+          label: "Image",
+          type: "image",
+          tab: "content",
+          section: "Showcase",
+        }),
+        c({
+          key: "alt",
+          label: "Alt text",
           type: "text",
           tab: "content",
           section: "Showcase",
@@ -2040,14 +2054,21 @@ const CONTENT: Record<string, Control[]> = {
       fields: [
         c({
           key: "image",
-          label: "Image URL",
-          type: "text",
+          label: "Image",
+          type: "image",
           tab: "content",
           section: "Grid",
         }),
         c({
           key: "hoverImage",
-          label: "Hover Image URL",
+          label: "Hover Image",
+          type: "image",
+          tab: "content",
+          section: "Grid",
+        }),
+        c({
+          key: "alt",
+          label: "Alternative text",
           type: "text",
           tab: "content",
           section: "Grid",
@@ -2117,7 +2138,14 @@ const CONTENT: Record<string, Control[]> = {
         }),
         c({
           key: "image",
-          label: "Image URL",
+          label: "Image",
+          type: "image",
+          tab: "content",
+          section: "Timeline",
+        }),
+        c({
+          key: "alt",
+          label: "Alt text",
           type: "text",
           tab: "content",
           section: "Timeline",
@@ -2172,7 +2200,14 @@ const CONTENT: Record<string, Control[]> = {
       fields: [
         c({
           key: "image",
-          label: "Image URL",
+          label: "Image",
+          type: "image",
+          tab: "content",
+          section: "Slides",
+        }),
+        c({
+          key: "alt",
+          label: "Alt text",
           type: "text",
           tab: "content",
           section: "Slides",
@@ -2517,8 +2552,8 @@ const CONTENT: Record<string, Control[]> = {
     }),
     c({
       key: "imageUrl",
-      label: "Image URL",
-      type: "text",
+      label: "Image",
+      type: "image",
       tab: "content",
       section: "Feature",
     }),
@@ -2740,8 +2775,8 @@ const CONTENT: Record<string, Control[]> = {
   logo: [
     c({
       key: "image",
-      label: "Logo image URL",
-      type: "text",
+      label: "Logo image",
+      type: "image",
       tab: "content",
       section: "Logo",
     }),
@@ -3320,7 +3355,7 @@ const CONTENT: Record<string, Control[]> = {
     c({
       key: "imageUrl",
       label: "Banner image",
-      type: "text",
+      type: "image",
       tab: "content",
       section: "Header",
     }),
@@ -3392,7 +3427,7 @@ const CONTENT: Record<string, Control[]> = {
     c({
       key: "imageUrl",
       label: "Background image",
-      type: "text",
+      type: "image",
       tab: "content",
       section: "Story",
     }),
@@ -4192,8 +4227,8 @@ const CONTENT: Record<string, Control[]> = {
     }),
     c({
       key: "imageUrl",
-      label: "Image URL",
-      type: "text",
+      label: "Image",
+      type: "image",
       tab: "content",
       section: "Shoppable image",
     }),
@@ -6555,8 +6590,8 @@ const CONTENT: Record<string, Control[]> = {
         }),
         c({
           key: "image",
-          label: "Avatar URL",
-          type: "text",
+          label: "Avatar image",
+          type: "image",
           tab: "content",
           section: "Testimonials",
         }),
@@ -6964,6 +6999,8 @@ const COMMERCE_KEYS = [
   "menu-cart",
   "reviews",
 ];
+
+export const SECTION_CONTROLS = CONTENT;
 
 export function contentControls(el: string): Control[] {
   if (CONTENT[el]) return CONTENT[el]!;

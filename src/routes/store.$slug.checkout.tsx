@@ -199,6 +199,7 @@ export const Route = createFileRoute("/store/$slug/checkout")({
   head: () => ({
     meta: [
       { title: "Checkout — secure order placement" },
+      { name: "robots", content: "noindex, nofollow" },
       {
         name: "description",
         content:

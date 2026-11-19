@@ -13,6 +13,7 @@ export const Route = createFileRoute("/store/$slug/track")({
   head: () => ({
     meta: [
       { title: "Track your parcel" },
+      { name: "robots", content: "noindex, nofollow" },
       {
         name: "description",
         content:

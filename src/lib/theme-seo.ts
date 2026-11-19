@@ -622,3 +622,117 @@ export function buildSearchHead(input: SearchHeadInput): HeadOutput {
   }
   return head;
 }
+
+export type CollectionHeadInput = BaseInput & {
+  collection: {
+    name: string;
+    slug: string;
+    description?: string | null;
+    meta_title?: string | null;
+    meta_description?: string | null;
+    image_url?: string | null;
+    updated_at?: string | null;
+  };
+  products?: {
+    id?: string;
+    title: string;
+    slug: string;
+    image_url?: string | null;
+    price_minor_int?: number;
+    currency_code?: string;
+  }[];
+  storePath: string;
+  totalProducts?: number;
+};
+
+/**
+ * Collection listing head: CollectionPage + ItemList + BreadcrumbList.
+ * Centralized isomorphic SEO engine for all storefront collection routes.
+ */
+export function buildCollectionHead(input: CollectionHeadInput): HeadOutput {
+  const profile = seoProfileFor(input.themeKey);
+  const title =
+    input.collection.meta_title?.trim() ||
+    applyTemplate(profile.titleTemplate, input.collection.name, input.storeName);
+  const description =
+    input.collection.meta_description?.trim() ||
+    input.collection.description?.trim() ||
+    `Shop ${input.collection.name} at ${input.storeName} with nationwide delivery across Bangladesh.`;
+  const image =
+    input.image ??
+    input.collection.image_url ??
+    (input.products?.[0]?.image_url ?? null);
+
+  const head = baseHead(
+    { ...input, image },
+    title,
+    description,
+    "website",
+    profile,
+  );
+  const url = absUrl(input.origin, input.path);
+
+  // CollectionPage schema
+  head.scripts.push(
+    jsonLd({
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: clamp(input.collection.name, 110),
+      description: clamp(description, DESC_MAX),
+      ...(url ? { url } : {}),
+      ...(image ? { image: [image] } : {}),
+      ...(input.collection.updated_at
+        ? { dateModified: input.collection.updated_at }
+        : {}),
+      publisher: { "@type": "Organization", name: input.storeName },
+    }),
+  );
+
+  // ItemList schema
+  if (profile.jsonld.itemList && input.products && input.products.length > 0) {
+    const items = input.products.slice(0, 30).map((prod, index) => {
+      const prodUrl = absUrl(input.origin, `/p/${prod.slug}`);
+      return {
+        "@type": "ListItem",
+        position: index + 1,
+        name: prod.title,
+        ...(prodUrl ? { url: prodUrl } : {}),
+        ...(prod.image_url ? { image: prod.image_url } : {}),
+        ...(typeof prod.price_minor_int === "number"
+          ? {
+              offers: {
+                "@type": "Offer",
+                price: priceString(
+                  prod.price_minor_int,
+                  prod.currency_code ?? "BDT",
+                ),
+                priceCurrency: prod.currency_code ?? "BDT",
+              },
+            }
+          : {}),
+      };
+    });
+    head.scripts.push(
+      jsonLd({
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        name: input.collection.name,
+        numberOfItems: input.totalProducts ?? input.products.length,
+        itemListElement: items,
+      }),
+    );
+  }
+
+  // BreadcrumbList schema
+  if (profile.jsonld.breadcrumb) {
+    const crumbs = breadcrumbLd(input.origin, [
+      { name: input.storeName, path: input.storePath },
+      { name: input.collection.name, path: input.path },
+    ]);
+    if (crumbs) head.scripts.push(jsonLd(crumbs));
+  }
+
+  head.links.push(...performanceLinks(profile, { heroImage: image }));
+  return head;
+}
+

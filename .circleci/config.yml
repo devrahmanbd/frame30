@@ -94,6 +94,9 @@ jobs:
           name: Lean 4 formal verification & refinement (fail-closed)
           command: bun run test:lean
       - run:
+          name: Theme compliance gate (Frame30 Official Theme Standard)
+          command: bun run test:theme-compliance
+      - run:
           name: Unit + contract tests (Vitest)
           command: bun run test
       - run:

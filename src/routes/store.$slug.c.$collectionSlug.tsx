@@ -29,6 +29,7 @@ import {
   CollectionView,
   resolveProductPricingAndStock,
 } from "@/components/store/CollectionView";
+import { buildCollectionHead } from "@/lib/theme-seo";
 
 export const Route = createFileRoute("/store/$slug/c/$collectionSlug")({
   loader: async ({ params }) => {
@@ -63,30 +64,17 @@ export const Route = createFileRoute("/store/$slug/c/$collectionSlug")({
         ],
       };
     }
-    const title =
-      loaderData.seo?.metaTitle ||
-      `${loaderData.collection.name} — ${loaderData.merchant.name}`;
-    const description =
-      loaderData.seo?.metaDescription ||
-      loaderData.collection.description ||
-      `Shop ${loaderData.collection.name} at ${loaderData.merchant.name}.`;
-    const canonicalPath =
-      loaderData.canonicalPath || `/c/${loaderData.collection.slug}`;
-    const canonical = loaderData.origin
-      ? `${loaderData.origin}${canonicalPath}`
-      : canonicalPath;
-    return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:type", content: "website" },
-        { property: "og:url", content: canonical },
-        { name: "twitter:card", content: "summary_large_image" },
-      ],
-      links: [{ rel: "canonical", href: canonical }],
-    };
+    return buildCollectionHead({
+      origin: loaderData.origin,
+      path: loaderData.canonicalPath || `/c/${loaderData.collection.slug}`,
+      storeName: loaderData.merchant.name,
+      themeKey: loaderData.themeKey,
+      locale: loaderData.locale === "bn" ? "bn" : "en",
+      collection: loaderData.collection,
+      products: loaderData.products,
+      storePath: "/",
+      seo: loaderData.seo,
+    });
   },
   component: function RouteComponent() {
     return <CollectionView data={Route.useLoaderData()} />;

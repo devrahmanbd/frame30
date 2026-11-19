@@ -107,8 +107,15 @@ function rowsOf(section: Section, key: string): PropRow[] {
   return Array.isArray(value) ? value : [];
 }
 
-const readString = (row: PropRow, key: string) =>
-  typeof row[key] === "string" ? (row[key] as string) : "";
+const readString = (row: PropRow, key: string): string => {
+  const val = row[key];
+  if (typeof val === "string") return val;
+  if (val && typeof val === "object" && "url" in val) {
+    const u = (val as { url?: unknown }).url;
+    return typeof u === "string" ? u : "";
+  }
+  return "";
+};
 
 function readBn(row: PropRow, key: string, locale: string) {
   const bn = readString(row, `${key}_bn`);
@@ -2043,6 +2050,7 @@ const SongoskritiDepartmentGrid: WidgetComponent = ({
     .map((row) => ({
       title: readBn(row, "title", locale) || readBn(row, "name", locale),
       image: readString(row, "image"),
+      alt: readString(row, "alt") || null,
       hoverImage:
         readString(row, "hoverImage") || readString(row, "hover_image") || null,
       href: readString(row, "href"),
@@ -2088,13 +2096,14 @@ const SongoskritiDepartmentGrid: WidgetComponent = ({
                 {dept.image ? (
                   <img
                     src={dept.image}
-                    alt={dept.title}
+                    alt={dept.alt || dept.title || ""}
                     className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ease-out ${
                       dept.hoverImage
                         ? "opacity-100 group-hover:opacity-0 group-focus-within:opacity-0 [@media(hover:none)]:opacity-100 group-hover:scale-105"
                         : "opacity-100 group-hover:scale-105"
                     }`}
                     loading="lazy"
+                    decoding="async"
                   />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center text-2xl text-[var(--theme-ink)]/10 select-none font-serif">
@@ -2108,6 +2117,7 @@ const SongoskritiDepartmentGrid: WidgetComponent = ({
                     aria-hidden="true"
                     className="absolute inset-0 h-full w-full object-cover opacity-0 transition-all duration-700 ease-out scale-100 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-0 group-hover:scale-105"
                     loading="lazy"
+                    decoding="async"
                   />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-[var(--theme-ink)]/75 via-[var(--theme-ink)]/20 to-transparent transition-opacity duration-500 group-hover:from-[var(--theme-ink)]/85" />
