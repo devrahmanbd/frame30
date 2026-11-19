@@ -74,6 +74,42 @@ const imageInspection = extract((state: State) => {
 
   const failures: ImageFailureRecord[] = [];
 
+  const win = state.window;
+  const hasInteracted = state.lastAction !== null;
+
+  // Active decode trigger & watcher on live browser window
+  if (win && !(win as any).__framique_decode_watcher) {
+    (win as any).__framique_decode_watcher = true;
+    const triggerDecode = (el: HTMLImageElement) => {
+      if (
+        typeof el.decode === "function" &&
+        !el.hasAttribute("data-decoded") &&
+        !el.hasAttribute("data-decode-error") &&
+        !el.hasAttribute("data-decoding")
+      ) {
+        el.setAttribute("data-decoding", "true");
+        el.setAttribute("data-decoding-start", String(Date.now()));
+        el.decode()
+          .then(() => {
+            el.removeAttribute("data-decoding");
+            el.setAttribute("data-decoded", "true");
+          })
+          .catch((err: any) => {
+            el.removeAttribute("data-decoding");
+            el.setAttribute("data-decode-error", err?.message || "decode-failure");
+          });
+      }
+    };
+    Array.from(doc.querySelectorAll("img")).forEach(triggerDecode);
+    const observer = new win.MutationObserver(() => {
+      Array.from(doc.querySelectorAll("img")).forEach(triggerDecode);
+    });
+    observer.observe(doc.body || doc.documentElement, { childList: true, subtree: true, attributes: true });
+    win.addEventListener("scroll", () => {
+      Array.from(doc.querySelectorAll("img")).forEach(triggerDecode);
+    }, { passive: true });
+  }
+
   // Determine current page route to apply page-type specific container requirements
   const currentUrl =
     state.navigationHistory?.current?.url ||
@@ -157,6 +193,26 @@ const imageInspection = extract((state: State) => {
   const images = Array.from(doc.querySelectorAll("img"));
 
   for (const img of images) {
+    // Synchronously ensure decode is triggered for every img found
+    if (
+      typeof img.decode === "function" &&
+      !img.hasAttribute("data-decoded") &&
+      !img.hasAttribute("data-decode-error") &&
+      !img.hasAttribute("data-decoding")
+    ) {
+      img.setAttribute("data-decoding", "true");
+      img.setAttribute("data-decoding-start", String(Date.now()));
+      img.decode()
+        .then(() => {
+          img.removeAttribute("data-decoding");
+          img.setAttribute("data-decoded", "true");
+        })
+        .catch((err: any) => {
+          img.removeAttribute("data-decoding");
+          img.setAttribute("data-decode-error", err?.message || "decode-failure");
+        });
+    }
+
     const rawSrc = img.getAttribute("src")?.trim() || "";
     const currentSrc = img.currentSrc?.trim() || "";
     const effectiveSrc = currentSrc || rawSrc;
@@ -186,7 +242,7 @@ const imageInspection = extract((state: State) => {
       continue;
     }
 
-    // Explicit image decode check
+    // Explicit image decode error check
     const decodeError = img.getAttribute("data-decode-error");
     if (decodeError) {
       failures.push({
@@ -198,7 +254,6 @@ const imageInspection = extract((state: State) => {
     }
 
     const isLazy = img.getAttribute("loading") === "lazy";
-    const win = state.window;
 
     // Incomplete loading and natural dimension verification
     if (img.complete) {
@@ -208,6 +263,22 @@ const imageInspection = extract((state: State) => {
           url: effectiveSrc,
           reason: "zero-natural-dimensions",
           selector: img.className || img.alt || "img",
+        });
+        continue;
+      }
+
+      // Mandatory successful decode verification:
+      // Once decoding has had sufficient time (>= 400ms) or is already completed,
+      // it MUST have data-decoded === "true". If it failed or stalled, fail closed.
+      const decodeStartTime = parseInt(img.getAttribute("data-decoding-start") || "0", 10);
+      const isDecoded = img.getAttribute("data-decoded") === "true";
+      const decodeElapsed = decodeStartTime ? (Date.now() - decodeStartTime) : 0;
+
+      if (!isDecoded && decodeElapsed >= 400) {
+        failures.push({
+          url: effectiveSrc,
+          reason: "decode-failed",
+          selector: `${img.className || img.alt || "img"} [decode-stalled-or-failed]`,
         });
         continue;
       }

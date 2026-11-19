@@ -2,9 +2,10 @@
   "testRun": {
     "tool": "@antithesishq/bombadil",
     "version": "0.7.10",
-    "date": "2026-11-19T05:21:04.795Z",
+    "date": "2026-11-19T07:52:43.910Z",
     "target": "http://localhost:3000",
     "targetEnvironment": "staging-loopback (seeded-preview-fixtures)",
+    "routeCoverageDescription": "8 route/viewport combinations covering 5 canonical route types, not a complete 40-case matrix",
     "routeMatrix": [
       {
         "viewport": "mobile-320",
@@ -49,10 +50,11 @@
         "route": "/",
         "targetUrl": "http://localhost:3000/",
         "durationSeconds": 15.5,
-        "actionsExecuted": 10,
+        "actionsExecuted": 15,
         "actionTypes": [
+          "ScrollDown",
           "Click",
-          "ScrollDown"
+          "Reload"
         ],
         "invariantsExecuted": [
           "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
@@ -68,8 +70,9 @@
         "failedUrls": [],
         "verdict": "PASS",
         "tracePath": "docs/verification-evidence/bombadil/traces/mobile-320/trace.jsonl",
-        "traceSha256": "796fde41b347cc42e634c39c1308742219c003c9e44635fa6e045b48f28614e9",
-        "screenshotPath": "docs/verification-evidence/bombadil/traces/mobile-320/"
+        "traceSha256": "c077c5b9c96a71e6e28bf42f79440b8dfeac72a4615968e10ba358d5eac8a217",
+        "screenshotPath": "docs/verification-evidence/bombadil/traces/mobile-320/",
+        "error": null
       },
       {
         "name": "mobile-360",
@@ -77,10 +80,14 @@
         "height": 640,
         "route": "/c/sarees",
         "targetUrl": "http://localhost:3000/c/sarees",
-        "durationSeconds": 15.7,
-        "actionsExecuted": 1,
+        "durationSeconds": 15.4,
+        "actionsExecuted": 16,
         "actionTypes": [
-          "Click"
+          "Click",
+          "ScrollDown",
+          "TypeText",
+          "ScrollUp",
+          "Back"
         ],
         "invariantsExecuted": [
           "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
@@ -96,8 +103,9 @@
         "failedUrls": [],
         "verdict": "PASS",
         "tracePath": "docs/verification-evidence/bombadil/traces/mobile-360/trace.jsonl",
-        "traceSha256": "b6434738469263bcf5a49c0a9bd3c9d5eea26cb4eae0318acd85d0e3e3a716f0",
-        "screenshotPath": "docs/verification-evidence/bombadil/traces/mobile-360/"
+        "traceSha256": "2f9074a9b83c6574e66d1e768f9686491d66b308f18bbf6f16035b5d1c4d7bb7",
+        "screenshotPath": "docs/verification-evidence/bombadil/traces/mobile-360/",
+        "error": null
       },
       {
         "name": "mobile-390",
@@ -105,15 +113,13 @@
         "height": 844,
         "route": "/",
         "targetUrl": "http://localhost:3000/",
-        "durationSeconds": 15.6,
-        "actionsExecuted": 26,
+        "durationSeconds": 15.5,
+        "actionsExecuted": 31,
         "actionTypes": [
-          "Custom",
           "Click",
           "ScrollDown",
-          "ScrollUp",
-          "PressKey",
           "TypeText",
+          "ScrollUp",
           "Back"
         ],
         "invariantsExecuted": [
@@ -130,8 +136,9 @@
         "failedUrls": [],
         "verdict": "PASS",
         "tracePath": "docs/verification-evidence/bombadil/traces/mobile-390/trace.jsonl",
-        "traceSha256": "9f7418c536f212e79dc797c6161beebed70d568e8e94f27416603aadf89e2877",
-        "screenshotPath": "docs/verification-evidence/bombadil/traces/mobile-390/"
+        "traceSha256": "7e2c99c374c2520025a26f15422c43dfcc0389e004148e152e5ff2c72980a16c",
+        "screenshotPath": "docs/verification-evidence/bombadil/traces/mobile-390/",
+        "error": null
       },
       {
         "name": "mobile-430",
@@ -139,12 +146,15 @@
         "height": 932,
         "route": "/p/dhakai-jamdani-silk-saree",
         "targetUrl": "http://localhost:3000/p/dhakai-jamdani-silk-saree",
-        "durationSeconds": 15.6,
-        "actionsExecuted": 9,
+        "durationSeconds": 15.3,
+        "actionsExecuted": 42,
         "actionTypes": [
-          "Custom",
           "Click",
-          "ScrollDown"
+          "ScrollDown",
+          "Wait",
+          "ScrollUp",
+          "Back",
+          "TypeText"
         ],
         "invariantsExecuted": [
           "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
@@ -160,8 +170,9 @@
         "failedUrls": [],
         "verdict": "PASS",
         "tracePath": "docs/verification-evidence/bombadil/traces/mobile-430/trace.jsonl",
-        "traceSha256": "3219bdfc86d66115698a3b967516d4a681dada5a9c07f96c9a9dffa83037190c",
-        "screenshotPath": "docs/verification-evidence/bombadil/traces/mobile-430/"
+        "traceSha256": "94e3c7d12a570c286946373e8594cf6ff7489f8b8ae58067abd7ceb5c1619006",
+        "screenshotPath": "docs/verification-evidence/bombadil/traces/mobile-430/",
+        "error": null
       },
       {
         "name": "tablet-768",
@@ -169,11 +180,10 @@
         "height": 1024,
         "route": "/cart",
         "targetUrl": "http://localhost:3000/cart",
-        "durationSeconds": 15.7,
-        "actionsExecuted": 9,
+        "durationSeconds": 15.4,
+        "actionsExecuted": 13,
         "actionTypes": [
           "ScrollDown",
-          "Reload",
           "Click"
         ],
         "invariantsExecuted": [
@@ -190,8 +200,9 @@
         "failedUrls": [],
         "verdict": "PASS",
         "tracePath": "docs/verification-evidence/bombadil/traces/tablet-768/trace.jsonl",
-        "traceSha256": "585884d59b479c48fed7e8b27b153f22cc1a9eea0d5ca8de1f14134a575da5f2",
-        "screenshotPath": "docs/verification-evidence/bombadil/traces/tablet-768/"
+        "traceSha256": "d627f13f23d7c3e4f6629aee903d95a855772cf17e66de792e9e4f43c857a885",
+        "screenshotPath": "docs/verification-evidence/bombadil/traces/tablet-768/",
+        "error": null
       },
       {
         "name": "laptop-1024",
@@ -199,13 +210,11 @@
         "height": 768,
         "route": "/auth",
         "targetUrl": "http://localhost:3000/auth",
-        "durationSeconds": 15.5,
-        "actionsExecuted": 10,
+        "durationSeconds": 15.3,
+        "actionsExecuted": 11,
         "actionTypes": [
           "Click",
-          "Reload",
-          "ScrollDown",
-          "Custom"
+          "ScrollDown"
         ],
         "invariantsExecuted": [
           "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
@@ -221,8 +230,9 @@
         "failedUrls": [],
         "verdict": "PASS",
         "tracePath": "docs/verification-evidence/bombadil/traces/laptop-1024/trace.jsonl",
-        "traceSha256": "0d3a13b3fc8599ceeb9ad97a098a7e09e8f2ecb9d534d8c31bfef923df863373",
-        "screenshotPath": "docs/verification-evidence/bombadil/traces/laptop-1024/"
+        "traceSha256": "5a3b5e50aa8bb7673dbeaad805f2fa8fba913da4bf0f35ae3cb6ad9c319c791f",
+        "screenshotPath": "docs/verification-evidence/bombadil/traces/laptop-1024/",
+        "error": null
       },
       {
         "name": "desktop-1280",
@@ -230,11 +240,11 @@
         "height": 800,
         "route": "/c/sarees",
         "targetUrl": "http://localhost:3000/c/sarees",
-        "durationSeconds": 15.8,
-        "actionsExecuted": 6,
+        "durationSeconds": 15.4,
+        "actionsExecuted": 5,
         "actionTypes": [
           "Click",
-          "Custom"
+          "ScrollDown"
         ],
         "invariantsExecuted": [
           "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
@@ -250,8 +260,9 @@
         "failedUrls": [],
         "verdict": "PASS",
         "tracePath": "docs/verification-evidence/bombadil/traces/desktop-1280/trace.jsonl",
-        "traceSha256": "e9ca55757e832c25342a6f4834ab0bf86a3cbbc0f9bb8fafcc53c4742dbc3fc4",
-        "screenshotPath": "docs/verification-evidence/bombadil/traces/desktop-1280/"
+        "traceSha256": "1fc107b01cb76399dd1483d87401777dcc62ad238a0c5fd83ccd617b4bc9b1dd",
+        "screenshotPath": "docs/verification-evidence/bombadil/traces/desktop-1280/",
+        "error": null
       },
       {
         "name": "desktop-1440",
@@ -259,13 +270,13 @@
         "height": 900,
         "route": "/",
         "targetUrl": "http://localhost:3000/",
-        "durationSeconds": 15.7,
-        "actionsExecuted": 11,
+        "durationSeconds": 15.4,
+        "actionsExecuted": 15,
         "actionTypes": [
-          "Reload",
-          "ScrollDown",
           "Click",
-          "Custom"
+          "ScrollDown",
+          "ScrollUp",
+          "Back"
         ],
         "invariantsExecuted": [
           "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
@@ -281,8 +292,9 @@
         "failedUrls": [],
         "verdict": "PASS",
         "tracePath": "docs/verification-evidence/bombadil/traces/desktop-1440/trace.jsonl",
-        "traceSha256": "d19b2a8f12383ece83a32a5e1c405c4ce92066135e7e7c14f701c0ad48d739da",
-        "screenshotPath": "docs/verification-evidence/bombadil/traces/desktop-1440/"
+        "traceSha256": "4de1b204c45be51022638175ee29a530e9f35d9ecd0d21b84ca51d6d3e7c51a1",
+        "screenshotPath": "docs/verification-evidence/bombadil/traces/desktop-1440/",
+        "error": null
       }
     ]
   }

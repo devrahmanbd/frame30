@@ -12,7 +12,7 @@
 To permanently eliminate recurring defects (such as preview vs. production drift, cross-contaminated product collections, responsive overflow, and duplicated AI patch cycles), Frame30 has deployed a **six-layer verification engineering architecture**.
 
 In Wave 23.2, all verification mechanisms were hardened with extreme precision to address formal audit feedback:
-- **Truthful & Fail-Closed Bombadil Exploration:** Removed synthetic trace stubs; missing traces fail closed; parsed 82 real executed actions and dynamic action types from actual trace events across all 8 viewports; added fail-closed image decoding verification via custom action `await_image_decodes`.
+- **Truthful & Fail-Closed Bombadil Exploration:** Removed synthetic trace stubs; missing traces, malformed records, and summary write failures strictly fail closed; parsed 148 real executed actions and dynamic action types from actual trace events across eight route/viewport combinations covering five route types (not a complete 40-case matrix); made successful image decoding mandatory for every expected visible image in every tested viewport (not left as an optional weighted action).
 - **Refined TLA+ Concurrent Checkout Semantics:** Separated physical inventory quantities (`qty`, `availableStock`, `holds`) from financial monetary minor units (`orderTotalMinor`, `capturedAmountMinor`, `refundedAmountMinor`). Capture strictly uses modeled order totals, and refunds model cumulative partial and full amounts bounded by capture. Proved 12 invariants (**3,283,425 states generated, 52,880 distinct states found with 0 errors**, depth 12).
 - **Tightened Lean 4 Formal Correspondence:** Pinned `leanprover/lean4:v4.15.0`, machine-checked 7 formal theorems, and asserted 13 unique test vectors with nonzero shipping and BOGO edge cases matching production TypeScript 100% exactly.
 - **Dedicated CI Staging Job:** Added `bombadil-staging` job to `.circleci/config.yml` executing the explicit 8-viewport matrix against seeded loopback staging.
@@ -30,30 +30,31 @@ In Wave 23.2, all verification mechanisms were hardened with extreme precision t
 
 ## 2. Key Accomplishments & Hardened Verification Gates (Wave 23.2)
 
-### A. Fail-Closed Bombadil Image Verification (P0)
+### A. Mandatory Fail-Closed Image Decoding (P0)
 - **Files:** `bombadil/properties/images.ts`, `bombadil/specification.ts`
+- Made successful image decoding strictly mandatory for every expected visible image in every tested viewport.
+- Removed optional weighted `customActions` in `specification.ts`, using standard exploration while `imageInspection` actively monitors and enforces DOM image decoding.
 - Missing browser document state (`!doc`) strictly fails closed with `brokenCount: 1`.
 - Canonical image container validation: requires expected images to exist in homepage heroes (`[data-hero-image] img, img[alt='Dashboard'], .fq-halo ~ img`), collection cards (`[data-product-card] img`), PDP product galleries (`[data-gallery-image] img`), and cart items (`[data-cart-item] img`).
 - Rejects missing sources (`!src`) and invalid sources (`src="undefined"`, `src="null"`).
-- Requires completed images to decode with strictly positive dimensions (`naturalWidth > 0 && naturalHeight > 0`).
-- Custom browser action `await_image_decodes` explicitly awaits `img.decode()` during exploration.
+- Requires completed images to decode with strictly positive dimensions (`naturalWidth > 0 && naturalHeight > 0`) and successful decode state (`data-decoded === "true"` without `data-decode-error`).
 - Exercises lazy-loaded images after scrolling into the active viewport.
 - Captures all failed URLs and specific failure reasons (`missing-src`, `invalid-src`, `incomplete-load`, `zero-natural-dimensions`, `decode-failed`) in trace output.
 
-### B. Truthful 8-Viewport Responsive Matrix (`test:bombadil:all`) (P1)
+### B. Truthful 8 Route/Viewport Combinations (`test:bombadil:all`) (P1)
 - **Command:** `bun run test:bombadil:all` (added to `package.json`).
 - Automatically manages local test server lifecycle on port 3000 with TanStack Start SSR pre-warming.
-- Removed synthetic trace fallback; missing traces fail closed immediately.
+- Removed synthetic trace fallback; missing traces, malformed records, and summary-file write failures fail closed immediately.
 - Dynamically parses real executed actions, action types, violations, and image failures from `trace.jsonl`.
-- Explores all 8 viewports:
-  1. `mobile-320` (320x568, route `/`) — **PASS** (10 actions, 0 violations, 0 image failures)
-  2. `mobile-360` (360x640, route `/c/sarees`) — **PASS** (1 action, 0 violations, 0 image failures)
-  3. `mobile-390` (390x844, route `/`) — **PASS** (26 actions, 0 violations, 0 image failures)
-  4. `mobile-430` (430x932, route `/p/dhakai-jamdani-silk-saree`) — **PASS** (9 actions, 0 violations, 0 image failures)
-  5. `tablet-768` (768x1024, route `/cart`) — **PASS** (9 actions, 0 violations, 0 image failures)
-  6. `laptop-1024` (1024x768, route `/auth`) — **PASS** (10 actions, 0 violations, 0 image failures)
-  7. `desktop-1280` (1280x800, route `/c/sarees`) — **PASS** (6 actions, 0 violations, 0 image failures)
-  8. `desktop-1440` (1440x900, route `/`) — **PASS** (11 actions, 0 violations, 0 image failures)
+- Explores eight route/viewport combinations covering five canonical route types (not a complete 40-case matrix):
+  1. `mobile-320` (320x568, route `/`) — **PASS** (15 actions, 0 violations, 0 image failures)
+  2. `mobile-360` (360x640, route `/c/sarees`) — **PASS** (16 actions, 0 violations, 0 image failures)
+  3. `mobile-390` (390x844, route `/`) — **PASS** (31 actions, 0 violations, 0 image failures)
+  4. `mobile-430` (430x932, route `/p/dhakai-jamdani-silk-saree`) — **PASS** (42 actions, 0 violations, 0 image failures)
+  5. `tablet-768` (768x1024, route `/cart`) — **PASS** (13 actions, 0 violations, 0 image failures)
+  6. `laptop-1024` (1024x768, route `/auth`) — **PASS** (11 actions, 0 violations, 0 image failures)
+  7. `desktop-1280` (1280x800, route `/c/sarees`) — **PASS** (5 actions, 0 violations, 0 image failures)
+  8. `desktop-1440` (1440x900, route `/`) — **PASS** (15 actions, 0 violations, 0 image failures)
 - Preserves separate trace files in `docs/verification-evidence/bombadil/traces/<viewport>/` with cryptographic SHA-256 digests.
 - Records complete execution metrics in `docs/verification-evidence/bombadil-trace-summary.json`.
 - Protects production customer data by targeting `staging-loopback (seeded-preview-fixtures)` at `http://127.0.0.1:3000`.
@@ -110,7 +111,7 @@ bun run test:features     # PASS (5/5 features pass schema & file linkages)
 bun run test:properties   # PASS (7/7 tests: 5 property suites + 2 mutation proofs)
 bun run test:lean         # PASS (7 theorems compiled, 13/13 formal vectors match production TS)
 bun run test:tla          # PASS (TLC verified 3,283,425 states, 12 invariants, 0 errors)
-bun run test:bombadil:all # PASS (All 8 viewports pass with 82 real actions executed, 0 violations, 0 image failures)
+bun run test:bombadil:all # PASS (All 8 viewports pass with 148 real actions executed, 0 violations, 0 image failures)
 bun run test:contracts    # PASS (13 contract suites, 258/258 cases passed)
 bun run test              # PASS (642 Vitest test files)
 ```

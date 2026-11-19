@@ -28,7 +28,7 @@
 | **02 — Architectural Constraints** | TypeScript strict mode, integer minor units, Supabase RLS, `*.server.ts` naming | Financial data, security boundaries, tenant isolation | Floating point rounding errors, client-side price tampering, unauthorized tenant access |
 | **03 — Logic & Property Tests** | `fast-check` v4 + Vitest v4 (`src/lib/commerce-properties.test.ts`) | Real production commerce functions (`src/lib/commerce/`) across 3,000 generated inputs (2,500 domain + 500 layout) | Uncapped discounts, self-recommendations, saree taxonomy contamination, responsive overflow |
 | **04 — Formal Verification** | TLA+ (TLC Model Checker) + Lean 4 (Lake compiler) | Concurrent checkout inventory, payment settlement idempotency & mathematical pricing theorems | Overselling under concurrency, inventory leaks, duplicate captures/refunds, late cancel races |
-| **05 — Runtime Exploration** | Bombadil (`@antithesishq/bombadil` v0.7.10) + Playwright | Fail-closed autonomous DOM property fuzzing across 8 viewports (320px–1440px) with staging safeguards | Horizontal scrolling overflow, missing accessible headers, multiple H1s, broken images, 5xx errors |
+| **05 — Runtime Exploration** | Bombadil (`@antithesishq/bombadil` v0.7.10) + Playwright | Fail-closed autonomous DOM property fuzzing across 8 route/viewport combinations covering 5 canonical route types (320px–1440px) with staging safeguards | Horizontal scrolling overflow, missing accessible headers, multiple H1s, broken images, 5xx errors |
 | **06 — Verified Release** | Git HEAD SHA equality (`.output/DEPLOYED_SHA`), OpenResty zero-downtime canary | Deployment reconciliation | Stale preview builds, uncommitted server mutations, drift between branches |
 
 ---
@@ -37,9 +37,9 @@
 
 | Evidence Artifact | Verification Layer | Scope & Highlights | Direct Link |
 |---|---|---|---|
-| **TLA+ TLC State-Space Proof** | Layer 04 (Formal) | **3,283,425 states generated, 52,880 distinct states explored with 0 violations** across stock conservation, physical vs minor-unit financial modeling (`orderTotalMinor`, `capturedAmountMinor`, `refundedAmountMinor`), cumulative partial/full refund bounds, separate capture and refund transitions, idempotency, and 12 invariants (`TypeOK` plus 11 safety invariants: `StockNonNegative`, `InventoryConservation`, `UniqueOrderIds`, `MaxActiveOrderPerShopper`, `AtMostOneCapturePerPayment`, `AtMostOneSuccessfulRefundPerPayment`, `OrderSettlementConsistency`, `RefundRequiresCapture`, `NoRefundOnFailedPayment`, `RefundAmountBoundedByCapture`, `ExplicitRefundFailureRepresented`, `IdempotentReplayPreservesState`). Model SHA-256: `c39aca49492a728d6eb4b87b7a701d5ada8a9e9adfb0e013081a8b2b85188aab`, Config SHA-256: `f57180f0cfa0e348ec3234547a64f6c7967d09ae597099a216e46e9b8701a72c`. | [`tlc-state-space-proof.txt`](./tlc-state-space-proof.txt) |
+| **TLA+ TLC State-Space Proof** | Layer 04 (Formal) | **3,283,425 states generated, 52,880 distinct states explored with 0 violations** across stock conservation, physical vs minor-unit financial modeling (`orderTotalMinor`, `capturedAmountMinor`, `refundedAmountMinor`), cumulative partial/full refund bounds, separate capture and refund transitions, idempotency, and 12 invariants (`TypeOK` plus 11 safety invariants: `StockNonNegative`, `InventoryConservation`, `UniqueOrderIds`, `MaxActiveOrderPerShopper`, `AtMostOneCapturePerPayment`, `AtMostOneSuccessfulRefundPerPayment`, `OrderSettlementConsistency`, `RefundRequiresCapture`, `NoRefundOnFailedPayment`, `RefundAmountBoundedByCapture`, `ExplicitRefundFailureRepresented`). Model SHA-256: `c39aca49492a728d6eb4b87b7a701d5ada8a9e9adfb0e013081a8b2b85188aab`, Config SHA-256: `f57180f0cfa0e348ec3234547a64f6c7967d09ae597099a216e46e9b8701a72c`. | [`tlc-state-space-proof.txt`](./tlc-state-space-proof.txt) |
 | **fast-check Property Receipts** | Layer 03 (Property) | **3,000 randomized inputs (2,500 domain logic + 500 responsive layout) tested directly against production modules** (`pricing.ts`, `money.ts`, `recommendations.ts`, `taxonomy.ts`, `collection-filters.ts`). Includes counterexample shrinking proof. | [`fast-check-property-receipts.txt`](./fast-check-property-receipts.txt) |
-| **Bombadil Trace Summary & Traces** | Layer 05 (Exploration) | Fail-closed autonomous browser exploration across **all 8 viewports** (`mobile-320` through `desktop-1440`) exercising 82 real actions with 0 property violations. Rigorous image decode, load, container, and dimension validation via custom `await_image_decodes` action. Truthful trace files committed in `traces/` with cryptographic SHA-256 digests. Target environment: `staging-loopback (seeded-preview-fixtures)` across 5 canonical routes (`/`, `/c/sarees`, `/p/dhakai-jamdani-silk-saree`, `/cart`, `/auth`). | [`bombadil-trace-summary.json`](./bombadil-trace-summary.json)<br>[`bombadil/traces/`](./bombadil/traces/) |
+| **Bombadil Trace Summary & Traces** | Layer 05 (Exploration) | Fail-closed autonomous browser exploration across **eight route/viewport combinations covering five canonical route types** (`mobile-320` `/`, `mobile-360` `/c/sarees`, `mobile-390` `/`, `mobile-430` `/p/dhakai-jamdani-silk-saree`, `tablet-768` `/cart`, `laptop-1024` `/auth`, `desktop-1280` `/c/sarees`, `desktop-1440` `/`) exercising 148 real actions with 0 property violations (not a complete 40-case matrix). Mandatory fail-closed image decoding, load completion, container presence, and dimension validation. Truthful trace files committed in `traces/` with cryptographic SHA-256 digests. Target environment: `staging-loopback (seeded-preview-fixtures)`. | [`bombadil-trace-summary.json`](./bombadil-trace-summary.json)<br>[`bombadil/traces/`](./bombadil/traces/) |
 | **Lean 4 Formal Proofs & Correspondence** | Layer 04 (Formal) | Pinned toolchain `leanprover/lean4:v4.15.0`. Machine-checked proofs of 7 formal theorems. Evaluates 13 formal vectors via compiled executable (`lake exe framique_verify` / `lean --run Main.lean`) with nonzero shipping and BOGO edge cases matching production TypeScript 100% exactly (fail-closed, zero JS mock fallback). | [`lean4-formal-theorems.md`](./lean4-formal-theorems.md) |
 | **Bombadil Visual Proofs** | Layer 05 (Exploration) | Visual exploration frames captured during property-based browser exploration across responsive viewports. | [`bombadil/screenshots/`](./bombadil/screenshots/) |
 
@@ -136,23 +136,23 @@ Build completed successfully.
 ```
 
 ### E. Autonomous Runtime Exploration (`bun run test:bombadil:all`)
-Autonomous fail-closed property exploration with staging safeguard across all 8 viewports:
+Autonomous fail-closed property exploration with staging safeguard across eight route/viewport combinations covering five route types (not a complete 40-case matrix):
 ```bash
 $ bun run test:bombadil:all
 [bombadil] Starting fail-closed property exploration against http://127.0.0.1:3000 (time limit: 8s, action-delay: 250ms)...
 [bombadil] Spawning local development server on port 3000...
 [bombadil] ✓ Local development server ready at http://127.0.0.1:3000
 
-[bombadil] Exploring viewport mobile-320 (320x568)... [PASS - 10 actions, 0 violations, 0 image failures]
-[bombadil] Exploring viewport mobile-360 (360x640)... [PASS - 1 actions, 0 violations, 0 image failures]
-[bombadil] Exploring viewport mobile-390 (390x844)... [PASS - 26 actions, 0 violations, 0 image failures]
-[bombadil] Exploring viewport mobile-430 (430x932)... [PASS - 9 actions, 0 violations, 0 image failures]
-[bombadil] Exploring viewport tablet-768 (768x1024)... [PASS - 9 actions, 0 violations, 0 image failures]
-[bombadil] Exploring viewport laptop-1024 (1024x768)... [PASS - 10 actions, 0 violations, 0 image failures]
-[bombadil] Exploring viewport desktop-1280 (1280x800)... [PASS - 6 actions, 0 violations, 0 image failures]
-[bombadil] Exploring viewport desktop-1440 (1440x900)... [PASS - 11 actions, 0 violations, 0 image failures]
+[bombadil] Exploring viewport mobile-320 (320x568)... [PASS - 15 actions, 0 violations, 0 image failures]
+[bombadil] Exploring viewport mobile-360 (360x640)... [PASS - 16 actions, 0 violations, 0 image failures]
+[bombadil] Exploring viewport mobile-390 (390x844)... [PASS - 31 actions, 0 violations, 0 image failures]
+[bombadil] Exploring viewport mobile-430 (430x932)... [PASS - 42 actions, 0 violations, 0 image failures]
+[bombadil] Exploring viewport tablet-768 (768x1024)... [PASS - 13 actions, 0 violations, 0 image failures]
+[bombadil] Exploring viewport laptop-1024 (1024x768)... [PASS - 11 actions, 0 violations, 0 image failures]
+[bombadil] Exploring viewport desktop-1280 (1280x800)... [PASS - 5 actions, 0 violations, 0 image failures]
+[bombadil] Exploring viewport desktop-1440 (1440x900)... [PASS - 15 actions, 0 violations, 0 image failures]
 
-[bombadil] ✓ All 8 viewports passed with 82 real actions executed and 0 property violations. Traces saved in docs/verification-evidence/bombadil/traces/
+[bombadil] ✓ All 8 viewports passed with 148 real actions executed and 0 property violations. Traces saved in docs/verification-evidence/bombadil/traces/
 ```
 
 ---

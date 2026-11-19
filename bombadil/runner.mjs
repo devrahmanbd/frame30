@@ -31,8 +31,9 @@ const summaryPath = join(process.cwd(), "docs", "verification-evidence", "bombad
 
 console.log(`[bombadil] Starting fail-closed property exploration against ${targetUrl} (time limit: ${timeLimit}, action-delay: ${actionDelay}ms)...`);
 
-// Full 8-viewport responsive matrix spanning mobile, phablet, tablet, and high-DPI desktop
-// with dedicated route coverage across homepage, collections, PDP, cart, and account/auth.
+// Eight route/viewport combinations covering five canonical route types
+// (homepage, collections, PDP, cart, and account/auth). Note: this covers
+// 8 distinct route/viewport pairs, not a complete 40-case (8x5) Cartesian matrix.
 const allViewports = [
   { name: "mobile-320", width: 320, height: 568, route: "/" },
   { name: "mobile-360", width: 360, height: 640, route: "/c/sarees" },
@@ -223,14 +224,20 @@ async function runViewport(vp) {
       let violationsCount = 0;
       let imageFailuresCount = 0;
       const observedFailedUrls = new Set();
+      let hasMalformedRecord = false;
+      let malformedErrorMessage = null;
 
-      for (const lineStr of lines) {
+      for (let i = 0; i < lines.length; i++) {
+        const lineStr = lines[i];
         if (!lineStr.trim()) continue;
         let record;
         try {
           record = JSON.parse(lineStr);
-        } catch {
-          continue;
+        } catch (err) {
+          hasMalformedRecord = true;
+          malformedErrorMessage = `Line ${i + 1} is malformed JSON: ${err.message}`;
+          console.error(`[bombadil] ✗ Malformed trace record in viewport ${vp.name} on line ${i + 1}: ${err.message}`);
+          break;
         }
 
         // 1. Extract action counts and action types dynamically
@@ -263,12 +270,17 @@ async function runViewport(vp) {
         }
       }
 
+      if (hasMalformedRecord) {
+        violationsCount = Math.max(violationsCount, 1);
+      }
+
       const actionTypesList = Array.from(observedActionTypes);
 
       // A viewport passes ONLY when exit code is 0, zero violations, zero image failures,
-      // and at least one real action was executed from the trace evidence.
+      // zero malformed records, and at least one real action was executed from the trace evidence.
       const isPass = (
         code === 0 &&
+        !hasMalformedRecord &&
         violationsCount === 0 &&
         imageFailuresCount === 0 &&
         actionsExecuted > 0
@@ -277,7 +289,7 @@ async function runViewport(vp) {
       if (!isPass) {
         overallSuccess = false;
         failureExitCode = code || 1;
-        console.error(`[bombadil] ✗ Viewport ${vp.name} failed: code=${code}, violations=${violationsCount}, imageFailures=${imageFailuresCount}, actions=${actionsExecuted}`);
+        console.error(`[bombadil] ✗ Viewport ${vp.name} failed: code=${code}, violations=${violationsCount}, imageFailures=${imageFailuresCount}, actions=${actionsExecuted}, malformed=${hasMalformedRecord}`);
       } else {
         console.log(`[bombadil] ✓ Viewport ${vp.name} passed with ${actionsExecuted} actions, 0 violations, 0 image failures (SHA-256: ${traceSha256.slice(0, 16)}...).`);
       }
@@ -306,7 +318,8 @@ async function runViewport(vp) {
         verdict: isPass ? "PASS" : "FAIL",
         tracePath: `docs/verification-evidence/bombadil/traces/${vp.name}/trace.jsonl`,
         traceSha256,
-        screenshotPath: `docs/verification-evidence/bombadil/traces/${vp.name}/`
+        screenshotPath: `docs/verification-evidence/bombadil/traces/${vp.name}/`,
+        error: malformedErrorMessage || (isPass ? null : `code=${code}, violations=${violationsCount}, imageFailures=${imageFailuresCount}`)
       });
 
       resolve();
@@ -340,6 +353,7 @@ try {
       targetEnvironment: (targetUrl.includes("127.0.0.1") || targetUrl.includes("localhost"))
         ? "staging-loopback (seeded-preview-fixtures)"
         : "production-readonly",
+      routeCoverageDescription: "8 route/viewport combinations covering 5 canonical route types, not a complete 40-case matrix",
       routeMatrix: allViewports.map((v) => ({ viewport: v.name, route: v.route })),
       runnerMode: "fail-closed",
       actionDelayMs: Number(actionDelay),
@@ -347,13 +361,18 @@ try {
     }
   };
   writeFileSync(summaryPath, JSON.stringify(summaryData, null, 2) + "\n", "utf-8");
+  if (!existsSync(summaryPath) || statSync(summaryPath).size === 0) {
+    throw new Error("Summary file was not written or is empty");
+  }
 } catch (err) {
-  console.error("[bombadil] Failed to write trace summary:", err.message);
+  console.error("[bombadil] ✗ Failed to write trace summary:", err.message);
+  overallSuccess = false;
+  failureExitCode = failureExitCode || 1;
 }
 
 if (!overallSuccess) {
   console.error(`\n[bombadil] ✗ Exploration suite failed with exit code ${failureExitCode}. Terminating process.`);
-  process.exit(failureExitCode);
+  process.exit(failureExitCode || 1);
 }
 
 console.log("\n[bombadil] ✓ All viewports passed with 0 property violations. Traces saved in docs/verification-evidence/bombadil/traces/\n");

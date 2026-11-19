@@ -2333,19 +2333,20 @@ Extracted pure domain logic into modular production libraries:
 
 ### 24.1 Wave 23.2 Objectives & Problem Statement
 Wave 23.2 addresses all targeted feedback items from the formal verification audit:
-1. **Fail-Closed Bombadil Image Verification (P0):** Corrected `bombadil/properties/images.ts` to assert that:
+1. **Mandatory Fail-Closed Image Decoding (P0):** Hardened `bombadil/properties/images.ts` and `specification.ts`:
+   - Made successful image decoding mandatory for every expected visible image in every tested viewport (not left as an optional weighted action).
+   - Removed optional weighted `customActions` in `specification.ts`, using standard exploration while `imageInspection` actively monitors and enforces DOM image decoding.
    - Missing browser document state (`!doc`) fails closed immediately with `brokenCount: 1`.
    - Expected product images exist for canonical containers (homepage hero `img`, collection product cards `[data-product-card] img`, PDP product gallery `[data-gallery-image] img`, and cart items `[data-cart-item] img`).
    - Missing or corrupted image sources fail immediately.
-   - Completed images must decode successfully with `naturalWidth > 0` and `naturalHeight > 0`.
-   - Custom browser action `await_image_decodes` explicitly awaits `img.decode()` during exploration.
+   - Completed images must decode successfully (`data-decoded === "true"`, `naturalWidth > 0`, and `naturalHeight > 0`).
    - Lazy-loaded images are verified after scrolling into the viewport.
    - All failed image URLs and specific failure reasons (`missing-src`, `invalid-src`, `incomplete-load`, `zero-natural-dimensions`, `decode-failed`) appear in trace output.
-2. **Prove All 8 Bombadil Viewports Truthfully (P1):** Added `test:bombadil:all` to `package.json`. Ran all 8 responsive viewport configurations (`mobile-320`, `mobile-360`, `mobile-390`, `mobile-430`, `tablet-768`, `laptop-1024`, `desktop-1280`, `desktop-1440`).
-   - Completely removed synthetic trace fallback in `bombadil/runner.mjs`; missing traces strictly fail the viewport.
-   - Extracted 82 real executed actions and dynamic action types directly from actual `trace.jsonl` lines.
+2. **Prove 8 Route/Viewport Combinations Truthfully (P1):** Added `test:bombadil:all` to `package.json`. Ran 8 route/viewport combinations covering 5 canonical route types (`mobile-320` `/`, `mobile-360` `/c/sarees`, `mobile-390` `/`, `mobile-430` `/p/dhakai-jamdani-silk-saree`, `tablet-768` `/cart`, `laptop-1024` `/auth`, `desktop-1280` `/c/sarees`, `desktop-1440` `/`) — accurately described as 8 route/viewport combinations, not a full 40-case matrix.
+   - Completely removed synthetic trace fallback in `bombadil/runner.mjs`; missing traces, malformed JSON lines, and summary-file write failures strictly fail closed.
+   - Extracted 148 real executed actions and dynamic action types directly from actual `trace.jsonl` lines.
    - Preserved separate trace directories in `docs/verification-evidence/bombadil/traces/<viewport>/` with cryptographic SHA-256 hashes.
-   - Updated `bombadil-trace-summary.json` with exact target environment (`staging-loopback (seeded-preview-fixtures)`), route matrix across 5 canonical routes (`/`, `/c/sarees`, `/p/dhakai-jamdani-silk-saree`, `/cart`, `/auth`), dimensions, duration, actions, invariants executed, violations (0), image failures (0), and trace/screenshot paths.
+   - Updated `bombadil-trace-summary.json` with exact target environment (`staging-loopback (seeded-preview-fixtures)`), dimensions, duration, actions, invariants executed, violations (0), image failures (0), and trace/screenshot paths.
 3. **Refined TLA+ Payment & Refund Semantics with Minor-Unit Separation (P1):** Strengthened `specs/tla/CheckoutInventory.tla`:
    - Separated physical inventory quantities (`qty \in 1..MaxStock`, `availableStock`, `holds`) from financial monetary amounts (`orderTotalMinor \in 1000..MaxOrderTotalMinor`, `capturedAmountMinor`, `refundedAmountMinor`).
    - Capture strictly uses modeled order total minor units (`target.orderTotalMinor`), NOT `target.qty`.
