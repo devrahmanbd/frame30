@@ -3200,7 +3200,7 @@ const BASE_CATALOG: CatalogEntry[] = [
         itemLabel: "alt",
         maxRows: 8,
         fields: [
-          url("image", "Image"),
+          { key: "image", label: "Image", kind: "image", panel: "content" },
           text("alt", "Alt text", 120),
           text("alt_bn", "Alt text (বাংলা)", 120),
           url("href", "Link"),
@@ -3342,7 +3342,7 @@ const BASE_CATALOG: CatalogEntry[] = [
         maxRows: 8,
         fields: [
           text("title", "Title", 80),
-          text("image", "Image URL", 200),
+          { key: "image", label: "Image", kind: "image", panel: "content" },
           text("alt", "Alt text", 200),
           url("href", "Link URL"),
           text("subtitle", "Subtitle", 80),
@@ -5401,8 +5401,8 @@ const BASE_CATALOG: CatalogEntry[] = [
         itemLabel: "title",
         maxRows: 8,
         fields: [
-          text("image", "Image URL", 200),
-          text("hoverImage", "Hover Image URL", 200),
+          { key: "image", label: "Image", kind: "image", panel: "content" },
+          { key: "hoverImage", label: "Hover Image", kind: "image", panel: "content" },
           text("alt", "Alternative text", 200),
           text("title", "Title", 80),
           // `href` renders raw into the tile anchor (heritage.tsx
@@ -7763,7 +7763,19 @@ function coerceRow(schema: Field[], value: unknown): PropRow | null {
   const row: PropRow = {};
   for (const sub of schema) {
     if (sub.kind === "array" || sub.kind === "group") continue;
-    const coerced = coerceProp(sub, source[sub.key]);
+    let coerced = coerceProp(sub, source[sub.key]);
+    if (
+      coerced === null &&
+      (sub.kind === "url" || sub.kind === "text") &&
+      source[sub.key] &&
+      typeof source[sub.key] === "object" &&
+      !Array.isArray(source[sub.key])
+    ) {
+      const parsed = StructuredMediaValueSchema.safeParse(source[sub.key]);
+      if (parsed.success && SAFE_HREF.test(parsed.data.url)) {
+        coerced = parsed.data;
+      }
+    }
     if (coerced === null || Array.isArray(coerced)) {
       if (
         sub.kind === "image" &&

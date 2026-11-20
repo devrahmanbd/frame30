@@ -606,9 +606,12 @@ function LegacySectionInspector({
     );
     for (const field of fields) {
       if (owned.has(field.key)) continue;
-      const panel = field.panel ?? "content";
-      if (contentOnly && panel !== "content" && panel !== "layout") continue;
-      out[panel].push(field);
+      const targetPanel: PanelKey =
+        field.panel === "style" || field.panel === "advanced"
+          ? field.panel
+          : "content";
+      if (contentOnly && targetPanel !== "content") continue;
+      out[targetPanel].push(field);
     }
     // Elementor parity: the Advanced controls exist on every widget, so they
     // are appended here rather than repeated across the catalog.
@@ -742,6 +745,81 @@ function LegacySectionInspector({
                     disabled={!editable}
                   />
                 </div>
+              ) : sub.kind === "image" ||
+                sub.key === "image" ||
+                sub.key === "hoverImage" ||
+                (typeof row[sub.key] === "object" &&
+                  row[sub.key] !== null &&
+                  "url" in (row[sub.key] as Record<string, unknown>)) ? (
+                <div className="space-y-1.5">
+                  <MediaPicker
+                    value={row[sub.key] as string | StructuredMediaValue}
+                    sizesPreset="full"
+                    disabled={!editable}
+                    onPick={(urlOrValue, meta) => {
+                      const nextValue: PropScalar =
+                        typeof urlOrValue === "object" && urlOrValue !== null
+                          ? {
+                              ...urlOrValue,
+                              ...(meta?.altText && !urlOrValue.alt
+                                ? { alt: meta.altText }
+                                : {}),
+                            }
+                          : meta?.focalPoint
+                            ? {
+                                url: urlOrValue,
+                                alt: meta.altText ?? undefined,
+                                focalPoint: meta.focalPoint,
+                                width: meta.width ?? undefined,
+                                height: meta.height ?? undefined,
+                              }
+                            : urlOrValue;
+
+                      const altCandidateKey =
+                        sub.key === "image"
+                          ? ("alt" in row
+                              ? "alt"
+                              : "altText" in row
+                                ? "altText"
+                                : undefined)
+                          : `${sub.key}Alt` in row
+                            ? `${sub.key}Alt`
+                            : undefined;
+
+                      if (
+                        altCandidateKey &&
+                        meta?.altText &&
+                        !(
+                          typeof row[altCandidateKey] === "string" &&
+                          (row[altCandidateKey] as string).trim()
+                        )
+                      ) {
+                        set({
+                          [sub.key]: nextValue,
+                          [altCandidateKey]: meta.altText,
+                        });
+                      } else {
+                        set(sub.key, nextValue);
+                      }
+                    }}
+                    onSizes={() => {}}
+                  />
+                  <div className="flex items-center gap-2">
+                    <span className="text-[0.65rem] text-muted-foreground">
+                      {t("Dynamic", "ডাইনামিক")}
+                    </span>
+                    <DynamicTagPicker
+                      value={
+                        resolveMediaUrl(row[sub.key]) ||
+                        (typeof row[sub.key] === "string"
+                          ? (row[sub.key] as string)
+                          : "")
+                      }
+                      onChange={(next) => set(sub.key, next)}
+                      disabled={!editable}
+                    />
+                  </div>
+                </div>
               ) : (
                 <input
                   type={
@@ -753,7 +831,11 @@ function LegacySectionInspector({
                         ? "color"
                         : "text"
                   }
-                  value={String(row[sub.key] ?? "")}
+                  value={
+                    typeof row[sub.key] === "object" && row[sub.key] !== null
+                      ? (resolveMediaUrl(row[sub.key]) ?? "")
+                      : String(row[sub.key] ?? "")
+                  }
                   onChange={(e) =>
                     set(
                       sub.key,

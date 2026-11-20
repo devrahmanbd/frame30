@@ -22,7 +22,10 @@ type Props = {
   renderRowField: (
     sub: Field,
     row: PropRow,
-    set: (key: string, value: PropScalar) => void,
+    set: {
+      (key: string, value: PropScalar): void;
+      (patch: Record<string, PropScalar>): void;
+    },
   ) => React.ReactNode;
 };
 
@@ -33,9 +36,13 @@ function summarise(field: Field, row: PropRow, index: number): string {
   const text =
     typeof value === "string"
       ? value.trim()
-      : value !== undefined
-        ? String(value)
-        : "";
+      : typeof value === "object" && value !== null
+        ? (("alt" in value && typeof (value as Record<string, unknown>).alt === "string" && ((value as Record<string, unknown>).alt as string).trim()) ||
+           ("url" in value && typeof (value as Record<string, unknown>).url === "string" ? ((value as Record<string, unknown>).url as string) : "") ||
+           "")
+        : value !== undefined
+          ? String(value)
+          : "";
   return text || `#${index + 1}`;
 }
 
@@ -147,11 +154,25 @@ export function ArrayFieldEditor({
             {open === index && (
               <div className="space-y-3 border-t border-border p-2">
                 {(field.fields ?? field.children ?? []).map((sub) =>
-                  renderRowField(sub, row, (key, value) => {
-                    const next = rows.slice();
-                    next[index] = { ...row, [key]: value };
-                    onChange(next);
-                  }),
+                  renderRowField(
+                    sub,
+                    row,
+                    (
+                      keyOrPatch: string | Record<string, PropScalar>,
+                      maybeValue?: PropScalar,
+                    ) => {
+                      const next = rows.slice();
+                      if (typeof keyOrPatch === "string") {
+                        next[index] = {
+                          ...row,
+                          [keyOrPatch]: maybeValue as PropScalar,
+                        };
+                      } else {
+                        next[index] = { ...row, ...keyOrPatch };
+                      }
+                      onChange(next);
+                    },
+                  ),
                 )}
               </div>
             )}

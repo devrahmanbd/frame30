@@ -20,7 +20,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:theme-compliance": "vitest run src/lib/themes/theme-compliance.test.ts",
-    "test:properties": "vitest run src/lib/commerce-properties*.test.ts src/lib/themes/theme-lifecycle-properties.test.ts",
+    "test:properties": "vitest run src/lib/commerce-properties*.test.ts src/lib/themes/*properties.test.ts",
     "test:features": "node scripts/feature-map-check.mjs",
     "test:bombadil": "node bombadil/runner.mjs",
     "test:bombadil:all": "node bombadil/runner.mjs --all",
