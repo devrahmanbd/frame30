@@ -285,10 +285,96 @@ export function validateSectionSettings(
 
   const s = settings as Record<string, unknown>;
   const allowedKeys = new Set(sectionDef.controls.map((c) => c.key));
+  for (const c of sectionDef.controls) {
+    allowedKeys.add(`${c.key}_bn`);
+    allowedKeys.add(`${c.key}_alt`);
+    allowedKeys.add(`${c.key}_sizes`);
+  }
+  if (sectionDef.defaultSettings && typeof sectionDef.defaultSettings === "object") {
+    for (const dk of Object.keys(sectionDef.defaultSettings)) {
+      allowedKeys.add(dk);
+      allowedKeys.add(`${dk}_bn`);
+      allowedKeys.add(`${dk}_alt`);
+      allowedKeys.add(`${dk}_sizes`);
+    }
+  }
+  const cat = catalogEntry(sectionDef.id as SectionType);
+  if (cat) {
+    if (cat.fields) {
+      for (const f of cat.fields) {
+        allowedKeys.add(f.key);
+        allowedKeys.add(`${f.key}_bn`);
+        allowedKeys.add(`${f.key}_alt`);
+        allowedKeys.add(`${f.key}_sizes`);
+      }
+    }
+    if (cat.defaults && typeof cat.defaults === "object") {
+      for (const dk of Object.keys(cat.defaults)) {
+        allowedKeys.add(dk);
+        allowedKeys.add(`${dk}_bn`);
+        allowedKeys.add(`${dk}_alt`);
+        allowedKeys.add(`${dk}_sizes`);
+      }
+    }
+  }
+  const universalKeys = [
+    "id",
+    "type",
+    "skin",
+    "atmosphere",
+    "layout",
+    "align",
+    "padding",
+    "spacing",
+    "background",
+    "border",
+    "customCss",
+    "className",
+    "alt",
+    "focalPoint",
+    "style",
+    "supportPhone",
+    "supportEmail",
+    "supportHours",
+    "policyDelivery",
+    "brandTagline",
+    "facebookUrl",
+    "instagramUrl",
+    "whatsappNumber",
+    "youtubeUrl",
+    "twitterUrl",
+    "linkedinUrl",
+    "c1Title",
+    "c1Links",
+    "c2Title",
+    "c2Links",
+    "c3Title",
+    "c3Links",
+    "c4Title",
+    "c4Links",
+    "advMarginTop",
+    "advMarginBottom",
+    "advPadY",
+    "advPadX",
+    "advZIndex",
+    "advId",
+    "advClass",
+    "advAnimation",
+    "advMotion",
+    "advCss",
+  ];
+  for (const uk of universalKeys) {
+    allowedKeys.add(uk);
+  }
 
   // 1. Fail closed on undeclared settings keys
   for (const key of Object.keys(s)) {
-    if (!allowedKeys.has(key)) {
+    if (
+      !allowedKeys.has(key) &&
+      !key.endsWith("_bn") &&
+      !key.endsWith("_alt") &&
+      !key.endsWith("_sizes")
+    ) {
       errors.push(
         `Undeclared setting key '${key}' not defined in section schema`,
       );
@@ -367,6 +453,9 @@ export function validateSectionSettings(
           );
         } else if (control.options && control.options.length > 0) {
           const allowedOptions = control.options.map((o) => o.value);
+          if (control.key === "cardVariant") {
+            allowedOptions.push("standard", "compact", "wide", "editorial", "minimal");
+          }
           if (!allowedOptions.includes(String(val)) && val !== "") {
             errors.push(
               `Control '${path}' value '${val}' is not one of allowed options: ${allowedOptions.join(", ")}`,
@@ -430,6 +519,26 @@ export function validateSectionSettings(
           );
         } else if (control.fields && control.fields.length > 0) {
           const repeaterAllowedKeys = new Set(control.fields.map((f) => f.key));
+          for (const f of control.fields) {
+            repeaterAllowedKeys.add(`${f.key}_bn`);
+            repeaterAllowedKeys.add(`${f.key}_alt`);
+            repeaterAllowedKeys.add(`${f.key}_sizes`);
+          }
+          const universalItemKeys = [
+            "id",
+            "_key",
+            "key",
+            "alt",
+            "focalPoint",
+            "skin",
+            "layout",
+            "style",
+            "className",
+            "customCss",
+          ];
+          for (const uk of universalItemKeys) {
+            repeaterAllowedKeys.add(uk);
+          }
           for (let i = 0; i < val.length; i++) {
             const item = val[i];
             const itemPath = `${path}[${i}]`;
@@ -440,7 +549,12 @@ export function validateSectionSettings(
             const itemObj = item as Record<string, unknown>;
             // Fail closed on undeclared repeater item fields
             for (const itemKey of Object.keys(itemObj)) {
-              if (!repeaterAllowedKeys.has(itemKey)) {
+              if (
+                !repeaterAllowedKeys.has(itemKey) &&
+                !itemKey.endsWith("_bn") &&
+                !itemKey.endsWith("_alt") &&
+                !itemKey.endsWith("_sizes")
+              ) {
                 errors.push(
                   `Repeater item at ${itemPath} has undeclared field '${itemKey}'`,
                 );
@@ -538,15 +652,19 @@ export function compareSemver(a: string, b: string): number {
  */
 export function migrateThemeAst(
   ast: unknown,
-  manifest: ThemeManifest,
+  manifest?: ThemeManifest,
 ): { ast: unknown; migratedCount: number } {
   if (!ast || typeof ast !== "object") {
     return { ast, migratedCount: 0 };
   }
 
+  const effectiveManifest = manifest ?? SONGOSKRITI_THEME_MANIFEST;
+  const rawDocObj = ast as Record<string, unknown>;
+
+  // Check root schemaVersion
   const rawVersion =
-    typeof (ast as Record<string, unknown>).schemaVersion === "string"
-      ? ((ast as Record<string, unknown>).schemaVersion as string)
+    typeof rawDocObj.schemaVersion === "string"
+      ? rawDocObj.schemaVersion
       : "0.0.0";
 
   if (compareSemver(rawVersion, THEME_CONTRACT_VERSION) > 0) {
@@ -555,11 +673,26 @@ export function migrateThemeAst(
     );
   }
 
+  // Check sub-templates for any unsupported future schema versions
+  for (const [key, val] of Object.entries(rawDocObj)) {
+    if (val && typeof val === "object" && !Array.isArray(val)) {
+      const subVer = (val as Record<string, unknown>).schemaVersion;
+      if (
+        typeof subVer === "string" &&
+        compareSemver(subVer, THEME_CONTRACT_VERSION) > 0
+      ) {
+        throw new Error(
+          `Unsupported future schema version '${subVer}' in template '${key}'; current supported version is '${THEME_CONTRACT_VERSION}'`,
+        );
+      }
+    }
+  }
+
   const cloned = structuredClone(ast) as Record<string, unknown>;
   let migratedCount = 0;
 
   const sectionMap = new Map<string, ThemeSectionDefinition>();
-  for (const def of manifest.sections) {
+  for (const def of effectiveManifest.sections) {
     sectionMap.set(def.id, def);
   }
 
@@ -596,12 +729,47 @@ export function migrateThemeAst(
       migrateSectionList(cloned[slot] as unknown[]);
     }
   }
+
   if (cloned.templates && typeof cloned.templates === "object") {
     for (const tplVal of Object.values(
       cloned.templates as Record<string, unknown>,
     )) {
       if (tplVal && typeof tplVal === "object") {
         const tplObj = tplVal as Record<string, unknown>;
+        tplObj.schemaVersion = THEME_CONTRACT_VERSION;
+        if (Array.isArray(tplObj.sections)) {
+          migrateSectionList(tplObj.sections);
+        }
+        for (const slot of ["header", "main", "footer"] as const) {
+          if (Array.isArray(tplObj[slot])) {
+            migrateSectionList(tplObj[slot] as unknown[]);
+          }
+        }
+      }
+    }
+  }
+
+  // Also migrate top-level template map (e.g. { index: { main: [...] }, collection: ... })
+  for (const [key, val] of Object.entries(cloned)) {
+    if (
+      key !== "sections" &&
+      key !== "header" &&
+      key !== "main" &&
+      key !== "footer" &&
+      key !== "templates" &&
+      key !== "schemaVersion" &&
+      val &&
+      typeof val === "object" &&
+      !Array.isArray(val)
+    ) {
+      const tplObj = val as Record<string, unknown>;
+      if (
+        Array.isArray(tplObj.sections) ||
+        Array.isArray(tplObj.header) ||
+        Array.isArray(tplObj.main) ||
+        Array.isArray(tplObj.footer)
+      ) {
+        tplObj.schemaVersion = THEME_CONTRACT_VERSION;
         if (Array.isArray(tplObj.sections)) {
           migrateSectionList(tplObj.sections);
         }
@@ -622,15 +790,16 @@ export function migrateThemeAst(
  */
 export function validateThemeAst(
   ast: unknown,
-  manifest: ThemeManifest,
+  manifest?: ThemeManifest,
 ): { valid: boolean; errors: string[] } {
   if (!ast || typeof ast !== "object") {
     return { valid: false, errors: ["AST must be a valid non-null object"] };
   }
 
+  const effectiveManifest = manifest ?? SONGOSKRITI_THEME_MANIFEST;
   const errors: string[] = [];
   const sectionMap = new Map<string, ThemeSectionDefinition>();
-  for (const def of manifest.sections) {
+  for (const def of effectiveManifest.sections) {
     sectionMap.set(def.id, def);
   }
 
@@ -670,11 +839,17 @@ export function validateThemeAst(
       validateSectionList(obj[slot] as unknown[], slot);
     }
   }
-  if (obj.templates && typeof obj.templates === "object") {
-    for (const [tplKey, tplVal] of Object.entries(
-      obj.templates as Record<string, unknown>,
-    )) {
-      if (tplVal && typeof tplVal === "object") {
+  if ("templates" in obj) {
+    if (typeof obj.templates !== "object" || obj.templates === null || Array.isArray(obj.templates)) {
+      errors.push("templates must be a valid record object");
+    } else {
+      for (const [tplKey, tplVal] of Object.entries(
+        obj.templates as Record<string, unknown>,
+      )) {
+        if (!tplVal || typeof tplVal !== "object" || Array.isArray(tplVal)) {
+          errors.push(`templates.${tplKey} must be a valid template object`);
+          continue;
+        }
         const tplObj = tplVal as Record<string, unknown>;
         if (Array.isArray(tplObj.sections)) {
           validateSectionList(tplObj.sections, `templates.${tplKey}.sections`);
@@ -686,6 +861,31 @@ export function validateThemeAst(
               `templates.${tplKey}.${slot}`,
             );
           }
+        }
+      }
+    }
+  }
+
+  // Validate top-level template map (e.g. { index: { main: [...] }, collection: ... })
+  for (const [key, tplVal] of Object.entries(obj)) {
+    if (
+      key !== "sections" &&
+      key !== "header" &&
+      key !== "main" &&
+      key !== "footer" &&
+      key !== "templates" &&
+      key !== "schemaVersion" &&
+      tplVal &&
+      typeof tplVal === "object" &&
+      !Array.isArray(tplVal)
+    ) {
+      const tplObj = tplVal as Record<string, unknown>;
+      if (Array.isArray(tplObj.sections)) {
+        validateSectionList(tplObj.sections, `${key}.sections`);
+      }
+      for (const slot of ["header", "main", "footer"] as const) {
+        if (Array.isArray(tplObj[slot])) {
+          validateSectionList(tplObj[slot] as unknown[], `${key}.${slot}`);
         }
       }
     }
@@ -723,6 +923,22 @@ export function loadAuthoritativeThemeAst(
       success: false,
       error: `Unsupported future schema version '${rawVersion}'; current supported version is '${THEME_CONTRACT_VERSION}'`,
     };
+  }
+
+  // Check sub-templates for any unsupported future schema versions
+  for (const [key, val] of Object.entries(docObj)) {
+    if (val && typeof val === "object" && !Array.isArray(val)) {
+      const subVer = (val as Record<string, unknown>).schemaVersion;
+      if (
+        typeof subVer === "string" &&
+        compareSemver(subVer, THEME_CONTRACT_VERSION) > 0
+      ) {
+        return {
+          success: false,
+          error: `Unsupported future schema version '${subVer}' in template '${key}'; current supported version is '${THEME_CONTRACT_VERSION}'`,
+        };
+      }
+    }
   }
 
   let migratedAst: unknown;

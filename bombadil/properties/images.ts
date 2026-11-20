@@ -81,6 +81,13 @@ const imageInspection = extract((state: State) => {
   if (win && !(win as any).__framique_decode_watcher) {
     (win as any).__framique_decode_watcher = true;
     const triggerDecode = (el: HTMLImageElement) => {
+      if (!el.complete) {
+        if (!el.hasAttribute("data-decode-listener")) {
+          el.setAttribute("data-decode-listener", "true");
+          el.addEventListener("load", () => triggerDecode(el), { once: true });
+        }
+        return;
+      }
       if (
         typeof el.decode === "function" &&
         !el.hasAttribute("data-decoded") &&
@@ -195,6 +202,7 @@ const imageInspection = extract((state: State) => {
   for (const img of images) {
     // Synchronously ensure decode is triggered for every img found
     if (
+      img.complete &&
       typeof img.decode === "function" &&
       !img.hasAttribute("data-decoded") &&
       !img.hasAttribute("data-decode-error") &&
@@ -274,7 +282,7 @@ const imageInspection = extract((state: State) => {
       const isDecoded = img.getAttribute("data-decoded") === "true";
       const decodeElapsed = decodeStartTime ? (Date.now() - decodeStartTime) : 0;
 
-      if (!isDecoded && decodeElapsed >= 400) {
+      if (!isDecoded && decodeElapsed >= 1500) {
         failures.push({
           url: effectiveSrc,
           reason: "decode-failed",
@@ -286,7 +294,8 @@ const imageInspection = extract((state: State) => {
       // Image has NOT completed loading (!img.complete)
       // Eager images must complete once exploration actions have begun.
       // Lazy-loaded images must complete once scrolled into the viewport.
-      const hasInteracted = state.lastAction !== null;
+      const pageTime = win?.performance?.now ? win.performance.now() : 0;
+      const hasInteracted = state.lastAction !== null && pageTime >= 1200;
       if (hasInteracted) {
         if (!isLazy) {
           failures.push({

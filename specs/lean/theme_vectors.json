@@ -1,0 +1,157 @@
+[
+  {
+    "id": "tv-legacy-migrate",
+    "description": "Legacy 0.9.0 AST with string media URL promoted to canonical 1.0.0 with default focal point and alt",
+    "input": {
+      "schemaVersion": "0.9.0",
+      "templates": {
+        "index": {
+          "sections": [
+            {
+              "type": "craft_story",
+              "settings": {
+                "imageUrl": "https://cdn.framique.com/artisan.jpg"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "expected": {
+      "status": "ok",
+      "schema": "1.0.0",
+      "isStructured": true,
+      "url": "https://cdn.framique.com/artisan.jpg",
+      "alt": "",
+      "focalX": 0,
+      "focalY": 0,
+      "publishEligible": true
+    }
+  },
+  {
+    "id": "tv-canonical-preserve",
+    "description": "Canonical 1.0.0 AST with pre-existing structured media preserved without mutation",
+    "input": {
+      "schemaVersion": "1.0.0",
+      "templates": {
+        "index": {
+          "sections": [
+            {
+              "type": "craft_story",
+              "settings": {
+                "imageUrl": {
+                  "url": "https://cdn.framique.com/artisan.jpg",
+                  "alt": "Handloom",
+                  "focalPoint": {
+                    "x": 25,
+                    "y": 75
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "expected": {
+      "status": "ok",
+      "schema": "1.0.0",
+      "isStructured": true,
+      "url": "https://cdn.framique.com/artisan.jpg",
+      "alt": "Handloom",
+      "focalX": 25,
+      "focalY": 75,
+      "publishEligible": true
+    }
+  },
+  {
+    "id": "tv-future-reject",
+    "description": "Unsupported future 2.0.0 AST rejected fail-closed with zero data mutation",
+    "input": {
+      "schemaVersion": "2.0.0",
+      "templates": {
+        "index": {
+          "sections": [
+            {
+              "type": "craft_story",
+              "settings": {
+                "imageUrl": {
+                  "url": "https://cdn.framique.com/artisan.jpg",
+                  "alt": "Futuristic",
+                  "focalPoint": {
+                    "x": 50,
+                    "y": 50
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "expected": {
+      "status": "rejected",
+      "schema": "2.0.0",
+      "isStructured": true,
+      "url": "https://cdn.framique.com/artisan.jpg",
+      "alt": "Futuristic",
+      "focalX": 50,
+      "focalY": 50,
+      "publishEligible": false
+    }
+  },
+  {
+    "id": "tv-invalid-reject",
+    "description": "Malformed AST failing schema validation rejected fail-closed",
+    "input": {
+      "schemaVersion": "1.0.0",
+      "templates": "invalid-non-object-templates"
+    },
+    "expected": {
+      "status": "rejected",
+      "schema": "1.0.0",
+      "isStructured": true,
+      "url": "https://cdn.framique.com/artisan.jpg",
+      "alt": "Invalid",
+      "focalX": 50,
+      "focalY": 50,
+      "publishEligible": false
+    }
+  },
+  {
+    "id": "tv-idempotent",
+    "description": "Re-migrating already canonical migrated AST produces identical idempotent output",
+    "input": {
+      "schemaVersion": "1.0.0",
+      "templates": {
+        "index": {
+          "sections": [
+            {
+              "type": "craft_story",
+              "settings": {
+                "imageUrl": {
+                  "url": "https://cdn.framique.com/artisan.jpg",
+                  "alt": "",
+                  "focalPoint": {
+                    "x": 50,
+                    "y": 50
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "expected": {
+      "status": "ok",
+      "schema": "1.0.0",
+      "isStructured": true,
+      "url": "https://cdn.framique.com/artisan.jpg",
+      "alt": "",
+      "focalX": 0,
+      "focalY": 0,
+      "publishEligible": true
+    }
+  }
+]

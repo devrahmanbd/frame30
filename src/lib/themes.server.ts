@@ -48,7 +48,12 @@ import {
 } from "./theme-variations";
 import { previewSourceFor } from "./preview-sources";
 import { SONGOSKRITI_WIDGET_DEFAULTS } from "./themes/songoskriti/skins";
-import { migrateThemeAst, SONGOSKRITI_THEME_MANIFEST } from "./theme-contract";
+import {
+  migrateThemeAst,
+  loadAuthoritativeThemeAst,
+  SONGOSKRITI_THEME_MANIFEST,
+  type ThemeManifest,
+} from "./theme-contract";
 import { PRESET_API_RANGE, checkApiCompatibility } from "./registry-version";
 import { translationGate } from "./builder-guardrails";
 import { translationCoverage } from "./translation-coverage";
@@ -86,6 +91,68 @@ export class BuilderError extends Error {
     super(message);
     this.name = "BuilderError";
   }
+}
+
+/**
+ * Resolves the authoritative ThemeManifest for a given themeKey.
+ */
+export function resolveThemeManifest(
+  themeKey: string | null | undefined,
+): ThemeManifest | null {
+  if (themeKey === "songoskriti") return SONGOSKRITI_THEME_MANIFEST;
+  return null;
+}
+
+/**
+ * One Authoritative Theme Configuration Lifecycle Boundary (Frame30 Phase 1).
+ *
+ * Evaluates raw template documents through loadAuthoritativeThemeAst:
+ * - Current schema: validates and parses cleanly.
+ * - Supported older schema: migrates sequentially to canonical schema (1.0.0).
+ * - Future schema: rejects fail-closed without modifying saved data.
+ * - Missing schema: applies legacy migration policy.
+ * - Malformed document: rejects fail-closed.
+ */
+export function authoritativeThemeLoad(
+  rawTemplates: unknown,
+  themeKey: string | null | undefined,
+): {
+  success: boolean;
+  templates: ThemeTemplates;
+  migratedCount: number;
+  error?: string;
+  errors?: string[];
+} {
+  const manifest = resolveThemeManifest(themeKey);
+  if (!manifest) {
+    return {
+      success: true,
+      templates: parseTemplates(rawTemplates),
+      migratedCount: 0,
+    };
+  }
+
+  const result = loadAuthoritativeThemeAst(
+    rawTemplates,
+    manifest,
+    (ast) => parseTemplates(ast as any),
+  );
+
+  if (result.success) {
+    return {
+      success: true,
+      templates: result.ast as ThemeTemplates,
+      migratedCount: result.migratedCount,
+    };
+  }
+
+  return {
+    success: false,
+    templates: parseTemplates(rawTemplates),
+    migratedCount: 0,
+    error: result.error,
+    errors: result.errors,
+  };
 }
 
 /* ------------------------------------------------------------- theme + draft */
@@ -265,11 +332,15 @@ export async function loadWorkspace(
     let tokens: ThemeTokens;
     let source: BuilderWorkspace["source"];
     if (draft) {
-      templates = parseTemplates(draft.templates);
+      const auth = authoritativeThemeLoad(draft.templates, theme.sourceKey);
+      templates = auth.templates;
       tokens = parseTokens(draft.tokens);
       source = "draft";
     } else if (newest) {
-      templates = parseTemplates(newest.templates ?? { index: newest.ast });
+      const rawVersionTemplates =
+        newest.templates ?? { index: newest.ast };
+      const auth = authoritativeThemeLoad(rawVersionTemplates, theme.sourceKey);
+      templates = auth.templates;
       tokens = parseTokens(newest.tokens);
       source = "version";
     } else {
@@ -427,7 +498,29 @@ export async function autosave(
   },
 ) {
   await rateLimit("builder.autosave", `${merchantId}`);
-  const { templates, tokens } = parseUntrusted(input, "autosave");
+  let { templates, tokens } = parseUntrusted(input, "autosave");
+
+  // Phase 1: Authoritative schema validation and migration boundary
+  const { data: theme } = await db
+    .from("store_themes")
+    .select("source_listing_slug")
+    .eq("id", input.themeId)
+    .eq("merchant_id", merchantId)
+    .maybeSingle();
+
+  const themeKey = theme?.source_listing_slug ?? null;
+  const manifest = resolveThemeManifest(themeKey);
+  if (manifest) {
+    const auth = authoritativeThemeLoad(input.templates ?? templates, themeKey);
+    if (!auth.success) {
+      throw new BuilderError(
+        "theme.unsupported_schema",
+        auth.error ?? "Invalid schema version or theme structure",
+      );
+    }
+    templates = auth.templates;
+  }
+
   const result = await rpc<{ revision: number; applied: boolean }>(
     db,
     "theme_autosave",
@@ -455,7 +548,28 @@ export async function commitVersion(
   },
 ) {
   await rateLimit("builder.commit", merchantId);
-  const { templates, tokens } = parseUntrusted(input, "commit");
+  let { templates, tokens } = parseUntrusted(input, "commit");
+
+  // Phase 1: Authoritative schema validation and migration boundary
+  const { data: theme } = await db
+    .from("store_themes")
+    .select("source_listing_slug")
+    .eq("id", input.themeId)
+    .eq("merchant_id", merchantId)
+    .maybeSingle();
+
+  const themeKey = theme?.source_listing_slug ?? null;
+  const manifest = resolveThemeManifest(themeKey);
+  if (manifest) {
+    const auth = authoritativeThemeLoad(input.templates ?? templates, themeKey);
+    if (!auth.success) {
+      throw new BuilderError(
+        "builder.schema_invalid",
+        auth.error ?? "Invalid theme schema for commit",
+      );
+    }
+    templates = auth.templates;
+  }
   // Loop B trust boundary: extension props are re-validated server-side with
   // the same `validateProps` module the client calls, before anything is
   // stored. Invalid props reject the commit loudly (recoverable BuilderError,
@@ -915,10 +1029,31 @@ export async function publishVersion(
     input.themeId,
   ).catch(() => null);
   const resolved = resolvePublishPayload(input, artifact);
-  const { templates } = parseUntrusted(
+  let { templates } = parseUntrusted(
     { templates: resolved.templates, tokens: resolved.tokens },
     "publish",
   );
+
+  // Phase 1: Authoritative schema validation and migration boundary
+  const { data: theme } = await db
+    .from("store_themes")
+    .select("source_listing_slug")
+    .eq("id", input.themeId)
+    .eq("merchant_id", merchantId)
+    .maybeSingle();
+
+  const themeKey = theme?.source_listing_slug ?? null;
+  const manifest = resolveThemeManifest(themeKey);
+  if (manifest) {
+    const auth = authoritativeThemeLoad(resolved.templates ?? templates, themeKey);
+    if (!auth.success) {
+      throw new BuilderError(
+        "builder.schema_invalid",
+        auth.error ?? "Invalid theme schema for publication",
+      );
+    }
+    templates = auth.templates;
+  }
   const lint = lintTemplateMap(templates);
   // Phase 9: missing বাংলা only warns per string, but a theme that is more than
   // 10% untranslated cannot go live half-Bangla.
@@ -1227,21 +1362,13 @@ export function registryPackage(key: string): {
 } {
   const preview = resolveThemePreview(key);
   if (preview) {
+    const rawTemplates = {
+      ...preview.templates,
+      ...preview.variants,
+    };
+    const auth = authoritativeThemeLoad(rawTemplates, key);
     return {
-      // The package carries the theme's VARIANT bodies beside its base
-      // bodies. `preview.variants` is a SEPARATE map in the preview preset
-      // (the base map is the template-key space the preview host resolves
-      // against), and the install seed is the ONE place a merchant's map is
-      // filled with the theme's defaults — so the theme's authored variant
-      // defaults have to travel with the package. Without them a merchant
-      // who installs the theme gets no `blog_listing` / `blog_article` body:
-      // the editor's variant strip opens EMPTY and the storefront's
-      // listing and article both fall back to the base `blog` body, so the
-      // two surfaces are not distinguishable.
-      templates: {
-        ...preview.templates,
-        ...preview.variants,
-      } as unknown as ThemeTemplates,
+      templates: (auth.success ? auth.templates : parseTemplates(rawTemplates)) as unknown as ThemeTemplates,
       tokens: preview.tokens,
       version: "1.0.0",
     };
@@ -2188,25 +2315,21 @@ export async function publishedTheme(
       // Variation follow-through: the persisted key rides the version's
       // settings document — shoppers see the active variation, not the base.
       const live = resolveLiveVariation(row.tokens, themeKey);
-      let rawTemplates =
+      const rawTemplates =
         row.templates && Object.keys(row.templates as object).length
           ? row.templates
           : { index: parseAst(row.ast) };
-      if (themeKey === "songoskriti" && rawTemplates) {
-        try {
-          const migrated = migrateThemeAst(
-            rawTemplates,
-            SONGOSKRITI_THEME_MANIFEST,
-          );
-          rawTemplates = migrated.ast as Record<string, unknown>;
-        } catch (e) {
-          log("warn", "theme.published_migration_failed", {
-            error: String(e),
-          });
-        }
+      const auth = authoritativeThemeLoad(rawTemplates, themeKey);
+      if (!auth.success) {
+        log("warn", "theme.published_migration_failed", {
+          merchant_id: merchantId,
+          theme_id: theme.id,
+          version_id: versionId,
+          error: auth.error,
+        });
       }
       const templates = fillVariationSkins(
-        parseTemplates(rawTemplates),
+        auth.templates,
         live.variation,
         VARIATION_BASE_DEFAULTS[themeKey ?? ""] ?? {},
       );
@@ -2260,12 +2383,20 @@ export async function publishedThemeById(
       if (!version) return null;
       const themeKey = theme.source_listing_slug ?? null;
       const live = resolveLiveVariation(version.tokens, themeKey);
+      const rawTemplates =
+        version.templates && Object.keys(version.templates as object).length
+          ? version.templates
+          : { index: parseAst(version.ast) };
+      const auth = authoritativeThemeLoad(rawTemplates, themeKey);
+      if (!auth.success) {
+        log("warn", "theme.published_by_id_migration_failed", {
+          merchant_id: merchantId,
+          theme_id: themeId,
+          error: auth.error,
+        });
+      }
       const templates = fillVariationSkins(
-        parseTemplates(
-          version.templates && Object.keys(version.templates as object).length
-            ? version.templates
-            : { index: parseAst(version.ast) },
-        ),
+        auth.templates,
         live.variation,
         VARIATION_BASE_DEFAULTS[themeKey ?? ""] ?? {},
       );
@@ -2318,22 +2449,16 @@ export async function previewTheme(
   // Draft preview follows the persisted pick so the merchant previews what
   // shoppers would see; explicit `?variation=` stays on the blueprint path.
   const live = resolveLiveVariation(draft.tokens, themeKey);
-  let rawTemplates = draft.templates;
-  if (themeKey === "songoskriti" && rawTemplates) {
-    try {
-      const migrated = migrateThemeAst(
-        rawTemplates,
-        SONGOSKRITI_THEME_MANIFEST,
-      );
-      rawTemplates = migrated.ast as Record<string, unknown>;
-    } catch (e) {
-      log("warn", "theme.draft_migration_failed", {
-        error: String(e),
-      });
-    }
+  const auth = authoritativeThemeLoad(draft.templates, themeKey);
+  if (!auth.success) {
+    log("warn", "theme.draft_migration_failed", {
+      merchant_id: merchantId,
+      theme_id: themeId,
+      error: auth.error,
+    });
   }
   return {
-    templates: parseTemplates(rawTemplates),
+    templates: auth.templates,
     tokens: live.tokens,
     themeKey,
     variationKey: live.variationKey,

@@ -1,29 +1,25 @@
 =============================================================================
-TLA+ TLC FORMAL MODEL CHECKING STATE-SPACE PROOF RECEIPT (WAVE 23.2)
+TLA+ TLC FORMAL MODEL CHECKING STATE-SPACE PROOF RECEIPT (CHECKOUT INVENTORY)
 =============================================================================
-Date: 2026-11-19T19:59:35.980Z
+Date: 2026-11-20T12:05:07.236Z
 Model File: specs/tla/CheckoutInventory.tla
 Model SHA-256:  c39aca49492a728d6eb4b87b7a701d5ada8a9e9adfb0e013081a8b2b85188aab
 Config File: specs/tla/CheckoutInventory.cfg
 Config SHA-256: f57180f0cfa0e348ec3234547a64f6c7967d09ae597099a216e46e9b8701a72c
 TLC JAR SHA-256: 7e53aa636dac8a3cb0533f343115c0548e03fc0ce5edc7739becf58d3d0fb84f
-Invariants Verified: 12 (TypeOK plus 11 safety invariants: TypeOK, StockNonNegative,
-  InventoryConservation, UniqueOrderIds, MaxActiveOrderPerShopper,
-  AtMostOneCapturePerPayment, AtMostOneSuccessfulRefundPerPayment,
-  OrderSettlementConsistency, RefundRequiresCapture, NoRefundOnFailedPayment,
-  RefundAmountBoundedByCapture, ExplicitRefundFailureRepresented)
+Invariants Verified: 12 (TypeOK, StockNonNegative, InventoryConservation, UniqueOrderIds, MaxActiveOrderPerShopper, AtMostOneCapturePerPayment, AtMostOneSuccessfulRefundPerPayment, OrderSettlementConsistency, RefundRequiresCapture, NoRefundOnFailedPayment, RefundAmountBoundedByCapture, ExplicitRefundFailureRepresented)
 -----------------------------------------------------------------------------
 
 TLC2 Version 2026.11.15.002146 (rev: bc1b506)
-Running breadth-first search Model-Checking with fp 9 and seed -393293264709987332 with 1 worker on 8 cores with 2048MB heap and 64MB offheap memory [pid: 83774] (Mac OS X 26.3 aarch64, Homebrew 21.0.13.1 64bit, MSBDiskFPSet, DiskStateQueue).
+Running breadth-first search Model-Checking with fp 87 and seed 8455951826845225644 with 1 worker on 8 cores with 2048MB heap and 64MB offheap memory [pid: 74729] (Mac OS X 26.3 aarch64, Homebrew 21.0.13.1 64bit, MSBDiskFPSet, DiskStateQueue).
 Parsing file /Users/rahman/Documents/frame30/specs/tla/CheckoutInventory.tla
-Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13523374017262520125/Integers.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/Integers.tla)
-Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13523374017262520125/FiniteSets.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
-Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13523374017262520125/_TLCTrace.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/_TLCTrace.tla)
-Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13523374017262520125/Naturals.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
-Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13523374017262520125/Sequences.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
-Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13523374017262520125/TLC.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
-Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13523374017262520125/TLCExt.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/TLCExt.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13516986304730119200/Integers.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/Integers.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13516986304730119200/FiniteSets.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13516986304730119200/_TLCTrace.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/_TLCTrace.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13516986304730119200/Naturals.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13516986304730119200/Sequences.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13516986304730119200/TLC.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13516986304730119200/TLCExt.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/TLCExt.tla)
 Semantic processing of module Naturals
 Semantic processing of module Integers
 Semantic processing of module Sequences
@@ -35,18 +31,18 @@ Semantic processing of module CheckoutInventory
 Linting of module TLCExt
 Linting of module _TLCTrace
 Linting of module CheckoutInventory
-Starting... (2026-11-20 01:59:25)
+Starting... (2026-11-20 18:04:57)
 Computing initial states...
-Finished computing initial states: 1 distinct state generated at 2026-11-20 01:59:26.
-Progress(10) at 2026-11-20 01:59:29: 966,619 states generated (966,619 s/min), 28,464 distinct states found (28,464 ds/min), 12,978 states left on queue.
+Finished computing initial states: 1 distinct state generated at 2026-11-20 18:04:57.
+Progress(10) at 2026-11-20 18:05:00: 996,199 states generated (996,199 s/min), 28,909 distinct states found (28,909 ds/min), 12,946 states left on queue.
 Model checking completed. No error has been found.
   Estimates of the probability that TLC did not check all reachable states
   because two distinct states had the same fingerprint:
   calculated (optimistic):  val = 9.3E-9
-  based on the actual fingerprints:  val = 2.1E-10
+  based on the actual fingerprints:  val = 4.5E-11
 3283425 states generated, 52880 distinct states found, 0 states left on queue.
 The depth of the complete state graph search is 12.
 The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 31 and the 95th percentile is 6).
-Finished in 10s at (2026-11-20 01:59:35)
+Finished in 10s at (2026-11-20 18:05:07)
 
 =============================================================================

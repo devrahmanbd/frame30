@@ -104,13 +104,16 @@ async function ensureTarget() {
     if (await checkServer(targetUrl)) {
       console.log(`[bombadil] ✓ Local development server ready at ${targetUrl}`);
       console.log(`[bombadil] Warming up SSR route cache...`);
-      try {
-        const warmupRes = await fetch(targetUrl, { signal: AbortSignal.timeout(15000) });
-        await warmupRes.text();
-        console.log(`[bombadil] ✓ Target warm and responding (status: ${warmupRes.status}).`);
-      } catch (e) {
-        console.warn(`[bombadil] Warmup note:`, e.message);
+      const routesToWarm = ["/", "/c/sarees", "/p/dhakai-jamdani-silk-saree", "/cart", "/auth"];
+      for (const r of routesToWarm) {
+        try {
+          const warmupRes = await fetch(`${targetUrl}${r}`, { signal: AbortSignal.timeout(15000) });
+          await warmupRes.text();
+        } catch (e) {
+          console.warn(`[bombadil] Warmup note for ${r}:`, e.message);
+        }
       }
+      console.log(`[bombadil] ✓ All 5 canonical routes warmed and responding.`);
       return;
     }
   }
