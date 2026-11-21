@@ -97,6 +97,9 @@ jobs:
           name: Theme compliance gate (Frame30 Official Theme Standard)
           command: bun run test:theme-compliance
       - run:
+          name: Wave 2.3 merchant controls acceptance test suite
+          command: bunx vitest run src/components/builder/merchant-controls-wave23.test.tsx
+      - run:
           name: Unit + contract tests (Vitest)
           command: bun run test
       - run:

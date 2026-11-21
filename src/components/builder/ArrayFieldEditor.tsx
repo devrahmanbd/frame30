@@ -33,7 +33,7 @@ function summarise(field: Field, row: PropRow, index: number): string {
   const key =
     field.itemLabel ?? (field.fields ?? field.children)?.[0]?.key ?? "";
   const value = key ? row[key] : undefined;
-  const text =
+  let text =
     typeof value === "string"
       ? value.trim()
       : typeof value === "object" && value !== null
@@ -43,6 +43,20 @@ function summarise(field: Field, row: PropRow, index: number): string {
         : value !== undefined
           ? String(value)
           : "";
+
+  if (row.links !== undefined) {
+    const linkCount = Array.isArray(row.links)
+      ? row.links.length
+      : typeof row.links === "string"
+        ? row.links.split(/[\r\n,]+/).filter((s) => s.trim().length > 0).length
+        : 0;
+    if (text) {
+      text = `${text} (${linkCount} ${linkCount === 1 ? "link" : "links"})`;
+    } else {
+      text = `${linkCount} ${linkCount === 1 ? "link" : "links"}`;
+    }
+  }
+
   return text || `#${index + 1}`;
 }
 

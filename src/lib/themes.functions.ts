@@ -315,3 +315,26 @@ export const builderRegistryVersionFn = createServerFn({
   const { registryVersionInfo } = await import("./registry-version");
   return registryVersionInfo();
 });
+
+export const builderCollectionsFn = createServerFn({ method: "GET" })
+  .middleware([requirePermission("themes.read")])
+  .handler(async ({ context }) => {
+    const { listMerchantCollections } = await import("./themes.server");
+    const merchantId = await scope(context.supabase, context.userId);
+    return listMerchantCollections(context.supabase, merchantId);
+  });
+
+export const builderMenusFn = createServerFn({ method: "GET" })
+  .middleware([requirePermission("themes.read")])
+  .handler(async ({ context }) => {
+    const { listMenus } = await import("./menus/menu.server");
+    const merchantId = await scope(context.supabase, context.userId);
+    const menus = await listMenus(context.supabase, merchantId);
+    return menus.map((m) => ({
+      id: m.id,
+      name: m.name,
+      handle: m.handle,
+      locations: m.locations,
+    }));
+  });
+

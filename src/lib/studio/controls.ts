@@ -2499,12 +2499,12 @@ export const CONTENT: Record<string, Control[]> = {
         }),
         c({
           key: "links",
-          label: "Links (one per line: Label|/href)",
+          label: "Links",
           type: "textarea",
           tab: "content",
           section: "Columns",
           placeholder: "New in|/\nBest sellers|/sale",
-          help: "One link per line. “Label” alone links to “#”.",
+          help: "Add and arrange links for this column.",
         }),
       ],
     }),
@@ -4962,7 +4962,7 @@ export const CONTENT: Record<string, Control[]> = {
     }),
     c({
       key: "collection",
-      label: "Collection handle",
+      label: "Collection",
       type: "text",
       tab: "content",
       section: "Rail",
@@ -5963,11 +5963,11 @@ export const CONTENT: Record<string, Control[]> = {
   mega_menu: [
     c({
       key: "menuId",
-      label: "Menu (from Content › Menus — blank for live taxonomy)",
+      label: "Menu",
       type: "text",
       tab: "content",
       section: "Mega menu",
-      placeholder: "Menu ID or handle",
+      placeholder: "Select a menu",
     }),
     c({
       key: "label",
@@ -6331,7 +6331,7 @@ export const CONTENT: Record<string, Control[]> = {
     }),
     c({
       key: "images",
-      label: "Images (comma separated URLs)",
+      label: "Images",
       type: "textarea",
       tab: "content",
       section: "Gallery",
@@ -6348,7 +6348,7 @@ export const CONTENT: Record<string, Control[]> = {
     }),
     c({
       key: "collection",
-      label: "Collection handle",
+      label: "Collection",
       type: "text",
       tab: "content",
       section: "Gallery",

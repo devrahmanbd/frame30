@@ -11,9 +11,12 @@
 export {
   builderAutosaveFn,
   builderCancelScheduleFn,
+  builderCollectionsFn,
   builderCommitFn,
+  builderMenusFn,
   builderPublishFn,
   builderRollbackFn,
   builderScheduleFn,
   builderWorkspaceFn,
 } from "./themes.functions";
+

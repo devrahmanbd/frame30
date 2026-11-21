@@ -3385,4 +3385,24 @@ export function resolveDevThemeAsset(
   }
 }
 
+export async function listMerchantCollections(
+  db: Client,
+  merchantId: string,
+): Promise<Array<{ id: string; name: string; slug: string }>> {
+  const any = db as unknown as SupabaseClient<never, never, never>;
+  const { data, error } = await any
+    .from("collections")
+    .select("id, name, slug")
+    .eq("merchant_id", merchantId)
+    .is("deleted_at", null)
+    .order("name", { ascending: true })
+    .limit(200);
+  if (error || !Array.isArray(data)) return [];
+  return data.map((c: { id?: unknown; name?: unknown; slug?: unknown }) => ({
+    id: String(c.id ?? ""),
+    name: String(c.name ?? c.slug ?? ""),
+    slug: String(c.slug ?? ""),
+  })).filter((c) => c.slug.length > 0);
+}
+
 export type { TemplateKey };

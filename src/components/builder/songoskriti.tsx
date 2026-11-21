@@ -67,6 +67,11 @@ import {
 import { cardVariantOf } from "./merch";
 import { altKey, sizesAttr, sizesKey } from "@/lib/media";
 import { placeholderSeed } from "@/lib/placeholder";
+import {
+  resolveMediaUrl,
+  resolveMediaAlt,
+  type StructuredMediaValue,
+} from "@/lib/theme-contract";
 import { parseLinkList } from "./chrome";
 import { formatDisplayMoney } from "@/lib/money-display";
 import { Instagram, Facebook, Twitter } from "lucide-react";
@@ -104,7 +109,7 @@ function t(locale: string, en: string, bn: string) {
 
 function rowsOf(section: Section, key: string): PropRow[] {
   const value: PropValue | undefined = section.props[key];
-  return Array.isArray(value) ? value : [];
+  return Array.isArray(value) ? (value as PropRow[]) : [];
 }
 
 const readString = (row: PropRow, key: string): string => {
@@ -1603,12 +1608,8 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
           const r = row as Record<string, unknown>;
           const title = typeof r.title === "string" ? r.title : "";
           const titleBn = typeof r.title_bn === "string" ? r.title_bn : "";
-          const links = parseLinkList(
-            typeof r.links === "string" ? r.links : "",
-          );
-          const linksBn = parseLinkList(
-            typeof r.links_bn === "string" ? r.links_bn : "",
-          );
+          const links = parseLinkList(r.links, locale);
+          const linksBn = parseLinkList(r.links_bn, "bn");
           return {
             title: locale === "bn" && titleBn ? titleBn : title,
             links: locale === "bn" && linksBn.length > 0 ? linksBn : links,
@@ -1622,7 +1623,7 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
       : [1, 2, 3, 4]
           .map((n) => ({
             title: str(`c${n}Title`),
-            links: parseLinkList(str(`c${n}Links`)),
+            links: parseLinkList(section.props[`c${n}Links`] ?? str(`c${n}Links`), locale),
           }))
           .filter((col) => col.title || col.links.length > 0);
   // Phase 4 page picker: explicitly picked page slugs append one extra
@@ -2847,21 +2848,48 @@ const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
   const handleHref = isValidSocialUrl(rawHandleHref)
     ? rawHandleHref.trim()
     : "https://instagram.com/flamefashionbd";
-  const rawImages = (str("images") || "")
-    .split(",")
-    .map((i) => i.trim())
-    .filter(Boolean);
+
+  interface GalleryItem {
+    url: string;
+    alt: string;
+    focalPoint?: { x: number; y: number } | null;
+  }
+
+  const rawImages: GalleryItem[] = Array.isArray(section.props.images)
+    ? section.props.images
+        .map((item) => {
+          if (typeof item === "string") {
+            const u = item.trim();
+            return u ? { url: u, alt: "" } : null;
+          }
+          const url = resolveMediaUrl(item);
+          if (!url) return null;
+          const alt = resolveMediaAlt(item, "");
+          const focalPoint =
+            item && typeof item === "object" && "focalPoint" in item
+              ? ((item as StructuredMediaValue).focalPoint ?? null)
+              : null;
+          return { url, alt, focalPoint };
+        })
+        .filter((item): item is GalleryItem => item !== null)
+    : (str("images") || "")
+        .split(",")
+        .map((i) => i.trim())
+        .filter(Boolean)
+        .map((url) => ({ url, alt: "" }));
 
   // Imageless fallback is a neutral placeholder tile, never brand art.
-  const displayImages =
+  const displayImages: GalleryItem[] =
     rawImages.length >= 6
       ? rawImages
       : [
           ...rawImages,
           ...Array.from(
             { length: 6 - rawImages.length },
-            (_, i) =>
-              `/api/public/ph/${placeholderSeed(`ugc-${rawImages.length + i}`)}`,
+            (_, i) => ({
+              url: `/api/public/ph/${placeholderSeed(`ugc-${rawImages.length + i}`)}`,
+              alt: "",
+            }),
           ),
         ];
 
@@ -2917,12 +2945,20 @@ const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
               className="relative overflow-hidden bg-[var(--theme-muted)] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] flex-1 sm:hover:flex-[2.5] cursor-pointer h-[300px] sm:h-full w-full rounded-sm sm:rounded-md"
             >
               <img
-                src={img}
+                src={img.url}
                 alt={
+                  img.alt ||
                   str("imageAlt") ||
                   (str("subhead")?.includes("LOOKBOOK")
                     ? "Flame Fashion BD Lookbook"
                     : "User generated content")
+                }
+                style={
+                  img.focalPoint
+                    ? {
+                        objectPosition: `${img.focalPoint.x}% ${img.focalPoint.y}%`,
+                      }
+                    : undefined
                 }
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 scale-100"
                 loading="lazy"

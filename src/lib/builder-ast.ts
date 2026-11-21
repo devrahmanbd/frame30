@@ -415,7 +415,20 @@ export type SectionType =
   // id/handle at render-data time (never stored inline, never migrated).
   | "global_ref";
 
-export type PropScalar = string | number | boolean | StructuredMediaValue;
+export type StructuredLink = {
+  label: string;
+  href: string;
+  label_bn?: string;
+  [key: string]: unknown;
+};
+
+export type PropScalar =
+  | string
+  | number
+  | boolean
+  | StructuredMediaValue
+  | StructuredLink[]
+  | StructuredMediaValue[];
 /** A repeatable row (Phase 3.2 `array` fields). Always JSON-safe. */
 export type PropRow = Record<string, PropScalar>;
 export type PropValue = PropScalar | PropRow[];
@@ -2222,7 +2235,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       // Phase 4 menu picker: dashboard menu id/handle (Content › Menus).
       // Blank keeps the live-taxonomy rows; mirrors the studio twin default
       // and the existing studio `menuId` control so parse preserves the pick.
-      text("menuId", "Menu ID or handle", 80),
+      text("menuId", "Menu", 80),
     ],
   },
   {
@@ -2278,13 +2291,13 @@ const BASE_CATALOG: CatalogEntry[] = [
     },
     fields: [
       text("c1Title", "Column 1 title", 40),
-      area("c1Links", "Column 1 links (Label|/href, …)", 600),
+      area("c1Links", "Column 1 links", 600),
       text("c2Title", "Column 2 title", 40),
-      area("c2Links", "Column 2 links (Label|/href, …)", 600),
+      area("c2Links", "Column 2 links", 600),
       text("c3Title", "Column 3 title", 40),
-      area("c3Links", "Column 3 links (Label|/href, …)", 600),
+      area("c3Links", "Column 3 links", 600),
       text("c4Title", "Column 4 title", 40),
-      area("c4Links", "Column 4 links (Label|/href, …)", 600),
+      area("c4Links", "Column 4 links", 600),
       text("statementHeading", "Statement heading", 80),
       area("statementBody", "Statement body", 300),
       url("storyHref", "Story link"),
@@ -2309,8 +2322,8 @@ const BASE_CATALOG: CatalogEntry[] = [
         fields: [
           text("title", "Column title", 40),
           text("title_bn", "Column title (বাংলা)", 40),
-          area("links", "Links (Label|/href, …)", 600),
-          area("links_bn", "Links (বাংলা, Label|/href, …)", 600),
+          area("links", "Links", 600),
+          area("links_bn", "Links (বাংলা)", 600),
         ],
       },
     ],
@@ -2393,7 +2406,7 @@ const BASE_CATALOG: CatalogEntry[] = [
           { value: "recommended", label: "Recommended" },
         ],
       },
-      text("collection", "Collection handle", 80),
+      text("collection", "Collection", 80),
       {
         key: "limit",
         label: "How many",
@@ -3375,7 +3388,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     fields: [
       text("heading", "Heading", 80),
       text("subhead", "Subhead", 80),
-      area("images", "Images (comma separated URLs)", 2000),
+      area("images", "Images", 2000),
       {
         key: "limit",
         label: "Max tiles (2-12)",
@@ -3383,7 +3396,7 @@ const BASE_CATALOG: CatalogEntry[] = [
         panel: "layout",
         responsive: true,
       },
-      text("collection", "Collection handle", 120),
+      text("collection", "Collection", 120),
       text("note", "Caption", 160),
       text("handleLabel", "Social handle label", 40),
       url("handleHref", "Social handle link"),
@@ -7756,6 +7769,60 @@ function clampNumber(field: Field, n: number): number {
   return Math.min(max, Math.max(min, Math.trunc(n)));
 }
 
+/** Coerces and sanitises an array of structured link items. */
+export function coerceStructuredLinks(
+  val: unknown,
+): StructuredLink[] | null {
+  if (!Array.isArray(val)) return null;
+  const links: StructuredLink[] = [];
+  for (const item of val) {
+    if (!item || typeof item !== "object") continue;
+    const raw = item as Record<string, unknown>;
+    const label = typeof raw.label === "string" ? raw.label.trim().slice(0, 100) : "";
+    const href = typeof raw.href === "string" ? raw.href.trim().slice(0, 500) : "";
+    const labelBn =
+      typeof raw.label_bn === "string" ? raw.label_bn.trim().slice(0, 100) : undefined;
+    if (!label && !href) continue;
+    if (href && !SAFE_HREF.test(href)) {
+      sanitiserRejects += 1;
+      continue;
+    }
+    const clean: StructuredLink = {
+      label: label || href,
+      href: href || "#",
+    };
+    if (labelBn) clean.label_bn = labelBn;
+    links.push(clean);
+  }
+  return links;
+}
+
+/** Coerces and sanitises an array of gallery media items (StructuredMediaValue or string URLs). */
+export function coerceGalleryImages(
+  val: unknown,
+): Array<StructuredMediaValue | string> | null {
+  if (!Array.isArray(val)) return null;
+  const result: Array<StructuredMediaValue | string> = [];
+  for (const item of val) {
+    if (typeof item === "string") {
+      const trimmed = item.trim().slice(0, 500);
+      if (trimmed && SAFE_HREF.test(trimmed)) {
+        result.push(trimmed);
+      } else {
+        sanitiserRejects += 1;
+      }
+    } else if (item && typeof item === "object") {
+      const parsed = StructuredMediaValueSchema.safeParse(item);
+      if (parsed.success && SAFE_HREF.test(parsed.data.url)) {
+        result.push(parsed.data);
+      } else {
+        sanitiserRejects += 1;
+      }
+    }
+  }
+  return result;
+}
+
 /** Phase 3.2: one repeatable row, coerced through the array's row schema. */
 function coerceRow(schema: Field[], value: unknown): PropRow | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
@@ -7763,6 +7830,17 @@ function coerceRow(schema: Field[], value: unknown): PropRow | null {
   const row: PropRow = {};
   for (const sub of schema) {
     if (sub.kind === "array" || sub.kind === "group") continue;
+    // Wave 2.3: support structured link list repeater in row columns (e.g. footer_sitemap links)
+    if (
+      (sub.key === "links" || sub.key === "links_bn" || sub.key.endsWith("Links")) &&
+      Array.isArray(source[sub.key])
+    ) {
+      const validLinks = coerceStructuredLinks(source[sub.key]);
+      if (validLinks !== null) {
+        row[sub.key] = validLinks;
+        continue;
+      }
+    }
     let coerced = coerceProp(sub, source[sub.key]);
     if (
       coerced === null &&
@@ -7775,6 +7853,14 @@ function coerceRow(schema: Field[], value: unknown): PropRow | null {
       if (parsed.success && SAFE_HREF.test(parsed.data.url)) {
         coerced = parsed.data;
       }
+    }
+    if (
+      coerced !== null &&
+      Array.isArray(coerced) &&
+      (sub.key === "links" || sub.key === "links_bn" || sub.key.endsWith("Links"))
+    ) {
+      row[sub.key] = coerced as unknown as PropScalar;
+      continue;
     }
     if (coerced === null || Array.isArray(coerced)) {
       if (
@@ -7812,6 +7898,19 @@ export function coerceProp(field: Field, value: unknown): PropValue | null {
       if (row) rows.push(row);
     }
     return rows;
+  }
+  // Wave 2.3: support structured link list for scalar link props (c1Links, etc.)
+  if (
+    (field.key === "links" || field.key.endsWith("Links")) &&
+    Array.isArray(value)
+  ) {
+    const validLinks = coerceStructuredLinks(value);
+    if (validLinks !== null) return validLinks as unknown as PropValue;
+  }
+  // Wave 2.3: support multi-image gallery (ugc_gallery images)
+  if (field.key === "images" && Array.isArray(value)) {
+    const validImages = coerceGalleryImages(value);
+    if (validImages !== null) return validImages as unknown as PropValue;
   }
   if (
     field.kind === "number" ||

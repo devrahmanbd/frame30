@@ -59,7 +59,24 @@ import { MediaFrame } from "./primitives/MediaFrame";
  * row format (repeater rows store one link per line); bare labels get
  * href "#". Malformed pairs are dropped, capped at 8.
  */
-export function parseLinkList(raw: string): { label: string; href: string }[] {
+export function parseLinkList(
+  raw: unknown,
+  locale?: string,
+): { label: string; href: string }[] {
+  if (Array.isArray(raw)) {
+    return raw
+      .filter((item): item is Record<string, unknown> => typeof item === "object" && item !== null)
+      .map((item) => {
+        const labelEn = typeof item.label === "string" ? item.label.trim() : "";
+        const labelBn = typeof item.label_bn === "string" ? item.label_bn.trim() : "";
+        const label = locale === "bn" && labelBn ? labelBn : labelEn;
+        const href = typeof item.href === "string" ? item.href.trim() : typeof item.url === "string" ? item.url.trim() : "";
+        return { label, href: href || "#" };
+      })
+      .filter((link) => link.label.length > 0)
+      .slice(0, 8);
+  }
+  if (typeof raw !== "string") return [];
   return raw
     .split(/[\r\n,]+/)
     .map((part) => part.trim())
@@ -538,12 +555,8 @@ function FooterSitemap({ str, section, link, locale }: WidgetCtx) {
           const r = row as Record<string, unknown>;
           const title = typeof r.title === "string" ? r.title : "";
           const titleBn = typeof r.title_bn === "string" ? r.title_bn : "";
-          const links = parseLinkList(
-            typeof r.links === "string" ? r.links : "",
-          );
-          const linksBn = parseLinkList(
-            typeof r.links_bn === "string" ? r.links_bn : "",
-          );
+          const links = parseLinkList(r.links, locale);
+          const linksBn = parseLinkList(r.links_bn, "bn");
           return {
             title: locale === "bn" && titleBn ? titleBn : title,
             links: locale === "bn" && linksBn.length > 0 ? linksBn : links,

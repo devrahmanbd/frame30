@@ -39,6 +39,10 @@ import {
 import type { VisibilityRule } from "@/lib/visibility";
 import { ArrayFieldEditor } from "./ArrayFieldEditor";
 import { MediaPicker } from "./MediaPicker";
+import { LinkListEditor } from "./LinkListEditor";
+import { GalleryMediaEditor } from "./GalleryMediaEditor";
+import { CollectionPicker } from "./CollectionPicker";
+import { MenuPicker } from "./MenuPicker";
 import {
   resolveMediaUrl,
   type StructuredMediaValue,
@@ -703,7 +707,22 @@ function LegacySectionInspector({
           renderRowField={(sub, row, set) => (
             <div key={sub.key} className="space-y-1">
               <label className="block text-xs font-medium">{sub.label}</label>
-              {sub.kind === "boolean" ? (
+              {sub.key === "links" || sub.key === "links_bn" || sub.key.endsWith("Links") ? (
+                <LinkListEditor
+                  value={row[sub.key]}
+                  onChange={(links) => set(sub.key, links as unknown as PropScalar)}
+                />
+              ) : sub.key === "collection" ? (
+                <CollectionPicker
+                  value={typeof row[sub.key] === "string" ? (row[sub.key] as string) : ""}
+                  onChange={(slug) => set(sub.key, slug)}
+                />
+              ) : sub.key === "menuId" ? (
+                <MenuPicker
+                  value={typeof row[sub.key] === "string" ? (row[sub.key] as string) : ""}
+                  onChange={(menuId) => set(sub.key, menuId)}
+                />
+              ) : sub.kind === "boolean" ? (
                 <input
                   type="checkbox"
                   checked={row[sub.key] === true}
@@ -941,6 +960,58 @@ function LegacySectionInspector({
             }
             onChange={(key, next) => onChange(key, next, "desktop")}
             className={shared}
+          />
+        </div>
+      );
+    }
+
+    // Wave 2.3: structured link repeater for scalar link props (c1Links, etc.)
+    if (field.key === "links" || field.key.endsWith("Links")) {
+      return (
+        <div key={field.key} className="space-y-1">
+          <LinkListEditor
+            value={value}
+            onChange={(links) => onChange(field.key, links as unknown as PropValue, device)}
+            disabled={!editable}
+          />
+        </div>
+      );
+    }
+
+    // Wave 2.3: visual multi-image gallery management (ugc_gallery images)
+    if (field.key === "images") {
+      return (
+        <div key={field.key} className="space-y-1">
+          <GalleryMediaEditor
+            value={value}
+            onChange={(images) => onChange(field.key, images as unknown as PropValue, device)}
+            disabled={!editable}
+          />
+        </div>
+      );
+    }
+
+    // Wave 2.3: merchant collection selector (product_rail, etc.)
+    if (field.key === "collection") {
+      return (
+        <div key={field.key} className="space-y-1">
+          <CollectionPicker
+            value={typeof value === "string" ? value : ""}
+            onChange={(slug) => onChange(field.key, slug, device)}
+            disabled={!editable}
+          />
+        </div>
+      );
+    }
+
+    // Wave 2.3: merchant navigation menu selector (mega_menu, etc.)
+    if (field.key === "menuId") {
+      return (
+        <div key={field.key} className="space-y-1">
+          <MenuPicker
+            value={typeof value === "string" ? value : ""}
+            onChange={(menuId) => onChange(field.key, menuId, device)}
+            disabled={!editable}
           />
         </div>
       );
