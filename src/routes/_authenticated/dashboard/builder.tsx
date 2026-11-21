@@ -2453,6 +2453,8 @@ function BuilderStudio() {
                     key={preset.width}
                     type="button"
                     role="tab"
+                    title={`${t(preset.name, preset.name_bn)} (${preset.width}×${preset.height})`}
+                    aria-label={`${t(preset.name, preset.name_bn)} (${preset.width}×${preset.height})`}
                     aria-selected={
                       !fluidCanvas && previewWidth === preset.width
                     }

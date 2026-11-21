@@ -2220,6 +2220,13 @@ export const CONTENT: Record<string, Control[]> = {
           section: "Slides",
         }),
         c({
+          key: "mobileImage",
+          label: "Mobile image (optional)",
+          type: "image",
+          tab: "content",
+          section: "Slides",
+        }),
+        c({
           key: "alt",
           label: "Alt text",
           type: "text",

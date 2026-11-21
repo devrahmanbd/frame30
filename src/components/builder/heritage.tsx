@@ -19,6 +19,7 @@ import type { WidgetComponent, WidgetCtx } from "./widgets";
 import { resolveSkin } from "@/lib/builder-ast";
 import { placeholderSeed } from "@/lib/placeholder";
 import { useHeroMotion } from "./songoskriti-motion";
+import type { StructuredMediaValue } from "@/lib/theme-contract";
 
 /* ---------------------------------------------------------------- helpers */
 
@@ -28,11 +29,58 @@ function t(locale: string, en: string, bn: string) {
 
 function rowsOf(section: Section, key: string): PropRow[] {
   const value: PropValue | undefined = section.props[key];
-  return Array.isArray(value) ? value : [];
+  return Array.isArray(value) ? (value as PropRow[]) : [];
 }
 
-const readString = (row: PropRow, key: string) =>
-  typeof row[key] === "string" ? (row[key] as string) : "";
+function resolveMedia(val: unknown): {
+  url: string;
+  alt?: string;
+  focalPoint?: { x: number; y: number } | null;
+} | null {
+  if (!val) return null;
+  if (typeof val === "string") {
+    const trimmed = val.trim();
+    return trimmed ? { url: trimmed } : null;
+  }
+  if (
+    typeof val === "object" &&
+    val !== null &&
+    "url" in val &&
+    typeof (val as Record<string, unknown>).url === "string"
+  ) {
+    const obj = val as StructuredMediaValue;
+    const url = obj.url.trim();
+    if (!url) return null;
+    return {
+      url,
+      alt:
+        typeof obj.alt === "string" && obj.alt.trim()
+          ? obj.alt.trim()
+          : undefined,
+      focalPoint:
+        obj.focalPoint &&
+        typeof obj.focalPoint.x === "number" &&
+        typeof obj.focalPoint.y === "number"
+          ? obj.focalPoint
+          : null,
+    };
+  }
+  return null;
+}
+
+const readString = (row: PropRow, key: string) => {
+  const val = row[key];
+  if (typeof val === "string") return val;
+  if (
+    typeof val === "object" &&
+    val !== null &&
+    "url" in val &&
+    typeof (val as Record<string, unknown>).url === "string"
+  ) {
+    return (val as Record<string, unknown>).url as string;
+  }
+  return "";
+};
 
 const readNumber = (row: PropRow, key: string, fallback: number) => {
   const v = row[key];
@@ -137,6 +185,11 @@ function WeaveMotif({ seed, className }: { seed: string; className?: string }) {
 
 type HeroSlide = {
   image: string;
+  imageAlt?: string;
+  imageFocalPoint?: { x: number; y: number } | null;
+  mobileImage?: string;
+  mobileImageAlt?: string;
+  mobileImageFocalPoint?: { x: number; y: number } | null;
   headline: string;
   headlineBn: string;
   subhead: string;
@@ -147,6 +200,82 @@ type HeroSlide = {
   caption: string;
   captionBn: string;
 };
+
+function renderHeroArt({
+  slide,
+  isFirst,
+  className = "absolute inset-0 h-full w-full object-cover",
+  device,
+}: {
+  slide: HeroSlide;
+  isFirst: boolean;
+  className?: string;
+  device?: string;
+}) {
+  const hasDesktop = Boolean(
+    slide.image && !slide.image.startsWith("/api/public/ph/"),
+  );
+  const hasMobile = Boolean(
+    slide.mobileImage && !slide.mobileImage.startsWith("/api/public/ph/"),
+  );
+
+  if (!hasDesktop && !hasMobile) {
+    return (
+      <WeaveMotif
+        seed={slide.headline || "heritage"}
+        className="absolute inset-0 h-full w-full text-primary"
+      />
+    );
+  }
+
+  const desktopSrc = slide.image;
+  const mobileSrc = slide.mobileImage || desktopSrc;
+  const isMobileCanvas = device === "mobile";
+  const activeFocal =
+    isMobileCanvas && hasMobile && slide.mobileImageFocalPoint
+      ? slide.mobileImageFocalPoint
+      : slide.imageFocalPoint;
+
+  const focalStyle = activeFocal
+    ? { objectPosition: `${activeFocal.x}% ${activeFocal.y}%` }
+    : undefined;
+
+  const alt =
+    (isMobileCanvas ? slide.mobileImageAlt : undefined) ||
+    slide.imageAlt ||
+    slide.headline ||
+    "Hero slide";
+
+  if (hasMobile && !isMobileCanvas) {
+    return (
+      <picture className="contents">
+        <source media="(max-width: 767px)" srcSet={mobileSrc} />
+        <img
+          src={desktopSrc}
+          alt={alt}
+          style={focalStyle}
+          className={className}
+          loading={isFirst ? "eager" : "lazy"}
+          fetchPriority={isFirst ? "high" : "auto"}
+          decoding="async"
+        />
+      </picture>
+    );
+  }
+
+  const activeSrc = isMobileCanvas && hasMobile ? mobileSrc : desktopSrc;
+  return (
+    <img
+      src={activeSrc}
+      alt={alt}
+      style={focalStyle}
+      className={className}
+      loading={isFirst ? "eager" : "lazy"}
+      fetchPriority={isFirst ? "high" : "auto"}
+      decoding="async"
+    />
+  );
+}
 
 /**
  * Dots + arrows shared by the non-split hero skins. Class-identical to the
@@ -195,6 +324,7 @@ function HeroSkinSlide({
   prev,
   prevLabel,
   nextLabel,
+  device,
 }: {
   skin: string;
   slide: HeroSlide;
@@ -209,26 +339,17 @@ function HeroSkinSlide({
   prev: () => void;
   prevLabel: string;
   nextLabel: string;
+  device?: string;
 }) {
   const slideLabel = `${t(locale, "Slide", "স্লাইড")} ${current + 1} / ${count}`;
   const subhead =
     locale === "bn" && slide.subheadBn ? slide.subheadBn : slide.subhead;
-  const art =
-    slide.image && !slide.image.startsWith("/api/public/ph/") ? (
-      <img
-        src={slide.image}
-        alt={slide.headline}
-        className="absolute inset-0 h-full w-full object-cover object-[50%_35%]"
-        loading={isFirst ? "eager" : "lazy"}
-        fetchPriority={isFirst ? "high" : undefined}
-        decoding="async"
-      />
-    ) : (
-      <WeaveMotif
-        seed={slide.headline || "heritage"}
-        className="absolute inset-0 h-full w-full text-primary"
-      />
-    );
+  const art = renderHeroArt({
+    slide,
+    isFirst,
+    className: "absolute inset-0 h-full w-full object-cover object-[50%_35%]",
+    device,
+  });
   const controls = (
     <HeroSlideControls
       slides={slides}
@@ -453,19 +574,35 @@ const HeroCarousel: WidgetComponent = ({
   Heading,
   locale,
   editing,
+  device,
 }) => {
-  const slides = rowsOf(section, "slides").map((row) => ({
-    image: readString(row, "image"),
-    headline: readString(row, "headline"),
-    headlineBn: readString(row, "headline_bn"),
-    subhead: readString(row, "subhead"),
-    subheadBn: readString(row, "subhead_bn"),
-    ctaLabel: readString(row, "ctaLabel"),
-    ctaLabelBn: readString(row, "ctaLabel_bn"),
-    ctaUrl: readString(row, "ctaUrl"),
-    caption: readString(row, "caption"),
-    captionBn: readString(row, "caption_bn"),
-  }));
+  const slides: HeroSlide[] = rowsOf(section, "slides").map((row) => {
+    const desktopMedia = resolveMedia(row.image);
+    const mobileMedia = resolveMedia(row.mobileImage);
+    return {
+      image: desktopMedia?.url || readString(row, "image"),
+      imageAlt:
+        desktopMedia?.alt ||
+        (typeof row.imageAlt === "string" ? row.imageAlt : undefined),
+      imageFocalPoint: desktopMedia?.focalPoint ?? null,
+      mobileImage: mobileMedia?.url || readString(row, "mobileImage"),
+      mobileImageAlt:
+        mobileMedia?.alt ||
+        (typeof row.mobileImageAlt === "string"
+          ? row.mobileImageAlt
+          : undefined),
+      mobileImageFocalPoint: mobileMedia?.focalPoint ?? null,
+      headline: readString(row, "headline"),
+      headlineBn: readString(row, "headline_bn"),
+      subhead: readString(row, "subhead"),
+      subheadBn: readString(row, "subhead_bn"),
+      ctaLabel: readString(row, "ctaLabel"),
+      ctaLabelBn: readString(row, "ctaLabel_bn"),
+      ctaUrl: readString(row, "ctaUrl"),
+      caption: readString(row, "caption"),
+      captionBn: readString(row, "caption_bn"),
+    };
+  });
   const autoAdvanceMs = int("autoAdvanceMs", 5000, 1000, 15000);
   const atmosphere = str("atmosphere") || "wash";
   // Widget skin (spec 2026-09-25): split (default, current asymmetric
@@ -585,6 +722,7 @@ const HeroCarousel: WidgetComponent = ({
           prev={prev}
           prevLabel={prevLabel}
           nextLabel={nextLabel}
+          device={device}
         />
       ) : (
         <div
@@ -684,21 +822,12 @@ const HeroCarousel: WidgetComponent = ({
             placeholder URLs become hand-built weave lattice instead. */}
           <div data-hero-art className="min-w-0 lg:col-span-6 lg:-mr-8">
             <div className="relative aspect-[3/4] w-full overflow-hidden bg-transparent sm:aspect-[4/3] lg:aspect-[3/4]">
-              {slide.image && !slide.image.startsWith("/api/public/ph/") ? (
-                <img
-                  src={slide.image}
-                  alt={slide.headline}
-                  className="absolute inset-0 h-full w-full object-cover"
-                  loading={isFirst ? "eager" : "lazy"}
-                  fetchPriority={isFirst ? "high" : "auto"}
-                  decoding="async"
-                />
-              ) : (
-                <WeaveMotif
-                  seed={slide.headline || "heritage"}
-                  className="absolute inset-0 h-full w-full text-primary"
-                />
-              )}
+              {renderHeroArt({
+                slide,
+                isFirst,
+                className: "absolute inset-0 h-full w-full object-cover",
+                device,
+              })}
             </div>
           </div>
         </div>

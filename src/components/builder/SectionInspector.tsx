@@ -707,19 +707,31 @@ function LegacySectionInspector({
           renderRowField={(sub, row, set) => (
             <div key={sub.key} className="space-y-1">
               <label className="block text-xs font-medium">{sub.label}</label>
-              {sub.key === "links" || sub.key === "links_bn" || sub.key.endsWith("Links") ? (
+              {sub.key === "links" ||
+              sub.key === "links_bn" ||
+              sub.key.endsWith("Links") ? (
                 <LinkListEditor
                   value={row[sub.key]}
-                  onChange={(links) => set(sub.key, links as unknown as PropScalar)}
+                  onChange={(links) =>
+                    set(sub.key, links as unknown as PropScalar)
+                  }
                 />
               ) : sub.key === "collection" ? (
                 <CollectionPicker
-                  value={typeof row[sub.key] === "string" ? (row[sub.key] as string) : ""}
+                  value={
+                    typeof row[sub.key] === "string"
+                      ? (row[sub.key] as string)
+                      : ""
+                  }
                   onChange={(slug) => set(sub.key, slug)}
                 />
               ) : sub.key === "menuId" ? (
                 <MenuPicker
-                  value={typeof row[sub.key] === "string" ? (row[sub.key] as string) : ""}
+                  value={
+                    typeof row[sub.key] === "string"
+                      ? (row[sub.key] as string)
+                      : ""
+                  }
                   onChange={(menuId) => set(sub.key, menuId)}
                 />
               ) : sub.kind === "boolean" ? (
@@ -767,6 +779,7 @@ function LegacySectionInspector({
               ) : sub.kind === "image" ||
                 sub.key === "image" ||
                 sub.key === "hoverImage" ||
+                sub.key === "mobileImage" ||
                 (typeof row[sub.key] === "object" &&
                   row[sub.key] !== null &&
                   "url" in (row[sub.key] as Record<string, unknown>)) ? (
@@ -796,11 +809,11 @@ function LegacySectionInspector({
 
                       const altCandidateKey =
                         sub.key === "image"
-                          ? ("alt" in row
-                              ? "alt"
-                              : "altText" in row
-                                ? "altText"
-                                : undefined)
+                          ? "alt" in row
+                            ? "alt"
+                            : "altText" in row
+                              ? "altText"
+                              : undefined
                           : `${sub.key}Alt` in row
                             ? `${sub.key}Alt`
                             : undefined;
@@ -899,7 +912,7 @@ function LegacySectionInspector({
     }
 
     // Phase 3.3: image props get the media picker, alt text and a sizes preset.
-    if (field.kind === "image") {
+    if (field.kind === "image" || field.key === "mobileImage") {
       const altField: Field = {
         ...field,
         key: altKey(field.key),
@@ -971,7 +984,9 @@ function LegacySectionInspector({
         <div key={field.key} className="space-y-1">
           <LinkListEditor
             value={value}
-            onChange={(links) => onChange(field.key, links as unknown as PropValue, device)}
+            onChange={(links) =>
+              onChange(field.key, links as unknown as PropValue, device)
+            }
             disabled={!editable}
           />
         </div>
@@ -984,7 +999,9 @@ function LegacySectionInspector({
         <div key={field.key} className="space-y-1">
           <GalleryMediaEditor
             value={value}
-            onChange={(images) => onChange(field.key, images as unknown as PropValue, device)}
+            onChange={(images) =>
+              onChange(field.key, images as unknown as PropValue, device)
+            }
             disabled={!editable}
           />
         </div>

@@ -45,7 +45,7 @@ function t(locale: string, en: string, bn: string) {
 
 function rowsOf(section: Section, key: string): PropRow[] {
   const value: PropValue | undefined = section.props[key];
-  return Array.isArray(value) ? value : [];
+  return Array.isArray(value) ? (value as PropRow[]) : [];
 }
 
 const readString = (row: PropRow, key: string) =>

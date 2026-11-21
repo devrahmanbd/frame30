@@ -581,19 +581,21 @@ export function BuilderTopBar({
         <div
           role="tablist"
           aria-label={t("Device", "ডিভাইস")}
-          className="flex items-center gap-1 rounded-fq-lg border border-border/80 bg-muted/60 p-1 shadow-inner"
+          className="flex items-center gap-0.5 rounded-fq-lg border border-border/80 bg-muted/60 p-1 shadow-inner overflow-x-auto max-w-full"
         >
           {DEVICE_PRESETS.map((preset) => {
             const isSelected = previewWidth === preset.width;
+            const displayName = t(preset.name, preset.name_bn);
             return (
               <button
                 key={preset.width}
                 type="button"
                 role="tab"
                 aria-selected={isSelected}
-                aria-label={`${preset.label}px — ${preset.bp}`}
+                aria-label={`${displayName} (${preset.width}×${preset.height})`}
+                title={`${displayName} (${preset.width}×${preset.height})`}
                 onClick={() => onWidthChange(preset.width)}
-                className={`flex items-center gap-1.5 rounded-fq-md px-2.5 py-1 text-xs font-medium tabular-nums transition-all cursor-pointer ${
+                className={`flex items-center gap-1 shrink-0 rounded-fq-md px-2 py-1 text-xs font-medium tabular-nums transition-all cursor-pointer ${
                   isSelected
                     ? "bg-background text-foreground shadow-xs ring-1 ring-border/50 font-semibold"
                     : "text-muted-foreground hover:text-foreground hover:bg-background/40"

@@ -50,21 +50,94 @@ export const MIN_TOUCH_PX = 44;
 /** Smallest width the storefront must render without horizontal overflow. */
 export const MIN_SUPPORTED_WIDTH_PX = 320;
 
-/**
- * Studio device frames. Each width maps onto the bucket the inspector edits,
- * so "preview at 375" and "edit the mobile layer" are one gesture.
- */
-export const DEVICE_PRESETS = [
-  { width: 320, label: "320", bp: "mobile" },
-  { width: 375, label: "375", bp: "mobile" },
-  { width: 768, label: "768", bp: "tablet" },
-  { width: 1024, label: "1024", bp: "tablet" },
-  { width: 1440, label: "1440", bp: "desktop" },
-] as const satisfies readonly {
+export interface DevicePreset {
+  id: string;
+  name: string;
+  name_bn: string;
   width: number;
+  height: number;
   label: string;
   bp: DeviceBucket;
-}[];
+}
+
+/**
+ * Studio device frames. Each width maps onto the bucket the inspector edits,
+ * so "preview at 390" and "edit the mobile layer" are one gesture.
+ */
+export const DEVICE_PRESETS: readonly DevicePreset[] = [
+  {
+    id: "small-mobile",
+    name: "Small mobile",
+    name_bn: "ছোট মোবাইল",
+    width: 320,
+    height: 568,
+    label: "320",
+    bp: "mobile",
+  },
+  {
+    id: "mobile",
+    name: "Mobile",
+    name_bn: "মোবাইল",
+    width: 360,
+    height: 640,
+    label: "360",
+    bp: "mobile",
+  },
+  {
+    id: "mobile-large",
+    name: "Mobile large",
+    name_bn: "বড় মোবাইল",
+    width: 390,
+    height: 844,
+    label: "390",
+    bp: "mobile",
+  },
+  {
+    id: "mobile-xl",
+    name: "Mobile XL",
+    name_bn: "মোবাইল এক্সএল",
+    width: 430,
+    height: 932,
+    label: "430",
+    bp: "mobile",
+  },
+  {
+    id: "tablet",
+    name: "Tablet",
+    name_bn: "ট্যাবলেট",
+    width: 768,
+    height: 1024,
+    label: "768",
+    bp: "tablet",
+  },
+  {
+    id: "laptop",
+    name: "Laptop",
+    name_bn: "ল্যাপটপ",
+    width: 1024,
+    height: 768,
+    label: "1024",
+    bp: "tablet",
+  },
+  {
+    id: "desktop",
+    name: "Desktop",
+    name_bn: "ডেস্কটপ",
+    width: 1280,
+    height: 800,
+    label: "1280",
+    bp: "desktop",
+  },
+  {
+    id: "desktop-wide",
+    name: "Desktop wide",
+    name_bn: "ওয়াইড ডেস্কটপ",
+    width: 1440,
+    height: 900,
+    label: "1440",
+    bp: "desktop",
+  },
+] as const;
 
 /** The bucket a viewport width resolves to, using the platform breakpoints. */
 export function bucketForWidth(width: number): DeviceBucket {

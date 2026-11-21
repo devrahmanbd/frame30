@@ -798,6 +798,12 @@ const url = (key: string, label: string): Field => ({
   max: 500,
   panel: "content",
 });
+const img = (key: string, label: string): Field => ({
+  key,
+  label,
+  kind: "image",
+  panel: "content",
+});
 const embed = (key: string, label: string): Field => ({
   key,
   label,
@@ -2308,7 +2314,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       text("brandName", "Brand name", 60),
       area("paymentsMarks", "Payment marks (comma separated)", 300),
       text("paymentsHeading", "Payment heading", 40),
-      text("pages", "Picked pages (comma-separated slugs)", 400),
+      text("pages", "Selected pages", 400),
       {
         // Repeater-first (chrome.tsx + songoskriti.tsx footers): studio
         // `items` column rows win when present; scalar c1..c4 pairs stay
@@ -2839,7 +2845,7 @@ const BASE_CATALOG: CatalogEntry[] = [
           { value: "occasion", label: "Occasion" },
         ],
       },
-      area("subnav", "Subnav (Label:/c/slug, comma separated)", 600),
+      area("subnav", "Subnavigation links", 600),
     ],
   },
   {
@@ -3293,11 +3299,11 @@ const BASE_CATALOG: CatalogEntry[] = [
       area("body", "Body", 800),
       text("ctaLabel", "Link label", 40),
       url("ctaHref", "Link URL"),
-      url("imageUrl", "Image"),
+      img("imageUrl", "Image"),
       text("imageAlt", "Image alt", 160),
       bool("flip", "Image on the right"),
-      url("primaryImage", "Primary image"),
-      url("secondaryImage", "Secondary image"),
+      img("primaryImage", "Primary image"),
+      img("secondaryImage", "Secondary image"),
       url("ctaUrl", "Primary link URL"),
       text("ctaLabel2", "Second link label", 40),
       url("ctaUrl2", "Second link URL"),
@@ -3453,10 +3459,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     },
     fields: [
       text("heading", "Heading", 80),
-      // The Songoskriti renderer's own fallback list: a comma-separated URL
-      // string it splits per store (`src/components/builder/songoskriti.tsx`,
-      // `SongoskritiStoreLocator`).
-      area("images", "Store images (comma separated URLs)", 2000),
+      area("images", "Store images", 2000),
       text("s1Name", "Store 1 name", 80),
       area("s1Address", "Store 1 address", 300),
       text("s1Hours", "Store 1 hours", 120),
@@ -4688,8 +4691,8 @@ const BASE_CATALOG: CatalogEntry[] = [
     },
     fields: [
       text("heading", "Heading"),
-      text("terms", "Concern slugs (comma separated)", 200),
-      text("collection", "Collection handle", 120),
+      text("terms", "Filter tags", 200),
+      text("collection", "Collection", 120),
       bool("showRating", "Show rating"),
       CARD_VARIANT,
     ],
@@ -5061,7 +5064,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       bool("showExcerpt", "Show excerpt"),
       bool("showMeta", "Show author and date"),
       text("emptyText", "Empty state text", 120),
-      text("handles", "Picked articles (comma-separated slugs)", 400),
+      text("handles", "Selected articles", 400),
     ],
   },
   {
@@ -5242,6 +5245,7 @@ const BASE_CATALOG: CatalogEntry[] = [
         maxRows: 3,
         fields: [
           { key: "image", label: "Image", kind: "image", panel: "content" },
+          img("mobileImage", "Mobile image (optional)"),
           text("headline", "Headline", 120),
           text("headline_bn", "Headline (বাংলা)", 120),
           area("subhead", "Subhead", 300),
@@ -5286,7 +5290,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       layout: "image-left",
     },
     fields: [
-      url("image", "Image"),
+      img("image", "Image"),
       text("headline", "Headline", 120),
       text("heading", "Heading (alias)", 120),
       area("body", "Body", 1200),
@@ -5325,7 +5329,7 @@ const BASE_CATALOG: CatalogEntry[] = [
         itemLabel: "title",
         maxRows: 8,
         fields: [
-          url("image", "Image"),
+          img("image", "Image"),
           text("title", "Title", 120),
           text("subtitle", "Subtitle", 120),
         ],
@@ -5352,7 +5356,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       surface: "card",
     },
     fields: [
-      url("image", "Image"),
+      img("image", "Image"),
       text("headline", "Headline", 120),
       text("heading", "Heading (alias)", 120),
       text("subhead", "Subhead", 300),
@@ -5415,7 +5419,12 @@ const BASE_CATALOG: CatalogEntry[] = [
         maxRows: 8,
         fields: [
           { key: "image", label: "Image", kind: "image", panel: "content" },
-          { key: "hoverImage", label: "Hover Image", kind: "image", panel: "content" },
+          {
+            key: "hoverImage",
+            label: "Hover Image",
+            kind: "image",
+            panel: "content",
+          },
           text("alt", "Alternative text", 200),
           text("title", "Title", 80),
           // `href` renders raw into the tile anchor (heritage.tsx
@@ -7770,18 +7779,20 @@ function clampNumber(field: Field, n: number): number {
 }
 
 /** Coerces and sanitises an array of structured link items. */
-export function coerceStructuredLinks(
-  val: unknown,
-): StructuredLink[] | null {
+export function coerceStructuredLinks(val: unknown): StructuredLink[] | null {
   if (!Array.isArray(val)) return null;
   const links: StructuredLink[] = [];
   for (const item of val) {
     if (!item || typeof item !== "object") continue;
     const raw = item as Record<string, unknown>;
-    const label = typeof raw.label === "string" ? raw.label.trim().slice(0, 100) : "";
-    const href = typeof raw.href === "string" ? raw.href.trim().slice(0, 500) : "";
+    const label =
+      typeof raw.label === "string" ? raw.label.trim().slice(0, 100) : "";
+    const href =
+      typeof raw.href === "string" ? raw.href.trim().slice(0, 500) : "";
     const labelBn =
-      typeof raw.label_bn === "string" ? raw.label_bn.trim().slice(0, 100) : undefined;
+      typeof raw.label_bn === "string"
+        ? raw.label_bn.trim().slice(0, 100)
+        : undefined;
     if (!label && !href) continue;
     if (href && !SAFE_HREF.test(href)) {
       sanitiserRejects += 1;
@@ -7832,7 +7843,9 @@ function coerceRow(schema: Field[], value: unknown): PropRow | null {
     if (sub.kind === "array" || sub.kind === "group") continue;
     // Wave 2.3: support structured link list repeater in row columns (e.g. footer_sitemap links)
     if (
-      (sub.key === "links" || sub.key === "links_bn" || sub.key.endsWith("Links")) &&
+      (sub.key === "links" ||
+        sub.key === "links_bn" ||
+        sub.key.endsWith("Links")) &&
       Array.isArray(source[sub.key])
     ) {
       const validLinks = coerceStructuredLinks(source[sub.key]);
@@ -7857,7 +7870,9 @@ function coerceRow(schema: Field[], value: unknown): PropRow | null {
     if (
       coerced !== null &&
       Array.isArray(coerced) &&
-      (sub.key === "links" || sub.key === "links_bn" || sub.key.endsWith("Links"))
+      (sub.key === "links" ||
+        sub.key === "links_bn" ||
+        sub.key.endsWith("Links"))
     ) {
       row[sub.key] = coerced as unknown as PropScalar;
       continue;

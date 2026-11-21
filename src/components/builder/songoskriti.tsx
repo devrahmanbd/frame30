@@ -1623,7 +1623,10 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
       : [1, 2, 3, 4]
           .map((n) => ({
             title: str(`c${n}Title`),
-            links: parseLinkList(section.props[`c${n}Links`] ?? str(`c${n}Links`), locale),
+            links: parseLinkList(
+              section.props[`c${n}Links`] ?? str(`c${n}Links`),
+              locale,
+            ),
           }))
           .filter((col) => col.title || col.links.length > 0);
   // Phase 4 page picker: explicitly picked page slugs append one extra
@@ -1676,8 +1679,8 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
         : typeof dynamic.site === "object" &&
             dynamic.site &&
             "title" in dynamic.site &&
-            typeof (dynamic.site as any).title === "string"
-          ? (dynamic.site as any).title
+            typeof (dynamic.site as Record<string, unknown>).title === "string"
+          ? ((dynamic.site as Record<string, unknown>).title as string)
           : "");
   const rawTagline =
     str("brandTagline") ||
@@ -1741,9 +1744,7 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
           : "");
   // Missing hours: omit the hours (never fall back to unverified defaults)
   const supportHours =
-    rawHours && !rawHours.toLowerCase().includes("daily 10am")
-      ? rawHours
-      : "";
+    rawHours && !rawHours.toLowerCase().includes("daily 10am") ? rawHours : "";
   const rawDelivery =
     str("policyDelivery") ||
     (typeof dynamicMerchant.deliveryInfo === "string" &&
@@ -1754,8 +1755,7 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
         : "");
   // Missing delivery policy: omit the promise (never fall back to unverified claims)
   const policyDelivery =
-    rawDelivery &&
-    !rawDelivery.toLowerCase().includes("nationwide")
+    rawDelivery && !rawDelivery.toLowerCase().includes("nationwide")
       ? rawDelivery
       : "";
   const rawInstagram =
@@ -1778,9 +1778,7 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
     (typeof dynamic.facebook_url === "string"
       ? (dynamic.facebook_url as string)
       : "");
-  const facebookUrl = isValidSocialUrl(rawFacebook)
-    ? rawFacebook.trim()
-    : "";
+  const facebookUrl = isValidSocialUrl(rawFacebook) ? rawFacebook.trim() : "";
 
   return (
     <section className="w-full flex flex-col pt-10 sm:pt-20">
@@ -2884,13 +2882,10 @@ const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
       ? rawImages
       : [
           ...rawImages,
-          ...Array.from(
-            { length: 6 - rawImages.length },
-            (_, i) => ({
-              url: `/api/public/ph/${placeholderSeed(`ugc-${rawImages.length + i}`)}`,
-              alt: "",
-            }),
-          ),
+          ...Array.from({ length: 6 - rawImages.length }, (_, i) => ({
+            url: `/api/public/ph/${placeholderSeed(`ugc-${rawImages.length + i}`)}`,
+            alt: "",
+          })),
         ];
 
   const scope = useRef<HTMLElement | null>(null);
@@ -2982,7 +2977,7 @@ const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
   );
 };
 
-const SongoskritiStoreLocator: WidgetComponent = ({ str, locale }) => {
+const SongoskritiStoreLocator: WidgetComponent = ({ section, str, locale }) => {
   // Heading/eyebrow fall back to generic chrome, never a brand name; the
   // songoskriti homepage authors its own heading. Store images resolve
   // per-store (`sNImage`), then the authored `images` list, then a neutral
@@ -2990,10 +2985,21 @@ const SongoskritiStoreLocator: WidgetComponent = ({ str, locale }) => {
   const heading =
     str("heading") || t(locale, "Visit our stores", "আমাদের স্টোরসমূহ");
   const eyebrow = str("eyebrow") || t(locale, "OUR STORES", "আমাদের শাখাসমূহ");
-  const listImages = (str("images") || "")
-    .split(",")
-    .map((i) => i.trim())
-    .filter(Boolean);
+  const rawImages = section?.props?.images;
+  const listImages = Array.isArray(rawImages)
+    ? rawImages
+        .map((img) =>
+          typeof img === "string"
+            ? img.trim()
+            : typeof img === "object" && img !== null && "url" in img
+              ? String(img.url).trim()
+              : "",
+        )
+        .filter(Boolean)
+    : (str("images") || "")
+        .split(",")
+        .map((i) => i.trim())
+        .filter(Boolean);
   const imageFor = (n: number, name: string) =>
     str(`s${n}Image`) ||
     listImages[n - 1] ||
