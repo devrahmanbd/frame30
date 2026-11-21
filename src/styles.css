@@ -2692,3 +2692,13 @@ html.dark,
     grid-template-columns: repeat(12, minmax(0, 1fr));
   }
 }
+
+/* Wave 2.4 — Responsive Hero Art Focal-Position Styling */
+.fq-hero-art {
+  object-position: var(--hero-focal-d, 50% 50%);
+}
+@media (max-width: 767px) {
+  .fq-hero-art {
+    object-position: var(--hero-focal-m, var(--hero-focal-d, 50% 50%));
+  }
+}

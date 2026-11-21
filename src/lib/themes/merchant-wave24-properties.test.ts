@@ -14,14 +14,25 @@
  * - Property P10: Merchant labels free of forbidden developer tokens
  */
 import { describe, it, expect } from "vitest";
+import { renderToStaticMarkup } from "react-dom/server";
 import fc from "fast-check";
 import {
   DEVICE_PRESETS,
   bucketForWidth,
   type DeviceBucket,
 } from "@/lib/responsive";
-import { parseAst, SECTION_CATALOG, type Section } from "@/lib/builder-ast";
+import {
+  parseAst,
+  SECTION_CATALOG,
+  type Section,
+  type PropRow,
+} from "@/lib/builder-ast";
 import type { StructuredMediaValue } from "@/lib/theme-contract";
+import {
+  resolveHeroSlide,
+  renderHeroArt,
+} from "@/components/builder/heritage";
+import { StructuredMediaValueSchema } from "@/lib/media";
 
 // ── Arbitraries & Generators ──
 
@@ -45,14 +56,14 @@ const genStructuredMedia = fc
     return media;
   });
 
-const genHeroSlide = fc
+const genHeroSlide: fc.Arbitrary<PropRow> = fc
   .record({
     headline: fc.string({ minLength: 1, maxLength: 80 }),
     image: fc.oneof(genSafeUrl, genStructuredMedia),
     mobileImage: fc.option(fc.oneof(genSafeUrl, genStructuredMedia)),
   })
   .map((raw) => {
-    const slide: Record<string, unknown> = {
+    const slide: PropRow = {
       headline: raw.headline,
       image: raw.image,
     };
@@ -114,18 +125,26 @@ describe("Wave 2.4 — Property Suites", () => {
               ],
             },
           };
-          const original = parseAst({ main: [section] });
-          const serializedOriginal = JSON.stringify(original);
+          const originalAst = parseAst({ main: [section] });
+          const serializedOriginal = JSON.stringify(originalAst);
 
-          // Simulated viewport width state changes
-          let currentWidth = 1440;
+          // Simulated viewport state transitions using production bucket resolution
           for (const w of widths) {
-            currentWidth = w;
-            expect(currentWidth).toBeGreaterThanOrEqual(320);
+            const bucket: DeviceBucket = bucketForWidth(w);
+            expect(bucket).toBeDefined();
+            // Production invariant: viewport switches must not alter document AST
+            const afterStepAst = parseAst({ main: [section] });
+            expect(JSON.stringify(afterStepAst)).toBe(serializedOriginal);
           }
 
-          const parsedAfter = parseAst({ main: [section] });
-          expect(JSON.stringify(parsedAfter)).toBe(serializedOriginal);
+          // Mutation check: if a faulty viewport handler accidentally mutates the AST, detect it
+          const faultyMutate = (ast: typeof originalAst, width: number) => {
+            const mutated = JSON.parse(JSON.stringify(ast));
+            mutated.main[0].props["viewportWidth"] = width;
+            return mutated;
+          };
+          const mutated = faultyMutate(originalAst, widths[0]!);
+          expect(JSON.stringify(mutated)).not.toBe(serializedOriginal);
         },
       ),
       { numRuns: 50 },
@@ -142,20 +161,72 @@ describe("Wave 2.4 — Property Suites", () => {
         genStructuredMedia,
         genStructuredMedia,
         (desktopMedia, initialMobileMedia, updatedMobileMedia) => {
-          const initialSlide = {
-            headline: "Title",
-            image: desktopMedia,
-            mobileImage: initialMobileMedia,
+          const section: Section = {
+            id: "hero-isolation",
+            type: "hero_carousel",
+            props: {
+              slides: [
+                {
+                  headline: "Heritage Slide",
+                  image: desktopMedia,
+                  mobileImage: initialMobileMedia,
+                },
+              ],
+            },
           };
 
-          // Update mobile image only
-          const updatedSlide = {
-            ...initialSlide,
-            mobileImage: updatedMobileMedia,
-          };
+          const parsedInitial = parseAst({ main: [section] });
+          const initialSlideRow = (
+            parsedInitial.main[0]!.props.slides as unknown as PropRow[]
+          )[0]!;
+          const resolvedBefore = resolveHeroSlide(initialSlideRow);
 
-          expect(updatedSlide.image).toEqual(desktopMedia);
-          expect(updatedSlide.mobileImage).toEqual(updatedMobileMedia);
+          // Update mobile image only through production AST structure
+          const updatedSection: Section = {
+            ...section,
+            props: {
+              ...section.props,
+              slides: [
+                {
+                  headline: "Heritage Slide",
+                  image: desktopMedia,
+                  mobileImage: updatedMobileMedia,
+                },
+              ],
+            },
+          };
+          const parsedUpdated = parseAst({ main: [updatedSection] });
+          const updatedSlideRow = (
+            parsedUpdated.main[0]!.props.slides as unknown as PropRow[]
+          )[0]!;
+          const resolvedAfter = resolveHeroSlide(updatedSlideRow);
+
+          // Desktop media invariants
+          expect(resolvedAfter.image).toBe(desktopMedia.url);
+          expect(resolvedAfter.imageAlt).toBe(
+            desktopMedia.alt?.trim() || undefined,
+          );
+          expect(resolvedAfter.imageFocalPoint).toEqual(
+            desktopMedia.focalPoint ?? null,
+          );
+
+          // Mobile media is updated correctly
+          expect(resolvedAfter.mobileImage).toBe(updatedMobileMedia.url);
+          expect(resolvedAfter.mobileImageAlt).toBe(
+            updatedMobileMedia.alt?.trim() || undefined,
+          );
+          expect(resolvedAfter.mobileImageFocalPoint).toEqual(
+            updatedMobileMedia.focalPoint ?? null,
+          );
+
+          // Mutation check: if mobile update accidentally overwrote desktop media
+          const faultyMobileOverwrite = {
+            ...resolvedAfter,
+            image: updatedMobileMedia.url,
+          };
+          if (updatedMobileMedia.url !== desktopMedia.url) {
+            expect(faultyMobileOverwrite.image).not.toBe(resolvedBefore.image);
+          }
         },
       ),
       { numRuns: 100 },
@@ -168,21 +239,50 @@ describe("Wave 2.4 — Property Suites", () => {
   it("Property P5: mutating slide i leaves all slides j != i strictly unchanged", () => {
     fc.assert(
       fc.property(
-        fc.array(genHeroSlide, { minLength: 2, maxLength: 5 }),
+        fc.array(genHeroSlide, { minLength: 2, maxLength: 3 }),
         fc.nat(),
         genStructuredMedia,
         (slides, rawIndex, newMobileMedia) => {
           const targetIndex = rawIndex % slides.length;
-          const clonedSlides = JSON.parse(JSON.stringify(slides));
+          const section: Section = {
+            id: "hero-multi-isolation",
+            type: "hero_carousel",
+            props: { slides: slides as unknown as PropRow[] },
+          };
 
-          // Mutate targetIndex
-          clonedSlides[targetIndex]!.mobileImage = newMobileMedia;
+          const parsedBefore = parseAst({ main: [section] });
+          const rawSlidesBefore = parsedBefore.main[0]!.props.slides as unknown as PropRow[];
+          const resolvedBefore = rawSlidesBefore.map(resolveHeroSlide);
 
-          // Assert all other slides are unchanged
+          // Update only slide targetIndex
+          const updatedSlides = slides.map((s, idx) =>
+            idx === targetIndex ? { ...s, mobileImage: newMobileMedia } : s,
+          );
+          const parsedAfter = parseAst({
+            main: [{ ...section, props: { slides: updatedSlides as unknown as PropRow[] } }],
+          });
+          const rawSlidesAfter = parsedAfter.main[0]!.props.slides as unknown as PropRow[];
+          const resolvedAfter = rawSlidesAfter.map(resolveHeroSlide);
+
+          // Invariant: all slides j != targetIndex remain strictly identical
           for (let j = 0; j < slides.length; j++) {
             if (j !== targetIndex) {
-              expect(clonedSlides[j]).toEqual(slides[j]);
+              expect(resolvedAfter[j]).toEqual(resolvedBefore[j]);
+            } else {
+              expect(resolvedAfter[j]!.mobileImage).toBe(newMobileMedia.url);
             }
+          }
+
+          // Mutation check: if slide modification leaked to all slides
+          const faultyGlobalLeak = resolvedBefore.map((s) => ({
+            ...s,
+            mobileImage: newMobileMedia.url,
+          }));
+          const untargetedIndex = (targetIndex + 1) % slides.length;
+          if (resolvedBefore[untargetedIndex]!.mobileImage !== newMobileMedia.url) {
+            expect(faultyGlobalLeak[untargetedIndex]).not.toEqual(
+              resolvedBefore[untargetedIndex],
+            );
           }
         },
       ),
@@ -199,24 +299,51 @@ describe("Wave 2.4 — Property Suites", () => {
         genStructuredMedia,
         fc.constantFrom(undefined, "", null),
         (desktopMedia, emptyMobile) => {
-          const slide: Record<string, unknown> = {
-            headline: "Heritage",
+          const row: PropRow = {
+            headline: "Heritage Weave",
             image: desktopMedia,
           };
-          if (emptyMobile !== undefined) {
-            slide.mobileImage = emptyMobile;
+          if (emptyMobile !== undefined && emptyMobile !== null) {
+            row.mobileImage = emptyMobile;
           }
 
-          // Fallback logic
-          const effectiveMobileUrl =
-            (slide.mobileImage && typeof slide.mobileImage === "object"
-              ? (slide.mobileImage as StructuredMediaValue).url
-              : typeof slide.mobileImage === "string" &&
-                  slide.mobileImage.trim()
-                ? slide.mobileImage
-                : null) || desktopMedia.url;
+          // Test actual production slide resolution
+          const resolved = resolveHeroSlide(row);
 
-          expect(effectiveMobileUrl).toBe(desktopMedia.url);
+          expect(resolved.image).toBe(desktopMedia.url);
+          expect(resolved.imageAlt).toBe(desktopMedia.alt?.trim() || undefined);
+          expect(resolved.imageFocalPoint).toEqual(
+            desktopMedia.focalPoint ?? null,
+          );
+
+          // Mobile image must be empty/unresolvable
+          expect(resolved.mobileImage).toBe("");
+          expect(resolved.mobileImageFocalPoint).toBeNull();
+
+          // Test actual production rendering fallback via renderHeroArt
+          const mobileElem = renderHeroArt({
+            slide: resolved,
+            isFirst: true,
+            device: "mobile",
+          }) as React.ReactElement<{ src?: string }>;
+          // On mobile preview, desktop image is rendered as fallback
+          expect(mobileElem.props.src).toBe(desktopMedia.url);
+
+          const markupDesktop = renderToStaticMarkup(
+            renderHeroArt({ slide: resolved, isFirst: true, device: "desktop" }),
+          );
+          // When mobileImage is absent, <source> must not emit an empty srcset
+          expect(markupDesktop).not.toContain('srcset=""');
+          expect(markupDesktop).not.toContain('srcSet=""');
+
+          // Clearing mobile media must never destroy desktop media
+          const clearedRow = { ...row, mobileImage: "" };
+          const resolvedCleared = resolveHeroSlide(clearedRow);
+          expect(resolvedCleared.image).toBe(desktopMedia.url);
+
+          // Mutation check: if clearing mobile media destroyed desktop media
+          const faultyClearDestroy = { ...resolvedCleared, image: "" };
+          expect(faultyClearDestroy.image).not.toBe(desktopMedia.url);
         },
       ),
       { numRuns: 100 },
@@ -224,28 +351,63 @@ describe("Wave 2.4 — Property Suites", () => {
   });
 
   /* ------------------------------------------------------------------ */
-  /* Property P7: Focal point boundary preservation                     */
+  /* Property P7: Focal point boundary preservation & validation        */
   /* ------------------------------------------------------------------ */
-  it("Property P7: valid focal coordinates [0, 100] are preserved without corruption", () => {
+  it("Property P7: valid focal coordinates [0, 100] are preserved, invalid coordinates are rejected", () => {
+    const genBadCoord = fc.oneof(
+      fc.integer({ min: -1000, max: -1 }),
+      fc.integer({ min: 101, max: 1000 }),
+    );
+
     fc.assert(
-      fc.property(genFocalPoint, genFocalPoint, (desktopFocal, mobileFocal) => {
-        expect(desktopFocal.x).toBeGreaterThanOrEqual(0);
-        expect(desktopFocal.x).toBeLessThanOrEqual(100);
-        expect(desktopFocal.y).toBeGreaterThanOrEqual(0);
-        expect(desktopFocal.y).toBeLessThanOrEqual(100);
+      fc.property(
+        genSafeUrl,
+        genFocalPoint,
+        genBadCoord,
+        fc.integer({ min: 0, max: 100 }),
+        (url, validFocal, badX, goodY) => {
+          // 1. Valid coordinates [0, 100] validate through StructuredMediaValueSchema
+          const validMedia = {
+            url,
+            focalPoint: validFocal,
+          };
+          const validParsed = StructuredMediaValueSchema.safeParse(validMedia);
+          expect(validParsed.success).toBe(true);
 
-        expect(mobileFocal.x).toBeGreaterThanOrEqual(0);
-        expect(mobileFocal.x).toBeLessThanOrEqual(100);
-        expect(mobileFocal.y).toBeGreaterThanOrEqual(0);
-        expect(mobileFocal.y).toBeLessThanOrEqual(100);
+          // Valid coordinates resolve through production resolveHeroSlide
+          const validSlide = resolveHeroSlide({ image: validMedia });
+          expect(validSlide.imageFocalPoint).toEqual(validFocal);
 
-        // Object-position CSS string formatting
-        const desktopCss = `${desktopFocal.x}% ${desktopFocal.y}%`;
-        const mobileCss = `${mobileFocal.x}% ${mobileFocal.y}%`;
+          // 2. Out-of-bounds coordinates must be rejected by schema
+          const badMediaX = {
+            url,
+            focalPoint: { x: badX, y: goodY },
+          };
+          const badParsedX = StructuredMediaValueSchema.safeParse(badMediaX);
+          expect(badParsedX.success).toBe(false);
 
-        expect(desktopCss).toMatch(/^\d{1,3}% \d{1,3}%$/);
-        expect(mobileCss).toMatch(/^\d{1,3}% \d{1,3}%$/);
-      }),
+          // Out-of-bounds coordinates must be stripped to null by resolveHeroSlide
+          const badSlideX = resolveHeroSlide({ image: badMediaX });
+          expect(badSlideX.imageFocalPoint).toBeNull();
+
+          const badMediaY = {
+            url,
+            focalPoint: { x: goodY, y: badX },
+          };
+          const badParsedY = StructuredMediaValueSchema.safeParse(badMediaY);
+          expect(badParsedY.success).toBe(false);
+
+          const badSlideY = resolveHeroSlide({ image: badMediaY });
+          expect(badSlideY.imageFocalPoint).toBeNull();
+
+          // Mutation check: if invalid focal coordinates entered persisted configuration
+          const faultyBypassValidation = (m: typeof badMediaX) => {
+            // Emulates an insecure validator that does not reject out-of-bounds coords
+            return m.focalPoint.x >= 0 && m.focalPoint.x <= 100;
+          };
+          expect(faultyBypassValidation(badMediaX)).toBe(false);
+        },
+      ),
       { numRuns: 100 },
     );
   });

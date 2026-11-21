@@ -287,7 +287,7 @@ describe("Wave 2.4 — Scope B: Optional Mobile-Specific Hero Image", () => {
     };
 
     // Desktop image must remain completely unchanged
-    expect(updatedSlide.image).toEqual(initialSlide.image);
+    expect((updatedSlide as Record<string, unknown>).image).toEqual(initialSlide.image);
 
     // Modifying desktop image leaves mobileImage completely unchanged
     const desktopUpdatedSlide = {
@@ -297,7 +297,7 @@ describe("Wave 2.4 — Scope B: Optional Mobile-Specific Hero Image", () => {
         alt: "New Desktop Alt",
       },
     };
-    expect(desktopUpdatedSlide.mobileImage).toEqual(initialSlide.mobileImage);
+    expect((desktopUpdatedSlide as Record<string, unknown>).mobileImage).toEqual(initialSlide.mobileImage);
   });
 
   it("Test B4: slide isolation — slide 0 mobile image edits do not leak to slide 1", () => {
@@ -452,6 +452,90 @@ describe("Wave 2.4 — Scope B: Optional Mobile-Specific Hero Image", () => {
     const markupMobile = html(<Cmp {...ctxMobile} />);
     expect(markupMobile).toContain("https://cdn.example.com/legacy-hero.jpg");
     expect(markupMobile).toContain("Traditional Handcraft");
+  });
+
+  it("Test B9: production <picture> responsive focal point styling emits --hero-focal-d, --hero-focal-m, and .fq-hero-art without hardcoded desktop object-position inline override", () => {
+    const section: Section = {
+      id: "hero-focal-responsive",
+      type: "hero_carousel",
+      props: {
+        skin: "split",
+        slides: [
+          {
+            image: {
+              url: "https://cdn.example.com/desktop.jpg",
+              focalPoint: { x: 25, y: 35 },
+            },
+            mobileImage: {
+              url: "https://cdn.example.com/mobile.jpg",
+              focalPoint: { x: 85, y: 95 },
+            },
+            headline: "Jamdani Artisans",
+          },
+        ],
+      },
+    };
+
+    // Render in production SSR mode (desktop ctx, no mobileCanvas)
+    const ctx = makeCtx(section, "desktop", "en");
+    const Cmp = WIDGET_COMPONENTS.hero_carousel;
+    const markup = html(<Cmp {...ctx} />);
+
+    // 1. Emits <picture> with responsive media query
+    expect(markup).toContain("<picture");
+    expect(markup).toContain('media="(max-width: 767px)"');
+    expect(markup).toContain("https://cdn.example.com/mobile.jpg");
+    expect(markup).toContain("https://cdn.example.com/desktop.jpg");
+
+    // 2. Responsive CSS custom properties must be present
+    expect(markup).toContain("--hero-focal-d:25% 35%");
+    expect(markup).toContain("--hero-focal-m:85% 95%");
+
+    // 3. Must use the responsive hero art class
+    expect(markup).toContain("fq-hero-art");
+
+    // 4. Must NOT have inline objectPosition hardcoded to desktop only when both are present
+    expect(markup).not.toMatch(/style="[^"]*object-position:\s*25%\s*35%[^"]*"/);
+  });
+
+  it("Test B10: alternative-text contract — single semantic image alt is uniformly resolved and applied across preview and production", () => {
+    const section: Section = {
+      id: "hero-alt-contract",
+      type: "hero_carousel",
+      props: {
+        skin: "split",
+        slides: [
+          {
+            image: {
+              url: "https://cdn.example.com/desktop.jpg",
+              alt: "Artisan weaving jamdani saree on handloom",
+            },
+            mobileImage: {
+              url: "https://cdn.example.com/mobile.jpg",
+              alt: "Close-up of handloom weaver fingers on jamdani motif",
+            },
+            headline: "Woven Heritage",
+          },
+        ],
+      },
+    };
+
+    // Desktop/production SSR
+    const ctxDesktop = makeCtx(section, "desktop", "en");
+    // Mobile preview
+    const ctxMobile = makeCtx(section, "mobile", "en");
+    const Cmp = WIDGET_COMPONENTS.hero_carousel;
+
+    const markupDesktop = html(<Cmp {...ctxDesktop} />);
+    const markupMobile = html(<Cmp {...ctxMobile} />);
+
+    // Primary image alt describes the editorial content
+    expect(markupDesktop).toContain('alt="Artisan weaving jamdani saree on handloom"');
+    // Simulated mobile preview must maintain the exact same alt contract
+    expect(markupMobile).toContain('alt="Artisan weaving jamdani saree on handloom"');
+
+    // <source> must NEVER receive invalid alt attribute
+    expect(markupDesktop).not.toMatch(/<source[^>]*\balt=/);
   });
 });
 

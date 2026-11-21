@@ -60,7 +60,11 @@ function resolveMedia(val: unknown): {
       focalPoint:
         obj.focalPoint &&
         typeof obj.focalPoint.x === "number" &&
-        typeof obj.focalPoint.y === "number"
+        typeof obj.focalPoint.y === "number" &&
+        obj.focalPoint.x >= 0 &&
+        obj.focalPoint.x <= 100 &&
+        obj.focalPoint.y >= 0 &&
+        obj.focalPoint.y <= 100
           ? obj.focalPoint
           : null,
     };
@@ -183,7 +187,7 @@ function WeaveMotif({ seed, className }: { seed: string; className?: string }) {
 
 /* ------------------------------------------------------ hero_carousel */
 
-type HeroSlide = {
+export type HeroSlide = {
   image: string;
   imageAlt?: string;
   imageFocalPoint?: { x: number; y: number } | null;
@@ -201,16 +205,46 @@ type HeroSlide = {
   captionBn: string;
 };
 
-function renderHeroArt({
+export function resolveHeroSlide(row: PropRow): HeroSlide {
+  const desktopMedia = resolveMedia(row.image);
+  const mobileMedia = resolveMedia(row.mobileImage);
+  return {
+    image: desktopMedia?.url || readString(row, "image"),
+    imageAlt:
+      desktopMedia?.alt ||
+      (typeof row.imageAlt === "string" ? row.imageAlt : undefined),
+    imageFocalPoint: desktopMedia?.focalPoint ?? null,
+    mobileImage: mobileMedia?.url || readString(row, "mobileImage"),
+    mobileImageAlt:
+      mobileMedia?.alt ||
+      (typeof row.mobileImageAlt === "string"
+        ? row.mobileImageAlt
+        : undefined),
+    mobileImageFocalPoint: mobileMedia?.focalPoint ?? null,
+    headline: readString(row, "headline"),
+    headlineBn: readString(row, "headline_bn"),
+    subhead: readString(row, "subhead"),
+    subheadBn: readString(row, "subhead_bn"),
+    ctaLabel: readString(row, "ctaLabel"),
+    ctaLabelBn: readString(row, "ctaLabel_bn"),
+    ctaUrl: readString(row, "ctaUrl"),
+    caption: readString(row, "caption"),
+    captionBn: readString(row, "caption_bn"),
+  };
+}
+
+export function renderHeroArt({
   slide,
   isFirst,
   className = "absolute inset-0 h-full w-full object-cover",
   device,
+  locale,
 }: {
   slide: HeroSlide;
   isFirst: boolean;
   className?: string;
   device?: string;
+  locale?: string;
 }) {
   const hasDesktop = Boolean(
     slide.image && !slide.image.startsWith("/api/public/ph/"),
@@ -231,48 +265,83 @@ function renderHeroArt({
   const desktopSrc = slide.image;
   const mobileSrc = slide.mobileImage || desktopSrc;
   const isMobileCanvas = device === "mobile";
-  const activeFocal =
-    isMobileCanvas && hasMobile && slide.mobileImageFocalPoint
-      ? slide.mobileImageFocalPoint
-      : slide.imageFocalPoint;
 
-  const focalStyle = activeFocal
-    ? { objectPosition: `${activeFocal.x}% ${activeFocal.y}%` }
-    : undefined;
+  const dFocal = slide.imageFocalPoint;
+  const mFocal = slide.mobileImageFocalPoint;
 
+  const dFocalStr = dFocal ? `${dFocal.x}% ${dFocal.y}%` : undefined;
+  const mFocalStr = mFocal ? `${mFocal.x}% ${mFocal.y}%` : dFocalStr;
+
+  // Single semantic image alt text contract:
+  // Primary imageAlt describes the represented visual content;
+  // falls back to mobileImageAlt, headline, or localized fallback.
+  // Uniform across production and simulated preview.
   const alt =
-    (isMobileCanvas ? slide.mobileImageAlt : undefined) ||
     slide.imageAlt ||
+    slide.mobileImageAlt ||
     slide.headline ||
-    "Hero slide";
+    (locale === "bn" ? "হিরো স্লাইড" : "Hero slide");
 
-  if (hasMobile && !isMobileCanvas) {
+  // In simulated mobile canvas mode, if hasMobile, render with mobileSrc & mobile focal position
+  if (isMobileCanvas) {
+    const activeSrc = hasMobile ? mobileSrc : desktopSrc;
+    const activeFocalStr = (hasMobile ? mFocalStr : dFocalStr) || dFocalStr;
+    const style: React.CSSProperties = activeFocalStr
+      ? { objectPosition: activeFocalStr }
+      : {};
+    return (
+      <img
+        src={activeSrc}
+        alt={alt}
+        style={style}
+        className={className}
+        loading={isFirst ? "eager" : "lazy"}
+        fetchPriority={isFirst ? "high" : "auto"}
+        decoding="async"
+        data-hero-image=""
+      />
+    );
+  }
+
+  // Production SSR and responsive preview rendering:
+  if (hasMobile) {
+    // Both desktop and mobile assets exist. Render responsive <picture> with (max-width: 767px).
+    // CSS custom properties provide independent focal points for mobile and desktop media.
+    const style: React.CSSProperties & Record<string, string> = {};
+    if (dFocalStr) style["--hero-focal-d"] = dFocalStr;
+    if (mFocalStr) style["--hero-focal-m"] = mFocalStr;
+
     return (
       <picture className="contents">
         <source media="(max-width: 767px)" srcSet={mobileSrc} />
         <img
           src={desktopSrc}
           alt={alt}
-          style={focalStyle}
-          className={className}
+          style={style}
+          className={`${className} fq-hero-art`}
           loading={isFirst ? "eager" : "lazy"}
           fetchPriority={isFirst ? "high" : "auto"}
           decoding="async"
+          data-hero-image=""
         />
       </picture>
     );
   }
 
-  const activeSrc = isMobileCanvas && hasMobile ? mobileSrc : desktopSrc;
+  // Desktop only:
+  const style: React.CSSProperties = dFocalStr
+    ? { objectPosition: dFocalStr }
+    : {};
   return (
     <img
-      src={activeSrc}
+      src={desktopSrc}
       alt={alt}
-      style={focalStyle}
+      style={style}
       className={className}
       loading={isFirst ? "eager" : "lazy"}
       fetchPriority={isFirst ? "high" : "auto"}
       decoding="async"
+      data-hero-image=""
     />
   );
 }
@@ -576,33 +645,7 @@ const HeroCarousel: WidgetComponent = ({
   editing,
   device,
 }) => {
-  const slides: HeroSlide[] = rowsOf(section, "slides").map((row) => {
-    const desktopMedia = resolveMedia(row.image);
-    const mobileMedia = resolveMedia(row.mobileImage);
-    return {
-      image: desktopMedia?.url || readString(row, "image"),
-      imageAlt:
-        desktopMedia?.alt ||
-        (typeof row.imageAlt === "string" ? row.imageAlt : undefined),
-      imageFocalPoint: desktopMedia?.focalPoint ?? null,
-      mobileImage: mobileMedia?.url || readString(row, "mobileImage"),
-      mobileImageAlt:
-        mobileMedia?.alt ||
-        (typeof row.mobileImageAlt === "string"
-          ? row.mobileImageAlt
-          : undefined),
-      mobileImageFocalPoint: mobileMedia?.focalPoint ?? null,
-      headline: readString(row, "headline"),
-      headlineBn: readString(row, "headline_bn"),
-      subhead: readString(row, "subhead"),
-      subheadBn: readString(row, "subhead_bn"),
-      ctaLabel: readString(row, "ctaLabel"),
-      ctaLabelBn: readString(row, "ctaLabel_bn"),
-      ctaUrl: readString(row, "ctaUrl"),
-      caption: readString(row, "caption"),
-      captionBn: readString(row, "caption_bn"),
-    };
-  });
+  const slides: HeroSlide[] = rowsOf(section, "slides").map(resolveHeroSlide);
   const autoAdvanceMs = int("autoAdvanceMs", 5000, 1000, 15000);
   const atmosphere = str("atmosphere") || "wash";
   // Widget skin (spec 2026-09-25): split (default, current asymmetric
