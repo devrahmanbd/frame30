@@ -22,8 +22,9 @@
  *
  * Error codes are keyed strings so either side can attribute them without a
  * shared error type: `<key>.<code>` for fields, `<key>.<index>.<sub>.<code>`
- * for repeater rows, `bp.<device>.<key>.<code>` for override layers.
  */
+
+import { StructuredMediaValueSchema } from "./media";
 
 export const PROP_KINDS = [
   "text",
@@ -400,8 +401,6 @@ function cleanValue(
         : fail("not_a_color");
     }
     case "link":
-    case "image":
-    case "media":
     case "video": {
       if (typeof raw !== "string") return fail("type");
       const trimmed = raw.trim();
@@ -414,6 +413,35 @@ function cleanValue(
       return SAFE_HREF.test(trimmed)
         ? { ok: true, value: trimmed }
         : fail("not_a_url");
+    }
+    case "image":
+    case "media": {
+      if (typeof raw === "string") {
+        const trimmed = raw.trim();
+        if (trimmed === "") return { ok: true, value: "" };
+        const limit = field.max ?? 2048;
+        if (trimmed.length > limit) {
+          errors?.push(`${path}.too_long`);
+          return { ok: false, value: trimmed.slice(0, limit) };
+        }
+        return SAFE_HREF.test(trimmed)
+          ? { ok: true, value: trimmed }
+          : fail("not_a_url");
+      }
+      if (isPlainObject(raw)) {
+        if (
+          !("url" in raw) ||
+          typeof (raw as Record<string, unknown>).url !== "string" ||
+          !(raw as Record<string, unknown>).url
+        ) {
+          return fail("not_a_url");
+        }
+        const parsed = StructuredMediaValueSchema.safeParse(raw);
+        if (!parsed.success) return fail("invalid_media");
+        if (!SAFE_HREF.test(parsed.data.url)) return fail("not_a_url");
+        return { ok: true, value: parsed.data };
+      }
+      return fail("type");
     }
     case "icon":
     case "category":

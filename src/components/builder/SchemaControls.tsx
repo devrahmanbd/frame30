@@ -33,8 +33,20 @@
  * host, so desktop values inherit down until overridden.
  */
 
-import { useId } from "react";
+import { useContext, useId } from "react";
 import type { FormEvent, ReactNode } from "react";
+import {
+  QueryClient,
+  QueryClientContext,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+import { MediaPicker } from "./MediaPicker";
+import { DynamicTagPicker } from "./DynamicTagPicker";
+import {
+  resolveMediaUrl,
+  resolveMediaAlt,
+  type StructuredMediaValue,
+} from "@/lib/theme-contract";
 import {
   CONTROL_STATUS,
   defaultsFor,
@@ -284,6 +296,16 @@ const PICKER_HINT: Record<string, string> = {
 const sharedInput =
   "w-full rounded-fq-md border border-border bg-card px-3 py-2 text-sm";
 
+let fallbackQueryClient: QueryClient | null = null;
+function getFallbackQueryClient(): QueryClient {
+  if (!fallbackQueryClient) {
+    fallbackQueryClient = new QueryClient({
+      defaultOptions: { queries: { enabled: false, retry: false } },
+    });
+  }
+  return fallbackQueryClient;
+}
+
 export function SchemaControls({
   schema,
   props,
@@ -295,6 +317,7 @@ export function SchemaControls({
   onValidationError,
 }: SchemaControlsProps) {
   const uid = useId();
+  const queryContext = useContext(QueryClientContext);
   const layer =
     device && overrides && isRecord(overrides[device])
       ? overrides[device]
@@ -392,6 +415,149 @@ export function SchemaControls({
           {PICKER_HINT[field.kind] ??
             "Values validate through the shared schema."}
         </p>
+        {renderHelp(field)}
+        {renderErrors(errorsForField(errors, errorKey), idBase)}
+      </div>
+    );
+  };
+
+  const renderMediaPicker = (
+    field: PropField,
+    value: unknown,
+    errorKey: string,
+    commit: (next: unknown) => void,
+  ): ReactNode => {
+    const idBase = `${uid}-${errorKey.replace(/[^a-zA-Z0-9_-]/g, "-")}`;
+    const inputId = `${idBase}-input`;
+    const altInputId = `${idBase}-alt`;
+    const currentUrl =
+      resolveMediaUrl(value) || (typeof value === "string" ? value : "");
+    const currentAlt = resolveMediaAlt(value, "");
+    const currentFocal =
+      typeof value === "object" && value !== null && "focalPoint" in value
+        ? ((value as StructuredMediaValue).focalPoint ?? null)
+        : null;
+
+    const showOverride =
+      layer !== undefined &&
+      Object.prototype.hasOwnProperty.call(layer, field.key);
+
+    const pickerNode = (
+      <MediaPicker
+        value={value as string | StructuredMediaValue}
+        sizesPreset="full"
+        focalPoint={currentFocal}
+        onPick={(urlOrValue, meta) => {
+          if (typeof urlOrValue === "object" && urlOrValue !== null) {
+            const nextVal: StructuredMediaValue = {
+              ...urlOrValue,
+              alt:
+                (typeof urlOrValue.alt === "string" && urlOrValue.alt) ||
+                meta?.altText ||
+                currentAlt ||
+                "",
+            };
+            commit(nextVal);
+          } else {
+            if (urlOrValue === "") {
+              commit("");
+            } else {
+              const nextVal: StructuredMediaValue = {
+                url: urlOrValue,
+                alt: meta?.altText ?? currentAlt ?? "",
+                ...((meta?.focalPoint ?? currentFocal)
+                  ? { focalPoint: meta?.focalPoint ?? currentFocal! }
+                  : {}),
+                ...(meta?.width ? { width: meta.width } : {}),
+                ...(meta?.height ? { height: meta.height } : {}),
+              };
+              commit(nextVal);
+            }
+          }
+        }}
+        onSizes={() => {}}
+      />
+    );
+
+    const safeMediaPicker = queryContext ? (
+      pickerNode
+    ) : (
+      <QueryClientProvider client={getFallbackQueryClient()}>
+        {pickerNode}
+      </QueryClientProvider>
+    );
+
+    return (
+      <div
+        key={field.key}
+        data-field={field.key}
+        data-status="placeholder"
+        data-placeholder={field.kind}
+        className="space-y-1.5"
+      >
+        <div className="flex items-center justify-between gap-2">
+          <div className="min-w-0 flex-1">
+            {renderHeader(field, inputId, showOverride)}
+          </div>
+          <button
+            type="button"
+            onClick={() => commit("")}
+            aria-label={`Clear ${field.label}`}
+            className="rounded-fq-sm border border-border px-1.5 py-0.5 text-xs text-muted-foreground hover:bg-muted"
+          >
+            Clear
+          </button>
+        </div>
+        <input
+          id={inputId}
+          type="text"
+          className="sr-only"
+          tabIndex={-1}
+          aria-hidden="true"
+          readOnly
+          value={currentUrl}
+        />
+        {safeMediaPicker}
+        <div className="space-y-1">
+          <label
+            htmlFor={altInputId}
+            className="block text-[0.65rem] text-muted-foreground"
+          >
+            {field.label} — Alt text
+          </label>
+          <input
+            id={altInputId}
+            type="text"
+            placeholder="Descriptive alt text…"
+            value={currentAlt}
+            onChange={(e) => {
+              const newAlt = e.target.value;
+              if (typeof value === "object" && value !== null) {
+                commit({ ...value, alt: newAlt });
+              } else {
+                commit({
+                  url: currentUrl,
+                  alt: newAlt,
+                  ...(currentFocal ? { focalPoint: currentFocal } : {}),
+                });
+              }
+            }}
+            className={sharedInput}
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-[0.65rem] text-muted-foreground">Dynamic</span>
+          <DynamicTagPicker
+            value={currentUrl}
+            onChange={(nextUrl) => {
+              if (typeof value === "object" && value !== null) {
+                commit({ ...value, url: nextUrl });
+              } else {
+                commit(nextUrl);
+              }
+            }}
+          />
+        </div>
         {renderHelp(field)}
         {renderErrors(errorsForField(errors, errorKey), idBase)}
       </div>
@@ -902,6 +1068,9 @@ export function SchemaControls({
     errorKey: string,
     commit: (next: unknown) => void,
   ): ReactNode => {
+    if (field.kind === "image" || field.kind === "media") {
+      return renderMediaPicker(field, value, errorKey, commit);
+    }
     if (PICKER_INPUT_TYPE[field.kind] !== undefined) {
       return renderPicker(field, value, errorKey, commit);
     }
