@@ -106,38 +106,59 @@ describe("Wave 2.4 — Property Suites", () => {
   /* Property P3: AST immutability under viewport transitions           */
   /* ------------------------------------------------------------------ */
   it("Property P3: switching between arbitrary presets leaves theme AST strictly invariant", () => {
+    // Helper to deeply freeze any data structure to guarantee immutability
+    const deepFreeze = <T>(obj: T): T => {
+      if (obj && typeof obj === "object" && !Object.isFrozen(obj)) {
+        Object.freeze(obj);
+        for (const key of Object.keys(obj)) {
+          deepFreeze((obj as Record<string, unknown>)[key]);
+        }
+      }
+      return obj;
+    };
+
     fc.assert(
       fc.property(
         fc.array(fc.constantFrom(...DEVICE_PRESETS.map((p) => p.width)), {
           minLength: 1,
           maxLength: 10,
         }),
-        (widths) => {
+        genHeroSlide,
+        (widths, slide) => {
           const section: Section = {
             id: "hero-prop",
             type: "hero_carousel",
             props: {
-              slides: [
-                {
-                  headline: "Heritage Textile",
-                  image: "https://cdn.example.com/artisan.jpg",
-                },
-              ],
+              slides: [slide],
             },
           };
           const originalAst = parseAst({ main: [section] });
+          deepFreeze(originalAst);
           const serializedOriginal = JSON.stringify(originalAst);
 
-          // Simulated viewport state transitions using production bucket resolution
+          // Simulated viewport state transitions driving production renderer across buckets
           for (const w of widths) {
             const bucket: DeviceBucket = bucketForWidth(w);
             expect(bucket).toBeDefined();
-            // Production invariant: viewport switches must not alter document AST
-            const afterStepAst = parseAst({ main: [section] });
-            expect(JSON.stringify(afterStepAst)).toBe(serializedOriginal);
+
+            // Resolve slide and render using production renderHeroArt
+            const slideRow = originalAst.main[0]!.props.slides[0] as unknown as PropRow;
+            const resolvedSlide = resolveHeroSlide(slideRow);
+            const rendered = renderHeroArt({
+              slide: resolvedSlide,
+              isFirst: true,
+              device: bucket,
+            });
+            const markup = renderToStaticMarkup(rendered);
+
+            // Production invariant 1: Render succeeds and produces non-empty output
+            expect(markup).toContain("data-hero-image");
+
+            // Production invariant 2: Viewport render passes do not alter frozen AST in-place
+            expect(JSON.stringify(originalAst)).toBe(serializedOriginal);
           }
 
-          // Mutation check: if a faulty viewport handler accidentally mutates the AST, detect it
+          // Mutation sensitivity proof: if a faulty viewport handler accidentally mutates the AST, detect it
           const faultyMutate = (ast: typeof originalAst, width: number) => {
             const mutated = JSON.parse(JSON.stringify(ast));
             mutated.main[0].props["viewportWidth"] = width;
@@ -180,6 +201,9 @@ describe("Wave 2.4 — Property Suites", () => {
             parsedInitial.main[0]!.props.slides as unknown as PropRow[]
           )[0]!;
           const resolvedBefore = resolveHeroSlide(initialSlideRow);
+          const markupDesktopBefore = renderToStaticMarkup(
+            renderHeroArt({ slide: resolvedBefore, isFirst: true, device: "desktop" }),
+          );
 
           // Update mobile image only through production AST structure
           const updatedSection: Section = {
@@ -200,6 +224,9 @@ describe("Wave 2.4 — Property Suites", () => {
             parsedUpdated.main[0]!.props.slides as unknown as PropRow[]
           )[0]!;
           const resolvedAfter = resolveHeroSlide(updatedSlideRow);
+          const markupDesktopAfter = renderToStaticMarkup(
+            renderHeroArt({ slide: resolvedAfter, isFirst: true, device: "desktop" }),
+          );
 
           // Desktop media invariants
           expect(resolvedAfter.image).toBe(desktopMedia.url);
@@ -219,7 +246,35 @@ describe("Wave 2.4 — Property Suites", () => {
             updatedMobileMedia.focalPoint ?? null,
           );
 
-          // Mutation check: if mobile update accidentally overwrote desktop media
+          // Desktop rendered element must preserve desktop image and focal CSS variable
+          const pic = renderHeroArt({
+            slide: resolvedAfter,
+            isFirst: true,
+            device: "desktop",
+          }) as React.ReactElement<{
+            children: [
+              React.ReactElement<{ srcSet: string }>,
+              React.ReactElement<{
+                src: string;
+                alt?: string;
+                style: Record<string, string>;
+              }>,
+            ];
+          }>;
+          const desktopImgElem = pic.props.children[1];
+          expect(desktopImgElem.props.src).toBe(desktopMedia.url);
+          const expectedAlt =
+            desktopMedia.alt?.trim() ||
+            updatedMobileMedia.alt?.trim() ||
+            "Heritage Slide";
+          expect(desktopImgElem.props.alt).toBe(expectedAlt);
+          if (desktopMedia.focalPoint) {
+            expect(desktopImgElem.props.style["--hero-focal-d"]).toBe(
+              `${desktopMedia.focalPoint.x}% ${desktopMedia.focalPoint.y}%`,
+            );
+          }
+
+          // Mutation sensitivity proof: if mobile update accidentally overwrote desktop media
           const faultyMobileOverwrite = {
             ...resolvedAfter,
             image: updatedMobileMedia.url,
@@ -253,6 +308,10 @@ describe("Wave 2.4 — Property Suites", () => {
           const parsedBefore = parseAst({ main: [section] });
           const rawSlidesBefore = parsedBefore.main[0]!.props.slides as unknown as PropRow[];
           const resolvedBefore = rawSlidesBefore.map(resolveHeroSlide);
+          const markupBefore = resolvedBefore.map((s) => ({
+            desktop: renderToStaticMarkup(renderHeroArt({ slide: s, isFirst: true, device: "desktop" })),
+            mobile: renderToStaticMarkup(renderHeroArt({ slide: s, isFirst: true, device: "mobile" })),
+          }));
 
           // Update only slide targetIndex
           const updatedSlides = slides.map((s, idx) =>
@@ -263,17 +322,23 @@ describe("Wave 2.4 — Property Suites", () => {
           });
           const rawSlidesAfter = parsedAfter.main[0]!.props.slides as unknown as PropRow[];
           const resolvedAfter = rawSlidesAfter.map(resolveHeroSlide);
+          const markupAfter = resolvedAfter.map((s) => ({
+            desktop: renderToStaticMarkup(renderHeroArt({ slide: s, isFirst: true, device: "desktop" })),
+            mobile: renderToStaticMarkup(renderHeroArt({ slide: s, isFirst: true, device: "mobile" })),
+          }));
 
-          // Invariant: all slides j != targetIndex remain strictly identical
+          // Invariant: all slides j != targetIndex remain strictly identical in both model and rendering
           for (let j = 0; j < slides.length; j++) {
             if (j !== targetIndex) {
               expect(resolvedAfter[j]).toEqual(resolvedBefore[j]);
+              expect(markupAfter[j]!.desktop).toBe(markupBefore[j]!.desktop);
+              expect(markupAfter[j]!.mobile).toBe(markupBefore[j]!.mobile);
             } else {
               expect(resolvedAfter[j]!.mobileImage).toBe(newMobileMedia.url);
             }
           }
 
-          // Mutation check: if slide modification leaked to all slides
+          // Mutation sensitivity proof: if slide modification leaked to all slides
           const faultyGlobalLeak = resolvedBefore.map((s) => ({
             ...s,
             mobileImage: newMobileMedia.url,

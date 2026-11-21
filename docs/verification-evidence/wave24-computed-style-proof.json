@@ -1,0 +1,162 @@
+{
+  "testRun": {
+    "tool": "playwright-chromium",
+    "browserVersion": "157.0.8103.79",
+    "timestamp": "2026-11-21T19:18:41.520Z",
+    "testedCases": 4,
+    "testedViewports": 5
+  },
+  "viewports": [
+    {
+      "name": "desktop-1440",
+      "width": 1440,
+      "height": 900,
+      "isMobileWidth": false,
+      "passed": true,
+      "screenshot": "desktop-1440.png",
+      "checks": {
+        "case1_dualFocal": {
+          "expected": "25% 35%",
+          "actual": "25% 35%",
+          "ok": true
+        },
+        "case2_desktopFocalFallback": {
+          "expected": "25% 35%",
+          "actual": "25% 35%",
+          "ok": true
+        },
+        "case3_defaultFallback": {
+          "expected": "50% 50%",
+          "actual": "50% 50%",
+          "ok": true
+        },
+        "case4_simulatedMobileCanvas": {
+          "expected": "85% 95%",
+          "actual": "85% 95%",
+          "ok": true
+        }
+      }
+    },
+    {
+      "name": "laptop-1024",
+      "width": 1024,
+      "height": 768,
+      "isMobileWidth": false,
+      "passed": true,
+      "screenshot": null,
+      "checks": {
+        "case1_dualFocal": {
+          "expected": "25% 35%",
+          "actual": "25% 35%",
+          "ok": true
+        },
+        "case2_desktopFocalFallback": {
+          "expected": "25% 35%",
+          "actual": "25% 35%",
+          "ok": true
+        },
+        "case3_defaultFallback": {
+          "expected": "50% 50%",
+          "actual": "50% 50%",
+          "ok": true
+        },
+        "case4_simulatedMobileCanvas": {
+          "expected": "85% 95%",
+          "actual": "85% 95%",
+          "ok": true
+        }
+      }
+    },
+    {
+      "name": "tablet-768",
+      "width": 768,
+      "height": 1024,
+      "isMobileWidth": false,
+      "passed": true,
+      "screenshot": null,
+      "checks": {
+        "case1_dualFocal": {
+          "expected": "25% 35%",
+          "actual": "25% 35%",
+          "ok": true
+        },
+        "case2_desktopFocalFallback": {
+          "expected": "25% 35%",
+          "actual": "25% 35%",
+          "ok": true
+        },
+        "case3_defaultFallback": {
+          "expected": "50% 50%",
+          "actual": "50% 50%",
+          "ok": true
+        },
+        "case4_simulatedMobileCanvas": {
+          "expected": "85% 95%",
+          "actual": "85% 95%",
+          "ok": true
+        }
+      }
+    },
+    {
+      "name": "mobile-390",
+      "width": 390,
+      "height": 844,
+      "isMobileWidth": true,
+      "passed": true,
+      "screenshot": "mobile-390.png",
+      "checks": {
+        "case1_dualFocal": {
+          "expected": "85% 95%",
+          "actual": "85% 95%",
+          "ok": true
+        },
+        "case2_desktopFocalFallback": {
+          "expected": "25% 35%",
+          "actual": "25% 35%",
+          "ok": true
+        },
+        "case3_defaultFallback": {
+          "expected": "50% 50%",
+          "actual": "50% 50%",
+          "ok": true
+        },
+        "case4_simulatedMobileCanvas": {
+          "expected": "85% 95%",
+          "actual": "85% 95%",
+          "ok": true
+        }
+      }
+    },
+    {
+      "name": "mobile-320",
+      "width": 320,
+      "height": 568,
+      "isMobileWidth": true,
+      "passed": true,
+      "screenshot": null,
+      "checks": {
+        "case1_dualFocal": {
+          "expected": "85% 95%",
+          "actual": "85% 95%",
+          "ok": true
+        },
+        "case2_desktopFocalFallback": {
+          "expected": "25% 35%",
+          "actual": "25% 35%",
+          "ok": true
+        },
+        "case3_defaultFallback": {
+          "expected": "50% 50%",
+          "actual": "50% 50%",
+          "ok": true
+        },
+        "case4_simulatedMobileCanvas": {
+          "expected": "85% 95%",
+          "actual": "85% 95%",
+          "ok": true
+        }
+      }
+    }
+  ],
+  "verdict": "PASS"
+}
