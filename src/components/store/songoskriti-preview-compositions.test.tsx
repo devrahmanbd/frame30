@@ -133,10 +133,7 @@ const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: false } },
 });
 
-function render(
-  template: TemplateKey,
-  initialFocus?: string,
-): string {
+function render(template: TemplateKey, initialFocus?: string): string {
   return renderToStaticMarkup(
     <QueryClientProvider client={queryClient}>
       <LanguageProvider initialLang="en">
@@ -362,5 +359,40 @@ describe("songoskriti preview — collection composition /c/sarees recommendatio
     expect(html).toContain("More Children&#x27;s Wear");
     expect(html).toContain("Boys Handloom Silk Panjabi &amp; Pajama");
   });
-});
 
+  it("eliminates duplicate product lists on collection templates (P1 audit reconciliation)", () => {
+    // Sarees collection: each authentic saree appears exactly once; redundant More to explore rail is omitted
+    const sareesHtml = render("collection", "sarees");
+    expect(sareesHtml).not.toContain("More to explore");
+    expect(sareesHtml).not.toContain("আরও দেখুন");
+    const jamdaniCardCount = (
+      sareesHtml.match(
+        /data-part="title"[^>]*>Dhakai Jamdani Heritage Saree/g,
+      ) || []
+    ).length;
+    expect(jamdaniCardCount).toBe(1);
+    const muslinCardCount = (
+      sareesHtml.match(
+        /data-part="title"[^>]*>Handwoven Muslin Floral Saree/g,
+      ) || []
+    ).length;
+    expect(muslinCardCount).toBe(1);
+    const tangailCardCount = (
+      sareesHtml.match(
+        /data-part="title"[^>]*>Tangail Taant Handloom Cotton Saree/g,
+      ) || []
+    ).length;
+    expect(tangailCardCount).toBe(1);
+
+    // Festive collection: items in main grid appear exactly once; redundant rail omitted
+    const festiveHtml = render("collection", "festive");
+    expect(festiveHtml).not.toContain("More to explore");
+    expect(festiveHtml).not.toContain("আরও দেখুন");
+    const festivePanjabiCardCount = (
+      festiveHtml.match(
+        /data-part="title"[^>]*>Rajshahi Silk Festive Panjabi/g,
+      ) || []
+    ).length;
+    expect(festivePanjabiCardCount).toBe(1);
+  });
+});

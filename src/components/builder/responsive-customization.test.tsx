@@ -216,7 +216,11 @@ describe("Wave 3 — Group 1: Responsive Configuration & Inheritance Contract (S
       },
     };
 
-    const mAfterReset = inheritanceOf(sectionAfterMobileReset, "columns", "mobile");
+    const mAfterReset = inheritanceOf(
+      sectionAfterMobileReset,
+      "columns",
+      "mobile",
+    );
     expect(mAfterReset.value).toBe(3);
     expect(mAfterReset.source).toBe("tablet");
     expect(mAfterReset.inherited).toBe(true);
@@ -228,7 +232,11 @@ describe("Wave 3 — Group 1: Responsive Configuration & Inheritance Contract (S
       bp: {},
     };
 
-    const tAfterReset = inheritanceOf(sectionAfterTabletReset, "columns", "tablet");
+    const tAfterReset = inheritanceOf(
+      sectionAfterTabletReset,
+      "columns",
+      "tablet",
+    );
     expect(tAfterReset.value).toBe(4);
     expect(tAfterReset.source).toBe("desktop");
     expect(tAfterReset.inherited).toBe(true);
@@ -258,7 +266,9 @@ describe("Wave 3 — Group 2: Responsive Merchant Controls & Inspector UX (Scope
     );
 
     expect(mobileMarkup).toContain("Editing the mobile layer");
-    expect(mobileMarkup).toContain("Values inherit from desktop until overridden");
+    expect(mobileMarkup).toContain(
+      "Values inherit from desktop until overridden",
+    );
 
     const tabletMarkup = html(
       withQuery(
@@ -321,12 +331,30 @@ describe("Wave 3 — Group 2: Responsive Merchant Controls & Inspector UX (Scope
       },
     };
 
-    // Test clear override handler logic directly
-    const handleClear = (key: string, device: Breakpoint) => {
-      onClearOverride(key, device);
-    };
+    const schema = [
+      { key: "columns", label: "Columns", kind: "number" as const },
+    ];
 
-    handleClear("columns", "mobile");
+    // Render SchemaControls with overridden mobile layer
+    const markup = html(
+      withQuery(
+        <SchemaControls
+          schema={schema}
+          props={section.props as never}
+          overrides={section.bp as never}
+          device="mobile"
+          onChange={noop}
+          onClearOverride={onClearOverride}
+        />,
+      ),
+    );
+
+    // Verify the actionable Reset button is rendered in the HTML output
+    expect(markup).toContain("Reset to inherited");
+    expect(markup).toMatch(/<button[^>]*>\s*Reset to inherited\s*<\/button>/);
+
+    // Direct callback contract verification
+    onClearOverride("columns", "mobile");
     expect(onClearOverride).toHaveBeenCalledWith("columns", "mobile");
   });
 
@@ -372,8 +400,8 @@ describe("Wave 3 — Group 2: Responsive Merchant Controls & Inspector UX (Scope
       withQuery(
         <SchemaControls
           schema={schema}
-          props={section.props as any}
-          overrides={section.bp as any}
+          props={section.props as never}
+          overrides={section.bp as never}
           device="mobile"
           onChange={noop}
         />,
@@ -488,7 +516,7 @@ describe("Wave 3 — Group 3: Section Responsive Rendering & Storefront Parity (
 });
 
 describe("Wave 3 — Group 4: Device Visibility Controls (Scope 5.2)", () => {
-  it("Test 4.1: section.hidden hides section only on targeted device layers", () => {
+  it("Test 4.1: section.hidden hides section only on targeted device layers in inspector UI", () => {
     const section: Section = {
       id: "sec-vis-1",
       type: "rich_text",
@@ -498,18 +526,36 @@ describe("Wave 3 — Group 4: Device Visibility Controls (Scope 5.2)", () => {
       hidden: ["mobile", "tablet"],
     };
 
-    // Helper checking device visibility
-    const isVisibleOn = (sec: Section, dev: Breakpoint) => {
-      return !sec.hidden || !sec.hidden.includes(dev);
-    };
+    // Render SectionInspector with the hidden breakpoint array
+    const markup = html(
+      withQuery(
+        <SectionInspector
+          {...baseInspectorProps}
+          section={section}
+          onChange={noop}
+        />,
+      ),
+    );
 
-    expect(isVisibleOn(section, "desktop")).toBe(true);
-    expect(isVisibleOn(section, "tablet")).toBe(false);
-    expect(isVisibleOn(section, "mobile")).toBe(false);
+    // Inspector must render the "Visible on" fieldset
+    expect(markup).toContain("Visible on");
+
+    // Match the visibility checkboxes: Desktop is checked; Tablet and Mobile are unchecked
+    // In React 19 SSR, checked inputs render with 'checked=""'
+    expect(markup).toMatch(
+      /<label[^>]*>\s*<input[^>]*checked=""[^>]*>\s*Desktop\s*<\/label>/,
+    );
+    expect(markup).not.toMatch(
+      /<label[^>]*>\s*<input[^>]*checked=""[^>]*>\s*Tablet\s*<\/label>/,
+    );
+    expect(markup).not.toMatch(
+      /<label[^>]*>\s*<input[^>]*checked=""[^>]*>\s*Mobile\s*<\/label>/,
+    );
   });
 
-  it("Test 4.2: Toggling device visibility updates hidden list cleanly without mutating props", () => {
-    const section: Section = {
+  it("Test 4.2: Toggling device visibility updates rendered inspector state and warns when hidden everywhere", () => {
+    // 1. Partial hidden state: only mobile hidden
+    const partialHiddenSection: Section = {
       id: "sec-vis-2",
       type: "announcement_bar",
       props: {
@@ -518,25 +564,58 @@ describe("Wave 3 — Group 4: Device Visibility Controls (Scope 5.2)", () => {
       hidden: ["mobile"],
     };
 
-    const toggleHidden = (sec: Section, dev: Breakpoint): Section => {
-      const current = sec.hidden ?? [];
-      const next = current.includes(dev)
-        ? current.filter((b) => b !== dev)
-        : [...current, dev];
-      return {
-        ...sec,
-        hidden: next.length ? next : undefined,
-      };
+    const partialMarkup = html(
+      withQuery(
+        <SectionInspector
+          {...baseInspectorProps}
+          section={partialHiddenSection}
+          onChange={noop}
+        />,
+      ),
+    );
+
+    // Desktop and Tablet are checked; Mobile is unchecked
+    expect(partialMarkup).toMatch(
+      /<label[^>]*>\s*<input[^>]*checked=""[^>]*>\s*Desktop\s*<\/label>/,
+    );
+    expect(partialMarkup).toMatch(
+      /<label[^>]*>\s*<input[^>]*checked=""[^>]*>\s*Tablet\s*<\/label>/,
+    );
+    expect(partialMarkup).not.toMatch(
+      /<label[^>]*>\s*<input[^>]*checked=""[^>]*>\s*Mobile\s*<\/label>/,
+    );
+    expect(partialMarkup).not.toContain(
+      "Hidden everywhere — shoppers will never see this section.",
+    );
+
+    // 2. Hidden everywhere state: all breakpoints hidden
+    const hiddenEverywhereSection: Section = {
+      ...partialHiddenSection,
+      hidden: ["desktop", "tablet", "mobile"],
     };
 
-    // Toggle mobile back on
-    const unhidden = toggleHidden(section, "mobile");
-    expect(unhidden.hidden).toBeUndefined();
-    expect(unhidden.props.message).toBe("Free shipping over ৳5000");
+    const everywhereMarkup = html(
+      withQuery(
+        <SectionInspector
+          {...baseInspectorProps}
+          section={hiddenEverywhereSection}
+          onChange={noop}
+        />,
+      ),
+    );
 
-    // Toggle tablet off
-    const tabletHidden = toggleHidden(unhidden, "tablet");
-    expect(tabletHidden.hidden).toEqual(["tablet"]);
-    expect(tabletHidden.props.message).toBe("Free shipping over ৳5000");
+    // All checkboxes are unchecked and the cautionary warning banner is rendered
+    expect(everywhereMarkup).not.toMatch(
+      /<label[^>]*>\s*<input[^>]*checked=""[^>]*>\s*Desktop\s*<\/label>/,
+    );
+    expect(everywhereMarkup).not.toMatch(
+      /<label[^>]*>\s*<input[^>]*checked=""[^>]*>\s*Tablet\s*<\/label>/,
+    );
+    expect(everywhereMarkup).not.toMatch(
+      /<label[^>]*>\s*<input[^>]*checked=""[^>]*>\s*Mobile\s*<\/label>/,
+    );
+    expect(everywhereMarkup).toContain(
+      "Hidden everywhere — shoppers will never see this section.",
+    );
   });
 });

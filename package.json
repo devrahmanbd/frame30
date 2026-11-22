@@ -28,7 +28,7 @@
     "test:tla": "node scripts/tla-verify.mjs",
     "test:lean": "bun scripts/lean-verify.mjs",
     "e2e": "playwright test -c .e2e/playwright.config.ts",
-    "e2e:critical": "playwright test -c .e2e/playwright.config.ts smoke theme-preview-isolation real-frames storefront-resilience",
+    "e2e:critical": "playwright test -c .e2e/playwright.config.ts smoke theme-preview-isolation real-frames storefront-resilience responsive-inspector-reset",
     "e2e:gates": "playwright test -c .e2e/playwright.config.ts smoke theme-preview-isolation",
     "schema:check": "node scripts/schema-fingerprint.mjs --check",
     "cron:generate": "node scripts/gen-crontab.mjs",
