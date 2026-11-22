@@ -210,7 +210,7 @@ describe("responsive — editable cascade through the device layer", () => {
         onChange={noop}
       />,
     );
-    expect(out).toContain("tablet override");
+    expect(out).toContain("Overridden on tablet");
     expect(overrides).toEqual(snapshot);
   });
 

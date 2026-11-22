@@ -31,6 +31,6 @@
 
 ## 6. Verification Commands
 - `bun run test:features`
-- `vitest run src/components/builder/responsive-customization.test.tsx`
-- `vitest run src/lib/themes/responsive-customization-properties.test.ts`
+- `bun run test:responsive`
+- `bun run test:properties`
 - `bun run test:bombadil --smoke`

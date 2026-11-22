@@ -104,7 +104,7 @@ jobs:
           command: bunx vitest run src/components/builder/merchant-controls-wave24.test.tsx
       - run:
           name: Wave 3 responsive customization acceptance test suite
-          command: bunx vitest run src/components/builder/responsive-customization.test.tsx
+          command: bun run test:responsive
       - run:
           name: Unit + contract tests (Vitest)
           command: bun run test

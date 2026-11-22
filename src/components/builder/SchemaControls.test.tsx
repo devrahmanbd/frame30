@@ -452,7 +452,7 @@ describe("responsive overrides passthrough", () => {
       />,
     );
     expect(out).toContain("Tab");
-    expect(out).toContain("override");
+    expect(out).toContain("Overridden on tablet");
     expect(overrides).toEqual(snapshot);
   });
 
@@ -491,3 +491,157 @@ describe("submit form", () => {
     expect(without).not.toContain("<form");
   });
 });
+
+describe("authoritative cascade inheritance resolver (Desktop -> Tablet -> Mobile)", () => {
+  const cascadeSchema: PropSchema = [
+    { key: "columns", label: "Columns", kind: "number", min: 1, max: 6 },
+    { key: "title", label: "Title", kind: "text" },
+  ];
+
+  it("cascades Desktop: 4 -> Tablet: 3 -> Mobile (not overridden): effective value 3", () => {
+    const props: WidgetProps = { columns: 4, title: "Base Heading" };
+    const overrides = {
+      tablet: { columns: 3 },
+      mobile: {},
+    };
+
+    // Mobile inspect: must resolve effective columns = 3 inherited from tablet
+    const mobileOut = html(
+      <SchemaControls
+        schema={cascadeSchema}
+        props={props}
+        device="mobile"
+        overrides={overrides}
+        onChange={noop}
+      />,
+    );
+
+    // Value in input must be 3, not 4
+    expect(mobileOut).toContain('value="3"');
+    expect(mobileOut).toContain("Inherited from tablet");
+    expect(mobileOut).not.toContain("Overridden on mobile");
+
+    // Tablet inspect: must resolve effective columns = 3 overridden on tablet
+    const tabletOut = html(
+      <SchemaControls
+        schema={cascadeSchema}
+        props={props}
+        device="tablet"
+        overrides={overrides}
+        onChange={noop}
+      />,
+    );
+    expect(tabletOut).toContain('value="3"');
+    expect(tabletOut).toContain("Overridden on tablet");
+
+    // Desktop inspect: base value 4, no inheritance badge
+    const desktopOut = html(
+      <SchemaControls
+        schema={cascadeSchema}
+        props={props}
+        device="desktop"
+        overrides={overrides}
+        onChange={noop}
+      />,
+    );
+    expect(desktopOut).toContain('value="4"');
+    expect(desktopOut).not.toContain("Inherited from");
+    expect(desktopOut).not.toContain("Overridden on");
+  });
+
+  it("cascades Desktop -> Mobile directly when Tablet has no override", () => {
+    const props: WidgetProps = { columns: 4, title: "Desktop Title" };
+    const overrides = {
+      tablet: {},
+      mobile: {},
+    };
+
+    const mobileOut = html(
+      <SchemaControls
+        schema={cascadeSchema}
+        props={props}
+        device="mobile"
+        overrides={overrides}
+        onChange={noop}
+      />,
+    );
+
+    expect(mobileOut).toContain('value="4"');
+    expect(mobileOut).toContain("Inherited from desktop");
+    expect(mobileOut).not.toContain("Reset to inherited");
+  });
+
+  it("isolates explicit Mobile override (Mobile: 2) and presents reset affordance", () => {
+    let clearedKey = "";
+    let clearedDevice = "";
+    const handleClear = (key: string, dev: string) => {
+      clearedKey = key;
+      clearedDevice = dev;
+    };
+
+    const props: WidgetProps = { columns: 4 };
+    const overrides = {
+      tablet: { columns: 3 },
+      mobile: { columns: 2 },
+    };
+
+    const mobileOut = html(
+      <SchemaControls
+        schema={cascadeSchema}
+        props={props}
+        device="mobile"
+        overrides={overrides}
+        onChange={noop}
+        onClearOverride={handleClear}
+      />,
+    );
+
+    // Input has mobile override value 2
+    expect(mobileOut).toContain('value="2"');
+    expect(mobileOut).toContain("Overridden on mobile");
+    expect(mobileOut).toContain("Reset to inherited");
+
+    // Simulating clear override restores upstream tablet layer
+    const overridesAfterReset = {
+      tablet: { columns: 3 },
+      mobile: {},
+    };
+    const afterResetOut = html(
+      <SchemaControls
+        schema={cascadeSchema}
+        props={props}
+        device="mobile"
+        overrides={overridesAfterReset}
+        onChange={noop}
+        onClearOverride={handleClear}
+      />,
+    );
+
+    expect(afterResetOut).toContain('value="3"');
+    expect(afterResetOut).toContain("Inherited from tablet");
+    expect(afterResetOut).not.toContain("Reset to inherited");
+  });
+
+  it("resets Tablet override restoring desktop base layer", () => {
+    const props: WidgetProps = { columns: 4 };
+    const overridesAfterTabletReset = {
+      tablet: {},
+      mobile: {},
+    };
+
+    const tabletOut = html(
+      <SchemaControls
+        schema={cascadeSchema}
+        props={props}
+        device="tablet"
+        overrides={overridesAfterTabletReset}
+        onChange={noop}
+      />,
+    );
+
+    expect(tabletOut).toContain('value="4"');
+    expect(tabletOut).toContain("Inherited from desktop");
+    expect(tabletOut).not.toContain("Reset to inherited");
+  });
+});
+

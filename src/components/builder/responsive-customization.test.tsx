@@ -28,6 +28,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import type { ReactElement } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SectionInspector } from "./SectionInspector";
+import { SchemaControls } from "./SchemaControls";
 import {
   inheritanceOf,
   LAYER_CASCADE,
@@ -345,6 +346,48 @@ describe("Wave 3 — Group 2: Responsive Merchant Controls & Inspector UX (Scope
 
     handleChange("columns", 2, "mobile");
     expect(onChange).toHaveBeenCalledWith("columns", 2, "mobile");
+  });
+
+  it("Test 2.5: SchemaControls and SectionInspector share identical Desktop -> Tablet -> Mobile cascade and reset behavior", () => {
+    const section: Section = {
+      id: "sec-parity-1",
+      type: "department_grid",
+      props: {
+        columns: 4,
+        heading: "Featured Departments",
+      },
+      bp: {
+        tablet: {
+          columns: 3,
+        },
+      },
+    };
+
+    // Mobile without override: must inherit columns = 3 from tablet
+    const schema = [
+      { key: "columns", label: "Columns", kind: "number" as const },
+      { key: "heading", label: "Heading", kind: "text" as const },
+    ];
+    const schemaOut = html(
+      withQuery(
+        <SchemaControls
+          schema={schema}
+          props={section.props as any}
+          overrides={section.bp as any}
+          device="mobile"
+          onChange={noop}
+        />,
+      ),
+    );
+    expect(schemaOut).toContain('value="3"');
+    expect(schemaOut).toContain("Inherited from tablet");
+
+    // InheritanceOf directly matches
+    const inheritance = inheritanceOf(section, "columns", "mobile");
+    expect(inheritance.value).toBe(3);
+    expect(inheritance.source).toBe("tablet");
+    expect(inheritance.inherited).toBe(true);
+    expect(inheritance.overridden).toBe(false);
   });
 });
 

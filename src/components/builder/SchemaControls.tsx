@@ -33,7 +33,7 @@
  * host, so desktop values inherit down until overridden.
  */
 
-import { useContext, useId } from "react";
+import { useContext, useId, useMemo } from "react";
 import type { FormEvent, ReactNode } from "react";
 import {
   QueryClient,
@@ -329,14 +329,42 @@ export function SchemaControls({
       ? overrides[device]
       : undefined;
   const layer = currentLayer;
-  // Cascaded effective values: mobile inherits from tablet (if set) or desktop;
-  // tablet inherits from desktop; base props are untouched.
-  const effective: WidgetProps =
-    device === "mobile"
-      ? { ...props, ...(tabletLayer ?? {}), ...(currentLayer ?? {}) }
-      : device === "tablet"
-        ? { ...props, ...(tabletLayer ?? {}) }
-        : props;
+  const bucket =
+    device === "mobile" || device === "tablet" || device === "desktop"
+      ? (device as DeviceBucket)
+      : undefined;
+
+  // Authoritative cascade resolver: uses inheritanceOf for every schema field
+  // and override key so SchemaControls and SectionInspector share the exact same
+  // cascade rules (mobile inherits from tablet or desktop; tablet inherits from desktop).
+  const effective: WidgetProps = useMemo(() => {
+    if (!bucket || !overrides) return props;
+    const resolved: WidgetProps = { ...props };
+    const allKeys = new Set<string>([
+      ...Object.keys(props),
+      ...(overrides.desktop && isRecord(overrides.desktop)
+        ? Object.keys(overrides.desktop)
+        : []),
+      ...(overrides.tablet && isRecord(overrides.tablet)
+        ? Object.keys(overrides.tablet)
+        : []),
+      ...(overrides.mobile && isRecord(overrides.mobile)
+        ? Object.keys(overrides.mobile)
+        : []),
+      ...knownKeys(schema),
+    ]);
+    for (const key of allKeys) {
+      const inh = inheritanceOf<unknown>(
+        { props, bp: overrides as any },
+        key,
+        bucket,
+      );
+      if (inh.value !== undefined) {
+        resolved[key] = inh.value;
+      }
+    }
+    return resolved;
+  }, [props, overrides, bucket, schema]);
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
