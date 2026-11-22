@@ -377,6 +377,7 @@ function SchemaSectionInspector({
   template,
   device,
   onChange,
+  onClearOverride,
   onToggleHidden,
   onDelete,
   onDuplicate,
@@ -477,6 +478,11 @@ function SchemaSectionInspector({
         device={device}
         overrides={overrides}
         onChange={schemaChangeAdapter(onChange, device)}
+        onClearOverride={
+          onClearOverride
+            ? (key, dev) => onClearOverride(key, dev as Breakpoint)
+            : undefined
+        }
       />
 
       <div>

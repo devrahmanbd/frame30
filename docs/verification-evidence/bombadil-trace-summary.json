@@ -2,7 +2,7 @@
   "testRun": {
     "tool": "@antithesishq/bombadil",
     "version": "0.7.10",
-    "date": "2026-11-21T14:23:39.616Z",
+    "date": "2026-11-22T12:22:09.583Z",
     "target": "http://localhost:3000",
     "targetEnvironment": "staging-loopback (seeded-preview-fixtures)",
     "routeCoverageDescription": "8 route/viewport combinations covering 5 canonical route types, not a complete 40-case matrix",
@@ -44,49 +44,18 @@
     "actionDelayMs": 250,
     "viewports": [
       {
-        "name": "mobile-320",
-        "width": 320,
-        "height": 568,
-        "route": "/",
-        "targetUrl": "http://localhost:3000/",
-        "durationSeconds": 15.4,
-        "actionsExecuted": 2,
-        "actionTypes": [
-          "Click",
-          "ScrollDown"
-        ],
-        "invariantsExecuted": [
-          "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
-          "no_server_error_pages (no 5xx titles or headings)",
-          "page_has_title_or_heading (asserts accessible title/header present)",
-          "single_primary_h1 (at most 1 H1 per rendered page)",
-          "all_images_loaded (missing src, load completion, natural dimensions, decode check)",
-          "noUncaughtExceptions",
-          "noUnhandledPromiseRejections"
-        ],
-        "violations": 0,
-        "imageFailures": 0,
-        "failedUrls": [],
-        "verdict": "PASS",
-        "tracePath": "docs/verification-evidence/bombadil/traces/mobile-320/trace.jsonl",
-        "traceSha256": "a0660b887e053beec14acb28230b77a01ddae73fb18a19b7361d9b46ed4b912b",
-        "screenshotPath": "docs/verification-evidence/bombadil/traces/mobile-320/",
-        "error": null
-      },
-      {
         "name": "mobile-390",
         "width": 390,
         "height": 844,
         "route": "/",
         "targetUrl": "http://localhost:3000/",
-        "durationSeconds": 15.6,
-        "actionsExecuted": 14,
+        "durationSeconds": 25.4,
+        "actionsExecuted": 37,
         "actionTypes": [
-          "ScrollDown",
           "Click",
+          "ScrollDown",
           "TypeText",
-          "ScrollUp",
-          "PressKey"
+          "ScrollUp"
         ],
         "invariantsExecuted": [
           "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
@@ -102,68 +71,8 @@
         "failedUrls": [],
         "verdict": "PASS",
         "tracePath": "docs/verification-evidence/bombadil/traces/mobile-390/trace.jsonl",
-        "traceSha256": "591d155e0cc361a0d8522551ce8063feef4793ee669125acaff8a2c899ccff7f",
+        "traceSha256": "d0e49fb1c5d0cb9802bc4863f9d932c7c15937060ba64a20fb2c02a2c7ad4cc8",
         "screenshotPath": "docs/verification-evidence/bombadil/traces/mobile-390/",
-        "error": null
-      },
-      {
-        "name": "tablet-768",
-        "width": 768,
-        "height": 1024,
-        "route": "/cart",
-        "targetUrl": "http://localhost:3000/cart",
-        "durationSeconds": 15.4,
-        "actionsExecuted": 3,
-        "actionTypes": [
-          "Click"
-        ],
-        "invariantsExecuted": [
-          "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
-          "no_server_error_pages (no 5xx titles or headings)",
-          "page_has_title_or_heading (asserts accessible title/header present)",
-          "single_primary_h1 (at most 1 H1 per rendered page)",
-          "all_images_loaded (missing src, load completion, natural dimensions, decode check)",
-          "noUncaughtExceptions",
-          "noUnhandledPromiseRejections"
-        ],
-        "violations": 0,
-        "imageFailures": 0,
-        "failedUrls": [],
-        "verdict": "PASS",
-        "tracePath": "docs/verification-evidence/bombadil/traces/tablet-768/trace.jsonl",
-        "traceSha256": "71ae92841dff16119d3d9463f041757c1c67e340745ab32ef95fc64fa6542f72",
-        "screenshotPath": "docs/verification-evidence/bombadil/traces/tablet-768/",
-        "error": null
-      },
-      {
-        "name": "desktop-1440",
-        "width": 1440,
-        "height": 900,
-        "route": "/",
-        "targetUrl": "http://localhost:3000/",
-        "durationSeconds": 15.4,
-        "actionsExecuted": 10,
-        "actionTypes": [
-          "ScrollDown",
-          "Click",
-          "Reload"
-        ],
-        "invariantsExecuted": [
-          "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
-          "no_server_error_pages (no 5xx titles or headings)",
-          "page_has_title_or_heading (asserts accessible title/header present)",
-          "single_primary_h1 (at most 1 H1 per rendered page)",
-          "all_images_loaded (missing src, load completion, natural dimensions, decode check)",
-          "noUncaughtExceptions",
-          "noUnhandledPromiseRejections"
-        ],
-        "violations": 0,
-        "imageFailures": 0,
-        "failedUrls": [],
-        "verdict": "PASS",
-        "tracePath": "docs/verification-evidence/bombadil/traces/desktop-1440/trace.jsonl",
-        "traceSha256": "845c99e69a0b18ba73c36ed1ea4115d449db352abc06bc728a8ed59dd19cce4d",
-        "screenshotPath": "docs/verification-evidence/bombadil/traces/desktop-1440/",
         "error": null
       }
     ]

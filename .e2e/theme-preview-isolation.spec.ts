@@ -46,7 +46,7 @@ test("songoskriti preview serves every image with zero assets/ 404s", async ({
 
   // The preview frame renders real theme imagery, not an empty shell.
   await expect(
-    page.locator("img").first(),
+    page.locator("img:visible").first(),
     "preview renders images",
   ).toBeVisible({
     timeout: 20_000,

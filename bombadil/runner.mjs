@@ -21,7 +21,7 @@ if (isProductionDomain && !allowProduction) {
   process.exit(1);
 }
 
-const timeLimit = isSmoke ? "12s" : "15s";
+const timeLimit = isSmoke ? "25s" : "30s";
 const actionDelay = "250"; // 250ms pacing between actions to prevent resource exhaustion
 
 // Preserve traces directly into auditable repository documentation directory

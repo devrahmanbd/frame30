@@ -47,6 +47,7 @@ import {
   resolveMediaAlt,
   type StructuredMediaValue,
 } from "@/lib/theme-contract";
+import { inheritanceOf, type DeviceBucket } from "@/lib/responsive";
 import {
   CONTROL_STATUS,
   defaultsFor,
@@ -83,6 +84,8 @@ export type SchemaControlsProps = {
   /** Read-only responsive layers (`{ [device]: { [key]: value } }`). */
   overrides?: Record<string, WidgetProps>;
   onChange: SchemaChangeHandler;
+  /** Actionable override reset: clears key on active device layer. */
+  onClearOverride?: (key: string, device: string) => void;
   /** When set, controls wrap in a form validated by the shared validator. */
   onSubmit?: (clean: WidgetProps) => void;
   onValidationError?: (errors: string[]) => void;
@@ -313,19 +316,27 @@ export function SchemaControls({
   device,
   overrides,
   onChange,
+  onClearOverride,
   onSubmit,
   onValidationError,
 }: SchemaControlsProps) {
   const uid = useId();
   const queryContext = useContext(QueryClientContext);
-  const layer =
+  const tabletLayer =
+    overrides && isRecord(overrides["tablet"]) ? overrides["tablet"] : undefined;
+  const currentLayer =
     device && overrides && isRecord(overrides[device])
       ? overrides[device]
       : undefined;
-  // Device-layer value wins for display; base props are untouched and the
-  // overrides object is never written (passthrough).
+  const layer = currentLayer;
+  // Cascaded effective values: mobile inherits from tablet (if set) or desktop;
+  // tablet inherits from desktop; base props are untouched.
   const effective: WidgetProps =
-    layer !== undefined ? { ...props, ...layer } : props;
+    device === "mobile"
+      ? { ...props, ...(tabletLayer ?? {}), ...(currentLayer ?? {}) }
+      : device === "tablet"
+        ? { ...props, ...(tabletLayer ?? {}) }
+        : props;
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -351,21 +362,63 @@ export function SchemaControls({
     field: PropField,
     id: string,
     showOverride: boolean,
-  ): ReactNode => (
-    <div className="flex items-baseline justify-between gap-2">
-      <label htmlFor={id} className="block text-xs font-medium">
-        {field.label}
-        {field.required === true ? (
-          <span className="ml-1 text-muted-foreground">· required</span>
-        ) : null}
-      </label>
-      {showOverride && device ? (
-        <span className="text-[0.65rem] text-muted-foreground">
-          {device} override
-        </span>
-      ) : null}
-    </div>
-  );
+  ): ReactNode => {
+    const bucket =
+      device === "mobile" || device === "tablet" || device === "desktop"
+        ? (device as DeviceBucket)
+        : undefined;
+    const inheritance =
+      bucket && overrides
+        ? inheritanceOf<unknown>({ props, bp: overrides as any }, field.key, bucket)
+        : null;
+    const isOverridden = inheritance
+      ? inheritance.overridden && bucket !== "desktop"
+      : showOverride;
+    const isInherited = inheritance
+      ? inheritance.inherited
+      : device === "mobile" &&
+        !showOverride &&
+        tabletLayer !== undefined &&
+        Object.prototype.hasOwnProperty.call(tabletLayer, field.key);
+    const source = inheritance?.source;
+
+    return (
+      <div className="flex items-baseline justify-between gap-2">
+        <label htmlFor={id} className="block text-xs font-medium">
+          {field.label}
+          {field.required === true ? (
+            <span className="ml-1 text-muted-foreground">· required</span>
+          ) : null}
+        </label>
+        <div className="flex items-center gap-1.5">
+          {isOverridden && device ? (
+            <span
+              className="rounded-full bg-primary/10 px-2 py-0.5 text-[0.6rem] font-medium text-primary"
+              title={`Set on ${device} layer.`}
+            >
+              Overridden on {device}
+            </span>
+          ) : isInherited && source ? (
+            <span
+              className="rounded-full bg-muted px-2 py-0.5 text-[0.6rem] text-muted-foreground"
+              title="Value comes from a wider layer."
+            >
+              Inherited from {source}
+            </span>
+          ) : null}
+          {isOverridden && device && onClearOverride ? (
+            <button
+              type="button"
+              onClick={() => onClearOverride(field.key, device)}
+              className="text-[0.65rem] text-muted-foreground underline hover:text-foreground"
+            >
+              Reset to inherited
+            </button>
+          ) : null}
+        </div>
+      </div>
+    );
+  };
 
   const renderHelp = (field: PropField): ReactNode =>
     field.help ? (

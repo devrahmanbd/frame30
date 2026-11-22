@@ -46,7 +46,12 @@ import type {
 } from "@/lib/builder-ast";
 import type { WidgetComponent, WidgetCtx } from "./widgets";
 import type { WidgetRow } from "@/lib/widget-data";
-import { parsePickedHandles, resolveSkin } from "@/lib/builder-ast";
+import {
+  parsePickedHandles,
+  resolveProps,
+  resolveSkin,
+  type Breakpoint,
+} from "@/lib/builder-ast";
 import {
   clearFacets,
   facetHref,
@@ -107,8 +112,13 @@ function t(locale: string, en: string, bn: string) {
   return locale === "bn" ? bn : en;
 }
 
-function rowsOf(section: Section, key: string): PropRow[] {
-  const value: PropValue | undefined = section.props[key];
+function rowsOf(
+  section: Section,
+  key: string,
+  device?: Breakpoint,
+): PropRow[] {
+  const props = resolveProps(section, device);
+  const value: PropValue | undefined = props[key];
   return Array.isArray(value) ? (value as PropRow[]) : [];
 }
 
@@ -312,8 +322,9 @@ const Testimonials: WidgetComponent = ({
   locale,
   editing,
   link,
+  device,
 }) => {
-  const testimonials = rowsOf(section, "testimonials")
+  const testimonials = rowsOf(section, "testimonials", device)
     .map((row) => {
       const rawRating = row["rating"];
       const rating =
@@ -692,6 +703,7 @@ const TrustFooter: WidgetComponent = ({
   section,
   locale,
   editing,
+  device,
 }) => {
   // Task 5 motion: once-only batch reveal at full intent; static otherwise.
   const scope = useRef<HTMLDivElement | null>(null);
@@ -792,7 +804,7 @@ const TrustFooter: WidgetComponent = ({
 
   // Repeater-first (trust_bar precedent): studio `items` rows win when
   // present, scalar i1–i4 triples remain as the fallback.
-  const rawRows = rowsOf(section, "items")
+  const rawRows = rowsOf(section, "items", device)
     .map((row) => ({
       icon: readString(row, "icon"),
       title: readBn(row, "title", locale),
@@ -1598,12 +1610,17 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
   link,
   locale,
   editing,
+  device,
 }) => {
   const dynamic = (useDynamicContext(editing) || {}) as Record<string, unknown>;
   const dynamicMerchant = (dynamic.merchant || {}) as Record<string, unknown>;
+  const resolved = resolveProps(section, device);
 
-  const itemRows = Array.isArray(section.props.items)
-    ? section.props.items
+  const rawItems = Array.isArray(resolved.items)
+    ? resolved.items
+    : section.props.items;
+  const itemRows = Array.isArray(rawItems)
+    ? (rawItems as PropRow[])
         .map((row) => {
           const r = row as Record<string, unknown>;
           const title = typeof r.title === "string" ? r.title : "";
@@ -1624,7 +1641,7 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
           .map((n) => ({
             title: str(`c${n}Title`),
             links: parseLinkList(
-              section.props[`c${n}Links`] ?? str(`c${n}Links`),
+              resolved[`c${n}Links`] ?? section.props[`c${n}Links`] ?? str(`c${n}Links`),
               locale,
             ),
           }))
@@ -2044,8 +2061,9 @@ const SongoskritiDepartmentGrid: WidgetComponent = ({
   section,
   link,
   locale,
+  device,
 }) => {
-  const departments = rowsOf(section, "departments")
+  const departments = rowsOf(section, "departments", device)
     .map((row) => ({
       title: readBn(row, "title", locale) || readBn(row, "name", locale),
       image: readString(row, "image"),
@@ -2759,10 +2777,11 @@ const SongoskritiCollectionStory: WidgetComponent = ({
   section,
   locale,
   link,
+  device,
 }) => {
   const heading = str("heading");
   const subhead = str("subhead");
-  const collections = rowsOf(section, "collections")
+  const collections = rowsOf(section, "collections", device)
     .map((row) => ({
       title: readString(row, "title"),
       image: readString(row, "image"),
@@ -2835,7 +2854,13 @@ const SongoskritiCollectionStory: WidgetComponent = ({
   );
 };
 
-const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
+const SongoskritiUgcGallery: WidgetComponent = ({
+  str,
+  section,
+  locale,
+  device,
+}) => {
+  const resolved = resolveProps(section, device);
   const heading = str("heading");
   const subhead = str("subhead");
   // Social handle is theme-authored (songoskriti homepage owns the brand
@@ -2853,8 +2878,8 @@ const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
     focalPoint?: { x: number; y: number } | null;
   }
 
-  const rawImages: GalleryItem[] = Array.isArray(section.props.images)
-    ? section.props.images
+  const rawImages: GalleryItem[] = Array.isArray(resolved.images)
+    ? (resolved.images as unknown[])
         .map((item) => {
           if (typeof item === "string") {
             const u = item.trim();
@@ -2977,15 +3002,21 @@ const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
   );
 };
 
-const SongoskritiStoreLocator: WidgetComponent = ({ section, str, locale }) => {
+const SongoskritiStoreLocator: WidgetComponent = ({
+  section,
+  str,
+  locale,
+  device,
+}) => {
   // Heading/eyebrow fall back to generic chrome, never a brand name; the
   // songoskriti homepage authors its own heading. Store images resolve
   // per-store (`sNImage`), then the authored `images` list, then a neutral
   // placeholder tile — never brand art.
+  const resolved = resolveProps(section, device);
   const heading =
     str("heading") || t(locale, "Visit our stores", "আমাদের স্টোরসমূহ");
   const eyebrow = str("eyebrow") || t(locale, "OUR STORES", "আমাদের শাখাসমূহ");
-  const rawImages = section?.props?.images;
+  const rawImages = resolved?.images ?? section?.props?.images;
   const listImages = Array.isArray(rawImages)
     ? rawImages
         .map((img) =>
