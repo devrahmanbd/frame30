@@ -140,6 +140,41 @@ const models = [
       "PublishedUsesValidatedConfiguration",
       "PreviewPublishConfigurationConsistency"
     ]
+  },
+  {
+    name: "ResponsiveAutosave",
+    tlaFile: join(process.cwd(), "specs", "tla", "ResponsiveAutosave.tla"),
+    cfgFile: join(process.cwd(), "specs", "tla", "ResponsiveAutosave.cfg"),
+    proofFile: join(process.cwd(), "docs", "verification-evidence", "tlc-responsive-autosave-proof.txt"),
+    receiptTitle: "TLA+ TLC FORMAL MODEL CHECKING STATE-SPACE PROOF RECEIPT (RESPONSIVE AUTOSAVE)",
+    requiredSymbols: [
+      "MODULE ResponsiveAutosave",
+      "TypeOK",
+      "Init",
+      "Next",
+      "Spec",
+      "ParentPreservation",
+      "InheritanceCorrectness",
+      "ResetRestoration",
+      "NoStaleRegression",
+      "PublicationIntegrity",
+      "EditDesktop",
+      "EditTablet",
+      "EditMobile",
+      "ResetMobile",
+      "TriggerAutosave",
+      "AcceptAutosave",
+      "DropStaleAutosave",
+      "Publish"
+    ],
+    requiredInvariants: [
+      "TypeOK",
+      "ParentPreservation",
+      "InheritanceCorrectness",
+      "ResetRestoration",
+      "NoStaleRegression",
+      "PublicationIntegrity"
+    ]
   }
 ];
 

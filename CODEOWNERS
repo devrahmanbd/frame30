@@ -67,3 +67,18 @@ supabase/migrations/20260928000001_fix_kb_chunks_tenant_rls.sql @devrahmanbd
 supabase/migrations/*rls* @devrahmanbd
 supabase/migrations/*security* @devrahmanbd
 supabase/migrations/*auth* @devrahmanbd
+
+# Frame30 Engineering Governance & Proof-Driven SDLC Authority
+# Human owner (@devrahmanbd) owns constitutional rules, change contracts,
+# formal correctness laws, verification scripts, and CI pipeline gates.
+AGENTS.md @devrahmanbd
+features/contracts/** @devrahmanbd
+docs/governance/** @devrahmanbd
+specs/bend/** @devrahmanbd
+specs/tla/** @devrahmanbd
+specs/lean/** @devrahmanbd
+scripts/scope-guard.mjs @devrahmanbd
+scripts/bend-verify.mjs @devrahmanbd
+scripts/verification-drift.mjs @devrahmanbd
+scripts/mutation-test.mjs @devrahmanbd
+.circleci/config.yml @devrahmanbd

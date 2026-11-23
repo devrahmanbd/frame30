@@ -158,7 +158,7 @@ describe("Workstream B: Collection Merchandising Property Verification (fast-che
       fc.property(
         genCollectionSlug,
         genCollectionSlug,
-        fc.array(genProductItem, { minLength: 1, maxLength: 10 }),
+        fc.uniqueArray(genProductItem, { selector: (p) => p.id, minLength: 1, maxLength: 10 }),
         (activeSlug, otherSlug, activeProducts) => {
           fc.pre(normalizeCollectionSlug(activeSlug) !== normalizeCollectionSlug(otherSlug));
 

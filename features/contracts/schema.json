@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Frame30FeatureChangeContract",
+  "type": "object",
+  "required": [
+    "feature_id",
+    "title",
+    "owner",
+    "baseline_commit",
+    "baseline_tree",
+    "objective",
+    "merchant_or_user_outcome",
+    "in_scope",
+    "out_of_scope",
+    "allowed_file_changes",
+    "forbidden_file_changes",
+    "api_contract_changes",
+    "database_schema_changes",
+    "dependency_changes",
+    "security_changes",
+    "required_invariants",
+    "required_acceptance",
+    "required_formal_verification",
+    "required_ui_properties",
+    "required_browser_workflows",
+    "required_regression_suites",
+    "deployment_authorization"
+  ],
+  "properties": {
+    "feature_id": {
+      "type": "string",
+      "pattern": "^[A-Z0-9_-]+$"
+    },
+    "title": {
+      "type": "string"
+    },
+    "owner": {
+      "type": "string"
+    },
+    "baseline_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "baseline_tree": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "objective": {
+      "type": "string"
+    },
+    "merchant_or_user_outcome": {
+      "type": "string"
+    },
+    "in_scope": {
+      "type": "object",
+      "required": ["routes", "components", "services", "files"],
+      "properties": {
+        "routes": { "type": "array", "items": { "type": "string" } },
+        "components": { "type": "array", "items": { "type": "string" } },
+        "services": { "type": "array", "items": { "type": "string" } },
+        "files": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "out_of_scope": {
+      "type": "object",
+      "required": ["routes", "components", "services", "files"],
+      "properties": {
+        "routes": { "type": "array", "items": { "type": "string" } },
+        "components": { "type": "array", "items": { "type": "string" } },
+        "services": { "type": "array", "items": { "type": "string" } },
+        "files": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "allowed_file_changes": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "forbidden_file_changes": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "api_contract_changes": {
+      "type": "boolean"
+    },
+    "database_schema_changes": {
+      "type": "boolean"
+    },
+    "dependency_changes": {
+      "type": "boolean"
+    },
+    "security_changes": {
+      "type": "boolean"
+    },
+    "required_invariants": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "required_acceptance": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "required_formal_verification": {
+      "type": "object",
+      "required": ["bend", "lean", "tla"],
+      "properties": {
+        "bend": { "type": "object" },
+        "lean": { "type": "object" },
+        "tla": { "type": "object" }
+      }
+    },
+    "required_ui_properties": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "required_browser_workflows": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "required_regression_suites": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "deployment_authorization": {
+      "type": "boolean",
+      "const": false
+    }
+  }
+}

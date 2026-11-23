@@ -1,0 +1,160 @@
+{
+  "$schema": "./schema.json",
+  "feature_id": "PILOT-WORKSTREAMS-AB",
+  "title": "Songoskriti Merchant Experience Pilot - Workstreams A and B",
+  "owner": "@devrahmanbd",
+  "baseline_commit": "3376ed6914faefee5718728d65ba199ce75ab348",
+  "baseline_tree": "ef0daae579a9df7d46caae8385e9fd4d1cf05564",
+  "objective": "Establish proof-driven SDLC and verify Workstream A (interactive responsive controls, fail-closed auth, 8 viewports) and Workstream B (collection composition parity, self-exclusion, cross-sell preservation)",
+  "merchant_or_user_outcome": "Merchants can reliably customize responsive theme breakpoints with working reset controls, and collection pages omit duplicate active-collection rails while preserving deliberate cross-sells across preview and production storefronts",
+  "in_scope": {
+    "routes": [
+      "/dashboard/builder",
+      "/c/:collectionSlug"
+    ],
+    "components": [
+      "src/components/builder/SectionInspector.tsx",
+      "src/components/builder/SchemaControls.tsx",
+      "src/components/store/CollectionView.tsx",
+      "src/components/store/ThemePreviewFrame.tsx"
+    ],
+    "services": [
+      "src/lib/collection-composition.ts",
+      "src/lib/responsive.ts"
+    ],
+    "files": [
+      "src/lib/collection-composition.ts",
+      "src/components/store/CollectionView.tsx",
+      "src/components/store/ThemePreviewFrame.tsx",
+      "src/lib/themes/collection-composition-properties.test.ts",
+      "src/components/builder/responsive-customization.test.tsx",
+      "src/components/store/songoskriti-preview-compositions.test.tsx",
+      ".e2e/responsive-inspector-reset.spec.ts",
+      "docs/verification-evidence/responsive-viewports/*",
+      "features/contracts/*",
+      "docs/governance/*",
+      "scripts/scope-guard.mjs",
+      "scripts/bend-verify.mjs",
+      "scripts/verification-drift.mjs",
+      "scripts/mutation-test.mjs",
+      "specs/bend/*",
+      "specs/tla/ResponsiveAutosave.tla",
+      "specs/tla/ResponsiveAutosave.cfg",
+      "CODEOWNERS",
+      ".circleci/config.yml",
+      "package.json"
+    ]
+  },
+  "out_of_scope": {
+    "routes": [
+      "/cart",
+      "/checkout",
+      "/account",
+      "/admin/orders",
+      "/admin/customers",
+      "/admin/inventory"
+    ],
+    "components": [
+      "src/components/cart/*",
+      "src/components/checkout/*",
+      "src/components/admin/orders/*"
+    ],
+    "services": [
+      "src/lib/order.server.ts",
+      "src/lib/payments.server.ts",
+      "src/lib/auth.server.ts"
+    ],
+    "files": [
+      "supabase/migrations/*",
+      "src/lib/env.server.ts",
+      ".output/DEPLOYED_SHA"
+    ]
+  },
+  "allowed_file_changes": [
+    "src/lib/collection-composition.ts",
+    "src/components/store/CollectionView.tsx",
+    "src/components/store/ThemePreviewFrame.tsx",
+    "src/lib/themes/collection-composition-properties.test.ts",
+    "src/components/builder/responsive-customization.test.tsx",
+    "src/components/store/songoskriti-preview-compositions.test.tsx",
+    ".e2e/responsive-inspector-reset.spec.ts",
+    "docs/verification-evidence/responsive-viewports/*.png",
+    "features/contracts/*.json",
+    "docs/governance/*.md",
+    "scripts/scope-guard.mjs",
+    "scripts/bend-verify.mjs",
+    "scripts/verification-drift.mjs",
+    "scripts/mutation-test.mjs",
+    "specs/bend/LAWS.bend",
+    "specs/bend/PROOF.bend",
+    "specs/tla/ResponsiveAutosave.tla",
+    "specs/tla/ResponsiveAutosave.cfg",
+    "scripts/tla-verify.mjs",
+    "docs/verification-evidence/tlc-responsive-autosave-proof.txt",
+    "docs/verification-evidence/bend-proof.txt",
+    "docs/verification-evidence/mutation-sensitivity-receipt.txt",
+    ".agents/.skills/**",
+    "CODEOWNERS",
+    ".circleci/config.yml",
+    "package.json"
+  ],
+  "forbidden_file_changes": [
+    ".github/**",
+    ".output/DEPLOYED_SHA",
+    "supabase/migrations/**",
+    "src/lib/env.server.ts",
+    "src/lib/order.server.ts",
+    "src/lib/payments.server.ts"
+  ],
+  "api_contract_changes": false,
+  "database_schema_changes": false,
+  "dependency_changes": false,
+  "security_changes": false,
+  "required_invariants": [
+    "Responsive override reset deterministically restores parent device cascade value",
+    "Responsive device override never leaks or mutates unrelated breakpoint configurations",
+    "Active collection self-exclusion suppresses duplicate collection rails on /c/sarees and /c/festive",
+    "Deliberate cross-sells (/c/girls -> More Children's Wear) are strictly preserved across preview and production",
+    "Storefront CollectionView and ThemePreviewFrame share identical section composition semantics"
+  ],
+  "required_acceptance": [
+    "Test 2.3 clicks real Reset button via Playwright and asserts override removal and cascade restoration",
+    "Test 4.1 asserts real interactive SectionInspector device checkboxes and hide-everywhere warning",
+    "A3 authenticated workflow fails closed if merchant credentials are missing (zero silent skips)",
+    "A4 browser exploration passes across all 8 viewports (320px to 1440px) with zero horizontal overflow",
+    "Property suite passes 6 collection composition properties across 550+ fast-check executions"
+  ],
+  "required_formal_verification": {
+    "bend": {
+      "laws": "specs/bend/LAWS.bend",
+      "proof": "specs/bend/PROOF.bend",
+      "command": "node scripts/bend-verify.mjs"
+    },
+    "lean": {
+      "theorems": ["Pricing.lean", "ThemeLifecycle.lean"],
+      "command": "bun run test:lean"
+    },
+    "tla": {
+      "models": ["CheckoutInventory.tla", "ThemeLifecycle.tla", "ResponsiveAutosave.tla"],
+      "command": "bun run test:tla"
+    }
+  },
+  "required_ui_properties": [
+    "scrollWidth <= innerWidth across all 8 viewports",
+    "Zero uncaught JavaScript exceptions",
+    "Zero 5xx HTTP response codes",
+    "Zero duplicate product cards in active collection merchandising"
+  ],
+  "required_browser_workflows": [
+    "A3: Authenticated merchant builder reset flow",
+    "A4: 8-viewport responsive layout conformance"
+  ],
+  "required_regression_suites": [
+    "test:features",
+    "test:properties",
+    "test:responsive",
+    "test:theme-compliance",
+    "songoskriti-preview-compositions.test.tsx"
+  ],
+  "deployment_authorization": false
+}

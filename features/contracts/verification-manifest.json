@@ -1,0 +1,49 @@
+{
+  "synchronized_at": "2026-11-23T01:02:36.519Z",
+  "source_commit": "7e8b3db1f00f3e53a8d4a318f373704a8896f7e4",
+  "source_tree": "a492c978afc02d456c39b6fd1554ba12ea95ee0c",
+  "covered_sources": [
+    {
+      "path": "src/lib/collection-composition.ts",
+      "sha256": "b3bd4059fbb4dbbc8fe75a16be182c0ef09eb7af502b82e170ace751f750cc36",
+      "formalArtifact": "specs/bend/LAWS.bend (Law 4 & 5) + fast-check",
+      "domain": "Collection Merchandising & Self-Exclusion"
+    },
+    {
+      "path": "src/components/store/CollectionView.tsx",
+      "sha256": "2328fa014772be79470bab1d6a272feb3cbda175fd8cdf907f320b3d934cdf02",
+      "formalArtifact": "src/lib/themes/collection-composition-properties.test.ts",
+      "domain": "Storefront Collection Merchandising"
+    },
+    {
+      "path": "src/components/store/ThemePreviewFrame.tsx",
+      "sha256": "a52bb0ac8dd42f7c330041305b487e1d977aa3877b92c5919477ab1c00c37267",
+      "formalArtifact": "src/components/store/songoskriti-preview-compositions.test.tsx",
+      "domain": "Theme Preview Composition Parity"
+    },
+    {
+      "path": "src/lib/responsive.ts",
+      "sha256": "d7a8479f38954bdf5268c8bb21a36a0b5a484bb253572613919ee9c849b3efc1",
+      "formalArtifact": "specs/bend/LAWS.bend (Law 1, 2, 3) + specs/tla/ResponsiveAutosave.tla",
+      "domain": "Responsive Breakpoint Cascade & Override Reset"
+    },
+    {
+      "path": "src/lib/builder-ast.ts",
+      "sha256": "b143191272bfe45056a6344712ef91e2c74f00c9bffbd06cc2ea8cfd250ccebd",
+      "formalArtifact": "specs/tla/ResponsiveAutosave.tla",
+      "domain": "Theme Builder AST & Breakpoint Storage"
+    },
+    {
+      "path": "specs/bend/LAWS.bend",
+      "sha256": "e45d7d408cb992df52888aa1abe795b5c5b9e0754d60d5735b637f08b48a07d4",
+      "formalArtifact": "specs/bend/PROOF.bend",
+      "domain": "Bend 2 Human-Owned Correctness Laws"
+    },
+    {
+      "path": "specs/tla/ResponsiveAutosave.tla",
+      "sha256": "3863292d3c4a71ef008605edf1ba65e4a26b89bbd67aa2376b6ddfb8d6afa0c2",
+      "formalArtifact": "specs/tla/ResponsiveAutosave.cfg",
+      "domain": "TLA+ Responsive Autosave Concurrency Model"
+    }
+  ]
+}

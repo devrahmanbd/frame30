@@ -1,0 +1,34 @@
+=============================================================================
+FRAME30 ADVERSARIAL MUTATION SENSITIVITY EVIDENCE RECEIPT
+=============================================================================
+Timestamp: 2026-11-23T01:01:37.345Z
+Total Mutations Tested: 4
+
+[Mutation 1] Scope Guard: Forbidden File Modification
+  Detection Status: DETECTED & REJECTED (PASS)
+  Expected Signature: Explicitly forbidden by rule: 'supabase/migrations/**'
+  Clean Restoration: VERIFIED (PASS)
+  Output Snippet: [scope-guard] Loaded change contract: PILOT-WORKSTREAMS-AB ("Songoskriti Merchant Experience Pilot - Workstreams A and B") [scope-guard] Baseline Commit: 3376ed6914faefee5718728d65ba199ce75ab348 [scope-guard] Human Owner: @devrahmanbd [scope-guard] Total paths evaluated against scope: 37   =========...
+
+[Mutation 2] Bend 2: Corrupted Reset Override Semantics
+  Detection Status: DETECTED & REJECTED (PASS)
+  Expected Signature: Law 2: Reset Inheritance Restoration: FAILED
+  Clean Restoration: VERIFIED (PASS)
+  Output Snippet: [bend-verify] Validating Bend 2 formal laws and proof artifacts... [bend-verify] Bend toolchain: bend-lang 0.2.38 (/Users/rahman/.cargo/bin/bend) [bend-verify] LAWS.bend SHA-256:  e45d7d408cb992df52888aa1abe795b5c5b9e0754d60d5735b637f08b48a07d4 [bend-verify] PROOF.bend SHA-256: ecafe2023560b88213a57...
+
+[Mutation 3] fast-check: Corrupted Collection Rail Self-Exclusion
+  Detection Status: DETECTED & REJECTED (PASS)
+  Expected Signature: AssertionError
+  Clean Restoration: VERIFIED (PASS)
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/themes/collection-composition-properties.test.ts (6 tests | 3 failed) 44ms      × Property P1: Redundant active-collection rails are strictly eliminated 10ms      × Property P3: Product cards in active collection are never duplicated by seco...
+
+[Mutation 4] Verification Drift: Desynchronized Source Hash
+  Detection Status: DETECTED & REJECTED (PASS)
+  Expected Signature: VERIFICATION DRIFT DETECTED
+  Clean Restoration: VERIFIED (PASS)
+  Output Snippet: [verification-drift] Checking formal verification correspondence to production source... [verification-drift] Baseline Synchronization Commit: 7e8b3db1f00f3e53a8d4a318f373704a8896f7e4   ✓ src/components/store/CollectionView.tsx matches verified model state (2328fa014772...)   ✓ src/components/store/...
+
+-----------------------------------------------------------------------------
+VERDICT: ALL 4 MUTATIONS CONCLUSIVELY DETECTED WITH FAIL-CLOSED GATES.
+ZERO LEAKED MUTATIONS. RESTORATION VERIFIED CLEAN.
+=============================================================================

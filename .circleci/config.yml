@@ -69,6 +69,12 @@ jobs:
       - checkout
       - setup-bun
       - run:
+          name: Scope guard gate (fail-closed change contract compliance)
+          command: bun run gate:scope
+      - run:
+          name: Verification drift gate (SHA-256 model/source synchronization)
+          command: bun run gate:drift
+      - run:
           name: Install OpenJDK 21 for TLA+ TLC model checker
           command: |
             sudo apt-get update -qq
@@ -82,6 +88,23 @@ jobs:
             export PATH="$HOME/.elan/bin:$PATH"
             lake --version
       - run:
+          name: Install Bend 2 toolchain & HVM runtime
+          command: |
+            if ! command -v cargo &> /dev/null; then
+              curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
+              source "$HOME/.cargo/env"
+              echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> "$BASH_ENV"
+            fi
+            export PATH="$HOME/.cargo/bin:$PATH"
+            if ! command -v bend &> /dev/null; then
+              cargo install --version 0.2.38 bend-lang
+              cargo install hvm
+            fi
+            bend --version
+      - run:
+          name: Bend 2 formal verification (fail-closed correctness laws)
+          command: bun run test:bend
+      - run:
           name: Feature map documentation completeness check
           command: bun run test:features
       - run:
@@ -93,6 +116,9 @@ jobs:
       - run:
           name: Lean 4 formal verification & refinement (fail-closed)
           command: bun run test:lean
+      - run:
+          name: Adversarial mutation sensitivity gate (fail-closed defect detection)
+          command: bun run test:mutation
       - run:
           name: Theme compliance gate (Frame30 Official Theme Standard)
           command: bun run test:theme-compliance
