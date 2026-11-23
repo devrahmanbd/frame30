@@ -12,6 +12,7 @@ import { isCustomHostPath } from "@/lib/storefront-url";
 import { HEADER_FALLBACK_MENU } from "@/lib/header-copy";
 import { SlidersHorizontal, ChevronDown, X } from "lucide-react";
 import { buildCollectionArchetype } from "@/lib/themes/songoskriti/archetypes";
+import { reconcileStorefrontCollectionSections } from "@/lib/collection-composition";
 import type { getStoreCollection } from "@/lib/storefront.functions";
 
 export type CollectionPayload = Exclude<
@@ -1790,20 +1791,10 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
   const cleanAst = dynamicAst
     ? {
         ...dynamicAst,
-        main: dynamicAst.main
-          .filter(
-            (s) =>
-              s.type !== "category_header" &&
-              s.type !== "result_toolbar" &&
-              s.type !== "announcement_bar" &&
-              s.type !== "breadcrumb" &&
-              s.type !== "product_rail",
-          )
-          .map((s) =>
-            s.type === "product_grid"
-              ? { ...s, props: { ...s.props, heading: "", heading_bn: "" } }
-              : s,
-          ),
+        main: reconcileStorefrontCollectionSections(
+          dynamicAst.main,
+          collection.slug,
+        ),
       }
     : dynamicAst;
 

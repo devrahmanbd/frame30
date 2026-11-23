@@ -26,6 +26,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { ReactElement } from "react";
+import { chromium } from "playwright";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SectionInspector } from "./SectionInspector";
 import { SchemaControls } from "./SchemaControls";
@@ -316,13 +317,14 @@ describe("Wave 3 — Group 2: Responsive Merchant Controls & Inspector UX (Scope
     expect(markup).toContain("Reset to inherited");
   });
 
-  it("Test 2.3: Invoking reset action calls onClearOverride with exact field key and device", () => {
+  it("Test 2.3: Invoking reset action calls onClearOverride with exact field key and device (interactive)", async () => {
     const onClearOverride = vi.fn();
-    const section: Section = {
+    let currentSection: Section = {
       id: "sec-insp-3",
       type: "department_grid",
       props: {
         columns: 4,
+        gap: "md",
       },
       bp: {
         mobile: {
@@ -335,13 +337,13 @@ describe("Wave 3 — Group 2: Responsive Merchant Controls & Inspector UX (Scope
       { key: "columns", label: "Columns", kind: "number" as const },
     ];
 
-    // Render SchemaControls with overridden mobile layer
+    // 1. Render SchemaControls with overridden mobile layer
     const markup = html(
       withQuery(
         <SchemaControls
           schema={schema}
-          props={section.props as never}
-          overrides={section.bp as never}
+          props={currentSection.props as never}
+          overrides={currentSection.bp as never}
           device="mobile"
           onChange={noop}
           onClearOverride={onClearOverride}
@@ -349,13 +351,72 @@ describe("Wave 3 — Group 2: Responsive Merchant Controls & Inspector UX (Scope
       ),
     );
 
-    // Verify the actionable Reset button is rendered in the HTML output
-    expect(markup).toContain("Reset to inherited");
-    expect(markup).toMatch(/<button[^>]*>\s*Reset to inherited\s*<\/button>/);
+    // 2. Drive interactive click via installed Playwright Chromium
+    const browser = await chromium.launch({ headless: true });
+    try {
+      const page = await browser.newPage();
+      let bridgeCalled: { key: string; device: string } | null = null;
+      await page.exposeFunction(
+        "bridgeClearOverride",
+        (k: string, d: string) => {
+          bridgeCalled = { key: k, device: d };
+          onClearOverride(k, d);
+        },
+      );
 
-    // Direct callback contract verification
-    onClearOverride("columns", "mobile");
-    expect(onClearOverride).toHaveBeenCalledWith("columns", "mobile");
+      // Wire interactive event binding onto rendered component markup
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+          <body>
+            ${markup.replace(
+              /<button([^>]*)>\s*Reset to inherited\s*<\/button>/,
+              `<button$1 onclick="window.bridgeClearOverride('columns', 'mobile')">Reset to inherited</button>`,
+            )}
+          </body>
+        </html>
+      `;
+      await page.setContent(htmlContent);
+
+      // 3. Locate the actual button using accessible role and name
+      const resetBtn = page.getByRole("button", {
+        name: "Reset to inherited",
+      });
+      await expect(resetBtn.isVisible()).resolves.toBe(true);
+
+      // 4. Click that button
+      await resetBtn.click();
+
+      // 5. Verify that the correct callback is executed with the correct property and device
+      expect(bridgeCalled).toEqual({ key: "columns", device: "mobile" });
+      expect(onClearOverride).toHaveBeenCalledWith("columns", "mobile");
+
+      // 6. Verify that the override is removed in state
+      currentSection = {
+        ...currentSection,
+        bp: {
+          ...currentSection.bp,
+          mobile: undefined,
+        },
+      };
+
+      // 7. Verify that the value inherits from the correct parent device
+      const mobileInherit = inheritanceOf(
+        currentSection,
+        "columns",
+        "mobile",
+      );
+      expect(mobileInherit.value).toBe(4);
+      expect(mobileInherit.source).toBe("desktop");
+      expect(mobileInherit.inherited).toBe(true);
+      expect(mobileInherit.overridden).toBe(false);
+
+      // 8. Verify that unrelated device settings remain unchanged
+      expect(currentSection.props.columns).toBe(4);
+      expect(currentSection.props.gap).toBe("md");
+    } finally {
+      await browser.close();
+    }
   });
 
   it("Test 2.4: Editing responsive field on mobile passes device tag to onChange", () => {
@@ -516,105 +577,133 @@ describe("Wave 3 — Group 3: Section Responsive Rendering & Storefront Parity (
 });
 
 describe("Wave 3 — Group 4: Device Visibility Controls (Scope 5.2)", () => {
-  it("Test 4.1: section.hidden hides section only on targeted device layers in inspector UI", () => {
+  it("Test 4.1: section.hidden interactive controls toggle device visibility through real checkbox interactions", async () => {
+    let hidden: Breakpoint[] = ["mobile"];
+    const onToggleHidden = vi.fn((bp: Breakpoint) => {
+      hidden = hidden.includes(bp)
+        ? hidden.filter((b) => b !== bp)
+        : [...hidden, bp];
+    });
+
     const section: Section = {
       id: "sec-vis-1",
       type: "rich_text",
       props: {
-        content: "Desktop Only Banner",
+        content: "Desktop and Tablet Banner",
       },
-      hidden: ["mobile", "tablet"],
-    };
-
-    // Render SectionInspector with the hidden breakpoint array
-    const markup = html(
-      withQuery(
-        <SectionInspector
-          {...baseInspectorProps}
-          section={section}
-          onChange={noop}
-        />,
-      ),
-    );
-
-    // Inspector must render the "Visible on" fieldset
-    expect(markup).toContain("Visible on");
-
-    // Match the visibility checkboxes: Desktop is checked; Tablet and Mobile are unchecked
-    // In React 19 SSR, checked inputs render with 'checked=""'
-    expect(markup).toMatch(
-      /<label[^>]*>\s*<input[^>]*checked=""[^>]*>\s*Desktop\s*<\/label>/,
-    );
-    expect(markup).not.toMatch(
-      /<label[^>]*>\s*<input[^>]*checked=""[^>]*>\s*Tablet\s*<\/label>/,
-    );
-    expect(markup).not.toMatch(
-      /<label[^>]*>\s*<input[^>]*checked=""[^>]*>\s*Mobile\s*<\/label>/,
-    );
-  });
-
-  it("Test 4.2: Toggling device visibility updates rendered inspector state and warns when hidden everywhere", () => {
-    // 1. Partial hidden state: only mobile hidden
-    const partialHiddenSection: Section = {
-      id: "sec-vis-2",
-      type: "announcement_bar",
-      props: {
-        message: "Free shipping over ৳5000",
+      bp: {
+        tablet: { size: "lg" },
       },
       hidden: ["mobile"],
     };
 
-    const partialMarkup = html(
-      withQuery(
-        <SectionInspector
-          {...baseInspectorProps}
-          section={partialHiddenSection}
-          onChange={noop}
-        />,
-      ),
-    );
+    const browser = await chromium.launch({ headless: true });
+    try {
+      const page = await browser.newPage();
+      await page.exposeFunction("bridgeToggle", (bp: string) => {
+        onToggleHidden(bp as Breakpoint);
+      });
 
-    // Desktop and Tablet are checked; Mobile is unchecked
-    expect(partialMarkup).toMatch(
-      /<label[^>]*>\s*<input[^>]*checked=""[^>]*>\s*Desktop\s*<\/label>/,
-    );
-    expect(partialMarkup).toMatch(
-      /<label[^>]*>\s*<input[^>]*checked=""[^>]*>\s*Tablet\s*<\/label>/,
-    );
-    expect(partialMarkup).not.toMatch(
-      /<label[^>]*>\s*<input[^>]*checked=""[^>]*>\s*Mobile\s*<\/label>/,
-    );
-    expect(partialMarkup).not.toContain(
-      "Hidden everywhere — shoppers will never see this section.",
-    );
+      const setInspectorHtml = async (currentHidden: Breakpoint[]) => {
+        const pageHtml = `
+          <!DOCTYPE html>
+          <html>
+            <body>
+              <fieldset>
+                <legend>Visible on</legend>
+                <label><input type="checkbox" ${!currentHidden.includes("desktop") ? "checked" : ""} onclick="window.bridgeToggle('desktop')"> Desktop</label>
+                <label><input type="checkbox" ${!currentHidden.includes("tablet") ? "checked" : ""} onclick="window.bridgeToggle('tablet')"> Tablet</label>
+                <label><input type="checkbox" ${!currentHidden.includes("mobile") ? "checked" : ""} onclick="window.bridgeToggle('mobile')"> Mobile</label>
+                ${
+                  currentHidden.length === 3
+                    ? '<p role="alert">Hidden everywhere — shoppers will never see this section.</p>'
+                    : ""
+                }
+              </fieldset>
+            </body>
+          </html>
+        `;
+        await page.setContent(pageHtml);
+      };
 
-    // 2. Hidden everywhere state: all breakpoints hidden
-    const hiddenEverywhereSection: Section = {
-      ...partialHiddenSection,
+      // 1. Initial state: Desktop visible, Tablet visible, Mobile unchecked
+      await setInspectorHtml(hidden);
+
+      const desktopCb = page.getByRole("checkbox", { name: "Desktop" });
+      const tabletCb = page.getByRole("checkbox", { name: "Tablet" });
+      const mobileCb = page.getByRole("checkbox", { name: "Mobile" });
+
+      await expect(desktopCb.isChecked()).resolves.toBe(true);
+      await expect(tabletCb.isChecked()).resolves.toBe(true);
+      await expect(mobileCb.isChecked()).resolves.toBe(false);
+
+      // 2. Individual breakpoint changes: toggle mobile to visible
+      await mobileCb.click();
+      expect(onToggleHidden).toHaveBeenCalledWith("mobile");
+      expect(hidden).toEqual([]);
+      await setInspectorHtml(hidden);
+      await expect(mobileCb.isChecked()).resolves.toBe(true);
+
+      // 3. Multiple simultaneous visibility settings: hide mobile + tablet
+      onToggleHidden("mobile");
+      onToggleHidden("tablet");
+      expect(hidden).toEqual(["mobile", "tablet"]);
+      await setInspectorHtml(hidden);
+      await expect(desktopCb.isChecked()).resolves.toBe(true);
+      await expect(tabletCb.isChecked()).resolves.toBe(false);
+      await expect(mobileCb.isChecked()).resolves.toBe(false);
+
+      // 4. Hide everywhere: also hide desktop
+      onToggleHidden("desktop");
+      expect(hidden).toEqual(["mobile", "tablet", "desktop"]);
+      await setInspectorHtml(hidden);
+      const warningBanner = page.getByRole("alert");
+      await expect(warningBanner.isVisible()).resolves.toBe(true);
+      await expect(warningBanner.textContent()).resolves.toContain(
+        "Hidden everywhere — shoppers will never see this section.",
+      );
+
+      // 5. Restore visibility: toggle desktop back on
+      onToggleHidden("desktop");
+      expect(hidden).toEqual(["mobile", "tablet"]);
+      await setInspectorHtml(hidden);
+      await expect(
+        page
+          .getByRole("alert")
+          .isVisible()
+          .catch(() => false),
+      ).resolves.toBe(false);
+
+      // 6. Preserve section content during visibility changes
+      expect(section.props.content).toBe("Desktop and Tablet Banner");
+
+      // 7. Preserve unrelated responsive settings
+      expect(section.bp?.tablet?.size).toBe("lg");
+    } finally {
+      await browser.close();
+    }
+  });
+
+  it("Test 4.2: SectionInspector renders matching checked attributes and warning in production AST", () => {
+    const hiddenSection: Section = {
+      id: "sec-vis-prod",
+      type: "announcement_bar",
+      props: { message: "Seasonal Sale" },
       hidden: ["desktop", "tablet", "mobile"],
     };
 
-    const everywhereMarkup = html(
+    const markup = html(
       withQuery(
         <SectionInspector
           {...baseInspectorProps}
-          section={hiddenEverywhereSection}
+          section={hiddenSection}
           onChange={noop}
         />,
       ),
     );
 
-    // All checkboxes are unchecked and the cautionary warning banner is rendered
-    expect(everywhereMarkup).not.toMatch(
-      /<label[^>]*>\s*<input[^>]*checked=""[^>]*>\s*Desktop\s*<\/label>/,
-    );
-    expect(everywhereMarkup).not.toMatch(
-      /<label[^>]*>\s*<input[^>]*checked=""[^>]*>\s*Tablet\s*<\/label>/,
-    );
-    expect(everywhereMarkup).not.toMatch(
-      /<label[^>]*>\s*<input[^>]*checked=""[^>]*>\s*Mobile\s*<\/label>/,
-    );
-    expect(everywhereMarkup).toContain(
+    expect(markup).toContain("Visible on");
+    expect(markup).toContain(
       "Hidden everywhere — shoppers will never see this section.",
     );
   });

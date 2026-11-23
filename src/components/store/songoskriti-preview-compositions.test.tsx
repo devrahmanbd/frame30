@@ -361,10 +361,28 @@ describe("songoskriti preview — collection composition /c/sarees recommendatio
   });
 
   it("eliminates duplicate product lists on collection templates (P1 audit reconciliation)", () => {
-    // Sarees collection: each authentic saree appears exactly once; redundant More to explore rail is omitted
+    // Sarees collection: each authentic saree appears exactly once by canonical link and title
     const sareesHtml = render("collection", "sarees");
     expect(sareesHtml).not.toContain("More to explore");
     expect(sareesHtml).not.toContain("আরও দেখুন");
+
+    // Canonical product destination link assertions (2 links per product: image anchor + title anchor)
+    const jamdaniLinks = (
+      sareesHtml.match(/href="\/p\/dhakai-jamdani-heritage-saree"/g) || []
+    ).length;
+    expect(jamdaniLinks, "Dhakai Jamdani product card anchors appear exactly once per card (2 anchors)").toBe(2);
+
+    const muslinLinks = (
+      sareesHtml.match(/href="\/p\/muslin-floral-festive-saree"/g) || []
+    ).length;
+    expect(muslinLinks, "Handwoven Muslin product card anchors appear exactly once per card (2 anchors)").toBe(2);
+
+    const tangailLinks = (
+      sareesHtml.match(/href="\/p\/tangail-handloom-cotton-saree"/g) || []
+    ).length;
+    expect(tangailLinks, "Tangail Taant product card anchors appear exactly once per card (2 anchors)").toBe(2);
+
+    // Title element counts (exactly 1 card title per product)
     const jamdaniCardCount = (
       sareesHtml.match(
         /data-part="title"[^>]*>Dhakai Jamdani Heritage Saree/g,
@@ -394,5 +412,17 @@ describe("songoskriti preview — collection composition /c/sarees recommendatio
       ) || []
     ).length;
     expect(festivePanjabiCardCount).toBe(1);
+    const festivePanjabiLinks = (
+      festiveHtml.match(/href="\/p\/rajshahi-silk-festive-panjabi"/g) || []
+    ).length;
+    expect(festivePanjabiLinks, "Rajshahi Silk Panjabi links appear for exactly 1 card").toBe(2);
+
+    // /c/girls cross-sell preservation: intentional cross-sell is NOT deleted
+    const girlsHtml = render("collection", "girls");
+    expect(girlsHtml).toContain("More Children&#x27;s Wear");
+    const boysCrossSellLinks = (
+      girlsHtml.match(/href="\/p\/boys-silk-panjabi-pajama-set"/g) || []
+    ).length;
+    expect(boysCrossSellLinks, "Boys Panjabi cross-sell link appears in /c/girls").toBeGreaterThanOrEqual(1);
   });
 });

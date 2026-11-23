@@ -118,6 +118,7 @@ import {
   isTemplateVariantKey,
   type TemplateVariantKey,
 } from "@/lib/template-variants";
+import { filterCollectionSections } from "@/lib/collection-composition";
 import { useSectionChannel } from "@/components/builder/useSectionChannel";
 
 /* Click routing (block checks, href parsing, click/submit interception) lives in
@@ -685,22 +686,12 @@ export function ThemePreviewFrame({
     demoFocus &&
     (baseTemplate === "collection" || baseTemplate === "product") &&
     demoFocus.template === baseTemplate
-      ? applyDemoFocus(ast.main, demoFocus).filter((s) => {
-          if (baseTemplate === "collection" && s.type === "product_rail") {
-            const heading = s.props?.heading;
-            const headingBn = s.props?.heading_bn;
-            const isMoreToExplore =
-              heading === "More to explore" || headingBn === "আরও দেখুন";
-            const col = String(s.props?.collection || "").toLowerCase();
-            const focusCol = demoFocus.collection.toLowerCase();
-            // If the rail repeats the same collection as the active collection grid,
-            // omit it to prevent duplicate product cards (P1 audit reconciliation)
-            if (isMoreToExplore && col === focusCol) {
-              return false;
-            }
-          }
-          return true;
-        })
+      ? baseTemplate === "collection"
+        ? filterCollectionSections(
+            applyDemoFocus(ast.main, demoFocus),
+            demoFocus.collection,
+          )
+        : applyDemoFocus(ast.main, demoFocus)
       : ast.main;
   // The preview has no route to supply the h1, so the elected primary
   // section owns it — same election the storefront host runs. On product
