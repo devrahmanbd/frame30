@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Frame30PermanentDieSchema",
+  "type": "object",
+  "required": [
+    "die_id",
+    "version",
+    "title",
+    "domain",
+    "owner",
+    "requirement",
+    "protected_behaviour",
+    "forbidden_behaviour",
+    "formal_laws",
+    "executable_model",
+    "conformance_obligations",
+    "adversarial_checks",
+    "regression_requirements"
+  ],
+  "properties": {
+    "die_id": {
+      "type": "string",
+      "pattern": "^DIE-[0-9]{3}-[a-z0-9-]+$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "title": { "type": "string" },
+    "domain": { "type": "string" },
+    "owner": { "type": "string" },
+    "created_at": { "type": "string" },
+    "updated_at": { "type": "string" },
+    "requirement": {
+      "type": "object",
+      "required": ["summary", "user_outcome", "preconditions"],
+      "properties": {
+        "summary": { "type": "string" },
+        "user_outcome": { "type": "string" },
+        "preconditions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "protected_behaviour": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "forbidden_behaviour": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "formal_laws": {
+      "type": "object",
+      "properties": {
+        "bend_laws": { "type": "array", "items": { "type": "string" } },
+        "lean_theorems": { "type": "array", "items": { "type": "string" } },
+        "tla_models": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "executable_model": {
+      "type": "object",
+      "required": ["artifact", "correspondence_bridge"],
+      "properties": {
+        "artifact": { "type": "string" },
+        "correspondence_bridge": { "type": "string" }
+      }
+    },
+    "conformance_obligations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "command", "target_files"],
+        "properties": {
+          "type": { "type": "string" },
+          "command": { "type": "string" },
+          "target_files": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "adversarial_checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["defect_class", "mutation_description", "expected_failure_snippet"],
+        "properties": {
+          "defect_class": { "type": "string" },
+          "mutation_description": { "type": "string" },
+          "expected_failure_snippet": { "type": "string" }
+        }
+      }
+    },
+    "regression_requirements": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

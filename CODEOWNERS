@@ -73,6 +73,7 @@ supabase/migrations/*auth* @devrahmanbd
 # formal correctness laws, verification scripts, and CI pipeline gates.
 AGENTS.md @devrahmanbd
 features/contracts/** @devrahmanbd
+dies/** @devrahmanbd
 docs/governance/** @devrahmanbd
 specs/bend/** @devrahmanbd
 specs/tla/** @devrahmanbd
@@ -81,4 +82,6 @@ scripts/scope-guard.mjs @devrahmanbd
 scripts/bend-verify.mjs @devrahmanbd
 scripts/verification-drift.mjs @devrahmanbd
 scripts/mutation-test.mjs @devrahmanbd
+scripts/die-registry-check.mjs @devrahmanbd
+scripts/sdlc-evidence-collector.mjs @devrahmanbd
 .circleci/config.yml @devrahmanbd

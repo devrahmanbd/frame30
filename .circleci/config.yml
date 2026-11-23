@@ -113,6 +113,9 @@ jobs:
           name: Feature map documentation completeness check
           command: bun run test:features
       - run:
+          name: Permanent die registry integrity check (F30-SDLC-001)
+          command: bun run test:dies
+      - run:
           name: Property-based tests (fast-check)
           command: bun run test:properties
       - run:
@@ -145,6 +148,12 @@ jobs:
       - run:
           name: Documentation gate
           command: bun run doc:gate
+      - run:
+          name: SDLC evidence receipt collection (F30-SDLC-001)
+          command: bun run sdlc:evidence
+      - store_artifacts:
+          path: docs/verification-evidence
+          destination: verification-evidence
 
   scan:
     parameters:

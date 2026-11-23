@@ -1,141 +1,195 @@
-# Framique Engineering Rules
+# Framique Engineering Rules & Operating Constitution
 
-> Keep the repository in a clean, working state. All tests and type checks must pass before pushing changes.
+> **Authority**: Human Specification Authority (`@devrahmanbd`)  
+> **Normative Standard**: Frame30 Engineering SDLC (`F30-SDLC-001`, Version 1.0)  
+> **CI Authority**: CircleCI only (No GitHub Actions)  
+> **Permanent Registry**: `dies/` (Permanent-Die System)  
+> **Change Control**: `features/contracts/` (Feature Change Contracts)  
 
-## 🔴 TOP PRIORITY — WordPress-Parity CMS Program (Sept 2026)
+Keep the repository in a clean, working state. All tests and type checks must pass before pushing changes.
 
-Framique must feel like WordPress to a merchant: same user experience, same user journey, same theme/plugin/page-builder management, same sidebar system. Reference: WP admin (`/wp-admin/`) — Appearance › Themes (grid, Activate, Live Preview, Delete, Add New), Plugins › Installed Plugins (Activate, Deactivate, Delete, Add New), Pages/Posts lists, Settings, collapsible sidebar sections.
+---
 
-**P0 — Marketplace theme lifecycle (the current gap):**
+## 🔴 Central Engineering Law (non-negotiable)
 
-- Marketplace Install MUST create a **new inactive** `store_themes` row — never mutate the active theme's draft. Record the `marketplace_installs` ledger row.
-- Every installed theme card needs **Activate** (switch `is_active`, keep published version coherent), **Live Preview**, and **Delete** (blocked while active; cascade versions/drafts; ledger row to terminal status).
-- "Installed" badge logic must follow the active/installed state, not just ledger presence.
+> **Requirement-First, Proof-Backed Development (F30-SDLC-001)**
+>
+> 1. **The implementation is not the definition of correctness.**
+> 2. **The approved requirement defines correctness.**
+> 3. **Formal specifications express the mathematical properties that must hold.**
+> 4. **Independent verification challenges the implementation.**
+> 5. **Existing accepted contracts (Permanent Dies) remain active throughout every subsequent development cycle.**
+> 6. **A feature is not accepted merely because it builds, its own tests pass, or an agent says so.**
+> 7. **It is accepted only when its new obligations and every applicable existing obligation have passed independent verification, with any unproved or untested claims explicitly disclosed.**
 
-**P0 — Plugin lifecycle:**
+### 4-Way Capability Baseline Classification
+Every capability in Frame30 has one of four classifications:
+- **Confirmed stable**: Intended behaviour is understood and accepted -> Protect it permanently via versioned dies in `dies/`.
+- **Existing but unverified**: Works today, but full requirements unknown -> Characterise it and establish expected behaviour before locking contracts.
+- **Known defect**: Current behaviour is incorrect -> Document the defect and define the correct requirement. **Never write a test asserting the bug.**
+- **Approved change**: Old behaviour is intentionally being replaced -> Record the authorised change contract and protect the new behaviour.
 
-- Installed plugins need **Activate / Deactivate / Delete** (plugin_state.enabled toggle + row removal + ledger status), matching WP's Installed Plugins table. No dead buttons: every action must have a working server path.
+**Inviolable Law**: *Never weaken a valid requirement merely to make an implementation pass verification.* If an oracle fails, the default presumption is that the implementation is defective.
 
-**P1 — Sidebar system:**
+---
 
-- Audit `src/lib/console-nav.ts` + `AdminShell` against the WP menu model: top-level sections with icons, collapsible submenus, current-item highlighting, capability-gated entries. One nav source of truth.
+## 0. Six Governing Requirements of the Frame30 SDLC
 
-**P1 — Page builder management:**
+Per `F30-SDLC-001 Section 0`, all engineering modifications must conform to these six requirements:
 
-- Builder versions/drafts/publish/rollback/schedules already exist server-side — expose them consistently (no feature reachable only by RPC).
+1. **Requirements define correctness.** The implementation and its tests do not get to redefine the approved requirement.
+2. **Every change has an explicit boundary.** The agent may only change authorized product surfaces, files, schemas, APIs, configuration, and behavior. All changes are enforced mechanically via `bun run gate:scope`.
+3. **Existing accepted behavior remains protected.** New features add obligations; they do not erase old ones. Dies in `dies/` accumulate monotonically and are never deleted or relaxed.
+4. **Verification is risk-based and layered.** Static constraints, contracts, generated properties, browser exploration, deterministic journeys, formal methods, security tests, and operational checks each have a defined job across 10 verification layers.
+5. **Evidence is tied to the exact source and artifact.** A green command, a Git commit, a built artifact, and a production deployment are different facts. Receipts must be mechanically aggregated via `bun run sdlc:evidence`.
+6. **Release and production authority are separate from implementation.** An agent may prepare a release candidate but may not approve its own work or deploy without designated human authorization.
 
-**Rules for this program:** no action button without a working server path; no fabricated counts/ratings; every new server mutation gets deny + replay + audit coverage per the Testing section below.
+---
 
-## What Framique Is
+## 1. Agent Execution Authority Model & Containment
 
-Framique is a **full-stack cloud hosting service provider** — we do everything: CMS, visual storefront builder, zero-fee commerce engine, payments, courier dispatch, themes, analytics, AI support, and infrastructure. Merchants get a complete storefront at `store.framique.com/<slug>` plus optional custom domains. We handle hosting, databases, auth, CDN, observability, backups, and deployments end-to-end. No third-party app bloat, no per-transaction fees, no vendor lock-in.
+Per `F30-SDLC-001 Section 9.1`, autonomous agents operate under strict containment:
 
-## WordPress-Grade CMS Architecture & UX (Priority #1)
+### What the Agent CAN Do:
+- Read repository files and approved human specifications.
+- Propose designs, tests, formal properties, and change contracts.
+- Modify files authorized explicitly in `allowed_file_changes` within an isolated work environment.
+- Execute approved local verification checks and test environments.
+- Produce evidence receipts, change reports, and pull requests.
 
-Framique must deliver the exact user experience, user journey, and management systems of a full-scale CMS (modeled after WordPress):
+### What the Agent CANNOT Do (without explicit human authorization):
+- Change protected requirements, architecture policy, CI gates, CODEOWNERS, scope checker, release policy, or secrets.
+- Expand approved file paths, permissions, or scope boundaries unilaterally.
+- Push directly to protected production branches (`main`, `frame30`), rewrite history, or force-push.
+- Access production credentials or mutate production data.
+- Approve its own work, bypass peer reviews, or trigger production deployments.
+- Accept its own visual baselines, weaken tests, or modify test expectations to make a failed suite pass.
 
-1. **Appearance › Themes Management**:
-   - **Active Theme**: The current storefront theme must be prominently featured with a "Customize" button (opening the page builder/customizer), version, and author details.
-   - **Installed Themes Grid**: Every installed theme must have an instant **Activate** action (swapping the live storefront theme), **Live Preview**, and **Delete** (uninstalling inactive themes).
-   - **Theme Directory / Marketplace ("Add New Theme")**: Integrated directory where merchants can browse, filter, search, and 1-click install themes, with the install button immediately changing to **Activate**.
-2. **Plugins Management**:
-   - **Installed Plugins**: Tabular list view showing active and inactive plugins with toggles: **Activate**, **Deactivate**, **Settings**, and **Delete**.
-   - **Plugin Catalog / Marketplace ("Add New Plugin")**: Searchable extension store with 1-click install and instant activation.
-3. **Visual Page Builder & Templates**:
-   - Visual drag-and-drop page builder seamlessly integrated into Appearance › Customize and Pages table ("Edit with Page Builder").
-4. **Hierarchical CMS Sidebar Navigation**:
-   - CMS-first sidebar hierarchy: Dashboard, Content (Pages, Posts, Media), Appearance (Themes, Customize, Menus), Plugins (Installed Plugins, Add New), Store (Orders, Products, Customers), Settings.
-   - Submenus must support expandable accordion toggles and collapsed hover flyouts matching WordPress admin navigation.
+---
 
-## Stack
+## 2. The 18-State Change-Control Lifecycle
 
-- **Runtime**: Bun (ESM, `"type": "module"`)
-- **Framework**: TanStack Start + TanStack Router + TanStack React Query
-- **Styling**: Tailwind CSS v4 + shadcn/ui (New York style)
-- **Backend**: Self-hosted Supabase (Postgres, RLS, GoTrue) + Redis
-- **Build**: Vite 8 + Nitro
-- **Edge**: OpenResty + ACME TLS, Blue/Green canary deploys
-- **Observability**: Prometheus + Grafana + Loki + Sentry (all self-hosted)
+Every non-trivial engineering modification follows an explicit, monotonic lifecycle:
 
-## Commands
+```
+[1. REQUESTED] ──► [2. TRIAGED] ──► [3. BASELINED] ──► [4. DESIGNED]
+                                                           │
+[8. IMPLEMENTATION_AUTHORIZED] ◄── [7. VERIFICATION_DESIGNED] ◄── [6. CONTRACT_APPROVED] ◄── [5. IMPACT_MAPPED]
+       │
+       ▼
+[9. IMPLEMENTING] ──► [10. LOCAL_VERIFIED] ──► [11. CI_QUALIFIED] ──► [12. STAGING_QUALIFIED]
+                                                                                │
+[16. CANARY] ◄── [15. RELEASE_CANDIDATE] ◄── [14. MERGE_AUTHORIZED] ◄── [13. INDEPENDENTLY_REVIEWED]
+       │
+       ▼
+[17. RELEASED] ──► [18. POST_RELEASE_VERIFIED] ──► [CLOSED]
+```
+
+### Fail-Closed Result Accounting
+- `PASS`: Command executed and evidence satisfies declared requirements.
+- `FAIL`: Requirement was violated.
+- `BLOCKED`: Required environment, toolchain, credential, or test is missing.
+- `NOT_APPLICABLE`: Documented technical reason plus independent approval.
+
+**Zero Tolerance for Silent Skips**: A skipped mandatory test is `BLOCKED`, never `PASS`. Plugin authenticated tests in `.e2e/` skipped in mode A cannot satisfy release qualification.
+
+---
+
+## 3. Risk Classification
+
+Reuse the `[A]` marker in `BUILD.md` for money, transaction integrity, data safety, tenant isolation, and security risks:
+
+| Risk Class | Product Domains & Examples | Required Assurance |
+|---|---|---|
+| **Critical / `[A]`** | Tenant/RLS, authentication, authorization, payment, money, inventory reservation, secrets, API keys, plugin execution, destructive migrations, publishing authority, backup/restore | Independent human specification; deny + replay + audit tests; fast-check property tests; formal proof/model (Lean/Bend/TLA+); mutation sensitivity testing; isolated E2E qualification; explicit human CODEOWNER sign-off |
+| **High** | Theme runtime, builder AST, plugin/theme lifecycle, SEO route/slug/canonical behavior, SMTP/message delivery, webhooks, OAuth, public API, scheduled jobs, data exports | Contract and compatibility tests; generated properties; failure/replay tests; browser/API E2E; security review; mutation checks for critical invariants |
+| **Standard** | Isolated admin UI, copy, non-authoritative presentation, low-risk internal refactors | Static checks, unit/component tests, accessibility/visual checks, affected feature regression |
+
+---
+
+## 4. The 10-Layer Verification Architecture
+
+Framique enforces mathematical, structural, and behavioral containment across ten complementary verification layers:
+
+```
+  [09 — Mutation Sensitivity]      Adversarial scratch mutations proving fail-closed detector teeth
+  [08 — Security & Adversarial]    OWASP ASVS 5.0.0, negative auth, token replay, injection tests
+  [07 — Visual, A11y & Perf]       8-viewport stills (320-1440px), WCAG 2.2 AA, Core Web Vitals
+  [06 — Deterministic E2E]         Playwright browser journeys (critical loops, theme isolation)
+  [05 — Property DOM Fuzzing]      Bombadil 8-viewport DOM exploration & runtime invariant assertion
+  [04 — Formal Verification]       Lean 4 theorems, Bend 2 laws (--verdict), TLA+ TLC model checker
+  [03 — Generative Properties]     fast-check randomized property testing across thousands of inputs
+  [02 — Contract Tests]            Provider/consumer contracts for DB RPC, APIs, events, AST schemas
+  [01 — Unit & Component Tests]    Deterministic isolated component & server-function logic tests
+  [00 — Policy, Source & Static]   Scope guard (git diff vs contract), drift guard, typecheck, lint, SCA
+```
+
+---
+
+## 5. The Permanent-Die System (`dies/`)
+
+A **Frame30 Die** is an immutable, versioned specification of an accepted product capability, backed by independent verification obligations.
+
+Every die (`dies/<die_id>/die.json`) must contain 8 mandatory components:
+1. **Requirement**: What the capability accomplishes from the merchant/shopper perspective.
+2. **Protected Behaviour**: Invariants that must continue working under all future refactors.
+3. **Forbidden Behaviour**: Specific failure modes that are strictly prohibited.
+4. **Formal Laws**: Pure mathematical properties stated in Bend 2 (`LAWS.bend`) or Lean 4.
+5. **Executable Model**: Independent reference implementation acting as the oracle.
+6. **Conformance Obligations**: Automated test suites linking production code to the specification.
+7. **Adversarial Checks**: Deliberate mutation tests proving that verification gates catch defects.
+8. **Regression Requirements**: Explicit dependencies on previously accepted dies that must remain unbroken.
+
+**Monotonic Accumulation**: New capabilities add new dies. Existing dies are never deleted, silenced, or weakened.
+
+---
+
+## 6. Canonical Commands
 
 ```bash
-bun install && bun run dev        # dev server (port 3000)
-bun run lint                      # ESLint
-bun run format                    # Prettier
-bun run typecheck                 # tsgo --noEmit
-bun run test                      # Vitest (unit + contract + property)
-bun run test:contracts            # contract gate only
-bun run test:properties           # fast-check property suites
-bun run test:features             # feature map integrity gate
-bun run test:bombadil             # Bombadil property-based UI exploration
-bun run test:tla                  # TLA+ specification validation
-bun run e2e                       # Playwright (all suites)
-bun run e2e:critical              # Playwright (critical suites only)
-bun run schema:check              # repo migrations vs live schema
-bun run secrets:scan              # secret scanning
-bun run gates                     # full release gate suite
-bun run gates:release             # perf, seo, a11y, vitals, responsive
-bun run a11y:gate                 # axe-core, >= 90 score
+# Static & Policy Controls
+bun run gate:scope                 # Mechanical scope guard (git diff vs contract)
+bun run gate:drift                 # Verification drift gate (SHA-256 source sync)
+bun run lint                       # ESLint
+bun run format                     # Prettier
+bun run typecheck                  # tsgo --noEmit
+
+# Formal Verification Tools
+bun run test:bend                  # Bend 2 formal verifier with Lean-backed kernel (--verdict)
+bun run test:lean                  # Lean 4 formal verification & refinement (Lake build + axioms)
+bun run test:tla                   # TLA+ specification validation (TLC model checking)
+
+# Logic, Contracts & Properties
+bun run test                       # Vitest unit + integration tests
+bun run test:contracts             # Contract gate
+bun run test:properties            # fast-check property suites
+bun run test:features              # Feature map documentation integrity gate
+bun run test:dies                  # Permanent die registry schema & linkage gate
+bun run test:mutation              # 12-class adversarial mutation sensitivity harness
+
+# Browser Exploration & E2E
+bun run test:bombadil              # Bombadil property-based UI exploration (smoke)
+bun run test:bombadil:all          # Bombadil 8-viewport DOM fuzzing matrix
+bun run e2e:critical               # Playwright critical browser journeys
+bun run e2e:security               # Playwright adversarial security specs
+bun run e2e                        # Playwright full suite
+
+# Release Engineering & Evidence
+bun run sdlc:evidence              # Machine-readable SDLC evidence aggregator
+bun run schema:check               # Repo migrations vs live schema fingerprint
+bun run secrets:scan               # Blocking secret scan
+bun run sast:scan                  # Blocking SAST suspicious diff scan
+bun run build                      # Production build (Vite 8 + Nitro)
+bun run gates                      # Full release gate suite
+bun run gates:release              # Pre-release owner qualification gates (perf, seo, a11y, vitals)
 ```
 
-**Verification order**: `typecheck` → `test:features` → `test:properties` → `test` → `test:contracts` → `schema:check` → `gates:release`
+**Standard Verification Sequence**:  
+`gate:scope` → `gate:drift` → `lint` → `typecheck` → `test:dies` → `test:features` → `test:bend` → `test:lean` → `test:tla` → `test:properties` → `test` → `test:contracts` → `test:mutation` → `build` → `sdlc:evidence`
 
-## Verification Engineering Architecture (Spec-Driven / SpaceXSI Model)
+---
 
-> **Core Principle:** Every recurring human review correction must eventually become an architectural constraint, a deterministic check, or an executable property. Never rely on prompting an agent not to repeat a defect.
-
-Framique enforces an inverse trust pyramid across six complementary verification layers:
-
-```
-          [06 — Verified Release]        Build SHA equality, zero-downtime canary, live route probe
-        [05 — Runtime Exploration]       Bombadil property exploration (viewports), Playwright loops
-       [04 — Formal Verification]        TLA+ state-space model checking & Lean 4 algorithmic proofs
-      [03 — Logic & Property Tests]      Vitest + fast-check property testing across generated inputs
-     [02 — Architectural Constraints]    Typed contracts, RLS, strict DB constraints, ESLint guards
-    [01 — Feature Map & Specs]           Machine-readable specifications in features/ (routes, states, invariants)
-```
-
-### The 6 Verification Layers
-
-1. **Layer 01 — Feature Map & Machine-Readable Spec (`features/`)**:
-   - Central directory of record for all storefront, commerce, customer, and merchant workflows.
-   - Every feature file defines: entry route, preconditions, supported actions, state transitions, domain invariants, and verification commands.
-   - Coding agents MUST consult and update the feature map when implementing or altering workflows.
-2. **Layer 02 — Architectural & Static Constraints**:
-   - Constrain the framework and APIs so incorrect implementations become impossible or difficult to write.
-   - Strong TypeScript types, integer-only minor units (`amount_minor_int`), Supabase RLS policies, append-only audit tables, and directory conventions (`*.server.ts`).
-3. **Layer 03 — Logic Verification & Property Testing (`fast-check` + Vitest)**:
-   - Universal property assertions tested against thousands of randomized inputs with automated shrinking.
-   - Mandatory for commerce algorithms (discounts bounded by subtotal, integer rounding, line-item summation, recommendation self-exclusion, taxonomy isolation).
-4. **Layer 04 — Formal Verification (TLA+ & Lean 4)**:
-   - **TLA+ (`specs/tla/`)**: State-space model checking (via TLC) for concurrent, multi-party, or distributed workflows: stock hold reservations, concurrent checkout, and payment webhook idempotency.
-   - **Lean 4 (`specs/lean/`)**: Interactive theorem proving for pure mathematical algorithms (minor-unit arithmetic, non-negative totals, discount bounds) with documented refinement to production code.
-5. **Layer 05 — Runtime Exploration (`Bombadil` & Playwright)**:
-   - **Bombadil (`@antithesishq/bombadil`)**: Property-based web UI testing exploring live DOM states across responsive viewports (320px–1440px). Validates invariants: `scrollWidth <= clientWidth`, zero uncaught exceptions, zero console errors, valid navigation targets.
-   - **Playwright**: Deterministic regression suites for critical user journeys.
-6. **Layer 06 — Verified Release & Production Reconciliation**:
-   - Zero-trust deployment pipeline: exact commit SHA equality between Git HEAD and production `.output/DEPLOYED_SHA`.
-   - Live HTTP readiness verification before traffic shift; automated rollback on invariant failure.
-
-### Agent Workflow Rules
-- **No Prompt-Only Fixes**: If a review catches a regression (e.g. wordmark truncation, saree cross-contamination, self-recommendations), you MUST add an architectural constraint, a deterministic check, or a property test preventing it.
-- **Reference Feature Maps**: Read the relevant file in `features/` before starting work; update it if the feature contract changes.
-- **Run Property Checks**: When modifying commerce calculations or collection rules, execute `bun run test:properties` and ensure zero shrinkable counterexamples.
-
-## File Conventions
-
-| Pattern               | Purpose                                                  |
-| --------------------- | -------------------------------------------------------- |
-| `*.functions.ts`      | `createServerFn` wrappers — thin typed RPC boundary only |
-| `*.server.ts`         | Server-only code: secrets, DB, Redis, external calls     |
-| `*.test.ts`           | Unit/integration tests                                   |
-| `*.contract.test.ts`  | Contract tests                                           |
-| `src/routes/**/*.tsx` | TanStack Router file-based routes                        |
-
-**Path alias**: `@/*` maps to `./src/*`
-
-## Architecture Rules (non-negotiable)
+## 7. Architecture Rules (non-negotiable)
 
 1. **No client-trusted decisions**: price, discount, stock, tax, entitlement, risk, and role resolve server-side only.
 2. **Integer minor units for money**: `amount_minor_int` + `currency_code`. No floats stored, transmitted, or computed.
@@ -143,47 +197,44 @@ Framique enforces an inverse trust pyramid across six complementary verification
 4. **RLS on every public table** plus explicit `GRANT`s per role.
 5. **No `server-only` import** — use `*.server.ts` naming instead (ESLint enforced).
 6. **Append-only audit rows** for every `[A]` action (actor, before, after, reason).
-7. **Concurrent sessions claim files first**: multiple agents share this tree and `main`. Before starting a lane, append the files you will touch under a `CLAIMED:` line in `/tmp/opencode/progress.md`; treat other lanes' claimed files as read-only. Never commit another lane's hunks under your name — verify together, commit together with both lanes credited, or leave theirs untouched.
+7. **Scope Authority**: Every modification requires an active Feature Change Contract (`features/contracts/*.json`). Modifications outside `allowed_file_changes` fail closed via `bun run gate:scope`.
+8. **Permanent-Die System**: Accepted capabilities join the permanent registry in `dies/`. Dies accumulate monotonically.
+9. **Concurrent sessions claim files first**: Multiple agents share this tree and `main`. Before starting a lane, append files under a `CLAIMED:` line in `/tmp/opencode/progress.md`; treat other lanes' claimed files as read-only.
+10. **CircleCI is the sole CI authority**: Never create or modify GitHub Actions workflows (`.github/`).
 
-## Testing
+---
 
-- `vitest.config.ts` sets `passWithNoTests: false` — tests are required.
-- Test files live next to the code they test in `src/lib/`.
-- `[A]` (money, security, tenant isolation) features need deny cases + replay cases + audit assertions, not just happy paths.
-- E2E suites: `store_loop`, `admin_loop`, `builder_loop`, `market_loop`, `public_loop`, `failure_loop`, `owner_loop`, `currency_gate`, `fraud_loop`, `ai_support_loop`, `tenant_isolation`.
+## 8. Definition of Done
 
-## CI — CircleCI only (no GitHub Actions)
+Per `F30-SDLC-001 Section 13`, a change is complete only when:
+- Its requirement and observable acceptance criteria were approved before implementation.
+- Its base commit/tree and existing behavior were recorded.
+- Its risk class and impact map are complete.
+- Its actual Git diff conforms strictly to the approved scope via `bun run gate:scope`.
+- Its tests are derived from the approved requirement or independent reference behavior.
+- New and affected existing contracts pass; mandatory system contracts pass.
+- Required denied/negative/replay/audit cases pass for `[A]` changes.
+- Applicable formal verification executes with valid provenance and production correspondence.
+- Generated properties and browser exploration cover the actual production path in declared scope.
+- No required check is skipped or silently conditional.
+- Mutation tests demonstrate detection for critical laws and controls.
+- Accessibility, responsiveness, localization, and performance are verified where relevant.
+- Security and supply-chain findings are resolved or approved.
+- CI jobs are required by branch protection.
+- Independent review approves the exact final diff.
+- Build artifact and release evidence identify exact source/build provenance via `bun run sdlc:evidence`.
+- The production artifact, live behavior, and post-release health are reconciled.
+- `BUILD.md`, feature map, domain docs, and evidence index are updated.
 
-- **CircleCI is the only CI system.** Never create or edit anything under `.github/` — no Actions workflows, period. The old `gates.yml` was deleted in this migration.
-- **Single pipeline file:** all CI lives in `.circleci/config.yml`. Jobs mirror the Commands section: `lint-typecheck` (ESLint + `tsgo --noEmit`), `unit-contract` (Vitest + contract gate), `scan` (blocking secret scan; advisory dep audit), `build` (Vite + Nitro production build), `e2e-critical` (Playwright critical suites).
-- **Task-finish rule:** when a task finishes, update `.circleci/config.yml` so the pipeline actually exercises the change — extend the relevant job (test, build, lint, e2e) instead of assuming existing coverage. New suites, scripts, or gates must be wired into a job in the same commit.
-- **E2E auto-activation:** the `e2e-critical` job passes by design until `.e2e/playwright.config.ts` lands in the repo, then it installs Chromium (`--with-deps`) and runs `bun run e2e:critical`. Do not "fix" the skip — build the harness instead.
-- **Tooling (verified via Context7 against current CircleCI docs):** `circleci/node` orb for Bun (`install-bun: true`, `bun-version: "1.3.14"` pinned like local dev; `install-packages` with `pkg-manager: bun` runs frozen-lockfile installs that honour the `bunfig.toml` 24h supply-chain guard). Executors are `cimg/node:24.21` (there is no `cimg/bun` image) and `cimg/node:24.21-browsers` for E2E.
-- Validate config edits with `circleci config validate` (CLI) when available; at minimum keep the YAML parseable and the job list in sync with this section.
+---
 
-## Bun Supply-Chain Guard
+## Related Documentation
 
-`bunfig.toml` enforces a **24h minimum release age** for all npm packages. No bypasses in `minimumReleaseAgeExcludes` without explicit approval. This prevents supply-chain attacks from freshly published malicious packages.
-
-## SEO & Marketing
-
-`SEO/` contains the full semantic SEO vault: keyword research, topical authority maps, content briefs, schema specs, comparison routes, and editorial playbooks. See `SEO/README.md` for the master index.
-
-## Related Docs
-
-- `SYSTEM.md` — architecture, stack decisions, deployment topology
-- `BUILD.md` — feature ledger with `[A]` risk markers and testing gates
-- `DESIGN.md` — design system tokens and component specs
-- `TODO.md` — active execution plan
-- `docs/` — per-area planning specs (18 directories)
-
-## Backups — where they live and how long (dev server policy)
-
-- **Location:** `/var/backups/framique/`
-  - `YYYYMMDDTHHMMSSZ/` — nightly logical sets from `framique-backup.service` (`db.dump` + `configs.tar.zst` + `redis.rdb`).
-  - `base/` — `pg_basebackup` sets (`base.tar.gz`) for point-in-time recovery.
-  - `wal/` — Postgres WAL archive (`archive_command` ships every segment; `archive_timeout = 15min` caps idle churn).
-- **Retention (2-day rollback window):** keep the last 2 dated sets + last 2 `base/` sets. Enforced daily by `framique-backup-expiry.timer` → `/usr/local/bin/framique-backup-expiry.sh`.
-- **No WAL retention (dev-server decision, 2026-10-06):** WAL archiving is neutralized (`archive_command = /bin/true`, segments recycled by postgres, no restart needed). RPO is therefore the nightly dump (24h), not 300s — PITR between dumps is unavailable by policy. Re-enable archiving + expiry window if this box ever hosts non-dev workloads.
-- **Restore order:** latest dated `db.dump` for logic-level rollback; `base/` set for full snapshot restore. Anything older is expired by policy — do not expect it.
-- 2026-10-04 cleanup: 184G → ~164G WAL after disk hit 96%. 2026-10-06: WAL dropped entirely (168G freed, disk 54%); `archive_timeout` 1min → 15min earlier had already cut generation ~15x.
+- `docs/governance/sdlc-specification.md` — Normative Frame30 Engineering SDLC (`F30-SDLC-001`)
+- `docs/governance/baseline-audit-stage0.md` — Stage 0 Baseline & Contradictions Audit Report
+- `SYSTEM.md` — Architecture, stack decisions, trust boundaries, deployment topology
+- `BUILD.md` — Feature ledger with launch tiers and `[A]` risk markers
+- `DESIGN.md` — Design system tokens and component specs
+- `CODEOWNERS` — Protected policy ownership assignments
+- `dies/README.md` — Permanent Die Registry index and architecture
+- `features/contracts/` — Feature Change Contracts

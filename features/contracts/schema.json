@@ -3,30 +3,24 @@
   "title": "Frame30FeatureChangeContract",
   "type": "object",
   "required": [
-    "feature_id",
     "title",
     "owner",
-    "baseline_commit",
-    "baseline_tree",
     "objective",
     "merchant_or_user_outcome",
     "in_scope",
     "out_of_scope",
     "allowed_file_changes",
-    "forbidden_file_changes",
-    "api_contract_changes",
-    "database_schema_changes",
-    "dependency_changes",
-    "security_changes",
-    "required_invariants",
-    "required_acceptance",
-    "required_formal_verification",
-    "required_ui_properties",
-    "required_browser_workflows",
-    "required_regression_suites",
-    "deployment_authorization"
+    "forbidden_file_changes"
   ],
   "properties": {
+    "contract_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "change_id": {
+      "type": "string",
+      "pattern": "^[A-Z0-9_-]+$"
+    },
     "feature_id": {
       "type": "string",
       "pattern": "^[A-Z0-9_-]+$"
@@ -37,7 +31,19 @@
     "owner": {
       "type": "string"
     },
+    "reviewers": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "base_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
     "baseline_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "base_tree": {
       "type": "string",
       "pattern": "^[0-9a-f]{40}$"
     },
@@ -45,30 +51,45 @@
       "type": "string",
       "pattern": "^[0-9a-f]{40}$"
     },
+    "risk": {
+      "type": "string",
+      "enum": ["critical", "high", "standard"]
+    },
+    "build_tier": {
+      "type": "string"
+    },
     "objective": {
       "type": "string"
     },
     "merchant_or_user_outcome": {
       "type": "string"
     },
+    "problem_and_evidence": {
+      "type": "string"
+    },
     "in_scope": {
       "type": "object",
-      "required": ["routes", "components", "services", "files"],
       "properties": {
+        "domains": { "type": "array", "items": { "type": "string" } },
         "routes": { "type": "array", "items": { "type": "string" } },
         "components": { "type": "array", "items": { "type": "string" } },
         "services": { "type": "array", "items": { "type": "string" } },
-        "files": { "type": "array", "items": { "type": "string" } }
+        "files": { "type": "array", "items": { "type": "string" } },
+        "database_objects": { "type": "array", "items": { "type": "string" } },
+        "api_operations": { "type": "array", "items": { "type": "string" } },
+        "events": { "type": "array", "items": { "type": "string" } },
+        "theme_or_plugin_contracts": { "type": "array", "items": { "type": "string" } }
       }
     },
     "out_of_scope": {
       "type": "object",
-      "required": ["routes", "components", "services", "files"],
       "properties": {
+        "domains": { "type": "array", "items": { "type": "string" } },
         "routes": { "type": "array", "items": { "type": "string" } },
         "components": { "type": "array", "items": { "type": "string" } },
         "services": { "type": "array", "items": { "type": "string" } },
-        "files": { "type": "array", "items": { "type": "string" } }
+        "files": { "type": "array", "items": { "type": "string" } },
+        "database_objects": { "type": "array", "items": { "type": "string" } }
       }
     },
     "allowed_file_changes": {
@@ -79,50 +100,95 @@
       "type": "array",
       "items": { "type": "string" }
     },
-    "api_contract_changes": {
-      "type": "boolean"
-    },
-    "database_schema_changes": {
-      "type": "boolean"
-    },
-    "dependency_changes": {
-      "type": "boolean"
-    },
-    "security_changes": {
-      "type": "boolean"
-    },
-    "required_invariants": {
+    "behavioral_requirements": {
       "type": "array",
       "items": { "type": "string" }
     },
-    "required_acceptance": {
+    "forbidden_behaviors": {
       "type": "array",
       "items": { "type": "string" }
     },
-    "required_formal_verification": {
+    "protected_existing_contracts": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "state_machine_owner": {
+      "type": "string"
+    },
+    "compatibility": {
       "type": "object",
-      "required": ["bend", "lean", "tla"],
       "properties": {
-        "bend": { "type": "object" },
-        "lean": { "type": "object" },
-        "tla": { "type": "object" }
+        "api": { "type": "array", "items": { "type": "string" } },
+        "database": { "type": "array", "items": { "type": "string" } },
+        "theme_runtime": { "type": "array", "items": { "type": "string" } },
+        "plugin_runtime": { "type": "array", "items": { "type": "string" } },
+        "ast_schema": { "type": "array", "items": { "type": "string" } },
+        "event_schema": { "type": "array", "items": { "type": "string" } },
+        "url_slug_redirect": { "type": "array", "items": { "type": "string" } },
+        "sdk": { "type": "array", "items": { "type": "string" } }
       }
     },
-    "required_ui_properties": {
-      "type": "array",
-      "items": { "type": "string" }
+    "security": {
+      "type": "object",
+      "properties": {
+        "tenant_boundary": { "type": "string" },
+        "roles_scopes": { "type": "array", "items": { "type": "string" } },
+        "pii_classes": { "type": "array", "items": { "type": "string" } },
+        "secrets": { "type": "array", "items": { "type": "string" } },
+        "threat_model": { "type": "string" }
+      }
     },
-    "required_browser_workflows": {
-      "type": "array",
-      "items": { "type": "string" }
+    "verification": {
+      "type": "object",
+      "properties": {
+        "static": { "type": "array", "items": { "type": "string" } },
+        "unit_component": { "type": "array", "items": { "type": "string" } },
+        "contract_integration": { "type": "array", "items": { "type": "string" } },
+        "properties": { "type": "array", "items": { "type": "string" } },
+        "browser_bombadil": { "type": "array", "items": { "type": "string" } },
+        "playwright": { "type": "array", "items": { "type": "string" } },
+        "visual_accessibility": { "type": "array", "items": { "type": "string" } },
+        "formal_lean": { "type": "array", "items": { "type": "string" } },
+        "formal_bend": { "type": "array", "items": { "type": "string" } },
+        "formal_tla": { "type": "array", "items": { "type": "string" } },
+        "security_adversarial": { "type": "array", "items": { "type": "string" } },
+        "mutation_cases": { "type": "array", "items": { "type": "string" } },
+        "regression_dies": { "type": "array", "items": { "type": "string" } }
+      }
     },
-    "required_regression_suites": {
-      "type": "array",
-      "items": { "type": "string" }
+    "migration": {
+      "type": "object",
+      "properties": {
+        "expand_contract_plan": { "type": "string" },
+        "backfill": { "type": "string" },
+        "rollback_or_forward_fix": { "type": "string" }
+      }
     },
-    "deployment_authorization": {
-      "type": "boolean",
-      "const": false
+    "release": {
+      "type": "object",
+      "properties": {
+        "feature_flag": { "type": "string" },
+        "cohort": { "type": "string" },
+        "health_signals": { "type": "array", "items": { "type": "string" } },
+        "rollback_trigger": { "type": "array", "items": { "type": "string" } },
+        "deployment_authorization": { "type": "boolean" }
+      }
+    },
+    "api_contract_changes": { "type": "boolean" },
+    "database_schema_changes": { "type": "boolean" },
+    "dependency_changes": { "type": "boolean" },
+    "security_changes": { "type": "boolean" },
+    "required_invariants": { "type": "array", "items": { "type": "string" } },
+    "required_acceptance": { "type": "array", "items": { "type": "string" } },
+    "required_formal_verification": { "type": "object" },
+    "required_ui_properties": { "type": "array", "items": { "type": "string" } },
+    "required_browser_workflows": { "type": "array", "items": { "type": "string" } },
+    "required_regression_suites": { "type": "array", "items": { "type": "string" } },
+    "deployment_authorization": { "type": "boolean" },
+    "acceptance_owner": { "type": "string" },
+    "approval_state": {
+      "type": "string",
+      "enum": ["proposed", "approved", "amended", "rejected"]
     }
   }
 }

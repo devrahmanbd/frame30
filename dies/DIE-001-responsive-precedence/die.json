@@ -1,0 +1,98 @@
+{
+  "$schema": "../schema.json",
+  "die_id": "DIE-001-responsive-precedence",
+  "version": "1.0.0",
+  "title": "Responsive Breakpoint Cascade Precedence & Override Reset Restoration",
+  "domain": "Builder & Page Composition",
+  "owner": "@devrahmanbd",
+  "created_at": "2026-11-23T15:00:00Z",
+  "updated_at": "2026-11-23T15:00:00Z",
+  "requirement": {
+    "summary": "Merchants can configure device-specific overrides (mobile, tablet) for theme sections, and resetting an override deterministically restores cascade inheritance without corrupting other device values or leaking state across page reloads.",
+    "user_outcome": "Theme customizations display correctly on every device; clearing a mobile override instantly and safely reverts to the tablet override (or desktop baseline) without lost data.",
+    "preconditions": [
+      "Theme section AST document initialized with baseline properties",
+      "Supported device viewports: mobile (320px-430px), tablet (768px-1024px), desktop (1280px-1440px)"
+    ]
+  },
+  "protected_behaviour": [
+    "Mobile override is authoritative when defined: resolveResponsive(desk, Some(tab), Some(mob)) === mob",
+    "Tablet override is fallback when mobile is None: resolveResponsive(desk, Some(tab), None) === tab",
+    "Desktop baseline is default when both are None: resolveResponsive(desk, None, None) === desk",
+    "Resetting an override on mobile deterministically restores resolution to the parent tablet override",
+    "Clearing an override on one device leaves all other device values unchanged (layer isolation)",
+    "Saving and reloading theme AST preserves every explicitly configured device override without loss"
+  ],
+  "forbidden_behaviour": [
+    "Resetting an override clears or corrupts unrelated device breakpoints",
+    "Reloading the editor loses mobile-specific overrides",
+    "Selecting preview presets mutates underlying theme AST values",
+    "Horizontal viewport overflow (scrollWidth > innerWidth) on any supported device"
+  ],
+  "formal_laws": {
+    "bend_laws": [
+      "specs/bend/LAWS.bend:law_responsive_cascade_mobile",
+      "specs/bend/LAWS.bend:law_responsive_cascade_tablet",
+      "specs/bend/LAWS.bend:law_responsive_cascade_desktop",
+      "specs/bend/LAWS.bend:law_reset_restoration_mobile"
+    ],
+    "lean_theorems": [
+      "Framique.Responsive:responsive_precedence_mobile",
+      "Framique.Responsive:responsive_precedence_tablet",
+      "Framique.Responsive:responsive_precedence_desktop",
+      "Framique.Responsive:reset_restores_inheritance",
+      "Framique.Responsive:device_isolation_desktop",
+      "Framique.Responsive:device_isolation_tablet",
+      "Framique.Responsive:reset_idempotent"
+    ],
+    "tla_models": [
+      "specs/tla/ResponsiveAutosave.tla:NoLostOverrides",
+      "specs/tla/ResponsiveAutosave.tla:ResetRestoresInheritance",
+      "specs/tla/ResponsiveAutosave.tla:AutosaveMonotonic"
+    ]
+  },
+  "executable_model": {
+    "artifact": "specs/bend/PROOF.bend (resolve_responsive, reset_override)",
+    "correspondence_bridge": "src/lib/responsive.ts (resolveResponsiveProp, cleanEmptyBreakpoints) synchronized via SHA-256 drift gate"
+  },
+  "conformance_obligations": [
+    {
+      "type": "formal_bend",
+      "command": "bun run test:bend",
+      "target_files": ["specs/bend/LAWS.bend", "specs/bend/PROOF.bend"]
+    },
+    {
+      "type": "formal_lean",
+      "command": "bun run test:lean",
+      "target_files": ["specs/lean/Framique/Responsive.lean"]
+    },
+    {
+      "type": "formal_tla",
+      "command": "bun run test:tla",
+      "target_files": ["specs/tla/ResponsiveAutosave.tla", "specs/tla/ResponsiveAutosave.cfg"]
+    },
+    {
+      "type": "property_fuzz",
+      "command": "bun run test:properties",
+      "target_files": ["src/components/builder/responsive-customization.test.tsx"]
+    },
+    {
+      "type": "browser_e2e",
+      "command": "bun run test:responsive",
+      "target_files": [".e2e/responsive-inspector-reset.spec.ts"]
+    }
+  ],
+  "adversarial_checks": [
+    {
+      "defect_class": "responsive_reset_leakage",
+      "mutation_description": "Mutate desktop baseline during mobile override reset",
+      "expected_failure_snippet": "assertion failed: desktop baseline altered"
+    },
+    {
+      "defect_class": "responsive_cascade_inversion",
+      "mutation_description": "Reverse precedence cascade so desktop takes priority over mobile",
+      "expected_failure_snippet": "SOME PROOFS FAIL"
+    }
+  ],
+  "regression_requirements": []
+}

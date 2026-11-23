@@ -1,7 +1,7 @@
 =============================================================================
 TLA+ TLC FORMAL MODEL CHECKING STATE-SPACE PROOF RECEIPT (THEME LIFECYCLE)
 =============================================================================
-Date: 2026-11-23T05:56:04.657Z
+Date: 2026-11-23T10:10:33.369Z
 Model File: specs/tla/ThemeLifecycle.tla
 Model SHA-256:  9704b2d8c080cdba691b1bfe7d91d884144dbd1068e058a572d32b1269cbb8fe
 Config File: specs/tla/ThemeLifecycle.cfg
@@ -11,15 +11,15 @@ Invariants Verified: 12 (TypeOKInv, FutureSchemaNeverDowngraded, FailedMigration
 -----------------------------------------------------------------------------
 
 TLC2 Version 2026.11.15.002146 (rev: bc1b506)
-Running breadth-first search Model-Checking with fp 29 and seed 7235315669212773722 with 1 worker on 8 cores with 2048MB heap and 64MB offheap memory [pid: 36134] (Mac OS X 26.3 aarch64, Homebrew 21.0.13.1 64bit, MSBDiskFPSet, DiskStateQueue).
+Running breadth-first search Model-Checking with fp 44 and seed -2164841182923909200 with 1 worker on 8 cores with 2048MB heap and 64MB offheap memory [pid: 83330] (Mac OS X 26.3 aarch64, Homebrew 21.0.13.1 64bit, MSBDiskFPSet, DiskStateQueue).
 Parsing file /Users/rahman/Documents/frame30/specs/tla/ThemeLifecycle.tla
-Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13968979897621261512/Integers.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/Integers.tla)
-Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13968979897621261512/FiniteSets.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
-Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13968979897621261512/_TLCTrace.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/_TLCTrace.tla)
-Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13968979897621261512/Naturals.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
-Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13968979897621261512/Sequences.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
-Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13968979897621261512/TLC.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
-Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-13968979897621261512/TLCExt.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/TLCExt.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-7385257407812168871/Integers.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/Integers.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-7385257407812168871/FiniteSets.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-7385257407812168871/_TLCTrace.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/_TLCTrace.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-7385257407812168871/Naturals.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-7385257407812168871/Sequences.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-7385257407812168871/TLC.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
+Parsing file /private/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/tlc-7385257407812168871/TLCExt.tla (jar:file:/Users/rahman/Documents/frame30/specs/tla/tla2tools.jar!/tla2sany/StandardModules/TLCExt.tla)
 Semantic processing of module Naturals
 Semantic processing of module Integers
 Semantic processing of module Sequences
@@ -31,18 +31,18 @@ Semantic processing of module ThemeLifecycle
 Linting of module TLCExt
 Linting of module _TLCTrace
 Linting of module ThemeLifecycle
-Starting... (2026-11-23 11:56:02)
+Starting... (2026-11-23 16:10:31)
 Computing initial states...
 Computed 2 initial states...
-Finished computing initial states: 3 distinct states generated at 2026-11-23 11:56:02.
+Finished computing initial states: 3 distinct states generated at 2026-11-23 16:10:31.
 Model checking completed. No error has been found.
   Estimates of the probability that TLC did not check all reachable states
   because two distinct states had the same fingerprint:
   calculated (optimistic):  val = 4.3E-10
-  based on the actual fingerprints:  val = 1.9E-11
+  based on the actual fingerprints:  val = 3.6E-11
 364981 states generated, 23275 distinct states found, 0 states left on queue.
 The depth of the complete state graph search is 12.
 The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
-Finished in 02s at (2026-11-23 11:56:04)
+Finished in 02s at (2026-11-23 16:10:33)
 
 =============================================================================

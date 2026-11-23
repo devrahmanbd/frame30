@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-11-23T10:10:57.543Z",
+  "git": {
+    "commit": "e13ca6ef915547b97327cb3bda29dcbab3056480",
+    "tree": "ceaedf16494fca663306ced76c0e1ab66d597d70",
+    "branch": "governance/sdlc-pilot",
+    "clean": false
+  },
+  "toolchains": {
+    "bun": "1.3.14",
+    "node": "v26.10.0",
+    "lean_lake": "Lake 5.0.0-1165156 (Lean v4.15.0)",
+    "lean_kernel_bendtt": "leanprover/lean4:v4.34.0 (for BendTT kernel)",
+    "bend": "bend 2.0.40",
+    "tlc": "TLC2 v2.18 / OpenJDK 21"
+  },
+  "receipts_count": 3,
+  "receipts": [
+    {
+      "file": "bend-proof.txt",
+      "layer": "Layer 02: Computational Law",
+      "tool": "Bend 2.0.40",
+      "sha256": "5b668d75e79fb35491f2114ff62fdc4867c85a7796c99285c5559d47d2daa597",
+      "sizeBytes": 1467,
+      "modifiedAt": "2026-11-23T10:10:02.166Z",
+      "summary": "============================================================================="
+    },
+    {
+      "file": "mutation-sensitivity-receipt.txt",
+      "layer": "Layer 08: Mutation Sensitivity",
+      "tool": "Adversarial Harness",
+      "sha256": "2cb5106f2c9133edc315b1c6cc81116070131f6856303141fc36e2746bc8e63f",
+      "sizeBytes": 7115,
+      "modifiedAt": "2026-11-23T10:10:43.383Z",
+      "summary": "============================================================================="
+    },
+    {
+      "file": "bombadil-trace-summary.json",
+      "layer": "Layer 06: Property DOM Fuzzing",
+      "tool": "Bombadil",
+      "sha256": "d704f2b3fb6e3313e1e4620b3dafc45c4232ba815ac196f4cf0cee72e808fdaf",
+      "sizeBytes": 15902,
+      "modifiedAt": "2026-11-23T05:31:52.693Z",
+      "summary": "Passed: OK"
+    }
+  ]
+}

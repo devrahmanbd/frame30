@@ -1,0 +1,84 @@
+{
+  "$schema": "../schema.json",
+  "die_id": "DIE-002-collection-composition",
+  "version": "1.0.0",
+  "title": "Collection Merchandising Rail Self-Exclusion & Intentional Cross-Sell Preservation",
+  "domain": "Themes & Storefront",
+  "owner": "@devrahmanbd",
+  "created_at": "2026-11-23T15:00:00Z",
+  "updated_at": "2026-11-23T15:00:00Z",
+  "requirement": {
+    "summary": "Collection detail pages must suppress redundant recommendation rails targeting the active collection itself (self-exclusion), while strictly preserving intentional cross-sell rails targeting distinct collections across both live storefront and builder preview.",
+    "user_outcome": "Shoppers on collection pages (e.g. /c/sarees) see relevant cross-sell collections without encountering duplicate product rails of the collection they are already viewing.",
+    "preconditions": [
+      "Active published theme with collection template sections",
+      "Storefront CollectionView and ThemePreviewFrame share identical section composition semantics"
+    ]
+  },
+  "protected_behaviour": [
+    "A collection recommendation rail targeting the active collection is omitted (self-exclusion)",
+    "A collection recommendation rail targeting a distinct collection is preserved (cross-sell preservation)",
+    "Primary product grid sections are never excluded regardless of collection slug",
+    "Section composition logic is identical between SSR storefront (CollectionView) and studio preview (ThemePreviewFrame)",
+    "Filtering is idempotent: filtering an already filtered section list yields the exact same list"
+  ],
+  "forbidden_behaviour": [
+    "Duplicate product rails of the active collection rendered on /c/:slug",
+    "Blanket removal of recommendation rails that erroneously strips intentional cross-sells",
+    "Divergence in rendered section order or content between builder preview frame and live storefront"
+  ],
+  "formal_laws": {
+    "bend_laws": [
+      "specs/bend/LAWS.bend:law_collection_self_exclusion",
+      "specs/bend/LAWS.bend:law_cross_sell_preservation"
+    ],
+    "lean_theorems": [
+      "Framique.CollectionComposition:matching_rail_is_redundant",
+      "Framique.CollectionComposition:distinct_cross_sell_is_preserved",
+      "Framique.CollectionComposition:product_grid_is_never_redundant",
+      "Framique.CollectionComposition:blanket_removal_refuted"
+    ],
+    "tla_models": [
+      "specs/tla/ThemeLifecycle.tla:SectionCompositionInvariant"
+    ]
+  },
+  "executable_model": {
+    "artifact": "specs/bend/PROOF.bend (is_redundant_rail)",
+    "correspondence_bridge": "src/lib/collection-composition.ts (isRedundantCollectionRail, filterCollectionSections) synchronized via SHA-256 drift gate"
+  },
+  "conformance_obligations": [
+    {
+      "type": "formal_bend",
+      "command": "bun run test:bend",
+      "target_files": ["specs/bend/LAWS.bend", "specs/bend/PROOF.bend"]
+    },
+    {
+      "type": "formal_lean",
+      "command": "bun run test:lean",
+      "target_files": ["specs/lean/Framique/CollectionComposition.lean"]
+    },
+    {
+      "type": "property_fuzz",
+      "command": "bun run test:properties",
+      "target_files": ["src/lib/themes/collection-composition-properties.test.ts"]
+    },
+    {
+      "type": "unit_integration",
+      "command": "bun run test",
+      "target_files": ["src/components/store/songoskriti-preview-compositions.test.tsx"]
+    }
+  ],
+  "adversarial_checks": [
+    {
+      "defect_class": "self_exclusion_disabled",
+      "mutation_description": "Allow active collection rail to render alongside primary grid",
+      "expected_failure_snippet": "expected redundant rail to be excluded"
+    },
+    {
+      "defect_class": "cross_sell_suppressed",
+      "mutation_description": "Strip all collection rails indiscriminately",
+      "expected_failure_snippet": "expected intentional cross-sell rail to be preserved"
+    }
+  ],
+  "regression_requirements": ["DIE-001-responsive-precedence"]
+}

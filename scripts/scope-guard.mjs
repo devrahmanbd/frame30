@@ -34,14 +34,32 @@ function matchesAny(path, patterns) {
 }
 
 // 1. Resolve Contract
-let contractPath = process.argv[2];
+let contractPath = "";
+for (const arg of process.argv.slice(2)) {
+  if (arg.startsWith("--contract=")) {
+    contractPath = arg.split("=")[1];
+  } else if (!arg.startsWith("--") && !contractPath) {
+    contractPath = arg;
+  }
+}
+
 if (!contractPath) {
-  contractPath = process.env.ACTIVE_CHANGE_CONTRACT || "features/contracts/pilot-workstreams-ab.json";
+  if (process.env.ACTIVE_CHANGE_CONTRACT) {
+    contractPath = process.env.ACTIVE_CHANGE_CONTRACT;
+  } else if (
+    existsSync(join(REPO_ROOT, "features/contracts/FRAME30-SDLC-000.json"))
+  ) {
+    contractPath = "features/contracts/FRAME30-SDLC-000.json";
+  } else {
+    contractPath = "features/contracts/pilot-workstreams-ab.json";
+  }
 }
 const fullContractPath = resolve(REPO_ROOT, contractPath);
 
 if (!existsSync(fullContractPath)) {
-  console.error(`[scope-guard] ✗ FAIL-CLOSED: Authorized change contract not found at: ${contractPath}`);
+  console.error(
+    `[scope-guard] ✗ FAIL-CLOSED: Authorized change contract not found at: ${contractPath}`,
+  );
   process.exit(1);
 }
 
@@ -49,19 +67,37 @@ let contract;
 try {
   contract = JSON.parse(readFileSync(fullContractPath, "utf8"));
 } catch (err) {
-  console.error(`[scope-guard] ✗ FAIL-CLOSED: Malformed change contract JSON: ${err.message}`);
+  console.error(
+    `[scope-guard] ✗ FAIL-CLOSED: Malformed change contract JSON: ${err.message}`,
+  );
   process.exit(1);
 }
 
-console.log(`[scope-guard] Loaded change contract: ${contract.feature_id} ("${contract.title}")`);
-console.log(`[scope-guard] Baseline Commit: ${contract.baseline_commit}`);
+const contractId = contract.change_id || contract.feature_id || "UNKNOWN";
+const baseCommit = contract.base_commit || contract.baseline_commit;
+
+console.log(
+  `[scope-guard] Loaded change contract: ${contractId} ("${contract.title}")`,
+);
+console.log(`[scope-guard] Baseline Commit: ${baseCommit}`);
 console.log(`[scope-guard] Human Owner: ${contract.owner}`);
+
+if (!baseCommit) {
+  console.error(
+    "[scope-guard] ✗ FAIL-CLOSED: Contract does not declare base_commit or baseline_commit.",
+  );
+  process.exit(1);
+}
 
 // 2. Validate Baseline Commit
 try {
-  execSync(`git rev-parse --verify ${contract.baseline_commit}^{commit}`, { stdio: "ignore" });
+  execSync(`git rev-parse --verify ${baseCommit}^{commit}`, {
+    stdio: "ignore",
+  });
 } catch {
-  console.error(`[scope-guard] ✗ FAIL-CLOSED: Baseline commit ${contract.baseline_commit} does not exist in git history.`);
+  console.error(
+    `[scope-guard] ✗ FAIL-CLOSED: Baseline commit ${baseCommit} does not exist in git history.`,
+  );
   process.exit(1);
 }
 
@@ -88,7 +124,7 @@ function recordDiff(command) {
 }
 
 // Diff between baseline commit and HEAD
-recordDiff(`git diff --name-status ${contract.baseline_commit}...HEAD`);
+recordDiff(`git diff --name-status ${baseCommit}...HEAD`);
 
 // Also include uncommitted unstaged and staged changes if any
 recordDiff("git diff --name-status HEAD");
@@ -96,7 +132,9 @@ recordDiff("git diff --cached --name-status");
 
 // Include untracked files
 try {
-  const untracked = execSync("git ls-files --others --exclude-standard", { encoding: "utf8" });
+  const untracked = execSync("git ls-files --others --exclude-standard", {
+    encoding: "utf8",
+  });
   for (const line of untracked.split("\n")) {
     const p = line.trim();
     if (p) touched.set(p, "A(untracked)");
@@ -105,10 +143,14 @@ try {
   console.error(`[scope-guard] Error checking untracked files: ${err.message}`);
 }
 
-console.log(`[scope-guard] Total paths evaluated against scope: ${touched.size}`);
+console.log(
+  `[scope-guard] Total paths evaluated against scope: ${touched.size}`,
+);
 
 if (touched.size === 0) {
-  console.log("[scope-guard] ✓ No files changed relative to baseline. Scope check passed.");
+  console.log(
+    "[scope-guard] ✓ No files changed relative to baseline. Scope check passed.",
+  );
   process.exit(0);
 }
 
@@ -125,7 +167,7 @@ for (const [filePath, status] of touched.entries()) {
     violations.push({
       path: filePath,
       status,
-      reason: `Explicitly forbidden by rule: '${forbiddenMatch}'`
+      reason: `Explicitly forbidden by rule: '${forbiddenMatch}'`,
     });
     continue;
   }
@@ -136,7 +178,8 @@ for (const [filePath, status] of touched.entries()) {
     violations.push({
       path: filePath,
       status,
-      reason: "Unauthorized file modification: path not present in allowed_file_changes allowlist"
+      reason:
+        "Unauthorized file modification: path not present in allowed_file_changes allowlist",
     });
   }
 }
@@ -150,11 +193,19 @@ if (violations.length > 0) {
     console.error(`  [${v.status}] ${v.path}`);
     console.error(`      -> ${v.reason}`);
   }
-  console.error("\nAutonomous modification outside the approved change contract is strictly forbidden.");
-  console.error("To modify these paths, obtain human authorization and submit an approved scope amendment.\n");
+  console.error(
+    "\nAutonomous modification outside the approved change contract is strictly forbidden.",
+  );
+  console.error(
+    "To modify these paths, obtain human authorization and submit an approved scope amendment.\n",
+  );
   process.exit(1);
 }
 
-console.log("[scope-guard] ✓ All touched paths strictly conform to authorized change contract.");
-console.log(`[scope-guard] ✓ Verified ${touched.size} changed files. Scope guard PASSED.\n`);
+console.log(
+  "[scope-guard] ✓ All touched paths strictly conform to authorized change contract.",
+);
+console.log(
+  `[scope-guard] ✓ Verified ${touched.size} changed files. Scope guard PASSED.\n`,
+);
 process.exit(0);

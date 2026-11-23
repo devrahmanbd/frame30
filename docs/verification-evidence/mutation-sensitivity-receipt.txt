@@ -1,32 +1,32 @@
 =============================================================================
 FRAME30 ADVERSARIAL MUTATION SENSITIVITY EVIDENCE RECEIPT
 =============================================================================
-Timestamp: 2026-11-23T05:56:13.921Z
+Timestamp: 2026-11-23T10:10:43.380Z
 Total Mutations Tested: 12
 
 [Mutation 1] Scope Guard: Forbidden File Modification (supabase/migrations/**)
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: Explicitly forbidden by rule: 'supabase/migrations/**'
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet: [scope-guard] Loaded change contract: PILOT-WORKSTREAMS-AB ("Songoskriti Merchant Experience Pilot - Workstreams A and B") [scope-guard] Baseline Commit: 3376ed6914faefee5718728d65ba199ce75ab348 [scope-guard] Human Owner: @devrahmanbd [scope-guard] Total paths evaluated against scope: 818   ========...
+  Output Snippet: [scope-guard] Loaded change contract: FRAME30-SDLC-000 ("Baseline & Implement Frame30 SDLC Control Plane (F30-SDLC-001 Stage 0 & 1)") [scope-guard] Baseline Commit: e13ca6ef915547b97327cb3bda29dcbab3056480 [scope-guard] Human Owner: @devrahmanbd [scope-guard] Total paths evaluated against scope: 24 ...
 
 [Mutation 2] Scope Guard: Unauthorized Shared UI Component (src/components/ui/button.tsx)
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: Unauthorized file modification: path not present in allowed_file_changes
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet: [scope-guard] Loaded change contract: PILOT-WORKSTREAMS-AB ("Songoskriti Merchant Experience Pilot - Workstreams A and B") [scope-guard] Baseline Commit: 3376ed6914faefee5718728d65ba199ce75ab348 [scope-guard] Human Owner: @devrahmanbd [scope-guard] Total paths evaluated against scope: 818   ========...
+  Output Snippet: [scope-guard] Loaded change contract: FRAME30-SDLC-000 ("Baseline & Implement Frame30 SDLC Control Plane (F30-SDLC-001 Stage 0 & 1)") [scope-guard] Baseline Commit: e13ca6ef915547b97327cb3bda29dcbab3056480 [scope-guard] Human Owner: @devrahmanbd [scope-guard] Total paths evaluated against scope: 24 ...
 
 [Mutation 3] Scope Guard: Unauthorized Backend Service (src/lib/order.server.ts)
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: Explicitly forbidden by rule: 'src/lib/order.server.ts'
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet: [scope-guard] Loaded change contract: PILOT-WORKSTREAMS-AB ("Songoskriti Merchant Experience Pilot - Workstreams A and B") [scope-guard] Baseline Commit: 3376ed6914faefee5718728d65ba199ce75ab348 [scope-guard] Human Owner: @devrahmanbd [scope-guard] Total paths evaluated against scope: 818   ========...
+  Output Snippet: [scope-guard] Loaded change contract: FRAME30-SDLC-000 ("Baseline & Implement Frame30 SDLC Control Plane (F30-SDLC-001 Stage 0 & 1)") [scope-guard] Baseline Commit: e13ca6ef915547b97327cb3bda29dcbab3056480 [scope-guard] Human Owner: @devrahmanbd [scope-guard] Total paths evaluated against scope: 24 ...
 
-[Mutation 4] Scope Guard: Protected Constitution Modification (AGENTS.md)
+[Mutation 4] Scope Guard: Unauthorized Storefront Route Modification (src/routes/index.tsx)
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: Unauthorized file modification: path not present in allowed_file_changes
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet: [scope-guard] Loaded change contract: PILOT-WORKSTREAMS-AB ("Songoskriti Merchant Experience Pilot - Workstreams A and B") [scope-guard] Baseline Commit: 3376ed6914faefee5718728d65ba199ce75ab348 [scope-guard] Human Owner: @devrahmanbd [scope-guard] Total paths evaluated against scope: 818   ========...
+  Output Snippet: [scope-guard] Loaded change contract: FRAME30-SDLC-000 ("Baseline & Implement Frame30 SDLC Control Plane (F30-SDLC-001 Stage 0 & 1)") [scope-guard] Baseline Commit: e13ca6ef915547b97327cb3bda29dcbab3056480 [scope-guard] Human Owner: @devrahmanbd [scope-guard] Total paths evaluated against scope: 24 ...
 
 [Mutation 5] Bend 2: Corrupted Proof Term in PROOF.bend
   Detection Status: DETECTED & REJECTED (PASS)
@@ -50,7 +50,7 @@ Total Mutations Tested: 12
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: AssertionError
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/themes/collection-composition-properties.test.ts (6 tests | 3 failed) 38ms      × Property P1: Redundant active-collection rails are strictly eliminated 11ms      × Property P3: Product cards in active collection are never duplicated by seco...
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/themes/collection-composition-properties.test.ts (6 tests | 3 failed) 40ms      × Property P1: Redundant active-collection rails are strictly eliminated 11ms      × Property P3: Product cards in active collection are never duplicated by seco...
 
 [Mutation 9] Verification Drift: Desynchronized Source Hash
   Detection Status: DETECTED & REJECTED (PASS)
@@ -62,7 +62,7 @@ Total Mutations Tested: 12
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: AssertionError
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/components/builder/responsive-customization.test.tsx (14 tests | 1 failed) 1353ms      × Test 2.3: Invoking reset action calls onClearOverride with exact field key and device (interactive) 1000ms   Test Files  1 failed (1)       Tests  1 failed ...
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/components/builder/responsive-customization.test.tsx (14 tests | 1 failed) 1624ms      × Test 2.3: Invoking reset action calls onClearOverride with exact field key and device (interactive) 1280ms   Test Files  1 failed (1)       Tests  1 failed ...
 
 [Mutation 11] Bombadil: Injected 1200px Horizontal Overflow Invariant Detection
   Detection Status: DETECTED & REJECTED (PASS)

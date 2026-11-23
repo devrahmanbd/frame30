@@ -1,0 +1,209 @@
+{
+  "$schema": "./schema.json",
+  "contract_version": 1,
+  "change_id": "FRAME30-SDLC-000",
+  "feature_id": "FRAME30-SDLC-000",
+  "title": "Baseline & Implement Frame30 SDLC Control Plane (F30-SDLC-001 Stage 0 & 1)",
+  "owner": "@devrahmanbd",
+  "reviewers": ["@devrahmanbd"],
+  "base_commit": "e13ca6ef915547b97327cb3bda29dcbab3056480",
+  "baseline_commit": "e13ca6ef915547b97327cb3bda29dcbab3056480",
+  "base_tree": "ceaedf16494fca663306ced76c0e1ab66d597d70",
+  "baseline_tree": "ceaedf16494fca663306ced76c0e1ab66d597d70",
+  "risk": "critical",
+  "build_tier": "Tier 0 (Governance & Infrastructure)",
+  "objective": "Execute Stage 0 (Baseline & Contradictions Audit) and Stage 1 (SDLC Policy & Control Plane) to establish Requirement-First, Proof-Backed Development and the Permanent-Die registry without modifying production application behavior",
+  "merchant_or_user_outcome": "Frame30 capabilities are protected by immutable versioned dies and mechanical verification gates, preventing regression of accepted behaviors and eliminating circular self-verification by autonomous agents",
+  "problem_and_evidence": "Autonomous agents risk circular verification by inspecting current implementation bugs and declaring them requirements. A unified, 18-state lifecycle and permanent-die registry is required to bind implementation to human-owned laws.",
+  "in_scope": {
+    "domains": ["Platform Operations", "Engineering Governance"],
+    "routes": [],
+    "components": [],
+    "services": [],
+    "files": [
+      "docs/governance/*",
+      "docs/verification-evidence/*",
+      "features/contracts/*",
+      "dies/*",
+      "dies/**/*",
+      "scripts/scope-guard.mjs",
+      "scripts/verification-drift.mjs",
+      "scripts/mutation-test.mjs",
+      "scripts/die-registry-check.mjs",
+      "scripts/sdlc-evidence-collector.mjs",
+      "CODEOWNERS",
+      "AGENTS.md",
+      ".circleci/config.yml",
+      "package.json"
+    ],
+    "database_objects": [],
+    "api_operations": [],
+    "events": [],
+    "theme_or_plugin_contracts": []
+  },
+  "out_of_scope": {
+    "domains": [
+      "CMS Core",
+      "Storefront",
+      "Themes",
+      "Plugins",
+      "Commerce",
+      "Payments",
+      "Checkout",
+      "Marketing",
+      "Integrations"
+    ],
+    "routes": [
+      "/",
+      "/cart",
+      "/checkout",
+      "/c/*",
+      "/p/*",
+      "/dashboard/*"
+    ],
+    "components": [
+      "src/components/store/*",
+      "src/components/checkout/*",
+      "src/components/builder/*"
+    ],
+    "services": [
+      "src/lib/order.server.ts",
+      "src/lib/payments.server.ts",
+      "src/lib/inventory.server.ts",
+      "src/lib/env.server.ts"
+    ],
+    "files": [
+      "supabase/migrations/*",
+      ".output/DEPLOYED_SHA",
+      "src/routes/**/*",
+      "src/lib/order.server.ts",
+      "src/lib/payments.server.ts"
+    ],
+    "database_objects": ["*"]
+  },
+  "allowed_file_changes": [
+    "docs/governance/*",
+    "docs/verification-evidence/*",
+    "features/contracts/*",
+    "dies/*",
+    "dies/**/*",
+    "scripts/scope-guard.mjs",
+    "scripts/verification-drift.mjs",
+    "scripts/mutation-test.mjs",
+    "scripts/die-registry-check.mjs",
+    "scripts/sdlc-evidence-collector.mjs",
+    "CODEOWNERS",
+    "AGENTS.md",
+    ".circleci/config.yml",
+    "package.json"
+  ],
+  "forbidden_file_changes": [
+    ".github/**",
+    ".output/DEPLOYED_SHA",
+    "supabase/migrations/**",
+    "src/lib/env.server.ts",
+    "src/lib/order.server.ts",
+    "src/lib/payments.server.ts",
+    "src/components/store/**",
+    "src/components/checkout/**"
+  ],
+  "behavioral_requirements": [
+    "Requirement-First direction strictly enforced: agent cannot unilaterally redefine acceptance criteria",
+    "Scope Guard validates Git diff against active change contract and exits non-zero on unauthorized paths",
+    "Verification Drift gate locks production hashes to formal models and fails closed on desynchronization",
+    "Mutation sensitivity suite proves detection across deliberate control plane and domain defects",
+    "CircleCI remains the sole CI authority with blocking status gates"
+  ],
+  "forbidden_behaviors": [
+    "Modifying any production storefront, checkout, commerce, or payment execution path in this ticket",
+    "Weakening any existing test or property check to achieve a passing status",
+    "Creating GitHub Actions workflows",
+    "Self-approving merge or deployment without human authorization"
+  ],
+  "protected_existing_contracts": [
+    "PILOT-WORKSTREAMS-AB",
+    "specs/bend/LAWS.bend",
+    "specs/lean/Framique/Pricing.lean",
+    "specs/tla/ResponsiveAutosave.tla"
+  ],
+  "state_machine_owner": "Human Specification Authority (@devrahmanbd)",
+  "compatibility": {
+    "api": [],
+    "database": [],
+    "theme_runtime": [],
+    "plugin_runtime": [],
+    "ast_schema": [],
+    "event_schema": [],
+    "url_slug_redirect": [],
+    "sdk": []
+  },
+  "security": {
+    "tenant_boundary": "No tenant or auth schema changes permitted in this ticket",
+    "roles_scopes": ["Human Owner (@devrahmanbd) holds sole approval authority"],
+    "pii_classes": [],
+    "secrets": [],
+    "threat_model": "Autonomous agent containment against unauthorized scope expansion, test weakening, and circular self-verification"
+  },
+  "verification": {
+    "static": ["bun run lint", "bun run typecheck", "bun run gate:scope", "bun run gate:drift"],
+    "unit_component": ["bun run test"],
+    "contract_integration": ["bun run test:contracts"],
+    "properties": ["bun run test:properties"],
+    "browser_bombadil": ["bun run test:bombadil"],
+    "playwright": ["bun run e2e:critical"],
+    "visual_accessibility": [],
+    "formal_lean": ["bun run test:lean"],
+    "formal_bend": ["bun run test:bend"],
+    "formal_tla": ["bun run test:tla"],
+    "security_adversarial": ["bun run secrets:scan", "bun run sast:scan"],
+    "mutation_cases": ["bun run test:mutation"],
+    "regression_dies": ["DIE-001-responsive-precedence", "DIE-002-collection-composition"]
+  },
+  "migration": {
+    "expand_contract_plan": "N/A - zero database changes",
+    "backfill": "N/A",
+    "rollback_or_forward_fix": "Git revert commit cleanly restores previous baseline"
+  },
+  "release": {
+    "feature_flag": "N/A",
+    "cohort": "N/A",
+    "health_signals": ["CircleCI pipeline status == SUCCESS"],
+    "rollback_trigger": ["Any invariant violation or unauthorized file modification"],
+    "deployment_authorization": false
+  },
+  "api_contract_changes": false,
+  "database_schema_changes": false,
+  "dependency_changes": false,
+  "security_changes": false,
+  "required_invariants": [
+    "Scope guard rejects unauthorized file changes outside allowed_file_changes",
+    "Verification drift gate detects source hash changes",
+    "Lean 4 lake build succeeds with zero sorry",
+    "Bend 2 verification passes with Lean-backed kernel",
+    "TLA+ TLC model checker passes without errors",
+    "Fast-check property tests pass without counterexamples"
+  ],
+  "required_acceptance": [
+    "Stage 0 audit report F30-AUDIT-STAGE0-001 published and verified",
+    "SDLC specification F30-SDLC-001 updated in docs/governance/sdlc-specification.md",
+    "Scope guard supports FRAME30-SDLC-000.json contract",
+    "Permanent-Die system structure established in dies/",
+    "CircleCI pipeline gates verified"
+  ],
+  "required_formal_verification": {
+    "bend": { "command": "bun run test:bend" },
+    "lean": { "command": "bun run test:lean" },
+    "tla": { "command": "bun run test:tla" }
+  },
+  "required_ui_properties": [],
+  "required_browser_workflows": [],
+  "required_regression_suites": [
+    "test:features",
+    "test:properties",
+    "test:contracts",
+    "test:mutation"
+  ],
+  "deployment_authorization": false,
+  "acceptance_owner": "@devrahmanbd",
+  "approval_state": "approved"
+}
