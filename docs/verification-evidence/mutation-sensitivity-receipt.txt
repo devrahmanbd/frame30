@@ -1,14 +1,14 @@
 =============================================================================
 FRAME30 ADVERSARIAL MUTATION SENSITIVITY EVIDENCE RECEIPT
 =============================================================================
-Timestamp: 2026-11-23T01:01:37.345Z
+Timestamp: 2026-11-23T01:06:39.428Z
 Total Mutations Tested: 4
 
 [Mutation 1] Scope Guard: Forbidden File Modification
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: Explicitly forbidden by rule: 'supabase/migrations/**'
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet: [scope-guard] Loaded change contract: PILOT-WORKSTREAMS-AB ("Songoskriti Merchant Experience Pilot - Workstreams A and B") [scope-guard] Baseline Commit: 3376ed6914faefee5718728d65ba199ce75ab348 [scope-guard] Human Owner: @devrahmanbd [scope-guard] Total paths evaluated against scope: 37   =========...
+  Output Snippet: [scope-guard] Loaded change contract: PILOT-WORKSTREAMS-AB ("Songoskriti Merchant Experience Pilot - Workstreams A and B") [scope-guard] Baseline Commit: 3376ed6914faefee5718728d65ba199ce75ab348 [scope-guard] Human Owner: @devrahmanbd [scope-guard] Total paths evaluated against scope: 39   =========...
 
 [Mutation 2] Bend 2: Corrupted Reset Override Semantics
   Detection Status: DETECTED & REJECTED (PASS)
@@ -20,7 +20,7 @@ Total Mutations Tested: 4
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: AssertionError
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/themes/collection-composition-properties.test.ts (6 tests | 3 failed) 44ms      × Property P1: Redundant active-collection rails are strictly eliminated 10ms      × Property P3: Product cards in active collection are never duplicated by seco...
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/themes/collection-composition-properties.test.ts (6 tests | 3 failed) 39ms      × Property P1: Redundant active-collection rails are strictly eliminated 10ms      × Property P3: Product cards in active collection are never duplicated by seco...
 
 [Mutation 4] Verification Drift: Desynchronized Source Hash
   Detection Status: DETECTED & REJECTED (PASS)

@@ -1,7 +1,7 @@
 {
-  "synchronized_at": "2026-11-23T01:02:36.519Z",
-  "source_commit": "7e8b3db1f00f3e53a8d4a318f373704a8896f7e4",
-  "source_tree": "a492c978afc02d456c39b6fd1554ba12ea95ee0c",
+  "synchronized_at": "2026-11-23T01:07:53.493Z",
+  "source_commit": "62dd38b05940d649723f0a4c50c8864408ef2509",
+  "source_tree": "6dd8a7d9b2bd99b9b280ca12814e0931acd836ad",
   "covered_sources": [
     {
       "path": "src/lib/collection-composition.ts",
