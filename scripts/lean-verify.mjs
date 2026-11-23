@@ -1,5 +1,4 @@
-#!/usr/bin/env node
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, unlinkSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { execSync } from "node:child_process";
 import { calculateDiscount, calculateOrderTotal } from "../src/lib/commerce/pricing.ts";
@@ -9,10 +8,14 @@ import {
   loadAuthoritativeThemeAst,
   THEME_CONTRACT_VERSION
 } from "../src/lib/theme-contract.ts";
+import { resolveResponsive } from "../src/lib/studio/responsive.ts";
+import { isRedundantCollectionRail } from "../src/lib/collection-composition.ts";
 
 const leanDir = join(process.cwd(), "specs", "lean");
 const pricingLeanFile = join(leanDir, "Framique", "Pricing.lean");
 const themeLeanFile = join(leanDir, "Framique", "ThemeLifecycle.lean");
+const responsiveLeanFile = join(leanDir, "Framique", "Responsive.lean");
+const collectionLeanFile = join(leanDir, "Framique", "CollectionComposition.lean");
 const toolchainFile = join(leanDir, "lean-toolchain");
 const lakeFile = join(leanDir, "lakefile.lean");
 const mainLeanFile = join(leanDir, "Main.lean");
@@ -21,7 +24,16 @@ const themeVectorsFile = join(leanDir, "theme_vectors.json");
 console.log("[lean-verify] Validating Lean 4 formal specifications and production correspondence...");
 
 // 1. Toolchain and files existence check (Fail-closed)
-const requiredFiles = [pricingLeanFile, themeLeanFile, toolchainFile, lakeFile, mainLeanFile, themeVectorsFile];
+const requiredFiles = [
+  pricingLeanFile,
+  themeLeanFile,
+  responsiveLeanFile,
+  collectionLeanFile,
+  toolchainFile,
+  lakeFile,
+  mainLeanFile,
+  themeVectorsFile
+];
 for (const f of requiredFiles) {
   if (!existsSync(f)) {
     console.error(`[lean-verify] ✗ Missing required Lean 4 specification file: ${f}`);
@@ -72,6 +84,43 @@ for (const thm of expectedThemeTheorems) {
 }
 console.log(`[lean-verify] ✓ All ${expectedThemeTheorems.length} formal ThemeLifecycle theorems declared in ThemeLifecycle.lean.`);
 
+// Verify Responsive theorems
+const responsiveContent = readFileSync(responsiveLeanFile, "utf-8");
+const expectedResponsiveTheorems = [
+  "responsive_precedence_mobile",
+  "responsive_precedence_tablet",
+  "responsive_precedence_desktop",
+  "reset_restores_inheritance",
+  "device_isolation_desktop",
+  "device_isolation_tablet",
+  "reset_idempotent"
+];
+
+for (const thm of expectedResponsiveTheorems) {
+  if (!responsiveContent.includes(thm)) {
+    console.error(`[lean-verify] ✗ Missing formal theorem '${thm}' in Responsive.lean!`);
+    process.exit(1);
+  }
+}
+console.log(`[lean-verify] ✓ All ${expectedResponsiveTheorems.length} formal Responsive theorems declared in Responsive.lean.`);
+
+// Verify CollectionComposition theorems
+const collectionContent = readFileSync(collectionLeanFile, "utf-8");
+const expectedCollectionTheorems = [
+  "matching_rail_is_redundant",
+  "distinct_cross_sell_is_preserved",
+  "product_grid_is_never_redundant",
+  "blanket_removal_refuted"
+];
+
+for (const thm of expectedCollectionTheorems) {
+  if (!collectionContent.includes(thm)) {
+    console.error(`[lean-verify] ✗ Missing formal theorem '${thm}' in CollectionComposition.lean!`);
+    process.exit(1);
+  }
+}
+console.log(`[lean-verify] ✓ All ${expectedCollectionTheorems.length} formal CollectionComposition theorems declared in CollectionComposition.lean.`);
+
 // 2. Locate Lean & Lake binaries (check PATH and ~/.elan/bin)
 const elanPath = join(process.env.HOME || "/root", ".elan", "bin");
 const envWithPath = {
@@ -106,6 +155,76 @@ try {
   console.error("[lean-verify] ✗ FAIL-CLOSED: Lean 4 theorem compilation failed!");
   console.error(buildErr.stdout || buildErr.message);
   process.exit(1);
+}
+
+// 3b. Formal theorem axiom audit (#print axioms check)
+console.log("[lean-verify] Auditing formal theorem axioms with 'lake env lean'...");
+const allTheoremsToCheck = [
+  ...expectedPricingTheorems.map((t) => `Framique.${t}`),
+  ...expectedThemeTheorems.map((t) => `Framique.ThemeLifecycle.${t}`),
+  ...expectedResponsiveTheorems.map((t) => `Framique.Responsive.${t}`),
+  ...expectedCollectionTheorems.map((t) => `Framique.CollectionComposition.${t}`)
+];
+
+const auditLeanCode = `
+import Framique.Pricing
+import Framique.ThemeLifecycle
+import Framique.Responsive
+import Framique.CollectionComposition
+
+${allTheoremsToCheck.map((t) => `#print axioms ${t}`).join("\n")}
+`;
+
+const auditFile = join(leanDir, "_axiom_audit.lean");
+try {
+  writeFileSync(auditFile, auditLeanCode, "utf-8");
+  const auditOutput = execSync("lake env lean _axiom_audit.lean", {
+    cwd: leanDir,
+    env: envWithPath,
+    encoding: "utf-8",
+    timeout: 30000
+  });
+
+  const ALLOWED_AXIOMS = new Set(["propext", "Quot.sound", "Classical.choice"]);
+  const checkedTheorems = new Set();
+
+  for (const line of auditOutput.split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    const matchDep = trimmed.match(/'([^']+)'\s+depends on axioms:\s*\[(.*)\]/);
+    const matchNoDep = trimmed.match(/'([^']+)'\s+does not depend on any axioms/);
+
+    if (matchDep) {
+      const thmName = matchDep[1];
+      const axioms = matchDep[2].split(",").map((s) => s.trim()).filter(Boolean);
+      for (const ax of axioms) {
+        if (!ALLOWED_AXIOMS.has(ax)) {
+          console.error(`[lean-verify] ✗ FAIL-CLOSED: Unapproved axiom '${ax}' in theorem '${thmName}'!`);
+          process.exit(1);
+        }
+      }
+      checkedTheorems.add(thmName);
+    } else if (matchNoDep) {
+      const thmName = matchNoDep[1];
+      checkedTheorems.add(thmName);
+    }
+  }
+
+  for (const expectedThm of allTheoremsToCheck) {
+    if (!checkedTheorems.has(expectedThm)) {
+      console.error(`[lean-verify] ✗ FAIL-CLOSED: Theorem '${expectedThm}' was not audited or failed to evaluate!`);
+      process.exit(1);
+    }
+  }
+  console.log(`[lean-verify] ✓ Axiom audit passed for all ${checkedTheorems.size} formal theorems (zero unapproved axioms, zero 'sorry').`);
+} catch (auditErr) {
+  console.error("[lean-verify] ✗ FAIL-CLOSED: Theorem axiom audit failed!");
+  console.error(auditErr.stdout || auditErr.message);
+  process.exit(1);
+} finally {
+  if (existsSync(auditFile)) {
+    unlinkSync(auditFile);
+  }
 }
 
 // 4. Execute the compiled Lean vectors program directly (No JS mock fallback!)
@@ -160,8 +279,10 @@ try {
 
 const leanPricingVectors = fullResult.pricing || [];
 const leanThemeVectors = fullResult.theme || [];
+const leanResponsiveVectors = fullResult.responsive || [];
+const leanCollectionVectors = fullResult.collection || [];
 
-console.log(`[lean-verify] Received ${leanPricingVectors.length} pricing vectors and ${leanThemeVectors.length} theme vectors from Lean runtime.`);
+console.log(`[lean-verify] Received ${leanPricingVectors.length} pricing, ${leanThemeVectors.length} theme, ${leanResponsiveVectors.length} responsive, ${leanCollectionVectors.length} collection vectors from Lean runtime.`);
 
 // --- Verify Pricing Vectors (13 vectors) ---
 const EXPECTED_PRICING_VECTOR_IDS = [
@@ -343,6 +464,103 @@ for (const lVec of leanThemeVectors) {
   console.log(`  ✓ Theme Vector '${lVec.id}': status=${lVec.status}, schema=${lVec.schema}, structured=${lVec.isStructured}, url=${lVec.url}, focal=(${lVec.focalX},${lVec.focalY}) [Lean ↔ TypeScript match]`);
   matchedThemeCount++;
 }
+console.log(`[lean-verify] ✓ All ${matchedThemeCount}/5 Lean 4 Theme vectors match production TypeScript exactly.`);
 
-console.log(`\n[lean-verify] SUCCESS: All ${matchedPricingCount}/13 Pricing vectors and ${matchedThemeCount}/5 Theme vectors match production TypeScript exactly.`);
+// --- Verify Responsive Vectors (6 vectors) ---
+if (leanResponsiveVectors.length !== 6) {
+  console.error(`[lean-verify] ✗ RESPONSIVE VECTOR COUNT MISMATCH: Expected 6, got ${leanResponsiveVectors.length}!`);
+  process.exit(1);
+}
+
+const responsiveConfigurations = {
+  "resp-mobile-override": {
+    input: { __r: true, desktop: "boxed", mobile: "full" },
+    device: "mobile"
+  },
+  "resp-tablet-fallback": {
+    input: { __r: true, desktop: "grid", tablet: "flex" },
+    device: "mobile"
+  },
+  "resp-desktop-fallback": {
+    input: { __r: true, desktop: "standard" },
+    device: "mobile"
+  },
+  "resp-tablet-override": {
+    input: { __r: true, desktop: "grid", tablet: "flex" },
+    device: "tablet"
+  },
+  "resp-desktop-baseline": {
+    input: { __r: true, desktop: "standard" },
+    device: "desktop"
+  },
+  "resp-reset-restore": {
+    input: { __r: true, desktop: "100px", tablet: "80px" },
+    device: "mobile"
+  }
+};
+
+let matchedResponsiveCount = 0;
+for (const rVec of leanResponsiveVectors) {
+  const config = responsiveConfigurations[rVec.id];
+  if (!config) {
+    console.error(`[lean-verify] ✗ Unknown responsive vector ID: '${rVec.id}'`);
+    process.exit(1);
+  }
+  const tsResolved = resolveResponsive(config.input, config.device);
+  if (rVec.resolved !== tsResolved) {
+    console.error(`[lean-verify] ✗ RESPONSIVE MISMATCH on vector '${rVec.id}': Lean='${rVec.resolved}', TS='${tsResolved}'!`);
+    process.exit(1);
+  }
+  console.log(`  ✓ Responsive Vector '${rVec.id}': device=${rVec.device}, resolved=${rVec.resolved} [Lean ↔ TypeScript match]`);
+  matchedResponsiveCount++;
+}
+console.log(`[lean-verify] ✓ All ${matchedResponsiveCount}/6 Lean 4 Responsive vectors match production TypeScript exactly.`);
+
+// --- Verify Collection Composition Vectors (5 vectors) ---
+if (leanCollectionVectors.length !== 5) {
+  console.error(`[lean-verify] ✗ COLLECTION VECTOR COUNT MISMATCH: Expected 5, got ${leanCollectionVectors.length}!`);
+  process.exit(1);
+}
+
+const collectionConfigurations = {
+  "coll-redundant-self": {
+    activeSlug: "sarees",
+    section: { type: "product_rail", props: { collection: "sarees" } }
+  },
+  "coll-cross-sell": {
+    activeSlug: "girls",
+    section: { type: "product_rail", props: { collection: "kids" } }
+  },
+  "coll-grid-preserved": {
+    activeSlug: "sarees",
+    section: { type: "product_grid", props: { collection: "sarees" } }
+  },
+  "coll-empty-target-rail": {
+    activeSlug: "sarees",
+    section: { type: "product_rail", props: {} }
+  },
+  "coll-non-matching-rail": {
+    activeSlug: "panjabis",
+    section: { type: "product_rail", props: { collection: "sherwanis" } }
+  }
+};
+
+let matchedCollectionCount = 0;
+for (const cVec of leanCollectionVectors) {
+  const config = collectionConfigurations[cVec.id];
+  if (!config) {
+    console.error(`[lean-verify] ✗ Unknown collection vector ID: '${cVec.id}'`);
+    process.exit(1);
+  }
+  const tsRedundant = isRedundantCollectionRail(config.section, config.activeSlug);
+  if (cVec.redundant !== tsRedundant) {
+    console.error(`[lean-verify] ✗ COLLECTION COMPOSITION MISMATCH on vector '${cVec.id}': Lean=${cVec.redundant}, TS=${tsRedundant}!`);
+    process.exit(1);
+  }
+  console.log(`  ✓ Collection Vector '${cVec.id}': redundant=${cVec.redundant} [Lean ↔ TypeScript match]`);
+  matchedCollectionCount++;
+}
+console.log(`[lean-verify] ✓ All ${matchedCollectionCount}/5 Lean 4 Collection vectors match production TypeScript exactly.`);
+
+console.log(`\n[lean-verify] SUCCESS: All ${matchedPricingCount}/13 Pricing, ${matchedThemeCount}/5 Theme, ${matchedResponsiveCount}/6 Responsive, and ${matchedCollectionCount}/5 Collection vectors match production TypeScript exactly.`);
 console.log("[lean-verify] Zero discrepancies detected. Formal verification gate PASSED (fail-closed).\n");

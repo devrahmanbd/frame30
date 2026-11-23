@@ -28,6 +28,7 @@ function base(paths: string, props: IconProps): ReactElement {
       strokeWidth={strokeWidth}
       strokeLinecap="round"
       strokeLinejoin="round"
+      suppressHydrationWarning
       {...rest}
       dangerouslySetInnerHTML={{ __html: paths }} // sast-allow: html-sink -- generated file, paths are static Tabler geometry literals from the build script, no dynamic data reaches this sink
     />

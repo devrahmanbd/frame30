@@ -1,8 +1,12 @@
 import Framique.Pricing
 import Framique.ThemeLifecycle
+import Framique.Responsive
+import Framique.CollectionComposition
 
 open Framique
 open Framique.ThemeLifecycle
+open Framique.Responsive
+open Framique.CollectionComposition
 
 def formatPricingVector (id : String) (subtotal shipping : Nat) (c : Coupon) : String :=
   let d := calculateDiscount subtotal c
@@ -28,6 +32,15 @@ def formatThemeVector (id : String) (doc : ThemeDoc) : String :=
         | MediaValue.structured link desc x y => (link, desc, x, y)
       ("rejected", s, isStructuredMedia orig.media, u, a, fx, fy, false)
   s!"\{\"id\": \"{id}\", \"status\": \"{status}\", \"schema\": \"{outSchema}\", \"isStructured\": {isStructured}, \"url\": \"{url}\", \"alt\": \"{alt}\", \"focalX\": {focalX}, \"focalY\": {focalY}, \"publishEligible\": {pubEligible}}"
+
+def formatResponsiveVector (id : String) (cfg : BreakpointProps String) (dev : Device) : String :=
+  let val := resolveResponsiveProp cfg dev
+  let devStr := match dev with | Device.desktop => "desktop" | Device.tablet => "tablet" | Device.mobile => "mobile"
+  s!"\{\"id\": \"{id}\", \"device\": \"{devStr}\", \"resolved\": \"{val}\"}"
+
+def formatCollectionVector (id : String) (activeSlug : String) (sec : Section) : String :=
+  let red := isRedundantCollectionRail activeSlug sec
+  s!"\{\"id\": \"{id}\", \"redundant\": {red}}"
 
 def main : IO Unit := do
   let pricingVectors : List String := [
@@ -59,4 +72,21 @@ def main : IO Unit := do
     formatThemeVector "tv-idempotent" migratedLegacyDoc
   ]
 
-  IO.println ("{\"pricing\": [" ++ String.intercalate ", " pricingVectors ++ "], \"theme\": [" ++ String.intercalate ", " themeVectors ++ "]}")
+  let responsiveVectors : List String := [
+    formatResponsiveVector "resp-mobile-override" { desktop := "boxed", tablet := none, mobile := some "full" } Device.mobile,
+    formatResponsiveVector "resp-tablet-fallback" { desktop := "grid", tablet := some "flex", mobile := none } Device.mobile,
+    formatResponsiveVector "resp-desktop-fallback" { desktop := "standard", tablet := none, mobile := none } Device.mobile,
+    formatResponsiveVector "resp-tablet-override" { desktop := "grid", tablet := some "flex", mobile := none } Device.tablet,
+    formatResponsiveVector "resp-desktop-baseline" { desktop := "standard", tablet := none, mobile := none } Device.desktop,
+    formatResponsiveVector "resp-reset-restore" (clearOverride { desktop := "100px", tablet := some "80px", mobile := some "60px" } Device.mobile) Device.mobile
+  ]
+
+  let collectionVectors : List String := [
+    formatCollectionVector "coll-redundant-self" "sarees" { type := "product_rail", targetSlug := some "sarees" },
+    formatCollectionVector "coll-cross-sell" "girls" { type := "product_rail", targetSlug := some "kids" },
+    formatCollectionVector "coll-grid-preserved" "sarees" { type := "product_grid", targetSlug := some "sarees" },
+    formatCollectionVector "coll-empty-target-rail" "sarees" { type := "product_rail", targetSlug := none },
+    formatCollectionVector "coll-non-matching-rail" "panjabis" { type := "product_rail", targetSlug := some "sherwanis" }
+  ]
+
+  IO.println ("{\"pricing\": [" ++ String.intercalate ", " pricingVectors ++ "], \"theme\": [" ++ String.intercalate ", " themeVectors ++ "], \"responsive\": [" ++ String.intercalate ", " responsiveVectors ++ "], \"collection\": [" ++ String.intercalate ", " collectionVectors ++ "]}")

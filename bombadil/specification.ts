@@ -13,3 +13,12 @@ export {
   single_primary_h1,
 } from "./properties/navigation.ts";
 export { all_images_loaded } from "./properties/images.ts";
+export {
+  no_duplicate_active_collection_rail,
+  intentional_cross_sell_preserved,
+  unique_product_cards,
+} from "./properties/collections.ts";
+export {
+  responsive_override_reset_integrity,
+  device_visibility_consistency,
+} from "./properties/builder_responsive.ts";

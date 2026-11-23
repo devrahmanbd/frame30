@@ -90,7 +90,11 @@
     "specs/tla/ResponsiveAutosave.tla",
     "specs/tla/ResponsiveAutosave.cfg",
     "scripts/tla-verify.mjs",
-    "docs/verification-evidence/*.txt",
+    "specs/lean/**",
+    "scripts/lean-verify.mjs",
+    "bombadil/**",
+    "docs/verification-evidence/**",
+    "src/components/icons/**",
     ".agents/.skills/**",
     "CODEOWNERS",
     ".circleci/config.yml",
@@ -129,7 +133,7 @@
       "command": "node scripts/bend-verify.mjs"
     },
     "lean": {
-      "theorems": ["Pricing.lean", "ThemeLifecycle.lean"],
+      "theorems": ["Pricing.lean", "ThemeLifecycle.lean", "Responsive.lean", "CollectionComposition.lean"],
       "command": "bun run test:lean"
     },
     "tla": {

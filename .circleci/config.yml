@@ -81,26 +81,31 @@ jobs:
             sudo apt-get install -y -qq openjdk-21-jre-headless
             java -version
       - run:
-          name: Install Lean 4 toolchain (elan)
+          name: Install Lean 4 toolchains (elan)
           command: |
             curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain leanprover/lean4:v4.15.0
             echo 'export PATH="$HOME/.elan/bin:$PATH"' >> "$BASH_ENV"
             export PATH="$HOME/.elan/bin:$PATH"
+            elan toolchain install leanprover/lean4:v4.34.0
             lake --version
       - run:
-          name: Install Bend 2 toolchain & HVM runtime
+          name: Install official Bend 2 toolchain (v2.0.40)
           command: |
-            if ! command -v cargo &> /dev/null; then
-              curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
-              source "$HOME/.cargo/env"
-              echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> "$BASH_ENV"
+            mkdir -p "$HOME/.bend2/bin"
+            echo 'export PATH="$HOME/.bend2/bin:$PATH"' >> "$BASH_ENV"
+            export PATH="$HOME/.bend2/bin:$PATH"
+            if ! [ -x "$HOME/.bend2/bin/bend" ]; then
+              curl -sL https://github.com/bendlang/bend/releases/download/v2.0.40/bend-2.0.40-linux-x64.tar.gz -o /tmp/bend2.tar.gz
+              tar -xzf /tmp/bend2.tar.gz -C "$HOME/.bend2/bin/"
+              if [ -d "$HOME/.bend2/bin/bend" ]; then
+                mv "$HOME/.bend2/bin/bend/bin/bend" "$HOME/.bend2/bin/bend-exec"
+                mv "$HOME/.bend2/bin/bend/"* "$HOME/.bend2/" 2>/dev/null || true
+                rm -rf "$HOME/.bend2/bin/bend"
+                mv "$HOME/.bend2/bin/bend-exec" "$HOME/.bend2/bin/bend"
+              fi
+              chmod +x "$HOME/.bend2/bin/bend"
             fi
-            export PATH="$HOME/.cargo/bin:$PATH"
-            if ! command -v bend &> /dev/null; then
-              cargo install --version 0.2.38 bend-lang
-              cargo install hvm
-            fi
-            bend --version
+            "$HOME/.bend2/bin/bend" version
       - run:
           name: Bend 2 formal verification (fail-closed correctness laws)
           command: bun run test:bend

@@ -202,6 +202,11 @@ async function runViewport(vp) {
             "page_has_title_or_heading (asserts accessible title/header present)",
             "single_primary_h1 (at most 1 H1 per rendered page)",
             "all_images_loaded (missing src, load completion, natural dimensions, decode check)",
+            "no_duplicate_active_collection_rail (asserts active collection slug is never duplicated in secondary rails)",
+            "intentional_cross_sell_preserved (asserts distinct cross-sell collections are preserved in secondary rails)",
+            "unique_product_cards (asserts 0 duplicate product links across rendered grid cards)",
+            "responsive_override_reset_integrity (asserts reset button presence and wiring when overrides exist)",
+            "device_visibility_consistency (asserts breakpoint visibility consistency across mobile and desktop)",
             "noUncaughtExceptions",
             "noUnhandledPromiseRejections"
           ],
@@ -312,6 +317,11 @@ async function runViewport(vp) {
           "page_has_title_or_heading (asserts accessible title/header present)",
           "single_primary_h1 (at most 1 H1 per rendered page)",
           "all_images_loaded (missing src, load completion, natural dimensions, decode check)",
+          "no_duplicate_active_collection_rail (asserts active collection slug is never duplicated in secondary rails)",
+          "intentional_cross_sell_preserved (asserts distinct cross-sell collections are preserved in secondary rails)",
+          "unique_product_cards (asserts 0 duplicate product links across rendered grid cards)",
+          "responsive_override_reset_integrity (asserts reset button presence and wiring when overrides exist)",
+          "device_visibility_consistency (asserts breakpoint visibility consistency across mobile and desktop)",
           "noUncaughtExceptions",
           "noUnhandledPromiseRejections"
         ],

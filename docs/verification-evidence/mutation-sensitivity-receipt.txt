@@ -1,34 +1,82 @@
 =============================================================================
 FRAME30 ADVERSARIAL MUTATION SENSITIVITY EVIDENCE RECEIPT
 =============================================================================
-Timestamp: 2026-11-23T01:06:39.428Z
-Total Mutations Tested: 4
+Timestamp: 2026-11-23T05:56:13.921Z
+Total Mutations Tested: 12
 
-[Mutation 1] Scope Guard: Forbidden File Modification
+[Mutation 1] Scope Guard: Forbidden File Modification (supabase/migrations/**)
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: Explicitly forbidden by rule: 'supabase/migrations/**'
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet: [scope-guard] Loaded change contract: PILOT-WORKSTREAMS-AB ("Songoskriti Merchant Experience Pilot - Workstreams A and B") [scope-guard] Baseline Commit: 3376ed6914faefee5718728d65ba199ce75ab348 [scope-guard] Human Owner: @devrahmanbd [scope-guard] Total paths evaluated against scope: 39   =========...
+  Output Snippet: [scope-guard] Loaded change contract: PILOT-WORKSTREAMS-AB ("Songoskriti Merchant Experience Pilot - Workstreams A and B") [scope-guard] Baseline Commit: 3376ed6914faefee5718728d65ba199ce75ab348 [scope-guard] Human Owner: @devrahmanbd [scope-guard] Total paths evaluated against scope: 818   ========...
 
-[Mutation 2] Bend 2: Corrupted Reset Override Semantics
+[Mutation 2] Scope Guard: Unauthorized Shared UI Component (src/components/ui/button.tsx)
   Detection Status: DETECTED & REJECTED (PASS)
-  Expected Signature: Law 2: Reset Inheritance Restoration: FAILED
+  Expected Signature: Unauthorized file modification: path not present in allowed_file_changes
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet: [bend-verify] Validating Bend 2 formal laws and proof artifacts... [bend-verify] Bend toolchain: bend-lang 0.2.38 (/Users/rahman/.cargo/bin/bend) [bend-verify] LAWS.bend SHA-256:  e45d7d408cb992df52888aa1abe795b5c5b9e0754d60d5735b637f08b48a07d4 [bend-verify] PROOF.bend SHA-256: ecafe2023560b88213a57...
+  Output Snippet: [scope-guard] Loaded change contract: PILOT-WORKSTREAMS-AB ("Songoskriti Merchant Experience Pilot - Workstreams A and B") [scope-guard] Baseline Commit: 3376ed6914faefee5718728d65ba199ce75ab348 [scope-guard] Human Owner: @devrahmanbd [scope-guard] Total paths evaluated against scope: 818   ========...
 
-[Mutation 3] fast-check: Corrupted Collection Rail Self-Exclusion
+[Mutation 3] Scope Guard: Unauthorized Backend Service (src/lib/order.server.ts)
+  Detection Status: DETECTED & REJECTED (PASS)
+  Expected Signature: Explicitly forbidden by rule: 'src/lib/order.server.ts'
+  Clean Restoration: VERIFIED (PASS)
+  Output Snippet: [scope-guard] Loaded change contract: PILOT-WORKSTREAMS-AB ("Songoskriti Merchant Experience Pilot - Workstreams A and B") [scope-guard] Baseline Commit: 3376ed6914faefee5718728d65ba199ce75ab348 [scope-guard] Human Owner: @devrahmanbd [scope-guard] Total paths evaluated against scope: 818   ========...
+
+[Mutation 4] Scope Guard: Protected Constitution Modification (AGENTS.md)
+  Detection Status: DETECTED & REJECTED (PASS)
+  Expected Signature: Unauthorized file modification: path not present in allowed_file_changes
+  Clean Restoration: VERIFIED (PASS)
+  Output Snippet: [scope-guard] Loaded change contract: PILOT-WORKSTREAMS-AB ("Songoskriti Merchant Experience Pilot - Workstreams A and B") [scope-guard] Baseline Commit: 3376ed6914faefee5718728d65ba199ce75ab348 [scope-guard] Human Owner: @devrahmanbd [scope-guard] Total paths evaluated against scope: 818   ========...
+
+[Mutation 5] Bend 2: Corrupted Proof Term in PROOF.bend
+  Detection Status: DETECTED & REJECTED (PASS)
+  Expected Signature: SOME PROOFS FAIL
+  Clean Restoration: VERIFIED (PASS)
+  Output Snippet: [bend-verify] Validating Bend 2 formal laws and proof artifacts with Lean-backed kernel (--verdict)... [bend-verify] Official Bend 2 compiler detected: bend 2.0.40 (/Users/rahman/.bend2/bin/bend) [bend-verify] Binary SHA-256: c362cdac355d84f51278db97cb29a3b2e0be084d59b76a5cff013199b3513539 [bend-ver...
+
+[Mutation 6] Lean 4: Corrupted Theorem Proof in Responsive.lean
+  Detection Status: DETECTED & REJECTED (PASS)
+  Expected Signature: FAIL-CLOSED: Lean 4 theorem compilation failed
+  Clean Restoration: VERIFIED (PASS)
+  Output Snippet: [lean-verify] Validating Lean 4 formal specifications and production correspondence... [lean-verify] Pinned Lean toolchain: leanprover/lean4:v4.15.0 [lean-verify] ✓ All 7 formal Pricing theorems declared in Pricing.lean. [lean-verify] ✓ All 7 formal ThemeLifecycle theorems declared in ThemeLifecycle...
+
+[Mutation 7] TLA+: Inverted Autosave Invariant in ResponsiveAutosave.tla
+  Detection Status: DETECTED & REJECTED (PASS)
+  Expected Signature: is violated
+  Clean Restoration: VERIFIED (PASS)
+  Output Snippet: [tla-verify] Validating TLA+ specifications and formal invariants... [tla-verify] ✓ TLC JAR integrity verified (SHA-256: 7e53aa636dac8a3c...) [tla-verify] Java runtime detected (/opt/homebrew/opt/openjdk@21/bin/java): openjdk version "21.0.13.1" 2026-11-17  [tla-verify] --- Verifying model: Checkout...
+
+[Mutation 8] fast-check: Inverted Collection Rail Self-Exclusion
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: AssertionError
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/themes/collection-composition-properties.test.ts (6 tests | 3 failed) 39ms      × Property P1: Redundant active-collection rails are strictly eliminated 10ms      × Property P3: Product cards in active collection are never duplicated by seco...
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/themes/collection-composition-properties.test.ts (6 tests | 3 failed) 38ms      × Property P1: Redundant active-collection rails are strictly eliminated 11ms      × Property P3: Product cards in active collection are never duplicated by seco...
 
-[Mutation 4] Verification Drift: Desynchronized Source Hash
+[Mutation 9] Verification Drift: Desynchronized Source Hash
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: VERIFICATION DRIFT DETECTED
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet: [verification-drift] Checking formal verification correspondence to production source... [verification-drift] Baseline Synchronization Commit: 7e8b3db1f00f3e53a8d4a318f373704a8896f7e4   ✓ src/components/store/CollectionView.tsx matches verified model state (2328fa014772...)   ✓ src/components/store/...
+  Output Snippet: [verification-drift] Checking formal verification correspondence to production source... [verification-drift] Baseline Synchronization Commit: cc9cb62a998f43ab84f33ae17e149828c5dea602   ✓ src/components/store/CollectionView.tsx matches verified model state (2328fa014772...)   ✓ src/components/store/...
+
+[Mutation 10] Playwright: Disconnected Reset Button Cascade
+  Detection Status: DETECTED & REJECTED (PASS)
+  Expected Signature: AssertionError
+  Clean Restoration: VERIFIED (PASS)
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/components/builder/responsive-customization.test.tsx (14 tests | 1 failed) 1353ms      × Test 2.3: Invoking reset action calls onClearOverride with exact field key and device (interactive) 1000ms   Test Files  1 failed (1)       Tests  1 failed ...
+
+[Mutation 11] Bombadil: Injected 1200px Horizontal Overflow Invariant Detection
+  Detection Status: DETECTED & REJECTED (PASS)
+  Expected Signature: Bombadil invariant violation: no_horizontal_overflow
+  Clean Restoration: VERIFIED (PASS)
+  Output Snippet:  Bombadil invariant violation: no_horizontal_overflow (scrollWidth 1200 > innerWidth 390)  Command failed: node -e 'const fs = require("fs"); const width = fs.existsSync("/tmp/bombadil-test-overflow.txt") ? Number(fs.readFileSync("/tmp/bombadil-test-overflow.txt", "utf8")) : 390; const doc = { scrol...
+
+[Mutation 12] CI Bypass: Removing Blocking Step from .circleci/config.yml
+  Detection Status: DETECTED & REJECTED (PASS)
+  Expected Signature: FAIL-CLOSED: Missing required blocking CI gate: command: bun run gate:scope
+  Clean Restoration: VERIFIED (PASS)
+  Output Snippet:  FAIL-CLOSED: Missing required blocking CI gate: command: bun run gate:scope  Command failed: node -e 'const fs = require("fs"); const yaml = fs.readFileSync(".circleci/config.yml", "utf8"); const requiredGates = ["command: bun run gate:scope", "command: bun run gate:drift", "command: bun run test:b...
 
 -----------------------------------------------------------------------------
-VERDICT: ALL 4 MUTATIONS CONCLUSIVELY DETECTED WITH FAIL-CLOSED GATES.
+VERDICT: ALL 12 MUTATIONS CONCLUSIVELY DETECTED WITH FAIL-CLOSED GATES.
 ZERO LEAKED MUTATIONS. RESTORATION VERIFIED CLEAN.
 =============================================================================

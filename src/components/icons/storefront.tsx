@@ -44,6 +44,7 @@ function base(paths: string, props: StorefrontIconProps): ReactElement {
       strokeWidth={strokeWidth}
       strokeLinecap="round"
       strokeLinejoin="round"
+      suppressHydrationWarning
       {...rest}
       dangerouslySetInnerHTML={{ __html: paths }} // sast-allow: html-sink -- paths are first-party static literals only (SPACER plus hand-vendored geometry), no merchant or shopper data reaches this sink
     />

@@ -5,7 +5,7 @@ package "framique_verification" where
   version := v!"1.0.0"
 
 lean_lib «Framique» where
-  roots := #[`Framique.Pricing, `Framique.ThemeLifecycle]
+  roots := #[`Framique.Pricing, `Framique.ThemeLifecycle, `Framique.Responsive, `Framique.CollectionComposition]
 
 @[default_target]
 lean_exe «framique_verify» where
