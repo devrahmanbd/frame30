@@ -175,6 +175,43 @@ const models = [
       "NoStaleRegression",
       "PublicationIntegrity"
     ]
+  },
+  {
+    name: "CmsContentLifecycle",
+    tlaFile: join(process.cwd(), "specs", "tla", "CmsContentLifecycle.tla"),
+    cfgFile: join(process.cwd(), "specs", "tla", "CmsContentLifecycle.cfg"),
+    proofFile: join(process.cwd(), "docs", "verification-evidence", "tlc-cms-lifecycle-proof.txt"),
+    receiptTitle: "TLA+ TLC FORMAL MODEL CHECKING STATE-SPACE PROOF RECEIPT (CMS CONTENT LIFECYCLE)",
+    requiredSymbols: [
+      "MODULE CmsContentLifecycle",
+      "TypeOK",
+      "Init",
+      "Next",
+      "Spec",
+      "EditDraft",
+      "SaveValidRevision",
+      "DropStaleSave",
+      "SchedulePublication",
+      "ExecutePublishJob",
+      "PublishDirect",
+      "Unpublish",
+      "ArchiveDoc",
+      "RestoreArchived",
+      "RollbackRevision",
+      "NoPublicDraft",
+      "ScheduledNotPublicBeforeTime",
+      "AtomicPublicationState",
+      "NoCrossTenantAccess",
+      "RevisionBounds"
+    ],
+    requiredInvariants: [
+      "TypeOK",
+      "NoPublicDraft",
+      "ScheduledNotPublicBeforeTime",
+      "AtomicPublicationState",
+      "NoCrossTenantAccess",
+      "RevisionBounds"
+    ]
   }
 ];
 

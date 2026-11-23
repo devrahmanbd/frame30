@@ -2,7 +2,7 @@
   "testRun": {
     "tool": "@antithesishq/bombadil",
     "version": "0.7.10",
-    "date": "2026-11-23T05:31:52.683Z",
+    "date": "2026-11-23T11:18:16.526Z",
     "target": "http://localhost:3000",
     "targetEnvironment": "staging-loopback (seeded-preview-fixtures)",
     "routeCoverageDescription": "8 route/viewport combinations covering 5 canonical route types, not a complete 40-case matrix",
@@ -49,16 +49,12 @@
         "height": 568,
         "route": "/",
         "targetUrl": "http://localhost:3000/",
-        "durationSeconds": 30.4,
-        "actionsExecuted": 38,
+        "durationSeconds": 32.3,
+        "actionsExecuted": 20,
         "actionTypes": [
           "Click",
-          "Wait",
           "ScrollDown",
-          "PressKey",
-          "ScrollUp",
-          "TypeText",
-          "Back"
+          "Wait"
         ],
         "invariantsExecuted": [
           "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
@@ -79,22 +75,21 @@
         "failedUrls": [],
         "verdict": "PASS",
         "tracePath": "docs/verification-evidence/bombadil/traces/mobile-320/trace.jsonl",
-        "traceSha256": "489fa7d0d158689e050f37ca7a773b6bb26b46386cd927a2523cb1f6adb2bbe3",
+        "traceSha256": "971f50ee5860e46cf5c6de9fc3fe64d624167d2c22390cb213e42617fd1e4058",
         "screenshotPath": "docs/verification-evidence/bombadil/traces/mobile-320/",
         "error": null
       },
       {
-        "name": "mobile-360",
-        "width": 360,
-        "height": 640,
-        "route": "/c/sarees",
-        "targetUrl": "http://localhost:3000/c/sarees",
-        "durationSeconds": 30.6,
-        "actionsExecuted": 114,
+        "name": "mobile-390",
+        "width": 390,
+        "height": 844,
+        "route": "/",
+        "targetUrl": "http://localhost:3000/",
+        "durationSeconds": 31.3,
+        "actionsExecuted": 23,
         "actionTypes": [
+          "ScrollDown",
           "Click",
-          "Back",
-          "Wait",
           "Reload"
         ],
         "invariantsExecuted": [
@@ -115,85 +110,9 @@
         "imageFailures": 0,
         "failedUrls": [],
         "verdict": "PASS",
-        "tracePath": "docs/verification-evidence/bombadil/traces/mobile-360/trace.jsonl",
-        "traceSha256": "837417987dc96c73cc453d6baf4b60399031a02c1fc161792ab94f3be273ce4c",
-        "screenshotPath": "docs/verification-evidence/bombadil/traces/mobile-360/",
-        "error": null
-      },
-      {
-        "name": "mobile-390",
-        "width": 390,
-        "height": 844,
-        "route": "/",
-        "targetUrl": "http://localhost:3000/",
-        "durationSeconds": 30.4,
-        "actionsExecuted": 60,
-        "actionTypes": [
-          "ScrollDown",
-          "Reload",
-          "Click",
-          "TypeText",
-          "Back",
-          "ScrollUp"
-        ],
-        "invariantsExecuted": [
-          "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
-          "no_server_error_pages (no 5xx titles or headings)",
-          "page_has_title_or_heading (asserts accessible title/header present)",
-          "single_primary_h1 (at most 1 H1 per rendered page)",
-          "all_images_loaded (missing src, load completion, natural dimensions, decode check)",
-          "no_duplicate_active_collection_rail (asserts active collection slug is never duplicated in secondary rails)",
-          "intentional_cross_sell_preserved (asserts distinct cross-sell collections are preserved in secondary rails)",
-          "unique_product_cards (asserts 0 duplicate product links across rendered grid cards)",
-          "responsive_override_reset_integrity (asserts reset button presence and wiring when overrides exist)",
-          "device_visibility_consistency (asserts breakpoint visibility consistency across mobile and desktop)",
-          "noUncaughtExceptions",
-          "noUnhandledPromiseRejections"
-        ],
-        "violations": 0,
-        "imageFailures": 0,
-        "failedUrls": [],
-        "verdict": "PASS",
         "tracePath": "docs/verification-evidence/bombadil/traces/mobile-390/trace.jsonl",
-        "traceSha256": "8936b56dc839c0e854078df9f3ba8d18f63af4f05becf74d4db40af9f4599383",
+        "traceSha256": "1973bb24059eca45c1f73ffc286f15efd12452ce85f348468f79d7736e556134",
         "screenshotPath": "docs/verification-evidence/bombadil/traces/mobile-390/",
-        "error": null
-      },
-      {
-        "name": "mobile-430",
-        "width": 430,
-        "height": 932,
-        "route": "/p/dhakai-jamdani-silk-saree",
-        "targetUrl": "http://localhost:3000/p/dhakai-jamdani-silk-saree",
-        "durationSeconds": 30.4,
-        "actionsExecuted": 36,
-        "actionTypes": [
-          "Click",
-          "ScrollDown",
-          "Back",
-          "ScrollUp"
-        ],
-        "invariantsExecuted": [
-          "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
-          "no_server_error_pages (no 5xx titles or headings)",
-          "page_has_title_or_heading (asserts accessible title/header present)",
-          "single_primary_h1 (at most 1 H1 per rendered page)",
-          "all_images_loaded (missing src, load completion, natural dimensions, decode check)",
-          "no_duplicate_active_collection_rail (asserts active collection slug is never duplicated in secondary rails)",
-          "intentional_cross_sell_preserved (asserts distinct cross-sell collections are preserved in secondary rails)",
-          "unique_product_cards (asserts 0 duplicate product links across rendered grid cards)",
-          "responsive_override_reset_integrity (asserts reset button presence and wiring when overrides exist)",
-          "device_visibility_consistency (asserts breakpoint visibility consistency across mobile and desktop)",
-          "noUncaughtExceptions",
-          "noUnhandledPromiseRejections"
-        ],
-        "violations": 0,
-        "imageFailures": 0,
-        "failedUrls": [],
-        "verdict": "PASS",
-        "tracePath": "docs/verification-evidence/bombadil/traces/mobile-430/trace.jsonl",
-        "traceSha256": "9d358a6ff2fe176bcac05a1e125b83171a6da15fc1c7056213abce9b9e8d67e5",
-        "screenshotPath": "docs/verification-evidence/bombadil/traces/mobile-430/",
         "error": null
       },
       {
@@ -202,10 +121,11 @@
         "height": 1024,
         "route": "/cart",
         "targetUrl": "http://localhost:3000/cart",
-        "durationSeconds": 30.5,
-        "actionsExecuted": 13,
+        "durationSeconds": 30.7,
+        "actionsExecuted": 22,
         "actionTypes": [
           "Click",
+          "Back",
           "ScrollDown"
         ],
         "invariantsExecuted": [
@@ -227,83 +147,8 @@
         "failedUrls": [],
         "verdict": "PASS",
         "tracePath": "docs/verification-evidence/bombadil/traces/tablet-768/trace.jsonl",
-        "traceSha256": "1918edadb8ab1bf323a19527a9eccfd93c139e0cfb9ad2f2b934b43ed14970fd",
+        "traceSha256": "0402a40dc2ecbf911d5ed64dc6d7d3291b45f6f52919d0c1d689d3ae391dedb9",
         "screenshotPath": "docs/verification-evidence/bombadil/traces/tablet-768/",
-        "error": null
-      },
-      {
-        "name": "laptop-1024",
-        "width": 1024,
-        "height": 768,
-        "route": "/auth",
-        "targetUrl": "http://localhost:3000/auth",
-        "durationSeconds": 30.5,
-        "actionsExecuted": 58,
-        "actionTypes": [
-          "Click",
-          "ScrollDown",
-          "Back",
-          "TypeText",
-          "ScrollUp",
-          "Forward"
-        ],
-        "invariantsExecuted": [
-          "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
-          "no_server_error_pages (no 5xx titles or headings)",
-          "page_has_title_or_heading (asserts accessible title/header present)",
-          "single_primary_h1 (at most 1 H1 per rendered page)",
-          "all_images_loaded (missing src, load completion, natural dimensions, decode check)",
-          "no_duplicate_active_collection_rail (asserts active collection slug is never duplicated in secondary rails)",
-          "intentional_cross_sell_preserved (asserts distinct cross-sell collections are preserved in secondary rails)",
-          "unique_product_cards (asserts 0 duplicate product links across rendered grid cards)",
-          "responsive_override_reset_integrity (asserts reset button presence and wiring when overrides exist)",
-          "device_visibility_consistency (asserts breakpoint visibility consistency across mobile and desktop)",
-          "noUncaughtExceptions",
-          "noUnhandledPromiseRejections"
-        ],
-        "violations": 0,
-        "imageFailures": 0,
-        "failedUrls": [],
-        "verdict": "PASS",
-        "tracePath": "docs/verification-evidence/bombadil/traces/laptop-1024/trace.jsonl",
-        "traceSha256": "e618a64f98ba4b3a4f2f8be5083590655839639a2028301f0210aa55cdc7d7c9",
-        "screenshotPath": "docs/verification-evidence/bombadil/traces/laptop-1024/",
-        "error": null
-      },
-      {
-        "name": "desktop-1280",
-        "width": 1280,
-        "height": 800,
-        "route": "/c/sarees",
-        "targetUrl": "http://localhost:3000/c/sarees",
-        "durationSeconds": 30.5,
-        "actionsExecuted": 17,
-        "actionTypes": [
-          "Reload",
-          "Click",
-          "Back"
-        ],
-        "invariantsExecuted": [
-          "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
-          "no_server_error_pages (no 5xx titles or headings)",
-          "page_has_title_or_heading (asserts accessible title/header present)",
-          "single_primary_h1 (at most 1 H1 per rendered page)",
-          "all_images_loaded (missing src, load completion, natural dimensions, decode check)",
-          "no_duplicate_active_collection_rail (asserts active collection slug is never duplicated in secondary rails)",
-          "intentional_cross_sell_preserved (asserts distinct cross-sell collections are preserved in secondary rails)",
-          "unique_product_cards (asserts 0 duplicate product links across rendered grid cards)",
-          "responsive_override_reset_integrity (asserts reset button presence and wiring when overrides exist)",
-          "device_visibility_consistency (asserts breakpoint visibility consistency across mobile and desktop)",
-          "noUncaughtExceptions",
-          "noUnhandledPromiseRejections"
-        ],
-        "violations": 0,
-        "imageFailures": 0,
-        "failedUrls": [],
-        "verdict": "PASS",
-        "tracePath": "docs/verification-evidence/bombadil/traces/desktop-1280/trace.jsonl",
-        "traceSha256": "c5f4391918a08b8c3bd9b763ef1e7a2e98ca0daf1a68fbee3a48291faeef60f2",
-        "screenshotPath": "docs/verification-evidence/bombadil/traces/desktop-1280/",
         "error": null
       },
       {
@@ -312,15 +157,14 @@
         "height": 900,
         "route": "/",
         "targetUrl": "http://localhost:3000/",
-        "durationSeconds": 30.5,
-        "actionsExecuted": 55,
+        "durationSeconds": 30.7,
+        "actionsExecuted": 45,
         "actionTypes": [
           "ScrollDown",
           "Click",
-          "TypeText",
-          "ScrollUp",
           "Back",
-          "Wait"
+          "PressKey",
+          "ScrollUp"
         ],
         "invariantsExecuted": [
           "no_horizontal_overflow (scrollWidth <= innerWidth + 1, fail-closed on missing dims)",
@@ -341,7 +185,7 @@
         "failedUrls": [],
         "verdict": "PASS",
         "tracePath": "docs/verification-evidence/bombadil/traces/desktop-1440/trace.jsonl",
-        "traceSha256": "02212b4e85e969829ed29aac1212d41d7c8e7ef357bdbf148f21952b1dac6d32",
+        "traceSha256": "e665971dfa0fed1aa6b5688ad36bd549d5037fc907665493c6f1f1f9b4a5bb59",
         "screenshotPath": "docs/verification-evidence/bombadil/traces/desktop-1440/",
         "error": null
       }

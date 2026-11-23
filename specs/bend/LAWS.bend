@@ -46,3 +46,34 @@ law law_collection_self_exclusion:
 # When a collection recommendation rail targets a distinct collection, it is preserved (0).
 law law_cross_sell_preservation:
   {is_redundant_rail(False{}) == 0 : U32}
+
+# Law 7: CMS Draft Secrecy
+# For any document in draft status, public storefront visibility evaluates to 0.
+law law_cms_draft_secrecy:
+  {is_cms_public(Draft{}) == 0 : U32}
+
+# Law 8: CMS Scheduled Content Secrecy
+# For any scheduled document before release, public storefront visibility evaluates to 0.
+law law_cms_scheduled_secrecy:
+  {is_cms_public(Scheduled{}) == 0 : U32}
+
+# Law 9: CMS Published Visibility
+# For any published document, public storefront visibility evaluates to 1.
+law law_cms_published_visibility:
+  {is_cms_public(Published{}) == 1 : U32}
+
+# Law 10: CMS Archived Content Secrecy
+# For any archived document, public storefront visibility evaluates to 0.
+law law_cms_archived_secrecy:
+  {is_cms_public(Archived{}) == 0 : U32}
+
+# Law 11: CMS Tenant Boundary Isolation
+# Cross-tenant document access evaluates to 0 (denied).
+law law_cms_tenant_boundary_isolation:
+  {check_tenant_boundary(False{}) == 0 : U32}
+
+# Law 12: CMS Same-Tenant Access Authorization
+# Same-tenant document access evaluates to 1 (allowed).
+law law_cms_same_tenant_access:
+  {check_tenant_boundary(True{}) == 1 : U32}
+

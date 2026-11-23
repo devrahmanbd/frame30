@@ -1,11 +1,11 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-11-23T10:10:57.543Z",
+  "generated_at": "2026-11-23T13:47:37.895Z",
   "git": {
-    "commit": "e13ca6ef915547b97327cb3bda29dcbab3056480",
-    "tree": "ceaedf16494fca663306ced76c0e1ab66d597d70",
+    "commit": "c6f33d81eab9806818ca1b5213439003f5ec0214",
+    "tree": "2ffb06ce016da804a09d3b29ff9817f66e85a9be",
     "branch": "governance/sdlc-pilot",
-    "clean": false
+    "clean": true
   },
   "toolchains": {
     "bun": "1.3.14",
@@ -21,27 +21,27 @@
       "file": "bend-proof.txt",
       "layer": "Layer 02: Computational Law",
       "tool": "Bend 2.0.40",
-      "sha256": "5b668d75e79fb35491f2114ff62fdc4867c85a7796c99285c5559d47d2daa597",
-      "sizeBytes": 1467,
-      "modifiedAt": "2026-11-23T10:10:02.166Z",
+      "sha256": "cc9ce4ab9e54c69c41ae4bf2d2be63b6a66b900a8988f6215684b38d87d342d2",
+      "sizeBytes": 1753,
+      "modifiedAt": "2026-11-23T13:16:10.098Z",
       "summary": "============================================================================="
     },
     {
       "file": "mutation-sensitivity-receipt.txt",
       "layer": "Layer 08: Mutation Sensitivity",
       "tool": "Adversarial Harness",
-      "sha256": "2cb5106f2c9133edc315b1c6cc81116070131f6856303141fc36e2746bc8e63f",
-      "sizeBytes": 7115,
-      "modifiedAt": "2026-11-23T10:10:43.383Z",
+      "sha256": "6e7c380e6d30277c5ad5aef52954a1c9447e041848a02f686efec5e1ad178b10",
+      "sizeBytes": 9037,
+      "modifiedAt": "2026-11-23T13:16:10.834Z",
       "summary": "============================================================================="
     },
     {
       "file": "bombadil-trace-summary.json",
       "layer": "Layer 06: Property DOM Fuzzing",
       "tool": "Bombadil",
-      "sha256": "d704f2b3fb6e3313e1e4620b3dafc45c4232ba815ac196f4cf0cee72e808fdaf",
-      "sizeBytes": 15902,
-      "modifiedAt": "2026-11-23T05:31:52.693Z",
+      "sha256": "64b94a7d8bf27a3de981aee8f3c702a85fd756d85d7f1dadd08845546560286e",
+      "sizeBytes": 8361,
+      "modifiedAt": "2026-11-23T11:18:16.540Z",
       "summary": "Passed: OK"
     }
   ]

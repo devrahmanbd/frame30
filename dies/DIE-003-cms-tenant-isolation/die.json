@@ -1,0 +1,89 @@
+{
+  "$schema": "../schema.json",
+  "die_id": "DIE-003-cms-tenant-isolation",
+  "version": "1.0.0",
+  "title": "PostgreSQL Row-Level Security & Multi-Tenant CMS Isolation",
+  "domain": "CMS & Tenancy",
+  "owner": "@devrahmanbd",
+  "created_at": "2026-11-23T15:00:00Z",
+  "updated_at": "2026-11-23T15:00:00Z",
+  "requirement": {
+    "summary": "Multi-tenant CMS core must enforce strict isolation between merchants across all database queries, server actions, and REST endpoints, guaranteeing that Merchant A cannot read, mutate, or join against Merchant B's documents, revisions, or media.",
+    "user_outcome": "Store data and merchant content remain completely isolated; no unauthorized cross-tenant data traversal, tampering, or disclosure is possible.",
+    "preconditions": [
+      "PostgreSQL Row-Level Security enabled on storefront_pages, articles, revisions, and media",
+      "Authenticated session context provides verified merchant_id via staff membership claim"
+    ]
+  },
+  "protected_behaviour": [
+    "Queries for pages, articles, or revisions filter strictly by the authenticated tenant ID",
+    "Client-supplied merchant_id in payloads or query params is ignored in favor of session context",
+    "Cross-tenant joins or foreign key queries return zero records and log security warnings",
+    "Anonymous shoppers only access published content filtered by active domain tenant mapping"
+  ],
+  "forbidden_behaviour": [
+    "Direct IDOR access allowing one tenant to fetch another tenant's documents",
+    "Forged merchant_id payloads bypassing session authorization",
+    "Data leakage across tenant boundaries in draft preview or revision history"
+  ],
+  "formal_laws": {
+    "bend_laws": [
+      "specs/bend/LAWS.bend:law_cms_tenant_boundary_isolation",
+      "specs/bend/LAWS.bend:law_cms_same_tenant_access"
+    ],
+    "lean_theorems": [
+      "Framique.CmsLifecycle:cross_tenant_access_denied",
+      "Framique.CmsLifecycle:unauthorized_actor_cannot_publish"
+    ],
+    "tla_models": [
+      "specs/tla/CmsContentLifecycle.tla:NoCrossTenantAccess"
+    ]
+  },
+  "executable_model": {
+    "artifact": "specs/lean/Framique/CmsLifecycle.lean (CmsDoc, checkTenantAccess)",
+    "correspondence_bridge": "src/lib/cms-tenant-rls.test.ts synchronized with database RLS policies"
+  },
+  "conformance_obligations": [
+    {
+      "type": "formal_bend",
+      "command": "bun run test:bend",
+      "target_files": ["specs/bend/LAWS.bend", "specs/bend/PROOF.bend"]
+    },
+    {
+      "type": "formal_lean",
+      "command": "bun run test:lean",
+      "target_files": ["specs/lean/Framique/CmsLifecycle.lean"]
+    },
+    {
+      "type": "formal_tla",
+      "command": "bun run test:tla",
+      "target_files": ["specs/tla/CmsContentLifecycle.tla", "specs/tla/CmsContentLifecycle.cfg"]
+    },
+    {
+      "type": "property_fuzz",
+      "command": "bun run test:properties",
+      "target_files": ["src/lib/cms-properties.test.ts"]
+    },
+    {
+      "type": "unit_integration",
+      "command": "bun run test",
+      "target_files": ["src/lib/cms-tenant-rls.test.ts"]
+    }
+  ],
+  "adversarial_checks": [
+    {
+      "defect_class": "cross_tenant_read_leakage",
+      "mutation_description": "Disable tenant filter in page query to allow foreign tenant access",
+      "expected_failure_snippet": "expected cross-tenant access to throw or return null"
+    },
+    {
+      "defect_class": "forged_merchant_id_bypass",
+      "mutation_description": "Accept client-supplied merchant_id over authenticated session claim",
+      "expected_failure_snippet": "expected forged tenant query to be rejected"
+    }
+  ],
+  "regression_requirements": [
+    "DIE-001-responsive-precedence",
+    "DIE-002-collection-composition"
+  ]
+}

@@ -47,6 +47,10 @@ if (!contractPath) {
   if (process.env.ACTIVE_CHANGE_CONTRACT) {
     contractPath = process.env.ACTIVE_CHANGE_CONTRACT;
   } else if (
+    existsSync(join(REPO_ROOT, "features/contracts/FRAME30-CMS-CORE.json"))
+  ) {
+    contractPath = "features/contracts/FRAME30-CMS-CORE.json";
+  } else if (
     existsSync(join(REPO_ROOT, "features/contracts/FRAME30-SDLC-000.json"))
   ) {
     contractPath = "features/contracts/FRAME30-SDLC-000.json";

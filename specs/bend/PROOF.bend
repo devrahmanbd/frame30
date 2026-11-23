@@ -36,6 +36,31 @@ def is_redundant_rail(is_same: Bool) -> U32:
     case False{}:
       0
 
+# CMS status definition and public visibility oracle
+type CmsStatus is Data:
+  Draft{}
+  Scheduled{}
+  Published{}
+  Archived{}
+
+def is_cms_public(status: CmsStatus) -> U32:
+  match status:
+    case Draft{}:
+      0
+    case Scheduled{}:
+      0
+    case Published{}:
+      1
+    case Archived{}:
+      0
+
+def check_tenant_boundary(is_same_tenant: Bool) -> U32:
+  match is_same_tenant:
+    case True{}:
+      1
+    case False{}:
+      0
+
 # --- Proof Implementations filling the laws in LAWS.bend ---
 
 def law_responsive_cascade_mobile(desk, tab, mob):
@@ -56,5 +81,24 @@ def law_collection_self_exclusion():
 def law_cross_sell_preservation():
   {==}
 
+def law_cms_draft_secrecy():
+  {==}
+
+def law_cms_scheduled_secrecy():
+  {==}
+
+def law_cms_published_visibility():
+  {==}
+
+def law_cms_archived_secrecy():
+  {==}
+
+def law_cms_tenant_boundary_isolation():
+  {==}
+
+def law_cms_same_tenant_access():
+  {==}
+
 def main() -> U32:
   42
+

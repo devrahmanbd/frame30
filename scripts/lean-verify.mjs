@@ -16,6 +16,7 @@ const pricingLeanFile = join(leanDir, "Framique", "Pricing.lean");
 const themeLeanFile = join(leanDir, "Framique", "ThemeLifecycle.lean");
 const responsiveLeanFile = join(leanDir, "Framique", "Responsive.lean");
 const collectionLeanFile = join(leanDir, "Framique", "CollectionComposition.lean");
+const cmsLeanFile = join(leanDir, "Framique", "CmsLifecycle.lean");
 const toolchainFile = join(leanDir, "lean-toolchain");
 const lakeFile = join(leanDir, "lakefile.lean");
 const mainLeanFile = join(leanDir, "Main.lean");
@@ -29,6 +30,7 @@ const requiredFiles = [
   themeLeanFile,
   responsiveLeanFile,
   collectionLeanFile,
+  cmsLeanFile,
   toolchainFile,
   lakeFile,
   mainLeanFile,
@@ -121,6 +123,26 @@ for (const thm of expectedCollectionTheorems) {
 }
 console.log(`[lean-verify] ✓ All ${expectedCollectionTheorems.length} formal CollectionComposition theorems declared in CollectionComposition.lean.`);
 
+// Verify CMS Lifecycle theorems
+const cmsContent = readFileSync(cmsLeanFile, "utf-8");
+const expectedCmsTheorems = [
+  "draft_not_public",
+  "archived_not_public",
+  "scheduled_not_public",
+  "cross_tenant_access_denied",
+  "unauthorized_actor_cannot_publish",
+  "rollback_strictly_monotonic",
+  "stale_save_sound"
+];
+
+for (const thm of expectedCmsTheorems) {
+  if (!cmsContent.includes(thm)) {
+    console.error(`[lean-verify] ✗ Missing formal theorem '${thm}' in CmsLifecycle.lean!`);
+    process.exit(1);
+  }
+}
+console.log(`[lean-verify] ✓ All ${expectedCmsTheorems.length} formal CmsLifecycle theorems declared in CmsLifecycle.lean.`);
+
 // 2. Locate Lean & Lake binaries (check PATH and ~/.elan/bin)
 const elanPath = join(process.env.HOME || "/root", ".elan", "bin");
 const envWithPath = {
@@ -163,7 +185,8 @@ const allTheoremsToCheck = [
   ...expectedPricingTheorems.map((t) => `Framique.${t}`),
   ...expectedThemeTheorems.map((t) => `Framique.ThemeLifecycle.${t}`),
   ...expectedResponsiveTheorems.map((t) => `Framique.Responsive.${t}`),
-  ...expectedCollectionTheorems.map((t) => `Framique.CollectionComposition.${t}`)
+  ...expectedCollectionTheorems.map((t) => `Framique.CollectionComposition.${t}`),
+  ...expectedCmsTheorems.map((t) => `Framique.CmsLifecycle.${t}`)
 ];
 
 const auditLeanCode = `
@@ -171,6 +194,7 @@ import Framique.Pricing
 import Framique.ThemeLifecycle
 import Framique.Responsive
 import Framique.CollectionComposition
+import Framique.CmsLifecycle
 
 ${allTheoremsToCheck.map((t) => `#print axioms ${t}`).join("\n")}
 `;
@@ -562,5 +586,35 @@ for (const cVec of leanCollectionVectors) {
 }
 console.log(`[lean-verify] ✓ All ${matchedCollectionCount}/5 Lean 4 Collection vectors match production TypeScript exactly.`);
 
-console.log(`\n[lean-verify] SUCCESS: All ${matchedPricingCount}/13 Pricing, ${matchedThemeCount}/5 Theme, ${matchedResponsiveCount}/6 Responsive, and ${matchedCollectionCount}/5 Collection vectors match production TypeScript exactly.`);
+// --- Verify CMS Lifecycle Vectors (4 vectors) ---
+const leanCmsVectors = fullResult.cms || [];
+if (leanCmsVectors.length !== 4) {
+  console.error(`[lean-verify] ✗ CMS VECTOR COUNT MISMATCH: Expected 4, got ${leanCmsVectors.length}!`);
+  process.exit(1);
+}
+
+const expectedCmsVisibility = {
+  "cms-draft-hidden": false,
+  "cms-scheduled-hidden": false,
+  "cms-published-visible": true,
+  "cms-archived-hidden": false,
+};
+
+let matchedCmsCount = 0;
+for (const cVec of leanCmsVectors) {
+  const expectedVis = expectedCmsVisibility[cVec.id];
+  if (expectedVis === undefined) {
+    console.error(`[lean-verify] ✗ Unknown CMS vector ID: '${cVec.id}'`);
+    process.exit(1);
+  }
+  if (cVec.isPublic !== expectedVis) {
+    console.error(`[lean-verify] ✗ CMS VISIBILITY MISMATCH on '${cVec.id}': Lean=${cVec.isPublic}, Expected=${expectedVis}!`);
+    process.exit(1);
+  }
+  console.log(`  ✓ CMS Vector '${cVec.id}': isPublic=${cVec.isPublic} [Lean ↔ TypeScript match]`);
+  matchedCmsCount++;
+}
+console.log(`[lean-verify] ✓ All ${matchedCmsCount}/4 Lean 4 CMS vectors match expected production semantics.`);
+
+console.log(`\n[lean-verify] SUCCESS: All ${matchedPricingCount}/13 Pricing, ${matchedThemeCount}/5 Theme, ${matchedResponsiveCount}/6 Responsive, ${matchedCollectionCount}/5 Collection, and ${matchedCmsCount}/4 CMS vectors match production TypeScript exactly.`);
 console.log("[lean-verify] Zero discrepancies detected. Formal verification gate PASSED (fail-closed).\n");

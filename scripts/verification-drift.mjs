@@ -49,6 +49,21 @@ const COVERED_MAPPINGS = [
     productionFile: "specs/tla/ResponsiveAutosave.tla",
     formalArtifact: "specs/tla/ResponsiveAutosave.cfg",
     domain: "TLA+ Responsive Autosave Concurrency Model"
+  },
+  {
+    productionFile: "src/lib/editor/editor.server.ts",
+    formalArtifact: "specs/lean/Framique/CmsLifecycle.lean + specs/tla/CmsContentLifecycle.tla",
+    domain: "CMS Content Lifecycle & Optimistic Concurrency"
+  },
+  {
+    productionFile: "specs/tla/CmsContentLifecycle.tla",
+    formalArtifact: "specs/tla/CmsContentLifecycle.cfg",
+    domain: "TLA+ CMS Content Lifecycle & Tenant Boundary Model"
+  },
+  {
+    productionFile: "specs/lean/Framique/CmsLifecycle.lean",
+    formalArtifact: "src/lib/cms-lifecycle.test.ts",
+    domain: "Lean 4 CMS Lifecycle Machine Proofs"
   }
 ];
 

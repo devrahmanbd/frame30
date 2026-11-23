@@ -21,7 +21,7 @@
     "test:watch": "vitest",
     "test:theme-compliance": "vitest run src/lib/themes/theme-compliance.test.ts",
     "test:responsive": "vitest run src/components/builder/responsive-customization.test.tsx",
-    "test:properties": "vitest run src/lib/commerce-properties*.test.ts src/lib/themes/*properties.test.ts",
+    "test:properties": "vitest run src/lib/commerce-properties*.test.ts src/lib/themes/*properties.test.ts src/lib/cms-properties.test.ts",
     "test:features": "node scripts/feature-map-check.mjs",
     "test:dies": "node scripts/die-registry-check.mjs",
     "test:bombadil": "node bombadil/runner.mjs",

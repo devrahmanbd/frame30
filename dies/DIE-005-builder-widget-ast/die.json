@@ -1,0 +1,84 @@
+{
+  "$schema": "../schema.json",
+  "die_id": "DIE-005-builder-widget-ast",
+  "version": "1.0.0",
+  "title": "Builder AST Schema Validation, Responsive Prop Cascade & Studio Rendering Parity",
+  "domain": "Page Builder & Themes",
+  "owner": "@devrahmanbd",
+  "created_at": "2026-11-23T15:00:00Z",
+  "updated_at": "2026-11-23T15:00:00Z",
+  "requirement": {
+    "summary": "Builder AST documents conform to strict schema validation with versioning, preserve responsive breakpoint overrides across reload, enforce collection rail self-exclusion, and ensure visual and behavioral parity between studio editor preview and live storefront rendering.",
+    "user_outcome": "Page layouts designed in the visual builder render identically on live storefronts without layout shift or dropped widget configurations.",
+    "preconditions": [
+      "AST conforming to builder schema with sections, blocks, and responsive prop bags",
+      "Standard widget catalog: Hero, ProductGrid, RichText, CollectionRail, Spacer"
+    ]
+  },
+  "protected_behaviour": [
+    "Builder AST validates section structure and rejects unknown or malformed widget types",
+    "Responsive prop cascade resolves mobile -> tablet -> desktop with clean fallback",
+    "ThemePreviewFrame and live storefront share exact section composition rules",
+    "Corrupted widget props render fail-safe error boundaries instead of crashing the page"
+  ],
+  "forbidden_behaviour": [
+    "Unsanitized widget HTML leading to stored cross-site scripting (XSS)",
+    "Dropped or corrupted responsive overrides upon saving and reloading builder document",
+    "Preview/storefront rendering divergence causing visual discrepancy"
+  ],
+  "formal_laws": {
+    "bend_laws": [
+      "specs/bend/LAWS.bend:law_responsive_cascade_mobile",
+      "specs/bend/LAWS.bend:law_collection_self_exclusion"
+    ],
+    "lean_theorems": [
+      "Framique.Responsive:responsive_precedence_mobile",
+      "Framique.CollectionComposition:matching_rail_is_redundant"
+    ],
+    "tla_models": [
+      "specs/tla/ResponsiveAutosave.tla:NoLostOverrides"
+    ]
+  },
+  "executable_model": {
+    "artifact": "src/lib/builder-ast.ts (AST definitions, widget catalog)",
+    "correspondence_bridge": "src/components/builder/builder-ast-conformance.test.ts"
+  },
+  "conformance_obligations": [
+    {
+      "type": "formal_bend",
+      "command": "bun run test:bend",
+      "target_files": ["specs/bend/LAWS.bend", "specs/bend/PROOF.bend"]
+    },
+    {
+      "type": "formal_lean",
+      "command": "bun run test:lean",
+      "target_files": ["specs/lean/Framique/Responsive.lean"]
+    },
+    {
+      "type": "unit_integration",
+      "command": "bun run test",
+      "target_files": ["src/components/builder/builder-ast-conformance.test.ts"]
+    },
+    {
+      "type": "property_fuzz",
+      "command": "bun run test:properties",
+      "target_files": ["src/lib/cms-properties.test.ts"]
+    }
+  ],
+  "adversarial_checks": [
+    {
+      "defect_class": "responsive_override_loss",
+      "mutation_description": "Omit breakpoint overrides during builder document serialization",
+      "expected_failure_snippet": "expected mobile override to be preserved"
+    },
+    {
+      "defect_class": "corrupt_widget_crash",
+      "mutation_description": "Throw unhandled exception on malformed widget JSON",
+      "expected_failure_snippet": "expected error boundary fallback"
+    }
+  ],
+  "regression_requirements": [
+    "DIE-001-responsive-precedence",
+    "DIE-002-collection-composition"
+  ]
+}

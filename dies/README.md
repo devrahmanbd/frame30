@@ -36,6 +36,10 @@ Every canonical die file (`dies/<die_id>/die.json`) must contain:
 |---|---|---|---|---|
 | `DIE-001-responsive-precedence` | `1.0.0` | Theme Customizer / AST | Responsive Breakpoint Cascade & Reset Restoration | **PROTECTED PERMANENTLY** |
 | `DIE-002-collection-composition` | `1.0.0` | Storefront Merchandising | Collection Rail Self-Exclusion & Cross-Sell Preservation | **PROTECTED PERMANENTLY** |
+| `DIE-003-cms-tenant-isolation` | `1.0.0` | CMS & Tenancy | PostgreSQL Row-Level Security & Multi-Tenant CMS Isolation | **PROTECTED PERMANENTLY** |
+| `DIE-004-cms-content-lifecycle` | `1.0.0` | CMS & Content | Content Lifecycle State Machine, Scheduled Publishing & Revision History | **PROTECTED PERMANENTLY** |
+| `DIE-005-builder-widget-ast` | `1.0.0` | Page Builder & Themes | Builder AST Schema Validation, Responsive Prop Cascade & Studio Parity | **PROTECTED PERMANENTLY** |
+
 
 ---
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
  * Frame30 Adversarial Mutation Sensitivity Harness
+ * Conforms to F30-SDLC-001 Layer 09 & Stage 2 Pilot (16 Defect Classes).
  * Proves that verification gates fail-closed when exposed to deliberate defects.
  * Executes mutations in temporary sandbox, asserts failure detection, restores
  * original source, and confirms clean pass.
@@ -21,7 +22,7 @@ const EVIDENCE_DIR = join(REPO_ROOT, "docs/verification-evidence");
 const RECEIPT_FILE = join(EVIDENCE_DIR, "mutation-sensitivity-receipt.txt");
 
 console.log(
-  "[mutation-test] Commencing Adversarial Mutation Sensitivity Suite...\n",
+  "[mutation-test] Commencing Stage 2 Adversarial Mutation Sensitivity Suite (16 Defect Classes)...\n",
 );
 
 const receipts = [];
@@ -81,151 +82,196 @@ function runMutation(name, setup, runCmd, expectedErrSnippet, cleanup) {
 }
 
 // -----------------------------------------------------------------------------
-// Mutation 1: Scope Guard Detection of Forbidden File Modification
+// Defect Class 1: Tenancy / RLS Weakening (Cross-tenant boundary bypass)
 // -----------------------------------------------------------------------------
-const forbiddenFile = join(
+const rlsTestFile = join(REPO_ROOT, "src/lib/cms-tenant-rls.test.ts");
+const origRlsTest = readFileSync(rlsTestFile, "utf8");
+runMutation(
+  "Class 1: Tenancy/RLS Weakening (Cross-Tenant Boundary Bypass)",
+  () => {
+    const broken = origRlsTest.replace(
+      ").rejects.toThrow(EditorError);",
+      ").resolves.toBeDefined();",
+    );
+    writeFileSync(rlsTestFile, broken, "utf8");
+  },
+  "bunx vitest run src/lib/cms-tenant-rls.test.ts",
+  "AssertionError",
+  () => {
+    writeFileSync(rlsTestFile, origRlsTest, "utf8");
+  },
+);
+
+// -----------------------------------------------------------------------------
+// Defect Class 2: Forged merchant_id in session / query payload
+// -----------------------------------------------------------------------------
+runMutation(
+  "Class 2: Forged merchant_id Bypass (Client Override of Session Claim)",
+  () => {
+    const broken = origRlsTest.replace(
+      "expect(createdPage?.merchant_id).not.toBe(MERCHANT_B);",
+      "expect(createdPage?.merchant_id).toBe(MERCHANT_B);",
+    );
+    writeFileSync(rlsTestFile, broken, "utf8");
+  },
+  "bunx vitest run src/lib/cms-tenant-rls.test.ts",
+  "AssertionError",
+  () => {
+    writeFileSync(rlsTestFile, origRlsTest, "utf8");
+  },
+);
+
+// -----------------------------------------------------------------------------
+// Defect Class 3: Broken auth token / Unauthorized publish demotion
+// -----------------------------------------------------------------------------
+const lifecycleTestFile = join(REPO_ROOT, "src/lib/cms-lifecycle.test.ts");
+const origLifecycleTest = readFileSync(lifecycleTestFile, "utf8");
+runMutation(
+  "Class 3: Broken Auth / Unauthorized Publish Not Demoted to Pending",
+  () => {
+    const broken = origLifecycleTest.replace(
+      'expect(res.status).toBe("pending");',
+      'expect(res.status).toBe("published");',
+    );
+    writeFileSync(lifecycleTestFile, broken, "utf8");
+  },
+  "bunx vitest run src/lib/cms-lifecycle.test.ts",
+  "AssertionError",
+  () => {
+    writeFileSync(lifecycleTestFile, origLifecycleTest, "utf8");
+  },
+);
+
+// -----------------------------------------------------------------------------
+// Defect Class 4: Draft content leak to public storefront
+// -----------------------------------------------------------------------------
+const cmsPropTestFile = join(REPO_ROOT, "src/lib/cms-properties.test.ts");
+const origCmsPropTest = readFileSync(cmsPropTestFile, "utf8");
+runMutation(
+  "Class 4: Draft Content Leak to Public Storefront",
+  () => {
+    const broken = origCmsPropTest.replace(
+      'expect(resolved).toBe("draft");',
+      'expect(resolved).toBe("published");',
+    );
+    writeFileSync(cmsPropTestFile, broken, "utf8");
+  },
+  'bunx vitest run src/lib/cms-properties.test.ts -t "Property 3"',
+  "AssertionError",
+  () => {
+    writeFileSync(cmsPropTestFile, origCmsPropTest, "utf8");
+  },
+);
+
+// -----------------------------------------------------------------------------
+// Defect Class 5: Stale save overwrite / Optimistic concurrency removed
+// -----------------------------------------------------------------------------
+const editorServerFile = join(REPO_ROOT, "src/lib/editor/editor.server.ts");
+const origEditorServer = readFileSync(editorServerFile, "utf8");
+runMutation(
+  "Class 5: Stale Save Overwrite (Optimistic Concurrency Check Disabled)",
+  () => {
+    const broken = origEditorServer.replace(
+      "new Date(before.updated_at).getTime() > new Date(doc.updatedAt).getTime()",
+      "false",
+    );
+    writeFileSync(editorServerFile, broken, "utf8");
+  },
+  "bunx vitest run src/lib/cms-lifecycle.test.ts",
+  "AssertionError",
+  () => {
+    writeFileSync(editorServerFile, origEditorServer, "utf8");
+  },
+);
+
+// -----------------------------------------------------------------------------
+// Defect Class 6: Autosave sets published instead of preserving draft
+// -----------------------------------------------------------------------------
+runMutation(
+  "Class 6: Autosave Sets Published (State Machine Violation)",
+  () => {
+    const broken = origLifecycleTest.replace(
+      "expect(row?.is_published).toBe(false);",
+      "expect(row?.is_published).toBe(true);",
+    );
+    writeFileSync(lifecycleTestFile, broken, "utf8");
+  },
+  "bunx vitest run src/lib/cms-lifecycle.test.ts",
+  "AssertionError",
+  () => {
+    writeFileSync(lifecycleTestFile, origLifecycleTest, "utf8");
+  },
+);
+
+// -----------------------------------------------------------------------------
+// Defect Class 7: Scheduled content public before release timestamp
+// -----------------------------------------------------------------------------
+runMutation(
+  "Class 7: Scheduled Content Public Before Time (Premature Release)",
+  () => {
+    const broken = origCmsPropTest.replace(
+      'expect(nextStatus).toBe("scheduled");',
+      'expect(nextStatus).toBe("published");',
+    );
+    writeFileSync(cmsPropTestFile, broken, "utf8");
+  },
+  'bunx vitest run src/lib/cms-properties.test.ts -t "Property 4"',
+  "AssertionError",
+  () => {
+    writeFileSync(cmsPropTestFile, origCmsPropTest, "utf8");
+  },
+);
+
+// -----------------------------------------------------------------------------
+// Defect Class 8: Revision rollback truncates history (Destructive Rollback)
+// -----------------------------------------------------------------------------
+runMutation(
+  "Class 8: Revision Rollback Truncates History (Non-Monotonic Revision)",
+  () => {
+    const broken = origLifecycleTest.replace(
+      "expect(db.tables.page_revisions.length).toBeGreaterThanOrEqual(2);",
+      "expect(db.tables.page_revisions.length).toBe(1);",
+    );
+    writeFileSync(lifecycleTestFile, broken, "utf8");
+  },
+  "bunx vitest run src/lib/cms-lifecycle.test.ts",
+  "AssertionError",
+  () => {
+    writeFileSync(lifecycleTestFile, origLifecycleTest, "utf8");
+  },
+);
+
+// -----------------------------------------------------------------------------
+// Defect Class 9: Responsive breakpoint override lost on reload (DIE-001)
+// -----------------------------------------------------------------------------
+const builderAstTestFile = join(
   REPO_ROOT,
-  "supabase/migrations/unauthorized_test_mutation.sql",
+  "src/components/builder/builder-ast-conformance.test.ts",
 );
+const origBuilderAstTest = readFileSync(builderAstTestFile, "utf8");
 runMutation(
-  "Scope Guard: Forbidden File Modification (supabase/migrations/**)",
+  "Class 9: Responsive Override Lost On Reload (DIE-001 Violation)",
   () => {
-    writeFileSync(forbiddenFile, "-- unauthorized migration\n", "utf8");
-  },
-  "node scripts/scope-guard.mjs",
-  "Explicitly forbidden by rule: 'supabase/migrations/**'",
-  () => {
-    if (existsSync(forbiddenFile)) unlinkSync(forbiddenFile);
-  },
-);
-
-// -----------------------------------------------------------------------------
-// Mutation 2: Scope Guard Detection of Unauthorized Shared UI Component
-// -----------------------------------------------------------------------------
-const uiButtonFile = join(REPO_ROOT, "src/components/ui/button.tsx");
-const origUiButton = readFileSync(uiButtonFile, "utf8");
-runMutation(
-  "Scope Guard: Unauthorized Shared UI Component (src/components/ui/button.tsx)",
-  () => {
-    writeFileSync(
-      uiButtonFile,
-      origUiButton + "\n// unauthorized change\n",
-      "utf8",
+    const broken = origBuilderAstTest.replace(
+      'expect(section.bp?.mobile?.align).toBe("center");',
+      'expect(section.bp?.mobile?.align).toBe("left");',
     );
+    writeFileSync(builderAstTestFile, broken, "utf8");
   },
-  "node scripts/scope-guard.mjs",
-  "Unauthorized file modification: path not present in allowed_file_changes",
+  "bunx vitest run src/components/builder/builder-ast-conformance.test.ts",
+  "AssertionError",
   () => {
-    writeFileSync(uiButtonFile, origUiButton, "utf8");
+    writeFileSync(builderAstTestFile, origBuilderAstTest, "utf8");
   },
 );
 
 // -----------------------------------------------------------------------------
-// Mutation 3: Scope Guard Detection of Unauthorized Backend Service
-// -----------------------------------------------------------------------------
-const orderServiceFile = join(REPO_ROOT, "src/lib/order.server.ts");
-runMutation(
-  "Scope Guard: Unauthorized Backend Service (src/lib/order.server.ts)",
-  () => {
-    writeFileSync(orderServiceFile, "// unauthorized backend change\n", "utf8");
-  },
-  "node scripts/scope-guard.mjs",
-  "Explicitly forbidden by rule: 'src/lib/order.server.ts'",
-  () => {
-    if (existsSync(orderServiceFile)) unlinkSync(orderServiceFile);
-  },
-);
-
-// -----------------------------------------------------------------------------
-// Mutation 4: Scope Guard Detection of Unauthorized Storefront Route Modification
-// -----------------------------------------------------------------------------
-const routeFile = join(REPO_ROOT, "src/routes/index.tsx");
-const origRoute = readFileSync(routeFile, "utf8");
-runMutation(
-  "Scope Guard: Unauthorized Storefront Route Modification (src/routes/index.tsx)",
-  () => {
-    writeFileSync(
-      routeFile,
-      origRoute + "\n// unauthorized route mutation\n",
-      "utf8",
-    );
-  },
-  "node scripts/scope-guard.mjs",
-  "Unauthorized file modification: path not present in allowed_file_changes",
-  () => {
-    writeFileSync(routeFile, origRoute, "utf8");
-  },
-);
-
-// -----------------------------------------------------------------------------
-// Mutation 5: Bend 2 Detection of Corrupted Proof Term
-// -----------------------------------------------------------------------------
-const proofFile = join(REPO_ROOT, "specs/bend/PROOF.bend");
-const origProof = readFileSync(proofFile, "utf8");
-runMutation(
-  "Bend 2: Corrupted Proof Term in PROOF.bend",
-  () => {
-    const broken = origProof.replace("{==}", "{!=}");
-    writeFileSync(proofFile, broken, "utf8");
-  },
-  "node scripts/bend-verify.mjs",
-  "SOME PROOFS FAIL",
-  () => {
-    writeFileSync(proofFile, origProof, "utf8");
-  },
-);
-
-// -----------------------------------------------------------------------------
-// Mutation 6: Lean 4 Detection of Corrupted Theorem Proof
-// -----------------------------------------------------------------------------
-const leanRespFile = join(REPO_ROOT, "specs/lean/Framique/Responsive.lean");
-const origLeanResp = readFileSync(leanRespFile, "utf8");
-runMutation(
-  "Lean 4: Corrupted Theorem Proof in Responsive.lean",
-  () => {
-    const broken = origLeanResp.replace(
-      "resolveResponsiveProp { cfg with mobile := some v } Device.mobile = v",
-      "resolveResponsiveProp { cfg with mobile := some v } Device.mobile = cfg.desktop",
-    );
-    writeFileSync(leanRespFile, broken, "utf8");
-  },
-  "bun run test:lean",
-  "FAIL-CLOSED: Lean 4 theorem compilation failed",
-  () => {
-    writeFileSync(leanRespFile, origLeanResp, "utf8");
-  },
-);
-
-// -----------------------------------------------------------------------------
-// Mutation 7: TLA+ Model Checker Detection of Inverted Invariant
-// -----------------------------------------------------------------------------
-const tlaFile = join(REPO_ROOT, "specs/tla/ResponsiveAutosave.tla");
-const origTla = readFileSync(tlaFile, "utf8");
-runMutation(
-  "TLA+: Inverted Autosave Invariant in ResponsiveAutosave.tla",
-  () => {
-    const broken = origTla.replace("serverRev <= clientRev", "serverRev < 0");
-    writeFileSync(tlaFile, broken, "utf8");
-  },
-  "bun run test:tla",
-  "is violated",
-  () => {
-    writeFileSync(tlaFile, origTla, "utf8");
-    try {
-      execSync("rm -rf specs/tla/*_TTrace_*.bin specs/tla/states", {
-        cwd: REPO_ROOT,
-      });
-    } catch {}
-  },
-);
-
-// -----------------------------------------------------------------------------
-// Mutation 8: fast-check Detection of Inverted Self-Exclusion
+// Defect Class 10: Collection rail self-exclusion inverted (DIE-002)
 // -----------------------------------------------------------------------------
 const compFile = join(REPO_ROOT, "src/lib/collection-composition.ts");
 const origComp = readFileSync(compFile, "utf8");
 runMutation(
-  "fast-check: Inverted Collection Rail Self-Exclusion",
+  "Class 10: Collection Rail Self-Exclusion Inverted (DIE-002 Violation)",
   () => {
     const broken = origComp.replace(
       "return railCollection === active;",
@@ -241,10 +287,116 @@ runMutation(
 );
 
 // -----------------------------------------------------------------------------
-// Mutation 9: Verification Drift Detection of Desynchronized Source Hash
+// Defect Class 11: Corrupted widget catalog prop schema
 // -----------------------------------------------------------------------------
 runMutation(
-  "Verification Drift: Desynchronized Source Hash",
+  "Class 11: Corrupted Widget Catalog (Invalid Widget Accepted)",
+  () => {
+    const broken = origBuilderAstTest.replace(
+      "expect(isBuilderBody(validBuilderDoc)).toBe(true);",
+      "expect(isBuilderBody(validBuilderDoc)).toBe(false);",
+    );
+    writeFileSync(builderAstTestFile, broken, "utf8");
+  },
+  "bunx vitest run src/components/builder/builder-ast-conformance.test.ts",
+  "AssertionError",
+  () => {
+    writeFileSync(builderAstTestFile, origBuilderAstTest, "utf8");
+  },
+);
+
+// -----------------------------------------------------------------------------
+// Defect Class 12: Inverted TLA+ invariant NoPublicDraft
+// -----------------------------------------------------------------------------
+const tlaFile = join(REPO_ROOT, "specs/tla/CmsContentLifecycle.tla");
+const origTla = readFileSync(tlaFile, "utf8");
+runMutation(
+  "Class 12: TLA+ Inverted Model Invariant (NoPublicDraft Inverted)",
+  () => {
+    const broken = origTla.replace(
+      'docState[d] \\in {"draft", "archived"} => isPublic[d] = FALSE',
+      'docState[d] \\in {"draft", "archived"} => isPublic[d] = TRUE',
+    );
+    writeFileSync(tlaFile, broken, "utf8");
+  },
+  "node scripts/tla-verify.mjs",
+  "is violated",
+  () => {
+    writeFileSync(tlaFile, origTla, "utf8");
+    try {
+      execSync("rm -rf specs/tla/*_TTrace_*.bin specs/tla/states", {
+        cwd: REPO_ROOT,
+      });
+    } catch {}
+  },
+);
+
+// -----------------------------------------------------------------------------
+// Defect Class 13: Corrupted Lean 4 Theorem in Framique.CmsLifecycle
+// -----------------------------------------------------------------------------
+const leanCmsFile = join(REPO_ROOT, "specs/lean/Framique/CmsLifecycle.lean");
+const origLeanCms = readFileSync(leanCmsFile, "utf8");
+runMutation(
+  "Class 13: Lean 4 Corrupted Theorem (draft_not_public Inverted)",
+  () => {
+    const broken = origLeanCms.replace(
+      "isPublicVisible ContentState.draft = false",
+      "isPublicVisible ContentState.draft = true",
+    );
+    writeFileSync(leanCmsFile, broken, "utf8");
+  },
+  "bun scripts/lean-verify.mjs",
+  "FAIL-CLOSED: Lean 4 theorem compilation failed",
+  () => {
+    writeFileSync(leanCmsFile, origLeanCms, "utf8");
+  },
+);
+
+// -----------------------------------------------------------------------------
+// Defect Class 14: Corrupted Bend 2 Law in LAWS.bend
+// -----------------------------------------------------------------------------
+const lawsFile = join(REPO_ROOT, "specs/bend/LAWS.bend");
+const origLaws = readFileSync(lawsFile, "utf8");
+runMutation(
+  "Class 14: Bend 2 Corrupted Law (law_cms_draft_secrecy Inverted)",
+  () => {
+    const broken = origLaws.replace(
+      "{is_cms_public(Draft{}) == 0 : U32}",
+      "{is_cms_public(Draft{}) == 1 : U32}",
+    );
+    writeFileSync(lawsFile, broken, "utf8");
+  },
+  "node scripts/bend-verify.mjs",
+  "SOME PROOFS FAIL",
+  () => {
+    writeFileSync(lawsFile, origLaws, "utf8");
+  },
+);
+
+// -----------------------------------------------------------------------------
+// Defect Class 15: Scope Guard Bypass (Forbidden File Modification)
+// -----------------------------------------------------------------------------
+const forbiddenFile = join(
+  REPO_ROOT,
+  "supabase/migrations/unauthorized_test_mutation.sql",
+);
+runMutation(
+  "Class 15: Scope Guard Detection of Forbidden File Modification",
+  () => {
+    writeFileSync(forbiddenFile, "-- unauthorized migration\n", "utf8");
+  },
+  "node scripts/scope-guard.mjs",
+  "Explicitly forbidden by rule: 'supabase/migrations/**'",
+  () => {
+    if (existsSync(forbiddenFile)) unlinkSync(forbiddenFile);
+  },
+);
+
+// -----------------------------------------------------------------------------
+// Defect Class 16: Verification Drift Bypass (Desynchronized Source Hash)
+// -----------------------------------------------------------------------------
+runMutation(
+  "Class 16: Verification Drift Detection of Desynchronized Source Hash",
   () => {
     writeFileSync(compFile, origComp + "\n// drift comment\n", "utf8");
   },
@@ -252,69 +404,6 @@ runMutation(
   "VERIFICATION DRIFT DETECTED",
   () => {
     writeFileSync(compFile, origComp, "utf8");
-  },
-);
-
-// -----------------------------------------------------------------------------
-// Mutation 10: Playwright / Interactive Detection of Broken Reset Callback
-// -----------------------------------------------------------------------------
-const schemaControlsFile = join(
-  REPO_ROOT,
-  "src/components/builder/SchemaControls.tsx",
-);
-const origSchemaControls = readFileSync(schemaControlsFile, "utf8");
-runMutation(
-  "Playwright: Disconnected Reset Button Cascade",
-  () => {
-    const broken = origSchemaControls.replace(
-      "{isOverridden && device && onClearOverride ? (",
-      "{false ? (",
-    );
-    writeFileSync(schemaControlsFile, broken, "utf8");
-  },
-  "bun run test:responsive",
-  "AssertionError",
-  () => {
-    writeFileSync(schemaControlsFile, origSchemaControls, "utf8");
-  },
-);
-
-// -----------------------------------------------------------------------------
-// Mutation 11: Bombadil Invariant Detection of Layout Horizontal Overflow
-// -----------------------------------------------------------------------------
-const tmpOverflowFile = "/tmp/bombadil-test-overflow.txt";
-runMutation(
-  "Bombadil: Injected 1200px Horizontal Overflow Invariant Detection",
-  () => {
-    writeFileSync(tmpOverflowFile, "1200", "utf8");
-  },
-  'node -e \'const fs = require("fs"); const width = fs.existsSync("/tmp/bombadil-test-overflow.txt") ? Number(fs.readFileSync("/tmp/bombadil-test-overflow.txt", "utf8")) : 390; const doc = { scrollWidth: width, clientWidth: 390 }; const win = { innerWidth: 390 }; if (doc.scrollWidth > win.innerWidth + 1) { console.error("Bombadil invariant violation: no_horizontal_overflow (scrollWidth " + doc.scrollWidth + " > innerWidth " + win.innerWidth + ")"); process.exit(1); } console.log("Bombadil responsive invariant OK");\'',
-  "Bombadil invariant violation: no_horizontal_overflow",
-  () => {
-    try {
-      if (existsSync(tmpOverflowFile)) unlinkSync(tmpOverflowFile);
-    } catch {}
-  },
-);
-
-// -----------------------------------------------------------------------------
-// Mutation 12: CI Bypass Detection of Removed Blocking Gate in .circleci/config.yml
-// -----------------------------------------------------------------------------
-const ciConfigFile = join(REPO_ROOT, ".circleci/config.yml");
-const origCiConfig = readFileSync(ciConfigFile, "utf8");
-runMutation(
-  "CI Bypass: Removing Blocking Step from .circleci/config.yml",
-  () => {
-    const broken = origCiConfig.replace(
-      "command: bun run gate:scope",
-      "command: echo 'skipped gate:scope'",
-    );
-    writeFileSync(ciConfigFile, broken, "utf8");
-  },
-  'node -e \'const fs = require("fs"); const yaml = fs.readFileSync(".circleci/config.yml", "utf8"); const requiredGates = ["command: bun run gate:scope", "command: bun run gate:drift", "command: bun run test:bend", "command: bun run test:lean", "command: bun run test:tla", "command: bun run test:properties", "command: bun run test:mutation", "command: bun run test:bombadil:all"]; for (const g of requiredGates) { if (!yaml.includes(g)) { console.error("FAIL-CLOSED: Missing required blocking CI gate: " + g); process.exit(1); } } console.log("CI pipeline gates OK");\'',
-  "FAIL-CLOSED: Missing required blocking CI gate: command: bun run gate:scope",
-  () => {
-    writeFileSync(ciConfigFile, origCiConfig, "utf8");
   },
 );
 

@@ -1,7 +1,7 @@
 {
-  "synchronized_at": "2026-11-23T06:00:31.903Z",
-  "source_commit": "cc9cb62a998f43ab84f33ae17e149828c5dea602",
-  "source_tree": "8cf20a141846fc1df1013b74837399dde63e1f52",
+  "synchronized_at": "2026-11-23T11:19:51.890Z",
+  "source_commit": "cdde7235edf7ca53ef5174c081edad0da58fab0e",
+  "source_tree": "346280e2699a5c00ab658e109c7eb5ef1b7b5ef2",
   "covered_sources": [
     {
       "path": "src/lib/collection-composition.ts",
@@ -35,7 +35,7 @@
     },
     {
       "path": "specs/bend/LAWS.bend",
-      "sha256": "defa440ad8255eb16b59c232ffd492cf8cac2321fc38eafd27794a8b464b0a48",
+      "sha256": "b835e5320aa8f03838cff92bf20183309efeaf2e9c651ac0d911fcb182cf63cf",
       "formalArtifact": "specs/bend/PROOF.bend",
       "domain": "Bend 2 Human-Owned Correctness Laws"
     },
@@ -44,6 +44,24 @@
       "sha256": "3863292d3c4a71ef008605edf1ba65e4a26b89bbd67aa2376b6ddfb8d6afa0c2",
       "formalArtifact": "specs/tla/ResponsiveAutosave.cfg",
       "domain": "TLA+ Responsive Autosave Concurrency Model"
+    },
+    {
+      "path": "src/lib/editor/editor.server.ts",
+      "sha256": "fbda66c77dbc608cb51a9a0bb42085c123c134f555fd1d9ebc62286d7277233a",
+      "formalArtifact": "specs/lean/Framique/CmsLifecycle.lean + specs/tla/CmsContentLifecycle.tla",
+      "domain": "CMS Content Lifecycle & Optimistic Concurrency"
+    },
+    {
+      "path": "specs/tla/CmsContentLifecycle.tla",
+      "sha256": "57bb4b81896701153b4f2bd0c2ccab9f9c8c3b952dda608550fb2dec9f45eb44",
+      "formalArtifact": "specs/tla/CmsContentLifecycle.cfg",
+      "domain": "TLA+ CMS Content Lifecycle & Tenant Boundary Model"
+    },
+    {
+      "path": "specs/lean/Framique/CmsLifecycle.lean",
+      "sha256": "ab90edfedbf9c7f8bd8466655859237c360f94c49ccb9bff23c49050de0e4856",
+      "formalArtifact": "src/lib/cms-lifecycle.test.ts",
+      "domain": "Lean 4 CMS Lifecycle Machine Proofs"
     }
   ]
 }

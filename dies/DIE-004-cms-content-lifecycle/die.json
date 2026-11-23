@@ -1,0 +1,99 @@
+{
+  "$schema": "../schema.json",
+  "die_id": "DIE-004-cms-content-lifecycle",
+  "version": "1.0.0",
+  "title": "CMS Content Lifecycle State Machine, Scheduled Publishing & Revision History",
+  "domain": "CMS & Content",
+  "owner": "@devrahmanbd",
+  "created_at": "2026-11-23T15:00:00Z",
+  "updated_at": "2026-11-23T15:00:00Z",
+  "requirement": {
+    "summary": "CMS documents (pages, blog posts, articles) follow a deterministic state machine (draft -> scheduled -> published -> archived) with atomic transitions, stale save conflict detection, forward-only revision rollbacks, and absolute draft secrecy from unauthenticated visitors.",
+    "user_outcome": "Merchants safely author drafts, schedule releases, roll back to prior revisions without data loss, and prevent concurrent overwrite conflicts.",
+    "preconditions": [
+      "Document authored within merchant workspace with revision sequence tracking",
+      "Authenticated role with marketing.update or marketing.publish permissions"
+    ]
+  },
+  "protected_behaviour": [
+    "Draft documents are strictly inaccessible from public storefront routes",
+    "Scheduled documents remain hidden until publication timestamp is reached",
+    "Autosave updates document draft state and creates revision without altering publication status",
+    "Save operations detect stale revisions and reject concurrent conflict saves",
+    "Rollback to a past revision appends a new forward revision, preserving complete audit history"
+  ],
+  "forbidden_behaviour": [
+    "Draft content leaking to public or search indexing crawlers",
+    "Silent overwrite of newer revisions during concurrent authoring sessions",
+    "Unauthorized actors directly transitioning draft documents to published state",
+    "Destructive rollback truncating or deleting revision records"
+  ],
+  "formal_laws": {
+    "bend_laws": [
+      "specs/bend/LAWS.bend:law_cms_draft_secrecy",
+      "specs/bend/LAWS.bend:law_cms_scheduled_secrecy",
+      "specs/bend/LAWS.bend:law_cms_published_visibility",
+      "specs/bend/LAWS.bend:law_cms_archived_secrecy"
+    ],
+    "lean_theorems": [
+      "Framique.CmsLifecycle:draft_not_public",
+      "Framique.CmsLifecycle:scheduled_not_public",
+      "Framique.CmsLifecycle:archived_not_public",
+      "Framique.CmsLifecycle:rollback_strictly_monotonic",
+      "Framique.CmsLifecycle:stale_save_sound"
+    ],
+    "tla_models": [
+      "specs/tla/CmsContentLifecycle.tla:NoPublicDraft",
+      "specs/tla/CmsContentLifecycle.tla:ScheduledNotPublicBeforeTime",
+      "specs/tla/CmsContentLifecycle.tla:AtomicPublicationState"
+    ]
+  },
+  "executable_model": {
+    "artifact": "specs/lean/Framique/CmsLifecycle.lean (CmsState, saveEditorDoc, rollbackDoc)",
+    "correspondence_bridge": "src/lib/editor/editor.server.ts (saveEditor, statusOf, resolvePublishStatus)"
+  },
+  "conformance_obligations": [
+    {
+      "type": "formal_bend",
+      "command": "bun run test:bend",
+      "target_files": ["specs/bend/LAWS.bend", "specs/bend/PROOF.bend"]
+    },
+    {
+      "type": "formal_lean",
+      "command": "bun run test:lean",
+      "target_files": ["specs/lean/Framique/CmsLifecycle.lean"]
+    },
+    {
+      "type": "formal_tla",
+      "command": "bun run test:tla",
+      "target_files": ["specs/tla/CmsContentLifecycle.tla", "specs/tla/CmsContentLifecycle.cfg"]
+    },
+    {
+      "type": "property_fuzz",
+      "command": "bun run test:properties",
+      "target_files": ["src/lib/cms-properties.test.ts"]
+    },
+    {
+      "type": "unit_integration",
+      "command": "bun run test",
+      "target_files": ["src/lib/cms-lifecycle.test.ts"]
+    }
+  ],
+  "adversarial_checks": [
+    {
+      "defect_class": "draft_content_leak",
+      "mutation_description": "Allow draft documents to be returned by public page resolver",
+      "expected_failure_snippet": "expected draft document to be inaccessible publicly"
+    },
+    {
+      "defect_class": "stale_save_silent_overwrite",
+      "mutation_description": "Remove updatedAt conflict check in saveEditor",
+      "expected_failure_snippet": "expected stale save to throw stale_revision"
+    }
+  ],
+  "regression_requirements": [
+    "DIE-001-responsive-precedence",
+    "DIE-002-collection-composition",
+    "DIE-003-cms-tenant-isolation"
+  ]
+}

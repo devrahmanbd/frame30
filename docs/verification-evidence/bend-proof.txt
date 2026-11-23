@@ -1,13 +1,13 @@
 =============================================================================
 BEND 2 OFFICIAL FORMAL VERIFICATION & THEOREM PROOF RECEIPT
 =============================================================================
-Date: 2026-11-23T10:27:22.542Z
+Date: 2026-11-23T13:16:10.096Z
 Compiler: bend 2.0.40
 Toolchain Path: /Users/rahman/.bend2/bin/bend
 Binary SHA-256: c362cdac355d84f51278db97cb29a3b2e0be084d59b76a5cff013199b3513539
 Lean Kernel: Lean v4.34.0 (BendTT kernel)
-LAWS.bend SHA-256:  defa440ad8255eb16b59c232ffd492cf8cac2321fc38eafd27794a8b464b0a48
-PROOF.bend SHA-256: f2483878f03bbd1773632c31ce5912b6d292f99db1e92bcdee5b85c3288f3e09
+LAWS.bend SHA-256:  b835e5320aa8f03838cff92bf20183309efeaf2e9c651ac0d911fcb182cf63cf
+PROOF.bend SHA-256: 0f0c28c92a08bea6cac000e0c0443cefb0537dfec6836448ec26b2d0f4776320
 Laws Formally Verified by Lean-Backed Kernel:
   - Law 1: Responsive Precedence Cascade (Mobile Override is Authoritative): PROVEN
   - Law 2: Responsive Precedence Cascade (Tablet Fallback): PROVEN
@@ -15,6 +15,12 @@ Laws Formally Verified by Lean-Backed Kernel:
   - Law 4: Reset Inheritance Restoration: PROVEN
   - Law 5: Collection Merchandising Self-Exclusion: PROVEN
   - Law 6: Intentional Cross-Sell Preservation: PROVEN
+  - Law 7: CMS Draft Secrecy: PROVEN
+  - Law 8: CMS Scheduled Content Secrecy: PROVEN
+  - Law 9: CMS Published Visibility: PROVEN
+  - Law 10: CMS Archived Content Secrecy: PROVEN
+  - Law 11: CMS Tenant Boundary Isolation: PROVEN
+  - Law 12: CMS Same-Tenant Access Authorization: PROVEN
 -----------------------------------------------------------------------------
 Raw Kernel Output:
 ALL PROOFS CHECK

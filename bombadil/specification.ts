@@ -22,3 +22,10 @@ export {
   responsive_override_reset_integrity,
   device_visibility_consistency,
 } from "./properties/builder_responsive.ts";
+export {
+  no_draft_leak_on_public,
+  no_cross_tenant_data_leak,
+  cms_editor_controls_accessible,
+  no_broken_cms_error_boundaries,
+} from "./properties/cms_lifecycle.ts";
+

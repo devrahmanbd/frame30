@@ -2,11 +2,13 @@ import Framique.Pricing
 import Framique.ThemeLifecycle
 import Framique.Responsive
 import Framique.CollectionComposition
+import Framique.CmsLifecycle
 
 open Framique
 open Framique.ThemeLifecycle
 open Framique.Responsive
 open Framique.CollectionComposition
+open Framique.CmsLifecycle
 
 def formatPricingVector (id : String) (subtotal shipping : Nat) (c : Coupon) : String :=
   let d := calculateDiscount subtotal c
@@ -41,6 +43,10 @@ def formatResponsiveVector (id : String) (cfg : BreakpointProps String) (dev : D
 def formatCollectionVector (id : String) (activeSlug : String) (sec : Section) : String :=
   let red := isRedundantCollectionRail activeSlug sec
   s!"\{\"id\": \"{id}\", \"redundant\": {red}}"
+
+def formatCmsVector (id : String) (st : ContentState) : String :=
+  let vis := isPublicVisible st
+  s!"\{\"id\": \"{id}\", \"isPublic\": {vis}}"
 
 def main : IO Unit := do
   let pricingVectors : List String := [
@@ -89,4 +95,11 @@ def main : IO Unit := do
     formatCollectionVector "coll-non-matching-rail" "panjabis" { type := "product_rail", targetSlug := some "sherwanis" }
   ]
 
-  IO.println ("{\"pricing\": [" ++ String.intercalate ", " pricingVectors ++ "], \"theme\": [" ++ String.intercalate ", " themeVectors ++ "], \"responsive\": [" ++ String.intercalate ", " responsiveVectors ++ "], \"collection\": [" ++ String.intercalate ", " collectionVectors ++ "]}")
+  let cmsVectors : List String := [
+    formatCmsVector "cms-draft-hidden" ContentState.draft,
+    formatCmsVector "cms-scheduled-hidden" (ContentState.scheduled 1800000000),
+    formatCmsVector "cms-published-visible" (ContentState.published 1700000000),
+    formatCmsVector "cms-archived-hidden" ContentState.archived
+  ]
+
+  IO.println ("{\"pricing\": [" ++ String.intercalate ", " pricingVectors ++ "], \"theme\": [" ++ String.intercalate ", " themeVectors ++ "], \"responsive\": [" ++ String.intercalate ", " responsiveVectors ++ "], \"collection\": [" ++ String.intercalate ", " collectionVectors ++ "], \"cms\": [" ++ String.intercalate ", " cmsVectors ++ "]}")

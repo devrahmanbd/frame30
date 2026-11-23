@@ -639,7 +639,7 @@ export async function saveEditor(
   if (doc.id) {
     const { data: before, error: readError } = await loose(db)
       .from(table(doc.kind))
-      .select("slug, status, published_at")
+      .select("slug, status, published_at, updated_at")
       .eq("id", doc.id)
       .eq("merchant_id", merchantId)
       .maybeSingle();
@@ -650,6 +650,20 @@ export async function saveEditor(
         "That item no longer exists.",
         "আইটেমটি আর নেই।",
       );
+
+    // Stale save conflict detection (Inviolable Invariant 4)
+    if (
+      !autosave &&
+      doc.updatedAt &&
+      before.updated_at &&
+      new Date(before.updated_at).getTime() > new Date(doc.updatedAt).getTime()
+    ) {
+      throw new EditorError(
+        "stale_revision",
+        "Another user or tab updated this item. Please reload before saving.",
+        "অন্য কোনো ব্যবহারকারী এটি পরিবর্তন করেছেন। সংরক্ষণ করার আগে অনুগ্রহ করে পুনরায় লোড করুন।",
+      );
+    }
 
     const revisionId = await snapshot(
       db,

@@ -1,82 +1,106 @@
 =============================================================================
 FRAME30 ADVERSARIAL MUTATION SENSITIVITY EVIDENCE RECEIPT
 =============================================================================
-Timestamp: 2026-11-23T10:10:43.380Z
-Total Mutations Tested: 12
+Timestamp: 2026-11-23T13:16:10.832Z
+Total Mutations Tested: 16
 
-[Mutation 1] Scope Guard: Forbidden File Modification (supabase/migrations/**)
+[Mutation 1] Class 1: Tenancy/RLS Weakening (Cross-Tenant Boundary Bypass)
   Detection Status: DETECTED & REJECTED (PASS)
-  Expected Signature: Explicitly forbidden by rule: 'supabase/migrations/**'
+  Expected Signature: AssertionError
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet: [scope-guard] Loaded change contract: FRAME30-SDLC-000 ("Baseline & Implement Frame30 SDLC Control Plane (F30-SDLC-001 Stage 0 & 1)") [scope-guard] Baseline Commit: e13ca6ef915547b97327cb3bda29dcbab3056480 [scope-guard] Human Owner: @devrahmanbd [scope-guard] Total paths evaluated against scope: 24 ...
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-tenant-rls.test.ts (7 tests | 1 failed) 42ms      × strictly forbids Merchant A from reading Merchant B's page (cross-tenant leak) 5ms   Test Files  1 failed (1)       Tests  1 failed | 6 passed (7)    Start at  19:15:12    Duration  574...
 
-[Mutation 2] Scope Guard: Unauthorized Shared UI Component (src/components/ui/button.tsx)
+[Mutation 2] Class 2: Forged merchant_id Bypass (Client Override of Session Claim)
   Detection Status: DETECTED & REJECTED (PASS)
-  Expected Signature: Unauthorized file modification: path not present in allowed_file_changes
+  Expected Signature: AssertionError
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet: [scope-guard] Loaded change contract: FRAME30-SDLC-000 ("Baseline & Implement Frame30 SDLC Control Plane (F30-SDLC-001 Stage 0 & 1)") [scope-guard] Baseline Commit: e13ca6ef915547b97327cb3bda29dcbab3056480 [scope-guard] Human Owner: @devrahmanbd [scope-guard] Total paths evaluated against scope: 24 ...
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-tenant-rls.test.ts (7 tests | 1 failed) 60ms      × prevents forged merchant ID override during document save 51ms   Test Files  1 failed (1)       Tests  1 failed | 6 passed (7)    Start at  19:15:14    Duration  890ms (transform 524ms,...
 
-[Mutation 3] Scope Guard: Unauthorized Backend Service (src/lib/order.server.ts)
+[Mutation 3] Class 3: Broken Auth / Unauthorized Publish Not Demoted to Pending
   Detection Status: DETECTED & REJECTED (PASS)
-  Expected Signature: Explicitly forbidden by rule: 'src/lib/order.server.ts'
+  Expected Signature: AssertionError
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet: [scope-guard] Loaded change contract: FRAME30-SDLC-000 ("Baseline & Implement Frame30 SDLC Control Plane (F30-SDLC-001 Stage 0 & 1)") [scope-guard] Baseline Commit: e13ca6ef915547b97327cb3bda29dcbab3056480 [scope-guard] Human Owner: @devrahmanbd [scope-guard] Total paths evaluated against scope: 24 ...
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-lifecycle.test.ts (6 tests | 1 failed) 43ms      × demotes publishing to pending review if actor lacks publish permission 4ms   Test Files  1 failed (1)       Tests  1 failed | 5 passed (6)    Start at  19:15:16    Duration  551ms (trans...
 
-[Mutation 4] Scope Guard: Unauthorized Storefront Route Modification (src/routes/index.tsx)
+[Mutation 4] Class 4: Draft Content Leak to Public Storefront
   Detection Status: DETECTED & REJECTED (PASS)
-  Expected Signature: Unauthorized file modification: path not present in allowed_file_changes
+  Expected Signature: AssertionError
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet: [scope-guard] Loaded change contract: FRAME30-SDLC-000 ("Baseline & Implement Frame30 SDLC Control Plane (F30-SDLC-001 Stage 0 & 1)") [scope-guard] Baseline Commit: e13ca6ef915547b97327cb3bda29dcbab3056480 [scope-guard] Human Owner: @devrahmanbd [scope-guard] Total paths evaluated against scope: 24 ...
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-properties.test.ts (6 tests | 1 failed | 5 skipped) 12ms      × Property 3: Draft content is strictly non-public across all arbitrary documents 11ms   Test Files  1 failed (1)       Tests  1 failed | 5 skipped (6)    Start at  19:15:18  ...
 
-[Mutation 5] Bend 2: Corrupted Proof Term in PROOF.bend
+[Mutation 5] Class 5: Stale Save Overwrite (Optimistic Concurrency Check Disabled)
   Detection Status: DETECTED & REJECTED (PASS)
-  Expected Signature: SOME PROOFS FAIL
+  Expected Signature: AssertionError
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet: [bend-verify] Validating Bend 2 formal laws and proof artifacts with Lean-backed kernel (--verdict)... [bend-verify] Official Bend 2 compiler detected: bend 2.0.40 (/Users/rahman/.bend2/bin/bend) [bend-verify] Binary SHA-256: c362cdac355d84f51278db97cb29a3b2e0be084d59b76a5cff013199b3513539 [bend-ver...
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-lifecycle.test.ts (6 tests | 1 failed) 43ms      × detects and rejects stale saves (concurrency conflict) 6ms   Test Files  1 failed (1)       Tests  1 failed | 5 passed (6)    Start at  19:15:19    Duration  551ms (transform 312ms, setu...
 
-[Mutation 6] Lean 4: Corrupted Theorem Proof in Responsive.lean
+[Mutation 6] Class 6: Autosave Sets Published (State Machine Violation)
   Detection Status: DETECTED & REJECTED (PASS)
-  Expected Signature: FAIL-CLOSED: Lean 4 theorem compilation failed
+  Expected Signature: AssertionError
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet: [lean-verify] Validating Lean 4 formal specifications and production correspondence... [lean-verify] Pinned Lean toolchain: leanprover/lean4:v4.15.0 [lean-verify] ✓ All 7 formal Pricing theorems declared in Pricing.lean. [lean-verify] ✓ All 7 formal ThemeLifecycle theorems declared in ThemeLifecycle...
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-lifecycle.test.ts (6 tests | 1 failed) 52ms      × creates a draft with valid invariants (is_published = false) 47ms   Test Files  1 failed (1)       Tests  1 failed | 5 passed (6)    Start at  19:15:21    Duration  564ms (transform 326m...
 
-[Mutation 7] TLA+: Inverted Autosave Invariant in ResponsiveAutosave.tla
+[Mutation 7] Class 7: Scheduled Content Public Before Time (Premature Release)
+  Detection Status: DETECTED & REJECTED (PASS)
+  Expected Signature: AssertionError
+  Clean Restoration: VERIFIED (PASS)
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-properties.test.ts (6 tests | 1 failed | 5 skipped) 12ms      × Property 4: Scheduled publication invariant — future dates remain scheduled, reached dates publish 11ms   Test Files  1 failed (1)       Tests  1 failed | 5 skipped (6)    S...
+
+[Mutation 8] Class 8: Revision Rollback Truncates History (Non-Monotonic Revision)
+  Detection Status: DETECTED & REJECTED (PASS)
+  Expected Signature: AssertionError
+  Clean Restoration: VERIFIED (PASS)
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-lifecycle.test.ts (6 tests | 1 failed) 41ms      × allows revision rollback and preserves append-only history 5ms   Test Files  1 failed (1)       Tests  1 failed | 5 passed (6)    Start at  19:15:25    Duration  532ms (transform 296ms, ...
+
+[Mutation 9] Class 9: Responsive Override Lost On Reload (DIE-001 Violation)
+  Detection Status: DETECTED & REJECTED (PASS)
+  Expected Signature: AssertionError
+  Clean Restoration: VERIFIED (PASS)
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/components/builder/builder-ast-conformance.test.ts (5 tests | 1 failed) 10ms      × preserves responsive overrides across serialization and AST reload (DIE-001) 4ms   Test Files  1 failed (1)       Tests  1 failed | 4 passed (5)    Start at  19:...
+
+[Mutation 10] Class 10: Collection Rail Self-Exclusion Inverted (DIE-002 Violation)
+  Detection Status: DETECTED & REJECTED (PASS)
+  Expected Signature: AssertionError
+  Clean Restoration: VERIFIED (PASS)
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/themes/collection-composition-properties.test.ts (6 tests | 3 failed) 43ms      × Property P1: Redundant active-collection rails are strictly eliminated 14ms      × Property P3: Product cards in active collection are never duplicated by seco...
+
+[Mutation 11] Class 11: Corrupted Widget Catalog (Invalid Widget Accepted)
+  Detection Status: DETECTED & REJECTED (PASS)
+  Expected Signature: AssertionError
+  Clean Restoration: VERIFIED (PASS)
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/components/builder/builder-ast-conformance.test.ts (5 tests | 1 failed) 10ms      × detects builder JSON body format reliably via isBuilderBody 4ms   Test Files  1 failed (1)       Tests  1 failed | 4 passed (5)    Start at  19:15:30    Duration...
+
+[Mutation 12] Class 12: TLA+ Inverted Model Invariant (NoPublicDraft Inverted)
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: is violated
   Clean Restoration: VERIFIED (PASS)
   Output Snippet: [tla-verify] Validating TLA+ specifications and formal invariants... [tla-verify] ✓ TLC JAR integrity verified (SHA-256: 7e53aa636dac8a3c...) [tla-verify] Java runtime detected (/opt/homebrew/opt/openjdk@21/bin/java): openjdk version "21.0.13.1" 2026-11-17  [tla-verify] --- Verifying model: Checkout...
 
-[Mutation 8] fast-check: Inverted Collection Rail Self-Exclusion
+[Mutation 13] Class 13: Lean 4 Corrupted Theorem (draft_not_public Inverted)
   Detection Status: DETECTED & REJECTED (PASS)
-  Expected Signature: AssertionError
+  Expected Signature: FAIL-CLOSED: Lean 4 theorem compilation failed
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/themes/collection-composition-properties.test.ts (6 tests | 3 failed) 40ms      × Property P1: Redundant active-collection rails are strictly eliminated 11ms      × Property P3: Product cards in active collection are never duplicated by seco...
+  Output Snippet: [lean-verify] Validating Lean 4 formal specifications and production correspondence... [lean-verify] Pinned Lean toolchain: leanprover/lean4:v4.15.0 [lean-verify] ✓ All 7 formal Pricing theorems declared in Pricing.lean. [lean-verify] ✓ All 7 formal ThemeLifecycle theorems declared in ThemeLifecycle...
 
-[Mutation 9] Verification Drift: Desynchronized Source Hash
+[Mutation 14] Class 14: Bend 2 Corrupted Law (law_cms_draft_secrecy Inverted)
+  Detection Status: DETECTED & REJECTED (PASS)
+  Expected Signature: SOME PROOFS FAIL
+  Clean Restoration: VERIFIED (PASS)
+  Output Snippet: [bend-verify] Validating Bend 2 formal laws and proof artifacts with Lean-backed kernel (--verdict)... [bend-verify] Official Bend 2 compiler detected: bend 2.0.40 (/Users/rahman/.bend2/bin/bend) [bend-verify] Binary SHA-256: c362cdac355d84f51278db97cb29a3b2e0be084d59b76a5cff013199b3513539 [bend-ver...
+
+[Mutation 15] Class 15: Scope Guard Detection of Forbidden File Modification
+  Detection Status: DETECTED & REJECTED (PASS)
+  Expected Signature: Explicitly forbidden by rule: 'supabase/migrations/**'
+  Clean Restoration: VERIFIED (PASS)
+  Output Snippet: [scope-guard] Loaded change contract: FRAME30-CMS-CORE ("Frame30 CMS Core Pilot: Tenancy, Content Lifecycle, and Builder AST Verification") [scope-guard] Baseline Commit: cdde7235edf7ca53ef5174c081edad0da58fab0e [scope-guard] Human Owner: @devrahmanbd [scope-guard] Total paths evaluated against scop...
+
+[Mutation 16] Class 16: Verification Drift Detection of Desynchronized Source Hash
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: VERIFICATION DRIFT DETECTED
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet: [verification-drift] Checking formal verification correspondence to production source... [verification-drift] Baseline Synchronization Commit: cc9cb62a998f43ab84f33ae17e149828c5dea602   ✓ src/components/store/CollectionView.tsx matches verified model state (2328fa014772...)   ✓ src/components/store/...
-
-[Mutation 10] Playwright: Disconnected Reset Button Cascade
-  Detection Status: DETECTED & REJECTED (PASS)
-  Expected Signature: AssertionError
-  Clean Restoration: VERIFIED (PASS)
-  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/components/builder/responsive-customization.test.tsx (14 tests | 1 failed) 1624ms      × Test 2.3: Invoking reset action calls onClearOverride with exact field key and device (interactive) 1280ms   Test Files  1 failed (1)       Tests  1 failed ...
-
-[Mutation 11] Bombadil: Injected 1200px Horizontal Overflow Invariant Detection
-  Detection Status: DETECTED & REJECTED (PASS)
-  Expected Signature: Bombadil invariant violation: no_horizontal_overflow
-  Clean Restoration: VERIFIED (PASS)
-  Output Snippet:  Bombadil invariant violation: no_horizontal_overflow (scrollWidth 1200 > innerWidth 390)  Command failed: node -e 'const fs = require("fs"); const width = fs.existsSync("/tmp/bombadil-test-overflow.txt") ? Number(fs.readFileSync("/tmp/bombadil-test-overflow.txt", "utf8")) : 390; const doc = { scrol...
-
-[Mutation 12] CI Bypass: Removing Blocking Step from .circleci/config.yml
-  Detection Status: DETECTED & REJECTED (PASS)
-  Expected Signature: FAIL-CLOSED: Missing required blocking CI gate: command: bun run gate:scope
-  Clean Restoration: VERIFIED (PASS)
-  Output Snippet:  FAIL-CLOSED: Missing required blocking CI gate: command: bun run gate:scope  Command failed: node -e 'const fs = require("fs"); const yaml = fs.readFileSync(".circleci/config.yml", "utf8"); const requiredGates = ["command: bun run gate:scope", "command: bun run gate:drift", "command: bun run test:b...
+  Output Snippet: [verification-drift] Checking formal verification correspondence to production source... [verification-drift] Baseline Synchronization Commit: cdde7235edf7ca53ef5174c081edad0da58fab0e   ✓ src/components/store/CollectionView.tsx matches verified model state (2328fa014772...)   ✓ src/components/store/...
 
 -----------------------------------------------------------------------------
-VERDICT: ALL 12 MUTATIONS CONCLUSIVELY DETECTED WITH FAIL-CLOSED GATES.
+VERDICT: ALL 16 MUTATIONS CONCLUSIVELY DETECTED WITH FAIL-CLOSED GATES.
 ZERO LEAKED MUTATIONS. RESTORATION VERIFIED CLEAN.
 =============================================================================
