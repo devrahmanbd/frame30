@@ -1,0 +1,346 @@
+{
+  "$schema": "./schema.json",
+  "contract_version": 1,
+  "change_id": "F30-DICE-REV2-3",
+  "feature_id": "F30-DICE-ARCH-001",
+  "title": "Frame30 Universal Verification Mould (DICE) Stage 2: Bootstrap Implementation & Schema Infrastructure",
+  "owner": "@devrahmanbd",
+  "reviewers": [
+    "@devrahmanbd"
+  ],
+  "base_commit": "5d2e538552d7c5c7905266de57153065fac83060",
+  "baseline_commit": "5d2e538552d7c5c7905266de57153065fac83060",
+  "base_tree": "3fc7226b47369e804b9f17bd8051cb68207a6952",
+  "baseline_tree": "3fc7226b47369e804b9f17bd8051cb68207a6952",
+  "risk": "critical",
+  "build_tier": "Tier 1",
+  "objective": "Implement the Stage 2 bootstrap foundation for the Frame30 Universal Verification Mould in accordance with ratified Architecture Revision 2.3. Delivers six normative machine-readable JSON schemas (Draft 2020-12), the authoritative component ledger and persistent registry stores, dynamic multi-surface dependency extraction across 12 architectural surfaces, Linux Bubblewrap OS-level execution sandboxing, deterministic frozen plan compilation, and fail-closed two-tier qualification evaluation.",
+  "merchant_or_user_outcome": "Guarantees that verification results across merchant data isolation, monetary transactions, and content publishing are evaluated against independently established requirements and authentic cryptographic evidence, eliminating false passes, vacuous qualifications, uncontained worker escapes, and unverified candidate claims.",
+  "problem_and_evidence": "Stage C.1 conformance audit (AUDIT-REV2-001 through AUDIT-REV2-015) identified critical vulnerabilities in Revision 2.2: empty-plan vacuous PASS, candidate-controlled CLI arguments and spec hashes, phantom dependency ledger reliance, self-referential receipt hashing, and lack of OS-level process containment. Revision 2.3 mathematically resolved these defects; Stage B.3 independent audit (FIND-B3-001 through FIND-B3-011) identified remaining contract-level defects; Stage 2 establishes the concrete schemas, ledgers, persistent registries, and isolated bootstrap harness required to enforce them.",
+  "in_scope": {
+    "domains": [
+      "governance",
+      "verification",
+      "tooling"
+    ],
+    "components": [
+      "dice-bootstrap-runner",
+      "dice-schemas",
+      "dice-registry",
+      "dice-plan-generator",
+      "dependency-extractor",
+      "dice-sandbox",
+      "dice-evidence",
+      "dice-qualify"
+    ],
+    "services": [
+      "scripts/dice-bootstrap.mjs",
+      "scripts/dice-plan-generator.mjs",
+      "scripts/extract-dependencies.mjs",
+      "scripts/dice-sandbox.mjs",
+      "scripts/dice-evidence.mjs",
+      "scripts/dice-qualify.mjs"
+    ],
+    "files": [
+      "features/contracts/component-ledger.json",
+      "schemas/dice/xdie.schema.json",
+      "schemas/dice/obl.schema.json",
+      "schemas/dice/domain-pack.schema.json",
+      "schemas/dice/registry.schema.json",
+      "schemas/dice/trusted-profile.schema.json",
+      "schemas/dice/evidence-envelope.schema.json",
+      "registries/dice/registry.json",
+      "registries/dice/mandatory-obligations.json",
+      "scripts/dice-bootstrap.mjs",
+      "scripts/dice-plan-generator.mjs",
+      "scripts/extract-dependencies.mjs",
+      "scripts/dice-sandbox.mjs",
+      "scripts/dice-evidence.mjs",
+      "scripts/dice-qualify.mjs",
+      "src/lib/dice/schemas.test.ts",
+      "src/lib/dice/plan-generator.test.ts",
+      "src/lib/dice/qualification.test.ts",
+      "src/lib/dice/dependency-extractor.test.ts",
+      "src/lib/dice/sandbox.test.ts",
+      "src/lib/dice/evidence.test.ts"
+    ]
+  },
+  "out_of_scope": {
+    "domains": [
+      "commerce",
+      "storefront",
+      "checkout",
+      "marketplace",
+      "cms-content-runtime",
+      "production-ci"
+    ],
+    "files": [
+      "features/contracts/F30-DICE-REV2-3.json",
+      "features/contracts/F30-DICE-DEP-AJV8.json",
+      "docs/governance/dice-architecture.md",
+      "features/contracts/F30-DICE-ARCH-001.json",
+      "docs/verification-evidence/tlc-dice-lifecycle-proof.txt",
+      "specs/tla/DiceLifecycle.tla",
+      "specs/tla/DiceLifecycle.cfg",
+      "specs/bend/SPEC.bend",
+      "features/contracts/FRAME30-CMS-CORE.json",
+      "features/contracts/FRAME30-SDLC-000.json",
+      "features/contracts/pilot-workstreams-ab.json",
+      "dies/**",
+      "scripts/scope-guard.mjs",
+      "scripts/tla-verify.mjs",
+      "scripts/bend-verify.mjs",
+      "scripts/lean-verify.mjs",
+      "scripts/mutation-test.mjs",
+      "scripts/verification-drift.mjs",
+      "scripts/sdlc-evidence-collector.mjs",
+      "specs/lean/**",
+      "specs/bend/**",
+      "specs/tla/**",
+      "bombadil/**",
+      ".circleci/config.yml",
+      ".github/**",
+      "package.json",
+      "bun.lock",
+      "src/components/**",
+      "src/routes/**",
+      "src/lib/commerce/**",
+      "src/lib/editor/**",
+      "src/lib/themes/**",
+      "supabase/**",
+      "docs/verification-evidence/**"
+    ]
+  },
+  "allowed_file_changes": [
+    "features/contracts/component-ledger.json",
+    "schemas/dice/xdie.schema.json",
+    "schemas/dice/obl.schema.json",
+    "schemas/dice/domain-pack.schema.json",
+    "schemas/dice/registry.schema.json",
+    "schemas/dice/trusted-profile.schema.json",
+    "schemas/dice/evidence-envelope.schema.json",
+    "registries/dice/registry.json",
+    "registries/dice/mandatory-obligations.json",
+    "scripts/dice-bootstrap.mjs",
+    "scripts/dice-plan-generator.mjs",
+    "scripts/extract-dependencies.mjs",
+    "scripts/dice-sandbox.mjs",
+    "scripts/dice-evidence.mjs",
+    "scripts/dice-qualify.mjs",
+    "src/lib/dice/schemas.test.ts",
+    "src/lib/dice/plan-generator.test.ts",
+    "src/lib/dice/qualification.test.ts",
+    "src/lib/dice/dependency-extractor.test.ts",
+    "src/lib/dice/sandbox.test.ts",
+    "src/lib/dice/evidence.test.ts",
+    "scripts/scope-guard.mjs",
+    ".circleci/config.yml",
+    "src/lib/dice/fixtures/**"
+  ],
+  "forbidden_file_changes": [
+    "features/contracts/F30-DICE-REV2-3.json",
+    "features/contracts/F30-DICE-DEP-AJV8.json",
+    "docs/governance/dice-architecture.md",
+    "features/contracts/F30-DICE-ARCH-001.json",
+    "docs/verification-evidence/tlc-dice-lifecycle-proof.txt",
+    "specs/tla/DiceLifecycle.tla",
+    "specs/tla/DiceLifecycle.cfg",
+    "specs/bend/SPEC.bend",
+    "features/contracts/FRAME30-CMS-CORE.json",
+    "features/contracts/FRAME30-SDLC-000.json",
+    "features/contracts/pilot-workstreams-ab.json",
+    "dies/**",
+    "scripts/tla-verify.mjs",
+    "scripts/bend-verify.mjs",
+    "scripts/lean-verify.mjs",
+    "scripts/mutation-test.mjs",
+    "scripts/verification-drift.mjs",
+    "scripts/sdlc-evidence-collector.mjs",
+    "specs/lean/**",
+    "specs/bend/**",
+    "specs/tla/**",
+    "bombadil/**",
+    ".github/**",
+    "package.json",
+    "bun.lock",
+    "src/components/**",
+    "src/routes/**",
+    "src/lib/commerce/**",
+    "src/lib/editor/**",
+    "src/lib/themes/**",
+    "supabase/**",
+    "docs/verification-evidence/**"
+  ],
+  "behavioral_requirements": [
+    "1. Four-tier requirement and executable-die taxonomy: Permanent DIEs in dies/<id>/die.json define human-owned normative requirements; Executable Verification Dies (XDIEs) package atomic verification obligations; Verification Obligations (OBLs) define tool-independent invariant verification responsibilities with conjunctive multi-adapter methods; DomainPacks organize related DIEs and XDIEs. Product XDIE mappings for existing product capabilities (DIE-001, DIE-002) are not created during Stage 2 bootstrap.",
+    "2. Master registry and mandatory OBL store: Authoritative master registry (registries/dice/registry.json) and system baseline OBL store (registries/dice/mandatory-obligations.json) provide persistent data separate from schemas (schemas/dice/*.schema.json). Registry completeness is protected under CODEOWNERS and verified by automated schema conformance tests.",
+    "3. Deterministic frozen plan compilation: Plan generator pre-computes an immutable frozen plan P_C containing the four mandatory baseline obligations (OBL-SYS-SCOPE-GUARD-001, OBL-SYS-DRIFT-GUARD-001, OBL-SYS-DIE-REGISTRY-001, OBL-SYS-SECRETS-SCAN-001) loaded from registries/dice/mandatory-obligations.json prior to worker dispatch, establishing an immutable plan SHA-256.",
+    "4. Tool-independent OBL identities: OBL identities conform strictly to ^OBL-[A-Z0-9]+-[A-Z0-9_]+-[0-9]{3}$ with tool names omitted, supporting multi-adapter conjunctive verification methods where all declared methods must achieve verified PASS.",
+    "5. Zero-trust invocation profiles: Candidate-controlled CLI arguments, binary paths, and specification hashes are rejected fail-closed; execution arguments and expected specification hashes derive exclusively from trusted runner profiles conforming to schemas/dice/trusted-profile.schema.json.",
+    "6. Multi-surface dependency extraction: Dynamic dependency extractor extracts multi-surface relationships across all 12 architectural surfaces specified in Revision 2.3 Section 5.2: TypeScript modules, server functions, SQL migrations, RLS policies, SQL functions/triggers, TanStack Router routes, builder schemas, cron scripts, global CSS, builder AST schemas, message queues, and external APIs.",
+    "7. Dual-graph traversal and conservative escalation: Dynamic traversal evaluates both G_base and G_cand; deleted edges trigger verification of all historical dependent components over G_union. Unparseable files, syntax errors, or unknown dependencies trigger conservative escalation to full repository verification (ImpactClosure = V) or fail-closed QUALIFIED_BLOCKED. Graph completeness is verified empirically via fixtures and edge-deletion tests, not solely from schema validation of component-ledger.json.",
+    "8. Linux Bubblewrap OS sandbox: Bubblewrap (bwrap) is the sole authoritative hostile-execution environment. Workers execute against a sanitized copy of candidate source mounted read-only (--ro-bind <snapshot> /workspace/src) with repo root, .git, .env* files, user home, and local credentials strictly excluded. Each obligation receives dedicated ephemeral scratch (--tmpfs /workspace/tmp) and dedicated staging (--bind <staging> /workspace/out). Child PID namespace reaps all descendants on PID 1 exit, preventing fork, double-fork, and setsid() escapes. Any unavailable kernel feature or sandbox setup failure halts closed as BLOCKED.",
+    "9. macOS non-authoritative platform status: macOS is strictly classified as a non-authoritative development and dry-run platform. macOS does not support PID namespaces, and process-group kill(-pgid, SIGKILL) fails to terminate descendants after setsid(). Authoritative hostile candidate execution on macOS evaluates strictly to BLOCKED.",
+    "10. Strict separation of evidence and attestation phases: Receipts are serialized via RFC 8785 Canonical JSON without internal self-hashes; detached digests are appended to receipts.sha256; envelopes conform to in-toto / DSSE (schemas/dice/evidence-envelope.schema.json); signature verification verifies Ed25519 signatures; trusted signing provenance is isolated to downstream CI signing roles. Private signing keys are never exposed to candidate workers. Stage 2 verifies parser, serialization, digest, and envelope logic using ephemeral test keypairs.",
+    "11. Deterministic two-tier qualification engine: Evaluates obligation dispositions into candidate qualification with strict precedence: QUALIFIED_FAIL > QUALIFIED_BLOCKED > QUALIFIED_WAIVED > QUALIFIED_PASS. Fully accounts for: empty plans (QUALIFIED_BLOCKED), missing receipts (DISP_BLOCKED), unexecuted obligations (DISP_BLOCKED with NOT_RUN), duplicate receipts (identical or conflicting -> DISP_BLOCKED), invalid signatures (DISP_BLOCKED), stale candidate/spec/toolchain hashes (DISP_BLOCKED), waiver of mandatory baseline obligations (DISP_FAIL with MANDATORY_WAIVER_PROHIBITED), all waived (QUALIFIED_WAIVED), and all non-applicable (QUALIFIED_BLOCKED with VACUOUS_COVERAGE).",
+    "12. Strict governance separation of merge and release eligibility: QUALIFIED_WAIVED and QUALIFIED_BLOCKED strictly prohibit merge review. Only QUALIFIED_PASS candidates are eligible for merge review. Production release authorization is an independent human specification authority action (deployment_authorization: true) and cannot be granted by qualification verdicts or peer CODEOWNERS."
+  ],
+  "forbidden_behaviors": [
+    "1. Permitting candidate manifests to declare their own CLI arguments, executable paths, or expected specification hashes.",
+    "2. Generating verification plans derived from worker results or available execution receipts.",
+    "3. Emitting QUALIFIED_PASS on empty obligation sets, partial executions, unexecuted tasks (NOT_RUN), or all-NOT_APPLICABLE sets.",
+    "4. Granting merge authorization or production release to candidates evaluating to QUALIFIED_WAIVED or QUALIFIED_BLOCKED.",
+    "5. Mounting or exposing the host Docker daemon socket (/var/run/docker.sock), host .git, host .env* files, or host credentials to candidate worker sandboxes.",
+    "6. Passing production secrets, API credentials, or private signing keys into candidate execution environments.",
+    "7. Relying on Node.js realpath, path string checks, or macOS process-group SIGKILL as an authoritative security boundary against detached descendants.",
+    "8. Modifying or weakening accepted permanent dies DIE-001 and DIE-002, or promoting provisional DIE-003..005 without separate human authority.",
+    "9. Evaluating or certifying quarantined Bend Laws 7-12 as ratified capabilities.",
+    "10. Treating permanent requirements DIE-001 and DIE-002 directly as executable tests in regression_dies without ratified executable XDIE containers.",
+    "11. Claiming complete dependency graph coverage solely because component-ledger.json validates against a schema.",
+    "12. Inventing executive, peer, or CODEOWNER waiver powers over mandatory baseline obligations or production release authority.",
+    "13. Writing to or mutating pre-existing tracked or untracked repository files during contract preparation or bootstrap verification."
+  ],
+  "protected_existing_contracts": [
+    "FRAME30-SDLC-000",
+    "FRAME30-CMS-CORE",
+    "DIE-001-responsive-precedence",
+    "DIE-002-collection-composition"
+  ],
+  "compatibility": {
+    "api": [
+      "Zero modifications to existing Frame30 server RPC endpoints or HTTP routes."
+    ],
+    "database": [
+      "Zero database migrations, schema alterations, or RLS policy changes."
+    ],
+    "theme_runtime": [
+      "Zero alterations to theme runtime, widget renderers, or Studio catalog."
+    ],
+    "plugin_runtime": [
+      "Zero alterations to plugin runtime, hook handlers, or event bus."
+    ],
+    "ast_schema": [
+      "Zero changes to builder AST schemas or widget prop validation."
+    ],
+    "event_schema": [
+      "Zero changes to event schemas or queue message formats."
+    ],
+    "url_slug_redirect": [
+      "Zero changes to URL routing, slug resolution, or redirects."
+    ],
+    "sdk": [
+      "Zero modifications to Frame30 client SDKs or public APIs."
+    ]
+  },
+  "security": {
+    "tenant_boundary": "DICE bootstrap runner operates outside database tenant boundaries; worker sandbox strictly prohibits outbound network access and isolates filesystem access to ephemeral tmpfs and dedicated per-obligation staging directories.",
+    "roles_scopes": [
+      "admin:developer"
+    ],
+    "pii_classes": [],
+    "secrets": [
+      "Zero secrets, environment variables, or private signing keys mounted or accessible in worker sandboxes; attestation signing keys isolated exclusively to downstream trusted signer role."
+    ],
+    "threat_model": "Adversarial candidate execution attempting arbitrary code execution, filesystem traversal to host .git or .env, credential theft, Docker socket escape, process tree detachment via setsid(), manifest argument tampering, specification weakening, receipt forgery, or unauthorized waiver of mandatory obligations."
+  },
+  "verification": {
+    "static": [
+      "bun run lint",
+      "node scripts/scope-guard.mjs --contract=features/contracts/F30-DICE-REV2-3.json"
+    ],
+    "unit_component": [
+      "bunx vitest run src/lib/dice/schemas.test.ts",
+      "bunx vitest run src/lib/dice/plan-generator.test.ts",
+      "bunx vitest run src/lib/dice/qualification.test.ts",
+      "bunx vitest run src/lib/dice/dependency-extractor.test.ts",
+      "bunx vitest run src/lib/dice/sandbox.test.ts",
+      "bunx vitest run src/lib/dice/evidence.test.ts"
+    ],
+    "contract_integration": [
+      "node scripts/dice-bootstrap.mjs --dry-run --contract=features/contracts/F30-DICE-REV2-3.json"
+    ],
+    "properties": [
+      "bunx vitest run src/lib/dice/plan-generator.test.ts --testNamePattern=\"property\""
+    ],
+    "browser_bombadil": [],
+    "playwright": [],
+    "visual_accessibility": [],
+    "formal_lean": [],
+    "formal_bend": [],
+    "formal_tla": [],
+    "security_adversarial": [],
+    "mutation_cases": [
+      "MC-01: Empty expected verification plan -> BLOCKED (PlanValidator)",
+      "MC-02: Empty execution result set -> BLOCKED (ResultReconciler)",
+      "MC-03: Worker killed mid-run (partial run) -> BLOCKED (ReceiptCompleter)",
+      "MC-04: Substitute result-derived obligation set -> BLOCKED (FrozenPlanGuard)",
+      "MC-05: Candidate-controlled CLI arguments -> BLOCKED (ProfileValidator)",
+      "MC-06: Candidate-controlled specification hashes -> BLOCKED (TreeHashVerifier)",
+      "MC-07: Dependency graph edge deletion -> FAIL (DualGraphCrawler)",
+      "MC-08: Omit cross-domain SQL/RLS dependency -> FAIL (MultiSurfaceScan)",
+      "MC-09: Quarantined Bend Laws 7-12 leakage -> FAIL (LawFileSegregator)",
+      "MC-10: Lean false equivalence (bad vector) -> FAIL (FastCheckBridge)",
+      "MC-11: TLA+ liveness failure (hang/livelock) -> FAIL (TLCModelChecker)",
+      "MC-12: Detached background child (setsid) -> BLOCKED (PidNamespaceGuard)",
+      "MC-13: Access exposed Docker daemon socket -> BLOCKED (SocketMountFilter)",
+      "MC-14: Tamper with .circleci/config.yml -> BLOCKED (ConfigHashGuard)",
+      "MC-15: Worker attempts reading signing key -> BLOCKED (SecretPathSandbox)",
+      "MC-16: Tamper with receipt JSON payload -> BLOCKED (DetachedDigestLedger)",
+      "MC-17: Forge unauthorized waiver signature -> BLOCKED (CryptographicSign)",
+      "MC-18: Run self-verification on dirty checkout -> PASS (SnapshotDiffGuard)",
+      "MC-19: Remove Lean theorem declaration -> FAIL (LakeAxiomAuditor)",
+      "MC-20: Inject Lean sorryAx cheat -> FAIL (AxiomAllowlist)",
+      "MC-21: Corrupt TLA+ .cfg model config -> BLOCKED (TlcConfigValidator)",
+      "MC-22: Invert TLA+ safety invariant -> FAIL (TLCModelChecker)",
+      "MC-23: Incomplete Bend 2 proof term -> FAIL (BendKernelVerdict)",
+      "MC-24: Viewport layout blowout (>100vw) -> FAIL (BombadilOverflow)",
+      "MC-25: Toolchain version downgrade -> BLOCKED (ToolVersionGuard)",
+      "MC-26: Reused evidence from older commit -> BLOCKED (TreeProvenanceChkr)",
+      "MC-27: Parser teeth regex inversion trap -> FAIL (OracleSelfAuditor)"
+    ],
+    "regression_dies": []
+  },
+  "required_invariants": [
+    "INVARIANT-1 (Mandatory Baseline Obligations): Every compiled frozen plan P_C must contain the 4 mandatory system baseline obligations {OBL-SYS-SCOPE-GUARD-001, OBL-SYS-DRIFT-GUARD-001, OBL-SYS-DIE-REGISTRY-001, OBL-SYS-SECRETS-SCAN-001} loaded from persistent registry data before worker dispatch; mandatory obligations can never be waived.",
+    "INVARIANT-2 (Non-Vacuous Qualification): A candidate with an empty plan |P_C| = 0 evaluates strictly to QUALIFIED_BLOCKED; candidate with only waived obligations evaluates to QUALIFIED_WAIVED; neither can produce QUALIFIED_PASS or authorize merge.",
+    "INVARIANT-3 (Zero-Trust Invocation Profiles): Worker execution arguments, binary paths, environment variables, and specification hashes are resolved exclusively from trusted profiles; candidate-provided execution flags and spec hashes are rejected fail-closed.",
+    "INVARIANT-4 (Bidirectional Multi-Surface Dependency Extraction): Dependency resolution traverses G_base union G_cand across all 12 architectural surfaces, ensuring deleted edges trigger verification of all historically dependent components; unknown dependencies cause conservative escalation to full verification or QUALIFIED_BLOCKED.",
+    "INVARIANT-5 (OS-Level Containment and Process Reaping): Linux Bubblewrap unshared PID namespaces ensure PID 1 init reaps all descendants, preventing setsid() detachment and process escapes; candidate snapshot mounts read-only without .git or .env access; macOS hostile execution returns strictly BLOCKED.",
+    "INVARIANT-6 (Detached Cryptographic Attestation): Receipts serialize via RFC 8785 Canonical JSON without recursive self-hashes; integrity is established via detached SHA-256 digest manifests and Ed25519 DSSE envelopes; private signing keys are never exposed to candidate workers.",
+    "INVARIANT-7 (Deterministic Two-Tier Qualification): Final qualification evaluates strictly according to two-tier disposition and qualification rules with fixed precedence QUALIFIED_FAIL > QUALIFIED_BLOCKED > QUALIFIED_WAIVED > QUALIFIED_PASS across all 14 evaluated states."
+  ],
+  "required_acceptance": [
+    "C1 (Schema Conformance & Registry Separation): All 6 normative JSON schemas validate under Draft 2020-12, and src/lib/dice/schemas.test.ts proves acceptance of valid manifests, rejection of invalid/tampered payloads, and strict separation between schemas and registry data.",
+    "C2 (Deterministic Plan Compilation & Mandatory Obligations): src/lib/dice/plan-generator.test.ts proves P_C includes the 4 mandatory baseline obligations loaded from registries/dice/mandatory-obligations.json, rejects candidate CLI overrides, and produces identical SHA-256 plan hashes across repeated runs.",
+    "C3 (Multi-Surface Dependency Extraction & Fixtures): src/lib/dice/dependency-extractor.test.ts verifies dynamic extraction across all 12 architectural surfaces with dedicated fixtures for each surface, and proves edge deletion in G_base triggers dependent obligation re-verification.",
+    "C4 (OS Sandbox Process Tree & Filesystem Isolation): src/lib/dice/sandbox.test.ts proves unprivileged execution, sanitized read-only candidate bind (masking .git and .env), network unsharing, dedicated ephemeral scratch/staging, recursive child process termination under setsid() on Linux, and fail-closed BLOCKED return on macOS.",
+    "C5 (Two-Tier Qualification Engine & Truth Table): src/lib/dice/qualification.test.ts exercises all 14 truth-table rows, proving QUALIFIED_BLOCKED on empty plans/missing receipts/NOT_RUN/all-NOT_APPLICABLE, QUALIFIED_FAIL on mandatory obligation waiver attempts, QUALIFIED_WAIVED when all obligations are waived, and strict precedence enforcement.",
+    "C6 (RFC 8785 Serialization & Evidence Envelope): src/lib/dice/evidence.test.ts proves deterministic canonical JSON formatting without receipt self-hashing, detached digest generation, and Ed25519 DSSE envelope parsing and verification using ephemeral test keypairs without exposing signing keys to workers.",
+    "C7 (Standalone Bootstrap Dry-Run Integration): scripts/dice-bootstrap.mjs --dry-run executes the complete pipeline without mutation, demonstrating plan generation, schema validation, and qualification reporting."
+  ],
+  "migration": {
+    "expand_contract_plan": "Bootstrap harness operates standalone alongside existing scripts without replacing authoritative CI runners in Stage 2.",
+    "backfill": "No data backfill required.",
+    "rollback_or_forward_fix": "Deleting or reverting the 21 Stage 2 bootstrap files restores repository to pre-bootstrap baseline without affecting application state, historical evidence, or pre-existing untracked files."
+  },
+  "release": {
+    "health_signals": [
+      "All 6 bootstrap test suites pass cleanly with 100% schema conformance.",
+      "Frozen plan generator produces identical deterministic SHA-256 digests across repeated invocations.",
+      "Sandbox execution terminates all child processes cleanly without orphaned daemons."
+    ],
+    "rollback_trigger": [
+      "Any unexpected schema validation failure on valid XDIE or OBL specifications.",
+      "Any process escape or socket leakage during containerized worker execution.",
+      "Any non-deterministic variation in compiled plan hashes."
+    ],
+    "deployment_authorization": false
+  },
+  "api_contract_changes": false,
+  "database_schema_changes": false,
+  "dependency_changes": false,
+  "security_changes": true,
+  "deployment_authorization": false,
+  "acceptance_owner": "@devrahmanbd",
+  "approval_state": "approved"
+}

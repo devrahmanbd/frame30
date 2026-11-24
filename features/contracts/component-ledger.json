@@ -1,0 +1,94 @@
+{
+  "$schema": "../../schemas/dice/registry.schema.json",
+  "ledger_version": "1.0.0",
+  "updated_at": "2026-11-24T12:00:00Z",
+  "components": [
+    {
+      "id": "comp-scope-guard",
+      "name": "Mechanical Scope Guard",
+      "domain": "system",
+      "risk_class": "critical",
+      "canonical_paths": [
+        "scripts/scope-guard.mjs"
+      ],
+      "dependencies": []
+    },
+    {
+      "id": "comp-verification-drift",
+      "name": "Verification Drift Guard",
+      "domain": "system",
+      "risk_class": "high",
+      "canonical_paths": [
+        "scripts/verification-drift.mjs"
+      ],
+      "dependencies": []
+    },
+    {
+      "id": "comp-die-registry",
+      "name": "Permanent Die Registry",
+      "domain": "system",
+      "risk_class": "critical",
+      "canonical_paths": [
+        "dies/schema.json",
+        "scripts/die-registry-check.mjs"
+      ],
+      "dependencies": []
+    },
+    {
+      "id": "comp-cms-core",
+      "name": "CMS Core Engine",
+      "domain": "cms",
+      "risk_class": "critical",
+      "canonical_paths": [
+        "src/lib/cms-lifecycle.test.ts",
+        "src/lib/cms-tenant-rls.test.ts",
+        "src/lib/cms-properties.test.ts",
+        "src/lib/editor/editor.server.ts",
+        "specs/lean/Framique/CmsLifecycle.lean",
+        "specs/tla/CmsContentLifecycle.tla"
+      ],
+      "dependencies": [
+        "comp-scope-guard"
+      ]
+    },
+    {
+      "id": "comp-builder-ast",
+      "name": "Builder AST & Widget Engine",
+      "domain": "builder",
+      "risk_class": "high",
+      "canonical_paths": [
+        "src/components/builder/builder-ast-conformance.test.ts",
+        "src/lib/builder-ast.ts"
+      ],
+      "dependencies": [
+        "comp-cms-core"
+      ]
+    },
+    {
+      "id": "comp-dice-bootstrap",
+      "name": "DICE Universal Verification Mould",
+      "domain": "system",
+      "risk_class": "critical",
+      "canonical_paths": [
+        "scripts/dice-bootstrap.mjs",
+        "scripts/dice-plan-generator.mjs",
+        "scripts/extract-dependencies.mjs",
+        "scripts/dice-sandbox.mjs",
+        "scripts/dice-evidence.mjs",
+        "scripts/dice-qualify.mjs",
+        "schemas/dice/xdie.schema.json",
+        "schemas/dice/obl.schema.json",
+        "schemas/dice/domain-pack.schema.json",
+        "schemas/dice/registry.schema.json",
+        "schemas/dice/trusted-profile.schema.json",
+        "schemas/dice/evidence-envelope.schema.json",
+        "registries/dice/registry.json",
+        "registries/dice/mandatory-obligations.json"
+      ],
+      "dependencies": [
+        "comp-scope-guard",
+        "comp-die-registry"
+      ]
+    }
+  ]
+}

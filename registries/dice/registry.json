@@ -1,0 +1,27 @@
+{
+  "schema_version": "2.3.0",
+  "registry_updated_at": "2026-11-24T12:00:00Z",
+  "authoritative_base_tree": "3fc7226b47369e804b9f17bd8051cb68207a6952",
+  "accepted_dies": [
+    "DIE-001-responsive-precedence",
+    "DIE-002-collection-composition"
+  ],
+  "provisional_dies": [
+    "DIE-003-cms-tenant-isolation",
+    "DIE-004-cms-content-lifecycle",
+    "DIE-005-builder-widget-ast"
+  ],
+  "domain_packs": [
+    "PACK-SYS_CORE-v1.0.0",
+    "PACK-THEME_BUILDER-v1.0.0"
+  ],
+  "trusted_profiles": [
+    "PROF-LEAN4-v1",
+    "PROF-TLC-v1",
+    "PROF-BEND2-v1",
+    "PROF-BOMBADIL-v1",
+    "PROF-VITEST-v1",
+    "PROF-FAST_CHECK-v1",
+    "PROF-SCRIPT-v1"
+  ]
+}

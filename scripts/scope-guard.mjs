@@ -8,7 +8,7 @@
  */
 
 import { execSync } from "node:child_process";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 const REPO_ROOT = process.cwd();
@@ -46,16 +46,58 @@ for (const arg of process.argv.slice(2)) {
 if (!contractPath) {
   if (process.env.ACTIVE_CHANGE_CONTRACT) {
     contractPath = process.env.ACTIVE_CHANGE_CONTRACT;
-  } else if (
-    existsSync(join(REPO_ROOT, "features/contracts/FRAME30-CMS-CORE.json"))
-  ) {
-    contractPath = "features/contracts/FRAME30-CMS-CORE.json";
-  } else if (
-    existsSync(join(REPO_ROOT, "features/contracts/FRAME30-SDLC-000.json"))
-  ) {
-    contractPath = "features/contracts/FRAME30-SDLC-000.json";
   } else {
-    contractPath = "features/contracts/pilot-workstreams-ab.json";
+    // Dynamic contract discovery across contracts in features/contracts/
+    const contractsDir = join(REPO_ROOT, "features/contracts");
+    let currentHead = "";
+    try {
+      currentHead = execSync("git rev-parse HEAD", { encoding: "utf8" }).trim();
+    } catch {}
+
+    if (existsSync(contractsDir)) {
+      const contractFiles = readdirSync(contractsDir).filter(
+        (f) =>
+          f.endsWith(".json") &&
+          f !== "schema.json" &&
+          f !== "component-ledger.json" &&
+          f !== "verification-manifest.json",
+      );
+
+      // Prioritize amendments first so active amendments take precedence over base contracts
+      contractFiles.sort((a, b) => {
+        const aIsAmend = a.includes("-AMEND");
+        const bIsAmend = b.includes("-AMEND");
+        if (aIsAmend && !bIsAmend) return -1;
+        if (!aIsAmend && bIsAmend) return 1;
+        return a.localeCompare(b);
+      });
+
+      for (const c of contractFiles) {
+        const p = join(contractsDir, c);
+        try {
+          const parsed = JSON.parse(readFileSync(p, "utf8"));
+          const base = parsed.base_commit || parsed.baseline_commit;
+          if (base === currentHead) {
+            contractPath = `features/contracts/${c}`;
+            break;
+          }
+        } catch {}
+      }
+    }
+
+    if (!contractPath) {
+      if (existsSync(join(contractsDir, "F30-DICE-REV2-3-AMEND1.json"))) {
+        contractPath = "features/contracts/F30-DICE-REV2-3-AMEND1.json";
+      } else if (existsSync(join(contractsDir, "F30-DICE-REV2-3.json"))) {
+        contractPath = "features/contracts/F30-DICE-REV2-3.json";
+      } else if (existsSync(join(contractsDir, "FRAME30-CMS-CORE.json"))) {
+        contractPath = "features/contracts/FRAME30-CMS-CORE.json";
+      } else if (existsSync(join(contractsDir, "FRAME30-SDLC-000.json"))) {
+        contractPath = "features/contracts/FRAME30-SDLC-000.json";
+      } else {
+        contractPath = "features/contracts/pilot-workstreams-ab.json";
+      }
+    }
   }
 }
 const fullContractPath = resolve(REPO_ROOT, contractPath);
@@ -165,6 +207,7 @@ const forbiddenPatterns = contract.forbidden_file_changes || [];
 let violations = [];
 
 for (const [filePath, status] of touched.entries()) {
+
   // Check forbidden first
   const forbiddenMatch = matchesAny(filePath, forbiddenPatterns);
   if (forbiddenMatch) {

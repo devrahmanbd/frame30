@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://framique.com/schemas/registry.schema.json",
+  "title": "MasterRegistry",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "registry_updated_at",
+    "authoritative_base_tree",
+    "accepted_dies",
+    "provisional_dies",
+    "domain_packs",
+    "trusted_profiles"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "2.3.0"
+    },
+    "registry_updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "authoritative_base_tree": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "accepted_dies": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^DIE-[0-9]{3}-[a-z0-9-]+$"
+      }
+    },
+    "provisional_dies": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^DIE-[0-9]{3}-[a-z0-9-]+$"
+      }
+    },
+    "domain_packs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^PACK-[A-Z0-9_]+-v[0-9]+\\.[0-9]+\\.[0-9]+$"
+      }
+    },
+    "trusted_profiles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^PROF-[A-Z0-9_]+-v[0-9]+$"
+      }
+    }
+  },
+  "additionalProperties": false
+}

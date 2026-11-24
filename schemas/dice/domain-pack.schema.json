@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://framique.com/schemas/domain-pack.schema.json",
+  "title": "DomainPack",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "pack_id",
+    "domain",
+    "authority",
+    "governance_status",
+    "dies",
+    "xdies"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "2.3.0"
+    },
+    "pack_id": {
+      "type": "string",
+      "pattern": "^PACK-[A-Z0-9_]+-v[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "domain": {
+      "type": "string",
+      "enum": [
+        "theme",
+        "builder",
+        "cms",
+        "storefront",
+        "inventory",
+        "auth",
+        "system"
+      ]
+    },
+    "authority": {
+      "type": "string",
+      "pattern": "^@[a-z0-9_-]+$"
+    },
+    "governance_status": {
+      "type": "string",
+      "enum": [
+        "ACCEPTED",
+        "PROVISIONAL_PILOT",
+        "UNACCEPTED_STAGE2"
+      ]
+    },
+    "dies": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^DIE-[0-9]{3}-[a-z0-9-]+$"
+      }
+    },
+    "xdies": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^XDIE-[A-Z0-9]+-[A-Z0-9_]+-v[0-9]+\\.[0-9]+\\.[0-9]+$"
+      }
+    }
+  },
+  "additionalProperties": false
+}

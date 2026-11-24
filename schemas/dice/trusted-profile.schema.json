@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://framique.com/schemas/trusted-profile.schema.json",
+  "title": "TrustedInvocationProfile",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "profile_id",
+    "adapter",
+    "command_template",
+    "allowed_cli_args",
+    "timeout_ms"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "2.3.0"
+    },
+    "profile_id": {
+      "type": "string",
+      "pattern": "^PROF-[A-Z0-9_]+-v[0-9]+$"
+    },
+    "adapter": {
+      "type": "string",
+      "enum": [
+        "lean4",
+        "tlc",
+        "bend2",
+        "bombadil",
+        "vitest",
+        "fast-check",
+        "script"
+      ]
+    },
+    "command_template": {
+      "type": "string",
+      "minLength": 3
+    },
+    "allowed_cli_args": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "timeout_ms": {
+      "type": "integer",
+      "minimum": 1000,
+      "maximum": 600000
+    },
+    "env_allowlist": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sandboxed": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

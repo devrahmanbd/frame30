@@ -155,6 +155,32 @@ jobs:
           path: docs/verification-evidence
           destination: verification-evidence
 
+  dice-qualification:
+    executor: bun-executor
+    steps:
+      - checkout
+      - setup-bun
+      - run:
+          name: Scope guard gate
+          command: ACTIVE_CHANGE_CONTRACT=features/contracts/F30-DICE-REV2-3-AMEND1.json bun run gate:scope
+      - run:
+          name: Install Linux Bubblewrap OS sandbox substrate
+          command: |
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq bubblewrap
+            bwrap --version
+      - run:
+          name: Execute DICE Stage 2 Bootstrap Harness
+          command: |
+            node scripts/dice-bootstrap.mjs --contract=features/contracts/F30-DICE-REV2-3-AMEND1.json
+      - run:
+          name: Run DICE Vitest Test Suites
+          command: |
+            bunx vitest run src/lib/dice/
+      - store_artifacts:
+          path: docs/verification-evidence
+          destination: dice-evidence
+
   scan:
     parameters:
       sast-mode:
@@ -508,6 +534,7 @@ workflows:
     jobs:
       - lint-typecheck
       - unit-contract
+      - dice-qualification
       - scan
       - build
       # build is a HARD gate: e2e-critical never starts unless the production

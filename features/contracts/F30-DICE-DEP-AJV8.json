@@ -1,0 +1,154 @@
+{
+  "$schema": "./schema.json",
+  "contract_version": 1,
+  "change_id": "F30-DICE-DEP-AJV8",
+  "feature_id": "F30-DICE-ARCH-001",
+  "title": "Frame30 Universal Verification Mould (DICE) Dependency Change: JSON Schema Draft 2020-12 Validator Support",
+  "owner": "@devrahmanbd",
+  "reviewers": [
+    "@devrahmanbd"
+  ],
+  "base_commit": "5d2e538552d7c5c7905266de57153065fac83060",
+  "baseline_commit": "5d2e538552d7c5c7905266de57153065fac83060",
+  "base_tree": "3fc7226b47369e804b9f17bd8051cb68207a6952",
+  "baseline_tree": "3fc7226b47369e804b9f17bd8051cb68207a6952",
+  "risk": "standard",
+  "build_tier": "Tier 2",
+  "objective": "Authorize the isolated addition of a compliant JSON Schema Draft 2020-12 validator dependency (ajv v8 or @hyperjump/json-schema) to enable authentic validation of the six DICE Draft 2020-12 schemas without downgrading schemas to Draft-07 or removing $schema headers.",
+  "merchant_or_user_outcome": "Ensures that verification manifests across merchant data boundaries and formal invariants are validated against official Draft 2020-12 normative schemas with authentic validator teeth.",
+  "problem_and_evidence": "Repository-pinned ajv 6.15.0 only supports Draft-07 and throws on Draft 2020-12 schemas unless $schema is stripped. Modifying package.json requires an independent, authorized feature change contract outside the Stage 2 implementation scope.",
+  "in_scope": {
+    "domains": [
+      "governance",
+      "verification",
+      "tooling"
+    ],
+    "components": [
+      "dice-validator-dependency"
+    ],
+    "files": [
+      "package.json",
+      "bun.lock"
+    ]
+  },
+  "out_of_scope": {
+    "domains": [
+      "commerce",
+      "storefront",
+      "checkout",
+      "marketplace",
+      "cms-content-runtime"
+    ],
+    "files": [
+      "src/**",
+      "features/contracts/**",
+      "scripts/**",
+      "schemas/**",
+      "dies/**",
+      ".circleci/**"
+    ]
+  },
+  "allowed_file_changes": [
+    "package.json",
+    "bun.lock"
+  ],
+  "forbidden_file_changes": [
+    "src/**",
+    "features/contracts/**",
+    "scripts/**",
+    "schemas/**",
+    "dies/**",
+    ".circleci/**"
+  ],
+  "behavioral_requirements": [
+    "1. Authorizes the addition of ajv ^8.17.1 (or @hyperjump/json-schema ^1.13.0) strictly for Draft 2020-12 schema validation in development and test environments.",
+    "2. Zero modifications to existing application runtime, storefront routes, or database schemas.",
+    "3. Dependency installation must be executed independently after human contract approval."
+  ],
+  "forbidden_behaviors": [
+    "1. Modifying application code or test suites under this contract.",
+    "2. Removing $schema from schemas/dice/*.json to force compatibility with Ajv 6.",
+    "3. Executing dependency installation before explicit human contract authorization."
+  ],
+  "protected_existing_contracts": [
+    "F30-DICE-REV2-3",
+    "FRAME30-SDLC-000",
+    "FRAME30-CMS-CORE"
+  ],
+  "compatibility": {
+    "api": [
+      "Zero modifications to existing Frame30 server RPC endpoints or HTTP routes."
+    ],
+    "database": [
+      "Zero database migrations, schema alterations, or RLS policy changes."
+    ],
+    "theme_runtime": [
+      "Zero alterations to theme runtime, widget renderers, or Studio catalog."
+    ],
+    "plugin_runtime": [
+      "Zero alterations to plugin runtime, hook handlers, or event bus."
+    ],
+    "ast_schema": [
+      "Zero changes to builder AST schemas or widget prop validation."
+    ],
+    "event_schema": [
+      "Zero changes to event schemas or queue message formats."
+    ],
+    "url_slug_redirect": [
+      "Zero changes to URL routing, slug resolution, or redirects."
+    ],
+    "sdk": [
+      "Zero modifications to Frame30 client SDKs or public APIs."
+    ]
+  },
+  "security": {
+    "tenant_boundary": "Dependency installation affects only development/test build tooling outside tenant boundaries.",
+    "roles_scopes": [
+      "admin:developer"
+    ],
+    "pii_classes": [],
+    "secrets": [
+      "Zero secrets or private keys involved in dependency installation."
+    ],
+    "threat_model": "Supply chain compromise via npm package registry; mitigated via bun.lock cryptographic hash verification."
+  },
+  "verification": {
+    "static": [
+      "node scripts/scope-guard.mjs --contract=features/contracts/F30-DICE-DEP-AJV8.json"
+    ],
+    "unit_component": [],
+    "contract_integration": [],
+    "properties": [],
+    "browser_bombadil": [],
+    "playwright": [],
+    "visual_accessibility": [],
+    "formal_lean": [],
+    "formal_bend": [],
+    "formal_tla": [],
+    "security_adversarial": [],
+    "mutation_cases": [],
+    "regression_dies": []
+  },
+  "migration": {
+    "expand_contract_plan": "Add devDependency via package manager after contract approval.",
+    "backfill": "No data backfill required.",
+    "rollback_or_forward_fix": "Reverting package.json and bun.lock restores previous dependency state without data impact."
+  },
+  "release": {
+    "health_signals": [
+      "Clean dependency lockfile resolution",
+      "Zero new vulnerability alerts"
+    ],
+    "rollback_trigger": [
+      "Any lockfile corruption or incompatible peer dependency resolution"
+    ],
+    "deployment_authorization": false
+  },
+  "api_contract_changes": false,
+  "database_schema_changes": false,
+  "dependency_changes": true,
+  "security_changes": false,
+  "deployment_authorization": false,
+  "acceptance_owner": "@devrahmanbd",
+  "approval_state": "approved"
+}

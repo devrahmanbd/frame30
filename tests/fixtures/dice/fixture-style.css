@@ -1,0 +1,3 @@
+@tailwind base;
+@tailwind components;
+.collection-rail { overflow-x: auto; }

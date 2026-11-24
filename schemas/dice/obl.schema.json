@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://framique.com/schemas/obl.schema.json",
+  "title": "VerificationObligation",
+  "type": "object",
+  "required": [
+    "obligation_id",
+    "name",
+    "description",
+    "verification_layer",
+    "methods"
+  ],
+  "properties": {
+    "obligation_id": {
+      "type": "string",
+      "pattern": "^OBL-[A-Z0-9]+-(?!.*(LEAN|TLC|BEND|BOMBADIL|VITEST))[A-Z0-9_-]+-[0-9]{3}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 100
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10
+    },
+    "verification_layer": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9
+    },
+    "methods": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "method_id",
+          "adapter",
+          "trusted_profile_ref",
+          "target_files",
+          "oracle"
+        ],
+        "properties": {
+          "method_id": {
+            "type": "string",
+            "pattern": "^METH-[A-Z0-9_-]+-[0-9]{2}$"
+          },
+          "adapter": {
+            "type": "string",
+            "enum": [
+              "lean4",
+              "tlc",
+              "bend2",
+              "bombadil",
+              "vitest",
+              "fast-check",
+              "script"
+            ]
+          },
+          "trusted_profile_ref": {
+            "type": "string",
+            "pattern": "^PROF-[A-Z0-9_-]+-v[0-9]+$"
+          },
+          "target_files": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "oracle": {
+            "type": "object",
+            "required": [
+              "oracle_type",
+              "assertions"
+            ],
+            "properties": {
+              "oracle_type": {
+                "type": "string",
+                "enum": [
+                  "multi_assert",
+                  "exact_match",
+                  "kernel_verdict"
+                ]
+              },
+              "assertions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "type"
+                  ],
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "exit_code",
+                        "stdout_must_contain",
+                        "stdout_prohibited",
+                        "trace_state_depth_min",
+                        "execution_time_max_ms"
+                      ]
+                    },
+                    "expected": {},
+                    "tokens": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

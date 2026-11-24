@@ -1,0 +1,2 @@
+CREATE FUNCTION notify_order() RETURNS trigger AS $$ BEGIN RETURN NEW; END; $$ LANGUAGE plpgsql;
+CREATE TRIGGER on_order_created AFTER INSERT ON orders FOR EACH ROW EXECUTE PROCEDURE notify_order();

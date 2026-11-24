@@ -1,0 +1,126 @@
+[
+  {
+    "obligation_id": "OBL-SYS-SCOPE-GUARD-001",
+    "name": "Mechanical Scope Guard Gate",
+    "description": "Verifies that changed files strictly conform to authorized Feature Change Contract allowlist.",
+    "verification_layer": 0,
+    "methods": [
+      {
+        "method_id": "METH-SCOPE-GUARD-01",
+        "adapter": "script",
+        "trusted_profile_ref": "PROF-SCRIPT-v1",
+        "target_files": [
+          "scripts/scope-guard.mjs"
+        ],
+        "oracle": {
+          "oracle_type": "multi_assert",
+          "assertions": [
+            {
+              "type": "exit_code",
+              "expected": 0
+            },
+            {
+              "type": "stdout_must_contain",
+              "tokens": [
+                "[scope-guard] ✓"
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "obligation_id": "OBL-SYS-DRIFT-GUARD-001",
+    "name": "Verification Drift Gate",
+    "description": "Verifies SHA-256 cryptographic alignment between models and production source files.",
+    "verification_layer": 0,
+    "methods": [
+      {
+        "method_id": "METH-DRIFT-GUARD-01",
+        "adapter": "script",
+        "trusted_profile_ref": "PROF-SCRIPT-v1",
+        "target_files": [
+          "scripts/verification-drift.mjs"
+        ],
+        "oracle": {
+          "oracle_type": "multi_assert",
+          "assertions": [
+            {
+              "type": "exit_code",
+              "expected": 0
+            },
+            {
+              "type": "stdout_must_contain",
+              "tokens": [
+                "[drift-guard] ✓"
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "obligation_id": "OBL-SYS-DIE-REGISTRY-001",
+    "name": "Permanent Die Registry Gate",
+    "description": "Verifies structural and schema integrity of all accepted capabilities in dies/.",
+    "verification_layer": 0,
+    "methods": [
+      {
+        "method_id": "METH-DIE-REGISTRY-01",
+        "adapter": "script",
+        "trusted_profile_ref": "PROF-SCRIPT-v1",
+        "target_files": [
+          "scripts/die-registry-check.mjs"
+        ],
+        "oracle": {
+          "oracle_type": "multi_assert",
+          "assertions": [
+            {
+              "type": "exit_code",
+              "expected": 0
+            },
+            {
+              "type": "stdout_must_contain",
+              "tokens": [
+                "[die-registry] ✓"
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "obligation_id": "OBL-SYS-SECRETS-SCAN-001",
+    "name": "Blocking Secrets Scanner",
+    "description": "Scans repository diff for committed secrets, API tokens, and private keys.",
+    "verification_layer": 0,
+    "methods": [
+      {
+        "method_id": "METH-SECRETS-SCAN-01",
+        "adapter": "script",
+        "trusted_profile_ref": "PROF-SCRIPT-v1",
+        "target_files": [
+          "scripts/secret-scan.mjs"
+        ],
+        "oracle": {
+          "oracle_type": "multi_assert",
+          "assertions": [
+            {
+              "type": "exit_code",
+              "expected": 0
+            },
+            {
+              "type": "stdout_prohibited",
+              "tokens": [
+                "SECRET DETECTED"
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+]
