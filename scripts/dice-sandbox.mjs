@@ -40,6 +40,14 @@ export class DiceSandbox {
     }
   }
 
+  findCapsh() {
+    try {
+      return execSync("which capsh", { encoding: "utf8" }).trim();
+    } catch {
+      return null;
+    }
+  }
+
   resolveToolchainDirs(extraPaths = []) {
     const dirs = new Set();
     const addDir = (binPath) => {
@@ -134,6 +142,8 @@ export class DiceSandbox {
       newSession = true,
       command = ["/bin/true"],
       allowedBindPaths = [],
+      maskGit = false,
+      maskEnv = true,
     } = options;
 
     if (!sourceSnapshot) {
@@ -170,10 +180,10 @@ export class DiceSandbox {
     args.push("--ro-bind", sourceSnapshot, "/workspace/src");
 
     // 6. Defense-in-depth masking within /workspace/src
-    if (existsSync(join(sourceSnapshot, ".git"))) {
+    if (maskGit && existsSync(join(sourceSnapshot, ".git"))) {
       args.push("--tmpfs", "/workspace/src/.git");
     }
-    if (existsSync(join(sourceSnapshot, ".env"))) {
+    if (maskEnv && existsSync(join(sourceSnapshot, ".env"))) {
       args.push("--ro-bind-try", "/dev/null", "/workspace/src/.env");
     }
 
@@ -257,10 +267,21 @@ export class DiceSandbox {
 
     // Linux execution via bwrap
     const bwrapArgs = this.buildBwrapArgs(options);
-    const result = spawnSync(this.bwrapPath, bwrapArgs, {
+    let result = spawnSync(this.bwrapPath, bwrapArgs, {
       encoding: "utf8",
       timeout: options.timeoutMs || 60000,
     });
+
+    // Handle nested container capability inheritance (e.g. Docker CI)
+    if (result.stderr && result.stderr.includes("Unexpected capabilities but not setuid")) {
+      const capshPath = this.findCapsh();
+      if (capshPath) {
+        result = spawnSync(capshPath, ["--drop=all", "--", this.bwrapPath, ...bwrapArgs], {
+          encoding: "utf8",
+          timeout: options.timeoutMs || 60000,
+        });
+      }
+    }
 
     const exitCode = result.status ?? (result.signal ? 128 + 15 : 1);
     return {

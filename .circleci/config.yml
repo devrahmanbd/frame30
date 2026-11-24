@@ -167,7 +167,8 @@ jobs:
           name: Install Linux Bubblewrap OS sandbox substrate
           command: |
             sudo apt-get update -qq
-            sudo apt-get install -y -qq bubblewrap
+            sudo apt-get install -y -qq bubblewrap libcap2-bin
+            sudo chmod u+s $(which bwrap)
             bwrap --version
       - run:
           name: Execute DICE Stage 2 Bootstrap Harness
