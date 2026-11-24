@@ -1,14 +1,19 @@
 #!/usr/bin/env node
 /**
- * Frame30 DICE OS-Level Sandbox Engine (Revision 2.3 Section 7)
+ * Frame30 DICE OS-Level Sandbox Engine (Revision 2.3 Section 7 & Stage 2.4)
  * Authoritative hostile candidate execution via Linux Bubblewrap (bwrap).
  * Evaluates fail-closed BLOCKED on macOS for authoritative hostile runs.
  *
  * Inviolable Law: Minimal filesystem allowlist; host root (/), host .git, host .env,
  * /home, /root, CI tokens, signing keys, and host sockets are strictly excluded.
+ *
+ * Stage 2.4 Hardening:
+ * - Mounts trusted verifier distribution read-only at /workspace/trusted.
+ * - Complete removal of string-interpolated execSync calls (execFileSync).
+ * - Enforced secret sanitization: signing keys and CI tokens strictly filtered.
  */
 
-import { execSync, spawnSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, realpathSync } from "node:fs";
 import { dirname, join } from "node:path";
 
@@ -22,7 +27,7 @@ export class DiceSandbox {
 
   findBwrap() {
     try {
-      return execSync("which bwrap", { encoding: "utf8" }).trim();
+      return execFileSync("which", ["bwrap"], { encoding: "utf8" }).trim();
     } catch {
       return null;
     }
@@ -31,7 +36,7 @@ export class DiceSandbox {
   getBwrapVersion() {
     if (!this.bwrapPath || !existsSync(this.bwrapPath)) return null;
     try {
-      return execSync(`"${this.bwrapPath}" --version`, {
+      return execFileSync(this.bwrapPath, ["--version"], {
         encoding: "utf8",
         stdio: ["ignore", "pipe", "ignore"],
       }).trim();
@@ -42,7 +47,7 @@ export class DiceSandbox {
 
   findCapsh() {
     try {
-      return execSync("which capsh", { encoding: "utf8" }).trim();
+      return execFileSync("which", ["capsh"], { encoding: "utf8" }).trim();
     } catch {
       return null;
     }
@@ -78,11 +83,15 @@ export class DiceSandbox {
 
     addDir(process.execPath);
     try {
-      const bunPath = execSync("which bun", { encoding: "utf8" }).trim();
+      const bunPath = execFileSync("which", ["bun"], {
+        encoding: "utf8",
+      }).trim();
       addDir(bunPath);
     } catch {}
     try {
-      const nodePath = execSync("which node", { encoding: "utf8" }).trim();
+      const nodePath = execFileSync("which", ["node"], {
+        encoding: "utf8",
+      }).trim();
       addDir(nodePath);
     } catch {}
 
@@ -114,7 +123,8 @@ export class DiceSandbox {
       if (!this.bwrapPath || !existsSync(this.bwrapPath)) {
         return {
           status: "BLOCKED",
-          reason: "FAIL-CLOSED: Bubblewrap (bwrap) binary not found on Linux host.",
+          reason:
+            "FAIL-CLOSED: Bubblewrap (bwrap) binary not found on Linux host.",
         };
       }
       return {
@@ -134,7 +144,7 @@ export class DiceSandbox {
   buildBwrapArgs(options = {}) {
     const {
       sourceSnapshot,
-      scratchDir,
+      trustedDir,
       stagingDir,
       unshareNet = true,
       unsharePid = true,
@@ -142,7 +152,7 @@ export class DiceSandbox {
       newSession = true,
       command = ["/bin/true"],
       allowedBindPaths = [],
-      maskGit = false,
+      maskGit = true,
       maskEnv = true,
     } = options;
 
@@ -152,22 +162,42 @@ export class DiceSandbox {
 
     const args = [
       // 1. Filesystem isolation: root is an empty tmpfs (NO --ro-bind / /)
-      "--tmpfs", "/",
+      "--tmpfs",
+      "/",
 
       // 2. Explicitly allowlisted minimal host system directories
-      "--ro-bind-try", "/usr", "/usr",
-      "--ro-bind-try", "/lib", "/lib",
-      "--ro-bind-try", "/lib64", "/lib64",
-      "--ro-bind-try", "/bin", "/bin",
-      "--ro-bind-try", "/sbin", "/sbin",
-      "--ro-bind-try", "/etc/ssl", "/etc/ssl",
-      "--ro-bind-try", "/etc/ca-certificates", "/etc/ca-certificates",
-      "--ro-bind-try", "/etc/alternatives", "/etc/alternatives",
+      "--ro-bind-try",
+      "/usr",
+      "/usr",
+      "--ro-bind-try",
+      "/lib",
+      "/lib",
+      "--ro-bind-try",
+      "/lib64",
+      "/lib64",
+      "--ro-bind-try",
+      "/bin",
+      "/bin",
+      "--ro-bind-try",
+      "/sbin",
+      "/sbin",
+      "--ro-bind-try",
+      "/etc/ssl",
+      "/etc/ssl",
+      "--ro-bind-try",
+      "/etc/ca-certificates",
+      "/etc/ca-certificates",
+      "--ro-bind-try",
+      "/etc/alternatives",
+      "/etc/alternatives",
 
       // 3. Pseudo-filesystems
-      "--proc", "/proc",
-      "--dev", "/dev",
-      "--tmpfs", "/tmp",
+      "--proc",
+      "/proc",
+      "--dev",
+      "/dev",
+      "--tmpfs",
+      "/tmp",
     ];
 
     // 4. Allowed toolchain binary directories outside /usr (e.g. ~/.bun/bin)
@@ -175,11 +205,17 @@ export class DiceSandbox {
       args.push("--ro-bind-try", toolDir, toolDir);
     }
 
-    // 5. Read-only candidate source
+    // 5. Mount independent trusted distribution read-only at /workspace/trusted (Stage 2.4)
+    if (trustedDir && existsSync(trustedDir)) {
+      args.push("--dir", "/workspace/trusted");
+      args.push("--ro-bind", trustedDir, "/workspace/trusted");
+    }
+
+    // 6. Read-only candidate source snapshot at /workspace/src
     args.push("--dir", "/workspace/src");
     args.push("--ro-bind", sourceSnapshot, "/workspace/src");
 
-    // 6. Defense-in-depth masking within /workspace/src
+    // 7. Defense-in-depth masking within /workspace/src
     if (maskGit && existsSync(join(sourceSnapshot, ".git"))) {
       args.push("--tmpfs", "/workspace/src/.git");
     }
@@ -187,7 +223,7 @@ export class DiceSandbox {
       args.push("--ro-bind-try", "/dev/null", "/workspace/src/.env");
     }
 
-    // 7. Ephemeral scratch tmpfs
+    // 8. Ephemeral scratch tmpfs & output staging
     args.push("--tmpfs", "/workspace/tmp");
     args.push("--dir", "/workspace/out");
 
@@ -202,10 +238,10 @@ export class DiceSandbox {
       args.push("--tmpfs", "/workspace/out");
     }
 
-    // 8. Remount root as read-only (prevents creating files outside /tmp or /workspace/out)
+    // 9. Remount root as read-only (prevents creating files outside /tmp or /workspace/out)
     args.push("--remount-ro", "/");
 
-    // 9. Process & namespace isolation
+    // 10. Process & namespace isolation
     if (unsharePid) {
       args.push("--unshare-pid");
     }
@@ -219,12 +255,16 @@ export class DiceSandbox {
       args.push("--new-session");
     }
 
-    // 10. Working directory
+    // 11. Working directory
     args.push("--chdir", "/workspace/src");
 
-    // 11. Environment sanitation (clears host credentials & CI tokens)
+    // 12. Environment sanitation (clears host credentials & CI tokens)
     args.push("--clearenv");
-    args.push("--setenv", "PATH", process.env.PATH || "/usr/local/bin:/usr/bin:/bin");
+    args.push(
+      "--setenv",
+      "PATH",
+      process.env.PATH || "/usr/local/bin:/usr/bin:/bin",
+    );
     args.push("--setenv", "HOME", "/tmp");
     args.push("--setenv", "TMPDIR", "/tmp");
     args.push("--setenv", "NODE_ENV", process.env.NODE_ENV || "test");
@@ -232,12 +272,21 @@ export class DiceSandbox {
     if (options.env) {
       for (const [k, v] of Object.entries(options.env)) {
         if (v !== undefined && v !== null) {
+          // Strictly reject any signing keys or sensitive CI tokens
+          if (
+            k.includes("SIGNING_KEY") ||
+            k.includes("TOKEN") ||
+            k.includes("SECRET") ||
+            k.includes("PASSWORD")
+          ) {
+            continue;
+          }
           args.push("--setenv", k, String(v));
         }
       }
     }
 
-    // 12. Command to execute
+    // 13. Command to execute
     args.push("--", ...command);
 
     return args;
@@ -261,7 +310,8 @@ export class DiceSandbox {
       return {
         verdict: "DRY_RUN",
         exitCode: 0,
-        stdout: "[dice-sandbox] macOS dry-run execution completed without containment.",
+        stdout:
+          "[dice-sandbox] macOS dry-run execution completed without containment.",
         stderr: "",
       };
     }
@@ -274,20 +324,27 @@ export class DiceSandbox {
     });
 
     // Handle nested container capability inheritance (e.g. Docker CI)
-    if (result.stderr && result.stderr.includes("Unexpected capabilities but not setuid")) {
+    if (
+      result.stderr &&
+      result.stderr.includes("Unexpected capabilities but not setuid")
+    ) {
       const capshPath = this.findCapsh();
       if (capshPath) {
-        result = spawnSync(capshPath, ["--drop=all", "--", this.bwrapPath, ...bwrapArgs], {
-          encoding: "utf8",
-          timeout: options.timeoutMs || 60000,
-        });
+        result = spawnSync(
+          capshPath,
+          ["--drop=all", "--", this.bwrapPath, ...bwrapArgs],
+          {
+            encoding: "utf8",
+            timeout: options.timeoutMs || 60000,
+          },
+        );
       }
     }
 
     const exitCode = result.status ?? (result.signal ? 128 + 15 : 1);
     const stderr = result.stderr || (result.error ? result.error.message : "");
 
-    // P1-5 & Test 11: Sandbox substrate setup failure or timeout must fail closed as BLOCKED, not FAIL/PASS
+    // Sandbox substrate setup failure or timeout must fail closed as BLOCKED, not FAIL/PASS
     if (result.error) {
       if (result.error.code === "ETIMEDOUT") {
         return {
@@ -307,7 +364,10 @@ export class DiceSandbox {
       };
     }
 
-    if (result.signal === "SIGKILL" || (result.status === null && exitCode === 143)) {
+    if (
+      result.signal === "SIGKILL" ||
+      (result.status === null && exitCode === 143)
+    ) {
       return {
         verdict: "BLOCKED",
         exitCode: 124,
@@ -317,10 +377,8 @@ export class DiceSandbox {
       };
     }
 
-    // Detect Bubblewrap initialization/setup errors (e.g. invalid mount, namespace denial)
+    // Detect Bubblewrap initialization/setup errors
     if (exitCode !== 0 && stderr && stderr.includes("bwrap: ")) {
-      // Check if bwrap failed setup vs child command outputting "bwrap:"
-      // When bwrap fails, it outputs "bwrap: ..." to stderr and child never executed
       const isBwrapSetupFailure =
         stderr.includes("bwrap: Can't create") ||
         stderr.includes("bwrap: Can't mount") ||

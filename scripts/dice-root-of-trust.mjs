@@ -1,54 +1,189 @@
 #!/usr/bin/env node
 /**
- * Frame30 DICE Independent Trusted Root-of-Trust Engine (Revision 2.3 Section 3 & P0-1)
+ * Frame30 DICE Independent Trusted Root-of-Trust Engine (Revision 2.3 Section 3 & Stage 2.4)
  *
  * Anchors the verification authority in an independently pinned and authenticated
  * trusted reference (commit/ref), extracting immutable verification policies,
  * schemas, registries, and evaluator logic independently of the untrusted candidate checkout.
+ *
+ * Stage 2.4 Hardening:
+ * - Zero candidate-local fallback paths in getTrustedPath() (fail-closed BLOCKED).
+ * - Zero candidate-local seeding of trusted-keys.json.
+ * - Validation of trusted root identity against approved commit and tree SHA.
+ * - Full policy manifest hashing all authoritative schemas, verifiers, evaluators, and registries.
+ * - Complete removal of string-interpolated execSync calls (structured spawnSync / execFileSync).
+ * - Strict SHA, ref, and path validation preventing shell injection.
  */
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync, copyFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  writeFileSync,
+  rmSync,
+} from "node:fs";
 import { join, resolve } from "node:path";
-import { execSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { canonicalizeJson } from "./dice-plan-generator.mjs";
 
-export const DEFAULT_TRUSTED_REF = "b09a772c59f9669af51d53f8411588a1eb95283c";
+export const DEFAULT_TRUSTED_REF = "2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271";
+
+export const APPROVED_ROOTS = Object.freeze({
+  "2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271":
+    "f8932f94a9179feea432073105739ed3c2fac294",
+  b09a772c59f9669af51d53f8411588a1eb95283c:
+    "6cacd5c6ad96b0c2fc4aa7822c31e0ce31d6f166",
+});
+
+export function validateCommitSha(sha) {
+  if (!sha || typeof sha !== "string" || !/^[0-9a-f]{40}$/i.test(sha.trim())) {
+    throw new Error(
+      `FAIL-CLOSED: Malformed commit SHA: ${JSON.stringify(sha)}`,
+    );
+  }
+  return sha.trim();
+}
+
+export function validateTreeSha(sha) {
+  if (!sha || typeof sha !== "string" || !/^[0-9a-f]{40}$/i.test(sha.trim())) {
+    throw new Error(`FAIL-CLOSED: Malformed tree SHA: ${JSON.stringify(sha)}`);
+  }
+  return sha.trim();
+}
+
+export function validateTrustedRef(ref) {
+  if (
+    !ref ||
+    typeof ref !== "string" ||
+    !/^[a-zA-Z0-9/_.-]+$/.test(ref.trim()) ||
+    ref.includes("..")
+  ) {
+    throw new Error(
+      `FAIL-CLOSED: Malformed trusted reference: ${JSON.stringify(ref)}`,
+    );
+  }
+  return ref.trim();
+}
+
+export function validateSafePath(p) {
+  if (
+    !p ||
+    typeof p !== "string" ||
+    p.includes("\0") ||
+    p.includes("\n") ||
+    p.includes("\r")
+  ) {
+    throw new Error(`FAIL-CLOSED: Malformed path: ${JSON.stringify(p)}`);
+  }
+  return p;
+}
+
+export function safeArchiveExtract(
+  commitOrTree,
+  targetPaths,
+  targetDir,
+  repoRoot,
+) {
+  validateSafePath(targetDir);
+  validateSafePath(repoRoot);
+  for (const p of targetPaths) {
+    validateSafePath(p);
+  }
+
+  mkdirSync(targetDir, { recursive: true });
+
+  try {
+    execFileSync(
+      "sh",
+      [
+        "-c",
+        'commit="$1"; dir="$2"; shift 2; git archive "$commit" "$@" | tar -x -C "$dir"',
+        "--",
+        commitOrTree,
+        targetDir,
+        ...targetPaths,
+      ],
+      {
+        cwd: repoRoot,
+        stdio: ["ignore", "pipe", "pipe"],
+      },
+    );
+  } catch (err) {
+    const msg = err.stderr ? err.stderr.toString("utf8").trim() : err.message;
+    throw new Error(`FAIL-CLOSED: Archive extraction failed: ${msg}`);
+  }
+}
 
 export class DiceTrustedRoot {
   constructor(options = {}) {
     this.repoRoot = options.repoRoot || process.cwd();
-    this.trustedRef = options.trustedRef || process.env.DICE_TRUSTED_REF || DEFAULT_TRUSTED_REF;
-    this.cacheDir = options.cacheDir || join(this.repoRoot, "artifacts/dice-trusted-root");
+    this.trustedRef =
+      options.trustedRef || process.env.DICE_TRUSTED_REF || DEFAULT_TRUSTED_REF;
+    this.cacheDir =
+      options.cacheDir || join(this.repoRoot, "artifacts/dice-trusted-root");
+    this.allowUnpinnedRoots = options.allowUnpinnedRoots || false;
     this.trustedRootSha = null;
     this.trustedCommit = null;
     this.trustedTree = null;
     this.runnerSha = null;
+    this.policyManifest = null;
   }
 
   resolve() {
-    // 1. Authenticate trusted ref against git object database
+    validateTrustedRef(this.trustedRef);
+
+    // 1. Authenticate trusted ref against git object database without shell interpolation
     try {
-      this.trustedCommit = execSync(`git rev-parse --verify ${this.trustedRef}^{commit}`, {
-        cwd: this.repoRoot,
-        encoding: "utf8",
-        stdio: ["ignore", "pipe", "pipe"],
-      }).trim();
+      this.trustedCommit = execFileSync(
+        "git",
+        ["rev-parse", "--verify", `${this.trustedRef}^{commit}`],
+        {
+          cwd: this.repoRoot,
+          encoding: "utf8",
+          stdio: ["ignore", "pipe", "pipe"],
+        },
+      ).trim();
+      validateCommitSha(this.trustedCommit);
     } catch (err) {
-      throw new Error(`FAIL-CLOSED: Trusted root reference '${this.trustedRef}' cannot be resolved in git history: ${err.message}`);
+      throw new Error(
+        `FAIL-CLOSED: Trusted root reference '${this.trustedRef}' cannot be resolved in git history: ${err.message}`,
+      );
     }
 
     try {
-      this.trustedTree = execSync(`git rev-parse --verify ${this.trustedCommit}^{tree}`, {
-        cwd: this.repoRoot,
-        encoding: "utf8",
-        stdio: ["ignore", "pipe", "pipe"],
-      }).trim();
+      this.trustedTree = execFileSync(
+        "git",
+        ["rev-parse", "--verify", `${this.trustedCommit}^{tree}`],
+        {
+          cwd: this.repoRoot,
+          encoding: "utf8",
+          stdio: ["ignore", "pipe", "pipe"],
+        },
+      ).trim();
+      validateTreeSha(this.trustedTree);
     } catch (err) {
-      throw new Error(`FAIL-CLOSED: Cannot resolve tree for trusted commit '${this.trustedCommit}': ${err.message}`);
+      throw new Error(
+        `FAIL-CLOSED: Cannot resolve tree for trusted commit '${this.trustedCommit}': ${err.message}`,
+      );
     }
 
-    // 2. Extract trusted verification policies from the authenticated tree
+    // Validate trusted root identity against independently approved commit and tree
+    if (!this.allowUnpinnedRoots) {
+      const expectedTree = APPROVED_ROOTS[this.trustedCommit];
+      if (!expectedTree) {
+        throw new Error(
+          `FAIL-CLOSED: Unrecognized or unapproved trusted root commit '${this.trustedCommit}'. Root identity rejected (BLOCKED).`,
+        );
+      }
+      if (expectedTree !== this.trustedTree) {
+        throw new Error(
+          `FAIL-CLOSED: Trusted tree mismatch for commit '${this.trustedCommit}'. Expected ${expectedTree}, got ${this.trustedTree} (BLOCKED).`,
+        );
+      }
+    }
+
+    // 2. Extract trusted verification policies and executables from authenticated tree
     if (existsSync(this.cacheDir)) {
       try {
         rmSync(this.cacheDir, { recursive: true, force: true });
@@ -59,18 +194,31 @@ export class DiceTrustedRoot {
     const potentialTargets = [
       "schemas/dice",
       "registries/dice",
+      "scripts/dice-root-of-trust.mjs",
+      "scripts/dice-bootstrap.mjs",
       "scripts/dice-qualify.mjs",
+      "scripts/dice-plan-generator.mjs",
+      "scripts/dice-sandbox.mjs",
+      "scripts/dice-evidence.mjs",
+      "scripts/dice-signing-service.mjs",
       "scripts/scope-guard.mjs",
+      "scripts/verification-drift.mjs",
+      "scripts/die-registry-check.mjs",
+      "scripts/secret-scan.mjs",
     ];
 
     const targetsToArchive = [];
     for (const target of potentialTargets) {
       try {
-        const out = execSync(`git ls-tree ${this.trustedCommit} ${target}`, {
-          cwd: this.repoRoot,
-          encoding: "utf8",
-          stdio: ["ignore", "pipe", "pipe"],
-        }).trim();
+        const out = execFileSync(
+          "git",
+          ["ls-tree", this.trustedCommit, target],
+          {
+            cwd: this.repoRoot,
+            encoding: "utf8",
+            stdio: ["ignore", "pipe", "pipe"],
+          },
+        ).trim();
         if (out) {
           targetsToArchive.push(target);
         }
@@ -78,34 +226,38 @@ export class DiceTrustedRoot {
     }
 
     if (targetsToArchive.length > 0) {
-      try {
-        execSync(`git archive ${this.trustedCommit} ${targetsToArchive.join(" ")} | tar -x -C "${this.cacheDir}"`, {
-          cwd: this.repoRoot,
-          stdio: ["ignore", "pipe", "pipe"],
-        });
-      } catch (err) {
-        throw new Error(`FAIL-CLOSED: Failed to extract trusted verification assets from ${this.trustedCommit}: ${err.message}`);
-      }
+      safeArchiveExtract(
+        this.trustedCommit,
+        targetsToArchive,
+        this.cacheDir,
+        this.repoRoot,
+      );
     }
 
-    // 3. For newly introduced Stage 2.3 policies (such as trusted-keys.json),
-    // if not present in earlier baseline ref, seed from authoritative local registry into trusted cache
-    const trustedKeysCache = join(this.cacheDir, "registries/dice/trusted-keys.json");
+    // In Stage 2.4, trusted-keys.json MUST be present in trusted root (zero candidate-local seeding)
+    const trustedKeysCache = join(
+      this.cacheDir,
+      "registries/dice/trusted-keys.json",
+    );
     if (!existsSync(trustedKeysCache)) {
-      const localKeys = join(this.repoRoot, "registries/dice/trusted-keys.json");
-      if (existsSync(localKeys)) {
-        mkdirSync(join(this.cacheDir, "registries/dice"), { recursive: true });
-        copyFileSync(localKeys, trustedKeysCache);
-      }
+      throw new Error(
+        `FAIL-CLOSED: Missing authoritative trusted-keys.json in trusted root reference '${this.trustedCommit}' (BLOCKED). Local seeding strictly prohibited.`,
+      );
     }
 
-    // 4. Compute immutable cryptographic digest of the trusted policy set
-    this.trustedRootSha = this.computePolicyHash();
+    // 3. Compute immutable cryptographic policy manifest & digest
+    this.policyManifest = this.generatePolicyManifest();
+    this.trustedRootSha = this.policyManifest.manifest_sha256;
 
-    // 5. Compute runner SHA
+    // 4. Compute runner SHA from trusted distribution cache
     try {
-      const runnerContent = readFileSync(join(this.repoRoot, "scripts/dice-bootstrap.mjs"), "utf8");
-      this.runnerSha = createHash("sha256").update(runnerContent, "utf8").digest("hex");
+      const runnerContent = readFileSync(
+        join(this.cacheDir, "scripts/dice-bootstrap.mjs"),
+        "utf8",
+      );
+      this.runnerSha = createHash("sha256")
+        .update(runnerContent, "utf8")
+        .digest("hex");
     } catch {
       this.runnerSha = "unknown";
     }
@@ -117,40 +269,88 @@ export class DiceTrustedRoot {
       trustedRootSha: this.trustedRootSha,
       runnerSha: this.runnerSha,
       cacheDir: this.cacheDir,
+      policyManifest: this.policyManifest,
     };
   }
 
-  computePolicyHash() {
-    const hash = createHash("sha256");
+  generatePolicyManifest() {
     const filesToHash = [
+      // Schemas
+      "schemas/dice/obl.schema.json",
+      "schemas/dice/xdie.schema.json",
+      "schemas/dice/domain-pack.schema.json",
+      "schemas/dice/registry.schema.json",
+      "schemas/dice/trusted-profile.schema.json",
+      "schemas/dice/evidence-envelope.schema.json",
+      // Verifier scripts & evaluators
+      "scripts/dice-root-of-trust.mjs",
+      "scripts/dice-bootstrap.mjs",
+      "scripts/dice-qualify.mjs",
+      "scripts/dice-plan-generator.mjs",
+      "scripts/dice-sandbox.mjs",
+      "scripts/dice-evidence.mjs",
+      "scripts/scope-guard.mjs",
+      "scripts/verification-drift.mjs",
+      "scripts/die-registry-check.mjs",
+      "scripts/secret-scan.mjs",
+      // Registries
       "registries/dice/mandatory-obligations.json",
       "registries/dice/trusted-profiles.json",
       "registries/dice/trusted-keys.json",
-      "scripts/dice-qualify.mjs",
-      "scripts/scope-guard.mjs",
+      "registries/dice/registry.json",
     ];
+
+    const entries = [];
+    const masterHasher = createHash("sha256");
 
     for (const rel of filesToHash) {
       const p = join(this.cacheDir, rel);
-      if (existsSync(p)) {
-        const content = readFileSync(p);
-        hash.update(rel);
-        hash.update(content);
+      if (!existsSync(p)) {
+        throw new Error(
+          `FAIL-CLOSED: Required trusted asset '${rel}' missing from trusted root cache (BLOCKED).`,
+        );
       }
+      const content = readFileSync(p);
+      const fileSha = createHash("sha256").update(content).digest("hex");
+      entries.push({ path: rel, sha256: fileSha });
+
+      masterHasher.update(rel);
+      masterHasher.update(fileSha);
     }
-    return hash.digest("hex");
+
+    const manifest_sha256 = masterHasher.digest("hex");
+    const manifest = {
+      trusted_commit: this.trustedCommit,
+      trusted_tree: this.trustedTree,
+      entries,
+      manifest_sha256,
+    };
+
+    writeFileSync(
+      join(this.cacheDir, "policy-manifest.json"),
+      canonicalizeJson(manifest),
+      "utf8",
+    );
+    return manifest;
+  }
+
+  computePolicyHash() {
+    if (this.policyManifest && this.policyManifest.manifest_sha256) {
+      return this.policyManifest.manifest_sha256;
+    }
+    return this.generatePolicyManifest().manifest_sha256;
   }
 
   getTrustedPath(relPath) {
+    validateSafePath(relPath);
     const cached = join(this.cacheDir, relPath);
     if (existsSync(cached)) {
       return cached;
     }
-    const local = join(this.repoRoot, relPath);
-    if (existsSync(local)) {
-      return local;
-    }
-    throw new Error(`FAIL-CLOSED: Trusted asset not found: ${relPath}`);
+    // STAGE 2.4: Zero candidate-local fallback paths. Missing trusted assets fail closed as BLOCKED.
+    throw new Error(
+      `FAIL-CLOSED: Trusted asset not found in trusted root cache: ${relPath} (BLOCKED)`,
+    );
   }
 
   loadTrustedJson(relPath) {
@@ -159,36 +359,37 @@ export class DiceTrustedRoot {
   }
 
   createCandidateSnapshot(candidateTree, targetDir) {
-    if (!candidateTree || candidateTree.length !== 40) {
-      throw new Error(`FAIL-CLOSED: Invalid candidate tree SHA: ${candidateTree}`);
-    }
-    if (!targetDir) {
-      throw new Error("FAIL-CLOSED: targetDir is required for candidate snapshot");
-    }
+    validateTreeSha(candidateTree);
+    validateSafePath(targetDir);
 
     mkdirSync(targetDir, { recursive: true });
-    try {
-      execSync(`git archive ${candidateTree} | tar -x -C "${targetDir}"`, {
-        cwd: this.repoRoot,
-        stdio: ["ignore", "pipe", "pipe"],
-      });
-    } catch (err) {
-      throw new Error(`FAIL-CLOSED: Failed to archive candidate tree ${candidateTree}: ${err.message}`);
-    }
+    safeArchiveExtract(candidateTree, [], targetDir, this.repoRoot);
 
     // Assert absence of host leaks
     if (existsSync(join(targetDir, ".git"))) {
-      throw new Error("SECURITY_VIOLATION: .git directory detected in isolated candidate snapshot");
+      throw new Error(
+        "SECURITY_VIOLATION: .git directory detected in isolated candidate snapshot",
+      );
     }
 
     return targetDir;
   }
 
   generateDiffManifest(baseCommit, candidateTree, targetFile) {
-    const cmd = `git diff-tree -r --name-status ${baseCommit} ${candidateTree}`;
-    const output = execSync(cmd, { cwd: this.repoRoot, encoding: "utf8" });
-    const entries = [];
+    validateCommitSha(baseCommit);
+    validateTreeSha(candidateTree);
+    if (targetFile) validateSafePath(targetFile);
 
+    const output = execFileSync(
+      "git",
+      ["diff-tree", "-r", "--name-status", baseCommit, candidateTree],
+      {
+        cwd: this.repoRoot,
+        encoding: "utf8",
+      },
+    );
+
+    const entries = [];
     for (const line of output.split("\n")) {
       const trimmed = line.trim();
       if (!trimmed) continue;

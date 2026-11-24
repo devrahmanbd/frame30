@@ -5,22 +5,46 @@
  * Feature Change Contract (features/contracts/*.json).
  *
  * Exits with code 0 on compliance, non-zero code on violation.
+ *
+ * Stage 2.4:
+ * - Complete removal of shell command interpolation (execFileSync with argument arrays).
+ * - Validation of commit SHA and contract paths against injection.
+ * - Support for --target-dir parameter.
  */
 
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 
-const REPO_ROOT = process.cwd();
+function validateCommitSha(sha) {
+  if (!sha || typeof sha !== "string" || !/^[0-9a-f]{40}$/i.test(sha.trim())) {
+    throw new Error(
+      `[scope-guard] ✗ FAIL-CLOSED: Malformed commit SHA: ${JSON.stringify(sha)}`,
+    );
+  }
+  return sha.trim();
+}
+
+function validateSafePath(p) {
+  if (
+    !p ||
+    typeof p !== "string" ||
+    p.includes("\0") ||
+    p.includes("\n") ||
+    p.includes("\r")
+  ) {
+    throw new Error(
+      `[scope-guard] ✗ FAIL-CLOSED: Malformed path: ${JSON.stringify(p)}`,
+    );
+  }
+  return p;
+}
 
 // Helper to convert simple glob (*, **) to RegExp
 function globToRegex(pattern) {
   let p = pattern.trim();
-  // Escape regex special chars except * and /
   p = p.replace(/[.+^${}()|[\]\\]/g, "\\$&");
-  // Replace ** with .*
   p = p.replace(/\*\*/g, ".*");
-  // Replace single * with [^/]*
   p = p.replace(/(?<!\.)\*/g, "[^/]*");
   return new RegExp(`^${p}$`);
 }
@@ -33,18 +57,25 @@ function matchesAny(path, patterns) {
   return null;
 }
 
-// 1. Resolve Contract & Diff Manifest
+// 1. Resolve Parameters
+let targetRoot = process.cwd();
 let contractPath = "";
 let diffManifestPath = "";
+
 for (const arg of process.argv.slice(2)) {
   if (arg.startsWith("--contract=")) {
     contractPath = arg.split("=")[1];
   } else if (arg.startsWith("--diff-manifest=")) {
     diffManifestPath = arg.split("=")[1];
+  } else if (arg.startsWith("--target-dir=")) {
+    targetRoot = arg.split("=")[1];
   } else if (!arg.startsWith("--") && !contractPath) {
     contractPath = arg;
   }
 }
+
+validateSafePath(targetRoot);
+
 if (!diffManifestPath && process.env.DIFF_MANIFEST) {
   diffManifestPath = process.env.DIFF_MANIFEST;
 }
@@ -53,11 +84,14 @@ if (!contractPath) {
   if (process.env.ACTIVE_CHANGE_CONTRACT) {
     contractPath = process.env.ACTIVE_CHANGE_CONTRACT;
   } else {
-    // Dynamic contract discovery across contracts in features/contracts/
-    const contractsDir = join(REPO_ROOT, "features/contracts");
+    const contractsDir = join(targetRoot, "features/contracts");
     let currentHead = "";
     try {
-      currentHead = execSync("git rev-parse HEAD", { encoding: "utf8" }).trim();
+      currentHead = execFileSync("git", ["rev-parse", "HEAD"], {
+        cwd: targetRoot,
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "ignore"],
+      }).trim();
     } catch {}
 
     if (existsSync(contractsDir)) {
@@ -69,8 +103,11 @@ if (!contractPath) {
           f !== "verification-manifest.json",
       );
 
-      // Prioritize amendments first so active amendments take precedence over base contracts
       contractFiles.sort((a, b) => {
+        const aIsStage24 = a.includes("STAGE2-4");
+        const bIsStage24 = b.includes("STAGE2-4");
+        if (aIsStage24 && !bIsStage24) return -1;
+        if (!aIsStage24 && bIsStage24) return 1;
         const aIsAmend = a.includes("-AMEND");
         const bIsAmend = b.includes("-AMEND");
         if (aIsAmend && !bIsAmend) return -1;
@@ -92,7 +129,13 @@ if (!contractPath) {
     }
 
     if (!contractPath) {
-      if (existsSync(join(contractsDir, "F30-DICE-REV2-3-AMEND1.json"))) {
+      if (existsSync(join(contractsDir, "F30-DICE-STAGE2-4.json"))) {
+        contractPath = "features/contracts/F30-DICE-STAGE2-4.json";
+      } else if (existsSync(join(contractsDir, "F30-DICE-STAGE2-3.json"))) {
+        contractPath = "features/contracts/F30-DICE-STAGE2-3.json";
+      } else if (
+        existsSync(join(contractsDir, "F30-DICE-REV2-3-AMEND1.json"))
+      ) {
         contractPath = "features/contracts/F30-DICE-REV2-3-AMEND1.json";
       } else if (existsSync(join(contractsDir, "F30-DICE-REV2-3.json"))) {
         contractPath = "features/contracts/F30-DICE-REV2-3.json";
@@ -106,7 +149,9 @@ if (!contractPath) {
     }
   }
 }
-const fullContractPath = resolve(REPO_ROOT, contractPath);
+
+validateSafePath(contractPath);
+const fullContractPath = resolve(targetRoot, contractPath);
 
 if (!existsSync(fullContractPath)) {
   console.error(
@@ -126,7 +171,16 @@ try {
 }
 
 const contractId = contract.change_id || contract.feature_id || "UNKNOWN";
-const baseCommit = contract.base_commit || contract.baseline_commit;
+const rawBaseCommit = contract.base_commit || contract.baseline_commit;
+
+if (!rawBaseCommit) {
+  console.error(
+    "[scope-guard] ✗ FAIL-CLOSED: Contract does not declare base_commit or baseline_commit.",
+  );
+  process.exit(1);
+}
+
+const baseCommit = validateCommitSha(rawBaseCommit);
 
 console.log(
   `[scope-guard] Loaded change contract: ${contractId} ("${contract.title}")`,
@@ -134,27 +188,25 @@ console.log(
 console.log(`[scope-guard] Baseline Commit: ${baseCommit}`);
 console.log(`[scope-guard] Human Owner: ${contract.owner}`);
 
-if (!baseCommit) {
-  console.error(
-    "[scope-guard] ✗ FAIL-CLOSED: Contract does not declare base_commit or baseline_commit.",
-  );
-  process.exit(1);
-}
-
 // 2. Validate Baseline Commit & Collect Touched Files
 const touched = new Map(); // path -> status (M, A, D, R, etc.)
 
 if (diffManifestPath) {
-  const fullManifestPath = resolve(REPO_ROOT, diffManifestPath);
+  validateSafePath(diffManifestPath);
+  const fullManifestPath = resolve(targetRoot, diffManifestPath);
   if (!existsSync(fullManifestPath)) {
-    console.error(`[scope-guard] ✗ FAIL-CLOSED: Diff manifest not found at ${fullManifestPath}`);
+    console.error(
+      `[scope-guard] ✗ FAIL-CLOSED: Diff manifest not found at ${fullManifestPath}`,
+    );
     process.exit(1);
   }
   let manifest;
   try {
     manifest = JSON.parse(readFileSync(fullManifestPath, "utf8"));
   } catch (err) {
-    console.error(`[scope-guard] ✗ FAIL-CLOSED: Malformed diff manifest JSON: ${err.message}`);
+    console.error(
+      `[scope-guard] ✗ FAIL-CLOSED: Malformed diff manifest JSON: ${err.message}`,
+    );
     process.exit(1);
   }
   if (manifest.base_commit && manifest.base_commit !== baseCommit) {
@@ -169,9 +221,10 @@ if (diffManifestPath) {
     }
   }
 } else {
-  // Standalone execution: query git history directly
+  // Standalone execution: query git history directly via execFileSync
   try {
-    execSync(`git rev-parse --verify ${baseCommit}^{commit}`, {
+    execFileSync("git", ["rev-parse", "--verify", `${baseCommit}^{commit}`], {
+      cwd: targetRoot,
       stdio: "ignore",
     });
   } catch {
@@ -181,43 +234,55 @@ if (diffManifestPath) {
     process.exit(1);
   }
 
-  function recordDiff(command) {
+  function recordDiff(args) {
     try {
-      const output = execSync(command, { encoding: "utf8" });
+      const output = execFileSync("git", args, {
+        cwd: targetRoot,
+        encoding: "utf8",
+      });
       for (const line of output.split("\n")) {
         const trimmed = line.trim();
         if (!trimmed) continue;
         const parts = trimmed.split(/\s+/);
         const status = parts[0];
-        const filePath = parts[parts.length - 1]; // handles renames (R100 old new)
+        const filePath = parts[parts.length - 1]; // handles renames
         if (filePath) {
           touched.set(filePath, status);
         }
       }
     } catch (err) {
-      console.error(`[scope-guard] Error executing ${command}: ${err.message}`);
+      console.error(
+        `[scope-guard] Error executing git ${args.join(" ")}: ${err.message}`,
+      );
       process.exit(1);
     }
   }
 
   // Diff between baseline commit and HEAD
-  recordDiff(`git diff --name-status ${baseCommit}...HEAD`);
+  recordDiff(["diff", "--name-status", `${baseCommit}...HEAD`]);
 
   // Also include uncommitted unstaged and staged changes if any
-  recordDiff("git diff --name-status HEAD");
-  recordDiff("git diff --cached --name-status");
+  recordDiff(["diff", "--name-status", "HEAD"]);
+  recordDiff(["diff", "--cached", "--name-status"]);
 
   // Include untracked files
   try {
-    const untracked = execSync("git ls-files --others --exclude-standard", {
-      encoding: "utf8",
-    });
+    const untracked = execFileSync(
+      "git",
+      ["ls-files", "--others", "--exclude-standard"],
+      {
+        cwd: targetRoot,
+        encoding: "utf8",
+      },
+    );
     for (const line of untracked.split("\n")) {
       const p = line.trim();
       if (p) touched.set(p, "A(untracked)");
     }
   } catch (err) {
-    console.error(`[scope-guard] Error checking untracked files: ${err.message}`);
+    console.error(
+      `[scope-guard] Error checking untracked files: ${err.message}`,
+    );
   }
 }
 
@@ -239,7 +304,6 @@ const forbiddenPatterns = contract.forbidden_file_changes || [];
 let violations = [];
 
 for (const [filePath, status] of touched.entries()) {
-
   // Check forbidden first
   const forbiddenMatch = matchesAny(filePath, forbiddenPatterns);
   if (forbiddenMatch) {

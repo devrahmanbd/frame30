@@ -11,7 +11,12 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join, relative } from "node:path";
 
-const root = process.cwd();
+let root = process.cwd();
+for (const arg of process.argv.slice(2)) {
+  if (arg.startsWith("--target-dir=")) {
+    root = arg.split("=")[1];
+  }
+}
 const SKIP_DIRS = new Set([
   "node_modules",
   ".git",

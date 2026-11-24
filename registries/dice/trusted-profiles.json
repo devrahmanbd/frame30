@@ -3,10 +3,17 @@
     "schema_version": "2.3.0",
     "profile_id": "PROF-SCRIPT-v1",
     "adapter": "script",
-    "command_template": "node",
+    "executable": "node",
+    "base_args": [],
+    "command_template": [
+      "node"
+    ],
     "allowed_cli_args": [
       "^scripts/[a-zA-Z0-9_-]+\\.mjs$",
+      "^/workspace/trusted/scripts/[a-zA-Z0-9_-]+\\.mjs$",
       "^--contract=features/contracts/[a-zA-Z0-9_.-]+\\.json$",
+      "^--diff-manifest=[a-zA-Z0-9/_.-]+\\.json$",
+      "^--target-dir=[a-zA-Z0-9/_.-]+$",
       "^--[a-zA-Z0-9_-]+(=.*)?$"
     ],
     "timeout_ms": 60000,
@@ -21,7 +28,16 @@
     "schema_version": "2.3.0",
     "profile_id": "PROF-VITEST-v1",
     "adapter": "vitest",
-    "command_template": "bunx vitest run",
+    "executable": "bunx",
+    "base_args": [
+      "vitest",
+      "run"
+    ],
+    "command_template": [
+      "bunx",
+      "vitest",
+      "run"
+    ],
     "allowed_cli_args": [
       "^src/lib/dice/[a-zA-Z0-9_.-]+\\.test\\.ts$"
     ],
@@ -36,7 +52,16 @@
     "schema_version": "2.3.0",
     "profile_id": "PROF-LEAN4-v1",
     "adapter": "lean4",
-    "command_template": "lake build && lake exe framique_verify",
+    "executable": "lake",
+    "base_args": [
+      "exe",
+      "framique_verify"
+    ],
+    "command_template": [
+      "lake",
+      "exe",
+      "framique_verify"
+    ],
     "allowed_cli_args": [
       "--verbose",
       "--json"
@@ -52,7 +77,16 @@
     "schema_version": "2.3.0",
     "profile_id": "PROF-TLC-v1",
     "adapter": "tlc",
-    "command_template": "java -jar tlc.jar",
+    "executable": "java",
+    "base_args": [
+      "-jar",
+      "specs/tla/tla2tools.jar"
+    ],
+    "command_template": [
+      "java",
+      "-jar",
+      "specs/tla/tla2tools.jar"
+    ],
     "allowed_cli_args": [
       "-modelcheck",
       "-coverage",
@@ -69,7 +103,14 @@
     "schema_version": "2.3.0",
     "profile_id": "PROF-BEND2-v1",
     "adapter": "bend2",
-    "command_template": "bend check",
+    "executable": "bend",
+    "base_args": [
+      "check"
+    ],
+    "command_template": [
+      "bend",
+      "check"
+    ],
     "allowed_cli_args": [
       "specs/bend/LAWS.bend"
     ],
@@ -83,7 +124,14 @@
     "schema_version": "2.3.0",
     "profile_id": "PROF-BOMBADIL-v1",
     "adapter": "bombadil",
-    "command_template": "node bombadil/fuzz.mjs",
+    "executable": "node",
+    "base_args": [
+      "bombadil/fuzz.mjs"
+    ],
+    "command_template": [
+      "node",
+      "bombadil/fuzz.mjs"
+    ],
     "allowed_cli_args": [
       "--viewports=8",
       "--depth=100"
@@ -98,7 +146,14 @@
     "schema_version": "2.3.0",
     "profile_id": "PROF-FAST_CHECK-v1",
     "adapter": "fast-check",
-    "command_template": "bun test:properties",
+    "executable": "bun",
+    "base_args": [
+      "test:properties"
+    ],
+    "command_template": [
+      "bun",
+      "test:properties"
+    ],
     "allowed_cli_args": [
       "--num-runs=1000"
     ],

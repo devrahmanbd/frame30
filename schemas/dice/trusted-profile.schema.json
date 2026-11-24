@@ -33,8 +33,18 @@
       ]
     },
     "command_template": {
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+      ]
+    },
+    "executable": {
       "type": "string",
-      "minLength": 3
+      "minLength": 1
+    },
+    "base_args": {
+      "type": "array",
+      "items": { "type": "string" }
     },
     "allowed_cli_args": {
       "type": "array",

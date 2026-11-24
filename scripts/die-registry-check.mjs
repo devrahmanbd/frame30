@@ -11,7 +11,12 @@
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { join } from "node:path";
 
-const REPO_ROOT = process.cwd();
+let REPO_ROOT = process.cwd();
+for (const arg of process.argv.slice(2)) {
+  if (arg.startsWith("--target-dir=")) {
+    REPO_ROOT = arg.split("=")[1];
+  }
+}
 const DIES_DIR = join(REPO_ROOT, "dies");
 const SCHEMA_FILE = join(DIES_DIR, "schema.json");
 
