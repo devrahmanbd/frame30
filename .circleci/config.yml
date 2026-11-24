@@ -188,7 +188,7 @@ jobs:
           command: |
             bunx vitest run src/lib/dice/
       - store_artifacts:
-          path: .artifacts/dice-evidence
+          path: artifacts/dice-evidence
           destination: dice-evidence
 
   scan:

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { mkdtempSync, writeFileSync, rmSync, existsSync } from "node:fs";
+import { mkdtempSync, writeFileSync, rmSync, existsSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { DiceSandbox } from "../../../scripts/dice-sandbox.mjs";
@@ -26,8 +26,7 @@ describe("DICE OS Sandbox Security & Containment (Revision 2.3 Section 7 & C4)",
       const tempDir = mkdtempSync(join(tmpdir(), "dice-test-git-"));
       try {
         const fakeGit = join(tempDir, ".git");
-        const fs = require("node:fs");
-        fs.mkdirSync(fakeGit, { recursive: true });
+        mkdirSync(fakeGit, { recursive: true });
         writeFileSync(join(fakeGit, "config"), "SECRET_TOKEN=ghp_forbidden123456");
 
         const sandbox = new DiceSandbox();
@@ -301,9 +300,8 @@ describe("DICE OS Sandbox Security & Containment (Revision 2.3 Section 7 & C4)",
       const tempDir = mkdtempSync(join(tmpdir(), "dice-test-out-"));
       const stagingDir = join(tempDir, "staging");
       const srcDir = join(tempDir, "src");
-      const fs = require("node:fs");
-      fs.mkdirSync(stagingDir, { recursive: true });
-      fs.mkdirSync(srcDir, { recursive: true });
+      mkdirSync(stagingDir, { recursive: true });
+      mkdirSync(srcDir, { recursive: true });
 
       try {
         const sandbox = new DiceSandbox();

@@ -53,7 +53,7 @@
             {
               "type": "stdout_must_contain",
               "tokens": [
-                "[drift-guard] ✓"
+                "[verification-drift] SUCCESS"
               ]
             }
           ]
@@ -84,7 +84,7 @@
             {
               "type": "stdout_must_contain",
               "tokens": [
-                "[die-registry] ✓"
+                "[die-registry-check] ✓"
               ]
             }
           ]

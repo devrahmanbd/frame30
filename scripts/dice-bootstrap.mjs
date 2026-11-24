@@ -33,7 +33,7 @@ const REPO_ROOT = process.cwd();
 // Parse CLI flags
 let isDryRun = false;
 let contractPath = "features/contracts/F30-DICE-STAGE2-2.json";
-let outDir = ".artifacts/dice-evidence";
+let outDir = "artifacts/dice-evidence";
 
 for (const arg of process.argv.slice(2)) {
   if (arg === "--dry-run") {
