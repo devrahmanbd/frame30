@@ -47,7 +47,15 @@ export class DiceSigningService {
       options.trustedRef || process.env.DICE_TRUSTED_REF || DEFAULT_TRUSTED_REF;
     this.evidenceDir = options.evidenceDir || "artifacts/dice-evidence";
     this.contractPath =
-      options.contractPath || "features/contracts/F30-DICE-STAGE2-4.json";
+      options.contractPath || "features/contracts/F30-DICE-STAGE2-4-1.json";
+    this.candidateCommit = options.candidateCommit
+      ? validateCommitSha(options.candidateCommit)
+      : null;
+    this.candidateTree = options.candidateTree
+      ? validateTreeSha(options.candidateTree)
+      : null;
+    this.testKeys = options.testKeys || null;
+    this.testKeysPath = options.testKeysPath || null;
     this.keyId =
       options.keyId ||
       process.env.DICE_SIGNING_KEY_ID ||
@@ -85,21 +93,33 @@ export class DiceSigningService {
     console.log(
       "[dice-signing] Gate 1: Verifying candidate identity against git object database...",
     );
-    let candidateCommit;
-    let candidateTree;
+    let candidateCommit = this.candidateCommit;
+    let candidateTree = this.candidateTree;
 
     const summaryPath = join(fullEvidenceDir, "qualification-summary.json");
     if (existsSync(summaryPath)) {
       try {
         const summary = JSON.parse(readFileSync(summaryPath, "utf8"));
-        candidateCommit = validateCommitSha(summary.candidate_commit);
-        candidateTree = validateTreeSha(summary.candidate_tree);
+        const summaryCommit = validateCommitSha(summary.candidate_commit);
+        const summaryTree = validateTreeSha(summary.candidate_tree);
+        if (candidateCommit && candidateCommit !== summaryCommit) {
+          throw new Error(
+            `FAIL-CLOSED: Supplied candidate commit (${candidateCommit}) does not match qualification-summary (${summaryCommit})`,
+          );
+        }
+        if (candidateTree && candidateTree !== summaryTree) {
+          throw new Error(
+            `FAIL-CLOSED: Supplied candidate tree (${candidateTree}) does not match qualification-summary (${summaryTree})`,
+          );
+        }
+        candidateCommit = summaryCommit;
+        candidateTree = summaryTree;
       } catch (err) {
         throw new Error(
           `FAIL-CLOSED: Malformed qualification-summary.json: ${err.message}`,
         );
       }
-    } else {
+    } else if (!candidateCommit || !candidateTree) {
       try {
         candidateCommit = validateCommitSha(
           execFileSync("git", ["rev-parse", "HEAD"], {
@@ -209,10 +229,14 @@ export class DiceSigningService {
       throw new Error("FAIL-CLOSED: Detached receipt ledger is empty");
     }
 
+    const trustedKeys = this.testKeys
+      ? this.testKeys
+      : this.testKeysPath
+        ? JSON.parse(readFileSync(this.testKeysPath, "utf8"))
+        : trustedRoot.loadTrustedJson("registries/dice/trusted-keys.json");
+
     const signingAuthority = new DiceSigningAuthority({
-      trustedKeys: trustedRoot.loadTrustedJson(
-        "registries/dice/trusted-keys.json",
-      ),
+      trustedKeys,
       repoRoot: this.repoRoot,
     });
 
@@ -412,29 +436,55 @@ export class DiceSigningService {
 
 // CLI Execution
 if (process.argv[1] && process.argv[1].endsWith("dice-signing-service.mjs")) {
-  let contractPath = "features/contracts/F30-DICE-STAGE2-4.json";
+  let contractPath = "features/contracts/F30-DICE-STAGE2-4-1.json";
   let evidenceDir = "artifacts/dice-evidence";
+  let candidateCommit = null;
+  let candidateTree = null;
+  let testKeysPath = null;
+  let keyId = process.env.DICE_SIGNING_KEY_ID || "key-dice-authoritative-01";
+  let trustedRef = process.env.DICE_TRUSTED_REF || DEFAULT_TRUSTED_REF;
 
   for (const arg of process.argv.slice(2)) {
     if (arg === "--help" || arg === "-h") {
       console.log(`Usage: node scripts/dice-signing-service.mjs [options]
 
 Options:
-  --contract=<path>     Path to change contract (default: features/contracts/F30-DICE-STAGE2-4.json)
-  --evidence-dir=<path> Path to evidence directory (default: artifacts/dice-evidence)
-  --trusted-ref=<ref>   Git commit/tag for trusted root (default: 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271)
-  --key-id=<id>         Key ID for signing (default: dice-attestation-primary-2026)
-  --help, -h            Show this help message
+  --contract=<path>         Path to change contract (default: features/contracts/F30-DICE-STAGE2-4-1.json)
+  --evidence-dir=<path>     Path to evidence directory (default: artifacts/dice-evidence)
+  --candidate-commit=<sha>  Candidate commit SHA (verified against git object database)
+  --candidate-tree=<sha>    Candidate tree SHA (verified against git object database)
+  --trusted-ref=<ref>       Git commit/tag for trusted root (default: 9e6a82abb3502edb84f2d7be9fcc36401b380bfb)
+  --key-id=<id>             Key ID for signing (default: key-dice-authoritative-01)
+  --test-keys=<path>        Path to test trusted-keys.json for isolated test verification
+  --help, -h                Show this help message
 `);
       process.exit(0);
     } else if (arg.startsWith("--contract=")) {
       contractPath = arg.split("=")[1];
     } else if (arg.startsWith("--evidence-dir=")) {
       evidenceDir = arg.split("=")[1];
+    } else if (arg.startsWith("--candidate-commit=")) {
+      candidateCommit = arg.split("=")[1];
+    } else if (arg.startsWith("--candidate-tree=")) {
+      candidateTree = arg.split("=")[1];
+    } else if (arg.startsWith("--trusted-ref=")) {
+      trustedRef = arg.split("=")[1];
+    } else if (arg.startsWith("--key-id=")) {
+      keyId = arg.split("=")[1];
+    } else if (arg.startsWith("--test-keys=")) {
+      testKeysPath = arg.split("=")[1];
     }
   }
 
-  const service = new DiceSigningService({ contractPath, evidenceDir });
+  const service = new DiceSigningService({
+    contractPath,
+    evidenceDir,
+    candidateCommit,
+    candidateTree,
+    trustedRef,
+    keyId,
+    testKeysPath,
+  });
   try {
     service.execute();
     process.exit(0);

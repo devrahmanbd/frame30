@@ -104,6 +104,10 @@ if (!contractPath) {
       );
 
       contractFiles.sort((a, b) => {
+        const aIsStage241 = a.includes("STAGE2-4-1");
+        const bIsStage241 = b.includes("STAGE2-4-1");
+        if (aIsStage241 && !bIsStage241) return -1;
+        if (!aIsStage241 && bIsStage241) return 1;
         const aIsStage24 = a.includes("STAGE2-4");
         const bIsStage24 = b.includes("STAGE2-4");
         if (aIsStage24 && !bIsStage24) return -1;
@@ -129,7 +133,9 @@ if (!contractPath) {
     }
 
     if (!contractPath) {
-      if (existsSync(join(contractsDir, "F30-DICE-STAGE2-4.json"))) {
+      if (existsSync(join(contractsDir, "F30-DICE-STAGE2-4-1.json"))) {
+        contractPath = "features/contracts/F30-DICE-STAGE2-4-1.json";
+      } else if (existsSync(join(contractsDir, "F30-DICE-STAGE2-4.json"))) {
         contractPath = "features/contracts/F30-DICE-STAGE2-4.json";
       } else if (existsSync(join(contractsDir, "F30-DICE-STAGE2-3.json"))) {
         contractPath = "features/contracts/F30-DICE-STAGE2-3.json";
@@ -228,10 +234,22 @@ if (diffManifestPath) {
       stdio: "ignore",
     });
   } catch {
-    console.error(
-      `[scope-guard] ✗ FAIL-CLOSED: Baseline commit ${baseCommit} does not exist in git history.`,
-    );
-    process.exit(1);
+    // In shallow CI checkouts, attempt to fetch the baseline commit directly from origin
+    try {
+      execFileSync("git", ["fetch", "--depth=50", "origin", baseCommit], {
+        cwd: targetRoot,
+        stdio: "ignore",
+      });
+      execFileSync("git", ["rev-parse", "--verify", `${baseCommit}^{commit}`], {
+        cwd: targetRoot,
+        stdio: "ignore",
+      });
+    } catch {
+      console.error(
+        `[scope-guard] ✗ FAIL-CLOSED: Baseline commit ${baseCommit} does not exist in git history.`,
+      );
+      process.exit(1);
+    }
   }
 
   function recordDiff(args) {
@@ -277,7 +295,7 @@ if (diffManifestPath) {
     );
     for (const line of untracked.split("\n")) {
       const p = line.trim();
-      if (p) touched.set(p, "A(untracked)");
+      if (p && !p.startsWith(".test-tmp")) touched.set(p, "A(untracked)");
     }
   } catch (err) {
     console.error(

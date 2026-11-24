@@ -21,15 +21,20 @@ import {
   readFileSync,
   writeFileSync,
   rmSync,
+  lstatSync,
+  realpathSync,
+  readdirSync,
 } from "node:fs";
-import { join, resolve } from "node:path";
+import { join, resolve, isAbsolute, normalize, relative } from "node:path";
 import { execFileSync, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { canonicalizeJson } from "./dice-plan-generator.mjs";
 
-export const DEFAULT_TRUSTED_REF = "2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271";
+export const DEFAULT_TRUSTED_REF = "9e6a82abb3502edb84f2d7be9fcc36401b380bfb";
 
 export const APPROVED_ROOTS = Object.freeze({
+  "9e6a82abb3502edb84f2d7be9fcc36401b380bfb":
+    "2194ec156151f39002d78e3a1cffdcd760d80ead",
   "2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271":
     "f8932f94a9179feea432073105739ed3c2fac294",
   b09a772c59f9669af51d53f8411588a1eb95283c:
@@ -66,7 +71,7 @@ export function validateTrustedRef(ref) {
   return ref.trim();
 }
 
-export function validateSafePath(p) {
+export function validateSafePath(p, options = {}) {
   if (
     !p ||
     typeof p !== "string" ||
@@ -76,7 +81,59 @@ export function validateSafePath(p) {
   ) {
     throw new Error(`FAIL-CLOSED: Malformed path: ${JSON.stringify(p)}`);
   }
-  return p;
+
+  const raw = p.trim();
+
+  // Reject parent-directory traversal in any form
+  if (/(^|[/\\])\.\.([/\\]|$)/.test(raw) || raw.includes("..")) {
+    throw new Error(
+      `FAIL-CLOSED: Parent directory traversal prohibited: ${JSON.stringify(p)}`,
+    );
+  }
+
+  // If relative path required
+  if (options.mustBeRelative && isAbsolute(raw)) {
+    throw new Error(
+      `FAIL-CLOSED: Absolute path prohibited: ${JSON.stringify(p)}`,
+    );
+  }
+
+  // If base directory is specified, verify containment
+  if (options.baseDir) {
+    const baseCanonical = resolve(options.baseDir);
+    const resolvedPath = resolve(options.baseDir, raw);
+    const rel = relative(baseCanonical, resolvedPath);
+    if (rel.startsWith("..") || isAbsolute(rel)) {
+      throw new Error(
+        `FAIL-CLOSED: Path escapes base directory: ${JSON.stringify(p)}`,
+      );
+    }
+  }
+
+  // Symlink escape check if path exists on disk
+  if (options.checkSymlinks !== false) {
+    try {
+      if (existsSync(raw)) {
+        const lstat = lstatSync(raw);
+        if (lstat.isSymbolicLink()) {
+          const real = realpathSync(raw);
+          if (options.baseDir) {
+            const baseCanonical = realpathSync(resolve(options.baseDir));
+            const rel = relative(baseCanonical, real);
+            if (rel.startsWith("..") || isAbsolute(rel)) {
+              throw new Error(
+                `FAIL-CLOSED: Symlink escape detected: ${raw} -> ${real}`,
+              );
+            }
+          }
+        }
+      }
+    } catch (err) {
+      if (err.message && err.message.startsWith("FAIL-CLOSED:")) throw err;
+    }
+  }
+
+  return raw;
 }
 
 export function safeArchiveExtract(
@@ -88,7 +145,20 @@ export function safeArchiveExtract(
   validateSafePath(targetDir);
   validateSafePath(repoRoot);
   for (const p of targetPaths) {
-    validateSafePath(p);
+    validateSafePath(p, { mustBeRelative: true });
+  }
+
+  // Ensure targetDir does not escape /tmp or repoRoot
+  const resolvedTarget = resolve(targetDir);
+  const resolvedRepo = resolve(repoRoot);
+  const isAllowedLocation =
+    resolvedTarget.startsWith("/tmp/") ||
+    resolvedTarget === "/tmp" ||
+    resolvedTarget.startsWith(resolvedRepo);
+  if (!isAllowedLocation) {
+    throw new Error(
+      `FAIL-CLOSED: Invalid extraction destination: ${targetDir}`,
+    );
   }
 
   mkdirSync(targetDir, { recursive: true });
@@ -98,7 +168,7 @@ export function safeArchiveExtract(
       "sh",
       [
         "-c",
-        'commit="$1"; dir="$2"; shift 2; git archive "$commit" "$@" | tar -x -C "$dir"',
+        'commit="$1"; dir="$2"; shift 2; git archive "$commit" "$@" | tar -x --no-same-owner -C "$dir"',
         "--",
         commitOrTree,
         targetDir,
@@ -112,6 +182,33 @@ export function safeArchiveExtract(
   } catch (err) {
     const msg = err.stderr ? err.stderr.toString("utf8").trim() : err.message;
     throw new Error(`FAIL-CLOSED: Archive extraction failed: ${msg}`);
+  }
+
+  // Symlink boundary sweep: verify no extracted entry points outside targetDir
+  function assertNoSymlinkEscapes(dir, base) {
+    if (!existsSync(dir)) return;
+    const entries = readdirSync(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const full = join(dir, entry.name);
+      if (entry.isSymbolicLink()) {
+        const target = realpathSync(full);
+        const rel = relative(base, target);
+        if (rel.startsWith("..") || isAbsolute(rel)) {
+          throw new Error(
+            `FAIL-CLOSED: Archive contains escaping symlink: ${entry.name} -> ${target}`,
+          );
+        }
+      } else if (entry.isDirectory()) {
+        assertNoSymlinkEscapes(full, base);
+      }
+    }
+  }
+
+  try {
+    assertNoSymlinkEscapes(resolvedTarget, resolvedTarget);
+  } catch (err) {
+    rmSync(targetDir, { recursive: true, force: true });
+    throw err;
   }
 }
 

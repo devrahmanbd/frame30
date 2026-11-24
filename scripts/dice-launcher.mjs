@@ -25,12 +25,14 @@ import {
 
 export class DiceLauncher {
   constructor(options = {}) {
-    this.repoRoot = options.repoRoot || process.cwd();
+    this.repoRoot = options.candidateDir
+      ? resolve(options.candidateDir)
+      : options.repoRoot || process.cwd();
     this.trustedRef =
       options.trustedRef || process.env.DICE_TRUSTED_REF || DEFAULT_TRUSTED_REF;
     this.distDir = options.distDir || join("/tmp/dice-trusted-dist");
     this.contractPath =
-      options.contractPath || "features/contracts/F30-DICE-STAGE2-4.json";
+      options.contractPath || "features/contracts/F30-DICE-STAGE2-4-1.json";
     this.outDir = options.outDir || "artifacts/dice-evidence";
     this.isDryRun = options.isDryRun || false;
     this.allowUnpinnedRoots = options.allowUnpinnedRoots || false;
@@ -95,6 +97,8 @@ export class DiceLauncher {
     console.log(`  Executing: node ${pinnedBootstrapPath}\n`);
 
     const runnerArgs = [
+      "--import",
+      "data:text/javascript,globalThis.REPO_ROOT=process.cwd();",
       pinnedBootstrapPath,
       `--contract=${this.contractPath}`,
       `--out-dir=${this.outDir}`,
@@ -129,10 +133,11 @@ export class DiceLauncher {
 
 // CLI Execution
 if (process.argv[1] && process.argv[1].endsWith("dice-launcher.mjs")) {
-  let contractPath = "features/contracts/F30-DICE-STAGE2-4.json";
+  let contractPath = "features/contracts/F30-DICE-STAGE2-4-1.json";
   let distDir = "/tmp/dice-trusted-dist";
   let outDir = "artifacts/dice-evidence";
   let isDryRun = false;
+  let candidateDir = null;
   let trustedRef = process.env.DICE_TRUSTED_REF || DEFAULT_TRUSTED_REF;
 
   for (const arg of process.argv.slice(2)) {
@@ -141,10 +146,11 @@ if (process.argv[1] && process.argv[1].endsWith("dice-launcher.mjs")) {
 
 Options:
   --dry-run             Execute launcher and bootstrap in dry-run mode
-  --contract=<path>     Path to change contract (default: features/contracts/F30-DICE-STAGE2-4.json)
+  --contract=<path>     Path to change contract (default: features/contracts/F30-DICE-STAGE2-4-1.json)
+  --candidate-dir=<dir> Target candidate repository directory (default: current working directory)
   --dist-dir=<path>     Path to cache trusted distribution (default: /tmp/dice-trusted-dist)
   --out-dir=<path>      Path to evidence output directory (default: artifacts/dice-evidence)
-  --trusted-ref=<ref>   Git commit/tag for trusted root (default: 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271)
+  --trusted-ref=<ref>   Git commit/tag for trusted root (default: 9e6a82abb3502edb84f2d7be9fcc36401b380bfb)
   --help, -h            Show this help message
 `);
       process.exit(0);
@@ -152,6 +158,8 @@ Options:
       isDryRun = true;
     } else if (arg.startsWith("--contract=")) {
       contractPath = arg.split("=")[1];
+    } else if (arg.startsWith("--candidate-dir=")) {
+      candidateDir = arg.split("=")[1];
     } else if (arg.startsWith("--dist-dir=")) {
       distDir = arg.split("=")[1];
     } else if (arg.startsWith("--out-dir=")) {
@@ -163,6 +171,7 @@ Options:
 
   const launcher = new DiceLauncher({
     contractPath,
+    candidateDir,
     distDir,
     outDir,
     isDryRun,

@@ -69,6 +69,10 @@ jobs:
       - checkout
       - setup-bun
       - run:
+          name: Fetch baseline commits for scope guard
+          command: |
+            git fetch origin 9e6a82abb3502edb84f2d7be9fcc36401b380bfb 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271 || true
+      - run:
           name: Scope guard gate (fail-closed change contract compliance)
           command: bun run gate:scope
       - run:
@@ -174,12 +178,14 @@ jobs:
           name: Unshallow git history for baseline and trusted ref verification
           command: |
             if [ "$(git rev-parse --is-shallow-repository 2>/dev/null)" = "true" ]; then
-              git fetch --unshallow origin || git fetch origin --depth=100
+              git fetch --unshallow origin || git fetch origin --depth=100 || true
             fi
+            git fetch origin 9e6a82abb3502edb84f2d7be9fcc36401b380bfb 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271 || true
+            git rev-parse --verify 9e6a82abb3502edb84f2d7be9fcc36401b380bfb^{commit}
             git rev-parse --verify 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271^{commit}
       - run:
           name: Scope guard gate
-          command: ACTIVE_CHANGE_CONTRACT=features/contracts/F30-DICE-STAGE2-4.json bun run gate:scope
+          command: ACTIVE_CHANGE_CONTRACT=features/contracts/F30-DICE-STAGE2-4-1.json bun run gate:scope
       - run:
           name: Install Linux Bubblewrap OS sandbox substrate
           command: |
@@ -187,9 +193,21 @@ jobs:
             sudo apt-get install -y -qq bubblewrap
             bwrap --version
       - run:
-          name: Execute DICE Stage 2.4 Trusted Launcher
+          name: Extract and Execute Protected DICE Launcher from Pinned Reference
           command: |
-            DICE_TRUSTED_REF=2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271 node scripts/dice-launcher.mjs --contract=features/contracts/F30-DICE-STAGE2-4.json --trusted-ref=2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271 --dry-run
+            export NODE_OPTIONS="--import data:text/javascript,globalThis.REPO_ROOT=process.cwd();"
+            TRUSTED_REF="${DICE_TRUSTED_REF:-9e6a82abb3502edb84f2d7be9fcc36401b380bfb}"
+            ROOT_REF="${DICE_ROOT_REF:-2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271}"
+            LAUNCHER_DIR="/tmp/dice-protected-launcher"
+            rm -rf "$LAUNCHER_DIR"
+            mkdir -p "$LAUNCHER_DIR"
+            git archive "$TRUSTED_REF" scripts/dice-launcher.mjs scripts/dice-root-of-trust.mjs scripts/dice-plan-generator.mjs | tar -x -C "$LAUNCHER_DIR"
+            node "$LAUNCHER_DIR/scripts/dice-launcher.mjs" \
+              --trusted-ref="$ROOT_REF" \
+              --dist-dir=/tmp/dice-trusted-dist \
+              --candidate-dir=. \
+              --contract=features/contracts/F30-DICE-STAGE2-4-1.json \
+              --dry-run
       - run:
           name: Run DICE Vitest Test Suites
           command: |
@@ -219,13 +237,31 @@ jobs:
           name: Unshallow git history for baseline and trusted ref verification
           command: |
             if [ "$(git rev-parse --is-shallow-repository 2>/dev/null)" = "true" ]; then
-              git fetch --unshallow origin || git fetch origin --depth=100
+              git fetch --unshallow origin || git fetch origin --depth=100 || true
             fi
+            git fetch origin 9e6a82abb3502edb84f2d7be9fcc36401b380bfb 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271 || true
+            git rev-parse --verify 9e6a82abb3502edb84f2d7be9fcc36401b380bfb^{commit}
             git rev-parse --verify 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271^{commit}
       - run:
-          name: Execute DICE Isolated Attestation Signing Service
+          name: Extract and Execute Protected DICE Signing Distribution
           command: |
-            DICE_TRUSTED_REF=2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271 node scripts/dice-signing-service.mjs --contract=features/contracts/F30-DICE-STAGE2-4.json --evidence-dir=artifacts/dice-evidence
+            TRUSTED_REF="${DICE_TRUSTED_REF:-9e6a82abb3502edb84f2d7be9fcc36401b380bfb}"
+            ROOT_REF="${DICE_ROOT_REF:-2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271}"
+            SIGNER_DIR="/tmp/dice-protected-signer"
+            rm -rf "$SIGNER_DIR"
+            mkdir -p "$SIGNER_DIR"
+            git archive "$TRUSTED_REF" \
+              scripts/dice-signing-service.mjs \
+              scripts/dice-root-of-trust.mjs \
+              scripts/dice-qualify.mjs \
+              scripts/dice-plan-generator.mjs \
+              scripts/dice-evidence.mjs \
+              registries/dice/ \
+              schemas/dice/ | tar -x -C "$SIGNER_DIR"
+            NODE_PATH="$SIGNER_DIR" node "$SIGNER_DIR/scripts/dice-signing-service.mjs" \
+              --contract=features/contracts/F30-DICE-STAGE2-4-1.json \
+              --evidence-dir=artifacts/dice-evidence \
+              --trusted-ref="$ROOT_REF"
       - store_artifacts:
           path: artifacts/dice-evidence
           destination: dice-attestation

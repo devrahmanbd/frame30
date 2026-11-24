@@ -1,0 +1,235 @@
+{
+  "$schema": "./schema.json",
+  "contract_version": 1,
+  "change_id": "F30-DICE-STAGE2-4-1",
+  "feature_id": "F30-DICE-ARCH-001",
+  "title": "Frame30 Universal Verification Mould (DICE) Stage 2.4.1: Protected Invocation, Signer Isolation & Adversarial Proof",
+  "owner": "@devrahmanbd",
+  "reviewers": ["@devrahmanbd"],
+  "base_commit": "9e6a82abb3502edb84f2d7be9fcc36401b380bfb",
+  "baseline_commit": "9e6a82abb3502edb84f2d7be9fcc36401b380bfb",
+  "base_tree": "2194ec156151f39002d78e3a1cffdcd760d80ead",
+  "baseline_tree": "2194ec156151f39002d78e3a1cffdcd760d80ead",
+  "risk": "critical",
+  "build_tier": "Tier 1",
+  "objective": "Establish complete protected invocation and external signing isolation for DICE Stage 2.4.1. Move the initial verification entrypoint in CircleCI into an independently extracted execution context so the trusted launcher is never loaded from candidate source. Replace the candidate-controlled signing job with a protected signing distribution that never executes candidate scripts, imports candidate modules, or accesses candidate dependencies. Extend the mutation test suite with real active attacks against all 10 entrypoint vectors (launcher, root-of-trust, CI config, bootstrap runner, qualification evaluator, signing service, key registry, package/dependencies, evidence serializer, policy manifest). Deliver positive end-to-end signing test verification without bypass flags, and harden safe path validation against parent traversal, unapproved absolute paths, and symlink escapes.",
+  "merchant_or_user_outcome": "Guarantees absolute cryptographic, structural, and operational isolation between the candidate being verified and the verification/signing authority, eliminating all vectors for candidate-controlled self-authorization in CI.",
+  "problem_and_evidence": "Stage 2.4 established the external launcher and downstream signing service but left two residual entrypoint vulnerabilities: (1) CircleCI dice-qualification executed 'node scripts/dice-launcher.mjs' from candidate source rather than an independently extracted context, (2) CircleCI dice-attestation-signing executed from candidate checkout with potential module/dependency leaks, (3) mutation tests relied on unit mocks rather than real attacks against the protected invocation pipeline, (4) positive signing tests utilized allowUnapprovedContract and allowUnpinnedRoots bypass flags rather than clean end-to-end qualification with independently pinned test trust anchors, and (5) path validation required hardening against symlink escapes and parent traversal.",
+  "in_scope": {
+    "domains": ["governance", "verification", "tooling", "ci", "security"],
+    "components": [
+      "dice-root-of-trust",
+      "dice-launcher",
+      "dice-signing-service",
+      "scope-guard",
+      "circleci-pipeline"
+    ],
+    "services": [
+      "scripts/dice-root-of-trust.mjs",
+      "scripts/dice-launcher.mjs",
+      "scripts/dice-signing-service.mjs",
+      "scripts/scope-guard.mjs"
+    ],
+    "files": [
+      ".circleci/config.yml",
+      "features/contracts/F30-DICE-STAGE2-4-1.json",
+      "scripts/dice-root-of-trust.mjs",
+      "scripts/dice-launcher.mjs",
+      "scripts/dice-signing-service.mjs",
+      "scripts/scope-guard.mjs",
+      "src/lib/dice/authority-mutation.test.ts",
+      "src/lib/dice/signing-isolation.test.ts",
+      "src/lib/dice/signing-e2e.test.ts"
+    ]
+  },
+  "out_of_scope": {
+    "domains": [
+      "stage-3-formal-methods-integration",
+      "lean4-native-theorems",
+      "tlc-model-checking",
+      "bombadil-fuzzing",
+      "bend-verdict-kernel"
+    ],
+    "components": [
+      "specs/lean/**",
+      "specs/bend/**",
+      "specs/tla/**",
+      "bombadil/**"
+    ],
+    "services": [
+      "specs/lean/Framique/CmsLifecycle.lean",
+      "specs/bend/LAWS.bend",
+      "specs/tla/ResponsiveAutosave.tla",
+      "bombadil/runner.mjs"
+    ],
+    "files": [
+      "features/contracts/FRAME30-CMS-CORE.json",
+      "features/contracts/FRAME30-SDLC-000.json",
+      "features/contracts/pilot-workstreams-ab.json",
+      "features/contracts/F30-DICE-REV2-3.json",
+      "features/contracts/F30-DICE-REV2-3-AMEND1.json",
+      "features/contracts/F30-DICE-STAGE2-2.json",
+      "features/contracts/F30-DICE-STAGE2-3.json",
+      "features/contracts/F30-DICE-STAGE2-4.json",
+      "dies/**",
+      "specs/lean/**",
+      "specs/bend/**",
+      "specs/tla/**",
+      "src/routes/**",
+      "src/components/**",
+      "src/lib/store/**",
+      "src/lib/themes/**",
+      "src/lib/editor/**",
+      "src/lib/cms/**",
+      "src/lib/builder-ast.ts",
+      "src/lib/collection-composition.ts",
+      "src/lib/responsive.ts",
+      "supabase/migrations/**"
+    ]
+  },
+  "allowed_file_changes": [
+    ".circleci/config.yml",
+    "features/contracts/F30-DICE-STAGE2-4-1.json",
+    "scripts/dice-root-of-trust.mjs",
+    "scripts/dice-launcher.mjs",
+    "scripts/dice-signing-service.mjs",
+    "scripts/scope-guard.mjs",
+    "src/lib/dice/authority-mutation.test.ts",
+    "src/lib/dice/signing-isolation.test.ts",
+    "src/lib/dice/signing-e2e.test.ts"
+  ],
+  "forbidden_file_changes": [
+    "features/contracts/F30-DICE-STAGE2-4.json",
+    "features/contracts/F30-DICE-STAGE2-3.json",
+    "features/contracts/F30-DICE-STAGE2-2.json",
+    "features/contracts/F30-DICE-REV2-3-AMEND1.json",
+    "features/contracts/F30-DICE-REV2-3.json",
+    "features/contracts/FRAME30-CMS-CORE.json",
+    "features/contracts/FRAME30-SDLC-000.json",
+    "dies/**",
+    "specs/lean/**",
+    "specs/bend/**",
+    "specs/tla/**",
+    "bombadil/**"
+  ],
+  "contract_surfaces": {
+    "api": [],
+    "database": [],
+    "theme_runtime": [],
+    "plugin_runtime": [],
+    "ast_schema": [],
+    "event_schema": [],
+    "url_slug_redirect": [],
+    "sdk": []
+  },
+  "security": {
+    "tenant_boundary": "Isolated verification boundary. No candidate code or dependencies may execute within the authoritative verification launcher or downstream signing service.",
+    "roles_scopes": [
+      "human-specification-authority",
+      "dice-attestation-signer",
+      "dice-verifier"
+    ],
+    "pii_classes": [],
+    "secrets": ["DICE_SIGNING_KEY"],
+    "threat_model": "Hostile candidate repository attempts to tamper with verification launcher, root of trust, CircleCI config, bootstrap runner, qualification evaluator, signing service, key registry, dependencies, evidence serializer, or policy manifest to forge qualification passes or extract DICE_SIGNING_KEY."
+  },
+  "verification": {
+    "static": [
+      "bun run gate:scope",
+      "bun run gate:drift",
+      "bun run lint",
+      "bun run typecheck",
+      "bun run secrets:scan"
+    ],
+    "unit_component": [
+      "bunx vitest run src/lib/dice/root-of-trust.test.ts",
+      "bunx vitest run src/lib/dice/sandbox.test.ts",
+      "bunx vitest run src/lib/dice/qualification.test.ts",
+      "bunx vitest run src/lib/dice/evidence.test.ts",
+      "bunx vitest run src/lib/dice/schemas.test.ts"
+    ],
+    "contract_integration": [
+      "bun run test:contracts",
+      "bunx vitest run src/lib/dice/signing-isolation.test.ts",
+      "bunx vitest run src/lib/dice/signing-e2e.test.ts"
+    ],
+    "properties": ["bun run test:properties"],
+    "browser_bombadil": [],
+    "playwright": [],
+    "visual_accessibility": [],
+    "formal_lean": [],
+    "formal_bend": [],
+    "formal_tla": [],
+    "security_adversarial": [
+      "bunx vitest run src/lib/dice/authority-mutation.test.ts"
+    ],
+    "mutation_cases": [
+      "Candidate replaces scripts/dice-launcher.mjs",
+      "Candidate replaces scripts/dice-root-of-trust.mjs",
+      "Candidate tampers with .circleci/config.yml",
+      "Candidate replaces scripts/dice-bootstrap.mjs",
+      "Candidate replaces scripts/dice-qualify.mjs",
+      "Candidate replaces scripts/dice-signing-service.mjs",
+      "Candidate alters registries/dice/trusted-keys.json",
+      "Candidate injects hostile package.json/node_modules",
+      "Candidate replaces scripts/dice-evidence.mjs",
+      "Candidate tampers with policy-manifest digest"
+    ],
+    "regression_dies": [
+      "DIE-001-responsive-precedence",
+      "DIE-002-collection-composition",
+      "DIE-003-cms-tenant-isolation",
+      "DIE-004-cms-content-lifecycle",
+      "DIE-005-builder-widget-ast"
+    ]
+  },
+  "migration": {
+    "expand_contract_plan": "Stage 2.4.1 adds external launcher and signing extraction in CircleCI, hardens path/symlink validation, and establishes positive E2E tests without bypass flags.",
+    "backfill": "None required.",
+    "rollback_or_forward_fix": "Revert to Stage 2.4 baseline 9e6a82abb3502edb84f2d7be9fcc36401b380bfb if regression is detected."
+  },
+  "release": {
+    "feature_flag": "dice_stage2_4_1_protected_authority",
+    "cohort": "internal-verification-authority",
+    "health_signals": [
+      "circleci_dice_qualification_pass",
+      "circleci_dice_attestation_signing_pass",
+      "zero_candidate_script_leak"
+    ],
+    "rollback_trigger": [
+      "candidate_script_execution_in_launcher",
+      "signing_key_exposure_in_sandbox",
+      "symlink_escape_detected"
+    ],
+    "deployment_authorization": false
+  },
+  "api_contract_changes": false,
+  "database_schema_changes": false,
+  "dependency_changes": false,
+  "security_changes": true,
+  "required_invariants": [
+    "The trusted verification launcher is never loaded or executed from candidate checkout.",
+    "The downstream signing service is extracted from the authenticated git object tree into an isolated execution directory with zero candidate dependencies or module imports.",
+    "All candidate attempts to alter the launcher, root of trust, CircleCI config, bootstrap runner, evaluator, signer, key registry, package dependencies, evidence serializer, or policy manifest fail closed.",
+    "The signing service executes end-to-end without allowUnapprovedContract, allowUnpinnedRoots, or other bypass flags when supplied with an approved contract and matching evidence.",
+    "All file paths, extraction targets, and symlinks are strictly confined to authorized repository and staging directories."
+  ],
+  "required_acceptance": [
+    "Independent verification of protected launcher boundary outside candidate checkout.",
+    "Demonstration of isolated signing distribution executing without candidate dependencies.",
+    "10-vector real adversarial entrypoint test execution.",
+    "Positive E2E signing test generating valid in-toto DSSE attestation.",
+    "Remote CircleCI execution proof on frozen candidate."
+  ],
+  "required_formal_verification": {},
+  "required_ui_properties": [],
+  "required_browser_workflows": [],
+  "required_regression_suites": [
+    "test:dies",
+    "test:contracts",
+    "test:features"
+  ],
+  "deployment_authorization": false,
+  "acceptance_owner": "@devrahmanbd",
+  "approval_state": "proposed"
+}

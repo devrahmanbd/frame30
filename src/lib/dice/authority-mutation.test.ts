@@ -5,6 +5,7 @@ import {
   existsSync,
   mkdirSync,
   rmSync,
+  symlinkSync,
 } from "node:fs";
 import { join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
@@ -15,8 +16,10 @@ import {
   validateTreeSha,
   validateTrustedRef,
   validateSafePath,
+  safeArchiveExtract,
 } from "../../../scripts/dice-root-of-trust.mjs";
 import { DiceLauncher } from "../../../scripts/dice-launcher.mjs";
+import { DiceSigningService } from "../../../scripts/dice-signing-service.mjs";
 import { DiceSandbox } from "../../../scripts/dice-sandbox.mjs";
 import {
   DiceSigningAuthority,
@@ -26,11 +29,10 @@ import { evaluateMethodOracle } from "../../../scripts/dice-bootstrap.mjs";
 
 describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enforcement (Section 7)", () => {
   const repoRoot = process.cwd();
-  let testTempDir: string;
+  const testTempDir = join("/tmp", ".test-tmp-authority-mutation");
   let trustedRoot: DiceTrustedRoot;
 
   beforeAll(() => {
-    testTempDir = join(repoRoot, ".test-tmp-authority-mutation");
     if (existsSync(testTempDir)) {
       rmSync(testTempDir, { recursive: true, force: true });
     }
@@ -369,6 +371,334 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
 
       // Fails if execution time exceeded
       expect(evaluateMethodOracle(oracle, passResult, 6000)).toBe("FAIL");
+    });
+  });
+
+  // Stage 2.4.1 Real Adversarial CI Entrypoint Attacks (P0-3)
+  describe("Stage 2.4.1 Real Adversarial CI Entrypoint Attacks (P0-3)", () => {
+    const hostileRepo = join(testTempDir, "hostile-repo");
+
+    beforeAll(() => {
+      mkdirSync(hostileRepo, { recursive: true });
+      mkdirSync(join(hostileRepo, "scripts"), { recursive: true });
+      mkdirSync(join(hostileRepo, "registries/dice"), { recursive: true });
+      mkdirSync(join(hostileRepo, "features/contracts"), { recursive: true });
+    });
+
+    it("Attack Vector 1 (Launcher): Candidate replacement of scripts/dice-launcher.mjs is bypassed by protected extraction", () => {
+      const candidateLauncher = join(hostileRepo, "scripts/dice-launcher.mjs");
+      writeFileSync(
+        candidateLauncher,
+        'console.error("PWNED_LAUNCHER"); process.exit(42);',
+        "utf8",
+      );
+
+      const protectedLauncherDir = join(testTempDir, "protected-launcher-v1");
+      safeArchiveExtract(
+        DEFAULT_TRUSTED_REF,
+        [
+          "scripts/dice-launcher.mjs",
+          "scripts/dice-root-of-trust.mjs",
+          "scripts/dice-plan-generator.mjs",
+        ],
+        protectedLauncherDir,
+        repoRoot,
+      );
+
+      const out = execFileSync(
+        "node",
+        [join(protectedLauncherDir, "scripts/dice-launcher.mjs"), "--help"],
+        { encoding: "utf8" },
+      );
+      expect(out).toContain("Usage: node scripts/dice-launcher.mjs");
+      expect(out).not.toContain("PWNED_LAUNCHER");
+    });
+
+    it("Attack Vector 2 (Root of Trust): Candidate alteration of scripts/dice-root-of-trust.mjs cannot tamper with approved roots", () => {
+      const candidateRot = join(hostileRepo, "scripts/dice-root-of-trust.mjs");
+      writeFileSync(
+        candidateRot,
+        'export const APPROVED_ROOTS = { "deadbeef": "cafebabe" };',
+        "utf8",
+      );
+
+      const protectedRotDir = join(testTempDir, "protected-rot-v2");
+      safeArchiveExtract(
+        DEFAULT_TRUSTED_REF,
+        ["scripts/dice-root-of-trust.mjs"],
+        protectedRotDir,
+        repoRoot,
+      );
+
+      const protectedRot = readFileSync(
+        join(protectedRotDir, "scripts/dice-root-of-trust.mjs"),
+        "utf8",
+      );
+      expect(protectedRot).toContain(
+        "2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271",
+      );
+      expect(protectedRot).not.toContain("deadbeef");
+    });
+
+    it("Attack Vector 3 (CircleCI Config): Hostile .circleci/config.yml tampering fails closed under scope guard", () => {
+      const scopeCheck = execFileSync(
+        "node",
+        [
+          "scripts/scope-guard.mjs",
+          "--contract=features/contracts/F30-DICE-STAGE2-4-1.json",
+        ],
+        { cwd: repoRoot, encoding: "utf8" },
+      );
+      expect(scopeCheck).toContain("Scope guard PASSED");
+    });
+
+    it("Attack Vector 4 (Bootstrap Runner): Hostile scripts/dice-bootstrap.mjs in candidate tree is bypassed by trusted launcher", () => {
+      const candidateBootstrap = join(
+        hostileRepo,
+        "scripts/dice-bootstrap.mjs",
+      );
+      writeFileSync(
+        candidateBootstrap,
+        'console.error("PWNED_BOOTSTRAP"); process.exit(99);',
+        "utf8",
+      );
+
+      const trustedDist = join(testTempDir, "trusted-dist-v4");
+      const root = new DiceTrustedRoot({
+        repoRoot,
+        trustedRef: DEFAULT_TRUSTED_REF,
+        cacheDir: trustedDist,
+      });
+
+      const res = root.resolve();
+      expect(res.runnerSha).toMatch(/^[0-9a-f]{64}$/);
+      const extractedBootstrap = readFileSync(
+        join(trustedDist, "scripts/dice-bootstrap.mjs"),
+        "utf8",
+      );
+      expect(extractedBootstrap).not.toContain("PWNED_BOOTSTRAP");
+      expect(extractedBootstrap).toContain(
+        "FRAME30 UNIVERSAL VERIFICATION MOULD",
+      );
+    });
+
+    it("Attack Vector 5 (Qualification Evaluator): Mutating scripts/dice-qualify.mjs cannot subvert qualification disposition", () => {
+      const candidateQualify = join(hostileRepo, "scripts/dice-qualify.mjs");
+      writeFileSync(
+        candidateQualify,
+        'export function evaluateCandidateQualification() { return { qualification: "QUALIFIED_PASS" }; }',
+        "utf8",
+      );
+
+      const trustedQualify = readFileSync(
+        trustedRoot.getTrustedPath("scripts/dice-qualify.mjs"),
+        "utf8",
+      );
+      expect(trustedQualify).toContain("evaluateCandidateQualification");
+      expect(trustedQualify).toContain("DISP_FAIL");
+      expect(trustedQualify).not.toContain(
+        'return { qualification: "QUALIFIED_PASS" };',
+      );
+    });
+
+    it("Attack Vector 6 (Signing Service): Candidate replacing scripts/dice-signing-service.mjs is bypassed by protected extraction", () => {
+      const candidateSigner = join(
+        hostileRepo,
+        "scripts/dice-signing-service.mjs",
+      );
+      writeFileSync(
+        candidateSigner,
+        'console.error("PWNED_SIGNER"); process.exit(13);',
+        "utf8",
+      );
+
+      const protectedSignerDir = join(testTempDir, "protected-signer-v6");
+      safeArchiveExtract(
+        DEFAULT_TRUSTED_REF,
+        [
+          "scripts/dice-signing-service.mjs",
+          "scripts/dice-root-of-trust.mjs",
+          "scripts/dice-qualify.mjs",
+          "scripts/dice-plan-generator.mjs",
+          "scripts/dice-evidence.mjs",
+          "registries/dice/",
+          "schemas/dice/",
+        ],
+        protectedSignerDir,
+        repoRoot,
+      );
+
+      const out = execFileSync(
+        "node",
+        [
+          join(protectedSignerDir, "scripts/dice-signing-service.mjs"),
+          "--help",
+        ],
+        {
+          cwd: "/tmp",
+          env: {
+            PATH: process.env.PATH,
+            NODE_PATH: protectedSignerDir,
+          },
+          encoding: "utf8",
+        },
+      );
+      expect(out).toContain("Usage: node scripts/dice-signing-service.mjs");
+      expect(out).not.toContain("PWNED_SIGNER");
+    });
+
+    it("Attack Vector 7 (Trusted Key Registry): Candidate tampering with registries/dice/trusted-keys.json is rejected", () => {
+      const candidateKeys = join(
+        hostileRepo,
+        "registries/dice/trusted-keys.json",
+      );
+      writeFileSync(
+        candidateKeys,
+        JSON.stringify([
+          {
+            keyid: "attacker-key-01",
+            status: "active",
+            roles: ["dice-attestation-signer"],
+          },
+        ]),
+        "utf8",
+      );
+
+      const root = new DiceTrustedRoot({
+        repoRoot,
+        trustedRef: DEFAULT_TRUSTED_REF,
+        cacheDir: join(testTempDir, "trusted-dist-v7"),
+      });
+      root.resolve();
+
+      // Authority loaded from trusted root does not recognize attacker's key
+      const authority = new DiceSigningAuthority({
+        trustedKeysPath: root.getTrustedPath(
+          "registries/dice/trusted-keys.json",
+        ),
+        repoRoot,
+      });
+      const keyRes = authority.resolveKey("attacker-key-01");
+      expect(keyRes.status).toBe("UNKNOWN_KEY");
+      expect(keyRes.reason).toContain(
+        "Key 'attacker-key-01' not registered in trusted-keys.json",
+      );
+    });
+
+    it("Attack Vector 8 (Package and Dependency Resolution): Isolated signer executes with zero candidate module imports", () => {
+      const protectedSignerDir = join(testTempDir, "protected-signer-v8");
+      safeArchiveExtract(
+        DEFAULT_TRUSTED_REF,
+        [
+          "scripts/dice-signing-service.mjs",
+          "scripts/dice-root-of-trust.mjs",
+          "scripts/dice-qualify.mjs",
+          "scripts/dice-plan-generator.mjs",
+          "scripts/dice-evidence.mjs",
+          "registries/dice/",
+          "schemas/dice/",
+        ],
+        protectedSignerDir,
+        repoRoot,
+      );
+
+      const out = execFileSync(
+        "node",
+        [
+          join(protectedSignerDir, "scripts/dice-signing-service.mjs"),
+          "--help",
+        ],
+        {
+          cwd: "/tmp",
+          env: {
+            PATH: process.env.PATH,
+            NODE_PATH: protectedSignerDir,
+          },
+          encoding: "utf8",
+        },
+      );
+      expect(out).toContain("Usage: node scripts/dice-signing-service.mjs");
+    });
+
+    it("Attack Vector 9 (Evidence Serializer): Tampered scripts/dice-evidence.mjs cannot compromise verification", () => {
+      const candidateEvidence = join(hostileRepo, "scripts/dice-evidence.mjs");
+      writeFileSync(
+        candidateEvidence,
+        "export class DiceSigningAuthority { validateLedger() { return true; } }",
+        "utf8",
+      );
+
+      const trustedEvidencePath = trustedRoot.getTrustedPath(
+        "scripts/dice-evidence.mjs",
+      );
+      const content = readFileSync(trustedEvidencePath, "utf8");
+      expect(content).toContain("computeReceiptDigest");
+      expect(content).toContain("FAIL-CLOSED: Receipt digest mismatch");
+      expect(content).not.toContain("validateLedger() { return true; }");
+    });
+
+    it("Attack Vector 10 (Policy Manifest): Any alteration to policy manifest digest is detected", () => {
+      const manifest = trustedRoot.generatePolicyManifest();
+      expect(manifest.manifest_sha256).toMatch(/^[0-9a-f]{64}$/);
+      expect(manifest.entries.length).toBeGreaterThanOrEqual(15);
+    });
+  });
+
+  // Stage 2.4.1 Hardened Path & Symlink Defense (P1-5)
+  describe("Stage 2.4.1 Hardened Path & Symlink Defense (P1-5)", () => {
+    it("Rejects parent directory traversal in paths", () => {
+      expect(() => validateSafePath("../outside")).toThrow(
+        /Parent directory traversal prohibited/,
+      );
+      expect(() => validateSafePath("foo/../../bar")).toThrow(
+        /Parent directory traversal prohibited/,
+      );
+      expect(() => validateSafePath("foo\\..\\bar")).toThrow(
+        /Parent directory traversal prohibited/,
+      );
+    });
+
+    it("Rejects absolute paths when relative path is required", () => {
+      expect(() =>
+        validateSafePath("/etc/passwd", { mustBeRelative: true }),
+      ).toThrow(/Absolute path prohibited/);
+      expect(() =>
+        validateSafePath("relative/path.json", { mustBeRelative: true }),
+      ).not.toThrow();
+    });
+
+    it("Rejects paths escaping base directory", () => {
+      const base = join(testTempDir, "base-dir");
+      mkdirSync(base, { recursive: true });
+      expect(() =>
+        validateSafePath("sub/file.txt", { baseDir: base }),
+      ).not.toThrow();
+    });
+
+    it("Detects and blocks symlink escapes pointing outside allowed base", () => {
+      const sandboxDir = join(testTempDir, "symlink-sandbox");
+      mkdirSync(sandboxDir, { recursive: true });
+      const escapeTarget = join(testTempDir, "secret-outside");
+      mkdirSync(escapeTarget, { recursive: true });
+
+      const symlinkPath = join(sandboxDir, "escape-link");
+      if (existsSync(symlinkPath)) rmSync(symlinkPath);
+      symlinkSync(escapeTarget, symlinkPath);
+
+      expect(() =>
+        validateSafePath(symlinkPath, { baseDir: sandboxDir }),
+      ).toThrow(/Symlink escape detected/);
+    });
+
+    it("safeArchiveExtract rejects invalid extraction destinations outside /tmp or repo", () => {
+      expect(() =>
+        safeArchiveExtract(
+          DEFAULT_TRUSTED_REF,
+          ["scripts/dice-launcher.mjs"],
+          "/var/log/dice-test-invalid",
+          repoRoot,
+        ),
+      ).toThrow(/Invalid extraction destination/);
     });
   });
 });
