@@ -156,10 +156,20 @@ jobs:
           destination: verification-evidence
 
   dice-qualification:
-    executor: bun-executor
+    machine:
+      image: ubuntu-2204:current
     steps:
       - checkout
-      - setup-bun
+      - run:
+          name: Install Bun and dependencies
+          command: |
+            curl -fsSL https://bun.sh/install | bash -s "bun-v1.3.14"
+            echo 'export BUN_INSTALL="$HOME/.bun"' >> "$BASH_ENV"
+            echo 'export PATH="$HOME/.bun/bin:$PATH"' >> "$BASH_ENV"
+            export BUN_INSTALL="$HOME/.bun"
+            export PATH="$HOME/.bun/bin:$PATH"
+            bun --version
+            bun install --frozen-lockfile
       - run:
           name: Scope guard gate
           command: ACTIVE_CHANGE_CONTRACT=features/contracts/F30-DICE-STAGE2-2.json bun run gate:scope
@@ -167,8 +177,7 @@ jobs:
           name: Install Linux Bubblewrap OS sandbox substrate
           command: |
             sudo apt-get update -qq
-            sudo apt-get install -y -qq bubblewrap libcap2-bin
-            sudo chmod u+s $(which bwrap)
+            sudo apt-get install -y -qq bubblewrap
             bwrap --version
       - run:
           name: Execute DICE Stage 2 Bootstrap Harness
