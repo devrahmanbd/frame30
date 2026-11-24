@@ -71,10 +71,10 @@ jobs:
       - run:
           name: Fetch baseline commits for scope guard
           command: |
-            git fetch origin 9e6a82abb3502edb84f2d7be9fcc36401b380bfb 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271 || true
+            git fetch origin 9e6a82abb3502edb84f2d7be9fcc36401b380bfb 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271 382261db0cb5b796046ae03c28fd8f309b901123 || true
       - run:
           name: Scope guard gate (fail-closed change contract compliance)
-          command: bun run gate:scope
+          command: ACTIVE_CHANGE_CONTRACT="${ACTIVE_CHANGE_CONTRACT:-features/contracts/F30-DICE-COMPLETE.json}" bun run gate:scope
       - run:
           name: Verification drift gate (SHA-256 model/source synchronization)
           command: bun run gate:drift
@@ -180,12 +180,12 @@ jobs:
             if [ "$(git rev-parse --is-shallow-repository 2>/dev/null)" = "true" ]; then
               git fetch --unshallow origin || git fetch origin --depth=100 || true
             fi
-            git fetch origin 9e6a82abb3502edb84f2d7be9fcc36401b380bfb 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271 || true
+            git fetch origin 9e6a82abb3502edb84f2d7be9fcc36401b380bfb 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271 382261db0cb5b796046ae03c28fd8f309b901123 || true
             git rev-parse --verify 9e6a82abb3502edb84f2d7be9fcc36401b380bfb^{commit}
             git rev-parse --verify 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271^{commit}
       - run:
           name: Scope guard gate
-          command: ACTIVE_CHANGE_CONTRACT=features/contracts/F30-DICE-STAGE2-4-1.json bun run gate:scope
+          command: ACTIVE_CHANGE_CONTRACT="${ACTIVE_CHANGE_CONTRACT:-features/contracts/F30-DICE-COMPLETE.json}" bun run gate:scope
       - run:
           name: Install Linux Bubblewrap OS sandbox substrate
           command: |
@@ -206,13 +206,13 @@ jobs:
               --trusted-ref="$ROOT_REF" \
               --dist-dir=/tmp/dice-trusted-dist \
               --candidate-dir=. \
-              --contract=features/contracts/F30-DICE-STAGE2-4-1.json \
+              --contract="${ACTIVE_CHANGE_CONTRACT:-features/contracts/F30-DICE-COMPLETE.json}" \
               --dry-run
       - run:
           name: Run DICE Vitest Test Suites
           command: |
             mkdir -p artifacts/dice-evidence
-            bunx vitest run src/lib/dice/ --reporter=verbose 2>&1 | tee artifacts/dice-evidence/vitest.log
+            bunx vitest run src/lib/dice/ --fileParallelism=false --reporter=verbose 2>&1 | tee artifacts/dice-evidence/vitest.log
       - store_artifacts:
           path: artifacts/dice-evidence
           destination: dice-evidence
@@ -239,7 +239,7 @@ jobs:
             if [ "$(git rev-parse --is-shallow-repository 2>/dev/null)" = "true" ]; then
               git fetch --unshallow origin || git fetch origin --depth=100 || true
             fi
-            git fetch origin 9e6a82abb3502edb84f2d7be9fcc36401b380bfb 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271 || true
+            git fetch origin 9e6a82abb3502edb84f2d7be9fcc36401b380bfb 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271 382261db0cb5b796046ae03c28fd8f309b901123 || true
             git rev-parse --verify 9e6a82abb3502edb84f2d7be9fcc36401b380bfb^{commit}
             git rev-parse --verify 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271^{commit}
       - run:
@@ -259,7 +259,7 @@ jobs:
               registries/dice/ \
               schemas/dice/ | tar -x -C "$SIGNER_DIR"
             NODE_PATH="$SIGNER_DIR" node "$SIGNER_DIR/scripts/dice-signing-service.mjs" \
-              --contract=features/contracts/F30-DICE-STAGE2-4-1.json \
+              --contract="${ACTIVE_CHANGE_CONTRACT:-features/contracts/F30-DICE-COMPLETE.json}" \
               --evidence-dir=artifacts/dice-evidence \
               --trusted-ref="$ROOT_REF"
       - store_artifacts:

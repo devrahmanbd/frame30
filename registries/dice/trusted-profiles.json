@@ -13,8 +13,7 @@
       "^/workspace/trusted/scripts/[a-zA-Z0-9_-]+\\.mjs$",
       "^--contract=features/contracts/[a-zA-Z0-9_.-]+\\.json$",
       "^--diff-manifest=[a-zA-Z0-9/_.-]+\\.json$",
-      "^--target-dir=[a-zA-Z0-9/_.-]+$",
-      "^--[a-zA-Z0-9_-]+(=.*)?$"
+      "^--target-dir=[a-zA-Z0-9/_.-]+$"
     ],
     "timeout_ms": 60000,
     "env_allowlist": [

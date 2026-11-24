@@ -1,0 +1,299 @@
+{
+  "$schema": "./schema.json",
+  "contract_version": 1,
+  "change_id": "F30-DICE-COMPLETE",
+  "feature_id": "F30-DICE-ARCH-001",
+  "title": "Frame30 Universal Verification Mould (DICE): Complete Implementation, Independent Qualification & Operational Readiness",
+  "owner": "@devrahmanbd",
+  "reviewers": [
+    "@devrahmanbd"
+  ],
+  "base_commit": "382261db0cb5b796046ae03c28fd8f309b901123",
+  "baseline_commit": "382261db0cb5b796046ae03c28fd8f309b901123",
+  "base_tree": "fbf972496f7783cae45267f524ee9cbf0238ad58",
+  "baseline_tree": "fbf972496f7783cae45267f524ee9cbf0238ad58",
+  "risk": "critical",
+  "build_tier": "Tier 1",
+  "objective": "Complete DICE as an independently trustworthy, executable verification and qualification system for Frame30. Deliver native verification adapters for Lean 4, TLA+/TLC, Bend 2, Bombadil, and Vitest/fast-check under a unified method interface; execute the complete 27-class adversarial mutation matrix (MC-01 through MC-27); qualify Linux Bubblewrap OS containment across all 6 normative isolation scenarios; harden protected external CI invocation and independent signing isolation; produce complete cryptographic evidence and operational governance runbooks.",
+  "merchant_or_user_outcome": "Guarantees that verification results across merchant data isolation, monetary transactions, and content publishing are evaluated against independently established requirements and authentic cryptographic evidence, eliminating false passes, vacuous qualifications, uncontained worker escapes, and unverified candidate claims.",
+  "problem_and_evidence": "Stage 2.4.1 established protected launcher invocation and isolated signing service architecture. However, full completion requires: (1) native toolchain adapters with standardized execution evidence for Lean 4, TLA+/TLC, Bend 2, and Bombadil, (2) complete implementation and automated execution of all 27 normative mutation classes (MC-01 to MC-27), (3) formal validation of the 6-scenario Stage 4 Linux Bubblewrap shadow qualification matrix, (4) CI evidence handoff hardening, and (5) machine-readable operational runbooks and complete evidence packages.",
+  "in_scope": {
+    "domains": [
+      "governance",
+      "verification",
+      "tooling",
+      "ci",
+      "security",
+      "formal-methods",
+      "sandboxing"
+    ],
+    "components": [
+      "dice-root-of-trust",
+      "dice-launcher",
+      "dice-signing-service",
+      "dice-sandbox",
+      "dice-plan-generator",
+      "dice-bootstrap",
+      "dice-qualify",
+      "dice-evidence",
+      "dependency-extractor",
+      "dice-adapters",
+      "scope-guard",
+      "circleci-pipeline"
+    ],
+    "services": [
+      "scripts/dice-root-of-trust.mjs",
+      "scripts/dice-launcher.mjs",
+      "scripts/dice-signing-service.mjs",
+      "scripts/dice-sandbox.mjs",
+      "scripts/dice-bootstrap.mjs",
+      "scripts/dice-qualify.mjs",
+      "scripts/dice-evidence.mjs",
+      "scripts/dice-plan-generator.mjs",
+      "scripts/extract-dependencies.mjs",
+      "scripts/scope-guard.mjs"
+    ],
+    "files": [
+      "features/contracts/F30-DICE-COMPLETE.json",
+      "docs/governance/dice-architecture.md",
+      "scripts/dice-root-of-trust.mjs",
+      "scripts/dice-launcher.mjs",
+      "scripts/dice-signing-service.mjs",
+      "scripts/dice-sandbox.mjs",
+      "scripts/dice-bootstrap.mjs",
+      "scripts/dice-qualify.mjs",
+      "scripts/dice-evidence.mjs",
+      "scripts/dice-plan-generator.mjs",
+      "scripts/extract-dependencies.mjs",
+      "scripts/scope-guard.mjs",
+      "src/lib/dice/adapters/types.ts",
+      "src/lib/dice/adapters/lean4-adapter.ts",
+      "src/lib/dice/adapters/tla-adapter.ts",
+      "src/lib/dice/adapters/bend2-adapter.ts",
+      "src/lib/dice/adapters/bombadil-adapter.ts",
+      "src/lib/dice/adapters/vitest-adapter.ts",
+      "src/lib/dice/adapters/index.ts",
+      "src/lib/dice/adapters.test.ts",
+      "src/lib/dice/mutation-matrix.test.ts",
+      "src/lib/dice/authority-mutation.test.ts",
+      "src/lib/dice/signing-isolation.test.ts",
+      "src/lib/dice/signing-e2e.test.ts",
+      "src/lib/dice/sandbox.test.ts",
+      "src/lib/dice/schemas.test.ts",
+      "src/lib/dice/plan-generator.test.ts",
+      "src/lib/dice/qualification.test.ts",
+      "src/lib/dice/dependency-extractor.test.ts",
+      "src/lib/dice/evidence.test.ts",
+      "src/lib/dice/root-of-trust.test.ts",
+      ".circleci/config.yml",
+      "registries/dice/registry.json",
+      "registries/dice/mandatory-obligations.json",
+      "registries/dice/trusted-profiles.json",
+      "registries/dice/trusted-keys.json",
+      "docs/verification-evidence/dice/DICE-COMPLETION-REPORT.md",
+      "docs/verification-evidence/dice/DICE-REQUIREMENT-TRACEABILITY.md",
+      "docs/verification-evidence/dice/DICE-TRUST-BOUNDARY-REPORT.md",
+      "docs/verification-evidence/dice/DICE-27-MUTATION-QUALIFICATION.md",
+      "docs/verification-evidence/dice/DICE-STAGE4-LINUX-QUALIFICATION.md",
+      "docs/verification-evidence/dice/DICE-TOOLCHAIN-QUALIFICATION.md",
+      "docs/verification-evidence/dice/DICE-CI-ENFORCEMENT-REPORT.md",
+      "docs/verification-evidence/dice/DICE-OPERATIONS-RUNBOOK.md"
+    ]
+  },
+  "out_of_scope": {
+    "domains": [
+      "commerce",
+      "storefront",
+      "checkout",
+      "marketplace",
+      "cms-content-runtime",
+      "theme-rendering"
+    ],
+    "components": [
+      "src/routes/**",
+      "src/components/**",
+      "src/lib/commerce/**",
+      "src/lib/editor/**",
+      "src/lib/themes/**",
+      "supabase/migrations/**"
+    ],
+    "services": [],
+    "files": [
+      "features/contracts/F30-DICE-STAGE2-4-1.json",
+      "features/contracts/F30-DICE-STAGE2-4.json",
+      "features/contracts/F30-DICE-STAGE2-3.json",
+      "features/contracts/F30-DICE-STAGE2-2.json",
+      "features/contracts/F30-DICE-REV2-3-AMEND1.json",
+      "features/contracts/F30-DICE-REV2-3.json",
+      "features/contracts/FRAME30-CMS-CORE.json",
+      "features/contracts/FRAME30-SDLC-000.json",
+      "dies/**",
+      "src/routes/**",
+      "src/components/**",
+      "src/lib/store/**",
+      "src/lib/themes/**",
+      "src/lib/editor/**",
+      "src/lib/cms/**",
+      "src/lib/commerce/**",
+      "supabase/migrations/**"
+    ]
+  },
+  "allowed_file_changes": [
+    "features/contracts/F30-DICE-COMPLETE.json",
+    "docs/governance/dice-architecture.md",
+    "scripts/dice-root-of-trust.mjs",
+    "scripts/dice-launcher.mjs",
+    "scripts/dice-signing-service.mjs",
+    "scripts/dice-sandbox.mjs",
+    "scripts/dice-bootstrap.mjs",
+    "scripts/dice-qualify.mjs",
+    "scripts/dice-evidence.mjs",
+    "scripts/dice-plan-generator.mjs",
+    "scripts/extract-dependencies.mjs",
+    "scripts/scope-guard.mjs",
+    "src/lib/dice/adapters/**",
+    "src/lib/dice/adapters.test.ts",
+    "src/lib/dice/mutation-matrix.test.ts",
+    "src/lib/dice/authority-mutation.test.ts",
+    "src/lib/dice/signing-isolation.test.ts",
+    "src/lib/dice/signing-e2e.test.ts",
+    "src/lib/dice/sandbox.test.ts",
+    "src/lib/dice/schemas.test.ts",
+    "src/lib/dice/plan-generator.test.ts",
+    "src/lib/dice/qualification.test.ts",
+    "src/lib/dice/dependency-extractor.test.ts",
+    "src/lib/dice/evidence.test.ts",
+    "src/lib/dice/root-of-trust.test.ts",
+    ".circleci/config.yml",
+    "registries/dice/registry.json",
+    "registries/dice/mandatory-obligations.json",
+    "registries/dice/trusted-profiles.json",
+    "registries/dice/trusted-keys.json",
+    "docs/verification-evidence/dice/**",
+    "docs/verification-evidence/**"
+  ],
+  "forbidden_file_changes": [
+    "features/contracts/F30-DICE-STAGE2-4-1.json",
+    "features/contracts/F30-DICE-STAGE2-4.json",
+    "features/contracts/F30-DICE-STAGE2-3.json",
+    "features/contracts/F30-DICE-STAGE2-2.json",
+    "features/contracts/F30-DICE-REV2-3-AMEND1.json",
+    "features/contracts/F30-DICE-REV2-3.json",
+    "features/contracts/FRAME30-CMS-CORE.json",
+    "features/contracts/FRAME30-SDLC-000.json",
+    "dies/**",
+    "src/routes/**",
+    "src/components/**",
+    "src/lib/store/**",
+    "src/lib/themes/**",
+    "src/lib/editor/**",
+    "src/lib/cms/**",
+    "src/lib/commerce/**",
+    "supabase/migrations/**"
+  ],
+  "contract_surfaces": {
+    "api": [],
+    "database": [],
+    "theme_runtime": [],
+    "plugin_runtime": [],
+    "ast_schema": [],
+    "event_schema": [],
+    "url_slug_redirect": [],
+    "sdk": []
+  },
+  "security": {
+    "tenant_boundary": "Isolated verification boundary. No candidate code or dependencies may execute within the authoritative verification launcher or downstream signing service.",
+    "roles_scopes": [
+      "human-specification-authority",
+      "dice-attestation-signer",
+      "dice-verifier"
+    ],
+    "pii_classes": [],
+    "secrets": [
+      "DICE_SIGNING_KEY"
+    ],
+    "threat_model": "Hostile candidate repository attempts to tamper with verification launcher, root of trust, CircleCI config, bootstrap runner, qualification evaluator, signing service, key registry, dependencies, evidence serializer, or policy manifest to forge qualification passes or extract DICE_SIGNING_KEY."
+  },
+  "verification": {
+    "static": [
+      "bun run gate:scope",
+      "bun run gate:drift",
+      "bun run lint",
+      "bun run typecheck",
+      "bun run secrets:scan"
+    ],
+    "unit_component": [
+      "bunx vitest run src/lib/dice/root-of-trust.test.ts",
+      "bunx vitest run src/lib/dice/sandbox.test.ts",
+      "bunx vitest run src/lib/dice/qualification.test.ts",
+      "bunx vitest run src/lib/dice/evidence.test.ts",
+      "bunx vitest run src/lib/dice/schemas.test.ts",
+      "bunx vitest run src/lib/dice/dependency-extractor.test.ts",
+      "bunx vitest run src/lib/dice/plan-generator.test.ts"
+    ],
+    "contract_integration": [
+      "bun run test:contracts",
+      "bunx vitest run src/lib/dice/adapters.test.ts",
+      "bunx vitest run src/lib/dice/signing-isolation.test.ts",
+      "bunx vitest run src/lib/dice/signing-e2e.test.ts"
+    ],
+    "properties": [
+      "bun run test:properties"
+    ],
+    "browser_bombadil": [
+      "bun run test:bombadil"
+    ],
+    "playwright": [],
+    "visual_accessibility": [],
+    "formal_lean": [
+      "PATH=\"$HOME/.elan/bin:$PATH\" bun run test:lean"
+    ],
+    "formal_bend": [
+      "bun run test:bend"
+    ],
+    "formal_tla": [
+      "bun run test:tla"
+    ],
+    "security_adversarial": [
+      "bunx vitest run src/lib/dice/authority-mutation.test.ts",
+      "bunx vitest run src/lib/dice/mutation-matrix.test.ts"
+    ],
+    "mutation_cases": [
+      "MC-01: Empty expected verification plan -> BLOCKED (PlanValidator)",
+      "MC-02: Empty execution result set -> BLOCKED (ResultReconciler)",
+      "MC-03: Worker killed mid-run (partial run) -> BLOCKED (ReceiptCompleter)",
+      "MC-04: Substitute result-derived obligation set -> BLOCKED (FrozenPlanGuard)",
+      "MC-05: Candidate-controlled CLI arguments -> BLOCKED (ProfileValidator)",
+      "MC-06: Candidate-controlled specification hashes -> BLOCKED (TreeHashVerifier)",
+      "MC-07: Dependency graph edge deletion -> FAIL (DualGraphCrawler)",
+      "MC-08: Omit cross-domain SQL/RLS dependency -> FAIL (MultiSurfaceScan)",
+      "MC-09: Quarantined Bend Laws 7-12 leakage -> FAIL (LawFileSegregator)",
+      "MC-10: Lean false equivalence (bad vector) -> FAIL (FastCheckBridge)",
+      "MC-11: TLA+ liveness failure (hang/livelock) -> FAIL (TLCModelChecker)",
+      "MC-12: Detached background child (setsid) -> BLOCKED (PidNamespaceGuard)",
+      "MC-13: Access exposed Docker daemon socket -> BLOCKED (SocketMountFilter)",
+      "MC-14: Tamper with .circleci/config.yml -> BLOCKED (ConfigHashGuard)",
+      "MC-15: Worker attempts reading signing key -> BLOCKED (SecretPathSandbox)",
+      "MC-16: Tamper with receipt JSON payload -> BLOCKED (DetachedDigestLedger)",
+      "MC-17: Forge unauthorized waiver signature -> BLOCKED (CryptographicSign)",
+      "MC-18: Run self-verification on dirty checkout -> PASS (SnapshotDiffGuard)",
+      "MC-19: Remove Lean theorem declaration -> FAIL (LakeAxiomAuditor)",
+      "MC-20: Inject Lean sorryAx cheat -> FAIL (AxiomAllowlist)",
+      "MC-21: Corrupt TLA+ .cfg model config -> BLOCKED (TlcConfigValidator)",
+      "MC-22: Invert TLA+ safety invariant -> FAIL (TLCModelChecker)",
+      "MC-23: Incomplete Bend 2 proof term -> FAIL (BendKernelVerdict)",
+      "MC-24: Viewport layout blowout (>100vw) -> FAIL (BombadilOverflow)",
+      "MC-25: Toolchain version downgrade -> BLOCKED (ToolVersionGuard)",
+      "MC-26: Reused evidence from older commit -> BLOCKED (TreeProvenanceChkr)",
+      "MC-27: Parser teeth regex inversion trap -> FAIL (OracleSelfAuditor)"
+    ],
+    "regression_dies": [
+      "DIE-001-responsive-precedence",
+      "DIE-002-collection-composition",
+      "DIE-003-cms-tenant-isolation",
+      "DIE-004-cms-content-lifecycle",
+      "DIE-005-builder-widget-ast"
+    ]
+  },
+  "approval_state": "approved"
+}

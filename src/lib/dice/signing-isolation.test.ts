@@ -104,7 +104,8 @@ describe("Frame30 DICE Stage 2.4: Isolated Signing Authority (Section 4)", () =>
     }
 
     const ledgerContent =
-      overrides.tamperedLedger || generateDetachedDigestLedger(ledgerEntries);
+      (overrides.tamperedLedger as string) ||
+      generateDetachedDigestLedger(ledgerEntries);
     writeFileSync(join(dir, "receipts.sha256"), ledgerContent, "utf8");
 
     const summary = {

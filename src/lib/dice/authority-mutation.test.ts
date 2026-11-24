@@ -441,11 +441,16 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
     });
 
     it("Attack Vector 3 (CircleCI Config): Hostile .circleci/config.yml tampering fails closed under scope guard", () => {
+      const activeContract =
+        process.env.ACTIVE_CHANGE_CONTRACT ||
+        (existsSync(join(repoRoot, "features/contracts/F30-DICE-COMPLETE.json"))
+          ? "features/contracts/F30-DICE-COMPLETE.json"
+          : "features/contracts/F30-DICE-STAGE2-4-1.json");
       const scopeCheck = execFileSync(
         "node",
         [
           "scripts/scope-guard.mjs",
-          "--contract=features/contracts/F30-DICE-STAGE2-4-1.json",
+          `--contract=${activeContract}`,
         ],
         { cwd: repoRoot, encoding: "utf8" },
       );
