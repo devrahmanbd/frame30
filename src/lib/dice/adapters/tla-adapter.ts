@@ -3,20 +3,25 @@
  * Normative Architecture: F30-DICE-ARCH-001 Revision 2.3 Section 3.2 & 8.2
  */
 
-import { execFileSync } from "node:child_process";
+import { execFileSync } from "node:child_process"; // sast-allow: shell-exec -- sanitized allowlisted deterministic adapter execution
 import { existsSync, readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
-import type {
-  DiceAdapter,
-  DiceAdapterToolInfo,
-  AdapterEnvironment,
-  AdapterInvocation,
-  AdapterProvenance,
-  AdapterLinkage,
-  AdapterSpecification,
-  AdapterVerdict,
-  DiceExecutionReceipt,
+import {
+  type DiceAdapter,
+  type DiceAdapterToolInfo,
+  type AdapterEnvironment,
+  type AdapterInvocation,
+  type AdapterProvenance,
+  type AdapterLinkage,
+  type AdapterSpecification,
+  type AdapterVerdict,
+  type DiceExecutionReceipt,
+  validateExecutable,
+  validateCwd,
+  sanitizeEnv,
+  boundedTimeout,
+  validateArgs,
 } from "./types.js";
 
 export class TlaAdapter implements DiceAdapter {
@@ -27,7 +32,8 @@ export class TlaAdapter implements DiceAdapter {
 
   constructor(options: { repoRoot?: string; jarPath?: string } = {}) {
     this.repoRoot = options.repoRoot || process.cwd();
-    this.jarPath = options.jarPath || join(this.repoRoot, "specs/tla/tla2tools.jar");
+    this.jarPath =
+      options.jarPath || join(this.repoRoot, "specs/tla/tla2tools.jar");
     this.tool = {
       name: "tlc",
       version: "2.18",
@@ -57,34 +63,54 @@ export class TlaAdapter implements DiceAdapter {
 
   validateEnvironment(): { status: "OK" | "BLOCKED"; reason?: string } {
     if (!existsSync(this.jarPath)) {
-      return { status: "BLOCKED", reason: `tla2tools.jar missing at ${this.jarPath}` };
+      return {
+        status: "BLOCKED",
+        reason: `tla2tools.jar missing at ${this.jarPath}`,
+      };
     }
     try {
-      const out = execFileSync(this.tool.binaryPath || "java", ["-version"], {
+      // prettier-ignore
+      const out = execFileSync(this.tool.binaryPath || "java", ["-version"], { // sast-allow: shell-exec -- sanitized allowlisted deterministic adapter execution
         encoding: "utf8",
+        shell: false,
         stdio: ["ignore", "pipe", "pipe"],
       });
       return { status: "OK" };
-    } catch (err: any) {
-      return { status: "BLOCKED", reason: `Java runtime unavailable: ${err.message}` };
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      return {
+        status: "BLOCKED",
+        reason: `Java runtime unavailable: ${message}`,
+      };
     }
   }
 
-  validateSpecifications(specs: readonly AdapterSpecification[]): { status: "OK" | "BLOCKED"; reason?: string } {
+  validateSpecifications(specs: readonly AdapterSpecification[]): {
+    status: "OK" | "BLOCKED";
+    reason?: string;
+  } {
     for (const spec of specs) {
       const full = join(this.repoRoot, spec.path);
       if (!existsSync(full)) {
-        return { status: "BLOCKED", reason: `Required TLA specification missing: ${spec.path}` };
+        return {
+          status: "BLOCKED",
+          reason: `Required TLA specification missing: ${spec.path}`,
+        };
       }
       // If a .tla file is given, its paired .cfg must also exist
       if (spec.path.endsWith(".tla")) {
         const cfgPath = spec.path.replace(/\.tla$/, ".cfg");
         const fullCfg = join(this.repoRoot, cfgPath);
         if (!existsSync(fullCfg)) {
-          return { status: "BLOCKED", reason: `Required model config (.cfg) missing for ${spec.path}: ${cfgPath}` };
+          return {
+            status: "BLOCKED",
+            reason: `Required model config (.cfg) missing for ${spec.path}: ${cfgPath}`,
+          };
         }
       }
-      const actualHash = createHash("sha256").update(readFileSync(full)).digest("hex");
+      const actualHash = createHash("sha256")
+        .update(readFileSync(full))
+        .digest("hex");
       if (spec.sha256 && actualHash !== spec.sha256) {
         return {
           status: "BLOCKED",
@@ -104,7 +130,11 @@ export class TlaAdapter implements DiceAdapter {
     const combined = `${rawStdout}\n${rawStderr}`;
 
     // Missing or invalid configuration
-    if (combined.includes("Cannot find configuration file") || combined.includes("Unknown option:") || combined.includes("Configuration file")) {
+    if (
+      combined.includes("Cannot find configuration file") ||
+      combined.includes("Unknown option:") ||
+      combined.includes("Configuration file")
+    ) {
       if (!combined.includes("Model checking completed")) {
         return {
           status: "BLOCKED",
@@ -112,7 +142,8 @@ export class TlaAdapter implements DiceAdapter {
           durationMs,
           stdout: rawStdout,
           stderr: rawStderr,
-          diagnostics: "TLC_CONFIG_ERROR: Missing or malformed configuration file",
+          diagnostics:
+            "TLC_CONFIG_ERROR: Missing or malformed configuration file",
         };
       }
     }
@@ -138,19 +169,26 @@ export class TlaAdapter implements DiceAdapter {
         durationMs,
         stdout: rawStdout,
         stderr: rawStderr,
-        diagnostics: "DEADLOCK_REACHED: System reached an unhandled terminal state",
+        diagnostics:
+          "DEADLOCK_REACHED: System reached an unhandled terminal state",
       };
     }
 
     // State counts extraction
-    const statesMatch = combined.match(/(\d+)\s+states generated,\s+(\d+)\s+distinct states found/);
-    const depthMatch = combined.match(/depth of the complete state graph search is\s+(\d+)/);
+    const statesMatch = combined.match(
+      /(\d+)\s+states generated,\s+(\d+)\s+distinct states found/,
+    );
+    const depthMatch = combined.match(
+      /depth of the complete state graph search is\s+(\d+)/,
+    );
 
     const distinctStates = statesMatch ? parseInt(statesMatch[2], 10) : 0;
     const totalStates = statesMatch ? parseInt(statesMatch[1], 10) : 0;
     const depth = depthMatch ? parseInt(depthMatch[1], 10) : 0;
 
-    const hasSuccessMarker = combined.includes("Model checking completed. No error has been found.");
+    const hasSuccessMarker = combined.includes(
+      "Model checking completed. No error has been found.",
+    );
 
     if (exitCode === 0 && hasSuccessMarker) {
       return {
@@ -183,14 +221,34 @@ export class TlaAdapter implements DiceAdapter {
     linkage: AdapterLinkage,
     specs: readonly AdapterSpecification[] = [],
   ): DiceExecutionReceipt {
-    const envCheck = this.validateEnvironment();
-    if (envCheck.status === "BLOCKED") {
-      return this.createReceipt("BLOCKED", 126, 0, envCheck.reason, invocation, provenance, linkage, specs, {});
-    }
-
     const specCheck = this.validateSpecifications(specs);
     if (specCheck.status === "BLOCKED") {
-      return this.createReceipt("BLOCKED", 127, 0, specCheck.reason, invocation, provenance, linkage, specs, {});
+      return this.createReceipt(
+        "BLOCKED",
+        127,
+        0,
+        specCheck.reason,
+        invocation,
+        provenance,
+        linkage,
+        specs,
+        {},
+      );
+    }
+
+    const envCheck = this.validateEnvironment();
+    if (envCheck.status === "BLOCKED") {
+      return this.createReceipt(
+        "BLOCKED",
+        126,
+        0,
+        envCheck.reason,
+        invocation,
+        provenance,
+        linkage,
+        specs,
+        {},
+      );
     }
 
     const start = Date.now();
@@ -199,23 +257,44 @@ export class TlaAdapter implements DiceAdapter {
     let exitCode = 0;
 
     try {
-      const java = invocation.executable || this.tool.binaryPath || "java";
-      const args = invocation.approvedArgs ? [...invocation.approvedArgs] : ["-jar", this.jarPath];
-      stdout = execFileSync(java, args, {
-        cwd: invocation.cwd || this.repoRoot,
-        env: { ...process.env, ...(invocation.env || {}) },
+      const rawJava = invocation.executable || this.tool.binaryPath || "java";
+      const java = validateExecutable(rawJava, ["java"]);
+      const safeCwd = validateCwd(invocation.cwd, this.repoRoot);
+      const safeTimeout = boundedTimeout(invocation.timeoutMs, 300000, 120000);
+      const rawArgs = invocation.approvedArgs
+        ? [...invocation.approvedArgs]
+        : ["-jar", this.jarPath];
+      const safeArgs = validateArgs(rawArgs);
+      const safeEnv = sanitizeEnv(invocation.env);
+
+      // prettier-ignore
+      stdout = execFileSync(java, safeArgs as string[], { // sast-allow: shell-exec -- sanitized allowlisted deterministic adapter execution
+        cwd: safeCwd,
+        env: safeEnv,
         encoding: "utf8",
-        timeout: invocation.timeoutMs || 120000,
+        timeout: safeTimeout,
+        shell: false,
         stdio: ["ignore", "pipe", "pipe"],
       });
-    } catch (err: any) {
-      exitCode = err.status || 1;
-      stdout = err.stdout?.toString() || "";
-      stderr = err.stderr?.toString() || err.message;
+    } catch (err: unknown) {
+      const procErr = err as {
+        status?: number;
+        stdout?: string | Buffer;
+        stderr?: string | Buffer;
+        message?: string;
+      };
+      exitCode = procErr.status || 1;
+      stdout = procErr.stdout?.toString() || "";
+      stderr = procErr.stderr?.toString() || procErr.message || String(err);
     }
 
     const durationMs = Date.now() - start;
-    const verdict = this.parseExecutionResult(stdout, stderr, exitCode, durationMs);
+    const verdict = this.parseExecutionResult(
+      stdout,
+      stderr,
+      exitCode,
+      durationMs,
+    );
 
     return this.createReceipt(
       verdict.status,
@@ -250,7 +329,10 @@ export class TlaAdapter implements DiceAdapter {
       tool: this.tool,
       invocation: {
         id: invocation.id,
-        command: [invocation.executable || this.tool.binaryPath || "java", ...(invocation.approvedArgs || [])],
+        command: [
+          invocation.executable || this.tool.binaryPath || "java",
+          ...(invocation.approvedArgs || []),
+        ],
       },
       specifications: specs,
       provenance,

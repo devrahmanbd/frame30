@@ -48,7 +48,7 @@ describe("Frame30 DICE Native Verification Adapters (Section 8 & Unified Interfa
       expect(verdict.status).toBe("PASS");
     });
 
-    it("detects missing specification file and returns BLOCKED receipt", () => {
+    it("detects missing specification file and returns BLOCKED receipt with SPECIFICATION_MISSING", () => {
       const receipt = adapter.execute(
         { id: "inv-1", approvedArgs: [] },
         dummyProvenance,
@@ -56,7 +56,55 @@ describe("Frame30 DICE Native Verification Adapters (Section 8 & Unified Interfa
         [{ path: "specs/lean/non_existent.lean", sha256: "000000" }],
       );
       expect(receipt.status).toBe("BLOCKED");
+      expect(receipt.diagnostics).toContain("SPECIFICATION_MISSING");
       expect(receipt.diagnostics).toContain("missing");
+    });
+
+    it("detects unavailable Lake toolchain deterministically and returns BLOCKED receipt with TOOLCHAIN_UNAVAILABLE", () => {
+      const isolatedAdapter = new Lean4Adapter({
+        toolDiscovery: () => null,
+      });
+      const receipt = isolatedAdapter.execute(
+        { id: "inv-2", approvedArgs: [] },
+        dummyProvenance,
+        dummyLinkage,
+        [{ path: "specs/lean/lakefile.lean", sha256: "" }],
+      );
+      expect(receipt.status).toBe("BLOCKED");
+      expect(receipt.status).not.toBe("PASS");
+      expect(receipt.diagnostics).toContain("TOOLCHAIN_UNAVAILABLE");
+    });
+
+    it("verifies valid specification with Lake present and produces PASS", () => {
+      const simulatedAdapter = new Lean4Adapter({
+        toolDiscovery: () => "/mock/bin/lake",
+        execFn: (_file, args) =>
+          (args as string[]).includes("--version")
+            ? "Lake version 4.15.0 (Lean 4.15.0)"
+            : "Build completed successfully.\nAll 32 theorems verified.",
+      });
+      const receipt = simulatedAdapter.execute(
+        { id: "inv-3", approvedArgs: ["build"] },
+        dummyProvenance,
+        dummyLinkage,
+        [{ path: "specs/lean/lakefile.lean", sha256: "" }],
+      );
+      expect(receipt.status).toBe("PASS");
+      expect(receipt.exit_code).toBe(0);
+    });
+
+    it("ensures unavailable mandatory Lean verification produces BLOCKED (never PASS)", () => {
+      const absentAdapter = new Lean4Adapter({
+        toolDiscovery: () => null,
+      });
+      const receipt = absentAdapter.execute(
+        { id: "inv-4", approvedArgs: [] },
+        dummyProvenance,
+        dummyLinkage,
+        [{ path: "specs/lean/lakefile.lean", sha256: "" }],
+      );
+      expect(receipt.status).toBe("BLOCKED");
+      expect(receipt.status).not.toBe("PASS");
     });
   });
 
@@ -69,21 +117,26 @@ describe("Frame30 DICE Native Verification Adapters (Section 8 & Unified Interfa
     });
 
     it("parses invariant violation as FAIL with exact invariant name", () => {
-      const stdout = "Error: Invariant ResponsiveConsistency is violated.\nThe behavior up to this point is...";
+      const stdout =
+        "Error: Invariant ResponsiveConsistency is violated.\nThe behavior up to this point is...";
       const verdict = adapter.parseExecutionResult(stdout, "", 1, 300);
       expect(verdict.status).toBe("FAIL");
-      expect(verdict.diagnostics).toBe("INVARIANT_VIOLATED: ResponsiveConsistency");
+      expect(verdict.diagnostics).toBe(
+        "INVARIANT_VIOLATED: ResponsiveConsistency",
+      );
     });
 
     it("parses deadlock as FAIL with explicit diagnostics", () => {
-      const stdout = "Error: Deadlock reached.\nThe behavior up to this point is...";
+      const stdout =
+        "Error: Deadlock reached.\nThe behavior up to this point is...";
       const verdict = adapter.parseExecutionResult(stdout, "", 1, 200);
       expect(verdict.status).toBe("FAIL");
       expect(verdict.diagnostics).toContain("DEADLOCK_REACHED");
     });
 
     it("parses successful model check and extracts state metrics", () => {
-      const stdout = "Model checking completed. No error has been found.\n34273 states generated, 11921 distinct states found, 0 states left on queue.\nThe depth of the complete state graph search is 10.";
+      const stdout =
+        "Model checking completed. No error has been found.\n34273 states generated, 11921 distinct states found, 0 states left on queue.\nThe depth of the complete state graph search is 10.";
       const verdict = adapter.parseExecutionResult(stdout, "", 0, 1500);
       expect(verdict.status).toBe("PASS");
       expect(verdict.metadata?.distinctStates).toBe(11921);
@@ -143,14 +196,16 @@ describe("Frame30 DICE Native Verification Adapters (Section 8 & Unified Interfa
     });
 
     it("parses horizontal overflow (>100vw) as FAIL", () => {
-      const stdout = "[bombadil] HORIZONTAL_OVERFLOW detected at 320px viewport";
+      const stdout =
+        "[bombadil] HORIZONTAL_OVERFLOW detected at 320px viewport";
       const verdict = adapter.parseExecutionResult(stdout, "", 1, 500);
       expect(verdict.status).toBe("FAIL");
       expect(verdict.diagnostics).toContain("HORIZONTAL_OVERFLOW");
     });
 
     it("parses zero violations across viewports as PASS", () => {
-      const stdout = "[bombadil] ✓ All viewports passed with 0 property violations. Traces saved in docs/verification-evidence/bombadil/traces/";
+      const stdout =
+        "[bombadil] ✓ All viewports passed with 0 property violations. Traces saved in docs/verification-evidence/bombadil/traces/";
       const verdict = adapter.parseExecutionResult(stdout, "", 0, 20000);
       expect(verdict.status).toBe("PASS");
     });
@@ -160,7 +215,8 @@ describe("Frame30 DICE Native Verification Adapters (Section 8 & Unified Interfa
     const adapter = new VitestAdapter();
 
     it("parses fast-check shrunk counterexample as FAIL with counterexample string", () => {
-      const stdout = "Property failed after 42 tests\nCounterexample: [ { amount_minor: -100 } ]";
+      const stdout =
+        "Property failed after 42 tests\nCounterexample: [ { amount_minor: -100 } ]";
       const verdict = adapter.parseExecutionResult(stdout, "", 1, 800);
       expect(verdict.status).toBe("FAIL");
       expect(verdict.diagnostics).toContain("PROPERTY_COUNTEREXAMPLE");
@@ -182,6 +238,75 @@ describe("Frame30 DICE Native Verification Adapters (Section 8 & Unified Interfa
       expect(getAdapterForTool("bombadil")).toBeInstanceOf(BombadilAdapter);
       expect(getAdapterForTool("vitest")).toBeInstanceOf(VitestAdapter);
       expect(getAdapterForTool("fast-check")).toBeInstanceOf(VitestAdapter);
+    });
+  });
+
+  describe("7. Subprocess Security & Containment", () => {
+    const adapter = new Lean4Adapter({
+      toolDiscovery: () => "/mock/bin/lake",
+      execFn: () => "Lake version 4.15.0",
+    });
+
+    it("rejects untrusted executable path outside approved allowlist", () => {
+      expect(() => {
+        adapter.execute(
+          { id: "inv-sec-1", approvedArgs: [], executable: "/bin/bash" },
+          dummyProvenance,
+          dummyLinkage,
+          [{ path: "specs/lean/lakefile.lean", sha256: "" }],
+        );
+      }).toThrow(/Disallowed executable/);
+    });
+
+    it("rejects shell metacharacters in executable path", () => {
+      expect(() => {
+        adapter.execute(
+          { id: "inv-sec-2", approvedArgs: [], executable: "lake; rm -rf /" },
+          dummyProvenance,
+          dummyLinkage,
+          [{ path: "specs/lean/lakefile.lean", sha256: "" }],
+        );
+      }).toThrow(/Disallowed shell metacharacter/);
+    });
+
+    it("rejects working directory path traversal outside repository root", () => {
+      expect(() => {
+        adapter.execute(
+          { id: "inv-sec-3", approvedArgs: [], cwd: "/etc" },
+          dummyProvenance,
+          dummyLinkage,
+          [{ path: "specs/lean/lakefile.lean", sha256: "" }],
+        );
+      }).toThrow(/Disallowed working directory outside repo root/);
+    });
+
+    it("rejects dangerous environment variables such as LD_PRELOAD", () => {
+      expect(() => {
+        adapter.execute(
+          {
+            id: "inv-sec-4",
+            approvedArgs: [],
+            env: { LD_PRELOAD: "/tmp/evil.so" },
+          },
+          dummyProvenance,
+          dummyLinkage,
+          [{ path: "specs/lean/lakefile.lean", sha256: "" }],
+        );
+      }).toThrow(/Forbidden environment variable in invocation: LD_PRELOAD/);
+    });
+
+    it("rejects non-string argument injection", () => {
+      expect(() => {
+        adapter.execute(
+          {
+            id: "inv-sec-5",
+            approvedArgs: ["build", 123 as unknown as string],
+          },
+          dummyProvenance,
+          dummyLinkage,
+          [{ path: "specs/lean/lakefile.lean", sha256: "" }],
+        );
+      }).toThrow(/Every argument must be a string/);
     });
   });
 });

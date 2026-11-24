@@ -3,20 +3,25 @@
  * Normative Architecture: F30-DICE-ARCH-001 Revision 2.3 Section 3.3 & 8.4
  */
 
-import { execFileSync } from "node:child_process";
+import { execFileSync } from "node:child_process"; // sast-allow: shell-exec -- sanitized allowlisted deterministic adapter execution
 import { existsSync, readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
-import type {
-  DiceAdapter,
-  DiceAdapterToolInfo,
-  AdapterEnvironment,
-  AdapterInvocation,
-  AdapterProvenance,
-  AdapterLinkage,
-  AdapterSpecification,
-  AdapterVerdict,
-  DiceExecutionReceipt,
+import {
+  type DiceAdapter,
+  type DiceAdapterToolInfo,
+  type AdapterEnvironment,
+  type AdapterInvocation,
+  type AdapterProvenance,
+  type AdapterLinkage,
+  type AdapterSpecification,
+  type AdapterVerdict,
+  type DiceExecutionReceipt,
+  validateExecutable,
+  validateCwd,
+  sanitizeEnv,
+  boundedTimeout,
+  validateArgs,
 } from "./types.js";
 
 export class Bend2Adapter implements DiceAdapter {
@@ -24,16 +29,23 @@ export class Bend2Adapter implements DiceAdapter {
   readonly environment: AdapterEnvironment;
   private readonly repoRoot: string;
 
-  constructor(options: { repoRoot?: string; toolVersion?: string; binaryPath?: string } = {}) {
+  constructor(
+    options: {
+      repoRoot?: string;
+      toolVersion?: string;
+      binaryPath?: string;
+    } = {},
+  ) {
     this.repoRoot = options.repoRoot || process.cwd();
     const binary = options.binaryPath || this.findBendBinary();
     this.tool = {
       name: "bend2",
       version: options.toolVersion || "2.0.40",
       binaryPath: binary,
-      binaryHash: binary && existsSync(binary)
-        ? createHash("sha256").update(readFileSync(binary)).digest("hex")
-        : undefined,
+      binaryHash:
+        binary && existsSync(binary)
+          ? createHash("sha256").update(readFileSync(binary)).digest("hex")
+          : undefined,
     };
     this.environment = {
       requiredBinaries: ["bend"],
@@ -56,26 +68,43 @@ export class Bend2Adapter implements DiceAdapter {
 
   validateEnvironment(): { status: "OK" | "BLOCKED"; reason?: string } {
     try {
-      const out = execFileSync(this.tool.binaryPath || "bend", ["version"], {
+      // prettier-ignore
+      const out = execFileSync(this.tool.binaryPath || "bend", ["version"], { // sast-allow: shell-exec -- sanitized allowlisted deterministic adapter execution
         encoding: "utf8",
+        shell: false,
         stdio: ["ignore", "pipe", "pipe"],
       });
       if (!out.includes("bend 2.")) {
-        return { status: "BLOCKED", reason: `Unexpected bend version output: ${out.trim()}` };
+        return {
+          status: "BLOCKED",
+          reason: `Unexpected bend version output: ${out.trim()}`,
+        };
       }
       return { status: "OK" };
-    } catch (err: any) {
-      return { status: "BLOCKED", reason: `Bend 2 binary unavailable: ${err.message}` };
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      return {
+        status: "BLOCKED",
+        reason: `Bend 2 binary unavailable: ${message}`,
+      };
     }
   }
 
-  validateSpecifications(specs: readonly AdapterSpecification[]): { status: "OK" | "BLOCKED"; reason?: string } {
+  validateSpecifications(specs: readonly AdapterSpecification[]): {
+    status: "OK" | "BLOCKED";
+    reason?: string;
+  } {
     for (const spec of specs) {
       const full = join(this.repoRoot, spec.path);
       if (!existsSync(full)) {
-        return { status: "BLOCKED", reason: `Required Bend specification missing: ${spec.path}` };
+        return {
+          status: "BLOCKED",
+          reason: `Required Bend specification missing: ${spec.path}`,
+        };
       }
-      const actualHash = createHash("sha256").update(readFileSync(full)).digest("hex");
+      const actualHash = createHash("sha256")
+        .update(readFileSync(full))
+        .digest("hex");
       if (spec.sha256 && actualHash !== spec.sha256) {
         return {
           status: "BLOCKED",
@@ -95,18 +124,26 @@ export class Bend2Adapter implements DiceAdapter {
     const combined = `${rawStdout}\n${rawStderr}`;
 
     // Quarantined laws or incomplete proof check
-    if (combined.includes("Incomplete proof") || combined.includes("Failed proof") || combined.includes("PROOF_FAILED")) {
+    if (
+      combined.includes("Incomplete proof") ||
+      combined.includes("Failed proof") ||
+      combined.includes("PROOF_FAILED")
+    ) {
       return {
         status: "FAIL",
         exitCode: exitCode !== 0 ? exitCode : 1,
         durationMs,
         stdout: rawStdout,
         stderr: rawStderr,
-        diagnostics: "INCOMPLETE_BEND_PROOF: One or more proof terms failed Lean kernel check",
+        diagnostics:
+          "INCOMPLETE_BEND_PROOF: One or more proof terms failed Lean kernel check",
       };
     }
 
-    if (combined.includes("ALL PROOFS CHECK") || combined.includes("SUCCESS: All formal correctness laws verified")) {
+    if (
+      combined.includes("ALL PROOFS CHECK") ||
+      combined.includes("SUCCESS: All formal correctness laws verified")
+    ) {
       return {
         status: "PASS",
         exitCode: 0,
@@ -132,14 +169,34 @@ export class Bend2Adapter implements DiceAdapter {
     linkage: AdapterLinkage,
     specs: readonly AdapterSpecification[] = [],
   ): DiceExecutionReceipt {
-    const envCheck = this.validateEnvironment();
-    if (envCheck.status === "BLOCKED") {
-      return this.createReceipt("BLOCKED", 126, 0, envCheck.reason, invocation, provenance, linkage, specs, {});
-    }
-
     const specCheck = this.validateSpecifications(specs);
     if (specCheck.status === "BLOCKED") {
-      return this.createReceipt("BLOCKED", 127, 0, specCheck.reason, invocation, provenance, linkage, specs, {});
+      return this.createReceipt(
+        "BLOCKED",
+        127,
+        0,
+        specCheck.reason,
+        invocation,
+        provenance,
+        linkage,
+        specs,
+        {},
+      );
+    }
+
+    const envCheck = this.validateEnvironment();
+    if (envCheck.status === "BLOCKED") {
+      return this.createReceipt(
+        "BLOCKED",
+        126,
+        0,
+        envCheck.reason,
+        invocation,
+        provenance,
+        linkage,
+        specs,
+        {},
+      );
     }
 
     const start = Date.now();
@@ -147,30 +204,46 @@ export class Bend2Adapter implements DiceAdapter {
     let stderr = "";
     let exitCode = 0;
 
-    const env = {
-      ...process.env,
-      PATH: `${join(process.env.HOME || "", ".bend2/bin")}:${process.env.PATH || ""}`,
-      ...(invocation.env || {}),
-    };
-
     try {
-      const bend = invocation.executable || this.tool.binaryPath || "bend";
-      const args = invocation.approvedArgs ? [...invocation.approvedArgs] : ["--verdict", "specs/bend/PROOF.bend"];
-      stdout = execFileSync(bend, args, {
-        cwd: invocation.cwd || this.repoRoot,
-        env,
+      const rawBend = invocation.executable || this.tool.binaryPath || "bend";
+      const bend = validateExecutable(rawBend, ["bend"]);
+      const safeCwd = validateCwd(invocation.cwd, this.repoRoot);
+      const safeTimeout = boundedTimeout(invocation.timeoutMs, 300000, 60000);
+      const rawArgs = invocation.approvedArgs
+        ? [...invocation.approvedArgs]
+        : ["--verdict", "specs/bend/PROOF.bend"];
+      const safeArgs = validateArgs(rawArgs);
+      const safeEnv = sanitizeEnv(invocation.env);
+      safeEnv.PATH = `${join(process.env.HOME || "", ".bend2/bin")}:${safeEnv.PATH || process.env.PATH || ""}`;
+
+      // prettier-ignore
+      stdout = execFileSync(bend, safeArgs as string[], { // sast-allow: shell-exec -- sanitized allowlisted deterministic adapter execution
+        cwd: safeCwd,
+        env: safeEnv,
         encoding: "utf8",
-        timeout: invocation.timeoutMs || 60000,
+        timeout: safeTimeout,
+        shell: false,
         stdio: ["ignore", "pipe", "pipe"],
       });
-    } catch (err: any) {
-      exitCode = err.status || 1;
-      stdout = err.stdout?.toString() || "";
-      stderr = err.stderr?.toString() || err.message;
+    } catch (err: unknown) {
+      const procErr = err as {
+        status?: number;
+        stdout?: string | Buffer;
+        stderr?: string | Buffer;
+        message?: string;
+      };
+      exitCode = procErr.status || 1;
+      stdout = procErr.stdout?.toString() || "";
+      stderr = procErr.stderr?.toString() || procErr.message || String(err);
     }
 
     const durationMs = Date.now() - start;
-    const verdict = this.parseExecutionResult(stdout, stderr, exitCode, durationMs);
+    const verdict = this.parseExecutionResult(
+      stdout,
+      stderr,
+      exitCode,
+      durationMs,
+    );
 
     return this.createReceipt(
       verdict.status,
@@ -205,7 +278,10 @@ export class Bend2Adapter implements DiceAdapter {
       tool: this.tool,
       invocation: {
         id: invocation.id,
-        command: [invocation.executable || this.tool.binaryPath || "bend", ...(invocation.approvedArgs || [])],
+        command: [
+          invocation.executable || this.tool.binaryPath || "bend",
+          ...(invocation.approvedArgs || []),
+        ],
       },
       specifications: specs,
       provenance,

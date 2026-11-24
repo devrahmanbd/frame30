@@ -3,20 +3,25 @@
  * Normative Architecture: F30-DICE-ARCH-001 Revision 2.3 Section 8.1
  */
 
-import { execFileSync } from "node:child_process";
+import { execFileSync } from "node:child_process"; // sast-allow: shell-exec -- sanitized allowlisted deterministic adapter execution
 import { existsSync, readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
-import type {
-  DiceAdapter,
-  DiceAdapterToolInfo,
-  AdapterEnvironment,
-  AdapterInvocation,
-  AdapterProvenance,
-  AdapterLinkage,
-  AdapterSpecification,
-  AdapterVerdict,
-  DiceExecutionReceipt,
+import {
+  type DiceAdapter,
+  type DiceAdapterToolInfo,
+  type AdapterEnvironment,
+  type AdapterInvocation,
+  type AdapterProvenance,
+  type AdapterLinkage,
+  type AdapterSpecification,
+  type AdapterVerdict,
+  type DiceExecutionReceipt,
+  validateExecutable,
+  validateCwd,
+  sanitizeEnv,
+  boundedTimeout,
+  validateArgs,
 } from "./types.js";
 
 export class VitestAdapter implements DiceAdapter {
@@ -24,7 +29,13 @@ export class VitestAdapter implements DiceAdapter {
   readonly environment: AdapterEnvironment;
   private readonly repoRoot: string;
 
-  constructor(options: { repoRoot?: string; toolVersion?: string; isFastCheck?: boolean } = {}) {
+  constructor(
+    options: {
+      repoRoot?: string;
+      toolVersion?: string;
+      isFastCheck?: boolean;
+    } = {},
+  ) {
     this.repoRoot = options.repoRoot || process.cwd();
     this.tool = {
       name: options.isFastCheck ? "fast-check" : "vitest",
@@ -42,13 +53,21 @@ export class VitestAdapter implements DiceAdapter {
     return { status: "OK" };
   }
 
-  validateSpecifications(specs: readonly AdapterSpecification[]): { status: "OK" | "BLOCKED"; reason?: string } {
+  validateSpecifications(specs: readonly AdapterSpecification[]): {
+    status: "OK" | "BLOCKED";
+    reason?: string;
+  } {
     for (const spec of specs) {
       const full = join(this.repoRoot, spec.path);
       if (!existsSync(full)) {
-        return { status: "BLOCKED", reason: `Required test suite file missing: ${spec.path}` };
+        return {
+          status: "BLOCKED",
+          reason: `Required test suite file missing: ${spec.path}`,
+        };
       }
-      const actualHash = createHash("sha256").update(readFileSync(full)).digest("hex");
+      const actualHash = createHash("sha256")
+        .update(readFileSync(full))
+        .digest("hex");
       if (spec.sha256 && actualHash !== spec.sha256) {
         return {
           status: "BLOCKED",
@@ -68,7 +87,10 @@ export class VitestAdapter implements DiceAdapter {
     const combined = `${rawStdout}\n${rawStderr}`;
 
     // Fast-check shrunk counterexample detection
-    if (combined.includes("Property failed after") || combined.includes("Counterexample:")) {
+    if (
+      combined.includes("Property failed after") ||
+      combined.includes("Counterexample:")
+    ) {
       const match = combined.match(/Counterexample:\s*(.+)/);
       return {
         status: "FAIL",
@@ -88,7 +110,9 @@ export class VitestAdapter implements DiceAdapter {
         durationMs,
         stdout: rawStdout,
         stderr: rawStderr,
-        diagnostics: failMatch ? failMatch[1].trim() : "One or more tests failed",
+        diagnostics: failMatch
+          ? failMatch[1].trim()
+          : "One or more tests failed",
       };
     }
 
@@ -117,14 +141,34 @@ export class VitestAdapter implements DiceAdapter {
     linkage: AdapterLinkage,
     specs: readonly AdapterSpecification[] = [],
   ): DiceExecutionReceipt {
-    const envCheck = this.validateEnvironment();
-    if (envCheck.status === "BLOCKED") {
-      return this.createReceipt("BLOCKED", 126, 0, envCheck.reason, invocation, provenance, linkage, specs, {});
-    }
-
     const specCheck = this.validateSpecifications(specs);
     if (specCheck.status === "BLOCKED") {
-      return this.createReceipt("BLOCKED", 127, 0, specCheck.reason, invocation, provenance, linkage, specs, {});
+      return this.createReceipt(
+        "BLOCKED",
+        127,
+        0,
+        specCheck.reason,
+        invocation,
+        provenance,
+        linkage,
+        specs,
+        {},
+      );
+    }
+
+    const envCheck = this.validateEnvironment();
+    if (envCheck.status === "BLOCKED") {
+      return this.createReceipt(
+        "BLOCKED",
+        126,
+        0,
+        envCheck.reason,
+        invocation,
+        provenance,
+        linkage,
+        specs,
+        {},
+      );
     }
 
     const start = Date.now();
@@ -133,23 +177,50 @@ export class VitestAdapter implements DiceAdapter {
     let exitCode = 0;
 
     try {
-      const bin = invocation.executable || "bunx";
-      const args = invocation.approvedArgs ? [...invocation.approvedArgs] : ["vitest", "run"];
-      stdout = execFileSync(bin, args, {
-        cwd: invocation.cwd || this.repoRoot,
-        env: { ...process.env, ...(invocation.env || {}) },
+      const rawBin = invocation.executable || "bunx";
+      const bin = validateExecutable(rawBin, [
+        "bunx",
+        "bun",
+        "vitest",
+        "npx",
+        "node",
+      ]);
+      const safeCwd = validateCwd(invocation.cwd, this.repoRoot);
+      const safeTimeout = boundedTimeout(invocation.timeoutMs, 300000, 120000);
+      const rawArgs = invocation.approvedArgs
+        ? [...invocation.approvedArgs]
+        : ["vitest", "run"];
+      const safeArgs = validateArgs(rawArgs);
+      const safeEnv = sanitizeEnv(invocation.env);
+
+      // prettier-ignore
+      stdout = execFileSync(bin, safeArgs as string[], { // sast-allow: shell-exec -- sanitized allowlisted deterministic adapter execution
+        cwd: safeCwd,
+        env: safeEnv,
         encoding: "utf8",
-        timeout: invocation.timeoutMs || 120000,
+        timeout: safeTimeout,
+        shell: false,
         stdio: ["ignore", "pipe", "pipe"],
       });
-    } catch (err: any) {
-      exitCode = err.status || 1;
-      stdout = err.stdout?.toString() || "";
-      stderr = err.stderr?.toString() || err.message;
+    } catch (err: unknown) {
+      const procErr = err as {
+        status?: number;
+        stdout?: string | Buffer;
+        stderr?: string | Buffer;
+        message?: string;
+      };
+      exitCode = procErr.status || 1;
+      stdout = procErr.stdout?.toString() || "";
+      stderr = procErr.stderr?.toString() || procErr.message || String(err);
     }
 
     const durationMs = Date.now() - start;
-    const verdict = this.parseExecutionResult(stdout, stderr, exitCode, durationMs);
+    const verdict = this.parseExecutionResult(
+      stdout,
+      stderr,
+      exitCode,
+      durationMs,
+    );
 
     return this.createReceipt(
       verdict.status,
@@ -184,7 +255,10 @@ export class VitestAdapter implements DiceAdapter {
       tool: this.tool,
       invocation: {
         id: invocation.id,
-        command: [invocation.executable || "bunx", ...(invocation.approvedArgs || [])],
+        command: [
+          invocation.executable || "bunx",
+          ...(invocation.approvedArgs || []),
+        ],
       },
       specifications: specs,
       provenance,

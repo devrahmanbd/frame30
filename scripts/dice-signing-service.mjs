@@ -47,7 +47,9 @@ export class DiceSigningService {
       options.trustedRef || process.env.DICE_TRUSTED_REF || DEFAULT_TRUSTED_REF;
     this.evidenceDir = options.evidenceDir || "artifacts/dice-evidence";
     this.contractPath =
-      options.contractPath || "features/contracts/F30-DICE-STAGE2-4-1.json";
+      options.contractPath ||
+      process.env.ACTIVE_CHANGE_CONTRACT ||
+      "features/contracts/F30-DICE-COMPLETE.json";
     this.candidateCommit = options.candidateCommit
       ? validateCommitSha(options.candidateCommit)
       : null;
@@ -436,7 +438,9 @@ export class DiceSigningService {
 
 // CLI Execution
 if (process.argv[1] && process.argv[1].endsWith("dice-signing-service.mjs")) {
-  let contractPath = "features/contracts/F30-DICE-STAGE2-4-1.json";
+  let contractPath =
+    process.env.ACTIVE_CHANGE_CONTRACT ||
+    "features/contracts/F30-DICE-COMPLETE.json";
   let evidenceDir = "artifacts/dice-evidence";
   let candidateCommit = null;
   let candidateTree = null;

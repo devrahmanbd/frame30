@@ -5,9 +5,7 @@
   "feature_id": "F30-DICE-ARCH-001",
   "title": "Frame30 Universal Verification Mould (DICE): Complete Implementation, Independent Qualification & Operational Readiness",
   "owner": "@devrahmanbd",
-  "reviewers": [
-    "@devrahmanbd"
-  ],
+  "reviewers": ["@devrahmanbd"],
   "base_commit": "382261db0cb5b796046ae03c28fd8f309b901123",
   "baseline_commit": "382261db0cb5b796046ae03c28fd8f309b901123",
   "base_tree": "fbf972496f7783cae45267f524ee9cbf0238ad58",
@@ -151,6 +149,7 @@
     "scripts/dice-plan-generator.mjs",
     "scripts/extract-dependencies.mjs",
     "scripts/scope-guard.mjs",
+    "scripts/mutation-test.mjs",
     "src/lib/dice/adapters/**",
     "src/lib/dice/adapters.test.ts",
     "src/lib/dice/mutation-matrix.test.ts",
@@ -209,9 +208,7 @@
       "dice-verifier"
     ],
     "pii_classes": [],
-    "secrets": [
-      "DICE_SIGNING_KEY"
-    ],
+    "secrets": ["DICE_SIGNING_KEY"],
     "threat_model": "Hostile candidate repository attempts to tamper with verification launcher, root of trust, CircleCI config, bootstrap runner, qualification evaluator, signing service, key registry, dependencies, evidence serializer, or policy manifest to forge qualification passes or extract DICE_SIGNING_KEY."
   },
   "verification": {
@@ -237,23 +234,13 @@
       "bunx vitest run src/lib/dice/signing-isolation.test.ts",
       "bunx vitest run src/lib/dice/signing-e2e.test.ts"
     ],
-    "properties": [
-      "bun run test:properties"
-    ],
-    "browser_bombadil": [
-      "bun run test:bombadil"
-    ],
+    "properties": ["bun run test:properties"],
+    "browser_bombadil": ["bun run test:bombadil"],
     "playwright": [],
     "visual_accessibility": [],
-    "formal_lean": [
-      "PATH=\"$HOME/.elan/bin:$PATH\" bun run test:lean"
-    ],
-    "formal_bend": [
-      "bun run test:bend"
-    ],
-    "formal_tla": [
-      "bun run test:tla"
-    ],
+    "formal_lean": ["PATH=\"$HOME/.elan/bin:$PATH\" bun run test:lean"],
+    "formal_bend": ["bun run test:bend"],
+    "formal_tla": ["bun run test:tla"],
     "security_adversarial": [
       "bunx vitest run src/lib/dice/authority-mutation.test.ts",
       "bunx vitest run src/lib/dice/mutation-matrix.test.ts"

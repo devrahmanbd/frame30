@@ -20,6 +20,9 @@ import { join } from "node:path";
 const REPO_ROOT = process.cwd();
 const EVIDENCE_DIR = join(REPO_ROOT, "docs/verification-evidence");
 const RECEIPT_FILE = join(EVIDENCE_DIR, "mutation-sensitivity-receipt.txt");
+const ACTIVE_CONTRACT =
+  process.env.ACTIVE_CHANGE_CONTRACT ||
+  "features/contracts/F30-DICE-COMPLETE.json";
 
 console.log(
   "[mutation-test] Commencing Stage 2 Adversarial Mutation Sensitivity Suite (16 Defect Classes)...\n",
@@ -385,7 +388,7 @@ runMutation(
   () => {
     writeFileSync(forbiddenFile, "-- unauthorized migration\n", "utf8");
   },
-  "node scripts/scope-guard.mjs",
+  `node scripts/scope-guard.mjs --contract=${ACTIVE_CONTRACT}`,
   "Explicitly forbidden by rule: 'supabase/migrations/**'",
   () => {
     if (existsSync(forbiddenFile)) unlinkSync(forbiddenFile);

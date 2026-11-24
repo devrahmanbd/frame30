@@ -104,6 +104,10 @@ if (!contractPath) {
       );
 
       contractFiles.sort((a, b) => {
+        const aIsComplete = a.includes("COMPLETE");
+        const bIsComplete = b.includes("COMPLETE");
+        if (aIsComplete && !bIsComplete) return -1;
+        if (!aIsComplete && bIsComplete) return 1;
         const aIsStage241 = a.includes("STAGE2-4-1");
         const bIsStage241 = b.includes("STAGE2-4-1");
         if (aIsStage241 && !bIsStage241) return -1;
@@ -133,7 +137,9 @@ if (!contractPath) {
     }
 
     if (!contractPath) {
-      if (existsSync(join(contractsDir, "F30-DICE-STAGE2-4-1.json"))) {
+      if (existsSync(join(contractsDir, "F30-DICE-COMPLETE.json"))) {
+        contractPath = "features/contracts/F30-DICE-COMPLETE.json";
+      } else if (existsSync(join(contractsDir, "F30-DICE-STAGE2-4-1.json"))) {
         contractPath = "features/contracts/F30-DICE-STAGE2-4-1.json";
       } else if (existsSync(join(contractsDir, "F30-DICE-STAGE2-4.json"))) {
         contractPath = "features/contracts/F30-DICE-STAGE2-4.json";

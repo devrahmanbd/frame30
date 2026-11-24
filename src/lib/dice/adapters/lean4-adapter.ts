@@ -3,37 +3,68 @@
  * Normative Architecture: F30-DICE-ARCH-001 Revision 2.3 Section 3.1 & 8.3
  */
 
-import { execFileSync } from "node:child_process";
+import { execFileSync } from "node:child_process"; // sast-allow: shell-exec -- sanitized allowlisted deterministic adapter execution
 import { existsSync, readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
-import type {
-  DiceAdapter,
-  DiceAdapterToolInfo,
-  AdapterEnvironment,
-  AdapterInvocation,
-  AdapterProvenance,
-  AdapterLinkage,
-  AdapterSpecification,
-  AdapterVerdict,
-  DiceExecutionReceipt,
+import {
+  type DiceAdapter,
+  type DiceAdapterToolInfo,
+  type AdapterEnvironment,
+  type AdapterInvocation,
+  type AdapterProvenance,
+  type AdapterLinkage,
+  type AdapterSpecification,
+  type AdapterVerdict,
+  type DiceExecutionReceipt,
+  validateExecutable,
+  validateCwd,
+  sanitizeEnv,
+  boundedTimeout,
+  validateArgs,
 } from "./types.js";
+
+export interface Lean4AdapterOptions {
+  repoRoot?: string;
+  toolVersion?: string;
+  binaryPath?: string;
+  toolDiscovery?: () => string | null;
+  execFn?: (
+    file: string,
+    args: readonly string[],
+    options: Record<string, unknown>,
+  ) => string;
+}
 
 export class Lean4Adapter implements DiceAdapter {
   readonly tool: DiceAdapterToolInfo;
   readonly environment: AdapterEnvironment;
   private readonly repoRoot: string;
+  private readonly toolDiscovery?: () => string | null;
+  private readonly execFn: (
+    file: string,
+    args: readonly string[],
+    options: Record<string, unknown>,
+  ) => string;
 
-  constructor(options: { repoRoot?: string; toolVersion?: string; binaryPath?: string } = {}) {
+  constructor(options: Lean4AdapterOptions = {}) {
     this.repoRoot = options.repoRoot || process.cwd();
-    const binary = options.binaryPath || this.findLakeBinary();
+    this.toolDiscovery = options.toolDiscovery;
+    this.execFn =
+      options.execFn ||
+      ((bin, args, opts) =>
+        String(execFileSync(bin, args as string[], { ...opts, shell: false }))); // sast-allow: shell-exec -- sanitized allowlisted deterministic adapter execution
+    const binary =
+      options.binaryPath ||
+      (this.toolDiscovery ? this.toolDiscovery() : this.findLakeBinary());
     this.tool = {
       name: "lean4",
       version: options.toolVersion || "v4.15.0",
-      binaryPath: binary,
-      binaryHash: binary && existsSync(binary)
-        ? createHash("sha256").update(readFileSync(binary)).digest("hex")
-        : undefined,
+      binaryPath: binary || undefined,
+      binaryHash:
+        binary && existsSync(binary)
+          ? createHash("sha256").update(readFileSync(binary)).digest("hex")
+          : undefined,
     };
     this.environment = {
       requiredBinaries: ["lake", "lean"],
@@ -42,7 +73,7 @@ export class Lean4Adapter implements DiceAdapter {
     };
   }
 
-  private findLakeBinary(): string {
+  private findLakeBinary(): string | null {
     const candidates = [
       join(process.env.HOME || "", ".elan/bin/lake"),
       "/usr/local/bin/lake",
@@ -51,35 +82,69 @@ export class Lean4Adapter implements DiceAdapter {
     for (const c of candidates) {
       if (existsSync(c)) return c;
     }
-    return "lake";
+    return null;
   }
 
-  validateEnvironment(): { status: "OK" | "BLOCKED"; reason?: string } {
+  validateEnvironment(): {
+    status: "OK" | "BLOCKED";
+    code?: string;
+    reason?: string;
+  } {
+    const binary = this.toolDiscovery
+      ? this.toolDiscovery()
+      : this.tool.binaryPath || this.findLakeBinary();
+    if (!binary) {
+      return {
+        status: "BLOCKED",
+        code: "TOOLCHAIN_UNAVAILABLE",
+        reason: "TOOLCHAIN_UNAVAILABLE: Lake binary unavailable",
+      };
+    }
     try {
-      const out = execFileSync(this.tool.binaryPath || "lake", ["--version"], {
+      const out = this.execFn(binary, ["--version"], {
         encoding: "utf8",
         stdio: ["ignore", "pipe", "pipe"],
       });
       if (!out.includes("Lake version") && !out.includes("Lean")) {
-        return { status: "BLOCKED", reason: `Unexpected lake version output: ${out.trim()}` };
+        return {
+          status: "BLOCKED",
+          code: "TOOLCHAIN_UNAVAILABLE",
+          reason: `TOOLCHAIN_UNAVAILABLE: Unexpected lake version output: ${out.trim()}`,
+        };
       }
       return { status: "OK" };
-    } catch (err: any) {
-      return { status: "BLOCKED", reason: `Lake binary unavailable: ${err.message}` };
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      return {
+        status: "BLOCKED",
+        code: "TOOLCHAIN_UNAVAILABLE",
+        reason: `TOOLCHAIN_UNAVAILABLE: Lake binary unavailable: ${message}`,
+      };
     }
   }
 
-  validateSpecifications(specs: readonly AdapterSpecification[]): { status: "OK" | "BLOCKED"; reason?: string } {
+  validateSpecifications(specs: readonly AdapterSpecification[]): {
+    status: "OK" | "BLOCKED";
+    code?: string;
+    reason?: string;
+  } {
     for (const spec of specs) {
       const full = join(this.repoRoot, spec.path);
       if (!existsSync(full)) {
-        return { status: "BLOCKED", reason: `Required Lean specification missing: ${spec.path}` };
+        return {
+          status: "BLOCKED",
+          code: "SPECIFICATION_MISSING",
+          reason: `SPECIFICATION_MISSING: Required Lean specification missing: ${spec.path}`,
+        };
       }
-      const actualHash = createHash("sha256").update(readFileSync(full)).digest("hex");
+      const actualHash = createHash("sha256")
+        .update(readFileSync(full))
+        .digest("hex");
       if (spec.sha256 && actualHash !== spec.sha256) {
         return {
           status: "BLOCKED",
-          reason: `Specification hash mismatch for ${spec.path}: expected ${spec.sha256}, got ${actualHash}`,
+          code: "SPECIFICATION_HASH_MISMATCH",
+          reason: `SPECIFICATION_HASH_MISMATCH: Specification hash mismatch for ${spec.path}: expected ${spec.sha256}, got ${actualHash}`,
         };
       }
     }
@@ -93,14 +158,20 @@ export class Lean4Adapter implements DiceAdapter {
     durationMs: number,
   ): AdapterVerdict {
     // Audit for disallowed axioms and cheating tactics
-    if (rawStdout.includes("sorryAx") || rawStderr.includes("sorryAx") || rawStdout.includes("sorry") || rawStderr.includes("sorry")) {
+    if (
+      rawStdout.includes("sorryAx") ||
+      rawStderr.includes("sorryAx") ||
+      rawStdout.includes("sorry") ||
+      rawStderr.includes("sorry")
+    ) {
       return {
         status: "FAIL",
         exitCode: exitCode !== 0 ? exitCode : 1,
         durationMs,
         stdout: rawStdout,
         stderr: rawStderr,
-        diagnostics: "REJECTED_UNAPPROVED_AXIOM: Lean sorryAx / sorry cheat detected",
+        diagnostics:
+          "REJECTED_UNAPPROVED_AXIOM: Lean sorryAx / sorry cheat detected",
       };
     }
 
@@ -148,45 +219,82 @@ export class Lean4Adapter implements DiceAdapter {
     linkage: AdapterLinkage,
     specs: readonly AdapterSpecification[] = [],
   ): DiceExecutionReceipt {
-    const envCheck = this.validateEnvironment();
-    if (envCheck.status === "BLOCKED") {
-      return this.createReceipt("BLOCKED", 126, 0, envCheck.reason, invocation, provenance, linkage, specs, {});
-    }
-
     const specCheck = this.validateSpecifications(specs);
     if (specCheck.status === "BLOCKED") {
-      return this.createReceipt("BLOCKED", 127, 0, specCheck.reason, invocation, provenance, linkage, specs, {});
+      return this.createReceipt(
+        "BLOCKED",
+        127,
+        0,
+        specCheck.reason,
+        invocation,
+        provenance,
+        linkage,
+        specs,
+        {},
+      );
     }
+
+    const envCheck = this.validateEnvironment();
+    if (envCheck.status === "BLOCKED") {
+      return this.createReceipt(
+        "BLOCKED",
+        126,
+        0,
+        envCheck.reason,
+        invocation,
+        provenance,
+        linkage,
+        specs,
+        {},
+      );
+    }
+
+    const rawBinary = invocation.executable || this.tool.binaryPath || "lake";
+    const binary = validateExecutable(rawBinary, ["lake", "lean"]);
+    const safeCwd = validateCwd(
+      invocation.cwd || join(this.repoRoot, "specs/lean"),
+      this.repoRoot,
+    );
+    const safeTimeout = boundedTimeout(invocation.timeoutMs, 300000, 120000);
+    const rawArgs = invocation.approvedArgs
+      ? [...invocation.approvedArgs]
+      : ["build"];
+    const safeArgs = validateArgs(rawArgs);
+    const safeEnv = sanitizeEnv(invocation.env);
+    safeEnv.PATH = `${join(process.env.HOME || "", ".elan/bin")}:${safeEnv.PATH || process.env.PATH || ""}`;
 
     const start = Date.now();
     let stdout = "";
     let stderr = "";
     let exitCode = 0;
 
-    const env = {
-      ...process.env,
-      PATH: `${join(process.env.HOME || "", ".elan/bin")}:${process.env.PATH || ""}`,
-      ...(invocation.env || {}),
-    };
-
     try {
-      const binary = invocation.executable || this.tool.binaryPath || "lake";
-      const args = invocation.approvedArgs ? [...invocation.approvedArgs] : ["build"];
-      stdout = execFileSync(binary, args, {
-        cwd: invocation.cwd || join(this.repoRoot, "specs/lean"),
-        env,
+      stdout = this.execFn(binary, safeArgs, {
+        cwd: safeCwd,
+        env: safeEnv,
         encoding: "utf8",
-        timeout: invocation.timeoutMs || 120000,
+        timeout: safeTimeout,
         stdio: ["ignore", "pipe", "pipe"],
       });
-    } catch (err: any) {
-      exitCode = err.status || 1;
-      stdout = err.stdout?.toString() || "";
-      stderr = err.stderr?.toString() || err.message;
+    } catch (err: unknown) {
+      const procErr = err as {
+        status?: number;
+        stdout?: string | Buffer;
+        stderr?: string | Buffer;
+        message?: string;
+      };
+      exitCode = procErr.status || 1;
+      stdout = procErr.stdout?.toString() || "";
+      stderr = procErr.stderr?.toString() || procErr.message || String(err);
     }
 
     const durationMs = Date.now() - start;
-    const verdict = this.parseExecutionResult(stdout, stderr, exitCode, durationMs);
+    const verdict = this.parseExecutionResult(
+      stdout,
+      stderr,
+      exitCode,
+      durationMs,
+    );
 
     return this.createReceipt(
       verdict.status,
@@ -221,7 +329,10 @@ export class Lean4Adapter implements DiceAdapter {
       tool: this.tool,
       invocation: {
         id: invocation.id,
-        command: [invocation.executable || this.tool.binaryPath || "lake", ...(invocation.approvedArgs || [])],
+        command: [
+          invocation.executable || this.tool.binaryPath || "lake",
+          ...(invocation.approvedArgs || []),
+        ],
       },
       specifications: specs,
       provenance,

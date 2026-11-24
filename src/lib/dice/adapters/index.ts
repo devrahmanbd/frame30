@@ -17,7 +17,10 @@ import { Bend2Adapter } from "./bend2-adapter.js";
 import { BombadilAdapter } from "./bombadil-adapter.js";
 import { VitestAdapter } from "./vitest-adapter.js";
 
-export function getAdapterForTool(tool: AdapterToolName, options: { repoRoot?: string } = {}): DiceAdapter {
+export function getAdapterForTool(
+  tool: AdapterToolName,
+  options: { repoRoot?: string } = {},
+): DiceAdapter {
   switch (tool) {
     case "lean4":
       return new Lean4Adapter(options);

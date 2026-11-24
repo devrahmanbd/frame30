@@ -32,7 +32,9 @@ export class DiceLauncher {
       options.trustedRef || process.env.DICE_TRUSTED_REF || DEFAULT_TRUSTED_REF;
     this.distDir = options.distDir || join("/tmp/dice-trusted-dist");
     this.contractPath =
-      options.contractPath || "features/contracts/F30-DICE-STAGE2-4-1.json";
+      options.contractPath ||
+      process.env.ACTIVE_CHANGE_CONTRACT ||
+      "features/contracts/F30-DICE-COMPLETE.json";
     this.outDir = options.outDir || "artifacts/dice-evidence";
     this.isDryRun = options.isDryRun || false;
     this.allowUnpinnedRoots = options.allowUnpinnedRoots || false;
@@ -133,7 +135,9 @@ export class DiceLauncher {
 
 // CLI Execution
 if (process.argv[1] && process.argv[1].endsWith("dice-launcher.mjs")) {
-  let contractPath = "features/contracts/F30-DICE-STAGE2-4-1.json";
+  let contractPath =
+    process.env.ACTIVE_CHANGE_CONTRACT ||
+    "features/contracts/F30-DICE-COMPLETE.json";
   let distDir = "/tmp/dice-trusted-dist";
   let outDir = "artifacts/dice-evidence";
   let isDryRun = false;

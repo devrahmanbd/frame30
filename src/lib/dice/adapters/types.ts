@@ -3,14 +3,10 @@
  * Normative Architecture: F30-DICE-ARCH-001 Revision 2.3 Section D & Section 8
  */
 
+import { resolve, basename, sep } from "node:path";
+
 export type AdapterToolName =
-  | "lean4"
-  | "tlc"
-  | "bend2"
-  | "bombadil"
-  | "vitest"
-  | "fast-check"
-  | "script";
+  "lean4" | "tlc" | "bend2" | "bombadil" | "vitest" | "fast-check" | "script";
 
 export type AdapterRiskClass = "critical" | "high" | "standard";
 
@@ -90,12 +86,141 @@ export interface DiceAdapter {
   readonly tool: DiceAdapterToolInfo;
   readonly environment: AdapterEnvironment;
   validateEnvironment(): { status: "OK" | "BLOCKED"; reason?: string };
-  validateSpecifications(specs: readonly AdapterSpecification[]): { status: "OK" | "BLOCKED"; reason?: string };
-  parseExecutionResult(rawStdout: string, rawStderr: string, exitCode: number, durationMs: number): AdapterVerdict;
+  validateSpecifications(specs: readonly AdapterSpecification[]): {
+    status: "OK" | "BLOCKED";
+    reason?: string;
+  };
+  parseExecutionResult(
+    rawStdout: string,
+    rawStderr: string,
+    exitCode: number,
+    durationMs: number,
+  ): AdapterVerdict;
   execute(
     invocation: AdapterInvocation,
     provenance: AdapterProvenance,
     linkage: AdapterLinkage,
     specs?: readonly AdapterSpecification[],
   ): DiceExecutionReceipt;
+}
+
+const FORBIDDEN_SHELL_CHARS = /[;&|`$\n\r><()]/;
+
+export function validateExecutable(
+  executable: string,
+  allowedNames: readonly string[],
+): string {
+  if (!executable || typeof executable !== "string") {
+    throw new Error(`[dice-adapter] ✗ Executable must be a non-empty string`);
+  }
+  if (FORBIDDEN_SHELL_CHARS.test(executable)) {
+    throw new Error(
+      `[dice-adapter] ✗ Disallowed shell metacharacter in executable path: ${executable}`,
+    );
+  }
+  const base = basename(executable);
+  if (!allowedNames.includes(base)) {
+    throw new Error(
+      `[dice-adapter] ✗ Disallowed executable: ${executable}. Approved executables: ${allowedNames.join(", ")}`,
+    );
+  }
+  return executable;
+}
+
+export function validateCwd(cwd: string | undefined, repoRoot: string): string {
+  const root = resolve(repoRoot);
+  const target = resolve(cwd || repoRoot);
+  if (target !== root && !target.startsWith(root + sep)) {
+    throw new Error(
+      `[dice-adapter] ✗ Disallowed working directory outside repo root: ${cwd}`,
+    );
+  }
+  return target;
+}
+
+const FORBIDDEN_ENV_VARS = new Set([
+  "LD_PRELOAD",
+  "LD_LIBRARY_PATH",
+  "LD_AUDIT",
+  "DYLD_INSERT_LIBRARIES",
+  "DYLD_LIBRARY_PATH",
+  "DYLD_FRAMEWORK_PATH",
+  "NODE_OPTIONS",
+  "BASH_ENV",
+  "ENV",
+  "SHELLOPTS",
+]);
+
+const SENSITIVE_SECRET_PATTERN =
+  /(?:KEY|SECRET|TOKEN|PASSWORD|AUTH|CREDENTIAL)/i;
+const SAFE_SECRET_WHITELIST = new Set([
+  "PATH",
+  "HOME",
+  "USER",
+  "LOGNAME",
+  "SHELL",
+  "LANG",
+  "LC_ALL",
+  "TERM",
+  "TMPDIR",
+  "CI",
+  "CIRCLECI",
+]);
+
+export function sanitizeEnv(
+  invocationEnv?: Record<string, string>,
+): Record<string, string> {
+  const sanitized: Record<string, string> = {};
+
+  for (const [key, value] of Object.entries(process.env)) {
+    if (value === undefined) continue;
+    if (FORBIDDEN_ENV_VARS.has(key)) continue;
+    if (SENSITIVE_SECRET_PATTERN.test(key) && !SAFE_SECRET_WHITELIST.has(key)) {
+      continue;
+    }
+    sanitized[key] = value;
+  }
+
+  if (invocationEnv) {
+    for (const [key, value] of Object.entries(invocationEnv)) {
+      if (FORBIDDEN_ENV_VARS.has(key)) {
+        throw new Error(
+          `[dice-adapter] ✗ Forbidden environment variable in invocation: ${key}`,
+        );
+      }
+      sanitized[key] = value;
+    }
+  }
+
+  return sanitized;
+}
+
+export function boundedTimeout(
+  timeoutMs?: number,
+  maxMs: number = 300000,
+  defaultMs: number = 120000,
+): number {
+  if (
+    timeoutMs === undefined ||
+    timeoutMs === null ||
+    timeoutMs <= 0 ||
+    !Number.isFinite(timeoutMs)
+  ) {
+    return defaultMs;
+  }
+  return Math.min(timeoutMs, maxMs);
+}
+
+export function validateArgs(args: readonly string[]): readonly string[] {
+  if (!Array.isArray(args)) {
+    throw new Error(`[dice-adapter] ✗ Arguments must be an array`);
+  }
+  for (const arg of args) {
+    if (typeof arg !== "string") {
+      throw new Error(
+        `[dice-adapter] ✗ Every argument must be a string, got ${typeof arg}`,
+      );
+    }
+  }
+  return args;
 }

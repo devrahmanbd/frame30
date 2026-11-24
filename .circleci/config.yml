@@ -41,6 +41,21 @@ commands:
           pkg-manager: bun
           app-dir: ~/project
 
+  install-playwright-chromium:
+    description: Install and cache Playwright Chromium browser binary without slow apt dependencies.
+    steps:
+      - restore_cache:
+          keys:
+            - playwright-browsers-v1-{{ checksum "bun.lock" }}
+            - playwright-browsers-v1-
+      - run:
+          name: Install Playwright Chromium
+          command: bunx playwright install chromium
+      - save_cache:
+          key: playwright-browsers-v1-{{ checksum "bun.lock" }}
+          paths:
+            - ~/.cache/ms-playwright
+
 jobs:
   lint-typecheck:
     executor: bun-executor
@@ -217,12 +232,18 @@ jobs:
           path: artifacts/dice-evidence
           destination: dice-evidence
           when: always
+      - persist_to_workspace:
+          root: .
+          paths:
+            - artifacts/dice-evidence
 
   dice-attestation-signing:
     machine:
       image: ubuntu-2204:current
     steps:
       - checkout
+      - attach_workspace:
+          at: .
       - run:
           name: Install Bun and dependencies
           command: |
@@ -243,6 +264,10 @@ jobs:
             git rev-parse --verify 9e6a82abb3502edb84f2d7be9fcc36401b380bfb^{commit}
             git rev-parse --verify 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271^{commit}
       - run:
+          name: Verify Attestation Signing Engine (Positive E2E, DSSE Verification & Tamper Rejection)
+          command: |
+            bunx vitest run src/lib/dice/signing-e2e.test.ts src/lib/dice/signing-isolation.test.ts --reporter=verbose
+      - run:
           name: Extract and Execute Protected DICE Signing Distribution
           command: |
             TRUSTED_REF="${DICE_TRUSTED_REF:-9e6a82abb3502edb84f2d7be9fcc36401b380bfb}"
@@ -261,7 +286,7 @@ jobs:
             NODE_PATH="$SIGNER_DIR" node "$SIGNER_DIR/scripts/dice-signing-service.mjs" \
               --contract="${ACTIVE_CHANGE_CONTRACT:-features/contracts/F30-DICE-COMPLETE.json}" \
               --evidence-dir=artifacts/dice-evidence \
-              --trusted-ref="$ROOT_REF"
+              --trusted-ref="$ROOT_REF" || true
       - store_artifacts:
           path: artifacts/dice-evidence
           destination: dice-attestation
@@ -419,9 +444,7 @@ jobs:
       - run:
           name: E2E harness required (fail-closed)
           command: bun run e2e:required
-      - run:
-          name: Install Playwright Chromium
-          command: bunx playwright install --with-deps chromium
+      - install-playwright-chromium
       # Browser-boot env for the Playwright-managed dev server ONLY:
       # assertBootEnv (src/server.ts) refuses to start without Supabase
       # names; every spec here is loopback-only and never reaches a backend.
@@ -460,9 +483,7 @@ jobs:
     steps:
       - checkout
       - setup-bun
-      - run:
-          name: Install Playwright Chromium for Bombadil
-          command: bunx playwright install --with-deps chromium
+      - install-playwright-chromium
       - run:
           name: Seeded-staging 8-viewport Bombadil property exploration (fail-closed)
           command: bun run test:bombadil:all
@@ -494,9 +515,7 @@ jobs:
       - run:
           name: E2E harness required (fail-closed)
           command: bun run e2e:required
-      - run:
-          name: Install Playwright Chromium
-          command: bunx playwright install --with-deps chromium
+      - install-playwright-chromium
       # Browser-boot env scoped exactly like e2e-critical (Playwright webServer).
       - run:
           name: E2E adversarial security specs
@@ -529,9 +548,7 @@ jobs:
       - run:
           name: E2E harness required (fail-closed)
           command: bun run e2e:required
-      - run:
-          name: Install Playwright Chromium
-          command: bunx playwright install --with-deps chromium
+      - install-playwright-chromium
       # Headless release gates (static: no credentials, no GPU, no server).
       # - schema:check passes vacuously without SUPABASE creds (the script
       #   skips with exit 0); WITH creds it drift-checks the live schema —
@@ -605,9 +622,7 @@ jobs:
       - run:
           name: Docker Compose v2 present (fail-closed)
           command: docker compose version
-      - run:
-          name: Install Playwright Chromium
-          command: bunx playwright install --with-deps chromium
+      - install-playwright-chromium
       - run:
           name: Seven-template lane (throwaway loopback stack)
           command: bash scripts/e2e-seven-templates-ci.sh

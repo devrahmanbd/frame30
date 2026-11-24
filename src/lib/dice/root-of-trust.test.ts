@@ -1,10 +1,25 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from "node:fs";
+import {
+  readFileSync,
+  writeFileSync,
+  existsSync,
+  mkdirSync,
+  rmSync,
+} from "node:fs";
 import { join } from "node:path";
 import { execSync } from "node:child_process";
-import { DiceTrustedRoot, DEFAULT_TRUSTED_REF } from "../../../scripts/dice-root-of-trust.mjs";
-import { evaluateObligationDisposition, evaluateCandidateQualification } from "../../../scripts/dice-qualify.mjs";
-import { DiceSigningAuthority, generateTestKeypair } from "../../../scripts/dice-evidence.mjs";
+import {
+  DiceTrustedRoot,
+  DEFAULT_TRUSTED_REF,
+} from "../../../scripts/dice-root-of-trust.mjs";
+import {
+  evaluateObligationDisposition,
+  evaluateCandidateQualification,
+} from "../../../scripts/dice-qualify.mjs";
+import {
+  DiceSigningAuthority,
+  generateTestKeypair,
+} from "../../../scripts/dice-evidence.mjs";
 import { DiceSandbox } from "../../../scripts/dice-sandbox.mjs";
 
 describe("Frame30 DICE Stage 2.3: Root-of-Trust, Conjunctive Verification & Attestation Integrity", () => {
@@ -27,7 +42,10 @@ describe("Frame30 DICE Stage 2.3: Root-of-Trust, Conjunctive Verification & Atte
     });
     trustedRoot.resolve();
 
-    candidateTree = execSync("git rev-parse HEAD^{tree}", { cwd: repoRoot, encoding: "utf8" }).trim();
+    candidateTree = execSync("git rev-parse HEAD^{tree}", {
+      cwd: repoRoot,
+      encoding: "utf8",
+    }).trim();
   });
 
   afterAll(() => {
@@ -38,10 +56,14 @@ describe("Frame30 DICE Stage 2.3: Root-of-Trust, Conjunctive Verification & Atte
 
   describe("P0-1: Independent Trusted Root-of-Trust (Scenarios 1-4, 14)", () => {
     it("Scenario 1: Weakening mandatory OBLs in candidate has zero effect on trusted verification policy", () => {
-      const trustedObls = trustedRoot.loadTrustedJson("registries/dice/mandatory-obligations.json");
+      const trustedObls = trustedRoot.loadTrustedJson(
+        "registries/dice/mandatory-obligations.json",
+      );
       expect(Array.isArray(trustedObls)).toBe(true);
       expect(trustedObls.length).toBeGreaterThanOrEqual(4);
-      const obIds = trustedObls.map((o: any) => o.obligation_id);
+      const obIds = (trustedObls as Array<{ obligation_id: string }>).map(
+        (o) => o.obligation_id,
+      );
       expect(obIds).toContain("OBL-SYS-SCOPE-GUARD-001");
       expect(obIds).toContain("OBL-SYS-DRIFT-GUARD-001");
       expect(obIds).toContain("OBL-SYS-DIE-REGISTRY-001");
@@ -49,12 +71,22 @@ describe("Frame30 DICE Stage 2.3: Root-of-Trust, Conjunctive Verification & Atte
     });
 
     it("Scenario 2: Altering trusted profiles in candidate has zero effect on trusted profiles registry", () => {
-      const trustedProfiles = trustedRoot.loadTrustedJson("registries/dice/trusted-profiles.json");
+      const trustedProfiles = trustedRoot.loadTrustedJson(
+        "registries/dice/trusted-profiles.json",
+      );
       expect(Array.isArray(trustedProfiles)).toBe(true);
-      const scriptProfile = trustedProfiles.find((p: any) => p.profile_id === "PROF-SCRIPT-v1");
+      const scriptProfile = (
+        trustedProfiles as Array<{
+          profile_id: string;
+          sandboxed: boolean;
+          allowed_cli_args: string[];
+        }>
+      ).find((p) => p.profile_id === "PROF-SCRIPT-v1");
       expect(scriptProfile).toBeDefined();
-      expect(scriptProfile.sandboxed).toBe(true);
-      expect(scriptProfile.allowed_cli_args).toContain("^scripts/[a-zA-Z0-9_-]+\\.mjs$");
+      expect(scriptProfile?.sandboxed).toBe(true);
+      expect(scriptProfile?.allowed_cli_args).toContain(
+        "^scripts/[a-zA-Z0-9_-]+\\.mjs$",
+      );
     });
 
     it("Scenario 3: Modifying scope guard gate is prevented by resolving path from trusted root", () => {
@@ -65,7 +97,9 @@ describe("Frame30 DICE Stage 2.3: Root-of-Trust, Conjunctive Verification & Atte
     });
 
     it("Scenario 4: Modifying qualification evaluator is prevented by resolving path from trusted root", () => {
-      const trustedPath = trustedRoot.getTrustedPath("scripts/dice-qualify.mjs");
+      const trustedPath = trustedRoot.getTrustedPath(
+        "scripts/dice-qualify.mjs",
+      );
       expect(existsSync(trustedPath)).toBe(true);
       const content = readFileSync(trustedPath, "utf8");
       expect(content).toContain("evaluateCandidateQualification");
@@ -119,13 +153,30 @@ describe("Frame30 DICE Stage 2.3: Root-of-Trust, Conjunctive Verification & Atte
 
     it("Scenario 5: Multi-method obligation evaluates to DISP_FAIL if any declared method fails", () => {
       const receipts = [
-        { obligation_id: "OBL-TEST-CONJUNCTIVE-001", method_id: "METH-UNIT-01", status: "PASS", tree_sha: candidateTree },
-        { obligation_id: "OBL-TEST-CONJUNCTIVE-001", method_id: "METH-FORMAL-01", status: "FAIL", tree_sha: candidateTree, diagnostics: "Theorem proof broken" },
+        {
+          obligation_id: "OBL-TEST-CONJUNCTIVE-001",
+          method_id: "METH-UNIT-01",
+          status: "PASS",
+          tree_sha: candidateTree,
+        },
+        {
+          obligation_id: "OBL-TEST-CONJUNCTIVE-001",
+          method_id: "METH-FORMAL-01",
+          status: "FAIL",
+          tree_sha: candidateTree,
+          diagnostics: "Theorem proof broken",
+        },
       ];
 
-      const disp = evaluateObligationDisposition("OBL-TEST-CONJUNCTIVE-001", receipts, dummyPlan, candidateTree, {
-        obligationDef: obDefMulti,
-      });
+      const disp = evaluateObligationDisposition(
+        "OBL-TEST-CONJUNCTIVE-001",
+        receipts,
+        dummyPlan,
+        candidateTree,
+        {
+          obligationDef: obDefMulti,
+        },
+      );
 
       expect(disp.disposition).toBe("DISP_FAIL");
       expect(disp.failed_method).toBe("METH-FORMAL-01");
@@ -133,13 +184,24 @@ describe("Frame30 DICE Stage 2.3: Root-of-Trust, Conjunctive Verification & Atte
 
     it("Scenario 6: Multi-method obligation evaluates to DISP_BLOCKED if one declared method receipt is missing", () => {
       const receipts = [
-        { obligation_id: "OBL-TEST-CONJUNCTIVE-001", method_id: "METH-UNIT-01", status: "PASS", tree_sha: candidateTree },
+        {
+          obligation_id: "OBL-TEST-CONJUNCTIVE-001",
+          method_id: "METH-UNIT-01",
+          status: "PASS",
+          tree_sha: candidateTree,
+        },
         // METH-FORMAL-01 receipt is missing
       ];
 
-      const disp = evaluateObligationDisposition("OBL-TEST-CONJUNCTIVE-001", receipts, dummyPlan, candidateTree, {
-        obligationDef: obDefMulti,
-      });
+      const disp = evaluateObligationDisposition(
+        "OBL-TEST-CONJUNCTIVE-001",
+        receipts,
+        dummyPlan,
+        candidateTree,
+        {
+          obligationDef: obDefMulti,
+        },
+      );
 
       expect(disp.disposition).toBe("DISP_BLOCKED");
       expect(disp.reason).toContain("MISSING_METHOD_RECEIPT: METH-FORMAL-01");
@@ -147,28 +209,67 @@ describe("Frame30 DICE Stage 2.3: Root-of-Trust, Conjunctive Verification & Atte
 
     it("Scenario 7: Duplicate method receipts are strictly prohibited and evaluate to DISP_BLOCKED", () => {
       const receipts = [
-        { obligation_id: "OBL-TEST-CONJUNCTIVE-001", method_id: "METH-UNIT-01", status: "PASS", tree_sha: candidateTree },
-        { obligation_id: "OBL-TEST-CONJUNCTIVE-001", method_id: "METH-UNIT-01", status: "PASS", tree_sha: candidateTree },
-        { obligation_id: "OBL-TEST-CONJUNCTIVE-001", method_id: "METH-FORMAL-01", status: "PASS", tree_sha: candidateTree },
+        {
+          obligation_id: "OBL-TEST-CONJUNCTIVE-001",
+          method_id: "METH-UNIT-01",
+          status: "PASS",
+          tree_sha: candidateTree,
+        },
+        {
+          obligation_id: "OBL-TEST-CONJUNCTIVE-001",
+          method_id: "METH-UNIT-01",
+          status: "PASS",
+          tree_sha: candidateTree,
+        },
+        {
+          obligation_id: "OBL-TEST-CONJUNCTIVE-001",
+          method_id: "METH-FORMAL-01",
+          status: "PASS",
+          tree_sha: candidateTree,
+        },
       ];
 
-      const disp = evaluateObligationDisposition("OBL-TEST-CONJUNCTIVE-001", receipts, dummyPlan, candidateTree, {
-        obligationDef: obDefMulti,
-      });
+      const disp = evaluateObligationDisposition(
+        "OBL-TEST-CONJUNCTIVE-001",
+        receipts,
+        dummyPlan,
+        candidateTree,
+        {
+          obligationDef: obDefMulti,
+        },
+      );
 
       expect(disp.disposition).toBe("DISP_BLOCKED");
-      expect(disp.reason).toContain("DUPLICATE_METHOD_RECEIPTS_PROHIBITED: METH-UNIT-01");
+      expect(disp.reason).toContain(
+        "DUPLICATE_METHOD_RECEIPTS_PROHIBITED: METH-UNIT-01",
+      );
     });
 
     it("Conjunctive pass: evaluates to DISP_PASS only when ALL declared methods pass cleanly", () => {
       const receipts = [
-        { obligation_id: "OBL-TEST-CONJUNCTIVE-001", method_id: "METH-UNIT-01", status: "PASS", tree_sha: candidateTree },
-        { obligation_id: "OBL-TEST-CONJUNCTIVE-001", method_id: "METH-FORMAL-01", status: "PASS", tree_sha: candidateTree },
+        {
+          obligation_id: "OBL-TEST-CONJUNCTIVE-001",
+          method_id: "METH-UNIT-01",
+          status: "PASS",
+          tree_sha: candidateTree,
+        },
+        {
+          obligation_id: "OBL-TEST-CONJUNCTIVE-001",
+          method_id: "METH-FORMAL-01",
+          status: "PASS",
+          tree_sha: candidateTree,
+        },
       ];
 
-      const disp = evaluateObligationDisposition("OBL-TEST-CONJUNCTIVE-001", receipts, dummyPlan, candidateTree, {
-        obligationDef: obDefMulti,
-      });
+      const disp = evaluateObligationDisposition(
+        "OBL-TEST-CONJUNCTIVE-001",
+        receipts,
+        dummyPlan,
+        candidateTree,
+        {
+          obligationDef: obDefMulti,
+        },
+      );
 
       expect(disp.disposition).toBe("DISP_PASS");
       expect(disp.methods_verified).toBe(2);
@@ -181,7 +282,7 @@ describe("Frame30 DICE Stage 2.3: Root-of-Trust, Conjunctive Verification & Atte
     beforeAll(() => {
       snapshotDir = join(testTempDir, "candidate-clean-snapshot");
       trustedRoot.createCandidateSnapshot(candidateTree, snapshotDir);
-    });
+    }, 30000);
 
     it("Scenario 8: Candidate snapshot strictly excludes .env, .env.local, and .env.production files", () => {
       expect(existsSync(join(snapshotDir, ".env"))).toBe(false);
@@ -199,7 +300,11 @@ describe("Frame30 DICE Stage 2.3: Root-of-Trust, Conjunctive Verification & Atte
 
     it("Generates clean diff manifest without requiring git inside the execution environment", () => {
       const manifestPath = join(testTempDir, "test-diff-manifest.json");
-      const manifest = trustedRoot.generateDiffManifest(DEFAULT_TRUSTED_REF, candidateTree, manifestPath);
+      const manifest = trustedRoot.generateDiffManifest(
+        DEFAULT_TRUSTED_REF,
+        candidateTree,
+        manifestPath,
+      );
 
       expect(manifest.base_commit).toBe(DEFAULT_TRUSTED_REF);
       expect(manifest.candidate_tree).toBe(candidateTree);
@@ -230,7 +335,9 @@ describe("Frame30 DICE Stage 2.3: Root-of-Trust, Conjunctive Verification & Atte
     let signingAuthority: DiceSigningAuthority;
 
     beforeAll(() => {
-      const trustedKeys = trustedRoot.loadTrustedJson("registries/dice/trusted-keys.json");
+      const trustedKeys = trustedRoot.loadTrustedJson(
+        "registries/dice/trusted-keys.json",
+      );
       signingAuthority = new DiceSigningAuthority({ trustedKeys });
     });
 
@@ -253,7 +360,11 @@ describe("Frame30 DICE Stage 2.3: Root-of-Trust, Conjunctive Verification & Atte
 
       // Attempting to sign with revoked key throws error
       expect(() => {
-        signingAuthority.signAttestation(statement, "dummy-pem", "key-dice-revoked-01");
+        signingAuthority.signAttestation(
+          statement,
+          "dummy-pem",
+          "key-dice-revoked-01",
+        );
       }).toThrow(/Key 'key-dice-revoked-01' was revoked/);
 
       // Verifying attestation signed by revoked key fails closed
@@ -277,7 +388,11 @@ describe("Frame30 DICE Stage 2.3: Root-of-Trust, Conjunctive Verification & Atte
       };
 
       expect(() => {
-        signingAuthority.signAttestation(statement, ephemeral.privateKey, "key-ephemeral-unregistered");
+        signingAuthority.signAttestation(
+          statement,
+          ephemeral.privateKey,
+          "key-ephemeral-unregistered",
+        );
       }).toThrow(/not registered in trusted-keys\.json/);
 
       const envelopeWithEphemeral = {
@@ -285,7 +400,9 @@ describe("Frame30 DICE Stage 2.3: Root-of-Trust, Conjunctive Verification & Atte
         payload: Buffer.from(JSON.stringify(statement)).toString("base64"),
         signatures: [{ keyid: "key-ephemeral-unregistered", sig: "dummy-sig" }],
       };
-      const verifyRes = signingAuthority.verifyAttestation(envelopeWithEphemeral);
+      const verifyRes = signingAuthority.verifyAttestation(
+        envelopeWithEphemeral,
+      );
       expect(verifyRes.valid).toBe(false);
       expect(verifyRes.reason).toContain("UNTRUSTED_KEY");
     });
@@ -312,7 +429,11 @@ describe("Frame30 DICE Stage 2.3: Root-of-Trust, Conjunctive Verification & Atte
         predicate: { qualification: "QUALIFIED_PASS" },
       };
 
-      const envelope = customAuthority.signAttestation(statement, validKeypair.privateKey, "key-test-auth-active");
+      const envelope = customAuthority.signAttestation(
+        statement,
+        validKeypair.privateKey,
+        "key-test-auth-active",
+      );
       expect(envelope.signatures[0].keyid).toBe("key-test-auth-active");
 
       const verifyRes = customAuthority.verifyAttestation(envelope);
