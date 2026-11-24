@@ -1,0 +1,156 @@
+{
+  "$schema": "./schema.json",
+  "contract_version": 1,
+  "change_id": "F30-DICE-STAGE2-3",
+  "feature_id": "F30-DICE-ARCH-001",
+  "title": "Frame30 Universal Verification Mould (DICE) Stage 2.3: Trusted Root-of-Trust, Conjunctive Verification & Attestation Integrity",
+  "owner": "@devrahmanbd",
+  "reviewers": [
+    "@devrahmanbd"
+  ],
+  "base_commit": "b09a772c59f9669af51d53f8411588a1eb95283c",
+  "baseline_commit": "b09a772c59f9669af51d53f8411588a1eb95283c",
+  "base_tree": "6cacd5c6ad96b0c2fc4aa7822c31e0ce31d6f166",
+  "baseline_tree": "6cacd5c6ad96b0c2fc4aa7822c31e0ce31d6f166",
+  "risk": "critical",
+  "build_tier": "Tier 1",
+  "objective": "Eliminate circular-trust vulnerabilities in Stage 2.2 by establishing an independent trusted root-of-trust, conjunctive multi-method execution (DISP_PASS iff forall m in Methods(o): VerifiedPASS(m)), strict clean-tree candidate snapshotting (zero host .git, .env, or credential exposure), authoritative key-managed DSSE attestation signing with revocation and role authorization, fail-closed execution disposition semantics (distinguishing PASS, FAIL, and BLOCKED), and a 14-scenario adversarial qualification matrix.",
+  "merchant_or_user_outcome": "Guarantees that untrusted candidate code cannot compromise or weaken the verification authority evaluating it, ensuring mathematical certainty in build qualification, zero secret leakage, and cryptographic non-repudiation of verification evidence.",
+  "problem_and_evidence": "Stage 2.2 audits revealed circular-trust vulnerabilities: (1) authoritative verification policy and scripts were loaded from the candidate checkout rather than an independent trusted root, (2) bootstrap evaluated only obDef.methods[0] rather than conjunctively verifying all declared methods, (3) sandbox mounted host repo checkout and exposed host .git to scope guard rather than isolating a clean candidate tree snapshot, (4) attestation used ephemeral generateTestKeypair() rather than authoritative role-authorized key resolution and revocation checking, (5) execution disposition semantics needed clean separation between worker failure and sandbox setup/timeout blockages.",
+  "in_scope": {
+    "domains": [
+      "governance",
+      "verification",
+      "tooling",
+      "ci",
+      "security"
+    ],
+    "components": [
+      "dice-root-of-trust",
+      "dice-bootstrap-runner",
+      "dice-sandbox",
+      "dice-qualify",
+      "dice-evidence",
+      "dice-signing-authority",
+      "scope-guard",
+      "circleci-pipeline"
+    ],
+    "services": [
+      "scripts/dice-root-of-trust.mjs",
+      "scripts/dice-bootstrap.mjs",
+      "scripts/dice-sandbox.mjs",
+      "scripts/dice-qualify.mjs",
+      "scripts/dice-evidence.mjs",
+      "scripts/scope-guard.mjs"
+    ],
+    "files": [
+      ".circleci/config.yml",
+      "features/contracts/F30-DICE-STAGE2-3.json",
+      "registries/dice/trusted-keys.json",
+      "registries/dice/trusted-profiles.json",
+      "registries/dice/mandatory-obligations.json",
+      "scripts/dice-root-of-trust.mjs",
+      "scripts/dice-sandbox.mjs",
+      "scripts/dice-bootstrap.mjs",
+      "scripts/dice-qualify.mjs",
+      "scripts/dice-evidence.mjs",
+      "scripts/scope-guard.mjs",
+      "src/lib/dice/root-of-trust.test.ts",
+      "src/lib/dice/sandbox.test.ts",
+      "src/lib/dice/qualification.test.ts",
+      "src/lib/dice/evidence.test.ts"
+    ]
+  },
+  "out_of_scope": {
+    "domains": [
+      "commerce",
+      "storefront",
+      "checkout",
+      "marketplace",
+      "cms-content-runtime"
+    ],
+    "files": [
+      "features/contracts/FRAME30-CMS-CORE.json",
+      "features/contracts/FRAME30-SDLC-000.json",
+      "features/contracts/pilot-workstreams-ab.json",
+      "features/contracts/F30-DICE-REV2-3.json",
+      "features/contracts/F30-DICE-REV2-3-AMEND1.json",
+      "features/contracts/F30-DICE-STAGE2-2.json",
+      "dies/**",
+      "specs/lean/**",
+      "specs/bend/**",
+      "specs/tla/**",
+      "src/routes/**",
+      "src/components/**",
+      "src/lib/store/**",
+      "src/lib/themes/**",
+      "src/lib/editor/**",
+      "src/lib/cms/**",
+      "src/lib/builder-ast.ts",
+      "src/lib/collection-composition.ts",
+      "src/lib/responsive.ts",
+      "supabase/migrations/**"
+    ]
+  },
+  "allowed_file_changes": [
+    ".circleci/config.yml",
+    "features/contracts/F30-DICE-STAGE2-3.json",
+    "registries/dice/trusted-keys.json",
+    "registries/dice/trusted-profiles.json",
+    "registries/dice/mandatory-obligations.json",
+    "scripts/dice-root-of-trust.mjs",
+    "scripts/dice-sandbox.mjs",
+    "scripts/dice-bootstrap.mjs",
+    "scripts/dice-qualify.mjs",
+    "scripts/dice-evidence.mjs",
+    "scripts/scope-guard.mjs",
+    "src/lib/dice/root-of-trust.test.ts",
+    "src/lib/dice/sandbox.test.ts",
+    "src/lib/dice/qualification.test.ts",
+    "src/lib/dice/evidence.test.ts"
+  ],
+  "forbidden_file_changes": [
+    "features/contracts/FRAME30-CMS-CORE.json",
+    "features/contracts/FRAME30-SDLC-000.json",
+    "features/contracts/pilot-workstreams-ab.json",
+    "features/contracts/F30-DICE-REV2-3.json",
+    "features/contracts/F30-DICE-REV2-3-AMEND1.json",
+    "features/contracts/F30-DICE-STAGE2-2.json",
+    "dies/**",
+    "specs/lean/**",
+    "specs/bend/**",
+    "specs/tla/**",
+    "src/routes/**",
+    "src/components/**",
+    "src/lib/store/**",
+    "src/lib/themes/**",
+    "src/lib/editor/**",
+    "src/lib/cms/**",
+    "src/lib/builder-ast.ts",
+    "src/lib/collection-composition.ts",
+    "src/lib/responsive.ts",
+    "supabase/migrations/**"
+  ],
+  "behavioral_requirements": [
+    "1. Independent trusted root: Authoritative verification policies, schemas, registries, and evaluator logic derive from an authenticated trusted reference ref/SHA.",
+    "2. Conjunctive multi-method execution: DISP_PASS(o) holds iff every declared method m in Methods(o) achieves independently verified PASS.",
+    "3. Clean candidate tree snapshot: Isolated snapshot extracted via git archive from candidateTree; raw host .git, .env, and home dirs are never mounted in sandbox.",
+    "4. Scope guard isolation: Scope guard receives pre-computed diff manifest inside container; maskGit is enabled across all sandboxed obligations.",
+    "5. Authoritative signing authority: Attestation signing requires active, non-revoked key with role 'dice-attestation-signer'; unattested fallback on absent/invalid key.",
+    "6. Distinct execution dispositions: Cleanly differentiates PASS, FAIL, and BLOCKED (sandbox launch failure, namespace errors, and timeouts fail closed as BLOCKED)."
+  ],
+  "forbidden_behaviors": [
+    "1. Loading authoritative verification policy solely from untrusted candidate checkout.",
+    "2. Omitting or ignoring non-zero methods in multi-method obligations (const method = obDef.methods[0]).",
+    "3. Mounting raw host .git or working directory containing uncommitted secrets into the sandbox.",
+    "4. Authoritative attestation signing using ephemeral in-memory test keys.",
+    "5. Masking sandbox setup failure or timeout as candidate failure or pass.",
+    "6. Initiating Stage 3 development."
+  ],
+  "protected_existing_contracts": [
+    "features/contracts/F30-DICE-REV2-3.json",
+    "features/contracts/F30-DICE-REV2-3-AMEND1.json",
+    "features/contracts/F30-DICE-STAGE2-2.json"
+  ],
+  "approval_state": "proposed"
+}

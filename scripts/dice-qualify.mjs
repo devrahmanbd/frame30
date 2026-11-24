@@ -13,8 +13,8 @@ export const MANDATORY_BASELINE_IDS = Object.freeze([
   "OBL-SYS-SECRETS-SCAN-001",
 ]);
 
-export function evaluateObligationDisposition(obligationId, receipts, plan, candidateTreeSha) {
-  const isWaived = plan.obligations.waived.includes(obligationId);
+export function evaluateObligationDisposition(obligationId, receipts, plan, candidateTreeSha, options = {}) {
+  const isWaived = plan && plan.obligations && plan.obligations.waived && plan.obligations.waived.includes(obligationId);
   if (isWaived) {
     return { disposition: "DISP_WAIVED", reason: "Approved cryptographic waiver" };
   }
@@ -41,8 +41,87 @@ export function evaluateObligationDisposition(obligationId, receipts, plan, cand
     }
   }
 
-  // Duplicate receipt check: Revision 2.3 and Contract mandate that ANY duplicate receipts
-  // (whether identical or conflicting) for the same obligation evaluate to DISP_BLOCKED.
+  // Obligation definition resolution (for declared methods)
+  const obDef = (options.obligationsMap && options.obligationsMap.get(obligationId)) || options.obligationDef;
+
+  if (obDef && Array.isArray(obDef.methods) && obDef.methods.length > 0) {
+    // Conjunctive multi-method verification across all declared methods
+    const declaredMethods = obDef.methods;
+    const methodDispositions = [];
+
+    for (const m of declaredMethods) {
+      const mId = m.method_id;
+      // Find matching receipts for this method
+      const mReceipts = obReceipts.filter((r) => r.method_id === mId || (!r.method_id && declaredMethods.length === 1));
+
+      if (mReceipts.length === 0) {
+        return { disposition: "DISP_BLOCKED", reason: `MISSING_METHOD_RECEIPT: ${mId}` };
+      }
+
+      if (mReceipts.length > 1) {
+        return { disposition: "DISP_BLOCKED", reason: `DUPLICATE_METHOD_RECEIPTS_PROHIBITED: ${mId}` };
+      }
+
+      const mReceipt = mReceipts[0];
+      methodDispositions.push({
+        method_id: mId,
+        status: mReceipt.status,
+        receipt: mReceipt,
+      });
+    }
+
+    // Precedence: FAIL > BLOCKED > PASS
+    const failedMethod = methodDispositions.find((md) => md.status === "FAIL");
+    if (failedMethod) {
+      return {
+        disposition: "DISP_FAIL",
+        reason: failedMethod.receipt.diagnostics || `Method failed verification: ${failedMethod.method_id}`,
+        failed_method: failedMethod.method_id,
+      };
+    }
+
+    const blockedMethod = methodDispositions.find((md) => md.status === "BLOCKED");
+    if (blockedMethod) {
+      return {
+        disposition: "DISP_BLOCKED",
+        reason: blockedMethod.receipt.diagnostics || `Method blocked: ${blockedMethod.method_id}`,
+        blocked_method: blockedMethod.method_id,
+      };
+    }
+
+    // All methods verified PASS
+    return {
+      disposition: "DISP_PASS",
+      reason: `All ${declaredMethods.length} declared methods verified cleanly`,
+      methods_verified: declaredMethods.length,
+    };
+  }
+
+  // Fallback for tests without full obligation definitions
+  const hasMethodIds = obReceipts.some((r) => r.method_id);
+  if (hasMethodIds) {
+    const seenMethods = new Set();
+    const methodReceipts = [];
+
+    for (const r of obReceipts) {
+      const mId = r.method_id || "default";
+      if (seenMethods.has(mId)) {
+        return { disposition: "DISP_BLOCKED", reason: `DUPLICATE_METHOD_RECEIPTS_PROHIBITED: ${mId}` };
+      }
+      seenMethods.add(mId);
+      methodReceipts.push(r);
+    }
+
+    const fail = methodReceipts.find((r) => r.status === "FAIL");
+    if (fail) return { disposition: "DISP_FAIL", reason: fail.diagnostics || "Method failure" };
+
+    const block = methodReceipts.find((r) => r.status === "BLOCKED");
+    if (block) return { disposition: "DISP_BLOCKED", reason: block.diagnostics || "Method blocked" };
+
+    return { disposition: "DISP_PASS", reason: "All methods verified cleanly" };
+  }
+
+  // Single legacy receipt check
   if (obReceipts.length > 1) {
     const statuses = new Set(obReceipts.map((r) => r.status));
     if (statuses.size > 1) {
@@ -216,7 +295,9 @@ export function evaluateCandidateQualification(plan, receipts, candidateTreeSha,
   const waivedList = [];
 
   for (const obId of selected) {
-    const disp = evaluateObligationDisposition(obId, receipts, plan, candidateTreeSha);
+    const disp = evaluateObligationDisposition(obId, receipts, plan, candidateTreeSha, {
+      obligationsMap: options.obligationsMap,
+    });
     dispositions[obId] = disp;
 
     if (disp.disposition === "DISP_FAIL") {

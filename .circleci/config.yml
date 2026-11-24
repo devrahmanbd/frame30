@@ -171,8 +171,15 @@ jobs:
             bun --version
             bun install --frozen-lockfile
       - run:
+          name: Unshallow git history for baseline and trusted ref verification
+          command: |
+            if [ "$(git rev-parse --is-shallow-repository 2>/dev/null)" = "true" ]; then
+              git fetch --unshallow origin || git fetch origin --depth=100
+            fi
+            git rev-parse --verify b09a772c59f9669af51d53f8411588a1eb95283c^{commit}
+      - run:
           name: Scope guard gate
-          command: ACTIVE_CHANGE_CONTRACT=features/contracts/F30-DICE-STAGE2-2.json bun run gate:scope
+          command: ACTIVE_CHANGE_CONTRACT=features/contracts/F30-DICE-STAGE2-3.json bun run gate:scope
       - run:
           name: Install Linux Bubblewrap OS sandbox substrate
           command: |
@@ -180,9 +187,9 @@ jobs:
             sudo apt-get install -y -qq bubblewrap
             bwrap --version
       - run:
-          name: Execute DICE Stage 2 Bootstrap Harness
+          name: Execute DICE Stage 2.3 Bootstrap Harness
           command: |
-            node scripts/dice-bootstrap.mjs --contract=features/contracts/F30-DICE-STAGE2-2.json
+            DICE_TRUSTED_REF=b09a772c59f9669af51d53f8411588a1eb95283c node scripts/dice-bootstrap.mjs --contract=features/contracts/F30-DICE-STAGE2-3.json
       - run:
           name: Run DICE Vitest Test Suites
           command: |

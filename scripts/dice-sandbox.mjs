@@ -252,6 +252,7 @@ export class DiceSandbox {
         exitCode: 126,
         stdout: "",
         stderr: envCheck.reason,
+        diagnostics: envCheck.reason,
       };
     }
 
@@ -284,11 +285,66 @@ export class DiceSandbox {
     }
 
     const exitCode = result.status ?? (result.signal ? 128 + 15 : 1);
+    const stderr = result.stderr || (result.error ? result.error.message : "");
+
+    // P1-5 & Test 11: Sandbox substrate setup failure or timeout must fail closed as BLOCKED, not FAIL/PASS
+    if (result.error) {
+      if (result.error.code === "ETIMEDOUT") {
+        return {
+          verdict: "BLOCKED",
+          exitCode: 124,
+          stdout: result.stdout || "",
+          stderr: "BLOCKED: Sandboxed execution timed out",
+          reason: "TIMEOUT",
+        };
+      }
+      return {
+        verdict: "BLOCKED",
+        exitCode: 126,
+        stdout: result.stdout || "",
+        stderr: `BLOCKED: Substrate launch error: ${result.error.message}`,
+        reason: "LAUNCH_ERROR",
+      };
+    }
+
+    if (result.signal === "SIGKILL" || (result.status === null && exitCode === 143)) {
+      return {
+        verdict: "BLOCKED",
+        exitCode: 124,
+        stdout: result.stdout || "",
+        stderr: "BLOCKED: Process killed due to timeout",
+        reason: "TIMEOUT",
+      };
+    }
+
+    // Detect Bubblewrap initialization/setup errors (e.g. invalid mount, namespace denial)
+    if (exitCode !== 0 && stderr && stderr.includes("bwrap: ")) {
+      // Check if bwrap failed setup vs child command outputting "bwrap:"
+      // When bwrap fails, it outputs "bwrap: ..." to stderr and child never executed
+      const isBwrapSetupFailure =
+        stderr.includes("bwrap: Can't create") ||
+        stderr.includes("bwrap: Can't mount") ||
+        stderr.includes("bwrap: Can't find") ||
+        stderr.includes("bwrap: Setting up") ||
+        stderr.includes("bwrap: No permissions") ||
+        stderr.includes("bwrap: loopback failed") ||
+        stderr.includes("bwrap: creating new namespace failed");
+      if (isBwrapSetupFailure) {
+        return {
+          verdict: "BLOCKED",
+          exitCode: 126,
+          stdout: result.stdout || "",
+          stderr,
+          reason: "SANDBOX_SETUP_FAILURE",
+        };
+      }
+    }
+
     return {
       verdict: exitCode === 0 ? "PASS" : "FAIL",
       exitCode,
       stdout: result.stdout || "",
-      stderr: result.stderr || (result.error ? result.error.message : ""),
+      stderr,
     };
   }
 }

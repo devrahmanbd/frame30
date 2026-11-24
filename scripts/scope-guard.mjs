@@ -33,14 +33,20 @@ function matchesAny(path, patterns) {
   return null;
 }
 
-// 1. Resolve Contract
+// 1. Resolve Contract & Diff Manifest
 let contractPath = "";
+let diffManifestPath = "";
 for (const arg of process.argv.slice(2)) {
   if (arg.startsWith("--contract=")) {
     contractPath = arg.split("=")[1];
+  } else if (arg.startsWith("--diff-manifest=")) {
+    diffManifestPath = arg.split("=")[1];
   } else if (!arg.startsWith("--") && !contractPath) {
     contractPath = arg;
   }
+}
+if (!diffManifestPath && process.env.DIFF_MANIFEST) {
+  diffManifestPath = process.env.DIFF_MANIFEST;
 }
 
 if (!contractPath) {
@@ -135,58 +141,84 @@ if (!baseCommit) {
   process.exit(1);
 }
 
-// 2. Validate Baseline Commit
-try {
-  execSync(`git rev-parse --verify ${baseCommit}^{commit}`, {
-    stdio: "ignore",
-  });
-} catch {
-  console.error(
-    `[scope-guard] ✗ FAIL-CLOSED: Baseline commit ${baseCommit} does not exist in git history.`,
-  );
-  process.exit(1);
-}
-
-// 3. Collect Touched Files
+// 2. Validate Baseline Commit & Collect Touched Files
 const touched = new Map(); // path -> status (M, A, D, R, etc.)
 
-function recordDiff(command) {
-  try {
-    const output = execSync(command, { encoding: "utf8" });
-    for (const line of output.split("\n")) {
-      const trimmed = line.trim();
-      if (!trimmed) continue;
-      const parts = trimmed.split(/\s+/);
-      const status = parts[0];
-      const filePath = parts[parts.length - 1]; // handles renames (R100 old new)
-      if (filePath) {
-        touched.set(filePath, status);
-      }
-    }
-  } catch (err) {
-    console.error(`[scope-guard] Error executing ${command}: ${err.message}`);
+if (diffManifestPath) {
+  const fullManifestPath = resolve(REPO_ROOT, diffManifestPath);
+  if (!existsSync(fullManifestPath)) {
+    console.error(`[scope-guard] ✗ FAIL-CLOSED: Diff manifest not found at ${fullManifestPath}`);
     process.exit(1);
   }
-}
-
-// Diff between baseline commit and HEAD
-recordDiff(`git diff --name-status ${baseCommit}...HEAD`);
-
-// Also include uncommitted unstaged and staged changes if any
-recordDiff("git diff --name-status HEAD");
-recordDiff("git diff --cached --name-status");
-
-// Include untracked files
-try {
-  const untracked = execSync("git ls-files --others --exclude-standard", {
-    encoding: "utf8",
-  });
-  for (const line of untracked.split("\n")) {
-    const p = line.trim();
-    if (p) touched.set(p, "A(untracked)");
+  let manifest;
+  try {
+    manifest = JSON.parse(readFileSync(fullManifestPath, "utf8"));
+  } catch (err) {
+    console.error(`[scope-guard] ✗ FAIL-CLOSED: Malformed diff manifest JSON: ${err.message}`);
+    process.exit(1);
   }
-} catch (err) {
-  console.error(`[scope-guard] Error checking untracked files: ${err.message}`);
+  if (manifest.base_commit && manifest.base_commit !== baseCommit) {
+    console.error(
+      `[scope-guard] ✗ FAIL-CLOSED: Diff manifest base_commit (${manifest.base_commit}) does not match contract baseline (${baseCommit})`,
+    );
+    process.exit(1);
+  }
+  for (const entry of manifest.entries || []) {
+    if (entry && entry.path) {
+      touched.set(entry.path, entry.status || "M");
+    }
+  }
+} else {
+  // Standalone execution: query git history directly
+  try {
+    execSync(`git rev-parse --verify ${baseCommit}^{commit}`, {
+      stdio: "ignore",
+    });
+  } catch {
+    console.error(
+      `[scope-guard] ✗ FAIL-CLOSED: Baseline commit ${baseCommit} does not exist in git history.`,
+    );
+    process.exit(1);
+  }
+
+  function recordDiff(command) {
+    try {
+      const output = execSync(command, { encoding: "utf8" });
+      for (const line of output.split("\n")) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+        const parts = trimmed.split(/\s+/);
+        const status = parts[0];
+        const filePath = parts[parts.length - 1]; // handles renames (R100 old new)
+        if (filePath) {
+          touched.set(filePath, status);
+        }
+      }
+    } catch (err) {
+      console.error(`[scope-guard] Error executing ${command}: ${err.message}`);
+      process.exit(1);
+    }
+  }
+
+  // Diff between baseline commit and HEAD
+  recordDiff(`git diff --name-status ${baseCommit}...HEAD`);
+
+  // Also include uncommitted unstaged and staged changes if any
+  recordDiff("git diff --name-status HEAD");
+  recordDiff("git diff --cached --name-status");
+
+  // Include untracked files
+  try {
+    const untracked = execSync("git ls-files --others --exclude-standard", {
+      encoding: "utf8",
+    });
+    for (const line of untracked.split("\n")) {
+      const p = line.trim();
+      if (p) touched.set(p, "A(untracked)");
+    }
+  } catch (err) {
+    console.error(`[scope-guard] Error checking untracked files: ${err.message}`);
+  }
 }
 
 console.log(
