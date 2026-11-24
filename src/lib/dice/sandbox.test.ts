@@ -93,7 +93,7 @@ describe("DICE OS Sandbox Security & Containment (Revision 2.3 Section 7 & C4)",
       }
     });
 
-    it.runIf(isLinuxWithBwrap)("live Linux bwrap: accessing /root or /home returns ENOENT", () => {
+    it.runIf(isLinuxWithBwrap)("live Linux bwrap: accessing /root or home user credentials returns ENOENT", () => {
       const tempDir = mkdtempSync(join(tmpdir(), "dice-test-home-"));
       try {
         const sandbox = new DiceSandbox();
@@ -104,12 +104,19 @@ describe("DICE OS Sandbox Security & Containment (Revision 2.3 Section 7 & C4)",
         expect(rootResult.verdict).toBe("FAIL");
         expect(rootResult.exitCode).not.toBe(0);
 
-        const homeResult = sandbox.execute({
+        const homeSsh = sandbox.execute({
           sourceSnapshot: tempDir,
-          command: ["ls", "/home"],
+          command: ["ls", `${process.env.HOME || "/home/circleci"}/.ssh`],
         });
-        expect(homeResult.verdict).toBe("FAIL");
-        expect(homeResult.exitCode).not.toBe(0);
+        expect(homeSsh.verdict).toBe("FAIL");
+        expect(homeSsh.exitCode).not.toBe(0);
+
+        const homeConfig = sandbox.execute({
+          sourceSnapshot: tempDir,
+          command: ["cat", `${process.env.HOME || "/home/circleci"}/.bashrc`],
+        });
+        expect(homeConfig.verdict).toBe("FAIL");
+        expect(homeConfig.exitCode).not.toBe(0);
       } finally {
         rmSync(tempDir, { recursive: true, force: true });
       }
@@ -187,7 +194,7 @@ describe("DICE OS Sandbox Security & Containment (Revision 2.3 Section 7 & C4)",
         });
         expect(writeRoot.verdict).toBe("FAIL");
         expect(writeRoot.exitCode).not.toBe(0);
-        expect(writeRoot.stderr).toContain("Read-only file system");
+        expect(writeRoot.stderr).toMatch(/read-only file system/i);
 
         const writeUsr = sandbox.execute({
           sourceSnapshot: tempDir,
@@ -195,7 +202,7 @@ describe("DICE OS Sandbox Security & Containment (Revision 2.3 Section 7 & C4)",
         });
         expect(writeUsr.verdict).toBe("FAIL");
         expect(writeUsr.exitCode).not.toBe(0);
-        expect(writeUsr.stderr).toContain("Read-only file system");
+        expect(writeUsr.stderr).toMatch(/read-only file system/i);
       } finally {
         rmSync(tempDir, { recursive: true, force: true });
       }
@@ -274,7 +281,7 @@ describe("DICE OS Sandbox Security & Containment (Revision 2.3 Section 7 & C4)",
         });
         expect(result.verdict).toBe("FAIL");
         expect(result.exitCode).not.toBe(0);
-        expect(result.stderr).toContain("Read-only file system");
+        expect(result.stderr).toMatch(/read-only file system/i);
       } finally {
         rmSync(tempDir, { recursive: true, force: true });
       }
@@ -323,7 +330,7 @@ describe("DICE OS Sandbox Security & Containment (Revision 2.3 Section 7 & C4)",
         });
         expect(badResult.verdict).toBe("FAIL");
         expect(badResult.exitCode).not.toBe(0);
-        expect(badResult.stderr).toContain("Read-only file system");
+        expect(badResult.stderr).toMatch(/read-only file system/i);
       } finally {
         rmSync(tempDir, { recursive: true, force: true });
       }

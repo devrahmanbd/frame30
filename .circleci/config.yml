@@ -186,10 +186,12 @@ jobs:
       - run:
           name: Run DICE Vitest Test Suites
           command: |
-            bunx vitest run src/lib/dice/
+            mkdir -p artifacts/dice-evidence
+            bunx vitest run src/lib/dice/ --reporter=verbose 2>&1 | tee artifacts/dice-evidence/vitest.log
       - store_artifacts:
           path: artifacts/dice-evidence
           destination: dice-evidence
+          when: always
 
   scan:
     parameters:
