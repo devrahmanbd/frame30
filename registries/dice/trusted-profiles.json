@@ -1,0 +1,111 @@
+[
+  {
+    "schema_version": "2.3.0",
+    "profile_id": "PROF-SCRIPT-v1",
+    "adapter": "script",
+    "command_template": "node",
+    "allowed_cli_args": [
+      "^scripts/[a-zA-Z0-9_-]+\\.mjs$",
+      "^--contract=features/contracts/[a-zA-Z0-9_.-]+\\.json$",
+      "^--[a-zA-Z0-9_-]+(=.*)?$"
+    ],
+    "timeout_ms": 60000,
+    "env_allowlist": [
+      "PATH",
+      "NODE_ENV",
+      "ACTIVE_CHANGE_CONTRACT"
+    ],
+    "sandboxed": true
+  },
+  {
+    "schema_version": "2.3.0",
+    "profile_id": "PROF-VITEST-v1",
+    "adapter": "vitest",
+    "command_template": "bunx vitest run",
+    "allowed_cli_args": [
+      "^src/lib/dice/[a-zA-Z0-9_.-]+\\.test\\.ts$"
+    ],
+    "timeout_ms": 60000,
+    "env_allowlist": [
+      "PATH",
+      "NODE_ENV"
+    ],
+    "sandboxed": true
+  },
+  {
+    "schema_version": "2.3.0",
+    "profile_id": "PROF-LEAN4-v1",
+    "adapter": "lean4",
+    "command_template": "lake build && lake exe framique_verify",
+    "allowed_cli_args": [
+      "--verbose",
+      "--json"
+    ],
+    "timeout_ms": 60000,
+    "env_allowlist": [
+      "PATH",
+      "ELAN_HOME"
+    ],
+    "sandboxed": true
+  },
+  {
+    "schema_version": "2.3.0",
+    "profile_id": "PROF-TLC-v1",
+    "adapter": "tlc",
+    "command_template": "java -jar tlc.jar",
+    "allowed_cli_args": [
+      "-modelcheck",
+      "-coverage",
+      "specs/tla/Framique.tla"
+    ],
+    "timeout_ms": 120000,
+    "env_allowlist": [
+      "PATH",
+      "JAVA_HOME"
+    ],
+    "sandboxed": true
+  },
+  {
+    "schema_version": "2.3.0",
+    "profile_id": "PROF-BEND2-v1",
+    "adapter": "bend2",
+    "command_template": "bend check",
+    "allowed_cli_args": [
+      "specs/bend/LAWS.bend"
+    ],
+    "timeout_ms": 60000,
+    "env_allowlist": [
+      "PATH"
+    ],
+    "sandboxed": true
+  },
+  {
+    "schema_version": "2.3.0",
+    "profile_id": "PROF-BOMBADIL-v1",
+    "adapter": "bombadil",
+    "command_template": "node bombadil/fuzz.mjs",
+    "allowed_cli_args": [
+      "--viewports=8",
+      "--depth=100"
+    ],
+    "timeout_ms": 180000,
+    "env_allowlist": [
+      "PATH"
+    ],
+    "sandboxed": true
+  },
+  {
+    "schema_version": "2.3.0",
+    "profile_id": "PROF-FAST_CHECK-v1",
+    "adapter": "fast-check",
+    "command_template": "bun test:properties",
+    "allowed_cli_args": [
+      "--num-runs=1000"
+    ],
+    "timeout_ms": 60000,
+    "env_allowlist": [
+      "PATH"
+    ],
+    "sandboxed": true
+  }
+]

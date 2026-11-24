@@ -162,7 +162,7 @@ jobs:
       - setup-bun
       - run:
           name: Scope guard gate
-          command: ACTIVE_CHANGE_CONTRACT=features/contracts/F30-DICE-REV2-3-AMEND1.json bun run gate:scope
+          command: ACTIVE_CHANGE_CONTRACT=features/contracts/F30-DICE-STAGE2-2.json bun run gate:scope
       - run:
           name: Install Linux Bubblewrap OS sandbox substrate
           command: |
@@ -172,13 +172,13 @@ jobs:
       - run:
           name: Execute DICE Stage 2 Bootstrap Harness
           command: |
-            node scripts/dice-bootstrap.mjs --contract=features/contracts/F30-DICE-REV2-3-AMEND1.json
+            node scripts/dice-bootstrap.mjs --contract=features/contracts/F30-DICE-STAGE2-2.json
       - run:
           name: Run DICE Vitest Test Suites
           command: |
             bunx vitest run src/lib/dice/
       - store_artifacts:
-          path: docs/verification-evidence
+          path: .artifacts/dice-evidence
           destination: dice-evidence
 
   scan:
@@ -268,9 +268,16 @@ jobs:
               fi
               CANDIDATE="main"
               if [ -n "$CUR" ] && [ "$CUR" != "main" ] && [ "$CUR" != "master" ] && [ "$CUR" != "frame30" ]; then
-                if git ls-remote --exit-code --heads origin frame30 >/dev/null 2>&1; then
-                  CANDIDATE="frame30"
-                fi
+                case "$CUR" in
+                  dice/*)
+                    CANDIDATE="main"
+                    ;;
+                  *)
+                    if git ls-remote --exit-code --heads origin frame30 >/dev/null 2>&1; then
+                      CANDIDATE="frame30"
+                    fi
+                    ;;
+                esac
               fi
               git fetch origin "$CANDIDATE:refs/remotes/origin/$CANDIDATE" --depth 50
               BASE="origin/$CANDIDATE"

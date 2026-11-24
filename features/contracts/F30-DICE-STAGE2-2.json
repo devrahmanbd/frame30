@@ -1,0 +1,147 @@
+{
+  "$schema": "./schema.json",
+  "contract_version": 1,
+  "change_id": "F30-DICE-STAGE2-2",
+  "feature_id": "F30-DICE-ARCH-001",
+  "title": "Frame30 Universal Verification Mould (DICE) Stage 2.2: Authoritative Sandbox Execution & Evidence Integration",
+  "owner": "@devrahmanbd",
+  "reviewers": [
+    "@devrahmanbd"
+  ],
+  "base_commit": "1c3746ee4685d351122b4fa91532667b0f92a268",
+  "baseline_commit": "1c3746ee4685d351122b4fa91532667b0f92a268",
+  "base_tree": "a31978ed1b22da5c6bdde7a4dbb9a6ac3705f53b",
+  "baseline_tree": "a31978ed1b22da5c6bdde7a4dbb9a6ac3705f53b",
+  "risk": "critical",
+  "build_tier": "Tier 1",
+  "objective": "Implement Stage 2.2 authoritative Bubblewrap execution and RFC 8785 evidence integration. Eliminates unrestricted host-root visibility (--ro-bind / /), replaces execSync obligation execution with mandatory DiceSandbox.execute(), establishes trusted invocation profiles (registries/dice/trusted-profiles.json) with validated argument arrays and zero shell interpolation, integrates RFC 8785 canonical serialization, detached digest ledger emission, and Ed25519 DSSE attestation envelope signing, and verifies 12 Linux Bubblewrap adversarial containment scenarios fail-closed.",
+  "merchant_or_user_outcome": "Guarantees zero-trust mathematical execution containment for all candidate verification tasks, preventing malicious worker privilege escalation, secret leakage, or source modification, backed by cryptographically verifiable detached evidence ledgers.",
+  "problem_and_evidence": "Stage 2.1 audit findings identified four P0 gaps: (1) scripts/dice-bootstrap.mjs called sandbox.validateEnvironment() but executed obligations using host execSync(cmd), (2) scripts/dice-sandbox.mjs bound host-root read-only (--ro-bind / /), exposing host .git, .env, and home directories, (3) scripts/dice-bootstrap.mjs created in-memory receipts rather than generating RFC 8785 canonical receipts, detached digest ledgers, and signed attestation envelopes, (4) obligation execution lacked validated trusted invocation profiles, relying on interpolated shell strings.",
+  "in_scope": {
+    "domains": [
+      "governance",
+      "verification",
+      "tooling",
+      "ci",
+      "security"
+    ],
+    "components": [
+      "dice-bootstrap-runner",
+      "dice-sandbox",
+      "dice-evidence",
+      "dice-registry",
+      "dice-trusted-profiles",
+      "circleci-pipeline"
+    ],
+    "services": [
+      "scripts/dice-bootstrap.mjs",
+      "scripts/dice-sandbox.mjs",
+      "scripts/dice-evidence.mjs"
+    ],
+    "files": [
+      ".circleci/config.yml",
+      "features/contracts/F30-DICE-STAGE2-2.json",
+      "registries/dice/trusted-profiles.json",
+      "registries/dice/mandatory-obligations.json",
+      "scripts/dice-sandbox.mjs",
+      "scripts/dice-bootstrap.mjs",
+      "scripts/dice-evidence.mjs",
+      "src/lib/dice/sandbox.test.ts",
+      "src/lib/dice/evidence.test.ts"
+    ]
+  },
+  "out_of_scope": {
+    "domains": [
+      "commerce",
+      "storefront",
+      "checkout",
+      "marketplace",
+      "cms-content-runtime"
+    ],
+    "files": [
+      "features/contracts/FRAME30-CMS-CORE.json",
+      "features/contracts/FRAME30-SDLC-000.json",
+      "features/contracts/pilot-workstreams-ab.json",
+      "features/contracts/F30-DICE-REV2-3.json",
+      "features/contracts/F30-DICE-REV2-3-AMEND1.json",
+      "dies/**",
+      "specs/lean/**",
+      "specs/bend/**",
+      "specs/tla/**",
+      "bombadil/**",
+      ".github/**",
+      "src/components/**",
+      "src/routes/**",
+      "src/lib/commerce/**",
+      "src/lib/editor/**",
+      "src/lib/themes/**",
+      "supabase/**",
+      "docs/verification-evidence/**"
+    ]
+  },
+  "allowed_file_changes": [
+    ".circleci/config.yml",
+    "features/contracts/F30-DICE-STAGE2-2.json",
+    "registries/dice/trusted-profiles.json",
+    "registries/dice/mandatory-obligations.json",
+    "scripts/dice-sandbox.mjs",
+    "scripts/dice-bootstrap.mjs",
+    "scripts/dice-evidence.mjs",
+    "src/lib/dice/sandbox.test.ts",
+    "src/lib/dice/evidence.test.ts"
+  ],
+  "forbidden_file_changes": [
+    "features/contracts/FRAME30-CMS-CORE.json",
+    "features/contracts/FRAME30-SDLC-000.json",
+    "features/contracts/pilot-workstreams-ab.json",
+    "features/contracts/F30-DICE-REV2-3.json",
+    "features/contracts/F30-DICE-REV2-3-AMEND1.json",
+    "dies/**",
+    "specs/lean/**",
+    "specs/bend/**",
+    "specs/tla/**",
+    "bombadil/**",
+    ".github/**",
+    "src/components/**",
+    "src/routes/**",
+    "src/lib/commerce/**",
+    "src/lib/editor/**",
+    "src/lib/themes/**",
+    "supabase/**",
+    "docs/verification-evidence/**"
+  ],
+  "behavioral_requirements": [
+    "1. Authoritative sandbox execution: Every active verification obligation in scripts/dice-bootstrap.mjs must execute exclusively via DiceSandbox.execute(); host execSync is strictly prohibited for obligations.",
+    "2. Minimal filesystem allowlist: scripts/dice-sandbox.mjs constructs a minimal root via --tmpfs / and allowlisted read-only system mounts, with host .git, .env, home directories (/root, /home), CI credentials, and sockets completely unmapped, plus defense-in-depth masks (--tmpfs /workspace/src/.git).",
+    "3. Root remount read-only: Sandbox root is remounted read-only (--remount-ro /), prohibiting writes outside /tmp and /workspace/out.",
+    "4. Process and network namespace isolation: Enforces --unshare-pid (PID 1 subreaper), --unshare-net (complete network denial), --die-with-parent, and --new-session.",
+    "5. Trusted invocation profiles: Obligation commands map to schemas/dice/trusted-profile.schema.json profiles in registries/dice/trusted-profiles.json; command arguments are passed as validated arrays without shell string interpolation.",
+    "6. Evidence engine integration: Execution receipts are canonically serialized via RFC 8785 in scripts/dice-evidence.mjs, bound to candidate commit, tree, specification hash, and toolchain identities, written to disk with detached digest ledgers and signed in-toto DSSE attestation envelopes.",
+    "7. 12 Linux Bubblewrap adversarial tests: src/lib/dice/sandbox.test.ts verifies all 12 containment scenarios fail-closed against genuine Linux Bubblewrap.",
+    "8. Strict containment: Storefront, CMS, commerce functionality remains untouched; Stage 3 mould self-verification remains blocked."
+  ],
+  "forbidden_behaviors": [
+    "1. Executing any active verification obligation outside DiceSandbox.execute().",
+    "2. Binding host root (/), host .git, host .env, /home, /root, or host sockets into the sandbox filesystem.",
+    "3. Interpolating untrusted CLI arguments into shell command strings.",
+    "4. Synthesizing or fabricating successful verification receipts.",
+    "5. Emitting signed DSSE attestation envelopes in dry-run mode or when any obligation fails or blocks.",
+    "6. Committing runtime verification evidence to git.",
+    "7. Beginning Stage 3 mould self-verification prior to Stage 2.2 authorization."
+  ],
+  "protected_existing_contracts": [
+    "FRAME30-SDLC-000",
+    "FRAME30-CMS-CORE",
+    "F30-DICE-REV2-3",
+    "F30-DICE-REV2-3-AMEND1",
+    "DIE-001-responsive-precedence",
+    "DIE-002-collection-composition"
+  ],
+  "api_contract_changes": false,
+  "database_schema_changes": false,
+  "dependency_changes": false,
+  "security_changes": true,
+  "deployment_authorization": false,
+  "acceptance_owner": "@devrahmanbd",
+  "approval_state": "approved"
+}

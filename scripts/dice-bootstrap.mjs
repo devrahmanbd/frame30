@@ -2,34 +2,46 @@
 /**
  * Frame30 DICE Stage 2 Bootstrap Runner (Revision 2.3)
  * Orchestrates frozen plan compilation, schema validation, dependency resolution,
- * sandbox pre-flight, and qualification reporting.
+ * sandbox pre-flight, authoritative sandboxed obligation execution, and qualification reporting.
  *
  * INVIOLABLE LAW: Zero synthetic PASS receipts. Dry-run mode is strictly non-qualifying
  * (DRY_RUN_NON_AUTHORITATIVE) and never emits an authoritative attestation envelope.
+ * Every authoritative obligation executes exclusively via DiceSandbox.execute().
  */
 
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { execSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const Ajv2020 = require("ajv/dist/2020");
 const addFormats = require("ajv-formats");
-import { generateFrozenPlan, computePlanHash } from "./dice-plan-generator.mjs";
+import { generateFrozenPlan, canonicalizeJson } from "./dice-plan-generator.mjs";
 import { DiceSandbox } from "./dice-sandbox.mjs";
 import { evaluateCandidateQualification } from "./dice-qualify.mjs";
+import {
+  serializeReceiptCanonical,
+  computeReceiptDigest,
+  generateDetachedDigestLedger,
+  createAttestationEnvelope,
+  generateTestKeypair,
+} from "./dice-evidence.mjs";
 
 const REPO_ROOT = process.cwd();
 
 // Parse CLI flags
 let isDryRun = false;
-let contractPath = "features/contracts/F30-DICE-REV2-3.json";
+let contractPath = "features/contracts/F30-DICE-STAGE2-2.json";
+let outDir = ".artifacts/dice-evidence";
 
 for (const arg of process.argv.slice(2)) {
   if (arg === "--dry-run") {
     isDryRun = true;
   } else if (arg.startsWith("--contract=")) {
     contractPath = arg.split("=")[1];
+  } else if (arg.startsWith("--out-dir=")) {
+    outDir = arg.split("=")[1];
   }
 }
 
@@ -55,12 +67,15 @@ try {
   process.exit(1);
 }
 
-if (contract.approval_state !== "approved") {
+if (!isDryRun && contract.approval_state !== "approved") {
   console.error(`[dice-bootstrap] ✗ FAIL-CLOSED: Contract approval_state is '${contract.approval_state}', expected 'approved'`);
   process.exit(1);
 }
 
 console.log(`[dice-bootstrap] Step 0: Contract verified: ${contract.change_id} ("${contract.title}")`);
+if (isDryRun && contract.approval_state !== "approved") {
+  console.log(`  [DRY RUN NOTICE] Contract approval_state is '${contract.approval_state}' (permitted for dry run only)`);
+}
 
 // Discover live candidate commit and tree SHA from git
 let candidateCommit = "0000000000000000000000000000000000000000";
@@ -135,6 +150,24 @@ for (const ob of mandatoryList) {
 }
 console.log(`  ✓ All ${mandatoryList.length} mandatory baseline obligations validated against obl.schema.json`);
 
+// Validate registries/dice/trusted-profiles.json against trusted-profile.schema.json
+const profilesPath = join(REPO_ROOT, "registries/dice/trusted-profiles.json");
+const profileSchema = ajv.getSchema("https://framique.com/schemas/trusted-profile.schema.json");
+if (!existsSync(profilesPath)) {
+  console.error(`[dice-bootstrap] ✗ FAIL-CLOSED: Missing trusted-profiles registry at ${profilesPath}`);
+  process.exit(1);
+}
+const profilesList = JSON.parse(readFileSync(profilesPath, "utf8"));
+const profilesMap = new Map();
+for (const prof of profilesList) {
+  if (!profileSchema(prof)) {
+    console.error(`[dice-bootstrap] ✗ FAIL-CLOSED: Trusted profile ${prof.profile_id} violates schema:`, profileSchema.errors);
+    process.exit(1);
+  }
+  profilesMap.set(prof.profile_id, prof);
+}
+console.log(`  ✓ All ${profilesList.length} trusted invocation profiles validated against trusted-profile.schema.json`);
+
 // Step 2: Compile Frozen Verification Plan
 console.log("\n[dice-bootstrap] Step 2: Compiling Immutable Frozen Verification Plan P_C...");
 const planResult = generateFrozenPlan({
@@ -154,6 +187,9 @@ const sandbox = new DiceSandbox();
 const envStatus = sandbox.validateEnvironment(!isDryRun);
 console.log(`  ✓ Host Platform: ${process.platform} (${process.arch})`);
 console.log(`  ✓ Sandbox Substrate Status: ${envStatus.status}`);
+if (envStatus.bwrapVersion) {
+  console.log(`  ✓ Bubblewrap Version: ${envStatus.bwrapVersion}`);
+}
 
 // Step 4: Execution / Qualification Evaluation
 console.log("\n[dice-bootstrap] Step 4: Verification Execution & Qualification Assessment...");
@@ -176,50 +212,223 @@ if (process.platform === "darwin") {
   process.exit(1);
 }
 
-// Execute active baseline obligations
-console.log("[dice-bootstrap] Executing active mandatory baseline obligations...");
-const authenticReceipts = [];
+if (envStatus.status === "BLOCKED") {
+  console.error(`  ✗ FAIL-CLOSED: Sandbox substrate blocked: ${envStatus.reason}`);
+  process.exit(1);
+}
 
-const obligationCommands = {
-  "OBL-SYS-SCOPE-GUARD-001": `node scripts/scope-guard.mjs --contract=${contractPath}`,
-  "OBL-SYS-DRIFT-GUARD-001": `node scripts/verification-drift.mjs`,
-  "OBL-SYS-DIE-REGISTRY-001": `node scripts/die-registry-check.mjs`,
-  "OBL-SYS-SECRETS-SCAN-001": `node scripts/secret-scan.mjs`,
-};
+// Execute active baseline obligations via DiceSandbox
+console.log("[dice-bootstrap] Executing active mandatory baseline obligations via DiceSandbox.execute()...");
+const authenticReceipts = [];
+const ledgerEntries = [];
+
+const fullOutDir = resolve(REPO_ROOT, outDir);
+const stagingDir = join(fullOutDir, "staging");
+const receiptsDir = join(fullOutDir, "receipts");
+mkdirSync(stagingDir, { recursive: true });
+mkdirSync(receiptsDir, { recursive: true });
+
+const obligationDefMap = new Map();
+for (const ob of mandatoryList) {
+  obligationDefMap.set(ob.obligation_id, ob);
+}
 
 for (const obId of planResult.plan.obligations.active) {
-  const cmd = obligationCommands[obId];
-  if (!cmd) {
-    console.error(`  ✗ FAIL-CLOSED: No execution command configured for active obligation ${obId}`);
-    authenticReceipts.push({
+  const obDef = obligationDefMap.get(obId);
+  if (!obDef || !obDef.methods || obDef.methods.length === 0) {
+    console.error(`  ✗ FAIL-CLOSED: Obligation definition missing or has no methods: ${obId}`);
+    const receipt = {
       obligation_id: obId,
       status: "BLOCKED",
+      verdict: "BLOCKED",
+      candidate_commit: candidateCommit,
+      candidate_tree: candidateTree,
       tree_sha: candidateTree,
-      diagnostics: `No execution command configured for ${obId}`,
-    });
+      specification_hash: "0000000000000000000000000000000000000000000000000000000000000000",
+      toolchain_identity: {
+        node: process.version,
+        bwrap: sandbox.bwrapVersion || "unknown",
+        platform: process.platform,
+        arch: process.arch,
+      },
+      invocation: { command: [], duration_ms: 0, started_at: new Date().toISOString() },
+      stdout_digest: createHash("sha256").digest("hex"),
+      stderr_digest: createHash("sha256").digest("hex"),
+      exit_code: 126,
+      diagnostics: `No methods found for obligation ${obId}`,
+    };
+    const canonicalStr = serializeReceiptCanonical(receipt);
+    writeFileSync(join(receiptsDir, `${obId}.json`), canonicalStr, "utf8");
+    ledgerEntries.push({ relPath: `receipts/${obId}.json`, canonicalStr });
+    authenticReceipts.push(receipt);
     continue;
   }
 
-  console.log(`  -> Executing ${obId}: ${cmd}`);
-  try {
-    const stdout = execSync(cmd, { encoding: "utf8", cwd: REPO_ROOT });
-    authenticReceipts.push({
+  const method = obDef.methods[0];
+  const profile = profilesMap.get(method.trusted_profile_ref);
+  if (!profile) {
+    console.error(`  ✗ FAIL-CLOSED: Trusted profile ${method.trusted_profile_ref} not found for obligation ${obId}`);
+    const receipt = {
       obligation_id: obId,
-      status: "PASS",
+      status: "BLOCKED",
+      verdict: "BLOCKED",
+      candidate_commit: candidateCommit,
+      candidate_tree: candidateTree,
       tree_sha: candidateTree,
-      diagnostics: stdout.slice(0, 500),
-    });
-    console.log(`     ✓ PASS`);
-  } catch (err) {
-    authenticReceipts.push({
+      specification_hash: computeReceiptDigest(canonicalizeJson(obDef)),
+      toolchain_identity: {
+        node: process.version,
+        bwrap: sandbox.bwrapVersion || "unknown",
+        platform: process.platform,
+        arch: process.arch,
+      },
+      invocation: { command: [], duration_ms: 0, started_at: new Date().toISOString() },
+      stdout_digest: createHash("sha256").digest("hex"),
+      stderr_digest: createHash("sha256").digest("hex"),
+      exit_code: 126,
+      diagnostics: `Trusted profile ${method.trusted_profile_ref} not found`,
+    };
+    const canonicalStr = serializeReceiptCanonical(receipt);
+    writeFileSync(join(receiptsDir, `${obId}.json`), canonicalStr, "utf8");
+    ledgerEntries.push({ relPath: `receipts/${obId}.json`, canonicalStr });
+    authenticReceipts.push(receipt);
+    continue;
+  }
+
+  // Construct structured command arguments from profile and method target_files
+  const targetScript = method.target_files[0];
+  const commandArgs = [targetScript];
+  if (obId === "OBL-SYS-SCOPE-GUARD-001") {
+    commandArgs.push(`--contract=${contractPath}`);
+  }
+
+  // Validate command arguments against profile.allowed_cli_args regex patterns
+  let argsValid = true;
+  for (const arg of commandArgs) {
+    const matched = profile.allowed_cli_args.some((pattern) => new RegExp(pattern).test(arg));
+    if (!matched) {
+      argsValid = false;
+      console.error(`  ✗ FAIL-CLOSED: Argument '${arg}' not permitted by profile ${profile.profile_id}`);
+      break;
+    }
+  }
+
+  if (!argsValid) {
+    const receipt = {
       obligation_id: obId,
-      status: "FAIL",
+      status: "BLOCKED",
+      verdict: "BLOCKED",
+      candidate_commit: candidateCommit,
+      candidate_tree: candidateTree,
       tree_sha: candidateTree,
-      diagnostics: (err.stdout || err.stderr || err.message).slice(0, 500),
-    });
-    console.error(`     ✗ FAIL (exit code ${err.status})`);
+      specification_hash: computeReceiptDigest(canonicalizeJson(obDef)),
+      toolchain_identity: {
+        node: process.version,
+        bwrap: sandbox.bwrapVersion || "unknown",
+        platform: process.platform,
+        arch: process.arch,
+      },
+      invocation: { command: commandArgs, duration_ms: 0, started_at: new Date().toISOString() },
+      stdout_digest: createHash("sha256").digest("hex"),
+      stderr_digest: createHash("sha256").digest("hex"),
+      exit_code: 126,
+      diagnostics: `CLI argument validation failed against trusted profile ${profile.profile_id}`,
+    };
+    const canonicalStr = serializeReceiptCanonical(receipt);
+    writeFileSync(join(receiptsDir, `${obId}.json`), canonicalStr, "utf8");
+    ledgerEntries.push({ relPath: `receipts/${obId}.json`, canonicalStr });
+    authenticReceipts.push(receipt);
+    continue;
+  }
+
+  const fullCommand = [profile.command_template, ...commandArgs];
+  console.log(`  -> Sandboxed execution of ${obId}: ${fullCommand.join(" ")}`);
+
+  const startTime = Date.now();
+  const startedAt = new Date().toISOString();
+
+  // Execute in isolated sandbox
+  // For scope-guard, git history is needed read-only; for other obligations, maskGit is strictly enabled.
+  const maskGit = obId !== "OBL-SYS-SCOPE-GUARD-001";
+  const execResult = sandbox.execute({
+    command: fullCommand,
+    sourceSnapshot: REPO_ROOT,
+    stagingDir,
+    maskGit,
+    maskEnv: true,
+    timeoutMs: profile.timeout_ms || 60000,
+    isAuthoritative: true,
+  });
+
+  const durationMs = Date.now() - startTime;
+
+  // Evaluate oracles
+  let obligationStatus = execResult.verdict; // PASS or FAIL or BLOCKED
+  if (obligationStatus === "PASS" && method.oracle) {
+    if (method.oracle.oracle_type === "multi_assert") {
+      for (const assertion of method.oracle.assertions || []) {
+        if (assertion.type === "exit_code" && execResult.exitCode !== assertion.expected) {
+          obligationStatus = "FAIL";
+        }
+        if (assertion.type === "stdout_must_contain") {
+          for (const token of assertion.tokens || []) {
+            if (!execResult.stdout.includes(token)) {
+              obligationStatus = "FAIL";
+            }
+          }
+        }
+        if (assertion.type === "stdout_prohibited") {
+          for (const token of assertion.tokens || []) {
+            if (execResult.stdout.includes(token)) {
+              obligationStatus = "FAIL";
+            }
+          }
+        }
+      }
+    }
+  }
+
+  const receipt = {
+    obligation_id: obId,
+    status: obligationStatus,
+    verdict: obligationStatus,
+    candidate_commit: candidateCommit,
+    candidate_tree: candidateTree,
+    tree_sha: candidateTree,
+    specification_hash: computeReceiptDigest(canonicalizeJson(obDef)),
+    toolchain_identity: {
+      node: process.version,
+      bwrap: sandbox.bwrapVersion || "unknown",
+      platform: process.platform,
+      arch: process.arch,
+    },
+    invocation: {
+      command: fullCommand,
+      duration_ms: durationMs,
+      started_at: startedAt,
+    },
+    stdout_digest: createHash("sha256").update(execResult.stdout).digest("hex"),
+    stderr_digest: createHash("sha256").update(execResult.stderr).digest("hex"),
+    exit_code: execResult.exitCode,
+    diagnostics: (execResult.stdout + "\n" + execResult.stderr).slice(0, 1000).trim(),
+  };
+
+  const canonicalStr = serializeReceiptCanonical(receipt);
+  writeFileSync(join(receiptsDir, `${obId}.json`), canonicalStr, "utf8");
+  ledgerEntries.push({ relPath: `receipts/${obId}.json`, canonicalStr });
+  authenticReceipts.push(receipt);
+
+  if (obligationStatus === "PASS") {
+    console.log(`     ✓ PASS (${durationMs}ms)`);
+  } else {
+    console.error(`     ✗ ${obligationStatus} (exit code ${execResult.exitCode})`);
   }
 }
+
+// Generate detached digest ledger
+const ledgerContent = generateDetachedDigestLedger(ledgerEntries);
+writeFileSync(join(fullOutDir, "receipts.sha256"), ledgerContent, "utf8");
+console.log(`\n  ✓ Detached digest ledger generated: ${join(outDir, "receipts.sha256")}`);
 
 // Evaluate Qualification with Authentic Receipts
 console.log("\n[dice-bootstrap] Evaluating candidate qualification against authentic receipts...");
@@ -234,6 +443,37 @@ if (qualResult.qualification !== "QUALIFIED_PASS") {
   console.error("===============================================================================\n");
   process.exit(1);
 }
+
+// Generate signed DSSE attestation envelope upon QUALIFIED_PASS
+const statement = {
+  _type: "https://in-toto.io/Statement/v1",
+  subject: [
+    {
+      name: "frame30-candidate",
+      digest: {
+        sha256: candidateTree,
+        commit: candidateCommit,
+      },
+    },
+  ],
+  predicateType: "https://framique.com/dice/attestation/v1",
+  predicate: {
+    qualification: "QUALIFIED_PASS",
+    plan_hash: planResult.planHash,
+    contract: contract.change_id,
+    obligations_verified: authenticReceipts.filter((r) => r.status === "PASS").length,
+    toolchain: {
+      node: process.version,
+      bwrap: sandbox.bwrapVersion || "unknown",
+    },
+    ledger_sha256: computeReceiptDigest(ledgerContent),
+  },
+};
+
+const keypair = generateTestKeypair();
+const envelope = createAttestationEnvelope(statement, keypair.privateKey, "key-dice-qualification-01");
+writeFileSync(join(fullOutDir, "attestation.dsse.json"), canonicalizeJson(envelope), "utf8");
+console.log(`  ✓ Signed in-toto DSSE attestation envelope generated: ${join(outDir, "attestation.dsse.json")}`);
 
 console.log("\n===============================================================================");
 console.log("  [dice-bootstrap] ✓ STAGE 2 BOOTSTRAP CANDIDATE QUALIFIED: QUALIFIED_PASS");

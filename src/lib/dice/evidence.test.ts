@@ -166,4 +166,97 @@ describe("DICE Evidence Authenticity & Cryptographic Attestation (Revision 2.3 S
       expect(valid, JSON.stringify(validate.errors)).toBe(true);
     });
   });
+
+  describe("3. Stage 2.2 Authoritative Evidence Integration & Provenance Binding", () => {
+    it("binds full candidate provenance and toolchain identity in canonical receipts", () => {
+      const receipt = {
+        obligation_id: "OBL-SYS-SCOPE-GUARD-001",
+        status: "PASS",
+        verdict: "PASS",
+        candidate_commit: "1c3746ee4685d351122b4fa91532667b0f92a268",
+        candidate_tree: "a31978ed1b22da5c6bdde7a4dbb9a6ac3705f53b",
+        tree_sha: "a31978ed1b22da5c6bdde7a4dbb9a6ac3705f53b",
+        specification_hash: "8e6e3e41bf55ddddfb2aecaefe242e19954fea8cebaa30b46dabcb7ef54ed35f",
+        toolchain_identity: {
+          node: "v20.18.0",
+          bwrap: "bubblewrap 0.4.1",
+          platform: "linux",
+          arch: "x64",
+        },
+        invocation: {
+          command: ["node", "scripts/scope-guard.mjs", "--contract=features/contracts/F30-DICE-STAGE2-2.json"],
+          duration_ms: 125,
+          started_at: "2026-11-24T12:00:00.000Z",
+        },
+        stdout_digest: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        stderr_digest: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        exit_code: 0,
+        diagnostics: "[scope-guard] ✓ Scope guard PASSED.",
+      };
+
+      const canonicalStr = serializeReceiptCanonical(receipt);
+      expect(canonicalStr).toContain('"candidate_commit":"1c3746ee4685d351122b4fa91532667b0f92a268"');
+      expect(canonicalStr).toContain('"candidate_tree":"a31978ed1b22da5c6bdde7a4dbb9a6ac3705f53b"');
+      expect(canonicalStr).toContain('"bwrap":"bubblewrap 0.4.1"');
+
+      const digest = computeReceiptDigest(canonicalStr);
+      expect(digest).toMatch(/^[0-9a-f]{64}$/);
+    });
+
+    it("verifies detached digest ledger integrity against individual receipt digests", () => {
+      const r1 = serializeReceiptCanonical({ obligation_id: "OBL-A", status: "PASS", tree_sha: "tree1" });
+      const r2 = serializeReceiptCanonical({ obligation_id: "OBL-B", status: "PASS", tree_sha: "tree1" });
+
+      const d1 = computeReceiptDigest(r1);
+      const d2 = computeReceiptDigest(r2);
+
+      const ledger = generateDetachedDigestLedger([
+        { relPath: "receipts/OBL-A.json", canonicalStr: r1 },
+        { relPath: "receipts/OBL-B.json", canonicalStr: r2 },
+      ]);
+
+      const lines = ledger.trim().split("\n");
+      expect(lines.length).toBe(2);
+      expect(lines[0]).toBe(`${d1}  receipts/OBL-A.json`);
+      expect(lines[1]).toBe(`${d2}  receipts/OBL-B.json`);
+    });
+
+    it("creates end-to-end DSSE attestation envelope binding qualification to detached ledger", () => {
+      const keypair = generateTestKeypair();
+      const ledgerDigest = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08";
+
+      const statement = {
+        _type: "https://in-toto.io/Statement/v1",
+        subject: [
+          {
+            name: "frame30-candidate",
+            digest: {
+              sha256: "a31978ed1b22da5c6bdde7a4dbb9a6ac3705f53b",
+              commit: "1c3746ee4685d351122b4fa91532667b0f92a268",
+            },
+          },
+        ],
+        predicateType: "https://framique.com/dice/attestation/v1",
+        predicate: {
+          qualification: "QUALIFIED_PASS",
+          plan_hash: "8e6e3e41bf55ddddfb2aecaefe242e19954fea8cebaa30b46dabcb7ef54ed35f",
+          contract: "F30-DICE-STAGE2-2",
+          obligations_verified: 4,
+          toolchain: {
+            node: process.version,
+            bwrap: "bubblewrap 0.4.1",
+          },
+          ledger_sha256: ledgerDigest,
+        },
+      };
+
+      const envelope = createAttestationEnvelope(statement, keypair.privateKey, "key-stage2-2-ci");
+      const verifyResult = verifyAttestationEnvelope(envelope, keypair.publicKey);
+
+      expect(verifyResult.valid).toBe(true);
+      expect(verifyResult.statement.predicate.qualification).toBe("QUALIFIED_PASS");
+      expect(verifyResult.statement.predicate.ledger_sha256).toBe(ledgerDigest);
+      expect(verifyResult.statement.subject[0].digest.commit).toBe("1c3746ee4685d351122b4fa91532667b0f92a268");
+    });
+  });
 });
