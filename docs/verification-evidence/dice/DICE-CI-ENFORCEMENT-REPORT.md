@@ -1,4 +1,5 @@
 # Frame30 DICE CircleCI Pipeline Enforcement Report
+
 **Continuous Integration Security Architecture & Isolated Attestation Pipeline**
 
 - **Specification Authority**: Human Specification Authority (`@devrahmanbd`)
@@ -11,6 +12,7 @@
 ## 1. Exclusive CI Authority Model
 
 In accordance with `AGENTS.md` and `F30-SDLC-001` Section 11:
+
 - **CircleCI is the sole CI authority for Frame30.**
 - No GitHub Actions workflows (`.github/workflows/`) exist or are permitted.
 - All branch protection rules and release qualification gates require CircleCI job checks to pass before pull request merge authorization.
@@ -27,6 +29,7 @@ ROOT_REF="${DICE_ROOT_REF:-2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271}"
 ```
 
 Before running any verification commands:
+
 1. `git fetch origin $TRUSTED_REF $ROOT_REF 382261db0cb5b796046ae03c28fd8f309b901123` retrieves the immutable baseline and trusted reference commits.
 2. `git archive "$TRUSTED_REF"` extracts trusted verification scripts and registries into external directories (`/tmp/dice-protected-launcher`, `/tmp/dice-protected-signer`).
 3. In-tree candidate scripts are strictly bypassed and cannot override the verification launcher or signer.
@@ -51,6 +54,7 @@ artifacts/dice-evidence (Signed Attestation Bundle + Detached Digest Signature)
 ```
 
 ### Job 1: `dice-qualification` (Unprivileged Worker Execution)
+
 - **Executor**: Ubuntu 22.04 (`ubuntu-2204:current`) machine runner with native kernel Bubblewrap support (`bwrap`).
 - **Steps**:
   1. Unshallow git repository and verify `$TRUSTED_REF` and `$ROOT_REF` commits.
@@ -61,15 +65,16 @@ artifacts/dice-evidence (Signed Attestation Bundle + Detached Digest Signature)
   6. Store raw execution receipts and qualification summary in `artifacts/dice-evidence`.
 
 ### Job 2: `dice-attestation-signing` (Isolated Cryptographic Signing)
+
 - **Executor**: Ubuntu 22.04 (`ubuntu-2204:current`) machine runner with pure Node execution.
 - **Access Boundary**: Possesses `DICE_SIGNING_KEY` credential in environment for production mode (inaccessible to `dice-qualification` worker). In test mode, `DICE_SIGNING_KEY` must be strictly absent.
 - **Isolation Guarantees**:
   1. No candidate dependencies installed (`bun install` omitted).
   2. No candidate-controlled tests executed in signing context.
   3. External Signer Distribution (P0-1): Pure Node runner extracts the protected signer distribution and verifies it against externally established cryptographic digests:
-     - Expected Distribution SHA-256: `3155cac15727ae58205dc16f729e051570068ce2c506b1a5f6bdfb976419273b` (covers all 16 verifier scripts, registries, and schemas)
+     - Expected Distribution SHA-256: `d855fdf18572aceb01bed5027c77f52b497d85d7549892c94b54ba881278d194` (covers all 16 verifier scripts, registries, and schemas)
      - Expected Test Policy SHA-256: `eb447909aff1afe029c5207e069259690a7975245926dd7ae0caef01b789380d`
-  4. Candidate checkout is never consulted for test policy or signer logic (P0-2).
+  4. External Trust Authority Injection: `DICE_EXPECTED_SIGNER_DIST_DIGEST` and `DICE_EXPECTED_TEST_POLICY_DIGEST` are injected via CircleCI Context `dice-trust-authority`. Fallback to candidate constants is logged and strictly rejected if `DICE_REQUIRE_EXTERNAL_ANCHORS=1`.
   5. Error suppression eliminated (zero `|| true`). Non-zero exit code on `UNATTESTED` or failure.
   6. Evaluates candidate qualification using Two-Tier Engine (`evaluateCandidateQualification`).
   7. If and only if qualification evaluates strictly to `QUALIFIED_PASS`, generates DSSE attestation envelope (`test-attestation.dsse.json` in test mode or `attestation.dsse.json` in production mode) with Ed25519 signature.
@@ -95,6 +100,7 @@ Per `F30-DICE-ARCH-001` Section 10 and P0-2, `dice-attestation-signing` executes
 ```
 
 The signing job requires all eleven upstream gates:
+
 1. `lint-typecheck`
 2. `unit-contract`
 3. `dice-qualification`
@@ -113,16 +119,16 @@ If any upstream job fails or is blocked, attestation signing is blocked fail-clo
 
 ## 5. Baseline vs Candidate Pipeline Comparison
 
-| Verification Dimension | Baseline (`c88c44d5`) | Candidate (`ea4af641` / HEAD) | Status & Corrective Action |
-|---|---|---|---|
-| **Authoritative Launcher** | Non-authoritative `--dry-run` (0 obligations run) | Genuine Linux Bubblewrap execution (all mandatory obligations executed) | Corrected (P0-1) |
-| **Contract Transport** | Host `/tmp` file path (fails closed in isolated bwrap `/tmp`) | Explicit single-file read-only input mount (`/workspace/input/contract.json`) with pre-execution and intra-sandbox digest checks | Corrected (P0-1) |
-| **Contract Approval** | Synthetic in-pipeline mutation of production contract (`owner = "@devrahmanbd"`) | Immutable test fixture `registries/dice/test-qualification-contract.json` bound to `test-policy.json` (`owner: "@dice-test-runner"`) | Corrected (P0-2) |
-| **Signing Mode Separation** | Single mode with ambiguous test key export (`export DICE_SIGNING_KEY=...`) | Explicit `--mode=test` vs `--mode=production` separation; test mode refuses execution if `DICE_SIGNING_KEY` is present | Corrected (P0-3) |
-| **Attestation Output** | Attempted production `attestation.dsse.json` with test key | Non-authoritative `test-attestation.dsse.json` (`TEST_QUALIFIED_NON_AUTHORITATIVE`) | Corrected (P0-3) |
-| **Upstream Gate Dependencies** | Missing dependencies (`dice-attestation-signing` only depended on `dice-qualification`) | Strictly requires all 11 mandatory upstream qualification jobs before signing | Corrected (P0-4) |
-| **Dependency Isolation in Signer** | Potential dependency bleed | Pure Node.js runner in isolated `/tmp/dice-protected-signer` with zero package installations | Preserved |
-| **Production Contract Safety** | Production contract risked accidental modification | `F30-DICE-COMPLETE.json` remains strictly `"approval_state": "proposed"` | Preserved |
+| Verification Dimension             | Baseline (`c88c44d5`)                                                                   | Candidate (`ea4af641` / HEAD)                                                                                                        | Status & Corrective Action |
+| ---------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------- |
+| **Authoritative Launcher**         | Non-authoritative `--dry-run` (0 obligations run)                                       | Genuine Linux Bubblewrap execution (all mandatory obligations executed)                                                              | Corrected (P0-1)           |
+| **Contract Transport**             | Host `/tmp` file path (fails closed in isolated bwrap `/tmp`)                           | Explicit single-file read-only input mount (`/workspace/input/contract.json`) with pre-execution and intra-sandbox digest checks     | Corrected (P0-1)           |
+| **Contract Approval**              | Synthetic in-pipeline mutation of production contract (`owner = "@devrahmanbd"`)        | Immutable test fixture `registries/dice/test-qualification-contract.json` bound to `test-policy.json` (`owner: "@dice-test-runner"`) | Corrected (P0-2)           |
+| **Signing Mode Separation**        | Single mode with ambiguous test key export (`export DICE_SIGNING_KEY=...`)              | Explicit `--mode=test` vs `--mode=production` separation; test mode refuses execution if `DICE_SIGNING_KEY` is present               | Corrected (P0-3)           |
+| **Attestation Output**             | Attempted production `attestation.dsse.json` with test key                              | Non-authoritative `test-attestation.dsse.json` (`TEST_QUALIFIED_NON_AUTHORITATIVE`)                                                  | Corrected (P0-3)           |
+| **Upstream Gate Dependencies**     | Missing dependencies (`dice-attestation-signing` only depended on `dice-qualification`) | Strictly requires all 11 mandatory upstream qualification jobs before signing                                                        | Corrected (P0-4)           |
+| **Dependency Isolation in Signer** | Potential dependency bleed                                                              | Pure Node.js runner in isolated `/tmp/dice-protected-signer` with zero package installations                                         | Preserved                  |
+| **Production Contract Safety**     | Production contract risked accidental modification                                      | `F30-DICE-COMPLETE.json` remains strictly `"approval_state": "proposed"`                                                             | Preserved                  |
 
 ---
 
@@ -167,5 +173,3 @@ While `.circleci/config.yml` mechanically enforces job dependencies, input isola
 ## 7. Conclusion
 
 The DICE CircleCI pipeline architecture achieves complete trust boundary separation, immutable reference extraction, single-file sandbox input containment, mode-segregated cryptographic attestation signing, and full upstream gate integrity. Candidate pull requests have zero opportunity to tamper with verification policies or forge passing production attestations.
-
-

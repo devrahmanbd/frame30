@@ -9,6 +9,7 @@ import {
 } from "node:fs";
 import { join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import {
   DiceTrustedRoot,
   DEFAULT_TRUSTED_REF,
@@ -712,11 +713,32 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
     const EXPECTED_TEST_POLICY_DIGEST =
       "eb447909aff1afe029c5207e069259690a7975245926dd7ae0caef01b789380d";
     const EXPECTED_DIST_DIGEST =
-      "3155cac15727ae58205dc16f729e051570068ce2c506b1a5f6bdfb976419273b";
+      "d855fdf18572aceb01bed5027c77f52b497d85d7549892c94b54ba881278d194";
 
     const p03TempDir = join(testTempDir, "p03-replacement-matrix");
     const candidateBase = join(p03TempDir, "candidate-tree");
+    const externalAuthorityDir = join(p03TempDir, "external-authority");
     const isolatedSignerDir = join(p03TempDir, "isolated-signer");
+
+    let candidateCommit: string;
+    let candidateTree: string;
+    let testKeypair: { privateKey: string; publicKey: string };
+    let testKeysJsonPath: string;
+    let testKeyPemPath: string;
+
+    function setupExternalAuthority() {
+      if (existsSync(externalAuthorityDir)) {
+        rmSync(externalAuthorityDir, { recursive: true, force: true });
+      }
+      mkdirSync(externalAuthorityDir, { recursive: true });
+
+      for (const rel of SIGNER_DISTRIBUTION_FILES) {
+        const src = join(repoRoot, rel);
+        const dest = join(externalAuthorityDir, rel);
+        mkdirSync(resolve(dest, ".."), { recursive: true });
+        writeFileSync(dest, readFileSync(src));
+      }
+    }
 
     function setupCandidateTree() {
       if (existsSync(candidateBase)) {
@@ -732,8 +754,119 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
       }
     }
 
+    function createValidEvidence(
+      dir: string,
+      overrides: Record<string, unknown> = {},
+    ) {
+      const receiptsDir = join(dir, "receipts");
+      mkdirSync(receiptsDir, { recursive: true });
+
+      const activeObs = [
+        "OBL-SYS-SCOPE-GUARD-001",
+        "OBL-SYS-DRIFT-GUARD-001",
+        "OBL-SYS-DIE-REGISTRY-001",
+        "OBL-SYS-SECRETS-SCAN-001",
+      ];
+      const methodIdMap: Record<string, string> = {
+        "OBL-SYS-SCOPE-GUARD-001": "METH-SCOPE-GUARD-01",
+        "OBL-SYS-DRIFT-GUARD-001": "METH-DRIFT-GUARD-01",
+        "OBL-SYS-DIE-REGISTRY-001": "METH-DIE-REGISTRY-01",
+        "OBL-SYS-SECRETS-SCAN-001": "METH-SECRETS-SCAN-01",
+      };
+
+      let ledger = "";
+      for (const obId of activeObs) {
+        if (overrides.skipReceipt === obId) continue;
+
+        const rPath = join(receiptsDir, `${obId}.json`);
+        const status = overrides.failReceipt === obId ? "FAIL" : "PASS";
+
+        const receipt = {
+          receipt_version: "1.0.0",
+          obligation_id: obId,
+          method_id: methodIdMap[obId],
+          status,
+          commit_sha: candidateCommit,
+          tree_sha: candidateTree,
+          candidate: { commit: candidateCommit, tree: candidateTree },
+          environment: {
+            node: process.version,
+            platform: process.platform,
+          },
+          execution: {
+            command: ["test"],
+            duration_ms: 10,
+            started_at: new Date().toISOString(),
+          },
+          verdict: {
+            disposition: status,
+            confidence: "machine_checked",
+            timestamp: new Date().toISOString(),
+          },
+        };
+
+        const content = JSON.stringify(receipt, null, 2);
+        writeFileSync(rPath, content, "utf8");
+
+        const sha =
+          overrides.badHashReceipt === obId
+            ? "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
+            : createHash("sha256").update(content, "utf8").digest("hex");
+        ledger += `${sha}  receipts/${obId}.json\n`;
+      }
+
+      if (overrides.tamperedLedger) {
+        ledger = overrides.tamperedLedger as string;
+      }
+
+      writeFileSync(join(dir, "receipts.sha256"), ledger, "utf8");
+
+      const summary = {
+        version: "1.0.0",
+        candidate_commit: candidateCommit,
+        candidate_tree: candidateTree,
+        qualification: overrides.failSummary
+          ? "QUALIFIED_FAIL"
+          : "QUALIFIED_PASS",
+        summary_sha256: "summary-sha-test",
+      };
+      writeFileSync(
+        join(dir, "qualification-summary.json"),
+        JSON.stringify(summary, null, 2),
+        "utf8",
+      );
+    }
+
     beforeAll(() => {
       mkdirSync(p03TempDir, { recursive: true });
+      candidateCommit = execFileSync("git", ["rev-parse", "HEAD"], {
+        cwd: repoRoot,
+        encoding: "utf8",
+      }).trim();
+      candidateTree = execFileSync("git", ["rev-parse", "HEAD^{tree}"], {
+        cwd: repoRoot,
+        encoding: "utf8",
+      }).trim();
+
+      testKeypair = generateTestKeypair();
+      testKeysJsonPath = join(p03TempDir, "test-trusted-keys.json");
+      testKeyPemPath = join(p03TempDir, "test-signing-key.pem");
+      const testKeysDef = [
+        {
+          keyid: "key-dice-test-signer-01",
+          algorithm: "ed25519",
+          public_key_pem: testKeypair.publicKey,
+          roles: ["dice-attestation-signer"],
+          status: "active",
+          created_at: new Date().toISOString(),
+        },
+      ];
+      writeFileSync(
+        testKeysJsonPath,
+        JSON.stringify(testKeysDef, null, 2),
+        "utf8",
+      );
+      writeFileSync(testKeyPemPath, testKeypair.privateKey, "utf8");
     });
 
     afterAll(() => {
@@ -742,10 +875,10 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
       }
     });
 
-    it("Genuine candidate tree matches externally pinned digests", () => {
-      setupCandidateTree();
+    it("Genuine external authority matches externally pinned digests", () => {
+      setupExternalAuthority();
       const res = extractAndVerifySigningDistribution({
-        repoRoot: candidateBase,
+        externalDistDir: externalAuthorityDir,
         targetDir: isolatedSignerDir,
         expectedDistDigest: EXPECTED_DIST_DIGEST,
         expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
@@ -761,13 +894,17 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
     });
 
     // Vector 1: signing service (scripts/dice-signing-service.mjs)
-    it("Vector 1: Hostile replacement of scripts/dice-signing-service.mjs is rejected and execution prevented", () => {
+    it("Vector 1: Hostile replacement of scripts/dice-signing-service.mjs in candidate tree is bypassed by external signer", () => {
       setupCandidateTree();
+      setupExternalAuthority();
+
+      // Candidate mutates its local signing script with malicious payload
       writeFileSync(
         join(candidateBase, "scripts/dice-signing-service.mjs"),
         'console.error("HOSTILE_SIGNER_PWNED"); process.exit(42);',
       );
 
+      // 1. Candidate tree extraction fails closed against expected digests
       expect(() =>
         extractAndVerifySigningDistribution({
           repoRoot: candidateBase,
@@ -776,19 +913,45 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
           expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
         }),
       ).toThrow(/FAIL-CLOSED: Signer distribution digest mismatch!/);
-
-      // Isolated target directory was wiped fail-closed
       expect(existsSync(isolatedSignerDir)).toBe(false);
+
+      // 2. Protected external extraction succeeds
+      extractAndVerifySigningDistribution({
+        externalDistDir: externalAuthorityDir,
+        targetDir: isolatedSignerDir,
+        expectedDistDigest: EXPECTED_DIST_DIGEST,
+        expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+      });
+
+      // 3. Executing the real protected path runs the protected signer, immune to candidate's hostile script
+      const out = execFileSync(
+        "node",
+        [join(isolatedSignerDir, "scripts/dice-signing-service.mjs"), "--help"],
+        {
+          cwd: "/tmp",
+          env: {
+            PATH: process.env.PATH,
+            NODE_PATH: isolatedSignerDir,
+          },
+          encoding: "utf8",
+        },
+      );
+      expect(out).toContain("Usage: node scripts/dice-signing-service.mjs");
+      expect(out).not.toContain("HOSTILE_SIGNER_PWNED");
     });
 
     // Vector 2: trusted root module (scripts/dice-root-of-trust.mjs)
-    it("Vector 2: Hostile replacement of scripts/dice-root-of-trust.mjs is rejected fail-closed", () => {
+    it("Vector 2: Hostile replacement of scripts/dice-root-of-trust.mjs in candidate tree cannot alter protected root verification", () => {
       setupCandidateTree();
+      setupExternalAuthority();
+
+      // Candidate injects rogue root definition
       writeFileSync(
         join(candidateBase, "scripts/dice-root-of-trust.mjs"),
         'export const APPROVED_ROOTS = { "rogue": "root" };',
       );
 
+      // 1. Candidate extraction fails closed
       expect(() =>
         extractAndVerifySigningDistribution({
           repoRoot: candidateBase,
@@ -798,17 +961,38 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
         }),
       ).toThrow(/FAIL-CLOSED: Signer distribution digest mismatch!/);
 
-      expect(existsSync(isolatedSignerDir)).toBe(false);
+      // 2. Protected extraction succeeds
+      extractAndVerifySigningDistribution({
+        externalDistDir: externalAuthorityDir,
+        targetDir: isolatedSignerDir,
+        expectedDistDigest: EXPECTED_DIST_DIGEST,
+        expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+      });
+
+      // 3. Protected root of trust initialized with external authority resolves authentic roots
+      const root = new DiceTrustedRoot({
+        repoRoot,
+        trustedRef: DEFAULT_TRUSTED_REF,
+        cacheDir: join(p03TempDir, "trusted-root-v2"),
+        externalDistDir: isolatedSignerDir,
+      });
+      const info = root.resolve();
+      expect(info.trustedCommit).toBe(DEFAULT_TRUSTED_REF);
+      expect(info.trustedRootSha).toMatch(/^[0-9a-f]{64}$/);
     });
 
     // Vector 3: qualification evaluator (scripts/dice-qualify.mjs)
-    it("Vector 3: Hostile replacement of scripts/dice-qualify.mjs is rejected fail-closed", () => {
+    it("Vector 3: Hostile candidate qualification evaluator (scripts/dice-qualify.mjs) cannot fake QUALIFIED_PASS", () => {
       setupCandidateTree();
+      setupExternalAuthority();
+
+      // Candidate mutates qualify script to always return QUALIFIED_PASS
       writeFileSync(
         join(candidateBase, "scripts/dice-qualify.mjs"),
         'export function evaluateCandidateQualification() { return { qualification: "QUALIFIED_PASS" }; }',
       );
 
+      // 1. Candidate extraction fails closed
       expect(() =>
         extractAndVerifySigningDistribution({
           repoRoot: candidateBase,
@@ -818,17 +1002,59 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
         }),
       ).toThrow(/FAIL-CLOSED: Signer distribution digest mismatch!/);
 
-      expect(existsSync(isolatedSignerDir)).toBe(false);
+      // 2. Protected extraction succeeds
+      extractAndVerifySigningDistribution({
+        externalDistDir: externalAuthorityDir,
+        targetDir: isolatedSignerDir,
+        expectedDistDigest: EXPECTED_DIST_DIGEST,
+        expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+      });
+
+      // 3. Candidate provides failing qualification receipts
+      const evidenceDir = join(p03TempDir, "failing-evidence-v3");
+      createValidEvidence(evidenceDir, {
+        failReceipt: "OBL-SYS-SCOPE-GUARD-001",
+      });
+
+      // 4. Real protected signer executes using isolatedSignerDir
+      const signer = new DiceSigningService({
+        repoRoot,
+        mode: "test",
+        contractPath: "registries/dice/test-qualification-contract.json",
+        evidenceDir,
+        distDir: isolatedSignerDir,
+        trustedRef: DEFAULT_TRUSTED_REF,
+        keyId: "key-dice-test-signer-01",
+        testKeysPath: testKeysJsonPath,
+        signingKeyFile: testKeyPemPath,
+      });
+
+      // Protected evaluation catches failure and fails closed
+      expect(() => signer.execute()).toThrow(
+        /FAIL-CLOSED: Receipt 'OBL-SYS-SCOPE-GUARD-001.json' has non-PASS status: FAIL/,
+      );
+
+      // Ensure zero attestations generated
+      expect(existsSync(join(evidenceDir, "test-attestation.dsse.json"))).toBe(
+        false,
+      );
+      expect(existsSync(join(evidenceDir, "attestation.dsse.json"))).toBe(
+        false,
+      );
     });
 
     // Vector 4: evidence serializer (scripts/dice-evidence.mjs)
-    it("Vector 4: Hostile replacement of scripts/dice-evidence.mjs is rejected fail-closed", () => {
+    it("Vector 4: Hostile replacement of scripts/dice-evidence.mjs cannot bypass ledger verification", () => {
       setupCandidateTree();
+      setupExternalAuthority();
+
+      // Candidate attempts to bypass ledger checking
       writeFileSync(
         join(candidateBase, "scripts/dice-evidence.mjs"),
         "export class DiceSigningAuthority { validateLedger() { return true; } signAttestation() { return {}; } }",
       );
 
+      // 1. Candidate extraction fails closed
       expect(() =>
         extractAndVerifySigningDistribution({
           repoRoot: candidateBase,
@@ -838,17 +1064,55 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
         }),
       ).toThrow(/FAIL-CLOSED: Signer distribution digest mismatch!/);
 
-      expect(existsSync(isolatedSignerDir)).toBe(false);
+      // 2. Protected extraction succeeds
+      extractAndVerifySigningDistribution({
+        externalDistDir: externalAuthorityDir,
+        targetDir: isolatedSignerDir,
+        expectedDistDigest: EXPECTED_DIST_DIGEST,
+        expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+      });
+
+      // 3. Tampered receipt digest in ledger
+      const evidenceDir = join(p03TempDir, "tampered-ledger-v4");
+      createValidEvidence(evidenceDir, {
+        badHashReceipt: "OBL-SYS-SCOPE-GUARD-001",
+      });
+
+      const signer = new DiceSigningService({
+        repoRoot,
+        mode: "test",
+        contractPath: "registries/dice/test-qualification-contract.json",
+        evidenceDir,
+        distDir: isolatedSignerDir,
+        trustedRef: DEFAULT_TRUSTED_REF,
+        keyId: "key-dice-test-signer-01",
+        testKeysPath: testKeysJsonPath,
+        signingKeyFile: testKeyPemPath,
+      });
+
+      expect(() => signer.execute()).toThrow(
+        /FAIL-CLOSED: Receipt digest mismatch for receipts\/|FAIL-CLOSED: Ledger digest mismatch/,
+      );
+      expect(existsSync(join(evidenceDir, "test-attestation.dsse.json"))).toBe(
+        false,
+      );
+      expect(existsSync(join(evidenceDir, "attestation.dsse.json"))).toBe(
+        false,
+      );
     });
 
     // Vector 5: test-policy manifest (registries/dice/test-policy.json)
-    it("Vector 5: Hostile modification of registries/dice/test-policy.json is detected and rejected", () => {
+    it("Vector 5: Hostile modification of registries/dice/test-policy.json in candidate tree is rejected", () => {
       setupCandidateTree();
+      setupExternalAuthority();
+
+      // Candidate mutates its local policy to allow rogue mode
       const tpPath = join(candidateBase, "registries/dice/test-policy.json");
       const tp = JSON.parse(readFileSync(tpPath, "utf8"));
       tp.test_signing.allowed_modes.push("rogue-mode");
       writeFileSync(tpPath, JSON.stringify(tp, null, 2));
 
+      // 1. Candidate extraction fails closed
       expect(() =>
         extractAndVerifySigningDistribution({
           repoRoot: candidateBase,
@@ -858,13 +1122,45 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
         }),
       ).toThrow(/FAIL-CLOSED: Test policy digest mismatch!/);
 
-      expect(existsSync(isolatedSignerDir)).toBe(false);
+      // 2. Protected extraction succeeds
+      extractAndVerifySigningDistribution({
+        externalDistDir: externalAuthorityDir,
+        targetDir: isolatedSignerDir,
+        expectedDistDigest: EXPECTED_DIST_DIGEST,
+        expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+      });
+
+      // 3. Running signer with rogue-mode against protected distDir fails closed
+      const evidenceDir = join(p03TempDir, "rogue-mode-v5");
+      createValidEvidence(evidenceDir);
+
+      expect(
+        () =>
+          new DiceSigningService({
+            repoRoot,
+            mode: "rogue-mode",
+            contractPath: "registries/dice/test-qualification-contract.json",
+            evidenceDir,
+            distDir: isolatedSignerDir,
+            trustedRef: DEFAULT_TRUSTED_REF,
+            keyId: "key-dice-test-signer-01",
+            testKeysPath: testKeysJsonPath,
+            signingKeyFile: testKeyPemPath,
+          }),
+      ).toThrow(
+        /FAIL-CLOSED: Invalid signing mode 'rogue-mode'|FAIL-CLOSED: Signing mode 'rogue-mode' not permitted by test policy/,
+      );
+      expect(existsSync(join(evidenceDir, "test-attestation.dsse.json"))).toBe(
+        false,
+      );
     });
 
     // Vector 6: test contract and expected digest together (test-qualification-contract.json + test-policy.json)
-    it("Vector 6: Joint modification of test contract and expected digest together fails closed and produces no attestation", () => {
+    it("Vector 6: Joint modification of test contract and candidate test policy fails closed against external authority", () => {
       setupCandidateTree();
-      // Attacker creates a rogue test contract with altered ownership/obligations
+      setupExternalAuthority();
+
+      // Rogue contract claiming @devrahmanbd
       const rogueContract = {
         change_id: "F30-DICE-ROGUE-MUTATION",
         owner: "@devrahmanbd",
@@ -877,7 +1173,7 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
       );
       writeFileSync(rogueContractPath, JSON.stringify(rogueContract, null, 2));
 
-      // Attacker also mutates test-policy.json to match rogue contract's SHA
+      // Candidate updates its own test-policy.json to match rogue contract's SHA
       const tpPath = join(candidateBase, "registries/dice/test-policy.json");
       const tp = JSON.parse(readFileSync(tpPath, "utf8"));
       tp.test_contract.change_id = "F30-DICE-ROGUE-MUTATION";
@@ -885,7 +1181,7 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
         "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef";
       writeFileSync(tpPath, JSON.stringify(tp, null, 2));
 
-      // 1. Verifier extraction immediately halts on test policy digest mismatch
+      // 1. Candidate extraction fails closed
       expect(() =>
         extractAndVerifySigningDistribution({
           repoRoot: candidateBase,
@@ -895,24 +1191,33 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
         }),
       ).toThrow(/FAIL-CLOSED: Test policy digest mismatch!/);
 
-      // 2. Furthermore, even if candidate attempts to pass rogue contract directly to DiceSigningService,
-      // Gate 3 loads authoritative test-policy.json from protected distribution, rejecting the contract
-      const evidenceDir = join(p03TempDir, "rogue-evidence");
-      mkdirSync(evidenceDir, { recursive: true });
+      // 2. Protected extraction succeeds
+      extractAndVerifySigningDistribution({
+        externalDistDir: externalAuthorityDir,
+        targetDir: isolatedSignerDir,
+        expectedDistDigest: EXPECTED_DIST_DIGEST,
+        expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+      });
+
+      // 3. Real protected signer evaluates rogue contract against protected policy
+      const evidenceDir = join(p03TempDir, "rogue-contract-v6");
+      createValidEvidence(evidenceDir);
+
       const signer = new DiceSigningService({
         repoRoot,
         mode: "test",
         contractPath: rogueContractPath,
         evidenceDir,
-        distDir: repoRoot, // points to authoritative distribution
+        distDir: isolatedSignerDir,
         trustedRef: DEFAULT_TRUSTED_REF,
+        keyId: "key-dice-test-signer-01",
+        testKeysPath: testKeysJsonPath,
+        signingKeyFile: testKeyPemPath,
       });
 
       expect(() => signer.execute()).toThrow(
         /FAIL-CLOSED: Test contract cannot claim human specification authority '@devrahmanbd'|FAIL-CLOSED: Test contract digest mismatch against test policy/,
       );
-
-      // Ensure zero attestations generated
       expect(existsSync(join(evidenceDir, "test-attestation.dsse.json"))).toBe(
         false,
       );
@@ -922,15 +1227,18 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
     });
 
     // Vector 7: trusted registry and schemas (mandatory-obligations.json, schemas/dice/*)
-    it("Vector 7: Tampering with mandatory-obligations.json or schemas is rejected fail-closed", () => {
+    it("Vector 7: Hostile tampering with mandatory-obligations.json or schemas in candidate tree is rejected fail-closed", () => {
       setupCandidateTree();
-      // Tamper with mandatory obligations
+      setupExternalAuthority();
+
+      // Candidate empties obligations in candidate tree
       const obPath = join(
         candidateBase,
         "registries/dice/mandatory-obligations.json",
       );
       writeFileSync(obPath, JSON.stringify([]));
 
+      // 1. Candidate extraction fails closed
       expect(() =>
         extractAndVerifySigningDistribution({
           repoRoot: candidateBase,
@@ -940,50 +1248,80 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
         }),
       ).toThrow(/FAIL-CLOSED: Signer distribution digest mismatch!/);
 
-      expect(existsSync(isolatedSignerDir)).toBe(false);
+      // 2. Protected extraction succeeds
+      extractAndVerifySigningDistribution({
+        externalDistDir: externalAuthorityDir,
+        targetDir: isolatedSignerDir,
+        expectedDistDigest: EXPECTED_DIST_DIGEST,
+        expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+      });
 
-      // Restore and tamper with schema
-      setupCandidateTree();
-      const schemaPath = join(
-        candidateBase,
-        "schemas/dice/evidence-envelope.schema.json",
+      // 3. Evidence has a missing receipt (candidate hoped empty obligations wouldn't check it)
+      const evidenceDir = join(p03TempDir, "missing-obligation-v7");
+      createValidEvidence(evidenceDir, {
+        skipReceipt: "OBL-SYS-SCOPE-GUARD-001",
+      });
+
+      const signer = new DiceSigningService({
+        repoRoot,
+        mode: "test",
+        contractPath: "registries/dice/test-qualification-contract.json",
+        evidenceDir,
+        distDir: isolatedSignerDir,
+        trustedRef: DEFAULT_TRUSTED_REF,
+        keyId: "key-dice-test-signer-01",
+        testKeysPath: testKeysJsonPath,
+        signingKeyFile: testKeyPemPath,
+      });
+
+      // Gate 6 strictly enforces all 4 mandatory obligations from isolatedSignerDir
+      expect(() => signer.execute()).toThrow(
+        /FAIL-CLOSED: Candidate qualification re-evaluation failed: QUALIFIED_(FAIL|BLOCKED)/,
       );
-      writeFileSync(schemaPath, JSON.stringify({ type: "any" }));
+      expect(existsSync(join(evidenceDir, "test-attestation.dsse.json"))).toBe(
+        false,
+      );
+      expect(existsSync(join(evidenceDir, "attestation.dsse.json"))).toBe(
+        false,
+      );
+    });
+
+    // Additional external trust enforcement tests
+    it("External Anchor Enforcement: Missing required external anchors fails closed", () => {
+      setupExternalAuthority();
+      expect(() =>
+        extractAndVerifySigningDistribution({
+          externalDistDir: externalAuthorityDir,
+          targetDir: isolatedSignerDir,
+          requireExternalAnchors: true,
+          expectedDistDigest: null,
+          expectedTestPolicyDigest: null,
+        }),
+      ).toThrow(/FAIL-CLOSED: External trust anchors required/);
+    });
+
+    it("External Distribution Integrity: Tampering with external distribution itself causes digest mismatch", () => {
+      setupExternalAuthority();
+      writeFileSync(
+        join(externalAuthorityDir, "registries/dice/test-policy.json"),
+        JSON.stringify({ tampered: true }),
+      );
 
       expect(() =>
         extractAndVerifySigningDistribution({
-          repoRoot: candidateBase,
+          externalDistDir: externalAuthorityDir,
           targetDir: isolatedSignerDir,
           expectedDistDigest: EXPECTED_DIST_DIGEST,
           expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
         }),
-      ).toThrow(/FAIL-CLOSED: Signer distribution digest mismatch!/);
-
+      ).toThrow(/FAIL-CLOSED: Test policy digest mismatch!/);
       expect(existsSync(isolatedSignerDir)).toBe(false);
     });
 
-    // Missing distribution file
-    it("Missing distribution asset fails closed with explicit error", () => {
-      setupCandidateTree();
-      rmSync(join(candidateBase, "scripts/dice-signing-service.mjs"));
-
-      expect(() =>
-        extractAndVerifySigningDistribution({
-          repoRoot: candidateBase,
-          targetDir: isolatedSignerDir,
-          expectedDistDigest: EXPECTED_DIST_DIGEST,
-          expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
-        }),
-      ).toThrow(
-        /FAIL-CLOSED: Required verifier distribution file missing: scripts\/dice-signing-service.mjs/,
-      );
-    });
-
-    // Symlink attack
-    it("Symlinked distribution asset is detected and rejected fail-closed", () => {
-      setupCandidateTree();
+    it("Symlinked asset in external authority is rejected fail-closed", () => {
+      setupExternalAuthority();
       const targetScript = join(
-        candidateBase,
+        externalAuthorityDir,
         "scripts/dice-signing-service.mjs",
       );
       rmSync(targetScript);
@@ -993,7 +1331,7 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
 
       expect(() =>
         extractAndVerifySigningDistribution({
-          repoRoot: candidateBase,
+          externalDistDir: externalAuthorityDir,
           targetDir: isolatedSignerDir,
           expectedDistDigest: EXPECTED_DIST_DIGEST,
           expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,

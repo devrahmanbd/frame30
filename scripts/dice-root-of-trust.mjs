@@ -229,6 +229,8 @@ export class DiceTrustedRoot {
     this.cacheDir =
       options.cacheDir || join(this.repoRoot, "artifacts/dice-trusted-root");
     this.allowUnpinnedRoots = options.allowUnpinnedRoots || false;
+    this.externalDistDir =
+      options.externalDistDir || process.env.DICE_EXTERNAL_DIST_DIR || null;
     this.trustedRootSha = null;
     this.trustedCommit = null;
     this.trustedTree = null;
@@ -338,6 +340,18 @@ export class DiceTrustedRoot {
         this.cacheDir,
         this.repoRoot,
       );
+    }
+
+    if (this.externalDistDir && existsSync(this.externalDistDir)) {
+      validateSafePath(this.externalDistDir);
+      for (const rel of SIGNER_DISTRIBUTION_FILES) {
+        const src = join(this.externalDistDir, rel);
+        if (existsSync(src)) {
+          const dest = join(this.cacheDir, rel);
+          mkdirSync(dirname(dest), { recursive: true });
+          copyFileSync(src, dest);
+        }
+      }
     }
 
     // In Stage 2.4, trusted-keys.json MUST be present in trusted root (zero candidate-local seeding)
@@ -575,6 +589,12 @@ export function extractAndVerifySigningDistribution(options = {}) {
   const repoRoot = options.repoRoot || process.cwd();
   const targetDir = options.targetDir || "/tmp/dice-protected-signer";
   const trustedRef = options.trustedRef || null;
+  const externalDistDir =
+    options.externalDistDir || process.env.DICE_EXTERNAL_DIST_DIR || null;
+  const requireExternalAnchors =
+    options.requireExternalAnchors !== undefined
+      ? options.requireExternalAnchors
+      : process.env.DICE_REQUIRE_EXTERNAL_ANCHORS === "1" || false;
   const files = options.files || SIGNER_DISTRIBUTION_FILES;
 
   validateSafePath(repoRoot);
@@ -585,7 +605,27 @@ export function extractAndVerifySigningDistribution(options = {}) {
   }
   mkdirSync(targetDir, { recursive: true });
 
-  if (trustedRef) {
+  if (externalDistDir) {
+    validateSafePath(externalDistDir);
+    for (const rel of files) {
+      validateSafePath(rel, { mustBeRelative: true });
+      const src = join(externalDistDir, rel);
+      if (!existsSync(src)) {
+        throw new Error(
+          `FAIL-CLOSED: Required verifier distribution file missing from external authority: ${rel}`,
+        );
+      }
+      if (lstatSync(src).isSymbolicLink()) {
+        throw new Error(
+          `FAIL-CLOSED: Distribution asset cannot be a symlink: ${rel}`,
+        );
+      }
+      validateSafePath(src, { baseDir: externalDistDir });
+      const dest = join(targetDir, rel);
+      mkdirSync(dirname(dest), { recursive: true });
+      copyFileSync(src, dest);
+    }
+  } else if (trustedRef) {
     validateTrustedRef(trustedRef);
     safeArchiveExtract(trustedRef, files, targetDir, repoRoot);
   } else {
@@ -633,6 +673,15 @@ export function extractAndVerifySigningDistribution(options = {}) {
     options.expectedTestPolicyDigest ||
     process.env.DICE_EXPECTED_TEST_POLICY_DIGEST ||
     null;
+
+  if (requireExternalAnchors) {
+    if (!expectedDistDigest || !expectedTestPolicyDigest) {
+      rmSync(targetDir, { recursive: true, force: true });
+      throw new Error(
+        "FAIL-CLOSED: External trust anchors required (DICE_REQUIRE_EXTERNAL_ANCHORS=1), but DICE_EXPECTED_SIGNER_DIST_DIGEST or DICE_EXPECTED_TEST_POLICY_DIGEST is not set (BLOCKED).",
+      );
+    }
+  }
 
   if (
     expectedTestPolicyDigest &&

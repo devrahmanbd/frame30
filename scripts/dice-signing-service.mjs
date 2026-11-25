@@ -226,6 +226,7 @@ export class DiceSigningService {
       repoRoot: this.repoRoot,
       trustedRef: this.trustedRef,
       allowUnpinnedRoots: this.allowUnpinnedRoots,
+      externalDistDir: this.distDir,
     });
     const trustedInfo = trustedRoot.resolve();
     console.log(`  ✓ Trusted Commit:     ${trustedInfo.trustedCommit}`);
@@ -361,11 +362,27 @@ export class DiceSigningService {
       throw new Error("FAIL-CLOSED: Detached receipt ledger is empty");
     }
 
-    const trustedKeys = this.testKeys
-      ? this.testKeys
-      : this.testKeysPath
-        ? JSON.parse(readFileSync(this.testKeysPath, "utf8"))
-        : trustedRoot.loadTrustedJson("registries/dice/trusted-keys.json");
+    let trustedKeys;
+    if (this.testKeys) {
+      trustedKeys = this.testKeys;
+    } else if (this.testKeysPath) {
+      trustedKeys = JSON.parse(readFileSync(this.testKeysPath, "utf8"));
+    } else {
+      try {
+        trustedKeys = trustedRoot.loadTrustedJson(
+          "registries/dice/trusted-keys.json",
+        );
+      } catch {
+        const p = join(this.distDir, "registries/dice/trusted-keys.json");
+        if (existsSync(p)) {
+          trustedKeys = JSON.parse(readFileSync(p, "utf8"));
+        } else {
+          throw new Error(
+            "FAIL-CLOSED: Authoritative registries/dice/trusted-keys.json missing from protected distribution",
+          );
+        }
+      }
+    }
 
     const signingAuthority = new DiceSigningAuthority({
       trustedKeys,
@@ -406,16 +423,33 @@ export class DiceSigningService {
     console.log(
       "\n[dice-signing] Gate 6: Re-evaluating method-level candidate qualification...",
     );
-    const mandatoryList = trustedRoot.loadTrustedJson(
-      "registries/dice/mandatory-obligations.json",
-    );
+    let mandatoryList;
+    let mandatoryRegistryPath;
+    try {
+      mandatoryList = trustedRoot.loadTrustedJson(
+        "registries/dice/mandatory-obligations.json",
+      );
+      mandatoryRegistryPath = trustedRoot.getTrustedPath(
+        "registries/dice/mandatory-obligations.json",
+      );
+    } catch {
+      mandatoryRegistryPath = join(
+        this.distDir,
+        "registries/dice/mandatory-obligations.json",
+      );
+      if (existsSync(mandatoryRegistryPath)) {
+        mandatoryList = JSON.parse(readFileSync(mandatoryRegistryPath, "utf8"));
+      } else {
+        throw new Error(
+          "FAIL-CLOSED: Authoritative registries/dice/mandatory-obligations.json missing from protected distribution",
+        );
+      }
+    }
     const planResult = generateFrozenPlan({
       candidateCommit,
       candidateTree,
       selectedObligations: [],
-      registryPath: trustedRoot.getTrustedPath(
-        "registries/dice/mandatory-obligations.json",
-      ),
+      registryPath: mandatoryRegistryPath,
     });
 
     const obligationsMap = new Map();

@@ -289,8 +289,26 @@ jobs:
                 "scripts/dice-signing-service.mjs"
               ];
 
-              const EXPECTED_TEST_POLICY_DIGEST = "eb447909aff1afe029c5207e069259690a7975245926dd7ae0caef01b789380d";
-              const EXPECTED_DIST_DIGEST = "3155cac15727ae58205dc16f729e051570068ce2c506b1a5f6bdfb976419273b";
+              const isExternal = Boolean(
+                process.env.DICE_EXPECTED_SIGNER_DIST_DIGEST &&
+                  process.env.DICE_EXPECTED_TEST_POLICY_DIGEST,
+              );
+              if (isExternal) {
+                console.log(
+                  "[dice-signing] External trust authority active: Anchors injected from CircleCI Context / Runner Environment",
+                );
+              } else {
+                console.log(
+                  "[dice-signing] NOTICE: Operating with candidate-local pinned fallback anchors. Full external authority requires CircleCI Context 'dice-trust-authority'.",
+                );
+              }
+
+              const EXPECTED_TEST_POLICY_DIGEST =
+                process.env.DICE_EXPECTED_TEST_POLICY_DIGEST ||
+                "eb447909aff1afe029c5207e069259690a7975245926dd7ae0caef01b789380d";
+              const EXPECTED_DIST_DIGEST =
+                process.env.DICE_EXPECTED_SIGNER_DIST_DIGEST ||
+                "d855fdf18572aceb01bed5027c77f52b497d85d7549892c94b54ba881278d194";
 
               for (const rel of FILES) {
                 const src = path.resolve(process.cwd(), rel);
