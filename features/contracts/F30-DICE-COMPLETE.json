@@ -88,6 +88,8 @@
       "registries/dice/mandatory-obligations.json",
       "registries/dice/trusted-profiles.json",
       "registries/dice/trusted-keys.json",
+      "registries/dice/test-qualification-contract.json",
+      "registries/dice/test-policy.json",
       "docs/verification-evidence/dice/DICE-COMPLETION-REPORT.md",
       "docs/verification-evidence/dice/DICE-REQUIREMENT-TRACEABILITY.md",
       "docs/verification-evidence/dice/DICE-TRUST-BOUNDARY-REPORT.md",
@@ -168,6 +170,8 @@
     "registries/dice/mandatory-obligations.json",
     "registries/dice/trusted-profiles.json",
     "registries/dice/trusted-keys.json",
+    "registries/dice/test-qualification-contract.json",
+    "registries/dice/test-policy.json",
     "docs/verification-evidence/dice/**",
     "docs/verification-evidence/**"
   ],

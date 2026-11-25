@@ -339,4 +339,143 @@ describe("Frame30 DICE Stage 2.4: Isolated Signing Authority (Section 4)", () =>
     expect(verifyRes.valid).toBe(true);
     expect(verifyRes.statement.predicate.qualification).toBe("QUALIFIED_PASS");
   });
+
+  describe("P0-3: Test vs Production Signing Mode Segregation", () => {
+    it("Test Mode: Fails closed if DICE_SIGNING_KEY is present in environment", () => {
+      const evDir = join(testTempDir, "ev-test-prod-key-leak");
+      createValidEvidenceDir(evDir);
+
+      const oldEnv = process.env.DICE_SIGNING_KEY;
+      try {
+        process.env.DICE_SIGNING_KEY = "dummy-production-key";
+        const service = new DiceSigningService({
+          repoRoot,
+          mode: "test",
+          evidenceDir: evDir,
+          keyId: "key-dice-test-signer-01",
+          signingKeyPem: testKeypair.privateKey,
+          testKeys: [
+            {
+              keyid: "key-dice-test-signer-01",
+              algorithm: "ed25519",
+              status: "active",
+              roles: ["dice-attestation-signer"],
+              public_key_pem: testKeypair.publicKey,
+            },
+          ],
+          allowUnapprovedContract: true,
+          allowUnpinnedRoots: true,
+        });
+
+        expect(() => service.execute()).toThrow(
+          /DICE_SIGNING_KEY is present in test mode/,
+        );
+      } finally {
+        if (oldEnv !== undefined) {
+          process.env.DICE_SIGNING_KEY = oldEnv;
+        } else {
+          delete process.env.DICE_SIGNING_KEY;
+        }
+      }
+    });
+
+    it("Test Mode: Fails closed if production key ID 'key-dice-authoritative-01' is requested", () => {
+      const evDir = join(testTempDir, "ev-test-prod-keyid");
+      createValidEvidenceDir(evDir);
+
+      const service = new DiceSigningService({
+        repoRoot,
+        mode: "test",
+        evidenceDir: evDir,
+        keyId: "key-dice-authoritative-01",
+        signingKeyPem: testKeypair.privateKey,
+        allowUnapprovedContract: true,
+        allowUnpinnedRoots: true,
+      });
+
+      expect(() => service.execute()).toThrow(
+        /Production signing key ID 'key-dice-authoritative-01' is forbidden in test mode/,
+      );
+    });
+
+    it("Production Mode: Rejects test contract fixture with 'is_test_contract: true'", () => {
+      const evDir = join(testTempDir, "ev-prod-reject-test-contract");
+      createValidEvidenceDir(evDir);
+
+      const service = new DiceSigningService({
+        repoRoot,
+        mode: "production",
+        contractPath: "registries/dice/test-qualification-contract.json",
+        evidenceDir: evDir,
+        allowUnapprovedContract: false,
+        allowUnpinnedRoots: true,
+      });
+
+      expect(() => service.execute()).toThrow(
+        /Production signing rejected test contract/,
+      );
+    });
+
+    it("Production Mode: Rejects test key ID 'key-dice-test-signer-01'", () => {
+      const evDir = join(testTempDir, "ev-prod-reject-test-key");
+      createValidEvidenceDir(evDir);
+
+      const service = new DiceSigningService({
+        repoRoot,
+        mode: "production",
+        evidenceDir: evDir,
+        keyId: "key-dice-test-signer-01",
+        allowUnapprovedContract: true,
+        allowUnpinnedRoots: true,
+      });
+
+      expect(() => service.execute()).toThrow(
+        /Test key ID 'key-dice-test-signer-01' cannot be used in production signing mode/,
+      );
+    });
+
+    it("Positive Test Mode: Generates non-authoritative test attestation with TEST_QUALIFIED_NON_AUTHORITATIVE", () => {
+      const evDir = join(testTempDir, "ev-test-positive");
+      createValidEvidenceDir(evDir);
+
+      const service = new DiceSigningService({
+        repoRoot,
+        mode: "test",
+        contractPath: "registries/dice/test-qualification-contract.json",
+        evidenceDir: evDir,
+        keyId: "key-dice-test-signer-01",
+        signingKeyPem: testKeypair.privateKey,
+        testKeys: [
+          {
+            keyid: "key-dice-test-signer-01",
+            algorithm: "ed25519",
+            status: "active",
+            roles: ["dice-attestation-signer"],
+            public_key_pem: testKeypair.publicKey,
+          },
+        ],
+        allowUnapprovedContract: false,
+        allowUnpinnedRoots: false,
+      });
+
+      const res = service.execute();
+      expect(res.status).toBe("TEST_ATTESTED");
+      expect(res.qualification).toBe("TEST_QUALIFIED_NON_AUTHORITATIVE");
+      expect(res.envelopePath).toContain("test-attestation.dsse.json");
+      expect(existsSync(res.envelopePath!)).toBe(true);
+
+      const envelope = JSON.parse(readFileSync(res.envelopePath!, "utf8"));
+      expect(envelope.signatures[0].keyid).toBe("key-dice-test-signer-01");
+      const statement = JSON.parse(
+        Buffer.from(envelope.payload, "base64").toString("utf8"),
+      );
+      expect(statement.predicateType).toBe(
+        "https://framique.com/dice/test-attestation/v1",
+      );
+      expect(statement.predicate.qualification).toBe(
+        "TEST_QUALIFIED_NON_AUTHORITATIVE",
+      );
+      expect(statement.predicate.mode).toBe("test");
+    });
+  });
 });

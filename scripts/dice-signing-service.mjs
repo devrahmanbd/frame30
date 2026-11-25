@@ -43,13 +43,21 @@ import {
 export class DiceSigningService {
   constructor(options = {}) {
     this.repoRoot = options.repoRoot || process.cwd();
+    this.mode = options.mode || process.env.DICE_SIGNING_MODE || "production";
+    if (this.mode !== "test" && this.mode !== "production") {
+      throw new Error(
+        `FAIL-CLOSED: Invalid signing mode '${this.mode}', must be 'test' or 'production'`,
+      );
+    }
     this.trustedRef =
       options.trustedRef || process.env.DICE_TRUSTED_REF || DEFAULT_TRUSTED_REF;
     this.evidenceDir = options.evidenceDir || "artifacts/dice-evidence";
     this.contractPath =
       options.contractPath ||
       process.env.ACTIVE_CHANGE_CONTRACT ||
-      "features/contracts/F30-DICE-COMPLETE.json";
+      (this.mode === "test"
+        ? "registries/dice/test-qualification-contract.json"
+        : "features/contracts/F30-DICE-COMPLETE.json");
     this.candidateCommit = options.candidateCommit
       ? validateCommitSha(options.candidateCommit)
       : null;
@@ -61,9 +69,18 @@ export class DiceSigningService {
     this.keyId =
       options.keyId ||
       process.env.DICE_SIGNING_KEY_ID ||
-      "key-dice-authoritative-01";
+      (this.mode === "test"
+        ? "key-dice-test-signer-01"
+        : "key-dice-authoritative-01");
     this.signingKeyPem =
-      options.signingKeyPem || process.env.DICE_SIGNING_KEY || null;
+      options.signingKeyPem ||
+      (options.signingKeyFile && existsSync(options.signingKeyFile)
+        ? readFileSync(options.signingKeyFile, "utf8")
+        : null) ||
+      (this.mode === "test"
+        ? process.env.DICE_TEST_SIGNING_KEY
+        : process.env.DICE_SIGNING_KEY) ||
+      null;
     this.allowUnapprovedContract = options.allowUnapprovedContract || false;
     this.allowUnpinnedRoots = options.allowUnpinnedRoots || false;
   }
@@ -85,11 +102,40 @@ export class DiceSigningService {
     console.log(
       "  Normative Standard: F30-DICE-ARCH-001 Revision 2.3 & Stage 2.4",
     );
+    console.log(`  Mode:               ${this.mode}`);
     console.log(`  Evidence Directory: ${this.evidenceDir}`);
     console.log(`  Contract Path:      ${this.contractPath}`);
     console.log(
       "===============================================================================\n",
     );
+
+    // Gate 0: Mode Segregation & Key Isolation
+    console.log(
+      `[dice-signing] Gate 0: Verifying signing mode boundary (mode: ${this.mode})...`,
+    );
+    if (this.mode === "test") {
+      if (process.env.DICE_SIGNING_KEY && process.env.DICE_SIGNING_KEY.trim()) {
+        throw new Error(
+          "FAIL-CLOSED: DICE_SIGNING_KEY is present in test mode. Production signing keys must NEVER be exposed to test environments.",
+        );
+      }
+      if (this.keyId === "key-dice-authoritative-01") {
+        throw new Error(
+          "FAIL-CLOSED: Production signing key ID 'key-dice-authoritative-01' is forbidden in test mode.",
+        );
+      }
+      console.log(
+        "  ✓ Test mode verified: production key strictly absent, test key ID configured",
+      );
+    } else {
+      // Production mode
+      if (this.keyId === "key-dice-test-signer-01") {
+        throw new Error(
+          `FAIL-CLOSED: Test key ID '${this.keyId}' cannot be used in production signing mode.`,
+        );
+      }
+      console.log("  ✓ Production mode verified: test signer key rejected");
+    }
 
     // Check 1: Candidate Identity
     console.log(
@@ -192,17 +238,78 @@ export class DiceSigningService {
       throw new Error("FAIL-CLOSED: Contract missing change_id");
     }
 
-    if (
-      !this.allowUnapprovedContract &&
-      contract.approval_state !== "approved"
-    ) {
-      throw new Error(
-        `FAIL-CLOSED: Contract approval_state is '${contract.approval_state}', expected 'approved' for authoritative signing`,
+    if (this.mode === "test") {
+      if (!contract.is_test_contract) {
+        throw new Error(
+          "FAIL-CLOSED: Test-mode signing requires a dedicated test qualification contract with 'is_test_contract: true'",
+        );
+      }
+      if (contract.owner === "@devrahmanbd") {
+        throw new Error(
+          "FAIL-CLOSED: Test contract cannot claim human specification authority '@devrahmanbd'",
+        );
+      }
+      if (contract.approval_state !== "approved") {
+        throw new Error(
+          `FAIL-CLOSED: Test contract approval_state is '${contract.approval_state}', expected 'approved' for test qualification`,
+        );
+      }
+      const testPolicyPath = resolve(
+        this.repoRoot,
+        "registries/dice/test-policy.json",
+      );
+      if (!existsSync(testPolicyPath)) {
+        throw new Error(
+          "FAIL-CLOSED: Missing registries/dice/test-policy.json",
+        );
+      }
+      const testPolicy = JSON.parse(readFileSync(testPolicyPath, "utf8"));
+      const rawContractBuf = readFileSync(fullContractPath);
+      const contractDigest = createHash("sha256")
+        .update(rawContractBuf)
+        .digest("hex");
+      if (
+        testPolicy.test_contract &&
+        testPolicy.test_contract.sha256 !== contractDigest
+      ) {
+        throw new Error(
+          `FAIL-CLOSED: Test contract digest mismatch against test policy: expected ${testPolicy.test_contract.sha256}, got ${contractDigest}`,
+        );
+      }
+      if (
+        testPolicy.test_contract &&
+        testPolicy.test_contract.change_id !== contract.change_id
+      ) {
+        throw new Error(
+          `FAIL-CLOSED: Test contract change_id mismatch against test policy: expected ${testPolicy.test_contract.change_id}, got ${contract.change_id}`,
+        );
+      }
+      console.log(
+        `  ✓ Test contract authorization verified: ${contract.change_id} (digest: ${contractDigest}, owner: ${contract.owner})`,
+      );
+    } else {
+      if (contract.is_test_contract) {
+        throw new Error(
+          "FAIL-CLOSED: Production signing rejected test contract. Test contracts cannot produce authoritative production attestations.",
+        );
+      }
+      if (!this.allowUnapprovedContract && contract.owner !== "@devrahmanbd") {
+        throw new Error(
+          `FAIL-CLOSED: Production contract must be owned by human authority '@devrahmanbd', got '${contract.owner}'`,
+        );
+      }
+      if (
+        !this.allowUnapprovedContract &&
+        contract.approval_state !== "approved"
+      ) {
+        throw new Error(
+          `FAIL-CLOSED: Contract approval_state is '${contract.approval_state}', expected 'approved' for authoritative signing`,
+        );
+      }
+      console.log(
+        `  ✓ Contract authorization verified: ${contract.change_id} (state: ${contract.approval_state})`,
       );
     }
-    console.log(
-      `  ✓ Contract authorization verified: ${contract.change_id} (state: ${contract.approval_state})`,
-    );
 
     // Check 3: Trusted Policy Identity
     console.log(
@@ -313,6 +420,19 @@ export class DiceSigningService {
     console.log(
       "\n[dice-signing] Gate 7: Verifying signer key role and revocation status...",
     );
+    if (this.mode === "test" && this.keyId === "key-dice-authoritative-01") {
+      throw new Error(
+        "FAIL-CLOSED: Production signing key ID 'key-dice-authoritative-01' is forbidden in test mode",
+      );
+    }
+    if (
+      this.mode === "production" &&
+      this.keyId === "key-dice-test-signer-01"
+    ) {
+      throw new Error(
+        "FAIL-CLOSED: Test key ID 'key-dice-test-signer-01' is forbidden in production signing mode",
+      );
+    }
     const keyRes = signingAuthority.resolveKey(this.keyId);
     if (keyRes.status === "UNKNOWN_KEY") {
       throw new Error(
@@ -344,25 +464,32 @@ export class DiceSigningService {
       console.log(
         "\n===============================================================================",
       );
-      console.log("  [dice-signing] UNATTESTED: DICE_SIGNING_KEY unset.");
       console.log(
-        "  All 7 verification gates passed. Candidate is qualified but UNATTESTED.",
+        `  [dice-signing] UNATTESTED: ${this.mode === "test" ? "DICE_TEST_SIGNING_KEY / test key" : "DICE_SIGNING_KEY"} unset.`,
+      );
+      console.log(
+        `  All verification gates passed. Candidate is qualified but UNATTESTED (mode: ${this.mode}).`,
       );
       console.log(
         "===============================================================================\n",
       );
       return {
         status: "UNATTESTED",
+        mode: this.mode,
         candidateCommit,
         candidateTree,
-        qualification: "QUALIFIED_PASS",
+        qualification:
+          this.mode === "test"
+            ? "TEST_QUALIFIED_NON_AUTHORITATIVE"
+            : "QUALIFIED_PASS",
       };
     }
 
     // Construct Statement and Sign
     console.log(
-      "\n[dice-signing] Generating authoritative in-toto DSSE attestation...",
+      `\n[dice-signing] Generating ${this.mode === "test" ? "non-authoritative test" : "authoritative"} in-toto DSSE attestation...`,
     );
+    const isTestMode = this.mode === "test";
     const statement = {
       _type: "https://in-toto.io/Statement/v1",
       subject: [
@@ -374,9 +501,14 @@ export class DiceSigningService {
           },
         },
       ],
-      predicateType: "https://framique.com/dice/attestation/v1",
+      predicateType: isTestMode
+        ? "https://framique.com/dice/test-attestation/v1"
+        : "https://framique.com/dice/attestation/v1",
       predicate: {
-        qualification: "QUALIFIED_PASS",
+        qualification: isTestMode
+          ? "TEST_QUALIFIED_NON_AUTHORITATIVE"
+          : "QUALIFIED_PASS",
+        mode: this.mode,
         plan_hash: planResult.planHash,
         contract: contract.change_id,
         trusted_root_sha: trustedInfo.trustedRootSha,
@@ -398,10 +530,13 @@ export class DiceSigningService {
       },
     );
 
-    const envelopePath = join(fullEvidenceDir, "attestation.dsse.json");
+    const envelopeFileName = isTestMode
+      ? "test-attestation.dsse.json"
+      : "attestation.dsse.json";
+    const envelopePath = join(fullEvidenceDir, envelopeFileName);
     writeFileSync(envelopePath, canonicalizeJson(envelope), "utf8");
     console.log(
-      `  ✓ Authoritative in-toto DSSE attestation envelope written to: ${envelopePath}`,
+      `  ✓ ${isTestMode ? "Test" : "Authoritative"} in-toto DSSE attestation envelope written to: ${envelopePath}`,
     );
 
     // Verify envelope immediately
@@ -419,17 +554,18 @@ export class DiceSigningService {
       "\n===============================================================================",
     );
     console.log(
-      "  [dice-signing] ✓ ATTESTATION COMPLETE: QUALIFIED_PASS & AUTHORITATIVELY SIGNED",
+      `  [dice-signing] ✓ ATTESTATION COMPLETE: ${statement.predicate.qualification} (${this.mode} mode)`,
     );
     console.log(
       "===============================================================================\n",
     );
 
     return {
-      status: "ATTESTED",
+      status: isTestMode ? "TEST_ATTESTED" : "ATTESTED",
+      mode: this.mode,
       candidateCommit,
       candidateTree,
-      qualification: "QUALIFIED_PASS",
+      qualification: statement.predicate.qualification,
       envelopePath,
       envelope,
     };
@@ -438,31 +574,37 @@ export class DiceSigningService {
 
 // CLI Execution
 if (process.argv[1] && process.argv[1].endsWith("dice-signing-service.mjs")) {
-  let contractPath =
-    process.env.ACTIVE_CHANGE_CONTRACT ||
-    "features/contracts/F30-DICE-COMPLETE.json";
+  let mode = process.env.DICE_SIGNING_MODE || "production";
+  let contractPath = null;
   let evidenceDir = "artifacts/dice-evidence";
   let candidateCommit = null;
   let candidateTree = null;
   let testKeysPath = null;
-  let keyId = process.env.DICE_SIGNING_KEY_ID || "key-dice-authoritative-01";
+  let keyId = null;
   let trustedRef = process.env.DICE_TRUSTED_REF || DEFAULT_TRUSTED_REF;
+  let signingKeyPem = null;
+  let signingKeyFile = null;
 
   for (const arg of process.argv.slice(2)) {
     if (arg === "--help" || arg === "-h") {
       console.log(`Usage: node scripts/dice-signing-service.mjs [options]
 
 Options:
-  --contract=<path>         Path to change contract (default: features/contracts/F30-DICE-STAGE2-4-1.json)
+  --mode=<test|production>  Signing mode (default: production)
+  --contract=<path>         Path to change contract
   --evidence-dir=<path>     Path to evidence directory (default: artifacts/dice-evidence)
   --candidate-commit=<sha>  Candidate commit SHA (verified against git object database)
   --candidate-tree=<sha>    Candidate tree SHA (verified against git object database)
   --trusted-ref=<ref>       Git commit/tag for trusted root (default: 9e6a82abb3502edb84f2d7be9fcc36401b380bfb)
-  --key-id=<id>             Key ID for signing (default: key-dice-authoritative-01)
+  --key-id=<id>             Key ID for signing
   --test-keys=<path>        Path to test trusted-keys.json for isolated test verification
+  --signing-key-pem=<pem>   Signing key in PEM format
+  --signing-key-file=<path> Path to signing key PEM file
   --help, -h                Show this help message
 `);
       process.exit(0);
+    } else if (arg.startsWith("--mode=")) {
+      mode = arg.split("=")[1];
     } else if (arg.startsWith("--contract=")) {
       contractPath = arg.split("=")[1];
     } else if (arg.startsWith("--evidence-dir=")) {
@@ -477,10 +619,27 @@ Options:
       keyId = arg.split("=")[1];
     } else if (arg.startsWith("--test-keys=")) {
       testKeysPath = arg.split("=")[1];
+    } else if (arg.startsWith("--signing-key-pem=")) {
+      signingKeyPem = arg.substring("--signing-key-pem=".length);
+    } else if (arg.startsWith("--signing-key-file=")) {
+      signingKeyFile = arg.split("=")[1];
     }
   }
 
+  contractPath =
+    contractPath ||
+    process.env.ACTIVE_CHANGE_CONTRACT ||
+    (mode === "test"
+      ? "registries/dice/test-qualification-contract.json"
+      : "features/contracts/F30-DICE-COMPLETE.json");
+
+  keyId =
+    keyId ||
+    process.env.DICE_SIGNING_KEY_ID ||
+    (mode === "test" ? "key-dice-test-signer-01" : "key-dice-authoritative-01");
+
   const service = new DiceSigningService({
+    mode,
     contractPath,
     evidenceDir,
     candidateCommit,
@@ -488,10 +647,12 @@ Options:
     trustedRef,
     keyId,
     testKeysPath,
+    signingKeyPem,
+    signingKeyFile,
   });
   try {
     const res = service.execute();
-    if (res.status !== "ATTESTED") {
+    if (res.status !== "ATTESTED" && res.status !== "TEST_ATTESTED") {
       console.error(
         `\n[dice-signing] ✗ UNATTESTED: Candidate qualified but attestation signing was not completed (status: ${res.status}). Exit code 1.`,
       );

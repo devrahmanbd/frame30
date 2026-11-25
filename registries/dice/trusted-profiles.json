@@ -11,7 +11,8 @@
     "allowed_cli_args": [
       "^scripts/[a-zA-Z0-9_-]+\\.mjs$",
       "^/workspace/trusted/scripts/[a-zA-Z0-9_-]+\\.mjs$",
-      "^--contract=features/contracts/[a-zA-Z0-9_.-]+\\.json$",
+      "^--contract=[a-zA-Z0-9/_.-]+\\.json$",
+      "^--contract-digest=[a-f0-9]{64}$",
       "^--diff-manifest=[a-zA-Z0-9/_.-]+\\.json$",
       "^--target-dir=[a-zA-Z0-9/_.-]+$"
     ],

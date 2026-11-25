@@ -1,9 +1,9 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-11-25T09:30:31.536Z",
+  "generated_at": "2026-11-25T11:58:31.147Z",
   "git": {
-    "commit": "c88c44d50078b55a38e9e3f5e74af916025933d0",
-    "tree": "6d637f7a1aa3d59fc95f7e23ded6ca62ab8818a6",
+    "commit": "ea4af6419b001373dde75a9892e8472e43c7cdd0",
+    "tree": "25a1018a4e0f5aa94b6d7a7c453c8d2fadf54966",
     "branch": "dice/complete-implementation",
     "clean": false
   },
@@ -21,18 +21,18 @@
       "file": "bend-proof.txt",
       "layer": "Layer 02: Computational Law",
       "tool": "Bend 2.0.40",
-      "sha256": "3e42507ddfb6efacb0f235fb644fcdcb738f131ea962a9cff34f30d8960e1c38",
+      "sha256": "ab4d001de4b6bdfbda684ec7603f5f1f809938abc2fb5272e816c7c0155ac1e4",
       "sizeBytes": 1753,
-      "modifiedAt": "2026-11-25T08:02:21.372Z",
+      "modifiedAt": "2026-11-25T11:58:21.592Z",
       "summary": "============================================================================="
     },
     {
       "file": "mutation-sensitivity-receipt.txt",
       "layer": "Layer 08: Mutation Sensitivity",
       "tool": "Adversarial Harness",
-      "sha256": "16777c85b9ae1ff7b90bb86a93f3038032361ce3947a24e82cfac89dfe5caa79",
+      "sha256": "912155a0b4762ba31744b968304c6496b16bc17f8191ec09b7e0aa4301c8278c",
       "sizeBytes": 9037,
-      "modifiedAt": "2026-11-25T08:02:22.056Z",
+      "modifiedAt": "2026-11-25T11:58:22.351Z",
       "summary": "============================================================================="
     },
     {

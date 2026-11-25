@@ -14,8 +14,16 @@
  */
 
 import { execFileSync, spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, realpathSync } from "node:fs";
-import { dirname, join } from "node:path";
+import {
+  existsSync,
+  mkdirSync,
+  realpathSync,
+  lstatSync,
+  statSync,
+  readFileSync,
+} from "node:fs";
+import { dirname, basename, join, resolve, isAbsolute } from "node:path";
+import { createHash } from "node:crypto";
 
 export class DiceSandbox {
   constructor(options = {}) {
@@ -141,6 +149,74 @@ export class DiceSandbox {
     };
   }
 
+  validateAndProcessInputMounts(inputMounts = []) {
+    const verifiedMounts = [];
+    for (const mount of inputMounts) {
+      if (!mount || !mount.hostPath || !mount.sandboxPath) {
+        throw new Error(
+          "FAIL-CLOSED: Input mount must specify both hostPath and sandboxPath",
+        );
+      }
+
+      const hostRaw = mount.hostPath;
+      if (!existsSync(hostRaw)) {
+        throw new Error(
+          `FAIL-CLOSED: Input mount host file does not exist: ${hostRaw}`,
+        );
+      }
+      const lstat = lstatSync(hostRaw);
+      if (lstat.isSymbolicLink()) {
+        throw new Error(
+          `FAIL-CLOSED: Input mount host file cannot be a symbolic link: ${hostRaw}`,
+        );
+      }
+
+      const canonicalHost = realpathSync(resolve(hostRaw));
+      const stat = statSync(canonicalHost);
+      if (!stat.isFile()) {
+        throw new Error(
+          `FAIL-CLOSED: Input mount host path must be a regular file: ${hostRaw}`,
+        );
+      }
+
+      const expectedBasename = basename(hostRaw);
+      if (basename(canonicalHost) !== expectedBasename) {
+        throw new Error(
+          `FAIL-CLOSED: Path substitution detected for input mount: ${hostRaw} -> ${canonicalHost}`,
+        );
+      }
+
+      if (!isAbsolute(mount.sandboxPath) || mount.sandboxPath.includes("..")) {
+        throw new Error(
+          `FAIL-CLOSED: Sandbox mount path must be absolute and cannot traverse: ${mount.sandboxPath}`,
+        );
+      }
+
+      const fileBuffer = readFileSync(canonicalHost);
+      const actualDigest = createHash("sha256")
+        .update(fileBuffer)
+        .digest("hex");
+
+      if (mount.expectedDigest) {
+        if (
+          actualDigest.toLowerCase() !==
+          mount.expectedDigest.toLowerCase().trim()
+        ) {
+          throw new Error(
+            `FAIL-CLOSED: Pre-execution digest mismatch for input mount '${hostRaw}'. Expected ${mount.expectedDigest}, got ${actualDigest}`,
+          );
+        }
+      }
+
+      verifiedMounts.push({
+        hostPath: canonicalHost,
+        sandboxPath: mount.sandboxPath,
+        digest: actualDigest,
+      });
+    }
+    return verifiedMounts;
+  }
+
   buildBwrapArgs(options = {}) {
     const {
       sourceSnapshot,
@@ -154,6 +230,7 @@ export class DiceSandbox {
       allowedBindPaths = [],
       maskGit = true,
       maskEnv = true,
+      inputMounts = [],
     } = options;
 
     if (!sourceSnapshot) {
@@ -238,6 +315,13 @@ export class DiceSandbox {
       args.push("--tmpfs", "/workspace/out");
     }
 
+    // 8b. Single-file read-only input mounts (P0-1)
+    const verifiedMounts = this.validateAndProcessInputMounts(inputMounts);
+    for (const m of verifiedMounts) {
+      args.push("--dir", dirname(m.sandboxPath));
+      args.push("--ro-bind", m.hostPath, m.sandboxPath);
+    }
+
     // 9. Remount root as read-only (prevents creating files outside /tmp or /workspace/out)
     args.push("--remount-ro", "/");
 
@@ -293,6 +377,12 @@ export class DiceSandbox {
   }
 
   execute(options = {}) {
+    const verifiedMounts = this.validateAndProcessInputMounts(
+      options.inputMounts || [],
+    );
+    const inputDigests = Object.fromEntries(
+      verifiedMounts.map((m) => [m.sandboxPath, m.digest]),
+    );
     const isAuthoritative = options.isAuthoritative !== false;
     const envCheck = this.validateEnvironment(isAuthoritative);
     if (envCheck.status === "BLOCKED") {
@@ -302,6 +392,8 @@ export class DiceSandbox {
         stdout: "",
         stderr: envCheck.reason,
         diagnostics: envCheck.reason,
+        inputMounts: verifiedMounts,
+        inputDigests,
       };
     }
 
@@ -313,6 +405,8 @@ export class DiceSandbox {
         stdout:
           "[dice-sandbox] macOS dry-run execution completed without containment.",
         stderr: "",
+        inputMounts: verifiedMounts,
+        inputDigests,
       };
     }
 
@@ -403,6 +497,8 @@ export class DiceSandbox {
       exitCode,
       stdout: result.stdout || "",
       stderr,
+      inputMounts: verifiedMounts,
+      inputDigests,
     };
   }
 }

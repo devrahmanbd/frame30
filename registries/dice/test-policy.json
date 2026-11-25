@@ -1,0 +1,18 @@
+{
+  "schema_version": "2.4.0",
+  "policy_id": "DICE-TEST-QUALIFICATION-POLICY-v1",
+  "test_contract": {
+    "change_id": "F30-DICE-TEST-ONLY-QUAL",
+    "path": "registries/dice/test-qualification-contract.json",
+    "sha256": "1183a8790d95ae213f4adecf890dc448c1b2adcef5bf90a3185609ed344f6873",
+    "owner": "@dice-test-runner",
+    "is_test_contract": true
+  },
+  "test_signing": {
+    "allowed_modes": [
+      "test"
+    ],
+    "test_key_id": "key-dice-test-signer-01",
+    "reject_production_keys": true
+  }
+}

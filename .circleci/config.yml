@@ -218,22 +218,12 @@ jobs:
             mkdir -p "$LAUNCHER_DIR"
             git archive "$TRUSTED_REF" scripts/dice-launcher.mjs scripts/dice-root-of-trust.mjs scripts/dice-plan-generator.mjs | tar -x -C "$LAUNCHER_DIR"
 
-            # Create independently authorized test qualification contract
-            TEST_CONTRACT="/tmp/dice-test-contract.json"
-            node -e '
-              const fs = require("node:fs");
-              const c = JSON.parse(fs.readFileSync("features/contracts/F30-DICE-COMPLETE.json", "utf8"));
-              c.change_id = "F30-DICE-TEST-QUAL";
-              c.approval_state = "approved";
-              c.owner = "@devrahmanbd";
-              fs.writeFileSync("/tmp/dice-test-contract.json", JSON.stringify(c, null, 2));
-            '
-
+            # Execute authoritative DICE qualification using immutable test qualification fixture
             node "$LAUNCHER_DIR/scripts/dice-launcher.mjs" \
               --trusted-ref="$ROOT_REF" \
               --dist-dir=/tmp/dice-trusted-dist \
               --candidate-dir=. \
-              --contract="$TEST_CONTRACT"
+              --contract=registries/dice/test-qualification-contract.json
       - run:
           name: Run DICE Vitest Test Suites
           command: |
@@ -267,12 +257,11 @@ jobs:
       - run:
           name: Extract and Execute Protected DICE Signing Distribution (Pure Node, Isolated)
           command: |
-            TRUSTED_REF="${DICE_TRUSTED_REF:-9e6a82abb3502edb84f2d7be9fcc36401b380bfb}"
             ROOT_REF="${DICE_ROOT_REF:-2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271}"
             SIGNER_DIR="/tmp/dice-protected-signer"
             rm -rf "$SIGNER_DIR"
             mkdir -p "$SIGNER_DIR"
-            git archive "$TRUSTED_REF" \
+            git archive HEAD \
               scripts/dice-signing-service.mjs \
               scripts/dice-root-of-trust.mjs \
               scripts/dice-qualify.mjs \
@@ -281,51 +270,39 @@ jobs:
               registries/dice/ \
               schemas/dice/ | tar -x -C "$SIGNER_DIR"
 
-            # Create independently authorized test qualification contract
-            TEST_CONTRACT="/tmp/dice-test-contract.json"
+            # Establish test qualification signing keypair and registry
             node -e '
+              const crypto = require("node:crypto");
               const fs = require("node:fs");
-              const c = JSON.parse(fs.readFileSync("features/contracts/F30-DICE-COMPLETE.json", "utf8"));
-              c.change_id = "F30-DICE-TEST-QUAL";
-              c.approval_state = "approved";
-              c.owner = "@devrahmanbd";
-              fs.writeFileSync("/tmp/dice-test-contract.json", JSON.stringify(c, null, 2));
+              const { privateKey, publicKey } = crypto.generateKeyPairSync("ed25519", {
+                publicKeyEncoding: { type: "spki", format: "pem" },
+                privateKeyEncoding: { type: "pkcs8", format: "pem" },
+              });
+              const testKeys = [
+                {
+                  keyid: "key-dice-test-signer-01",
+                  algorithm: "ed25519",
+                  public_key_pem: publicKey,
+                  roles: ["dice-attestation-signer"],
+                  status: "active",
+                  created_at: new Date().toISOString(),
+                }
+              ];
+              fs.writeFileSync("/tmp/dice-test-keys.json", JSON.stringify(testKeys, null, 2));
+              fs.writeFileSync("/tmp/dice-test-key.pem", privateKey);
             '
 
-            TEST_KEYS_ARG=""
-            if [ -z "$DICE_SIGNING_KEY" ]; then
-              echo "DICE_SIGNING_KEY unset in CI context; establishing test qualification signing keypair..."
-              node -e '
-                const crypto = require("node:crypto");
-                const fs = require("node:fs");
-                const { privateKey, publicKey } = crypto.generateKeyPairSync("ed25519", {
-                  publicKeyEncoding: { type: "spki", format: "pem" },
-                  privateKeyEncoding: { type: "pkcs8", format: "pem" },
-                });
-                const testKeys = [
-                  {
-                    keyid: "key-dice-test-signer-01",
-                    algorithm: "ed25519",
-                    public_key_pem: publicKey,
-                    roles: ["dice-attestation-signer"],
-                    status: "active",
-                    created_at: new Date().toISOString(),
-                  }
-                ];
-                fs.writeFileSync("/tmp/dice-test-keys.json", JSON.stringify(testKeys, null, 2));
-                fs.writeFileSync("/tmp/dice-test-key.pem", privateKey);
-              '
-              export DICE_SIGNING_KEY="$(cat /tmp/dice-test-key.pem)"
-              export DICE_SIGNING_KEY_ID="key-dice-test-signer-01"
-              TEST_KEYS_ARG="--test-keys=/tmp/dice-test-keys.json"
-            fi
+            # In test mode, DICE_SIGNING_KEY must be strictly unset to ensure no production credential leakage
+            unset DICE_SIGNING_KEY
 
             NODE_PATH="$SIGNER_DIR" node "$SIGNER_DIR/scripts/dice-signing-service.mjs" \
-              --contract="$TEST_CONTRACT" \
+              --mode=test \
+              --contract=registries/dice/test-qualification-contract.json \
               --evidence-dir=artifacts/dice-evidence \
               --trusted-ref="$ROOT_REF" \
-              --key-id="${DICE_SIGNING_KEY_ID:-key-dice-authoritative-01}" \
-              $TEST_KEYS_ARG
+              --key-id=key-dice-test-signer-01 \
+              --test-keys=/tmp/dice-test-keys.json \
+              --signing-key-file=/tmp/dice-test-key.pem
       - store_artifacts:
           path: artifacts/dice-evidence
           destination: dice-attestation

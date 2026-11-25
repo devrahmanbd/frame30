@@ -13,8 +13,15 @@
  */
 
 import { execFileSync } from "node:child_process";
-import { readFileSync, existsSync, readdirSync } from "node:fs";
+import {
+  readFileSync,
+  existsSync,
+  readdirSync,
+  lstatSync,
+  statSync,
+} from "node:fs";
 import { join, resolve } from "node:path";
+import { createHash } from "node:crypto";
 
 function validateCommitSha(sha) {
   if (!sha || typeof sha !== "string" || !/^[0-9a-f]{40}$/i.test(sha.trim())) {
@@ -61,10 +68,13 @@ function matchesAny(path, patterns) {
 let targetRoot = process.cwd();
 let contractPath = "";
 let diffManifestPath = "";
+let expectedContractDigest = "";
 
 for (const arg of process.argv.slice(2)) {
   if (arg.startsWith("--contract=")) {
     contractPath = arg.split("=")[1];
+  } else if (arg.startsWith("--contract-digest=")) {
+    expectedContractDigest = arg.split("=")[1].trim().toLowerCase();
   } else if (arg.startsWith("--diff-manifest=")) {
     diffManifestPath = arg.split("=")[1];
   } else if (arg.startsWith("--target-dir=")) {
@@ -172,9 +182,37 @@ if (!existsSync(fullContractPath)) {
   process.exit(1);
 }
 
+// Intra-sandbox contract integrity and digest verification (P0-1)
+const contractLstat = lstatSync(fullContractPath);
+if (contractLstat.isSymbolicLink()) {
+  console.error(
+    `[scope-guard] ✗ FAIL-CLOSED: Contract path is a symbolic link: ${contractPath}`,
+  );
+  process.exit(1);
+}
+const contractStat = statSync(fullContractPath);
+if (!contractStat.isFile()) {
+  console.error(
+    `[scope-guard] ✗ FAIL-CLOSED: Contract path must be a regular file: ${contractPath}`,
+  );
+  process.exit(1);
+}
+
+const contractRawBuffer = readFileSync(fullContractPath);
+const actualContractDigest = createHash("sha256")
+  .update(contractRawBuffer)
+  .digest("hex");
+
+if (expectedContractDigest && actualContractDigest !== expectedContractDigest) {
+  console.error(
+    `[scope-guard] ✗ FAIL-CLOSED: Intra-sandbox contract digest mismatch: expected ${expectedContractDigest}, got ${actualContractDigest}`,
+  );
+  process.exit(1);
+}
+
 let contract;
 try {
-  contract = JSON.parse(readFileSync(fullContractPath, "utf8"));
+  contract = JSON.parse(contractRawBuffer.toString("utf8"));
 } catch (err) {
   console.error(
     `[scope-guard] ✗ FAIL-CLOSED: Malformed change contract JSON: ${err.message}`,

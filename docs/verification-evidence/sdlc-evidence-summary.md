@@ -1,8 +1,8 @@
 # Frame30 SDLC Verification Evidence Summary
 
-**Generated**: 2026-11-25T09:30:31.536Z  
-**Git Commit**: `c88c44d50078b55a38e9e3f5e74af916025933d0`  
-**Git Tree**: `6d637f7a1aa3d59fc95f7e23ded6ca62ab8818a6`  
+**Generated**: 2026-11-25T11:58:31.147Z  
+**Git Commit**: `ea4af6419b001373dde75a9892e8472e43c7cdd0`  
+**Git Tree**: `25a1018a4e0f5aa94b6d7a7c453c8d2fadf54966`  
 **Branch**: `dice/complete-implementation`  
 
 ## Pinned Toolchains
@@ -20,6 +20,6 @@
 
 | Layer | Tool | Receipt File | SHA-256 | Summary |
 |---|---|---|---|---|
-| Layer 02: Computational Law | Bend 2.0.40 | `bend-proof.txt` | `3e42507ddfb6...` | ============================================================================= |
-| Layer 08: Mutation Sensitivity | Adversarial Harness | `mutation-sensitivity-receipt.txt` | `16777c85b9ae...` | ============================================================================= |
+| Layer 02: Computational Law | Bend 2.0.40 | `bend-proof.txt` | `ab4d001de4b6...` | ============================================================================= |
+| Layer 08: Mutation Sensitivity | Adversarial Harness | `mutation-sensitivity-receipt.txt` | `912155a0b476...` | ============================================================================= |
 | Layer 06: Property DOM Fuzzing | Bombadil | `bombadil-trace-summary.json` | `8636915419a5...` | Passed: OK |

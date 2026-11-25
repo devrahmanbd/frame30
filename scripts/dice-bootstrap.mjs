@@ -16,7 +16,14 @@
  * 6. Zero shell interpolation: All git and child commands use structured argument vectors.
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
+import {
+  readFileSync,
+  writeFileSync,
+  existsSync,
+  mkdirSync,
+  realpathSync,
+  lstatSync,
+} from "node:fs";
 import { join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -172,6 +179,32 @@ export function runBootstrap(cliArgs = process.argv.slice(2)) {
       `[dice-bootstrap] ✗ FAIL-CLOSED: Contract approval_state is '${contract.approval_state}', expected 'approved'`,
     );
     process.exit(1);
+  }
+
+  if (contract.is_test_contract) {
+    const testPolicyPath = resolve(
+      REPO_ROOT,
+      "registries/dice/test-policy.json",
+    );
+    if (existsSync(testPolicyPath)) {
+      const testPolicy = JSON.parse(readFileSync(testPolicyPath, "utf8"));
+      const rawContractBuf = readFileSync(fullContractPath);
+      const contractDigest = createHash("sha256")
+        .update(rawContractBuf)
+        .digest("hex");
+      if (
+        testPolicy.test_contract &&
+        testPolicy.test_contract.sha256 !== contractDigest
+      ) {
+        console.error(
+          `[dice-bootstrap] ✗ FAIL-CLOSED: Test contract digest mismatch against trusted test policy: expected ${testPolicy.test_contract.sha256}, got ${contractDigest}`,
+        );
+        process.exit(1);
+      }
+      console.log(
+        `  ✓ Test contract digest verified against trusted test policy: ${contractDigest}`,
+      );
+    }
   }
 
   console.log(
@@ -562,9 +595,29 @@ export function runBootstrap(cliArgs = process.argv.slice(2)) {
       const targetScript = method.target_files[0];
       const trustedScriptPath = `/workspace/trusted/${targetScript}`;
       const commandArgs = [trustedScriptPath];
+      const inputMounts = [];
+      let inputContractDigest = null;
 
       if (obId === "OBL-SYS-SCOPE-GUARD-001") {
-        commandArgs.push(`--contract=${contractPath}`);
+        const canonicalContractHostPath = realpathSync(
+          resolve(REPO_ROOT, contractPath),
+        );
+        if (lstatSync(canonicalContractHostPath).isSymbolicLink()) {
+          throw new Error(
+            `FAIL-CLOSED: Host contract path is a symbolic link: ${contractPath}`,
+          );
+        }
+        inputContractDigest = createHash("sha256")
+          .update(readFileSync(canonicalContractHostPath))
+          .digest("hex");
+        const fixedSandboxPath = "/workspace/input/contract.json";
+        inputMounts.push({
+          hostPath: canonicalContractHostPath,
+          sandboxPath: fixedSandboxPath,
+          expectedDigest: inputContractDigest,
+        });
+        commandArgs.push(`--contract=${fixedSandboxPath}`);
+        commandArgs.push(`--contract-digest=${inputContractDigest}`);
         commandArgs.push(`--diff-manifest=/workspace/out/diff-manifest.json`);
       } else {
         commandArgs.push(`--target-dir=/workspace/src`);
@@ -640,6 +693,7 @@ export function runBootstrap(cliArgs = process.argv.slice(2)) {
         sourceSnapshot: candidateSnapshotDir,
         trustedDir: trustedInfo.cacheDir,
         stagingDir,
+        inputMounts,
         maskGit: true,
         maskEnv: true,
         timeoutMs: profile.timeout_ms || 60000,
@@ -667,6 +721,7 @@ export function runBootstrap(cliArgs = process.argv.slice(2)) {
         candidate_tree: candidateTree,
         tree_sha: candidateTree,
         specification_hash: computeReceiptDigest(canonicalizeJson(obDef)),
+        input_contract_digest: inputContractDigest || undefined,
         toolchain_identity: {
           node: process.version,
           bwrap: sandbox.bwrapVersion || "unknown",

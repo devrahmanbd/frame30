@@ -108,16 +108,61 @@ If any upstream job fails or is blocked, attestation signing is blocked fail-clo
 
 ---
 
-## 5. External CI Enforcement Limitations & Administration Requirements
+## 5. Baseline vs Candidate Pipeline Comparison
 
-1. **Context Protection**: Production `DICE_SIGNING_KEY` credentials must be bound to protected CircleCI contexts restricted to authoritative branches (`main`, `frame30`) and human specification authority (`@devrahmanbd`).
-2. **Test Key Segregation**: In development branches, test qualification keypairs (`key-dice-test-signer-01`) authenticate pipeline mechanics without producing production-authoritative attestations.
-3. **Repository Containment**: Candidate branch pull requests cannot mutate the CircleCI configuration outside authorized scope (`gate:scope` blocks unauthorized `.circleci/**` changes).
-4. **Human Authority Preservation**: The production change contract (`F30-DICE-COMPLETE.json`) remains in `"approval_state": "proposed"`. Autonomous agents possess zero authority to approve production contracts or deploy production attestations.
+| Verification Dimension | Baseline (`c88c44d5`) | Candidate (`ea4af641` / HEAD) | Status & Corrective Action |
+|---|---|---|---|
+| **Authoritative Launcher** | Non-authoritative `--dry-run` (0 obligations run) | Genuine Linux Bubblewrap execution (all mandatory obligations executed) | Corrected (P0-1) |
+| **Contract Transport** | Host `/tmp` file path (fails closed in isolated bwrap `/tmp`) | Explicit single-file read-only input mount (`/workspace/input/contract.json`) with pre-execution and intra-sandbox digest checks | Corrected (P0-1) |
+| **Contract Approval** | Synthetic in-pipeline mutation of production contract (`owner = "@devrahmanbd"`) | Immutable test fixture `registries/dice/test-qualification-contract.json` bound to `test-policy.json` (`owner: "@dice-test-runner"`) | Corrected (P0-2) |
+| **Signing Mode Separation** | Single mode with ambiguous test key export (`export DICE_SIGNING_KEY=...`) | Explicit `--mode=test` vs `--mode=production` separation; test mode refuses execution if `DICE_SIGNING_KEY` is present | Corrected (P0-3) |
+| **Attestation Output** | Attempted production `attestation.dsse.json` with test key | Non-authoritative `test-attestation.dsse.json` (`TEST_QUALIFIED_NON_AUTHORITATIVE`) | Corrected (P0-3) |
+| **Upstream Gate Dependencies** | Missing dependencies (`dice-attestation-signing` only depended on `dice-qualification`) | Strictly requires all 11 mandatory upstream qualification jobs before signing | Corrected (P0-4) |
+| **Dependency Isolation in Signer** | Potential dependency bleed | Pure Node.js runner in isolated `/tmp/dice-protected-signer` with zero package installations | Preserved |
+| **Production Contract Safety** | Production contract risked accidental modification | `F30-DICE-COMPLETE.json` remains strictly `"approval_state": "proposed"` | Preserved |
 
 ---
 
-## 6. Conclusion
+## 6. External CI Enforcement Limitations & Administration Requirements (P0-5)
 
-The CircleCI configuration enforces complete trust boundary separation, immutable reference extraction, upstream qualification dependencies, and decoupled cryptographic attestation signing. Candidate pull requests have zero opportunity to tamper with verification policies or forge passing attestations.
+While `.circleci/config.yml` mechanically enforces job dependencies, input isolation, and test signing separation, CircleCI project administrators must enforce the following platform-level controls outside the repository:
+
+1. **CircleCI Context Security & Production Key Boundary**:
+   - The production signing key `DICE_SIGNING_KEY` must **never** be defined as a project-level environment variable.
+   - It must reside exclusively in a restricted CircleCI Context (e.g., `dice-production-signer`).
+   - The context must be configured with CircleCI Security Group restrictions permitting access **only** on protected production release branches (`main`, `frame30`) and requiring human specification authority approval (`@devrahmanbd`).
+   - In all normal PR and candidate branch builds, `DICE_SIGNING_KEY` is strictly absent from the environment.
+
+2. **Fork and Pull Request Secret Masking**:
+   - In CircleCI Advanced Project Settings, verify that `Pass secrets to builds from forked pull requests` is **DISABLED**.
+   - Verify that `Only build pull requests` is **ENABLED** to prevent redundant parallel workflow triggers.
+
+3. **Branch Protection & Status Check Policy**:
+   - GitHub/Git repository branch protection on `main` and `frame30` must require the following CircleCI gate jobs as mandatory blocking status checks:
+     - `ci/circleci: lint-typecheck`
+     - `ci/circleci: unit-contract`
+     - `ci/circleci: dice-qualification`
+     - `ci/circleci: scan`
+     - `ci/circleci: build`
+     - `ci/circleci: e2e-critical`
+     - `ci/circleci: e2e-security`
+     - `ci/circleci: e2e-levelb-production`
+     - `ci/circleci: e2e-seven-templates`
+     - `ci/circleci: bombadil-staging`
+     - `ci/circleci: plugin-storefront-gate`
+     - `ci/circleci: dice-attestation-signing`
+   - Linear history must be enforced (no merge commits, fast-forward or squash merge only).
+   - Direct pushes and force-pushes to `main` and `frame30` must be restricted to `@devrahmanbd`.
+
+4. **Human Release Authority Verification**:
+   - Autonomous agents have zero authority to approve change contracts or release production builds.
+   - The active change contract `features/contracts/F30-DICE-COMPLETE.json` remains in `proposed` state until formal human review by `@devrahmanbd`.
+   - Production attestations can only be generated when human authorization changes `approval_state` to `approved` in an authorized release lane.
+
+---
+
+## 7. Conclusion
+
+The DICE CircleCI pipeline architecture achieves complete trust boundary separation, immutable reference extraction, single-file sandbox input containment, mode-segregated cryptographic attestation signing, and full upstream gate integrity. Candidate pull requests have zero opportunity to tamper with verification policies or forge passing production attestations.
+
 
