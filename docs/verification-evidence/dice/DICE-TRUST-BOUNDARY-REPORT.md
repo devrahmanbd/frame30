@@ -87,6 +87,13 @@ The Frame30 DICE verification mould enforces five independent architectural trus
 | **TH-10** | Path traversal in candidate paths (`../../etc`) | Escape sandbox or overwrite host files | `validateSafePath()` lexical and resolve containment | **FAIL-CLOSED (Blocked)** |
 | **TH-11** | Malicious change contract in candidate | Expand `allowed_file_changes` arbitrarily | Contract baseline commit and tree SHA validated vs git HEAD | **FAIL-CLOSED (Rejected)** |
 | **TH-12** | Secret extraction via worker environment | Steal `DICE_SIGNING_KEY` or deployment tokens | Environment variable allowlisting; keys absent from worker | **FAIL-CLOSED (Inaccessible)** |
+| **TH-13** | Hostile candidate replacing signing service (`scripts/dice-signing-service.mjs`) | Forge or bypass attestation signing | Pure Node signer distribution verified against pinned SHA-256 digest (`3155cac...`) | **FAIL-CLOSED (Wiped & Blocked)** |
+| **TH-14** | Hostile candidate replacing trusted root (`scripts/dice-root-of-trust.mjs`) | Tamper with root identity or policy generation | Distribution digest mismatch rejects extraction fail-closed | **FAIL-CLOSED (Wiped & Blocked)** |
+| **TH-15** | Hostile candidate replacing evaluator (`scripts/dice-qualify.mjs`) | Force fake qualification verdict | Distribution digest mismatch halts execution before runner starts | **FAIL-CLOSED (Wiped & Blocked)** |
+| **TH-16** | Hostile candidate replacing serializer (`scripts/dice-evidence.mjs`) | Alter receipt digests or ledger validation | Distribution digest mismatch halts execution before runner starts | **FAIL-CLOSED (Wiped & Blocked)** |
+| **TH-17** | Hostile candidate modifying test policy (`registries/dice/test-policy.json`) | Broaden test scope or alter allowed modes | Pinned test policy digest (`eb4479...`) mismatch triggers immediate non-zero exit | **FAIL-CLOSED (Wiped & Blocked)** |
+| **TH-18** | Joint mutation of test contract & expected digest together | Subvert contract authorization gate | External signer distribution locks test policy digest; Gate 3 verifies against protected policy | **FAIL-CLOSED (Rejected)** |
+| **TH-19** | Hostile candidate modifying registries or schemas | Weaken mandatory obligations or schemas | Distribution digest includes all registries & schemas; tampering causes immediate mismatch | **FAIL-CLOSED (Wiped & Blocked)** |
 
 ---
 

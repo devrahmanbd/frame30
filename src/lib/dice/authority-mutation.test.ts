@@ -17,6 +17,9 @@ import {
   validateTrustedRef,
   validateSafePath,
   safeArchiveExtract,
+  SIGNER_DISTRIBUTION_FILES,
+  computeDistributionDigest,
+  extractAndVerifySigningDistribution,
 } from "../../../scripts/dice-root-of-trust.mjs";
 import { DiceLauncher } from "../../../scripts/dice-launcher.mjs";
 import { DiceSigningService } from "../../../scripts/dice-signing-service.mjs";
@@ -448,10 +451,7 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
           : "features/contracts/F30-DICE-STAGE2-4-1.json");
       const scopeCheck = execFileSync(
         "node",
-        [
-          "scripts/scope-guard.mjs",
-          `--contract=${activeContract}`,
-        ],
+        ["scripts/scope-guard.mjs", `--contract=${activeContract}`],
         { cwd: repoRoot, encoding: "utf8" },
       );
       expect(scopeCheck).toContain("Scope guard PASSED");
@@ -704,6 +704,303 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
           repoRoot,
         ),
       ).toThrow(/Invalid extraction destination/);
+    });
+  });
+
+  // Stage 2.4.2 P0-3: Hostile Candidate Replacement Matrix & External Signer Boundary
+  describe("Stage 2.4.2 P0-3: Hostile Candidate Replacement Matrix & External Signer Boundary", () => {
+    const EXPECTED_TEST_POLICY_DIGEST =
+      "eb447909aff1afe029c5207e069259690a7975245926dd7ae0caef01b789380d";
+    const EXPECTED_DIST_DIGEST =
+      "3155cac15727ae58205dc16f729e051570068ce2c506b1a5f6bdfb976419273b";
+
+    const p03TempDir = join(testTempDir, "p03-replacement-matrix");
+    const candidateBase = join(p03TempDir, "candidate-tree");
+    const isolatedSignerDir = join(p03TempDir, "isolated-signer");
+
+    function setupCandidateTree() {
+      if (existsSync(candidateBase)) {
+        rmSync(candidateBase, { recursive: true, force: true });
+      }
+      mkdirSync(candidateBase, { recursive: true });
+
+      for (const rel of SIGNER_DISTRIBUTION_FILES) {
+        const src = join(repoRoot, rel);
+        const dest = join(candidateBase, rel);
+        mkdirSync(resolve(dest, ".."), { recursive: true });
+        writeFileSync(dest, readFileSync(src));
+      }
+    }
+
+    beforeAll(() => {
+      mkdirSync(p03TempDir, { recursive: true });
+    });
+
+    afterAll(() => {
+      if (existsSync(p03TempDir)) {
+        rmSync(p03TempDir, { recursive: true, force: true });
+      }
+    });
+
+    it("Genuine candidate tree matches externally pinned digests", () => {
+      setupCandidateTree();
+      const res = extractAndVerifySigningDistribution({
+        repoRoot: candidateBase,
+        targetDir: isolatedSignerDir,
+        expectedDistDigest: EXPECTED_DIST_DIGEST,
+        expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+      });
+
+      expect(res.distributionDigest).toBe(EXPECTED_DIST_DIGEST);
+      expect(res.testPolicyDigest).toBe(EXPECTED_TEST_POLICY_DIGEST);
+      expect(
+        existsSync(
+          join(isolatedSignerDir, "signer-distribution-manifest.json"),
+        ),
+      ).toBe(true);
+    });
+
+    // Vector 1: signing service (scripts/dice-signing-service.mjs)
+    it("Vector 1: Hostile replacement of scripts/dice-signing-service.mjs is rejected and execution prevented", () => {
+      setupCandidateTree();
+      writeFileSync(
+        join(candidateBase, "scripts/dice-signing-service.mjs"),
+        'console.error("HOSTILE_SIGNER_PWNED"); process.exit(42);',
+      );
+
+      expect(() =>
+        extractAndVerifySigningDistribution({
+          repoRoot: candidateBase,
+          targetDir: isolatedSignerDir,
+          expectedDistDigest: EXPECTED_DIST_DIGEST,
+          expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+        }),
+      ).toThrow(/FAIL-CLOSED: Signer distribution digest mismatch!/);
+
+      // Isolated target directory was wiped fail-closed
+      expect(existsSync(isolatedSignerDir)).toBe(false);
+    });
+
+    // Vector 2: trusted root module (scripts/dice-root-of-trust.mjs)
+    it("Vector 2: Hostile replacement of scripts/dice-root-of-trust.mjs is rejected fail-closed", () => {
+      setupCandidateTree();
+      writeFileSync(
+        join(candidateBase, "scripts/dice-root-of-trust.mjs"),
+        'export const APPROVED_ROOTS = { "rogue": "root" };',
+      );
+
+      expect(() =>
+        extractAndVerifySigningDistribution({
+          repoRoot: candidateBase,
+          targetDir: isolatedSignerDir,
+          expectedDistDigest: EXPECTED_DIST_DIGEST,
+          expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+        }),
+      ).toThrow(/FAIL-CLOSED: Signer distribution digest mismatch!/);
+
+      expect(existsSync(isolatedSignerDir)).toBe(false);
+    });
+
+    // Vector 3: qualification evaluator (scripts/dice-qualify.mjs)
+    it("Vector 3: Hostile replacement of scripts/dice-qualify.mjs is rejected fail-closed", () => {
+      setupCandidateTree();
+      writeFileSync(
+        join(candidateBase, "scripts/dice-qualify.mjs"),
+        'export function evaluateCandidateQualification() { return { qualification: "QUALIFIED_PASS" }; }',
+      );
+
+      expect(() =>
+        extractAndVerifySigningDistribution({
+          repoRoot: candidateBase,
+          targetDir: isolatedSignerDir,
+          expectedDistDigest: EXPECTED_DIST_DIGEST,
+          expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+        }),
+      ).toThrow(/FAIL-CLOSED: Signer distribution digest mismatch!/);
+
+      expect(existsSync(isolatedSignerDir)).toBe(false);
+    });
+
+    // Vector 4: evidence serializer (scripts/dice-evidence.mjs)
+    it("Vector 4: Hostile replacement of scripts/dice-evidence.mjs is rejected fail-closed", () => {
+      setupCandidateTree();
+      writeFileSync(
+        join(candidateBase, "scripts/dice-evidence.mjs"),
+        "export class DiceSigningAuthority { validateLedger() { return true; } signAttestation() { return {}; } }",
+      );
+
+      expect(() =>
+        extractAndVerifySigningDistribution({
+          repoRoot: candidateBase,
+          targetDir: isolatedSignerDir,
+          expectedDistDigest: EXPECTED_DIST_DIGEST,
+          expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+        }),
+      ).toThrow(/FAIL-CLOSED: Signer distribution digest mismatch!/);
+
+      expect(existsSync(isolatedSignerDir)).toBe(false);
+    });
+
+    // Vector 5: test-policy manifest (registries/dice/test-policy.json)
+    it("Vector 5: Hostile modification of registries/dice/test-policy.json is detected and rejected", () => {
+      setupCandidateTree();
+      const tpPath = join(candidateBase, "registries/dice/test-policy.json");
+      const tp = JSON.parse(readFileSync(tpPath, "utf8"));
+      tp.test_signing.allowed_modes.push("rogue-mode");
+      writeFileSync(tpPath, JSON.stringify(tp, null, 2));
+
+      expect(() =>
+        extractAndVerifySigningDistribution({
+          repoRoot: candidateBase,
+          targetDir: isolatedSignerDir,
+          expectedDistDigest: EXPECTED_DIST_DIGEST,
+          expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+        }),
+      ).toThrow(/FAIL-CLOSED: Test policy digest mismatch!/);
+
+      expect(existsSync(isolatedSignerDir)).toBe(false);
+    });
+
+    // Vector 6: test contract and expected digest together (test-qualification-contract.json + test-policy.json)
+    it("Vector 6: Joint modification of test contract and expected digest together fails closed and produces no attestation", () => {
+      setupCandidateTree();
+      // Attacker creates a rogue test contract with altered ownership/obligations
+      const rogueContract = {
+        change_id: "F30-DICE-ROGUE-MUTATION",
+        owner: "@devrahmanbd",
+        approval_state: "approved",
+        is_test_contract: true,
+      };
+      const rogueContractPath = join(
+        candidateBase,
+        "registries/dice/test-qualification-contract.json",
+      );
+      writeFileSync(rogueContractPath, JSON.stringify(rogueContract, null, 2));
+
+      // Attacker also mutates test-policy.json to match rogue contract's SHA
+      const tpPath = join(candidateBase, "registries/dice/test-policy.json");
+      const tp = JSON.parse(readFileSync(tpPath, "utf8"));
+      tp.test_contract.change_id = "F30-DICE-ROGUE-MUTATION";
+      tp.test_contract.sha256 =
+        "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef";
+      writeFileSync(tpPath, JSON.stringify(tp, null, 2));
+
+      // 1. Verifier extraction immediately halts on test policy digest mismatch
+      expect(() =>
+        extractAndVerifySigningDistribution({
+          repoRoot: candidateBase,
+          targetDir: isolatedSignerDir,
+          expectedDistDigest: EXPECTED_DIST_DIGEST,
+          expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+        }),
+      ).toThrow(/FAIL-CLOSED: Test policy digest mismatch!/);
+
+      // 2. Furthermore, even if candidate attempts to pass rogue contract directly to DiceSigningService,
+      // Gate 3 loads authoritative test-policy.json from protected distribution, rejecting the contract
+      const evidenceDir = join(p03TempDir, "rogue-evidence");
+      mkdirSync(evidenceDir, { recursive: true });
+      const signer = new DiceSigningService({
+        repoRoot,
+        mode: "test",
+        contractPath: rogueContractPath,
+        evidenceDir,
+        distDir: repoRoot, // points to authoritative distribution
+        trustedRef: DEFAULT_TRUSTED_REF,
+      });
+
+      expect(() => signer.execute()).toThrow(
+        /FAIL-CLOSED: Test contract cannot claim human specification authority '@devrahmanbd'|FAIL-CLOSED: Test contract digest mismatch against test policy/,
+      );
+
+      // Ensure zero attestations generated
+      expect(existsSync(join(evidenceDir, "test-attestation.dsse.json"))).toBe(
+        false,
+      );
+      expect(existsSync(join(evidenceDir, "attestation.dsse.json"))).toBe(
+        false,
+      );
+    });
+
+    // Vector 7: trusted registry and schemas (mandatory-obligations.json, schemas/dice/*)
+    it("Vector 7: Tampering with mandatory-obligations.json or schemas is rejected fail-closed", () => {
+      setupCandidateTree();
+      // Tamper with mandatory obligations
+      const obPath = join(
+        candidateBase,
+        "registries/dice/mandatory-obligations.json",
+      );
+      writeFileSync(obPath, JSON.stringify([]));
+
+      expect(() =>
+        extractAndVerifySigningDistribution({
+          repoRoot: candidateBase,
+          targetDir: isolatedSignerDir,
+          expectedDistDigest: EXPECTED_DIST_DIGEST,
+          expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+        }),
+      ).toThrow(/FAIL-CLOSED: Signer distribution digest mismatch!/);
+
+      expect(existsSync(isolatedSignerDir)).toBe(false);
+
+      // Restore and tamper with schema
+      setupCandidateTree();
+      const schemaPath = join(
+        candidateBase,
+        "schemas/dice/evidence-envelope.schema.json",
+      );
+      writeFileSync(schemaPath, JSON.stringify({ type: "any" }));
+
+      expect(() =>
+        extractAndVerifySigningDistribution({
+          repoRoot: candidateBase,
+          targetDir: isolatedSignerDir,
+          expectedDistDigest: EXPECTED_DIST_DIGEST,
+          expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+        }),
+      ).toThrow(/FAIL-CLOSED: Signer distribution digest mismatch!/);
+
+      expect(existsSync(isolatedSignerDir)).toBe(false);
+    });
+
+    // Missing distribution file
+    it("Missing distribution asset fails closed with explicit error", () => {
+      setupCandidateTree();
+      rmSync(join(candidateBase, "scripts/dice-signing-service.mjs"));
+
+      expect(() =>
+        extractAndVerifySigningDistribution({
+          repoRoot: candidateBase,
+          targetDir: isolatedSignerDir,
+          expectedDistDigest: EXPECTED_DIST_DIGEST,
+          expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+        }),
+      ).toThrow(
+        /FAIL-CLOSED: Required verifier distribution file missing: scripts\/dice-signing-service.mjs/,
+      );
+    });
+
+    // Symlink attack
+    it("Symlinked distribution asset is detected and rejected fail-closed", () => {
+      setupCandidateTree();
+      const targetScript = join(
+        candidateBase,
+        "scripts/dice-signing-service.mjs",
+      );
+      rmSync(targetScript);
+      const rogueScript = join(p03TempDir, "rogue-external-script.mjs");
+      writeFileSync(rogueScript, 'console.log("PWNED");');
+      symlinkSync(rogueScript, targetScript);
+
+      expect(() =>
+        extractAndVerifySigningDistribution({
+          repoRoot: candidateBase,
+          targetDir: isolatedSignerDir,
+          expectedDistDigest: EXPECTED_DIST_DIGEST,
+          expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+        }),
+      ).toThrow(
+        /FAIL-CLOSED: Distribution asset cannot be a symlink: scripts\/dice-signing-service.mjs/,
+      );
     });
   });
 });

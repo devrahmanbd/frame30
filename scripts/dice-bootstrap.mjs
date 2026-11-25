@@ -24,9 +24,12 @@ import {
   realpathSync,
   lstatSync,
 } from "node:fs";
-import { join, resolve } from "node:path";
+import { join, resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const Ajv2020 = require("ajv/dist/2020");
@@ -183,28 +186,41 @@ export function runBootstrap(cliArgs = process.argv.slice(2)) {
 
   if (contract.is_test_contract) {
     const testPolicyPath = resolve(
-      REPO_ROOT,
-      "registries/dice/test-policy.json",
+      __dirname,
+      "../registries/dice/test-policy.json",
     );
-    if (existsSync(testPolicyPath)) {
-      const testPolicy = JSON.parse(readFileSync(testPolicyPath, "utf8"));
-      const rawContractBuf = readFileSync(fullContractPath);
-      const contractDigest = createHash("sha256")
-        .update(rawContractBuf)
-        .digest("hex");
-      if (
-        testPolicy.test_contract &&
-        testPolicy.test_contract.sha256 !== contractDigest
-      ) {
-        console.error(
-          `[dice-bootstrap] ✗ FAIL-CLOSED: Test contract digest mismatch against trusted test policy: expected ${testPolicy.test_contract.sha256}, got ${contractDigest}`,
-        );
-        process.exit(1);
-      }
-      console.log(
-        `  ✓ Test contract digest verified against trusted test policy: ${contractDigest}`,
+    if (!existsSync(testPolicyPath)) {
+      console.error(
+        `[dice-bootstrap] ✗ FAIL-CLOSED: Authoritative test-policy.json missing from protected distribution at ${testPolicyPath}`,
       );
+      process.exit(1);
     }
+    const testPolicy = JSON.parse(readFileSync(testPolicyPath, "utf8"));
+    const rawContractBuf = readFileSync(fullContractPath);
+    const contractDigest = createHash("sha256")
+      .update(rawContractBuf)
+      .digest("hex");
+    if (
+      testPolicy.test_contract &&
+      testPolicy.test_contract.sha256 !== contractDigest
+    ) {
+      console.error(
+        `[dice-bootstrap] ✗ FAIL-CLOSED: Test contract digest mismatch against trusted test policy: expected ${testPolicy.test_contract.sha256}, got ${contractDigest}`,
+      );
+      process.exit(1);
+    }
+    if (
+      testPolicy.test_contract &&
+      testPolicy.test_contract.change_id !== contract.change_id
+    ) {
+      console.error(
+        `[dice-bootstrap] ✗ FAIL-CLOSED: Test contract change_id mismatch against trusted test policy: expected ${testPolicy.test_contract.change_id}, got ${contract.change_id}`,
+      );
+      process.exit(1);
+    }
+    console.log(
+      `  ✓ Test contract digest verified against trusted test policy: ${contractDigest}`,
+    );
   }
 
   console.log(

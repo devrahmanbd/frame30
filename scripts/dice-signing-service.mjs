@@ -19,9 +19,12 @@
  */
 
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { join, resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 import {
   serializeReceiptCanonical,
   computeReceiptDigest,
@@ -83,6 +86,7 @@ export class DiceSigningService {
       null;
     this.allowUnapprovedContract = options.allowUnapprovedContract || false;
     this.allowUnpinnedRoots = options.allowUnpinnedRoots || false;
+    this.distDir = options.distDir || resolve(__dirname, "..");
   }
 
   execute() {
@@ -214,9 +218,22 @@ export class DiceSigningService {
     console.log(`  ✓ Candidate Commit verified: ${candidateCommit}`);
     console.log(`  ✓ Candidate Tree verified:   ${candidateTree}`);
 
-    // Check 2: Contract Authorization
+    // Check 2: Trusted Policy Identity
     console.log(
-      "\n[dice-signing] Gate 2: Verifying change contract authorization...",
+      "\n[dice-signing] Gate 2: Verifying trusted policy identity and manifest...",
+    );
+    const trustedRoot = new DiceTrustedRoot({
+      repoRoot: this.repoRoot,
+      trustedRef: this.trustedRef,
+      allowUnpinnedRoots: this.allowUnpinnedRoots,
+    });
+    const trustedInfo = trustedRoot.resolve();
+    console.log(`  ✓ Trusted Commit:     ${trustedInfo.trustedCommit}`);
+    console.log(`  ✓ Trusted Policy SHA: ${trustedInfo.trustedRootSha}`);
+
+    // Check 3: Contract Authorization
+    console.log(
+      "\n[dice-signing] Gate 3: Verifying change contract authorization against trusted policy...",
     );
     const fullContractPath = resolve(this.repoRoot, this.contractPath);
     if (!existsSync(fullContractPath)) {
@@ -254,16 +271,26 @@ export class DiceSigningService {
           `FAIL-CLOSED: Test contract approval_state is '${contract.approval_state}', expected 'approved' for test qualification`,
         );
       }
-      const testPolicyPath = resolve(
-        this.repoRoot,
-        "registries/dice/test-policy.json",
-      );
-      if (!existsSync(testPolicyPath)) {
-        throw new Error(
-          "FAIL-CLOSED: Missing registries/dice/test-policy.json",
+      // Load test policy strictly from trusted root distribution or protected signer distribution directory
+      let testPolicy;
+      try {
+        testPolicy = trustedRoot.loadTrustedJson(
+          "registries/dice/test-policy.json",
         );
+      } catch {
+        const protectedPolicyPath = join(
+          this.distDir,
+          "registries/dice/test-policy.json",
+        );
+        if (existsSync(protectedPolicyPath)) {
+          testPolicy = JSON.parse(readFileSync(protectedPolicyPath, "utf8"));
+        } else {
+          throw new Error(
+            "FAIL-CLOSED: Authoritative registries/dice/test-policy.json missing from protected distribution",
+          );
+        }
       }
-      const testPolicy = JSON.parse(readFileSync(testPolicyPath, "utf8"));
+
       const rawContractBuf = readFileSync(fullContractPath);
       const contractDigest = createHash("sha256")
         .update(rawContractBuf)
@@ -282,6 +309,15 @@ export class DiceSigningService {
       ) {
         throw new Error(
           `FAIL-CLOSED: Test contract change_id mismatch against test policy: expected ${testPolicy.test_contract.change_id}, got ${contract.change_id}`,
+        );
+      }
+      if (
+        testPolicy.test_signing &&
+        testPolicy.test_signing.allowed_modes &&
+        !testPolicy.test_signing.allowed_modes.includes(this.mode)
+      ) {
+        throw new Error(
+          `FAIL-CLOSED: Signing mode '${this.mode}' not permitted by test policy`,
         );
       }
       console.log(
@@ -310,19 +346,6 @@ export class DiceSigningService {
         `  ✓ Contract authorization verified: ${contract.change_id} (state: ${contract.approval_state})`,
       );
     }
-
-    // Check 3: Trusted Policy Identity
-    console.log(
-      "\n[dice-signing] Gate 3: Verifying trusted policy identity and manifest...",
-    );
-    const trustedRoot = new DiceTrustedRoot({
-      repoRoot: this.repoRoot,
-      trustedRef: this.trustedRef,
-      allowUnpinnedRoots: this.allowUnpinnedRoots,
-    });
-    const trustedInfo = trustedRoot.resolve();
-    console.log(`  ✓ Trusted Commit:     ${trustedInfo.trustedCommit}`);
-    console.log(`  ✓ Trusted Policy SHA: ${trustedInfo.trustedRootSha}`);
 
     // Check 4 & 5: Detached Ledger & Method Receipts Validation
     console.log(

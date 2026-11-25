@@ -255,20 +255,82 @@ jobs:
             git rev-parse --verify 9e6a82abb3502edb84f2d7be9fcc36401b380bfb^{commit}
             git rev-parse --verify 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271^{commit}
       - run:
-          name: Extract and Execute Protected DICE Signing Distribution (Pure Node, Isolated)
+          name: Extract and Verify Protected DICE Signing Distribution (Pure Node, Isolated)
           command: |
             ROOT_REF="${DICE_ROOT_REF:-2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271}"
             SIGNER_DIR="/tmp/dice-protected-signer"
             rm -rf "$SIGNER_DIR"
             mkdir -p "$SIGNER_DIR"
-            git archive HEAD \
-              scripts/dice-signing-service.mjs \
-              scripts/dice-root-of-trust.mjs \
-              scripts/dice-qualify.mjs \
-              scripts/dice-plan-generator.mjs \
-              scripts/dice-evidence.mjs \
-              registries/dice/ \
-              schemas/dice/ | tar -x -C "$SIGNER_DIR"
+
+            # Eliminate candidate-controlled signer execution (P0-1)
+            # Sourced from protected distribution and verified against externally established digests
+            node -e '
+              const fs = require("node:fs");
+              const path = require("node:path");
+              const crypto = require("node:crypto");
+
+              const SIGNER_DIR = "/tmp/dice-protected-signer";
+              const FILES = [
+                "registries/dice/mandatory-obligations.json",
+                "registries/dice/registry.json",
+                "registries/dice/test-policy.json",
+                "registries/dice/trusted-keys.json",
+                "registries/dice/trusted-profiles.json",
+                "schemas/dice/domain-pack.schema.json",
+                "schemas/dice/evidence-envelope.schema.json",
+                "schemas/dice/obl.schema.json",
+                "schemas/dice/registry.schema.json",
+                "schemas/dice/trusted-profile.schema.json",
+                "schemas/dice/xdie.schema.json",
+                "scripts/dice-evidence.mjs",
+                "scripts/dice-plan-generator.mjs",
+                "scripts/dice-qualify.mjs",
+                "scripts/dice-root-of-trust.mjs",
+                "scripts/dice-signing-service.mjs"
+              ];
+
+              const EXPECTED_TEST_POLICY_DIGEST = "eb447909aff1afe029c5207e069259690a7975245926dd7ae0caef01b789380d";
+              const EXPECTED_DIST_DIGEST = "3155cac15727ae58205dc16f729e051570068ce2c506b1a5f6bdfb976419273b";
+
+              for (const rel of FILES) {
+                const src = path.resolve(process.cwd(), rel);
+                if (!fs.existsSync(src)) {
+                  console.error(`FAIL-CLOSED: Missing required verifier file: ${rel}`);
+                  process.exit(1);
+                }
+                const lstat = fs.lstatSync(src);
+                if (lstat.isSymbolicLink()) {
+                  console.error(`FAIL-CLOSED: Distribution asset cannot be a symlink: ${rel}`);
+                  process.exit(1);
+                }
+                const dest = path.join(SIGNER_DIR, rel);
+                fs.mkdirSync(path.dirname(dest), { recursive: true });
+                fs.copyFileSync(src, dest);
+              }
+
+              const tpContent = fs.readFileSync(path.join(SIGNER_DIR, "registries/dice/test-policy.json"));
+              const tpDigest = crypto.createHash("sha256").update(tpContent).digest("hex");
+              if (tpDigest !== EXPECTED_TEST_POLICY_DIGEST) {
+                console.error(`FAIL-CLOSED: Test policy digest mismatch! Expected ${EXPECTED_TEST_POLICY_DIGEST}, got ${tpDigest}`);
+                process.exit(1);
+              }
+
+              const masterHasher = crypto.createHash("sha256");
+              for (const rel of [...FILES].sort()) {
+                const c = fs.readFileSync(path.join(SIGNER_DIR, rel));
+                const sha = crypto.createHash("sha256").update(c).digest("hex");
+                masterHasher.update(rel);
+                masterHasher.update(sha);
+              }
+              const distDigest = masterHasher.digest("hex");
+              if (distDigest !== EXPECTED_DIST_DIGEST) {
+                console.error(`FAIL-CLOSED: Signer distribution digest mismatch! Expected ${EXPECTED_DIST_DIGEST}, got ${distDigest}`);
+                process.exit(1);
+              }
+
+              console.log("[dice-signing] ✓ Protected signer distribution verified:", distDigest);
+              console.log("[dice-signing] ✓ Protected test policy verified:", tpDigest);
+            '
 
             # Establish test qualification signing keypair and registry
             node -e '

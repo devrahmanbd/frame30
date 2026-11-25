@@ -62,15 +62,18 @@ artifacts/dice-evidence (Signed Attestation Bundle + Detached Digest Signature)
 
 ### Job 2: `dice-attestation-signing` (Isolated Cryptographic Signing)
 - **Executor**: Ubuntu 22.04 (`ubuntu-2204:current`) machine runner with pure Node execution.
-- **Access Boundary**: Possesses `DICE_SIGNING_KEY` credential in environment (inaccessible to `dice-qualification` worker).
+- **Access Boundary**: Possesses `DICE_SIGNING_KEY` credential in environment for production mode (inaccessible to `dice-qualification` worker). In test mode, `DICE_SIGNING_KEY` must be strictly absent.
 - **Isolation Guarantees**:
   1. No candidate dependencies installed (`bun install` omitted).
   2. No candidate-controlled tests executed in signing context.
-  3. Pure Node runner extracts protected signer distribution directly from `$TRUSTED_REF`.
-  4. Error suppression eliminated (zero `|| true`). Non-zero exit code on `UNATTESTED` or failure.
-  5. Evaluates candidate qualification using Two-Tier Engine (`evaluateCandidateQualification`).
-  6. If and only if qualification evaluates strictly to `QUALIFIED_PASS`, generates in-toto DSSE attestation envelope (`attestation.dsse.json`) with Ed25519 signature.
-  7. Stores verifiable signed attestation in `artifacts/dice-evidence/attestation.dsse.json`.
+  3. External Signer Distribution (P0-1): Pure Node runner extracts the protected signer distribution and verifies it against externally established cryptographic digests:
+     - Expected Distribution SHA-256: `3155cac15727ae58205dc16f729e051570068ce2c506b1a5f6bdfb976419273b` (covers all 16 verifier scripts, registries, and schemas)
+     - Expected Test Policy SHA-256: `eb447909aff1afe029c5207e069259690a7975245926dd7ae0caef01b789380d`
+  4. Candidate checkout is never consulted for test policy or signer logic (P0-2).
+  5. Error suppression eliminated (zero `|| true`). Non-zero exit code on `UNATTESTED` or failure.
+  6. Evaluates candidate qualification using Two-Tier Engine (`evaluateCandidateQualification`).
+  7. If and only if qualification evaluates strictly to `QUALIFIED_PASS`, generates DSSE attestation envelope (`test-attestation.dsse.json` in test mode or `attestation.dsse.json` in production mode) with Ed25519 signature.
+  8. Stores verifiable signed attestation in `artifacts/dice-evidence/`.
 
 ---
 

@@ -24,8 +24,17 @@ import {
   lstatSync,
   realpathSync,
   readdirSync,
+  copyFileSync,
+  chmodSync,
 } from "node:fs";
-import { join, resolve, isAbsolute, normalize, relative } from "node:path";
+import {
+  join,
+  resolve,
+  isAbsolute,
+  normalize,
+  relative,
+  dirname,
+} from "node:path";
 import { execFileSync, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { canonicalizeJson } from "./dice-plan-generator.mjs";
@@ -397,6 +406,10 @@ export class DiceTrustedRoot {
       "registries/dice/registry.json",
     ];
 
+    if (existsSync(join(this.cacheDir, "registries/dice/test-policy.json"))) {
+      filesToHash.push("registries/dice/test-policy.json");
+    }
+
     const entries = [];
     const masterHasher = createHash("sha256");
 
@@ -518,4 +531,153 @@ export class DiceTrustedRoot {
       } catch {}
     }
   }
+}
+
+export const SIGNER_DISTRIBUTION_FILES = Object.freeze([
+  "registries/dice/mandatory-obligations.json",
+  "registries/dice/registry.json",
+  "registries/dice/test-policy.json",
+  "registries/dice/trusted-keys.json",
+  "registries/dice/trusted-profiles.json",
+  "schemas/dice/domain-pack.schema.json",
+  "schemas/dice/evidence-envelope.schema.json",
+  "schemas/dice/obl.schema.json",
+  "schemas/dice/registry.schema.json",
+  "schemas/dice/trusted-profile.schema.json",
+  "schemas/dice/xdie.schema.json",
+  "scripts/dice-evidence.mjs",
+  "scripts/dice-plan-generator.mjs",
+  "scripts/dice-qualify.mjs",
+  "scripts/dice-root-of-trust.mjs",
+  "scripts/dice-signing-service.mjs",
+]);
+
+export function computeDistributionDigest(
+  baseDir,
+  files = SIGNER_DISTRIBUTION_FILES,
+) {
+  const masterHasher = createHash("sha256");
+  const sortedFiles = [...files].sort();
+  for (const rel of sortedFiles) {
+    const full = join(baseDir, rel);
+    if (!existsSync(full)) {
+      throw new Error(`FAIL-CLOSED: Missing distribution asset: ${rel}`);
+    }
+    const content = readFileSync(full);
+    const sha = createHash("sha256").update(content).digest("hex");
+    masterHasher.update(rel);
+    masterHasher.update(sha);
+  }
+  return masterHasher.digest("hex");
+}
+
+export function extractAndVerifySigningDistribution(options = {}) {
+  const repoRoot = options.repoRoot || process.cwd();
+  const targetDir = options.targetDir || "/tmp/dice-protected-signer";
+  const trustedRef = options.trustedRef || null;
+  const files = options.files || SIGNER_DISTRIBUTION_FILES;
+
+  validateSafePath(repoRoot);
+  validateSafePath(targetDir);
+
+  if (existsSync(targetDir)) {
+    rmSync(targetDir, { recursive: true, force: true });
+  }
+  mkdirSync(targetDir, { recursive: true });
+
+  if (trustedRef) {
+    validateTrustedRef(trustedRef);
+    safeArchiveExtract(trustedRef, files, targetDir, repoRoot);
+  } else {
+    for (const rel of files) {
+      validateSafePath(rel, { mustBeRelative: true });
+      const src = join(repoRoot, rel);
+      if (!existsSync(src)) {
+        throw new Error(
+          `FAIL-CLOSED: Required verifier distribution file missing: ${rel}`,
+        );
+      }
+      if (lstatSync(src).isSymbolicLink()) {
+        throw new Error(
+          `FAIL-CLOSED: Distribution asset cannot be a symlink: ${rel}`,
+        );
+      }
+      validateSafePath(src, { baseDir: repoRoot });
+      const dest = join(targetDir, rel);
+      mkdirSync(dirname(dest), { recursive: true });
+      copyFileSync(src, dest);
+    }
+  }
+
+  // Compute test-policy digest
+  const testPolicyPath = join(targetDir, "registries/dice/test-policy.json");
+  if (!existsSync(testPolicyPath)) {
+    throw new Error(
+      "FAIL-CLOSED: Authoritative test-policy.json missing from distribution",
+    );
+  }
+  const testPolicyContent = readFileSync(testPolicyPath);
+  const testPolicyDigest = createHash("sha256")
+    .update(testPolicyContent)
+    .digest("hex");
+
+  // Compute canonical distribution digest
+  const distributionDigest = computeDistributionDigest(targetDir, files);
+
+  // Digest verification against expected anchors
+  const expectedDistDigest =
+    options.expectedDistDigest ||
+    process.env.DICE_EXPECTED_SIGNER_DIST_DIGEST ||
+    null;
+  const expectedTestPolicyDigest =
+    options.expectedTestPolicyDigest ||
+    process.env.DICE_EXPECTED_TEST_POLICY_DIGEST ||
+    null;
+
+  if (
+    expectedTestPolicyDigest &&
+    testPolicyDigest !== expectedTestPolicyDigest
+  ) {
+    rmSync(targetDir, { recursive: true, force: true });
+    throw new Error(
+      `FAIL-CLOSED: Test policy digest mismatch! Expected ${expectedTestPolicyDigest}, got ${testPolicyDigest}. Unauthorized policy tampering detected (BLOCKED).`,
+    );
+  }
+
+  if (expectedDistDigest && distributionDigest !== expectedDistDigest) {
+    rmSync(targetDir, { recursive: true, force: true });
+    throw new Error(
+      `FAIL-CLOSED: Signer distribution digest mismatch! Expected ${expectedDistDigest}, got ${distributionDigest}. Unauthorized signer tampering detected (BLOCKED).`,
+    );
+  }
+
+  // Write immutable distribution manifest
+  const entries = files.map((rel) => {
+    const content = readFileSync(join(targetDir, rel));
+    return {
+      path: rel,
+      sha256: createHash("sha256").update(content).digest("hex"),
+    };
+  });
+
+  const manifest = {
+    distribution_id: "DICE-VERIFIER-DISTRIBUTION-v2.4.2",
+    distribution_digest: distributionDigest,
+    test_policy_digest: testPolicyDigest,
+    extracted_at: new Date().toISOString(),
+    entries,
+  };
+
+  writeFileSync(
+    join(targetDir, "signer-distribution-manifest.json"),
+    canonicalizeJson(manifest),
+    "utf8",
+  );
+
+  return {
+    distributionDigest,
+    testPolicyDigest,
+    targetDir,
+    manifest,
+  };
 }
