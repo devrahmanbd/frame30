@@ -241,6 +241,8 @@ jobs:
   dice-attestation-signing:
     machine:
       image: ubuntu-2204:current
+    environment:
+      DICE_REQUIRE_EXTERNAL_ANCHORS: "1"
     steps:
       - checkout
       - attach_workspace:
@@ -263,91 +265,40 @@ jobs:
             mkdir -p "$SIGNER_DIR"
 
             # Eliminate candidate-controlled signer execution (P0-1)
-            # Sourced from protected distribution and verified against externally established digests
+            # Sourced exclusively from external distribution and verified against external authority digests
             node -e '
-              const fs = require("node:fs");
-              const path = require("node:path");
-              const crypto = require("node:crypto");
+              import("./scripts/dice-root-of-trust.mjs").then(m => {
+                const externalDistDir = process.env.DICE_EXTERNAL_DIST_DIR || null;
+                const expectedDistDigest = process.env.DICE_EXPECTED_SIGNER_DIST_DIGEST || null;
+                const expectedTestPolicyDigest = process.env.DICE_EXPECTED_TEST_POLICY_DIGEST || null;
+                const requireExternal = process.env.DICE_REQUIRE_EXTERNAL_ANCHORS === "1";
 
-              const SIGNER_DIR = "/tmp/dice-protected-signer";
-              const FILES = [
-                "registries/dice/mandatory-obligations.json",
-                "registries/dice/registry.json",
-                "registries/dice/test-policy.json",
-                "registries/dice/trusted-keys.json",
-                "registries/dice/trusted-profiles.json",
-                "schemas/dice/domain-pack.schema.json",
-                "schemas/dice/evidence-envelope.schema.json",
-                "schemas/dice/obl.schema.json",
-                "schemas/dice/registry.schema.json",
-                "schemas/dice/trusted-profile.schema.json",
-                "schemas/dice/xdie.schema.json",
-                "scripts/dice-evidence.mjs",
-                "scripts/dice-plan-generator.mjs",
-                "scripts/dice-qualify.mjs",
-                "scripts/dice-root-of-trust.mjs",
-                "scripts/dice-signing-service.mjs"
-              ];
+                if (requireExternal) {
+                  if (!expectedDistDigest || !expectedTestPolicyDigest) {
+                    console.error("FAIL-CLOSED: External trust anchors required (DICE_REQUIRE_EXTERNAL_ANCHORS=1), but DICE_EXPECTED_SIGNER_DIST_DIGEST or DICE_EXPECTED_TEST_POLICY_DIGEST is not set (BLOCKED).");
+                    process.exit(1);
+                  }
+                  if (!externalDistDir) {
+                    console.error("FAIL-CLOSED: Missing external verifier distribution directory (BLOCKED). External trust anchors require an independently provisioned external distribution via DICE_EXTERNAL_DIST_DIR.");
+                    process.exit(1);
+                  }
+                }
 
-              const isExternal = Boolean(
-                process.env.DICE_EXPECTED_SIGNER_DIST_DIGEST &&
-                  process.env.DICE_EXPECTED_TEST_POLICY_DIGEST,
-              );
-              if (isExternal) {
-                console.log(
-                  "[dice-signing] External trust authority active: Anchors injected from CircleCI Context / Runner Environment",
-                );
-              } else {
-                console.log(
-                  "[dice-signing] NOTICE: Operating with candidate-local pinned fallback anchors. Full external authority requires CircleCI Context 'dice-trust-authority'.",
-                );
-              }
-
-              const EXPECTED_TEST_POLICY_DIGEST =
-                process.env.DICE_EXPECTED_TEST_POLICY_DIGEST ||
-                "eb447909aff1afe029c5207e069259690a7975245926dd7ae0caef01b789380d";
-              const EXPECTED_DIST_DIGEST =
-                process.env.DICE_EXPECTED_SIGNER_DIST_DIGEST ||
-                "d855fdf18572aceb01bed5027c77f52b497d85d7549892c94b54ba881278d194";
-
-              for (const rel of FILES) {
-                const src = path.resolve(process.cwd(), rel);
-                if (!fs.existsSync(src)) {
-                  console.error(`FAIL-CLOSED: Missing required verifier file: ${rel}`);
+                try {
+                  const res = m.extractAndVerifySigningDistribution({
+                    externalDistDir,
+                    targetDir: "/tmp/dice-protected-signer",
+                    expectedDistDigest,
+                    expectedTestPolicyDigest,
+                    requireExternalAnchors: requireExternal,
+                  });
+                  console.log("[dice-signing] ✓ Protected signer distribution verified against external authority:", res.distributionDigest);
+                  console.log("[dice-signing] ✓ Protected test policy verified against external authority:", res.testPolicyDigest);
+                } catch (err) {
+                  console.error(err.message);
                   process.exit(1);
                 }
-                const lstat = fs.lstatSync(src);
-                if (lstat.isSymbolicLink()) {
-                  console.error(`FAIL-CLOSED: Distribution asset cannot be a symlink: ${rel}`);
-                  process.exit(1);
-                }
-                const dest = path.join(SIGNER_DIR, rel);
-                fs.mkdirSync(path.dirname(dest), { recursive: true });
-                fs.copyFileSync(src, dest);
-              }
-
-              const tpContent = fs.readFileSync(path.join(SIGNER_DIR, "registries/dice/test-policy.json"));
-              const tpDigest = crypto.createHash("sha256").update(tpContent).digest("hex");
-              if (tpDigest !== EXPECTED_TEST_POLICY_DIGEST) {
-                console.error(`FAIL-CLOSED: Test policy digest mismatch! Expected ${EXPECTED_TEST_POLICY_DIGEST}, got ${tpDigest}`);
-                process.exit(1);
-              }
-
-              const masterHasher = crypto.createHash("sha256");
-              for (const rel of [...FILES].sort()) {
-                const c = fs.readFileSync(path.join(SIGNER_DIR, rel));
-                const sha = crypto.createHash("sha256").update(c).digest("hex");
-                masterHasher.update(rel);
-                masterHasher.update(sha);
-              }
-              const distDigest = masterHasher.digest("hex");
-              if (distDigest !== EXPECTED_DIST_DIGEST) {
-                console.error(`FAIL-CLOSED: Signer distribution digest mismatch! Expected ${EXPECTED_DIST_DIGEST}, got ${distDigest}`);
-                process.exit(1);
-              }
-
-              console.log("[dice-signing] ✓ Protected signer distribution verified:", distDigest);
-              console.log("[dice-signing] ✓ Protected test policy verified:", tpDigest);
+              });
             '
 
             # Establish test qualification signing keypair and registry
@@ -383,6 +334,21 @@ jobs:
               --key-id=key-dice-test-signer-01 \
               --test-keys=/tmp/dice-test-keys.json \
               --signing-key-file=/tmp/dice-test-key.pem
+      - run:
+          name: Standalone Independent DSSE Attestation Verification Step
+          command: |
+            SIGNER_DIR="/tmp/dice-protected-signer"
+            CANDIDATE_TREE="$(git rev-parse HEAD^{tree})"
+            CANDIDATE_COMMIT="$(git rev-parse HEAD)"
+
+            # Separately invoked independent DSSE verification step (8-point criteria)
+            node "$SIGNER_DIR/scripts/dice-evidence.mjs" \
+              --verify-attestation=artifacts/dice-evidence/test-attestation.dsse.json \
+              --test-keys=/tmp/dice-test-keys.json \
+              --candidate-tree="$CANDIDATE_TREE" \
+              --candidate-commit="$CANDIDATE_COMMIT" \
+              --ledger=artifacts/dice-evidence/receipts.sha256 \
+              --expected-predicate="https://framique.com/dice/test-attestation/v1"
       - store_artifacts:
           path: artifacts/dice-evidence
           destination: dice-attestation
@@ -774,6 +740,8 @@ workflows:
       - plugin-storefront-gate
       # P0-2: Attestation signing strictly requires all mandatory qualification jobs
       - dice-attestation-signing:
+          context:
+            - dice-trust-authority
           requires:
             - lint-typecheck
             - unit-contract

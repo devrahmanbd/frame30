@@ -210,9 +210,26 @@ export class DiceSigningService {
           stdio: "ignore",
         },
       );
-    } catch {
+
+      // Verify that candidate tree does not commit evidence (receipt provenance check)
+      try {
+        const artifactsTree = execFileSync(
+          "git",
+          ["ls-tree", candidateTree, "artifacts"],
+          { cwd: this.repoRoot, encoding: "utf8" },
+        ).trim();
+        if (artifactsTree) {
+          throw new Error(
+            `FAIL-CLOSED: Candidate git tree contains committed 'artifacts' directory. Verification evidence must be produced by authentic execution, never committed into repository.`,
+          );
+        }
+      } catch (err) {
+        if (err.message && err.message.startsWith("FAIL-CLOSED:")) throw err;
+      }
+    } catch (err) {
+      if (err.message && err.message.startsWith("FAIL-CLOSED:")) throw err;
       throw new Error(
-        `FAIL-CLOSED: Candidate commit '${candidateCommit}' or tree '${candidateTree}' missing from git`,
+        `FAIL-CLOSED: Candidate commit '${candidateCommit}' or tree '${candidateTree}' missing from git: ${err.message}`,
       );
     }
     console.log(`  ✓ Candidate Commit verified: ${candidateCommit}`);
@@ -411,6 +428,19 @@ export class DiceSigningService {
       if (receipt.status !== "PASS") {
         throw new Error(
           `FAIL-CLOSED: Receipt '${cleanRel}' has non-PASS status: ${receipt.status}`,
+        );
+      }
+      if (receipt.exit_code !== undefined && receipt.exit_code !== 0) {
+        throw new Error(
+          `FAIL-CLOSED: Receipt '${cleanRel}' reports non-zero exit_code: ${receipt.exit_code}`,
+        );
+      }
+      const command =
+        (receipt.invocation && receipt.invocation.command) ||
+        (receipt.execution && receipt.execution.command);
+      if (!command || !Array.isArray(command) || command.length === 0) {
+        throw new Error(
+          `FAIL-CLOSED: Receipt '${cleanRel}' missing execution command array`,
         );
       }
       receipts.push(receipt);

@@ -596,6 +596,14 @@ export function extractAndVerifySigningDistribution(options = {}) {
       ? options.requireExternalAnchors
       : process.env.DICE_REQUIRE_EXTERNAL_ANCHORS === "1" || false;
   const files = options.files || SIGNER_DISTRIBUTION_FILES;
+  const expectedDistDigest =
+    options.expectedDistDigest ||
+    process.env.DICE_EXPECTED_SIGNER_DIST_DIGEST ||
+    null;
+  const expectedTestPolicyDigest =
+    options.expectedTestPolicyDigest ||
+    process.env.DICE_EXPECTED_TEST_POLICY_DIGEST ||
+    null;
 
   validateSafePath(repoRoot);
   validateSafePath(targetDir);
@@ -605,17 +613,44 @@ export function extractAndVerifySigningDistribution(options = {}) {
   }
   mkdirSync(targetDir, { recursive: true });
 
+  if (requireExternalAnchors) {
+    if (!expectedDistDigest || !expectedTestPolicyDigest) {
+      rmSync(targetDir, { recursive: true, force: true });
+      throw new Error(
+        "FAIL-CLOSED: External trust anchors required (DICE_REQUIRE_EXTERNAL_ANCHORS=1), but DICE_EXPECTED_SIGNER_DIST_DIGEST or DICE_EXPECTED_TEST_POLICY_DIGEST is not set (BLOCKED).",
+      );
+    }
+    if (!externalDistDir || !existsSync(externalDistDir)) {
+      rmSync(targetDir, { recursive: true, force: true });
+      throw new Error(
+        "FAIL-CLOSED: Missing external verifier distribution directory (BLOCKED). External trust anchors require an independently provisioned external distribution.",
+      );
+    }
+  }
+
   if (externalDistDir) {
     validateSafePath(externalDistDir);
+    const resolvedExt = resolve(externalDistDir);
+    const resolvedRepo = resolve(repoRoot);
+    const relFromRepo = relative(resolvedRepo, resolvedExt);
+    if (!relFromRepo.startsWith("..") && !isAbsolute(relFromRepo)) {
+      rmSync(targetDir, { recursive: true, force: true });
+      throw new Error(
+        `FAIL-CLOSED: Candidate-local signer substitution detected! External distribution cannot be inside candidate repository: ${externalDistDir} (FAIL).`,
+      );
+    }
+
     for (const rel of files) {
       validateSafePath(rel, { mustBeRelative: true });
       const src = join(externalDistDir, rel);
       if (!existsSync(src)) {
+        rmSync(targetDir, { recursive: true, force: true });
         throw new Error(
           `FAIL-CLOSED: Required verifier distribution file missing from external authority: ${rel}`,
         );
       }
       if (lstatSync(src).isSymbolicLink()) {
+        rmSync(targetDir, { recursive: true, force: true });
         throw new Error(
           `FAIL-CLOSED: Distribution asset cannot be a symlink: ${rel}`,
         );
@@ -629,6 +664,12 @@ export function extractAndVerifySigningDistribution(options = {}) {
     validateTrustedRef(trustedRef);
     safeArchiveExtract(trustedRef, files, targetDir, repoRoot);
   } else {
+    if (requireExternalAnchors) {
+      rmSync(targetDir, { recursive: true, force: true });
+      throw new Error(
+        "FAIL-CLOSED: Candidate-local verifier fallback is strictly prohibited when external anchors are required (BLOCKED).",
+      );
+    }
     for (const rel of files) {
       validateSafePath(rel, { mustBeRelative: true });
       const src = join(repoRoot, rel);
@@ -664,39 +705,20 @@ export function extractAndVerifySigningDistribution(options = {}) {
   // Compute canonical distribution digest
   const distributionDigest = computeDistributionDigest(targetDir, files);
 
-  // Digest verification against expected anchors
-  const expectedDistDigest =
-    options.expectedDistDigest ||
-    process.env.DICE_EXPECTED_SIGNER_DIST_DIGEST ||
-    null;
-  const expectedTestPolicyDigest =
-    options.expectedTestPolicyDigest ||
-    process.env.DICE_EXPECTED_TEST_POLICY_DIGEST ||
-    null;
-
-  if (requireExternalAnchors) {
-    if (!expectedDistDigest || !expectedTestPolicyDigest) {
-      rmSync(targetDir, { recursive: true, force: true });
-      throw new Error(
-        "FAIL-CLOSED: External trust anchors required (DICE_REQUIRE_EXTERNAL_ANCHORS=1), but DICE_EXPECTED_SIGNER_DIST_DIGEST or DICE_EXPECTED_TEST_POLICY_DIGEST is not set (BLOCKED).",
-      );
-    }
-  }
-
   if (
     expectedTestPolicyDigest &&
     testPolicyDigest !== expectedTestPolicyDigest
   ) {
     rmSync(targetDir, { recursive: true, force: true });
     throw new Error(
-      `FAIL-CLOSED: Test policy digest mismatch! Expected ${expectedTestPolicyDigest}, got ${testPolicyDigest}. Unauthorized policy tampering detected (BLOCKED).`,
+      `FAIL-CLOSED: Test policy digest mismatch! Expected ${expectedTestPolicyDigest}, got ${testPolicyDigest} (FAIL).`,
     );
   }
 
   if (expectedDistDigest && distributionDigest !== expectedDistDigest) {
     rmSync(targetDir, { recursive: true, force: true });
     throw new Error(
-      `FAIL-CLOSED: Signer distribution digest mismatch! Expected ${expectedDistDigest}, got ${distributionDigest}. Unauthorized signer tampering detected (BLOCKED).`,
+      `FAIL-CLOSED: Signer distribution digest mismatch! Expected ${expectedDistDigest}, got ${distributionDigest} (FAIL).`,
     );
   }
 

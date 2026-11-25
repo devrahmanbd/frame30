@@ -11,6 +11,7 @@ import {
   verifyAttestationEnvelope,
   generateTestKeypair,
   computePae,
+  verifyIndependentAttestation,
 } from "../../../scripts/dice-evidence.mjs";
 import { canonicalizeJson } from "../../../scripts/dice-plan-generator.mjs";
 
@@ -54,14 +55,20 @@ describe("DICE Evidence Authenticity & Cryptographic Attestation (Revision 2.3 S
       const r = serializeReceiptCanonical({ id: "OBL-X", status: "PASS" });
       expect(() =>
         generateDetachedDigestLedger([
-          { relPath: "receipts/normal.json\n0000000000000000  forged.json", canonicalStr: r },
-        ])
+          {
+            relPath: "receipts/normal.json\n0000000000000000  forged.json",
+            canonicalStr: r,
+          },
+        ]),
       ).toThrow(/Receipt path injection detected/);
 
       expect(() =>
         generateDetachedDigestLedger([
-          { relPath: "receipts/normal.json\r0000000000000000  forged.json", canonicalStr: r },
-        ])
+          {
+            relPath: "receipts/normal.json\r0000000000000000  forged.json",
+            canonicalStr: r,
+          },
+        ]),
       ).toThrow(/Receipt path injection detected/);
     });
 
@@ -74,7 +81,9 @@ describe("DICE Evidence Authenticity & Cryptographic Attestation (Revision 2.3 S
         "1": "one",
       };
       const canonical = canonicalizeJson(input);
-      expect(canonical).toBe('{"1":"one","a":"alpha","b":"beta","\u20ac":"Euro"}');
+      expect(canonical).toBe(
+        '{"1":"one","a":"alpha","b":"beta","\u20ac":"Euro"}',
+      );
     });
   });
 
@@ -83,7 +92,12 @@ describe("DICE Evidence Authenticity & Cryptographic Attestation (Revision 2.3 S
       const keypair = generateTestKeypair();
       const statement = {
         _type: "https://in-toto.io/Statement/v1",
-        subject: [{ name: "frame30-candidate", digest: { sha256: "3fc7226b47369e804b9f17bd8051cb68207a6952" } }],
+        subject: [
+          {
+            name: "frame30-candidate",
+            digest: { sha256: "3fc7226b47369e804b9f17bd8051cb68207a6952" },
+          },
+        ],
         predicateType: "https://framique.com/dice/attestation/v1",
         predicate: {
           qualification: "QUALIFIED_PASS",
@@ -91,21 +105,35 @@ describe("DICE Evidence Authenticity & Cryptographic Attestation (Revision 2.3 S
         },
       };
 
-      const envelope = createAttestationEnvelope(statement, keypair.privateKey, "key-test-ci-01");
+      const envelope = createAttestationEnvelope(
+        statement,
+        keypair.privateKey,
+        "key-test-ci-01",
+      );
       expect(envelope.payloadType).toBe("application/vnd.in-toto+json");
       expect(envelope.signatures.length).toBe(1);
 
-      const verifyResult = verifyAttestationEnvelope(envelope, keypair.publicKey);
+      const verifyResult = verifyAttestationEnvelope(
+        envelope,
+        keypair.publicKey,
+      );
       expect(verifyResult.valid).toBe(true);
       expect(verifyResult.keyid).toBe("key-test-ci-01");
-      expect(verifyResult.statement.predicate.qualification).toBe("QUALIFIED_PASS");
+      expect(verifyResult.statement.predicate.qualification).toBe(
+        "QUALIFIED_PASS",
+      );
     });
 
     it("DSSE PAE correctly calculates UTF-8 byte lengths for non-ASCII Unicode statements (বাংলা)", () => {
       const keypair = generateTestKeypair();
       const unicodeStatement = {
         _type: "https://in-toto.io/Statement/v1",
-        subject: [{ name: "বাংলাদেশ-কমার্স", digest: { sha256: "3fc7226b47369e804b9f17bd8051cb68207a6952" } }],
+        subject: [
+          {
+            name: "বাংলাদেশ-কমার্স",
+            digest: { sha256: "3fc7226b47369e804b9f17bd8051cb68207a6952" },
+          },
+        ],
         predicateType: "https://framique.com/dice/attestation/v1",
         predicate: {
           merchant: "বাংলাদেশ",
@@ -122,8 +150,15 @@ describe("DICE Evidence Authenticity & Cryptographic Attestation (Revision 2.3 S
       // Verify non-ASCII: byte length must be strictly greater than character count
       expect(utf8ByteCount).toBeGreaterThan(strCharCount);
 
-      const envelope = createAttestationEnvelope(unicodeStatement, keypair.privateKey, "key-unicode-01");
-      const verifyResult = verifyAttestationEnvelope(envelope, keypair.publicKey);
+      const envelope = createAttestationEnvelope(
+        unicodeStatement,
+        keypair.privateKey,
+        "key-unicode-01",
+      );
+      const verifyResult = verifyAttestationEnvelope(
+        envelope,
+        keypair.publicKey,
+      );
 
       expect(verifyResult.valid).toBe(true);
       expect(verifyResult.statement.predicate.merchant).toBe("বাংলাদেশ");
@@ -145,9 +180,14 @@ describe("DICE Evidence Authenticity & Cryptographic Attestation (Revision 2.3 S
 
       // Tamper with payload
       const tamperedStatement = { qualification: "QUALIFIED_FAIL" };
-      envelope.payload = Buffer.from(JSON.stringify(tamperedStatement)).toString("base64");
+      envelope.payload = Buffer.from(
+        JSON.stringify(tamperedStatement),
+      ).toString("base64");
 
-      const verifyResult = verifyAttestationEnvelope(envelope, keypair.publicKey);
+      const verifyResult = verifyAttestationEnvelope(
+        envelope,
+        keypair.publicKey,
+      );
       expect(verifyResult.valid).toBe(false);
       expect(verifyResult.reason).toBe("SIGNATURE_VERIFICATION_FAILED");
     });
@@ -155,12 +195,18 @@ describe("DICE Evidence Authenticity & Cryptographic Attestation (Revision 2.3 S
     it("validates envelope against schemas/dice/evidence-envelope.schema.json", () => {
       const ajv = new Ajv2020({ allErrors: true, strict: true });
       addFormats(ajv);
-      const schemaPath = join(process.cwd(), "schemas/dice/evidence-envelope.schema.json");
+      const schemaPath = join(
+        process.cwd(),
+        "schemas/dice/evidence-envelope.schema.json",
+      );
       const schema = JSON.parse(readFileSync(schemaPath, "utf8"));
       const validate = ajv.compile(schema);
 
       const keypair = generateTestKeypair();
-      const envelope = createAttestationEnvelope({ test: true }, keypair.privateKey);
+      const envelope = createAttestationEnvelope(
+        { test: true },
+        keypair.privateKey,
+      );
 
       const valid = validate(envelope);
       expect(valid, JSON.stringify(validate.errors)).toBe(true);
@@ -176,7 +222,8 @@ describe("DICE Evidence Authenticity & Cryptographic Attestation (Revision 2.3 S
         candidate_commit: "1c3746ee4685d351122b4fa91532667b0f92a268",
         candidate_tree: "a31978ed1b22da5c6bdde7a4dbb9a6ac3705f53b",
         tree_sha: "a31978ed1b22da5c6bdde7a4dbb9a6ac3705f53b",
-        specification_hash: "8e6e3e41bf55ddddfb2aecaefe242e19954fea8cebaa30b46dabcb7ef54ed35f",
+        specification_hash:
+          "8e6e3e41bf55ddddfb2aecaefe242e19954fea8cebaa30b46dabcb7ef54ed35f",
         toolchain_identity: {
           node: "v20.18.0",
           bwrap: "bubblewrap 0.4.1",
@@ -184,19 +231,29 @@ describe("DICE Evidence Authenticity & Cryptographic Attestation (Revision 2.3 S
           arch: "x64",
         },
         invocation: {
-          command: ["node", "scripts/scope-guard.mjs", "--contract=features/contracts/F30-DICE-STAGE2-2.json"],
+          command: [
+            "node",
+            "scripts/scope-guard.mjs",
+            "--contract=features/contracts/F30-DICE-STAGE2-2.json",
+          ],
           duration_ms: 125,
           started_at: "2026-11-24T12:00:00.000Z",
         },
-        stdout_digest: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        stderr_digest: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        stdout_digest:
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        stderr_digest:
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         exit_code: 0,
         diagnostics: "[scope-guard] ✓ Scope guard PASSED.",
       };
 
       const canonicalStr = serializeReceiptCanonical(receipt);
-      expect(canonicalStr).toContain('"candidate_commit":"1c3746ee4685d351122b4fa91532667b0f92a268"');
-      expect(canonicalStr).toContain('"candidate_tree":"a31978ed1b22da5c6bdde7a4dbb9a6ac3705f53b"');
+      expect(canonicalStr).toContain(
+        '"candidate_commit":"1c3746ee4685d351122b4fa91532667b0f92a268"',
+      );
+      expect(canonicalStr).toContain(
+        '"candidate_tree":"a31978ed1b22da5c6bdde7a4dbb9a6ac3705f53b"',
+      );
       expect(canonicalStr).toContain('"bwrap":"bubblewrap 0.4.1"');
 
       const digest = computeReceiptDigest(canonicalStr);
@@ -204,8 +261,16 @@ describe("DICE Evidence Authenticity & Cryptographic Attestation (Revision 2.3 S
     });
 
     it("verifies detached digest ledger integrity against individual receipt digests", () => {
-      const r1 = serializeReceiptCanonical({ obligation_id: "OBL-A", status: "PASS", tree_sha: "tree1" });
-      const r2 = serializeReceiptCanonical({ obligation_id: "OBL-B", status: "PASS", tree_sha: "tree1" });
+      const r1 = serializeReceiptCanonical({
+        obligation_id: "OBL-A",
+        status: "PASS",
+        tree_sha: "tree1",
+      });
+      const r2 = serializeReceiptCanonical({
+        obligation_id: "OBL-B",
+        status: "PASS",
+        tree_sha: "tree1",
+      });
 
       const d1 = computeReceiptDigest(r1);
       const d2 = computeReceiptDigest(r2);
@@ -223,7 +288,8 @@ describe("DICE Evidence Authenticity & Cryptographic Attestation (Revision 2.3 S
 
     it("creates end-to-end DSSE attestation envelope binding qualification to detached ledger", () => {
       const keypair = generateTestKeypair();
-      const ledgerDigest = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08";
+      const ledgerDigest =
+        "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08";
 
       const statement = {
         _type: "https://in-toto.io/Statement/v1",
@@ -239,7 +305,8 @@ describe("DICE Evidence Authenticity & Cryptographic Attestation (Revision 2.3 S
         predicateType: "https://framique.com/dice/attestation/v1",
         predicate: {
           qualification: "QUALIFIED_PASS",
-          plan_hash: "8e6e3e41bf55ddddfb2aecaefe242e19954fea8cebaa30b46dabcb7ef54ed35f",
+          plan_hash:
+            "8e6e3e41bf55ddddfb2aecaefe242e19954fea8cebaa30b46dabcb7ef54ed35f",
           contract: "F30-DICE-STAGE2-2",
           obligations_verified: 4,
           toolchain: {
@@ -250,13 +317,324 @@ describe("DICE Evidence Authenticity & Cryptographic Attestation (Revision 2.3 S
         },
       };
 
-      const envelope = createAttestationEnvelope(statement, keypair.privateKey, "key-stage2-2-ci");
-      const verifyResult = verifyAttestationEnvelope(envelope, keypair.publicKey);
+      const envelope = createAttestationEnvelope(
+        statement,
+        keypair.privateKey,
+        "key-stage2-2-ci",
+      );
+      const verifyResult = verifyAttestationEnvelope(
+        envelope,
+        keypair.publicKey,
+      );
 
       expect(verifyResult.valid).toBe(true);
-      expect(verifyResult.statement.predicate.qualification).toBe("QUALIFIED_PASS");
+      expect(verifyResult.statement.predicate.qualification).toBe(
+        "QUALIFIED_PASS",
+      );
       expect(verifyResult.statement.predicate.ledger_sha256).toBe(ledgerDigest);
-      expect(verifyResult.statement.subject[0].digest.commit).toBe("1c3746ee4685d351122b4fa91532667b0f92a268");
+      expect(verifyResult.statement.subject[0].digest.commit).toBe(
+        "1c3746ee4685d351122b4fa91532667b0f92a268",
+      );
+    });
+  });
+
+  describe("4. Standalone Independent DSSE Verification Suite (Stage 2.4.3 & 8-Point Criteria)", () => {
+    const keypair = generateTestKeypair();
+    const trustedKeys = [
+      {
+        keyid: "key-dice-test-signer-01",
+        algorithm: "ed25519",
+        public_key_pem: keypair.publicKey,
+        roles: ["dice-attestation-signer"],
+        status: "active",
+        created_at: new Date().toISOString(),
+      },
+      {
+        keyid: "key-dice-revoked-01",
+        algorithm: "ed25519",
+        public_key_pem: keypair.publicKey,
+        roles: ["dice-attestation-signer"],
+        status: "revoked",
+        revoked_at: new Date().toISOString(),
+      },
+      {
+        keyid: "key-dice-norole-01",
+        algorithm: "ed25519",
+        public_key_pem: keypair.publicKey,
+        roles: ["unauthorized-role"],
+        status: "active",
+        created_at: new Date().toISOString(),
+      },
+    ];
+
+    const validCommit = "1c3746ee4685d351122b4fa91532667b0f92a268";
+    const validTree = "a31978ed1b22da5c6bdde7a4dbb9a6ac3705f53b";
+    const validLedger =
+      "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08  receipts/r1.json\n";
+    const ledgerSha = computeReceiptDigest(validLedger);
+
+    function createValidStatement(isTest = true) {
+      return {
+        _type: "https://in-toto.io/Statement/v1",
+        subject: [
+          {
+            name: "frame30-candidate",
+            digest: {
+              sha256: validTree,
+              commit: validCommit,
+            },
+          },
+        ],
+        predicateType: isTest
+          ? "https://framique.com/dice/test-attestation/v1"
+          : "https://framique.com/dice/attestation/v1",
+        predicate: {
+          qualification: isTest
+            ? "TEST_QUALIFIED_NON_AUTHORITATIVE"
+            : "QUALIFIED_PASS",
+          mode: isTest ? "test" : "production",
+          plan_hash:
+            "8e6e3e41bf55ddddfb2aecaefe242e19954fea8cebaa30b46dabcb7ef54ed35f",
+          contract: "F30-DICE-TEST-ONLY-QUAL",
+          obligations_verified: 4,
+          ledger_sha256: ledgerSha,
+          attested_at: new Date().toISOString(),
+        },
+      };
+    }
+
+    it("Point 1-8: Positively verifies valid test DSSE attestation across all 8 criteria", () => {
+      const stmt = createValidStatement(true);
+      const envelope = createAttestationEnvelope(
+        stmt,
+        keypair.privateKey,
+        "key-dice-test-signer-01",
+      );
+
+      const res = verifyIndependentAttestation({
+        envelope,
+        trustedKeys,
+        candidateCommit: validCommit,
+        candidateTree: validTree,
+        ledgerContent: validLedger,
+        expectedPredicateType: "https://framique.com/dice/test-attestation/v1",
+      });
+
+      expect(res.valid).toBe(true);
+      expect(res.keyid).toBe("key-dice-test-signer-01");
+      expect(res.qualification).toBe("TEST_QUALIFIED_NON_AUTHORITATIVE");
+      expect(res.predicateType).toBe(
+        "https://framique.com/dice/test-attestation/v1",
+      );
+    });
+
+    it("Signature Tampering: Corrupted signature bytes fails verification fail-closed", () => {
+      const stmt = createValidStatement(true);
+      const envelope = createAttestationEnvelope(
+        stmt,
+        keypair.privateKey,
+        "key-dice-test-signer-01",
+      );
+      // Corrupt signature
+      const sigBuf = Buffer.from(envelope.signatures[0].sig, "base64");
+      sigBuf[0] ^= 0xff;
+      envelope.signatures[0].sig = sigBuf.toString("base64");
+
+      expect(() =>
+        verifyIndependentAttestation({
+          envelope,
+          trustedKeys,
+          candidateCommit: validCommit,
+          candidateTree: validTree,
+        }),
+      ).toThrow(/FAIL-CLOSED: Ed25519 signature verification failed/);
+    });
+
+    it("Payload Tampering: Statement tampering inside base64 payload fails verification fail-closed", () => {
+      const stmt = createValidStatement(true);
+      const envelope = createAttestationEnvelope(
+        stmt,
+        keypair.privateKey,
+        "key-dice-test-signer-01",
+      );
+      // Tamper statement (change qualification to fake production pass)
+      const tamperedStmt = JSON.parse(
+        Buffer.from(envelope.payload, "base64").toString("utf8"),
+      );
+      tamperedStmt.predicate.qualification = "QUALIFIED_PASS";
+      envelope.payload = Buffer.from(
+        JSON.stringify(tamperedStmt),
+        "utf8",
+      ).toString("base64");
+
+      expect(() =>
+        verifyIndependentAttestation({
+          envelope,
+          trustedKeys,
+          candidateCommit: validCommit,
+          candidateTree: validTree,
+        }),
+      ).toThrow(/FAIL-CLOSED: Ed25519 signature verification failed/);
+    });
+
+    it("Envelope Structure: Missing signatures fails closed", () => {
+      const stmt = createValidStatement(true);
+      const envelope = createAttestationEnvelope(
+        stmt,
+        keypair.privateKey,
+        "key-dice-test-signer-01",
+      );
+      envelope.signatures = [];
+
+      expect(() =>
+        verifyIndependentAttestation({
+          envelope,
+          trustedKeys,
+        }),
+      ).toThrow(/FAIL-CLOSED: Envelope signatures must be a non-empty array/);
+    });
+
+    it("Envelope Structure: Invalid payloadType fails closed", () => {
+      const stmt = createValidStatement(true);
+      const envelope = createAttestationEnvelope(
+        stmt,
+        keypair.privateKey,
+        "key-dice-test-signer-01",
+      );
+      (envelope as unknown as { payloadType: string }).payloadType =
+        "application/json";
+
+      expect(() =>
+        verifyIndependentAttestation({
+          envelope,
+          trustedKeys,
+        }),
+      ).toThrow(/FAIL-CLOSED: Invalid payloadType 'application\/json'/);
+    });
+
+    it("Registered Key Identity: Unregistered signer key fails closed", () => {
+      const stmt = createValidStatement(true);
+      const rogueKeypair = generateTestKeypair();
+      const envelope = createAttestationEnvelope(
+        stmt,
+        rogueKeypair.privateKey,
+        "key-unregistered-99",
+      );
+
+      expect(() =>
+        verifyIndependentAttestation({
+          envelope,
+          trustedKeys,
+        }),
+      ).toThrow(
+        /FAIL-CLOSED: Signer key 'key-unregistered-99' is not registered/,
+      );
+    });
+
+    it("Key Revocation: Revoked key is rejected fail-closed", () => {
+      const stmt = createValidStatement(true);
+      const envelope = createAttestationEnvelope(
+        stmt,
+        keypair.privateKey,
+        "key-dice-revoked-01",
+      );
+
+      expect(() =>
+        verifyIndependentAttestation({
+          envelope,
+          trustedKeys,
+        }),
+      ).toThrow(/FAIL-CLOSED: Signer key 'key-dice-revoked-01' is REVOKED/);
+    });
+
+    it("Key Role: Key missing dice-attestation-signer role is rejected fail-closed", () => {
+      const stmt = createValidStatement(true);
+      const envelope = createAttestationEnvelope(
+        stmt,
+        keypair.privateKey,
+        "key-dice-norole-01",
+      );
+
+      expect(() =>
+        verifyIndependentAttestation({
+          envelope,
+          trustedKeys,
+        }),
+      ).toThrow(
+        /FAIL-CLOSED: Signer key 'key-dice-norole-01' lacks authorized role/,
+      );
+    });
+
+    it("Candidate Commit & Tree: Tree mismatch fails closed", () => {
+      const stmt = createValidStatement(true);
+      const envelope = createAttestationEnvelope(
+        stmt,
+        keypair.privateKey,
+        "key-dice-test-signer-01",
+      );
+
+      expect(() =>
+        verifyIndependentAttestation({
+          envelope,
+          trustedKeys,
+          candidateTree: "0000000000000000000000000000000000000000",
+        }),
+      ).toThrow(/FAIL-CLOSED: Candidate tree SHA mismatch!/);
+    });
+
+    it("Candidate Commit & Tree: Commit mismatch fails closed", () => {
+      const stmt = createValidStatement(true);
+      const envelope = createAttestationEnvelope(
+        stmt,
+        keypair.privateKey,
+        "key-dice-test-signer-01",
+      );
+
+      expect(() =>
+        verifyIndependentAttestation({
+          envelope,
+          trustedKeys,
+          candidateCommit: "0000000000000000000000000000000000000000",
+        }),
+      ).toThrow(/FAIL-CLOSED: Candidate commit SHA mismatch!/);
+    });
+
+    it("Receipt Ledger Digest: Tampered ledger content fails closed", () => {
+      const stmt = createValidStatement(true);
+      const envelope = createAttestationEnvelope(
+        stmt,
+        keypair.privateKey,
+        "key-dice-test-signer-01",
+      );
+
+      expect(() =>
+        verifyIndependentAttestation({
+          envelope,
+          trustedKeys,
+          candidateTree: validTree,
+          candidateCommit: validCommit,
+          ledgerContent: "tampered-ledger-content-bytes",
+        }),
+      ).toThrow(/FAIL-CLOSED: Ledger digest mismatch!/);
+    });
+
+    it("Anti-Confusion: Test attestation cannot satisfy production release qualification", () => {
+      const stmt = createValidStatement(true);
+      const envelope = createAttestationEnvelope(
+        stmt,
+        keypair.privateKey,
+        "key-dice-test-signer-01",
+      );
+
+      expect(() =>
+        verifyIndependentAttestation({
+          envelope,
+          trustedKeys,
+          enforceProductionRelease: true,
+        }),
+      ).toThrow(
+        /FAIL-CLOSED: Test attestation \(TEST_QUALIFIED_NON_AUTHORITATIVE\) cannot satisfy production release qualification!/,
+      );
     });
   });
 });

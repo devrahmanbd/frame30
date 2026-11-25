@@ -28,6 +28,7 @@ import { DiceSandbox } from "../../../scripts/dice-sandbox.mjs";
 import {
   DiceSigningAuthority,
   generateTestKeypair,
+  verifyIndependentAttestation,
 } from "../../../scripts/dice-evidence.mjs";
 import { evaluateMethodOracle } from "../../../scripts/dice-bootstrap.mjs";
 
@@ -710,10 +711,10 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
 
   // Stage 2.4.2 P0-3: Hostile Candidate Replacement Matrix & External Signer Boundary
   describe("Stage 2.4.2 P0-3: Hostile Candidate Replacement Matrix & External Signer Boundary", () => {
-    const EXPECTED_TEST_POLICY_DIGEST =
-      "eb447909aff1afe029c5207e069259690a7975245926dd7ae0caef01b789380d";
-    const EXPECTED_DIST_DIGEST =
-      "d855fdf18572aceb01bed5027c77f52b497d85d7549892c94b54ba881278d194";
+    const EXPECTED_TEST_POLICY_DIGEST = createHash("sha256")
+      .update(readFileSync(join(repoRoot, "registries/dice/test-policy.json")))
+      .digest("hex");
+    const EXPECTED_DIST_DIGEST = computeDistributionDigest(repoRoot);
 
     const p03TempDir = join(testTempDir, "p03-replacement-matrix");
     const candidateBase = join(p03TempDir, "candidate-tree");
@@ -924,20 +925,47 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
       });
 
       // 3. Executing the real protected path runs the protected signer, immune to candidate's hostile script
-      const out = execFileSync(
-        "node",
-        [join(isolatedSignerDir, "scripts/dice-signing-service.mjs"), "--help"],
-        {
-          cwd: "/tmp",
-          env: {
-            PATH: process.env.PATH,
-            NODE_PATH: isolatedSignerDir,
-          },
-          encoding: "utf8",
-        },
+      const evidenceDir = join(p03TempDir, "evidence-v1");
+      createValidEvidence(evidenceDir);
+
+      const signer = new DiceSigningService({
+        repoRoot,
+        mode: "test",
+        contractPath: "registries/dice/test-qualification-contract.json",
+        evidenceDir,
+        distDir: isolatedSignerDir,
+        trustedRef: DEFAULT_TRUSTED_REF,
+        keyId: "key-dice-test-signer-01",
+        testKeysPath: testKeysJsonPath,
+        signingKeyFile: testKeyPemPath,
+      });
+
+      const res = signer.execute();
+      expect(res.status).toBe("TEST_ATTESTED");
+      expect(res.qualification).toBe("TEST_QUALIFIED_NON_AUTHORITATIVE");
+      expect(existsSync(join(evidenceDir, "test-attestation.dsse.json"))).toBe(
+        true,
       );
-      expect(out).toContain("Usage: node scripts/dice-signing-service.mjs");
-      expect(out).not.toContain("HOSTILE_SIGNER_PWNED");
+
+      // Verify independently via standalone DSSE verification step
+      const verifyRes = verifyIndependentAttestation({
+        attestationPath: join(evidenceDir, "test-attestation.dsse.json"),
+        testKeysPath: testKeysJsonPath,
+        candidateCommit,
+        candidateTree,
+        ledgerPath: join(evidenceDir, "receipts.sha256"),
+        expectedPredicateType: "https://framique.com/dice/test-attestation/v1",
+      });
+      expect(verifyRes.valid).toBe(true);
+      expect(verifyRes.qualification).toBe("TEST_QUALIFIED_NON_AUTHORITATIVE");
+
+      // Verify zero attestations can ever be produced from candidate's hostile script
+      expect(
+        existsSync(join(candidateBase, "test-attestation.dsse.json")),
+      ).toBe(false);
+      expect(existsSync(join(candidateBase, "attestation.dsse.json"))).toBe(
+        false,
+      );
     });
 
     // Vector 2: trusted root module (scripts/dice-root-of-trust.mjs)
@@ -1338,6 +1366,81 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
         }),
       ).toThrow(
         /FAIL-CLOSED: Distribution asset cannot be a symlink: scripts\/dice-signing-service.mjs/,
+      );
+      expect(existsSync(isolatedSignerDir)).toBe(false);
+    });
+
+    it("Candidate-Local Signer Substitution: Using candidate repo as external authority fails closed", () => {
+      setupCandidateTree();
+      expect(() =>
+        extractAndVerifySigningDistribution({
+          repoRoot: candidateBase,
+          externalDistDir: candidateBase,
+          targetDir: isolatedSignerDir,
+          requireExternalAnchors: true,
+          expectedDistDigest: EXPECTED_DIST_DIGEST,
+          expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+        }),
+      ).toThrow(/FAIL-CLOSED: Candidate-local signer substitution detected!/);
+      expect(existsSync(isolatedSignerDir)).toBe(false);
+    });
+
+    it("Missing External Distribution: Missing external distribution under external anchors fails closed as BLOCKED", () => {
+      expect(() =>
+        extractAndVerifySigningDistribution({
+          repoRoot,
+          externalDistDir: "/tmp/non-existent-dist-dir-99",
+          targetDir: isolatedSignerDir,
+          requireExternalAnchors: true,
+          expectedDistDigest: EXPECTED_DIST_DIGEST,
+          expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+        }),
+      ).toThrow(
+        /FAIL-CLOSED: Missing external verifier distribution directory \(BLOCKED\)/,
+      );
+      expect(existsSync(isolatedSignerDir)).toBe(false);
+    });
+
+    it("Candidate-Controlled Digest Modification: Tampered expected digest is rejected against external authority", () => {
+      setupExternalAuthority();
+      expect(() =>
+        extractAndVerifySigningDistribution({
+          externalDistDir: externalAuthorityDir,
+          targetDir: isolatedSignerDir,
+          requireExternalAnchors: true,
+          expectedDistDigest:
+            "0000000000000000000000000000000000000000000000000000000000000000",
+          expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+        }),
+      ).toThrow(
+        /FAIL-CLOSED: Signer distribution digest mismatch! Expected 0000.* \(FAIL\)/,
+      );
+      expect(existsSync(isolatedSignerDir)).toBe(false);
+    });
+
+    it("Unauthorized Contract Modification: Attempting production signing without approval fails closed", () => {
+      setupExternalAuthority();
+      const evidenceDir = join(p03TempDir, "unauthorized-prod-contract");
+      createValidEvidence(evidenceDir);
+
+      const signer = new DiceSigningService({
+        repoRoot,
+        mode: "production",
+        contractPath: "features/contracts/F30-DICE-COMPLETE.json",
+        evidenceDir,
+        distDir: externalAuthorityDir,
+        trustedRef: DEFAULT_TRUSTED_REF,
+        keyId: "key-dice-authoritative-01",
+      });
+
+      expect(() => signer.execute()).toThrow(
+        /FAIL-CLOSED: Contract approval_state is 'proposed', expected 'approved' for authoritative signing/,
+      );
+      expect(existsSync(join(evidenceDir, "attestation.dsse.json"))).toBe(
+        false,
+      );
+      expect(existsSync(join(evidenceDir, "test-attestation.dsse.json"))).toBe(
+        false,
       );
     });
   });
