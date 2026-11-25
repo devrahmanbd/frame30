@@ -1,5 +1,13 @@
 import { describe, it, expect } from "vitest";
 import {
+  existsSync,
+  mkdirSync,
+  rmSync,
+  symlinkSync,
+  unlinkSync,
+} from "node:fs";
+import { join, resolve } from "node:path";
+import {
   Lean4Adapter,
   TlaAdapter,
   Bend2Adapter,
@@ -307,6 +315,82 @@ describe("Frame30 DICE Native Verification Adapters (Section 8 & Unified Interfa
           [{ path: "specs/lean/lakefile.lean", sha256: "" }],
         );
       }).toThrow(/Every argument must be a string/);
+    });
+
+    it("rejects attacker executable path /tmp/attacker/lake even when matching approved basename", () => {
+      expect(() => {
+        adapter.execute(
+          {
+            id: "inv-sec-lake",
+            approvedArgs: [],
+            executable: "/tmp/attacker/lake",
+          },
+          dummyProvenance,
+          dummyLinkage,
+          [{ path: "specs/lean/lakefile.lean", sha256: "" }],
+        );
+      }).toThrow(/Disallowed executable path.*Untrusted execution path/);
+    });
+
+    it("rejects symlinked working directory escaping repository root", () => {
+      const outsideDir = resolve("/tmp", ".test-tmp-outside-target");
+      if (existsSync(outsideDir)) {
+        rmSync(outsideDir, { recursive: true, force: true });
+      }
+      mkdirSync(outsideDir, { recursive: true });
+      const linkInsideRepo = join(
+        process.cwd(),
+        "specs/lean/.tmp-symlink-escape",
+      );
+      try {
+        if (existsSync(linkInsideRepo)) unlinkSync(linkInsideRepo);
+        symlinkSync(outsideDir, linkInsideRepo);
+        expect(() => {
+          adapter.execute(
+            { id: "inv-sec-symlink", approvedArgs: [], cwd: linkInsideRepo },
+            dummyProvenance,
+            dummyLinkage,
+            [{ path: "specs/lean/lakefile.lean", sha256: "" }],
+          );
+        }).toThrow(/Disallowed working directory outside repo root/);
+      } finally {
+        if (existsSync(linkInsideRepo)) unlinkSync(linkInsideRepo);
+        rmSync(outsideDir, { recursive: true, force: true });
+      }
+    });
+
+    it("rejects DICE_SIGNING_KEY passed through invocation environment overrides", () => {
+      expect(() => {
+        adapter.execute(
+          {
+            id: "inv-sec-signing-key",
+            approvedArgs: [],
+            env: { DICE_SIGNING_KEY: "malicious-key-override" },
+          },
+          dummyProvenance,
+          dummyLinkage,
+          [{ path: "specs/lean/lakefile.lean", sha256: "" }],
+        );
+      }).toThrow(
+        /Sensitive secret environment variable prohibited in invocation: DICE_SIGNING_KEY/,
+      );
+    });
+
+    it("rejects AWS_SECRET_ACCESS_KEY and sensitive environment variable overrides", () => {
+      expect(() => {
+        adapter.execute(
+          {
+            id: "inv-sec-aws-key",
+            approvedArgs: [],
+            env: { AWS_SECRET_ACCESS_KEY: "malicious-aws-secret" },
+          },
+          dummyProvenance,
+          dummyLinkage,
+          [{ path: "specs/lean/lakefile.lean", sha256: "" }],
+        );
+      }).toThrow(
+        /Sensitive secret environment variable prohibited in invocation: AWS_SECRET_ACCESS_KEY/,
+      );
     });
   });
 });

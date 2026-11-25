@@ -295,3 +295,48 @@ export class Bend2Adapter implements DiceAdapter {
     };
   }
 }
+
+export class LawFileSegregator {
+  static readonly RATIFIED_LAWS = new Set([
+    "law_responsive_cascade_mobile",
+    "law_responsive_cascade_tablet",
+    "law_responsive_cascade_desktop",
+    "law_reset_restoration_mobile",
+    "law_collection_self_exclusion",
+    "law_cross_sell_preservation",
+  ]);
+
+  static readonly QUARANTINED_LAWS = new Set([
+    "law_cms_draft_secrecy",
+    "law_cms_scheduled_secrecy",
+    "law_cms_published_visibility",
+    "law_cms_archived_secrecy",
+    "law_cms_tenant_boundary_isolation",
+    "law_cms_same_tenant_access",
+  ]);
+
+  static auditLawRatification(lawName: string): "RATIFIED" | "QUARANTINED" {
+    if (this.QUARANTINED_LAWS.has(lawName)) return "QUARANTINED";
+    if (this.RATIFIED_LAWS.has(lawName)) return "RATIFIED";
+    return "QUARANTINED";
+  }
+
+  static validateLawFile(content: string): {
+    status: "OK" | "FAIL";
+    violations: string[];
+  } {
+    const violations: string[] = [];
+    for (const qLaw of this.QUARANTINED_LAWS) {
+      if (
+        content.includes(`ratify ${qLaw}`) ||
+        content.includes(`ratified_law: ${qLaw}`)
+      ) {
+        violations.push(qLaw);
+      }
+    }
+    return {
+      status: violations.length === 0 ? "OK" : "FAIL",
+      violations,
+    };
+  }
+}

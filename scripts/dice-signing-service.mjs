@@ -490,7 +490,13 @@ Options:
     testKeysPath,
   });
   try {
-    service.execute();
+    const res = service.execute();
+    if (res.status !== "ATTESTED") {
+      console.error(
+        `\n[dice-signing] ✗ UNATTESTED: Candidate qualified but attestation signing was not completed (status: ${res.status}). Exit code 1.`,
+      );
+      process.exit(1);
+    }
     process.exit(0);
   } catch (err) {
     console.error(`\n[dice-signing] ✗ FAIL-CLOSED: ${err.message}`);

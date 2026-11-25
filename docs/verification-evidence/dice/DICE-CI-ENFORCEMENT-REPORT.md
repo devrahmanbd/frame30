@@ -56,33 +56,68 @@ artifacts/dice-evidence (Signed Attestation Bundle + Detached Digest Signature)
   1. Unshallow git repository and verify `$TRUSTED_REF` and `$ROOT_REF` commits.
   2. Execute mechanical scope guard: `ACTIVE_CHANGE_CONTRACT=features/contracts/F30-DICE-COMPLETE.json bun run gate:scope`.
   3. Install Bubblewrap OS sandbox substrate (`sudo apt-get install -y bubblewrap`).
-  4. Extract and run protected launcher from `$TRUSTED_REF`.
-  5. Run DICE Vitest test suites with serialized execution (`--fileParallelism=false`).
-  6. Store raw execution receipts in `artifacts/dice-evidence`.
+  4. Extract and run protected launcher from `$TRUSTED_REF` using independently authorized test qualification contract without `--dry-run`.
+  5. Run all DICE Vitest test suites with serialized execution (`--fileParallelism=false`).
+  6. Store raw execution receipts and qualification summary in `artifacts/dice-evidence`.
 
 ### Job 2: `dice-attestation-signing` (Isolated Cryptographic Signing)
-- **Executor**: Machine runner with isolated context.
+- **Executor**: Ubuntu 22.04 (`ubuntu-2204:current`) machine runner with pure Node execution.
 - **Access Boundary**: Possesses `DICE_SIGNING_KEY` credential in environment (inaccessible to `dice-qualification` worker).
-- **Steps**:
-  1. Extract signing service, evaluator, and key registry from `$TRUSTED_REF`.
-  2. Execute `dice-signing-service.mjs` against `artifacts/dice-evidence`.
-  3. Evaluates candidate qualification using Two-Tier Engine (`evaluateCandidateQualification`).
-  4. If and only if qualification evaluates strictly to `QUALIFIED_PASS`, generates Ed25519 detached signature and signs attestation bundle.
-  5. Stores verifiable signed attestation in `artifacts/dice-evidence/attestation-bundle.json`.
+- **Isolation Guarantees**:
+  1. No candidate dependencies installed (`bun install` omitted).
+  2. No candidate-controlled tests executed in signing context.
+  3. Pure Node runner extracts protected signer distribution directly from `$TRUSTED_REF`.
+  4. Error suppression eliminated (zero `|| true`). Non-zero exit code on `UNATTESTED` or failure.
+  5. Evaluates candidate qualification using Two-Tier Engine (`evaluateCandidateQualification`).
+  6. If and only if qualification evaluates strictly to `QUALIFIED_PASS`, generates in-toto DSSE attestation envelope (`attestation.dsse.json`) with Ed25519 signature.
+  7. Stores verifiable signed attestation in `artifacts/dice-evidence/attestation.dsse.json`.
 
 ---
 
-## 4. Pipeline Gate Flow
+## 4. Pipeline Gate Flow & Upstream Dependencies
 
-The complete release gate workflow in `.circleci/config.yml` executes in strict monotonic order:
-1. `lint-typecheck`: ESLint, TypeScript `tsgo --noEmit`, shell script syntax.
-2. `unit-contract`: Scope guard, drift gate, TLA+ TLC model checker, Lean 4 Lake build, Bend 2 laws.
-3. `dice-qualification`: Bubblewrap sandbox verification, 27-mutation suite, DICE test harness.
-4. `dice-attestation-signing`: Attestation signing service validation and Ed25519 attestation creation.
-5. `e2e-critical` & `e2e-levelb`: Deterministic browser journeys and security specs.
+Per `F30-DICE-ARCH-001` Section 10 and P0-2, `dice-attestation-signing` executes strictly downstream of every mandatory technical qualification job:
+
+```
+[ lint-typecheck ] ──┐
+[ unit-contract ]  ──┤
+[ dice-qualification ]─┤
+[ scan ]           ──┤
+[ build ]          ──┼──► [ e2e-critical ] ──────────────┐
+                     ├──► [ e2e-security ] ──────────────┼──► [ dice-attestation-signing ]
+                     ├──► [ e2e-levelb-production ] ─────┤      (Requires ALL 11 jobs)
+                     ├──► [ e2e-seven-templates ] ───────┤
+                     └──► [ bombadil-staging ] ──────────┤
+[ plugin-storefront-gate ] ──────────────────────────────┘
+```
+
+The signing job requires all eleven upstream gates:
+1. `lint-typecheck`
+2. `unit-contract`
+3. `dice-qualification`
+4. `scan`
+5. `build`
+6. `e2e-critical`
+7. `e2e-security`
+8. `e2e-levelb-production`
+9. `e2e-seven-templates`
+10. `bombadil-staging`
+11. `plugin-storefront-gate`
+
+If any upstream job fails or is blocked, attestation signing is blocked fail-closed and never runs.
 
 ---
 
-## 5. Conclusion
+## 5. External CI Enforcement Limitations & Administration Requirements
 
-The CircleCI configuration enforces complete trust boundary separation, immutable reference extraction, and decoupled cryptographic attestation signing. Candidate pull requests have zero opportunity to tamper with verification policies or forge passing attestations.
+1. **Context Protection**: Production `DICE_SIGNING_KEY` credentials must be bound to protected CircleCI contexts restricted to authoritative branches (`main`, `frame30`) and human specification authority (`@devrahmanbd`).
+2. **Test Key Segregation**: In development branches, test qualification keypairs (`key-dice-test-signer-01`) authenticate pipeline mechanics without producing production-authoritative attestations.
+3. **Repository Containment**: Candidate branch pull requests cannot mutate the CircleCI configuration outside authorized scope (`gate:scope` blocks unauthorized `.circleci/**` changes).
+4. **Human Authority Preservation**: The production change contract (`F30-DICE-COMPLETE.json`) remains in `"approval_state": "proposed"`. Autonomous agents possess zero authority to approve production contracts or deploy production attestations.
+
+---
+
+## 6. Conclusion
+
+The CircleCI configuration enforces complete trust boundary separation, immutable reference extraction, upstream qualification dependencies, and decoupled cryptographic attestation signing. Candidate pull requests have zero opportunity to tamper with verification policies or forge passing attestations.
+

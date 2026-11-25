@@ -238,6 +238,53 @@ describe("Frame30 DICE Stage 2.4: Isolated Signing Authority (Section 4)", () =>
     expect(result.qualification).toBe("QUALIFIED_PASS");
   });
 
+  it("CLI fails closed with exit code 1 when DICE_SIGNING_KEY is unset (UNATTESTED non-zero exit)", () => {
+    const evDir = join(testTempDir, "ev-cli-unattested");
+    createValidEvidenceDir(evDir);
+
+    const testContractPath = join(testTempDir, "test-approved-contract.json");
+    const rawContract = JSON.parse(
+      readFileSync(
+        join(repoRoot, "features/contracts/F30-DICE-STAGE2-4-1.json"),
+        "utf8",
+      ),
+    );
+    rawContract.approval_state = "approved";
+    writeFileSync(
+      testContractPath,
+      JSON.stringify(rawContract, null, 2),
+      "utf8",
+    );
+
+    let failed = false;
+    let output = "";
+    try {
+      execFileSync(
+        process.execPath,
+        [
+          join(repoRoot, "scripts/dice-signing-service.mjs"),
+          `--evidence-dir=${evDir}`,
+          `--contract=${testContractPath}`,
+        ],
+        {
+          cwd: repoRoot,
+          env: {
+            ...process.env,
+            DICE_SIGNING_KEY: "",
+          },
+          stdio: "pipe",
+          encoding: "utf8",
+        },
+      );
+    } catch (err: unknown) {
+      failed = true;
+      const e = err as { stdout?: string; stderr?: string };
+      output = (e.stdout || "") + (e.stderr || "");
+    }
+    expect(failed).toBe(true);
+    expect(output).toContain("UNATTESTED");
+  });
+
   it("Generates and verifies authoritative DSSE attestation envelope when key is valid and all 7 gates pass", () => {
     const evDir = join(testTempDir, "ev-attested");
     createValidEvidenceDir(evDir);

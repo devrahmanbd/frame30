@@ -4,6 +4,7 @@
  */
 
 import { resolve, basename, sep } from "node:path";
+import { realpathSync, existsSync } from "node:fs";
 
 export type AdapterToolName =
   "lean4" | "tlc" | "bend2" | "bombadil" | "vitest" | "fast-check" | "script";
@@ -106,6 +107,13 @@ export interface DiceAdapter {
 
 const FORBIDDEN_SHELL_CHARS = /[;&|`$\n\r><()]/;
 
+const UNTRUSTED_PATH_PATTERNS = [
+  /^\/tmp(?:[/]|$)/i,
+  /^\/var\/tmp(?:[/]|$)/i,
+  /^\/dev\/shm(?:[/]|$)/i,
+  /\/attacker(?:[/]|$)/i,
+];
+
 export function validateExecutable(
   executable: string,
   allowedNames: readonly string[],
@@ -124,12 +132,26 @@ export function validateExecutable(
       `[dice-adapter] ✗ Disallowed executable: ${executable}. Approved executables: ${allowedNames.join(", ")}`,
     );
   }
+  if (executable.includes("/") || executable.includes("\\")) {
+    const resolved = resolve(executable);
+    const real = existsSync(resolved) ? realpathSync(resolved) : resolved;
+    for (const pattern of UNTRUSTED_PATH_PATTERNS) {
+      if (pattern.test(resolved) || pattern.test(real)) {
+        throw new Error(
+          `[dice-adapter] ✗ Disallowed executable path: ${executable}. Untrusted execution path strictly prohibited.`,
+        );
+      }
+    }
+  }
   return executable;
 }
 
 export function validateCwd(cwd: string | undefined, repoRoot: string): string {
-  const root = resolve(repoRoot);
-  const target = resolve(cwd || repoRoot);
+  const root = existsSync(repoRoot)
+    ? realpathSync(resolve(repoRoot))
+    : resolve(repoRoot);
+  const targetPath = resolve(cwd || repoRoot);
+  const target = existsSync(targetPath) ? realpathSync(targetPath) : targetPath;
   if (target !== root && !target.startsWith(root + sep)) {
     throw new Error(
       `[dice-adapter] ✗ Disallowed working directory outside repo root: ${cwd}`,
@@ -186,6 +208,14 @@ export function sanitizeEnv(
       if (FORBIDDEN_ENV_VARS.has(key)) {
         throw new Error(
           `[dice-adapter] ✗ Forbidden environment variable in invocation: ${key}`,
+        );
+      }
+      if (
+        SENSITIVE_SECRET_PATTERN.test(key) &&
+        !SAFE_SECRET_WHITELIST.has(key)
+      ) {
+        throw new Error(
+          `[dice-adapter] ✗ Sensitive secret environment variable prohibited in invocation: ${key}`,
         );
       }
       sanitized[key] = value;
