@@ -27,7 +27,7 @@ import {
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
-import { createHash } from "node:crypto";
+import { createHash, createHmac } from "node:crypto";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import { createRequire } from "node:module";
@@ -891,6 +891,31 @@ export function runBootstrap(cliArgs = process.argv.slice(2)) {
   );
   console.log(`  ✓ Reason: ${qualResult.reason}`);
 
+  // Compute execution_auth if execution authority key is provisioned
+  const executionAuthKey = process.env.DICE_EXECUTION_AUTH_KEY || null;
+  const ledgerDigest = computeReceiptDigest(ledgerContent);
+  let executionAuth = null;
+  if (executionAuthKey) {
+    const authPayload = [
+      candidateCommit,
+      candidateTree,
+      ledgerDigest,
+      trustedInfo.runnerSha,
+      trustedInfo.trustedRootSha,
+      qualResult.qualification,
+    ].join(":");
+    const signature = createHmac("sha256", executionAuthKey)
+      .update(authPayload)
+      .digest("hex");
+    executionAuth = {
+      version: "1.0.0",
+      algorithm: "hmac-sha256",
+      key_id: "dice-execution-authority-01",
+      signature,
+      authenticated_at: new Date().toISOString(),
+    };
+  }
+
   // Save qualification summary for downstream signing service
   const qualificationSummary = {
     candidate_commit: candidateCommit,
@@ -902,8 +927,9 @@ export function runBootstrap(cliArgs = process.argv.slice(2)) {
     qualification: qualResult.qualification,
     obligations_verified: authenticReceipts.filter((r) => r.status === "PASS")
       .length,
-    ledger_sha256: computeReceiptDigest(ledgerContent),
+    ledger_sha256: ledgerDigest,
     evaluated_at: new Date().toISOString(),
+    execution_auth: executionAuth,
   };
   writeFileSync(
     join(fullOutDir, "qualification-summary.json"),

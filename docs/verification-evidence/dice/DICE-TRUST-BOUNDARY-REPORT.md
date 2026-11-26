@@ -118,6 +118,7 @@ The hostile candidate replacement and trust boundary attack vectors are executed
 | **V-09**   | Candidate mutating `scripts/dice-evidence.mjs` in candidate tree         | Disable post-signing verification or bypass checks | Post-signing verifier executes strictly from external distribution (`$SIGNER_DIR`), candidate script completely ignored | **FAIL-CLOSED (Bypassed & Verified from Protected Distribution)** |
 | **V-10**   | Rogue key injection into candidate `registries/dice/trusted-keys.json`   | Authorize unauthorized signature with candidate key | Verifier resolves keys strictly from `$SIGNER_DIR/registries/dice/trusted-keys.json`, candidate keys completely ignored | **FAIL-CLOSED (Rejected: Unauthorized Key)** |
 | **V-11**   | Signature corruption, payload tampering, role mismatch, revoked keys, or tree mismatch | Bypass verifier cryptographic integrity checks | Verifier CLI rigorously validates Ed25519 signature over PAE, statement fields, key roles, revocation, and candidate tree | **FAIL-CLOSED (Rejected: Cryptographic / Policy Mismatch)** |
+| **V-12**   | Hostile synthetic execution evidence with correct runner SHA, correct root SHA, matching logs, and valid ledger | Bypass execution provenance via synthetic evidence with valid metadata | Signer requires cryptographic `execution_auth` signature from independently protected execution authority (`DICE_EXECUTION_AUTH_KEY`) | **FAIL-CLOSED (Rejected: 0 Attestations)** |
 
 Every adversarial attack vector produces strictly **zero valid attestations**.
 
@@ -125,19 +126,26 @@ Every adversarial attack vector produces strictly **zero valid attestations**.
 
 ## 3. Independent Acceptance Decision, Receipt Provenance & Baseline Reconciliation
 
-### 1. Receipt Execution Authenticity (Not Just Claimed Exit Codes)
+### 1. Receipt Execution Authenticity & Cryptographic Provenance (Not Just Claimed Exit Codes)
 
 In Frame30 DICE, a command string, status string `PASS`, and exit code `0` do **not** constitute execution evidence:
 
-1. **Candidate Tree Cleanliness (No Committed Artifacts)**:
+1. **Closed Receipt Validation**:
+   - **Missing exit_code must fail**: Mandatory integer `exit_code: 0` required on every receipt; missing or non-zero values throw `FAIL-CLOSED`.
+   - **Missing trusted_root_sha must fail**: Mandatory `trusted_root_sha` required on `qualification-summary.json` and every individual receipt; missing or mismatching values throw `FAIL-CLOSED`.
+   - **Missing log_sha256 must fail**: Mandatory `log_sha256` required on every receipt and verified against actual log contents on disk; missing or mismatching values throw `FAIL-CLOSED`.
+   - **Missing or unauthenticated summary must fail**: Missing `qualification-summary.json` or summary without valid cryptographic execution authentication throws `FAIL-CLOSED`.
+2. **Cryptographic Authentication of Orchestrator Evidence**:
+   - The protected orchestrator computes an HMAC-SHA256 signature (`execution_auth`) over `candidate_commit:candidate_tree:ledger_sha256:runner_sha:trusted_root_sha:qualification` using independently protected `DICE_EXECUTION_AUTH_KEY`.
+   - Candidate sandbox processes cannot access `DICE_EXECUTION_AUTH_KEY` due to Bubblewrap environment masking (`maskEnv: true`).
+   - Signer verifies this signature in Gate 4. Missing or invalid signature fails closed.
+3. **Candidate Tree Cleanliness (No Committed Artifacts)**:
    - Gate 1 runs `git ls-tree <candidateTree> artifacts`. If the candidate commit contains an `artifacts` tree, signing immediately fails closed. Evidence must be produced by genuine upstream execution stages in the runner workspace, never committed to git.
-2. **Process Result & Execution Binding**:
-   - Every receipt records detailed invocation metrics (command array, duration, ISO-8601 timestamps, stdout/stderr digests, and process exit code).
-3. **Execution Log Capture on Disk**:
+4. **Execution Log Capture on Disk**:
    - The orchestrator writes full stdout/stderr streams to `logs/<obligation_id>.log` on disk and computes its SHA-256 digest (`log_sha256`). Gate 5 verifies that the log file exists on disk and its SHA-256 strictly matches the receipt.
-4. **Trusted Runner Identity Binding**:
+5. **Trusted Runner Identity Binding**:
    - The orchestrator binds `runner_sha` (the SHA-256 of the trusted launcher/evaluator extracted from `$ROOT_REF`) and `trusted_root_sha` (the immutable policy manifest digest) into every receipt. Gate 5 asserts that `receipt.execution_provenance.runner_sha === trustedInfo.runnerSha`.
-5. **Orchestrator Qualification Summary**:
+6. **Orchestrator Qualification Summary**:
    - Gate 4 validates `qualification-summary.json`, asserting that `runner_sha` and `trusted_root_sha` match the trusted root, `candidate_tree` matches the candidate tree, and `ledger_sha256` seals the receipt ledger.
 
 ### 2. Independent DSSE Verification from Protected Distribution

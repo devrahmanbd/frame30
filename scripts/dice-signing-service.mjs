@@ -22,7 +22,7 @@ import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
-import { createHash } from "node:crypto";
+import { createHash, createHmac } from "node:crypto";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import {
@@ -42,6 +42,26 @@ import {
   generateFrozenPlan,
   canonicalizeJson,
 } from "./dice-plan-generator.mjs";
+
+export function computeExecutionAuthSignature({
+  candidateCommit,
+  candidateTree,
+  ledgerSha256,
+  runnerSha,
+  trustedRootSha,
+  qualification,
+  authKey,
+}) {
+  const payload = [
+    candidateCommit,
+    candidateTree,
+    ledgerSha256,
+    runnerSha,
+    trustedRootSha,
+    qualification,
+  ].join(":");
+  return createHmac("sha256", authKey).update(payload).digest("hex");
+}
 
 export class DiceSigningService {
   constructor(options = {}) {
@@ -86,6 +106,8 @@ export class DiceSigningService {
       null;
     this.allowUnapprovedContract = options.allowUnapprovedContract || false;
     this.allowUnpinnedRoots = options.allowUnpinnedRoots || false;
+    this.executionAuthKey =
+      options.executionAuthKey || process.env.DICE_EXECUTION_AUTH_KEY || null;
     const effectiveDistDir =
       options.distDir ||
       process.env.DICE_EXTERNAL_DIST_DIR ||
@@ -433,15 +455,22 @@ export class DiceSigningService {
         `FAIL-CLOSED: Corrupt qualification-summary.json: ${err.message}`,
       );
     }
+    if (!summary.runner_sha) {
+      throw new Error(
+        "FAIL-CLOSED: Orchestrator execution evidence missing mandatory runner_sha in qualification-summary.json",
+      );
+    }
     if (summary.runner_sha !== trustedInfo.runnerSha) {
       throw new Error(
         `FAIL-CLOSED: Orchestrator runner identity mismatch: expected '${trustedInfo.runnerSha}', got '${summary.runner_sha}'`,
       );
     }
-    if (
-      summary.trusted_root_sha &&
-      summary.trusted_root_sha !== trustedInfo.trustedRootSha
-    ) {
+    if (!summary.trusted_root_sha) {
+      throw new Error(
+        "FAIL-CLOSED: Orchestrator execution evidence missing mandatory trusted_root_sha in qualification-summary.json",
+      );
+    }
+    if (summary.trusted_root_sha !== trustedInfo.trustedRootSha) {
       throw new Error(
         `FAIL-CLOSED: Orchestrator trusted root mismatch: expected '${trustedInfo.trustedRootSha}', got '${summary.trusted_root_sha}'`,
       );
@@ -460,6 +489,45 @@ export class DiceSigningService {
     if (summary.qualification !== "QUALIFIED_PASS") {
       throw new Error(
         `FAIL-CLOSED: Orchestrator qualification is '${summary.qualification}', expected 'QUALIFIED_PASS'`,
+      );
+    }
+
+    // Cryptographic authentication of orchestrator execution evidence using independently protected execution authority
+    const executionAuthKey =
+      this.executionAuthKey || process.env.DICE_EXECUTION_AUTH_KEY || null;
+
+    if (!summary.execution_auth) {
+      throw new Error(
+        "FAIL-CLOSED: Missing or unauthenticated qualification-summary evidence: missing execution_auth cryptographic provenance from protected execution authority",
+      );
+    }
+    if (
+      !summary.execution_auth.signature ||
+      typeof summary.execution_auth.signature !== "string"
+    ) {
+      throw new Error(
+        "FAIL-CLOSED: Unauthenticated qualification-summary evidence: missing or malformed execution authority signature",
+      );
+    }
+    if (!executionAuthKey) {
+      throw new Error(
+        "FAIL-CLOSED: Missing independently protected execution authority key (DICE_EXECUTION_AUTH_KEY). Cannot authenticate orchestrator evidence (BLOCKED).",
+      );
+    }
+    const expectedAuthPayload = [
+      summary.candidate_commit,
+      summary.candidate_tree,
+      computedLedgerDigest,
+      summary.runner_sha,
+      summary.trusted_root_sha,
+      summary.qualification,
+    ].join(":");
+    const expectedAuthSig = createHmac("sha256", executionAuthKey)
+      .update(expectedAuthPayload)
+      .digest("hex");
+    if (summary.execution_auth.signature !== expectedAuthSig) {
+      throw new Error(
+        "FAIL-CLOSED: Unauthenticated orchestrator execution evidence: execution authority signature mismatch",
       );
     }
 
@@ -487,9 +555,24 @@ export class DiceSigningService {
           `FAIL-CLOSED: Receipt '${cleanRel}' has non-PASS status: ${receipt.status}`,
         );
       }
-      if (receipt.exit_code !== undefined && receipt.exit_code !== 0) {
+
+      const receiptExitCode =
+        typeof receipt.exit_code === "number"
+          ? receipt.exit_code
+          : typeof receipt.execution_provenance?.exit_code === "number"
+            ? receipt.execution_provenance.exit_code
+            : typeof receipt.invocation?.exit_code === "number"
+              ? receipt.invocation.exit_code
+              : undefined;
+
+      if (receiptExitCode === undefined) {
         throw new Error(
-          `FAIL-CLOSED: Receipt '${cleanRel}' reports non-zero exit_code: ${receipt.exit_code}`,
+          `FAIL-CLOSED: Receipt '${cleanRel}' missing mandatory exit_code`,
+        );
+      }
+      if (receiptExitCode !== 0) {
+        throw new Error(
+          `FAIL-CLOSED: Receipt '${cleanRel}' reports non-zero exit_code: ${receiptExitCode}`,
         );
       }
       const command =
@@ -513,12 +596,18 @@ export class DiceSigningService {
           `FAIL-CLOSED: Receipt '${cleanRel}' execution provenance is unauthenticated: runner_sha (${runnerId.runner_sha}) does not match trusted runner (${trustedInfo.runnerSha})`,
         );
       }
-      if (
-        runnerId.trusted_root_sha &&
-        runnerId.trusted_root_sha !== trustedInfo.trustedRootSha
-      ) {
+      const receiptRootSha =
+        runnerId.trusted_root_sha ||
+        receipt.trusted_root_sha ||
+        receipt.execution_provenance?.trusted_root_sha;
+      if (!receiptRootSha) {
         throw new Error(
-          `FAIL-CLOSED: Receipt '${cleanRel}' execution provenance is unauthenticated: trusted_root_sha mismatch`,
+          `FAIL-CLOSED: Receipt '${cleanRel}' execution provenance is unauthenticated: missing mandatory trusted_root_sha`,
+        );
+      }
+      if (receiptRootSha !== trustedInfo.trustedRootSha) {
+        throw new Error(
+          `FAIL-CLOSED: Receipt '${cleanRel}' execution provenance is unauthenticated: trusted_root_sha mismatch: expected '${trustedInfo.trustedRootSha}', got '${receiptRootSha}'`,
         );
       }
 
@@ -537,10 +626,18 @@ export class DiceSigningService {
       const actualLogSha = createHash("sha256")
         .update(actualLogContent)
         .digest("hex");
-      const expectedLogSha = receipt.execution_provenance?.log_sha256;
-      if (expectedLogSha && actualLogSha !== expectedLogSha) {
+      const expectedLogSha =
+        receipt.execution_provenance?.log_sha256 ||
+        receipt.log_sha256 ||
+        receipt.invocation?.log_sha256;
+      if (!expectedLogSha) {
         throw new Error(
-          `FAIL-CLOSED: Receipt '${cleanRel}' execution provenance is unauthenticated: execution log SHA-256 mismatch`,
+          `FAIL-CLOSED: Receipt '${cleanRel}' execution provenance is unauthenticated: missing mandatory log_sha256`,
+        );
+      }
+      if (actualLogSha !== expectedLogSha) {
+        throw new Error(
+          `FAIL-CLOSED: Receipt '${cleanRel}' execution provenance is unauthenticated: execution log SHA-256 mismatch: expected '${expectedLogSha}', got '${actualLogSha}'`,
         );
       }
 

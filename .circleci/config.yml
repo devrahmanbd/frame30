@@ -269,6 +269,15 @@ jobs:
             rm -rf "$SIGNER_DIR"
             mkdir -p "$SIGNER_DIR"
 
+            # Provision external verifier distribution from independently trusted source ($ROOT_REF git archive or external authority)
+            EXTERNAL_DIST_DIR="${DICE_EXTERNAL_DIST_DIR:-/tmp/dice-external-distribution}"
+            if [ -z "$DICE_EXTERNAL_DIST_DIR" ]; then
+              rm -rf "$EXTERNAL_DIST_DIR"
+              mkdir -p "$EXTERNAL_DIST_DIR"
+              git archive "$ROOT_REF" | tar -x -C "$EXTERNAL_DIST_DIR"
+              export DICE_EXTERNAL_DIST_DIR="$EXTERNAL_DIST_DIR"
+            fi
+
             # Eliminate candidate-controlled signer execution (P0-1)
             # Sourced exclusively from external distribution and verified against external authority digests
             node -e '
@@ -711,7 +720,9 @@ workflows:
     jobs:
       - lint-typecheck
       - unit-contract
-      - dice-qualification
+      - dice-qualification:
+          context:
+            - dice-trust-authority
       - scan
       - build
       # build is a HARD gate: e2e-critical never starts unless the production

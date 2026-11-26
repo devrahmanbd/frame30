@@ -9,7 +9,7 @@ import {
 } from "node:fs";
 import { join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
-import { createHash } from "node:crypto";
+import { createHash, createHmac } from "node:crypto";
 import {
   DiceTrustedRoot,
   DEFAULT_TRUSTED_REF,
@@ -810,6 +810,7 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
           obligation_id: obId,
           method_id: methodIdMap[obId],
           status,
+          exit_code: status === "PASS" ? 0 : 1,
           commit_sha: candidateCommit,
           tree_sha: candidateTree,
           candidate: { commit: candidateCommit, tree: candidateTree },
@@ -828,6 +829,12 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
             candidate_tree: candidateTree,
             log_file: logRel,
             log_sha256: logSha256,
+            exit_code: status === "PASS" ? 0 : 1,
+            duration_ms: 10,
+            started_at: new Date().toISOString(),
+          },
+          invocation: {
+            command: ["test"],
             exit_code: status === "PASS" ? 0 : 1,
             duration_ms: 10,
             started_at: new Date().toISOString(),
@@ -865,17 +872,43 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
 
       writeFileSync(join(dir, "receipts.sha256"), ledger, "utf8");
 
+      const ledgerDigest = createHash("sha256").update(ledger).digest("hex");
+      const qual = overrides.failSummary ? "QUALIFIED_FAIL" : "QUALIFIED_PASS";
+      const authKey =
+        (overrides.executionAuthKey as string) ||
+        process.env.DICE_EXECUTION_AUTH_KEY ||
+        "test-execution-auth-key-01";
+      const authPayload = [
+        candidateCommit,
+        candidateTree,
+        ledgerDigest,
+        runnerSha,
+        trustedRootSha,
+        qual,
+      ].join(":");
+      const authSig = createHmac("sha256", authKey)
+        .update(authPayload)
+        .digest("hex");
+
       const summary = {
         version: "1.0.0",
         candidate_commit: candidateCommit,
         candidate_tree: candidateTree,
         runner_sha: runnerSha,
         trusted_root_sha: trustedRootSha,
-        ledger_sha256: createHash("sha256").update(ledger).digest("hex"),
-        qualification: overrides.failSummary
-          ? "QUALIFIED_FAIL"
-          : "QUALIFIED_PASS",
+        ledger_sha256: ledgerDigest,
+        qualification: qual,
         summary_sha256: "summary-sha-test",
+        execution_auth:
+          overrides.executionAuth !== undefined
+            ? overrides.executionAuth
+            : {
+                version: "1.0.0",
+                algorithm: "hmac-sha256",
+                key_id: "dice-execution-authority-01",
+                signature: authSig,
+                authenticated_at: new Date().toISOString(),
+              },
       };
       writeFileSync(
         join(dir, "qualification-summary.json"),
@@ -885,6 +918,7 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
     }
 
     beforeAll(() => {
+      process.env.DICE_EXECUTION_AUTH_KEY = "test-execution-auth-key-01";
       mkdirSync(p03TempDir, { recursive: true });
       candidateCommit = execFileSync("git", ["rev-parse", "HEAD"], {
         cwd: repoRoot,
@@ -1600,6 +1634,150 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
       ).toBe(false);
       expect(
         existsSync(join(syntheticEvidenceDir, "attestation.dsse.json")),
+      ).toBe(false);
+    });
+
+    // P0.1 Adversarial: Hostile test with correct runner SHA and root SHA but unauthenticated execution authority
+    it("P0.1 Adversarial: Hostile test with correct runner SHA and root SHA but unauthenticated execution authority is rejected fail-closed (zero attestations)", () => {
+      setupCandidateTree();
+      setupExternalAuthority();
+      extractAndVerifySigningDistribution({
+        externalDistDir: externalAuthorityDir,
+        targetDir: isolatedSignerDir,
+        expectedDistDigest: EXPECTED_DIST_DIGEST,
+        expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+      });
+
+      const hostileEvidenceDir = join(
+        p03TempDir,
+        "hostile-correct-shas-evidence",
+      );
+      const receiptsDir = join(hostileEvidenceDir, "receipts");
+      const logsDir = join(hostileEvidenceDir, "logs");
+      mkdirSync(receiptsDir, { recursive: true });
+      mkdirSync(logsDir, { recursive: true });
+
+      // Correct trusted root and runner info matching isolatedSignerDir
+      const trustedRoot = new DiceTrustedRoot({
+        repoRoot,
+        trustedRef: DEFAULT_TRUSTED_REF,
+        externalDistDir: isolatedSignerDir,
+      });
+      const trustedInfo = trustedRoot.resolve();
+
+      const activeObs = [
+        "OBL-SYS-SCOPE-GUARD-001",
+        "OBL-SYS-DRIFT-GUARD-001",
+        "OBL-SYS-DIE-REGISTRY-001",
+        "OBL-SYS-SECRETS-SCAN-001",
+      ];
+      let hostileLedger = "";
+      for (const obId of activeObs) {
+        // Fabricated logs and matching log SHA
+        const logContent = `=== FABRICATED EXECUTION: ${obId} ===\nStatus: PASS\nExit: 0\n`;
+        const logRelPath = `logs/${obId}.log`;
+        writeFileSync(join(hostileEvidenceDir, logRelPath), logContent, "utf8");
+        const logSha256 = createHash("sha256").update(logContent).digest("hex");
+
+        const hostileReceipt = {
+          receipt_version: "1.0.0",
+          obligation_id: obId,
+          method_id: `METH-${obId}`,
+          status: "PASS",
+          commit_sha: candidateCommit,
+          tree_sha: candidateTree,
+          candidate: { commit: candidateCommit, tree: candidateTree },
+          exit_code: 0,
+          environment: {
+            node: process.version,
+            platform: process.platform,
+          },
+          runner_identity: {
+            runner_sha: trustedInfo.runnerSha,
+            trusted_root_sha: trustedInfo.trustedRootSha,
+          },
+          execution_provenance: {
+            runner_sha: trustedInfo.runnerSha,
+            trusted_root_sha: trustedInfo.trustedRootSha,
+            candidate_commit: candidateCommit,
+            candidate_tree: candidateTree,
+            exit_code: 0,
+            log_file: logRelPath,
+            log_sha256: logSha256,
+            duration_ms: 100,
+            started_at: new Date().toISOString(),
+          },
+          invocation: {
+            command: ["bun", "run", "test:obligation"],
+            exit_code: 0,
+            duration_ms: 100,
+            started_at: new Date().toISOString(),
+          },
+          execution: {
+            command: ["bun", "run", "test:obligation"],
+            duration_ms: 100,
+            started_at: new Date().toISOString(),
+          },
+          verdict: {
+            disposition: "PASS",
+            confidence: "machine_checked",
+            timestamp: new Date().toISOString(),
+          },
+        };
+        const content = JSON.stringify(hostileReceipt, null, 2);
+        writeFileSync(join(receiptsDir, `${obId}.json`), content, "utf8");
+        const sha = createHash("sha256").update(content, "utf8").digest("hex");
+        hostileLedger += `${sha}  receipts/${obId}.json\n`;
+      }
+      writeFileSync(
+        join(hostileEvidenceDir, "receipts.sha256"),
+        hostileLedger,
+        "utf8",
+      );
+
+      // Matching qualification summary with correct runner SHA and root SHA
+      const hostileSummary = {
+        version: "1.0.0",
+        candidate_commit: candidateCommit,
+        candidate_tree: candidateTree,
+        qualification: "QUALIFIED_PASS",
+        ledger_sha256: createHash("sha256").update(hostileLedger).digest("hex"),
+        runner_sha: trustedInfo.runnerSha,
+        trusted_root_sha: trustedInfo.trustedRootSha,
+        timestamp: new Date().toISOString(),
+        // Attacker either has NO execution_auth or fabricated token without protected execution key
+      };
+      writeFileSync(
+        join(hostileEvidenceDir, "qualification-summary.json"),
+        JSON.stringify(hostileSummary, null, 2),
+        "utf8",
+      );
+
+      // The protected signer is configured with an independently protected execution authority key
+      const signer = new DiceSigningService({
+        repoRoot,
+        mode: "test",
+        contractPath: "registries/dice/test-qualification-contract.json",
+        evidenceDir: hostileEvidenceDir,
+        distDir: isolatedSignerDir,
+        trustedRef: DEFAULT_TRUSTED_REF,
+        keyId: "key-dice-test-signer-01",
+        testKeysPath: testKeysJsonPath,
+        signingKeyFile: testKeyPemPath,
+        executionAuthKey: "protected-orchestrator-execution-secret-999",
+      });
+
+      // Signer MUST reject fail-closed: missing or unauthenticated execution authority cryptographic provenance
+      expect(() => signer.execute()).toThrow(
+        /FAIL-CLOSED: Missing or unauthenticated qualification-summary evidence|execution authority signature mismatch/i,
+      );
+
+      // Require strictly ZERO valid attestations produced
+      expect(
+        existsSync(join(hostileEvidenceDir, "test-attestation.dsse.json")),
+      ).toBe(false);
+      expect(
+        existsSync(join(hostileEvidenceDir, "attestation.dsse.json")),
       ).toBe(false);
     });
 

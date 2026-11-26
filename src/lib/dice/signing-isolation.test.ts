@@ -8,7 +8,7 @@ import {
 } from "node:fs";
 import { join } from "node:path";
 import { execFileSync } from "node:child_process";
-import { createHash } from "node:crypto";
+import { createHash, createHmac } from "node:crypto";
 import { DiceSigningService } from "../../../scripts/dice-signing-service.mjs";
 import {
   DiceSigningAuthority,
@@ -56,6 +56,7 @@ describe("Frame30 DICE Stage 2.4: Isolated Signing Authority (Section 4)", () =>
       runnerSha: string;
       trustedRootSha: string;
     };
+    process.env.DICE_EXECUTION_AUTH_KEY = "test-execution-auth-key-01";
   });
 
   afterAll(() => {
@@ -152,14 +153,46 @@ describe("Frame30 DICE Stage 2.4: Isolated Signing Authority (Section 4)", () =>
       generateDetachedDigestLedger(ledgerEntries);
     writeFileSync(join(dir, "receipts.sha256"), ledgerContent, "utf8");
 
+    const ledgerDigest = createHash("sha256")
+      .update(ledgerContent)
+      .digest("hex");
+    const summaryCommit = (overrides.commit as string) || candidateCommit;
+    const summaryTree = (overrides.tree as string) || candidateTree;
+    const summaryQual = (overrides.qualification as string) || "QUALIFIED_PASS";
+    const authKey =
+      (overrides.executionAuthKey as string) ||
+      process.env.DICE_EXECUTION_AUTH_KEY ||
+      "test-execution-auth-key-01";
+    const authPayload = [
+      summaryCommit,
+      summaryTree,
+      ledgerDigest,
+      runnerSha,
+      trustedRootSha,
+      summaryQual,
+    ].join(":");
+    const authSig = createHmac("sha256", authKey)
+      .update(authPayload)
+      .digest("hex");
+
     const summary = {
-      candidate_commit: overrides.commit || candidateCommit,
-      candidate_tree: overrides.tree || candidateTree,
+      candidate_commit: summaryCommit,
+      candidate_tree: summaryTree,
       runner_sha: runnerSha,
       trusted_root_sha: trustedRootSha,
       contract: "F30-DICE-STAGE2-4",
-      ledger_sha256: createHash("sha256").update(ledgerContent).digest("hex"),
-      qualification: overrides.qualification || "QUALIFIED_PASS",
+      ledger_sha256: ledgerDigest,
+      qualification: summaryQual,
+      execution_auth:
+        overrides.executionAuth !== undefined
+          ? overrides.executionAuth
+          : {
+              version: "1.0.0",
+              algorithm: "hmac-sha256",
+              key_id: "dice-execution-authority-01",
+              signature: authSig,
+              authenticated_at: new Date().toISOString(),
+            },
     };
     writeFileSync(
       join(dir, "qualification-summary.json"),

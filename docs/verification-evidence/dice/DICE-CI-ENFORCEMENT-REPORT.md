@@ -178,24 +178,56 @@ To maintain rigorous truth in advertising and prevent false claims of remote pro
 | **State 3: Effective Context Access Restrictions** | Security Group restrictions in CircleCI ensuring context is restricted to authorized workflows and release branches | **`BLOCKED`** | Requires human specification authority (`@devrahmanbd`) to enforce branch/team containment. |
 | **State 4: Successful Protected Workflow Execution** | Remote CircleCI workflow run where `dice-attestation-signing` actually consumes injected external anchors without fallback | **`BLOCKED`** | Retains `BLOCKED` status until State 2 and State 3 are provisioned and an authoritative run completes remotely. |
 
-> **Operational Activation Ruling (Non-Negotiable)**:
-> Documenting or referencing a CircleCI Context in repository configuration does **not** mean it is provisioned, restricted, or operational.
-> Until the administrator (`@devrahmanbd`) completes organization configuration and a protected workflow successfully consumes the external anchors, operational activation remains **`BLOCKED`**.
+### 7.1 Administrator Provisioning Runbook (Human Authority: `@devrahmanbd`)
+
+To transition State 2, State 3, and State 4 from `BLOCKED` to `OPERATIONAL`:
+
+1. **Context Creation**:
+   - Navigate to CircleCI Web Console: `Organization Settings > Contexts > Create Context`.
+   - Context Name: `dice-trust-authority`.
+2. **Environment Variable Configuration**:
+   - `DICE_EXPECTED_SIGNER_DIST_DIGEST`: `8ae4ee24a51b6f02529a590c291cd8260c6e44d5eb58559e63944e917cbb62c1` (covers all 16 signer distribution files).
+   - `DICE_EXPECTED_TEST_POLICY_DIGEST`: `eb447909aff1afe029c5207e069259690a7975245926dd7ae0caef01b789380d` (covers `test-policy.json`).
+   - `DICE_EXECUTION_AUTH_KEY`: `<cryptographic secret key>` (independently generated secret shared strictly between protected orchestrator and signing service).
+   - `DICE_SIGNING_KEY`: (Production signing only; remains unset until human specification authority approves change contract).
+3. **Workflow Security Boundaries**:
+   - In CircleCI Context settings, configure Security Groups limiting `dice-trust-authority` access strictly to protected branches (`main`, `frame30`) and authorized release tags.
+   - Both `dice-qualification` and `dice-attestation-signing` are attached to `context: [dice-trust-authority]`.
+4. **Provisioning External Distribution**:
+   - In `.circleci/config.yml` `dice-attestation-signing`, if `DICE_EXTERNAL_DIST_DIR` is not externally mounted, the pipeline provisions `/tmp/dice-external-distribution` directly from `$ROOT_REF` (`git archive "$ROOT_REF" | tar -x -C /tmp/dice-external-distribution`), completely outside the candidate working tree (`process.cwd()`).
+   - Candidate-local substitution is detected via relative path resolution and rejected fail-closed.
 
 ---
 
-## 8. Receipt Execution Authenticity & Independent Verifier Protection
+## 8. Receipt Execution Authenticity & Cryptographic Execution Provenance
 
 ### 8.1 Proving Receipt Execution Authenticity (Not Just Claimed Exit Codes)
 
 A claimed command array, a status string `PASS`, and an asserted exit code `0` do **not** constitute execution evidence; an attacker can synthesize them trivially. In Frame30 DICE Stage 2.4.3:
 
-1. **Process Result & Execution Binding**: Every receipt records detailed invocation metrics (command array, duration, ISO-8601 timestamps, stdout/stderr digests, and process exit code).
-2. **Candidate Identity Binding**: Every receipt binds both `candidate_commit` and `candidate_tree` ensuring receipts cannot be transplanted across commits or trees.
-3. **Execution Log Capture on Disk**: The orchestrator streams raw execution output directly to `logs/<obligation_id>.log` on disk and computes its cryptographic SHA-256 digest (`log_sha256`), which is sealed in `execution_provenance`.
-4. **Trusted Runner Identity Binding**: The orchestrator binds `runner_sha` (the SHA-256 of the trusted launcher/evaluator extracted from `$ROOT_REF`) and `trusted_root_sha` (the immutable policy manifest digest) into every receipt.
-5. **Orchestrator Qualification Summary**: Gate 4 & 5 validate that `qualification-summary.json` exists, matches `runner_sha`, matches `trusted_root_sha`, matches `candidate_tree`, and seals `ledger_sha256`.
-6. **Fail-Closed Adversarial Teeth**: In `src/lib/dice/authority-mutation.test.ts`, an adversarial test crafts completely synthetic receipts with `status: PASS`, `exit_code: 0`, matching candidate commit/tree, and valid SHA-256 ledger. The protected signer detects missing or unauthenticated runner provenance and rejects them fail-closed, producing strictly **zero valid attestations**.
+1. **Closed Receipt Validation (Zero Permissive Defaults)**:
+   - **Missing exit_code must fail**: `typeof exitCode !== "number" || exitCode !== 0` throws `FAIL-CLOSED: Receipt '...' missing mandatory exit_code`.
+   - **Missing trusted_root_sha must fail**: Missing `summary.trusted_root_sha` or missing `receipt.runner_identity.trusted_root_sha` throws `FAIL-CLOSED: missing mandatory trusted_root_sha`.
+   - **Missing log_sha256 must fail**: Missing `receipt.execution_provenance.log_sha256` throws `FAIL-CLOSED: missing mandatory log_sha256`.
+   - **Missing or unauthenticated qualification summary must fail**: Missing `qualification-summary.json` or unauthenticated summary throws `FAIL-CLOSED`.
+
+2. **Cryptographic Authentication of Orchestrator Execution Evidence**:
+   - The protected orchestrator (`scripts/dice-bootstrap.mjs`) generates an HMAC-SHA256 signature (`execution_auth`) over the canonical payload:
+     `candidate_commit : candidate_tree : ledger_sha256 : runner_sha : trusted_root_sha : qualification`
+     using an independently protected execution authority key (`DICE_EXECUTION_AUTH_KEY`).
+   - Candidate test processes running inside the Bubblewrap sandbox operate with `maskEnv: true` and cannot access `DICE_EXECUTION_AUTH_KEY`.
+   - The downstream signing service (`scripts/dice-signing-service.mjs`) verifies this signature in Gate 4. If `execution_auth` is missing or invalid, signing fails closed immediately.
+
+3. **Adversarial Verification (Zero Attestations on Hostile Synthesis)**:
+   - In `src/lib/dice/authority-mutation.test.ts`, a dedicated hostile candidate test creates:
+     * Correct trusted runner SHA (`trustedInfo.runnerSha`).
+     * Correct trusted-root SHA (`trustedInfo.trustedRootSha`).
+     * Fabricated successful execution (`exit_code: 0`, `status: "PASS"`).
+     * Fabricated execution logs with matching log SHA (`log_sha256`).
+     * Valid receipt ledger (`receipts.sha256`).
+     * Matching qualification summary (`qualification-summary.json`).
+     * Matching candidate commit and tree.
+   - Result: Because the attacker lacks the independently protected execution authority key, the protected signer rejects the fabricated evidence fail-closed (`FAIL-CLOSED: Missing or unauthenticated qualification-summary evidence`), producing strictly **zero valid attestations**.
 
 ### 8.2 Independent Protection of DSSE Verifier
 

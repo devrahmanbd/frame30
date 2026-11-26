@@ -8,7 +8,7 @@ import {
 } from "node:fs";
 import { join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
-import { createHash } from "node:crypto";
+import { createHash, createHmac } from "node:crypto";
 import { DiceSigningService } from "../../../scripts/dice-signing-service.mjs";
 import {
   DiceSigningAuthority,
@@ -55,6 +55,7 @@ describe("Frame30 DICE Stage 2.4.1: Positive End-to-End Signing & Hardened Gate 
       runnerSha: string;
       trustedRootSha: string;
     };
+    process.env.DICE_EXECUTION_AUTH_KEY = "test-execution-auth-key-01";
 
     // Write isolated test keys registry
     testKeysJsonPath = join(testDir, "test-trusted-keys.json");
@@ -143,6 +144,7 @@ describe("Frame30 DICE Stage 2.4.1: Positive End-to-End Signing & Hardened Gate 
         obligation_id: obId,
         method_id: methodIdMap[obId],
         status,
+        exit_code: status === "PASS" ? 0 : 1,
         commit_sha: candidateCommit,
         tree_sha: candidateTree,
         candidate: { commit: candidateCommit, tree: candidateTree },
@@ -161,6 +163,12 @@ describe("Frame30 DICE Stage 2.4.1: Positive End-to-End Signing & Hardened Gate 
           candidate_tree: candidateTree,
           log_file: logRel,
           log_sha256: logSha256,
+          exit_code: status === "PASS" ? 0 : 1,
+          duration_ms: 10,
+          started_at: new Date().toISOString(),
+        },
+        invocation: {
+          command: ["test"],
           exit_code: status === "PASS" ? 0 : 1,
           duration_ms: 10,
           started_at: new Date().toISOString(),
@@ -190,15 +198,45 @@ describe("Frame30 DICE Stage 2.4.1: Positive End-to-End Signing & Hardened Gate 
 
     writeFileSync(join(dir, "receipts.sha256"), ledger, "utf8");
 
+    const ledgerDigest = createHash("sha256").update(ledger).digest("hex");
+    const summaryQual = (overrides.qualification as string) || "QUALIFIED_PASS";
+    const authKey =
+      (overrides.executionAuthKey as string) ||
+      process.env.DICE_EXECUTION_AUTH_KEY ||
+      "test-execution-auth-key-01";
+    const runnerSha = trustedInfo?.runnerSha || "runner-sha";
+    const trustedRootSha = trustedInfo?.trustedRootSha || "root-sha";
+    const authPayload = [
+      candidateCommit,
+      candidateTree,
+      ledgerDigest,
+      runnerSha,
+      trustedRootSha,
+      summaryQual,
+    ].join(":");
+    const authSig = createHmac("sha256", authKey)
+      .update(authPayload)
+      .digest("hex");
+
     const summary = {
       version: "1.0.0",
       candidate_commit: candidateCommit,
       candidate_tree: candidateTree,
-      runner_sha: trustedInfo?.runnerSha || "runner-sha",
-      trusted_root_sha: trustedInfo?.trustedRootSha || "root-sha",
-      ledger_sha256: createHash("sha256").update(ledger).digest("hex"),
-      qualification: overrides.qualification || "QUALIFIED_PASS",
+      runner_sha: runnerSha,
+      trusted_root_sha: trustedRootSha,
+      ledger_sha256: ledgerDigest,
+      qualification: summaryQual,
       timestamp: new Date().toISOString(),
+      execution_auth:
+        overrides.executionAuth !== undefined
+          ? overrides.executionAuth
+          : {
+              version: "1.0.0",
+              algorithm: "hmac-sha256",
+              key_id: "dice-execution-authority-01",
+              signature: authSig,
+              authenticated_at: new Date().toISOString(),
+            },
     };
     writeFileSync(
       join(dir, "qualification-summary.json"),
