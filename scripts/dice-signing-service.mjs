@@ -856,6 +856,294 @@ export class DiceSigningService {
   }
 }
 
+/**
+ * Frame30 DICE Execution Authority
+ *
+ * Runs exclusively in the isolated attestation job outside candidate execution.
+ * Holds the private DICE_EXECUTION_AUTH_KEY to independently verify candidate
+ * execution evidence (receipts, logs, runner identity, root SHA, qualification)
+ * without trusting candidate-provided HMACs or signatures.
+ */
+export class DiceExecutionAuthority {
+  constructor(options = {}) {
+    this.repoRoot = options.repoRoot || process.cwd();
+    this.distDir =
+      options.distDir ||
+      process.env.DICE_EXTERNAL_DIST_DIR ||
+      (resolve(__dirname, "..") !== resolve(this.repoRoot)
+        ? resolve(__dirname, "..")
+        : null);
+    this.trustedRef =
+      options.trustedRef || process.env.DICE_TRUSTED_REF || DEFAULT_TRUSTED_REF;
+    this.contractPath =
+      options.contractPath ||
+      process.env.ACTIVE_CHANGE_CONTRACT ||
+      "registries/dice/test-qualification-contract.json";
+    this.executionAuthKey =
+      options.executionAuthKey || process.env.DICE_EXECUTION_AUTH_KEY || null;
+  }
+
+  authenticateExecutionEvidence(evidenceDir = "artifacts/dice-evidence") {
+    if (!this.executionAuthKey) {
+      throw new Error(
+        "FAIL-CLOSED: Missing independently protected execution authority key (DICE_EXECUTION_AUTH_KEY). Cannot authenticate orchestrator evidence (BLOCKED).",
+      );
+    }
+    validateSafePath(evidenceDir);
+    const fullEvidenceDir = resolve(this.repoRoot, evidenceDir);
+    const receiptsDir = join(fullEvidenceDir, "receipts");
+    const ledgerPath = join(fullEvidenceDir, "receipts.sha256");
+    const summaryPath = join(fullEvidenceDir, "qualification-summary.json");
+
+    if (!existsSync(fullEvidenceDir)) {
+      throw new Error(
+        `FAIL-CLOSED: Evidence directory missing: ${evidenceDir}`,
+      );
+    }
+    if (!existsSync(receiptsDir)) {
+      throw new Error(
+        `FAIL-CLOSED: Receipts directory missing: ${receiptsDir}`,
+      );
+    }
+    if (!existsSync(ledgerPath)) {
+      throw new Error(
+        `FAIL-CLOSED: Detached receipt ledger missing: ${ledgerPath}`,
+      );
+    }
+    if (!existsSync(summaryPath)) {
+      throw new Error(
+        `FAIL-CLOSED: Qualification summary missing: ${summaryPath}`,
+      );
+    }
+
+    // Resolve trusted root and runner SHA from protected distribution
+    const trustedRoot = new DiceTrustedRoot({
+      repoRoot: this.repoRoot,
+      trustedRef: this.trustedRef,
+      externalDistDir: this.distDir,
+    });
+    const trustedInfo = trustedRoot.resolve();
+
+    // Verify candidate identity from git
+    const candidateCommit = execFileSync("git", ["rev-parse", "HEAD"], {
+      cwd: this.repoRoot,
+      encoding: "utf8",
+    }).trim();
+    const candidateTree = execFileSync("git", ["rev-parse", "HEAD^{tree}"], {
+      cwd: this.repoRoot,
+      encoding: "utf8",
+    }).trim();
+
+    // Verify commit and tree exist in git object database
+    execFileSync(
+      "git",
+      ["rev-parse", "--verify", `${candidateCommit}^{commit}`],
+      {
+        cwd: this.repoRoot,
+        stdio: "ignore",
+      },
+    );
+    execFileSync("git", ["rev-parse", "--verify", `${candidateTree}^{tree}`], {
+      cwd: this.repoRoot,
+      stdio: "ignore",
+    });
+
+    const summary = JSON.parse(readFileSync(summaryPath, "utf8"));
+    if (
+      summary.candidate_commit &&
+      summary.candidate_commit !== candidateCommit
+    ) {
+      throw new Error(
+        `FAIL-CLOSED: Candidate commit mismatch: expected '${candidateCommit}', got '${summary.candidate_commit}'`,
+      );
+    }
+    if (summary.candidate_tree && summary.candidate_tree !== candidateTree) {
+      throw new Error(
+        `FAIL-CLOSED: Candidate tree mismatch: expected '${candidateTree}', got '${summary.candidate_tree}'`,
+      );
+    }
+
+    const ledgerContent = readFileSync(ledgerPath, "utf8");
+    const computedLedgerDigest = computeReceiptDigest(ledgerContent);
+    const receipts = [];
+    const ledgerLines = ledgerContent.trim().split("\n").filter(Boolean);
+
+    for (const line of ledgerLines) {
+      const parts = line.trim().split(/\s+/);
+      const relPath = parts[parts.length - 1];
+      const cleanRel = relPath.replace(/^receipts\//, "");
+      const receiptFile = resolve(receiptsDir, cleanRel);
+      if (!existsSync(receiptFile)) {
+        throw new Error(
+          `FAIL-CLOSED: Declared receipt missing from disk: ${cleanRel}`,
+        );
+      }
+      const receiptStr = readFileSync(receiptFile, "utf8");
+      const computedHash = createHash("sha256")
+        .update(receiptStr, "utf8")
+        .digest("hex");
+      if (computedHash !== parts[0]) {
+        throw new Error(
+          `FAIL-CLOSED: Ledger digest mismatch for '${cleanRel}': expected '${parts[0]}', computed '${computedHash}'`,
+        );
+      }
+      const receipt = JSON.parse(receiptStr);
+      if (
+        receipt.tree_sha !== candidateTree &&
+        receipt.candidate_tree !== candidateTree
+      ) {
+        throw new Error(
+          `FAIL-CLOSED: Receipt '${cleanRel}' tree_sha (${receipt.tree_sha}) does not match candidate tree (${candidateTree})`,
+        );
+      }
+      if (receipt.status !== "PASS") {
+        throw new Error(
+          `FAIL-CLOSED: Receipt '${cleanRel}' has non-PASS status: ${receipt.status}`,
+        );
+      }
+      const receiptExitCode =
+        typeof receipt.exit_code === "number"
+          ? receipt.exit_code
+          : typeof receipt.execution_provenance?.exit_code === "number"
+            ? receipt.execution_provenance.exit_code
+            : typeof receipt.invocation?.exit_code === "number"
+              ? receipt.invocation.exit_code
+              : undefined;
+      if (receiptExitCode === undefined) {
+        throw new Error(
+          `FAIL-CLOSED: Receipt '${cleanRel}' missing mandatory exit_code`,
+        );
+      }
+      if (receiptExitCode !== 0) {
+        throw new Error(
+          `FAIL-CLOSED: Receipt '${cleanRel}' reports non-zero exit_code: ${receiptExitCode}`,
+        );
+      }
+      const command =
+        (receipt.invocation && receipt.invocation.command) ||
+        (receipt.execution && receipt.execution.command);
+      if (!command || !Array.isArray(command) || command.length === 0) {
+        throw new Error(
+          `FAIL-CLOSED: Receipt '${cleanRel}' missing execution command array`,
+        );
+      }
+      const runnerId = receipt.runner_identity || receipt.execution_provenance;
+      if (!runnerId || !runnerId.runner_sha) {
+        throw new Error(
+          `FAIL-CLOSED: Receipt '${cleanRel}' execution provenance is unauthenticated: missing runner_identity`,
+        );
+      }
+      if (runnerId.runner_sha !== trustedInfo.runnerSha) {
+        throw new Error(
+          `FAIL-CLOSED: Receipt '${cleanRel}' execution provenance is unauthenticated: runner_sha (${runnerId.runner_sha}) does not match trusted runner (${trustedInfo.runnerSha})`,
+        );
+      }
+      const receiptRootSha =
+        runnerId.trusted_root_sha ||
+        receipt.trusted_root_sha ||
+        receipt.execution_provenance?.trusted_root_sha;
+      if (!receiptRootSha || receiptRootSha !== trustedInfo.trustedRootSha) {
+        throw new Error(
+          `FAIL-CLOSED: Receipt '${cleanRel}' execution provenance is unauthenticated: trusted_root_sha mismatch: expected '${trustedInfo.trustedRootSha}', got '${receiptRootSha}'`,
+        );
+      }
+      const logRelPath =
+        receipt.execution_provenance?.log_file ||
+        receipt.log_file ||
+        `logs/${cleanRel.replace(/\.json$/, "")}.log`;
+      const logFilePath = resolve(fullEvidenceDir, logRelPath);
+      if (!existsSync(logFilePath)) {
+        throw new Error(
+          `FAIL-CLOSED: Receipt '${cleanRel}' execution provenance is unauthenticated: execution log missing at ${logRelPath}`,
+        );
+      }
+      const actualLogContent = readFileSync(logFilePath, "utf8");
+      const actualLogSha = createHash("sha256")
+        .update(actualLogContent)
+        .digest("hex");
+      const expectedLogSha =
+        receipt.execution_provenance?.log_sha256 ||
+        receipt.log_sha256 ||
+        receipt.invocation?.log_sha256;
+      if (!expectedLogSha || actualLogSha !== expectedLogSha) {
+        throw new Error(
+          `FAIL-CLOSED: Receipt '${cleanRel}' execution provenance is unauthenticated: execution log SHA-256 mismatch: expected '${expectedLogSha}', got '${actualLogSha}'`,
+        );
+      }
+      receipts.push(receipt);
+    }
+
+    // Re-evaluate qualification using contract and frozen plan
+    const contractFullPath = resolve(this.repoRoot, this.contractPath);
+    if (!existsSync(contractFullPath)) {
+      throw new Error(
+        `FAIL-CLOSED: Contract file missing at ${contractFullPath}`,
+      );
+    }
+    const contract = JSON.parse(readFileSync(contractFullPath, "utf8"));
+    const frozenPlanResult = generateFrozenPlan({
+      contract,
+      candidateTree,
+      repoRoot: this.repoRoot,
+      distDir: this.distDir,
+    });
+
+    const qualResult = evaluateCandidateQualification(
+      frozenPlanResult.plan,
+      receipts,
+      candidateTree,
+    );
+
+    if (qualResult.qualification !== "QUALIFIED_PASS") {
+      throw new Error(
+        `FAIL-CLOSED: Candidate qualification re-evaluation is '${qualResult.qualification}', expected 'QUALIFIED_PASS': ${qualResult.reason}`,
+      );
+    }
+
+    // Evidence verified independently: Generate genuine execution_auth HMAC signature
+    const signature = computeExecutionAuthSignature({
+      candidateCommit,
+      candidateTree,
+      ledgerSha256: computedLedgerDigest,
+      runnerSha: trustedInfo.runnerSha,
+      trustedRootSha: trustedInfo.trustedRootSha,
+      qualification: qualResult.qualification,
+      authKey: this.executionAuthKey,
+    });
+
+    const executionAuth = {
+      version: "1.0.0",
+      algorithm: "hmac-sha256",
+      key_id: "dice-execution-authority-01",
+      signature,
+      authenticated_at: new Date().toISOString(),
+    };
+
+    summary.candidate_commit = candidateCommit;
+    summary.candidate_tree = candidateTree;
+    summary.runner_sha = trustedInfo.runnerSha;
+    summary.trusted_root_sha = trustedInfo.trustedRootSha;
+    summary.ledger_sha256 = computedLedgerDigest;
+    summary.qualification = qualResult.qualification;
+    summary.execution_auth = executionAuth;
+
+    writeFileSync(summaryPath, JSON.stringify(summary, null, 2), "utf8");
+
+    console.log(
+      `[dice-execution-authority] ✓ Candidate execution evidence authenticated successfully by protected authority: ${signature.slice(0, 16)}...`,
+    );
+
+    return {
+      authenticated: true,
+      candidateCommit,
+      candidateTree,
+      qualification: qualResult.qualification,
+      signature,
+      executionAuth,
+    };
+  }
+}
+
 // CLI Execution
 if (process.argv[1] && process.argv[1].endsWith("dice-signing-service.mjs")) {
   let mode = process.env.DICE_SIGNING_MODE || "production";
@@ -869,12 +1157,14 @@ if (process.argv[1] && process.argv[1].endsWith("dice-signing-service.mjs")) {
   let signingKeyPem = null;
   let signingKeyFile = null;
   let distDir = null;
+  let authenticateExecution = false;
 
   for (const arg of process.argv.slice(2)) {
     if (arg === "--help" || arg === "-h") {
       console.log(`Usage: node scripts/dice-signing-service.mjs [options]
 
 Options:
+  --authenticate-execution  Authenticate candidate execution evidence using DICE_EXECUTION_AUTH_KEY
   --mode=<test|production>  Signing mode (default: production)
   --contract=<path>         Path to change contract
   --evidence-dir=<path>     Path to evidence directory (default: artifacts/dice-evidence)
@@ -888,6 +1178,8 @@ Options:
   --help, -h                Show this help message
 `);
       process.exit(0);
+    } else if (arg === "--authenticate-execution") {
+      authenticateExecution = true;
     } else if (arg.startsWith("--mode=")) {
       mode = arg.split("=")[1];
     } else if (arg.startsWith("--contract=")) {
@@ -919,6 +1211,25 @@ Options:
     (mode === "test"
       ? "registries/dice/test-qualification-contract.json"
       : "features/contracts/F30-DICE-COMPLETE.json");
+
+  if (authenticateExecution) {
+    const authority = new DiceExecutionAuthority({
+      repoRoot: process.cwd(),
+      contractPath,
+      trustedRef,
+      distDir,
+    });
+    try {
+      authority.authenticateExecutionEvidence(evidenceDir);
+      console.log(
+        "[dice-signing] ✓ Candidate execution evidence authenticated successfully by protected authority.",
+      );
+      process.exit(0);
+    } catch (err) {
+      console.error(`\n[dice-signing] ✗ FAIL-CLOSED: ${err.message}`);
+      process.exit(1);
+    }
+  }
 
   keyId =
     keyId ||

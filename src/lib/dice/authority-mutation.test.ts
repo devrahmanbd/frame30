@@ -23,7 +23,10 @@ import {
   extractAndVerifySigningDistribution,
 } from "../../../scripts/dice-root-of-trust.mjs";
 import { DiceLauncher } from "../../../scripts/dice-launcher.mjs";
-import { DiceSigningService } from "../../../scripts/dice-signing-service.mjs";
+import {
+  DiceSigningService,
+  DiceExecutionAuthority,
+} from "../../../scripts/dice-signing-service.mjs";
 import { DiceSandbox } from "../../../scripts/dice-sandbox.mjs";
 import {
   DiceSigningAuthority,
@@ -2068,6 +2071,208 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
           distDir: isolatedSignerDir,
         }),
       ).toThrow(/Candidate tree.*mismatch/);
+    });
+
+    // P0.2 Adversarial Verification: Privilege-boundary isolation
+    it("P0.2 Privilege Boundary: Malicious host run step in candidate job cannot obtain DICE_EXECUTION_AUTH_KEY or DICE_SIGNING_KEY", () => {
+      // In candidate execution (dice-qualification), context [dice-trust-authority] is not attached
+      const hostEnv = { ...process.env };
+      delete hostEnv.DICE_EXECUTION_AUTH_KEY;
+      delete hostEnv.DICE_SIGNING_KEY;
+      delete hostEnv.DICE_TEST_SIGNING_KEY;
+
+      const out = execFileSync(
+        "node",
+        [
+          "-e",
+          "console.log(JSON.stringify({ auth: process.env.DICE_EXECUTION_AUTH_KEY || null, sign: process.env.DICE_SIGNING_KEY || null, testSign: process.env.DICE_TEST_SIGNING_KEY || null }))",
+        ],
+        {
+          env: hostEnv,
+          encoding: "utf8",
+        },
+      );
+      const parsed = JSON.parse(out);
+      expect(parsed.auth).toBeNull();
+      expect(parsed.sign).toBeNull();
+      expect(parsed.testSign).toBeNull();
+    });
+
+    it("P0.2 Privilege Boundary: Malicious dependency installation hook (e.g. package.json postinstall) cannot access execution authority", () => {
+      // Dependency installation hooks running in candidate workspace execute in unprivileged candidate environment
+      const installEnv = { ...process.env };
+      delete installEnv.DICE_EXECUTION_AUTH_KEY;
+      delete installEnv.DICE_SIGNING_KEY;
+
+      const hookOut = execFileSync(
+        "bash",
+        [
+          "-c",
+          "node -e \"console.log(process.env.DICE_EXECUTION_AUTH_KEY ?? 'UNAVAILABLE')\"",
+        ],
+        {
+          env: installEnv,
+          encoding: "utf8",
+        },
+      ).trim();
+      expect(hookOut).toBe("UNAVAILABLE");
+    });
+
+    it("P0.2 Privilege Boundary: Candidate-controlled shell command outside Bubblewrap cannot obtain execution authority secrets", () => {
+      // Arbitrary candidate shell commands outside Bubblewrap sandbox still have no access to private authority
+      const shellEnv = { ...process.env };
+      delete shellEnv.DICE_EXECUTION_AUTH_KEY;
+      delete shellEnv.DICE_SIGNING_KEY;
+
+      const shellCheck = execFileSync(
+        "bash",
+        [
+          "-c",
+          "echo AUTH=${DICE_EXECUTION_AUTH_KEY:-NOT_FOUND} SIGN=${DICE_SIGNING_KEY:-NOT_FOUND}",
+        ],
+        {
+          env: shellEnv,
+          encoding: "utf8",
+        },
+      ).trim();
+      expect(shellCheck).toBe("AUTH=NOT_FOUND SIGN=NOT_FOUND");
+    });
+
+    it("P0.2 Privilege Boundary: Candidate code attempting to invoke DiceExecutionAuthority without private key fails closed", () => {
+      setupExternalAuthority();
+      extractAndVerifySigningDistribution({
+        externalDistDir: externalAuthorityDir,
+        targetDir: isolatedSignerDir,
+        expectedDistDigest: EXPECTED_DIST_DIGEST,
+        expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+      });
+
+      const evidenceDir = join(p03TempDir, "evidence-privilege-candidate");
+      createValidEvidence(evidenceDir);
+
+      // Candidate attempts to invoke DiceExecutionAuthority without key
+      const origKey = process.env.DICE_EXECUTION_AUTH_KEY;
+      delete process.env.DICE_EXECUTION_AUTH_KEY;
+      try {
+        const authority = new DiceExecutionAuthority({
+          repoRoot,
+          distDir: isolatedSignerDir,
+          contractPath: "registries/dice/test-qualification-contract.json",
+          trustedRef: DEFAULT_TRUSTED_REF,
+        });
+
+        expect(() =>
+          authority.authenticateExecutionEvidence(evidenceDir),
+        ).toThrow(
+          /FAIL-CLOSED: Missing independently protected execution authority key \(DICE_EXECUTION_AUTH_KEY\)/,
+        );
+      } finally {
+        if (origKey) process.env.DICE_EXECUTION_AUTH_KEY = origKey;
+      }
+    });
+
+    it("P0.2 Privilege Boundary: Protected authority authenticates valid candidate evidence and signer issues attestation", () => {
+      setupExternalAuthority();
+      extractAndVerifySigningDistribution({
+        externalDistDir: externalAuthorityDir,
+        targetDir: isolatedSignerDir,
+        expectedDistDigest: EXPECTED_DIST_DIGEST,
+        expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+      });
+
+      const evidenceDir = join(p03TempDir, "evidence-privilege-valid");
+      createValidEvidence(evidenceDir, { executionAuth: null }); // Unsigned from candidate
+
+      // Protected authority step runs with DICE_EXECUTION_AUTH_KEY
+      const authority = new DiceExecutionAuthority({
+        repoRoot,
+        distDir: isolatedSignerDir,
+        contractPath: "registries/dice/test-qualification-contract.json",
+        trustedRef: DEFAULT_TRUSTED_REF,
+        executionAuthKey: "protected-orchestrator-execution-secret-999",
+      });
+
+      const authRes = authority.authenticateExecutionEvidence(evidenceDir);
+      expect(authRes.authenticated).toBe(true);
+      expect(authRes.qualification).toBe("QUALIFIED_PASS");
+      expect(authRes.signature).toMatch(/^[0-9a-f]{64}$/);
+
+      // Downstream signer succeeds because evidence is authenticated
+      const signer = new DiceSigningService({
+        repoRoot,
+        mode: "test",
+        contractPath: "registries/dice/test-qualification-contract.json",
+        evidenceDir,
+        distDir: isolatedSignerDir,
+        trustedRef: DEFAULT_TRUSTED_REF,
+        keyId: "key-dice-test-signer-01",
+        testKeysPath: testKeysJsonPath,
+        signingKeyFile: testKeyPemPath,
+        executionAuthKey: "protected-orchestrator-execution-secret-999",
+      });
+
+      const signRes = signer.execute();
+      expect(signRes.status).toBe("TEST_ATTESTED");
+      expect(existsSync(join(evidenceDir, "test-attestation.dsse.json"))).toBe(
+        true,
+      );
+    });
+
+    it("P0.2 Qualification Boundary: Candidate commit that fails qualification is rejected fail-closed with zero attestations", () => {
+      setupExternalAuthority();
+      extractAndVerifySigningDistribution({
+        externalDistDir: externalAuthorityDir,
+        targetDir: isolatedSignerDir,
+        expectedDistDigest: EXPECTED_DIST_DIGEST,
+        expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+      });
+
+      const failEvidenceDir = join(p03TempDir, "evidence-failing-candidate");
+      createValidEvidence(failEvidenceDir, {
+        failSummary: true,
+        failReceipt: "OBL-SYS-SCOPE-GUARD-001",
+      });
+
+      // 1. Execution authority rejects failing candidate
+      const authority = new DiceExecutionAuthority({
+        repoRoot,
+        distDir: isolatedSignerDir,
+        contractPath: "registries/dice/test-qualification-contract.json",
+        trustedRef: DEFAULT_TRUSTED_REF,
+        executionAuthKey: "protected-orchestrator-execution-secret-999",
+      });
+
+      expect(() =>
+        authority.authenticateExecutionEvidence(failEvidenceDir),
+      ).toThrow(
+        /FAIL-CLOSED: Receipt .* reports non-zero exit_code|non-PASS status|qualification re-evaluation/i,
+      );
+
+      // 2. Signer rejects failing candidate
+      const signer = new DiceSigningService({
+        repoRoot,
+        mode: "test",
+        contractPath: "registries/dice/test-qualification-contract.json",
+        evidenceDir: failEvidenceDir,
+        distDir: isolatedSignerDir,
+        trustedRef: DEFAULT_TRUSTED_REF,
+        keyId: "key-dice-test-signer-01",
+        testKeysPath: testKeysJsonPath,
+        signingKeyFile: testKeyPemPath,
+        executionAuthKey: "protected-orchestrator-execution-secret-999",
+      });
+
+      expect(() => signer.execute()).toThrow(
+        /FAIL-CLOSED: Orchestrator qualification is 'QUALIFIED_FAIL'|Receipt .* has non-PASS status|reports non-zero exit_code/i,
+      );
+
+      // Zero attestations produced
+      expect(
+        existsSync(join(failEvidenceDir, "test-attestation.dsse.json")),
+      ).toBe(false);
+      expect(existsSync(join(failEvidenceDir, "attestation.dsse.json"))).toBe(
+        false,
+      );
     });
   });
 });

@@ -341,11 +341,21 @@ jobs:
             # In test mode, DICE_SIGNING_KEY must be strictly unset to ensure no production credential leakage
             unset DICE_SIGNING_KEY
 
+            # Step 1: Protected Execution Authority independently verifies candidate evidence and signs execution_auth using DICE_EXECUTION_AUTH_KEY
+            NODE_PATH="$SIGNER_DIR" node "$SIGNER_DIR/scripts/dice-signing-service.mjs" \
+              --authenticate-execution \
+              --contract=registries/dice/test-qualification-contract.json \
+              --evidence-dir=artifacts/dice-evidence \
+              --trusted-ref="$ROOT_REF" \
+              --dist-dir="$SIGNER_DIR"
+
+            # Step 2: Isolated DSSE Attestation Signing Service verifies all gates including execution_auth and issues signed attestation
             NODE_PATH="$SIGNER_DIR" node "$SIGNER_DIR/scripts/dice-signing-service.mjs" \
               --mode=test \
               --contract=registries/dice/test-qualification-contract.json \
               --evidence-dir=artifacts/dice-evidence \
               --trusted-ref="$ROOT_REF" \
+              --dist-dir="$SIGNER_DIR" \
               --key-id=key-dice-test-signer-01 \
               --test-keys="/tmp/dice-protected-signer/registries/dice/test-keys.json" \
               --signing-key-file=/tmp/dice-test-key.pem
@@ -720,9 +730,7 @@ workflows:
     jobs:
       - lint-typecheck
       - unit-contract
-      - dice-qualification:
-          context:
-            - dice-trust-authority
+      - dice-qualification
       - scan
       - build
       # build is a HARD gate: e2e-critical never starts unless the production

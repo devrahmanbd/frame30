@@ -192,7 +192,8 @@ To transition State 2, State 3, and State 4 from `BLOCKED` to `OPERATIONAL`:
    - `DICE_SIGNING_KEY`: (Production signing only; remains unset until human specification authority approves change contract).
 3. **Workflow Security Boundaries**:
    - In CircleCI Context settings, configure Security Groups limiting `dice-trust-authority` access strictly to protected branches (`main`, `frame30`) and authorized release tags.
-   - Both `dice-qualification` and `dice-attestation-signing` are attached to `context: [dice-trust-authority]`.
+   - `dice-qualification` has **NO Context attached** and runs completely unprivileged. No candidate code, dependency installation hook, or host step can ever access `DICE_EXECUTION_AUTH_KEY` or `DICE_SIGNING_KEY`.
+   - `dice-attestation-signing` is the **sole job attached to `context: [dice-trust-authority]`**. It runs pure Node without candidate dependencies or candidate tests.
 4. **Provisioning External Distribution**:
    - In `.circleci/config.yml` `dice-attestation-signing`, if `DICE_EXTERNAL_DIST_DIR` is not externally mounted, the pipeline provisions `/tmp/dice-external-distribution` directly from `$ROOT_REF` (`git archive "$ROOT_REF" | tar -x -C /tmp/dice-external-distribution`), completely outside the candidate working tree (`process.cwd()`).
    - Candidate-local substitution is detected via relative path resolution and rejected fail-closed.
@@ -211,12 +212,13 @@ A claimed command array, a status string `PASS`, and an asserted exit code `0` d
    - **Missing log_sha256 must fail**: Missing `receipt.execution_provenance.log_sha256` throws `FAIL-CLOSED: missing mandatory log_sha256`.
    - **Missing or unauthenticated qualification summary must fail**: Missing `qualification-summary.json` or unauthenticated summary throws `FAIL-CLOSED`.
 
-2. **Cryptographic Authentication of Orchestrator Execution Evidence**:
-   - The protected orchestrator (`scripts/dice-bootstrap.mjs`) generates an HMAC-SHA256 signature (`execution_auth`) over the canonical payload:
+2. **Cryptographic Authentication of Orchestrator Execution Evidence (Privilege Isolation)**:
+   - Candidate execution (`dice-qualification`) operates with zero secrets (`DICE_EXECUTION_AUTH_KEY` is completely absent from the job environment).
+   - In the isolated `dice-attestation-signing` job, the protected execution authority (`DiceExecutionAuthority` in `scripts/dice-signing-service.mjs`) independently verifies candidate execution evidence (clean git tree, exit_code 0, runner_sha, trusted_root_sha, logs on disk, qualification re-evaluation) without trusting candidate-provided HMACs or signatures.
+   - Upon independent verification, `DiceExecutionAuthority` computes an HMAC-SHA256 signature (`execution_auth`) over:
      `candidate_commit : candidate_tree : ledger_sha256 : runner_sha : trusted_root_sha : qualification`
-     using an independently protected execution authority key (`DICE_EXECUTION_AUTH_KEY`).
-   - Candidate test processes running inside the Bubblewrap sandbox operate with `maskEnv: true` and cannot access `DICE_EXECUTION_AUTH_KEY`.
-   - The downstream signing service (`scripts/dice-signing-service.mjs`) verifies this signature in Gate 4. If `execution_auth` is missing or invalid, signing fails closed immediately.
+     using the independently protected `DICE_EXECUTION_AUTH_KEY` provisioned strictly in the signing context.
+   - The downstream signing service (`DiceSigningService`) verifies this signature in Gate 5. If `execution_auth` is missing or invalid, signing fails closed immediately.
 
 3. **Adversarial Verification (Zero Attestations on Hostile Synthesis)**:
    - In `src/lib/dice/authority-mutation.test.ts`, a dedicated hostile candidate test creates:

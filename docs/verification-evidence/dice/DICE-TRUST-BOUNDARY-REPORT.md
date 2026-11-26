@@ -119,6 +119,10 @@ The hostile candidate replacement and trust boundary attack vectors are executed
 | **V-10**   | Rogue key injection into candidate `registries/dice/trusted-keys.json`   | Authorize unauthorized signature with candidate key | Verifier resolves keys strictly from `$SIGNER_DIR/registries/dice/trusted-keys.json`, candidate keys completely ignored | **FAIL-CLOSED (Rejected: Unauthorized Key)** |
 | **V-11**   | Signature corruption, payload tampering, role mismatch, revoked keys, or tree mismatch | Bypass verifier cryptographic integrity checks | Verifier CLI rigorously validates Ed25519 signature over PAE, statement fields, key roles, revocation, and candidate tree | **FAIL-CLOSED (Rejected: Cryptographic / Policy Mismatch)** |
 | **V-12**   | Hostile synthetic execution evidence with correct runner SHA, correct root SHA, matching logs, and valid ledger | Bypass execution provenance via synthetic evidence with valid metadata | Signer requires cryptographic `execution_auth` signature from independently protected execution authority (`DICE_EXECUTION_AUTH_KEY`) | **FAIL-CLOSED (Rejected: 0 Attestations)** |
+| **V-13**   | Malicious additional host run step attempting to access `DICE_EXECUTION_AUTH_KEY` or `DICE_SIGNING_KEY` | Steal authority keys from candidate host job environment | CircleCI context `dice-trust-authority` is completely detached from `dice-qualification`; host job environment has no authority keys | **FAIL-CLOSED (Keys Undefined in Candidate Execution)** |
+| **V-14**   | Malicious dependency installation hook (`package.json` postinstall) | Exfiltrate execution authority keys during `bun install` | Candidate dependency installation runs in unprivileged candidate job with zero access to signing or execution authority | **FAIL-CLOSED (Keys Unavailable to Package Hooks)** |
+| **V-15**   | Candidate-controlled shell command outside Bubblewrap | Search disk, `/proc`, or environment for execution credentials | Candidate environment has zero execution authority secrets provisioned | **FAIL-CLOSED (Zero Credentials in Environment)** |
+| **V-16**   | Candidate code attempting to invoke `DiceExecutionAuthority` directly without private key | Force generation of `execution_auth` HMAC token | `DiceExecutionAuthority` fails closed immediately if `DICE_EXECUTION_AUTH_KEY` is undefined; candidate has zero access | **FAIL-CLOSED (Rejected: 0 Attestations)** |
 
 Every adversarial attack vector produces strictly **zero valid attestations**.
 
@@ -135,10 +139,13 @@ In Frame30 DICE, a command string, status string `PASS`, and exit code `0` do **
    - **Missing trusted_root_sha must fail**: Mandatory `trusted_root_sha` required on `qualification-summary.json` and every individual receipt; missing or mismatching values throw `FAIL-CLOSED`.
    - **Missing log_sha256 must fail**: Mandatory `log_sha256` required on every receipt and verified against actual log contents on disk; missing or mismatching values throw `FAIL-CLOSED`.
    - **Missing or unauthenticated summary must fail**: Missing `qualification-summary.json` or summary without valid cryptographic execution authentication throws `FAIL-CLOSED`.
-2. **Cryptographic Authentication of Orchestrator Evidence**:
-   - The protected orchestrator computes an HMAC-SHA256 signature (`execution_auth`) over `candidate_commit:candidate_tree:ledger_sha256:runner_sha:trusted_root_sha:qualification` using independently protected `DICE_EXECUTION_AUTH_KEY`.
-   - Candidate sandbox processes cannot access `DICE_EXECUTION_AUTH_KEY` due to Bubblewrap environment masking (`maskEnv: true`).
-   - Signer verifies this signature in Gate 4. Missing or invalid signature fails closed.
+2. **Cryptographic Authentication of Orchestrator Evidence (Privilege Isolation)**:
+   - Candidate execution (`dice-qualification`) operates with zero secrets (`DICE_EXECUTION_AUTH_KEY` is completely absent from the job environment).
+   - In the isolated `dice-attestation-signing` job, the protected execution authority (`DiceExecutionAuthority` in `scripts/dice-signing-service.mjs`) independently verifies candidate execution evidence (clean git tree, exit_code 0, runner_sha, trusted_root_sha, logs on disk, qualification re-evaluation) without trusting candidate-provided HMACs or signatures.
+   - Upon independent verification, `DiceExecutionAuthority` computes an HMAC-SHA256 signature (`execution_auth`) over:
+     `candidate_commit : candidate_tree : ledger_sha256 : runner_sha : trusted_root_sha : qualification`
+     using the independently protected `DICE_EXECUTION_AUTH_KEY` provisioned strictly in the signing context.
+   - The downstream signing service (`DiceSigningService`) verifies this signature in Gate 5. If `execution_auth` is missing or invalid, signing fails closed immediately.
 3. **Candidate Tree Cleanliness (No Committed Artifacts)**:
    - Gate 1 runs `git ls-tree <candidateTree> artifacts`. If the candidate commit contains an `artifacts` tree, signing immediately fails closed. Evidence must be produced by genuine upstream execution stages in the runner workspace, never committed to git.
 4. **Execution Log Capture on Disk**:
