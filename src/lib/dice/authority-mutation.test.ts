@@ -29,6 +29,7 @@ import {
   DiceSigningAuthority,
   generateTestKeypair,
   verifyIndependentAttestation,
+  createAttestationEnvelope,
 } from "../../../scripts/dice-evidence.mjs";
 import { evaluateMethodOracle } from "../../../scripts/dice-bootstrap.mjs";
 
@@ -760,7 +761,9 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
       overrides: Record<string, unknown> = {},
     ) {
       const receiptsDir = join(dir, "receipts");
+      const logsDir = join(dir, "logs");
       mkdirSync(receiptsDir, { recursive: true });
+      mkdirSync(logsDir, { recursive: true });
 
       const activeObs = [
         "OBL-SYS-SCOPE-GUARD-001",
@@ -775,6 +778,21 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
         "OBL-SYS-SECRETS-SCAN-001": "METH-SECRETS-SCAN-01",
       };
 
+      let runnerSha = overrides.runnerSha as string;
+      let trustedRootSha = overrides.trustedRootSha as string;
+      if (!runnerSha || !trustedRootSha) {
+        const rootInfo = new DiceTrustedRoot({
+          repoRoot,
+          trustedRef: DEFAULT_TRUSTED_REF,
+          allowUnpinnedRoots: true,
+          externalDistDir: existsSync(isolatedSignerDir)
+            ? isolatedSignerDir
+            : null,
+        }).resolve();
+        runnerSha = runnerSha || rootInfo.runnerSha;
+        trustedRootSha = trustedRootSha || rootInfo.trustedRootSha;
+      }
+
       let ledger = "";
       for (const obId of activeObs) {
         if (overrides.skipReceipt === obId) continue;
@@ -782,7 +800,12 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
         const rPath = join(receiptsDir, `${obId}.json`);
         const status = overrides.failReceipt === obId ? "FAIL" : "PASS";
 
-        const receipt = {
+        const logRel = `logs/${obId}.log`;
+        const logContent = `=== EXECUTION LOG FOR ${obId} ===\n`;
+        writeFileSync(join(dir, logRel), logContent, "utf8");
+        const logSha256 = createHash("sha256").update(logContent).digest("hex");
+
+        const receipt: Record<string, unknown> = {
           receipt_version: "1.0.0",
           obligation_id: obId,
           method_id: methodIdMap[obId],
@@ -793,6 +816,21 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
           environment: {
             node: process.version,
             platform: process.platform,
+          },
+          runner_identity: {
+            runner_sha: runnerSha,
+            trusted_root_sha: trustedRootSha,
+          },
+          execution_provenance: {
+            runner_sha: runnerSha,
+            trusted_root_sha: trustedRootSha,
+            candidate_commit: candidateCommit,
+            candidate_tree: candidateTree,
+            log_file: logRel,
+            log_sha256: logSha256,
+            exit_code: status === "PASS" ? 0 : 1,
+            duration_ms: 10,
+            started_at: new Date().toISOString(),
           },
           execution: {
             command: ["test"],
@@ -805,6 +843,11 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
             timestamp: new Date().toISOString(),
           },
         };
+
+        if (overrides.omitExecutionProvenance) {
+          delete receipt.execution_provenance;
+          delete receipt.runner_identity;
+        }
 
         const content = JSON.stringify(receipt, null, 2);
         writeFileSync(rPath, content, "utf8");
@@ -826,6 +869,9 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
         version: "1.0.0",
         candidate_commit: candidateCommit,
         candidate_tree: candidateTree,
+        runner_sha: runnerSha,
+        trusted_root_sha: trustedRootSha,
+        ledger_sha256: createHash("sha256").update(ledger).digest("hex"),
         qualification: overrides.failSummary
           ? "QUALIFIED_FAIL"
           : "QUALIFIED_PASS",
@@ -1442,6 +1488,408 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
       expect(existsSync(join(evidenceDir, "test-attestation.dsse.json"))).toBe(
         false,
       );
+    });
+
+    // P0 — Prove receipt execution authenticity
+    it("P0 Adversarial: Synthetic receipts without authentic orchestrator execution provenance are rejected fail-closed (zero attestations)", () => {
+      setupExternalAuthority();
+      extractAndVerifySigningDistribution({
+        externalDistDir: externalAuthorityDir,
+        targetDir: isolatedSignerDir,
+        expectedDistDigest: EXPECTED_DIST_DIGEST,
+        expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+      });
+
+      const syntheticEvidenceDir = join(
+        p03TempDir,
+        "hostile-synthetic-evidence",
+      );
+      const receiptsDir = join(syntheticEvidenceDir, "receipts");
+      mkdirSync(receiptsDir, { recursive: true });
+
+      // Hostile attacker crafts synthetic receipts claiming PASS, exit_code 0, valid timestamps, matching candidate commit and tree, but NO orchestrator execution provenance
+      const activeObs = [
+        "OBL-SYS-SCOPE-GUARD-001",
+        "OBL-SYS-DRIFT-GUARD-001",
+        "OBL-SYS-DIE-REGISTRY-001",
+        "OBL-SYS-SECRETS-SCAN-001",
+      ];
+      let syntheticLedger = "";
+      for (const obId of activeObs) {
+        const syntheticReceipt = {
+          receipt_version: "1.0.0",
+          obligation_id: obId,
+          method_id: `METH-${obId}`,
+          status: "PASS",
+          commit_sha: candidateCommit,
+          tree_sha: candidateTree,
+          candidate: { commit: candidateCommit, tree: candidateTree },
+          environment: {
+            node: process.version,
+            platform: process.platform,
+          },
+          invocation: {
+            command: ["bun", "run", "test:obligation"],
+            exit_code: 0,
+            duration_ms: 120,
+            started_at: new Date().toISOString(),
+          },
+          execution: {
+            command: ["bun", "run", "test:obligation"],
+            duration_ms: 120,
+            started_at: new Date().toISOString(),
+          },
+          verdict: {
+            disposition: "PASS",
+            confidence: "machine_checked",
+            timestamp: new Date().toISOString(),
+          },
+          // Intentionally NO authentic runner_identity or execution_provenance
+        };
+        const content = JSON.stringify(syntheticReceipt, null, 2);
+        writeFileSync(join(receiptsDir, `${obId}.json`), content, "utf8");
+        const sha = createHash("sha256").update(content, "utf8").digest("hex");
+        syntheticLedger += `${sha}  receipts/${obId}.json\n`;
+      }
+      writeFileSync(
+        join(syntheticEvidenceDir, "receipts.sha256"),
+        syntheticLedger,
+        "utf8",
+      );
+
+      // Attacker also provides a synthetic qualification summary
+      const syntheticSummary = {
+        version: "1.0.0",
+        candidate_commit: candidateCommit,
+        candidate_tree: candidateTree,
+        qualification: "QUALIFIED_PASS",
+        ledger_sha256: createHash("sha256")
+          .update(syntheticLedger)
+          .digest("hex"),
+        // Fake/unauthenticated runner sha
+        runner_sha: "fake-unauthenticated-runner-sha",
+        trusted_root_sha: "fake-unauthenticated-root-sha",
+        timestamp: new Date().toISOString(),
+      };
+      writeFileSync(
+        join(syntheticEvidenceDir, "qualification-summary.json"),
+        JSON.stringify(syntheticSummary, null, 2),
+        "utf8",
+      );
+
+      const signer = new DiceSigningService({
+        repoRoot,
+        mode: "test",
+        contractPath: "registries/dice/test-qualification-contract.json",
+        evidenceDir: syntheticEvidenceDir,
+        distDir: isolatedSignerDir,
+        trustedRef: DEFAULT_TRUSTED_REF,
+        keyId: "key-dice-test-signer-01",
+        testKeysPath: testKeysJsonPath,
+        signingKeyFile: testKeyPemPath,
+      });
+
+      // Signer MUST reject fail-closed: runner identity mismatch or unauthenticated execution provenance
+      expect(() => signer.execute()).toThrow(
+        /FAIL-CLOSED: Orchestrator runner identity mismatch|Receipt .* execution provenance is unauthenticated/,
+      );
+
+      // Require strictly ZERO valid attestations produced
+      expect(
+        existsSync(join(syntheticEvidenceDir, "test-attestation.dsse.json")),
+      ).toBe(false);
+      expect(
+        existsSync(join(syntheticEvidenceDir, "attestation.dsse.json")),
+      ).toBe(false);
+    });
+
+    // P0 — Independently protect the DSSE verifier
+    it("P0 Verifier Protection: Candidate mutating scripts/dice-evidence.mjs is ignored by protected verifier", () => {
+      setupCandidateTree();
+      setupExternalAuthority();
+      extractAndVerifySigningDistribution({
+        externalDistDir: externalAuthorityDir,
+        targetDir: isolatedSignerDir,
+        expectedDistDigest: EXPECTED_DIST_DIGEST,
+        expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+      });
+
+      // Candidate mutates its local scripts/dice-evidence.mjs to bypass verification or tamper logic
+      writeFileSync(
+        join(candidateBase, "scripts/dice-evidence.mjs"),
+        "export function verifyIndependentAttestation() { return { valid: false, tampered: true }; }",
+      );
+
+      // Sign valid evidence using protected signer
+      const evidenceDir = join(p03TempDir, "evidence-verifier-prot");
+      createValidEvidence(evidenceDir);
+
+      const signer = new DiceSigningService({
+        repoRoot,
+        mode: "test",
+        contractPath: "registries/dice/test-qualification-contract.json",
+        evidenceDir,
+        distDir: isolatedSignerDir,
+        trustedRef: DEFAULT_TRUSTED_REF,
+        keyId: "key-dice-test-signer-01",
+        testKeysPath: testKeysJsonPath,
+        signingKeyFile: testKeyPemPath,
+      });
+      const signRes = signer.execute();
+      expect(signRes.status).toBe("TEST_ATTESTED");
+
+      // Verify attestation using the protected verifier entrypoint with --dist-dir
+      const attestationPath = join(evidenceDir, "test-attestation.dsse.json");
+      const ledgerPath = join(evidenceDir, "receipts.sha256");
+
+      // Standalone verifier CLI execution pointing to protected distribution
+      const verifyCliOut = execFileSync(
+        "node",
+        [
+          join(isolatedSignerDir, "scripts/dice-evidence.mjs"),
+          `--attestation=${attestationPath}`,
+          `--test-keys=${testKeysJsonPath}`,
+          `--candidate-commit=${candidateCommit}`,
+          `--candidate-tree=${candidateTree}`,
+          `--ledger=${ledgerPath}`,
+          `--expected-predicate=https://framique.com/dice/test-attestation/v1`,
+          `--dist-dir=${isolatedSignerDir}`,
+        ],
+        {
+          cwd: repoRoot,
+          encoding: "utf8",
+        },
+      );
+      expect(verifyCliOut).toContain("Independent DSSE attestation verified");
+    });
+
+    // P0 — Independently protect trusted key registry
+    it("P0 Key Registry Protection: Rogue key injected into candidate registries/dice/trusted-keys.json is ignored by protected verifier", () => {
+      setupCandidateTree();
+      setupExternalAuthority();
+      extractAndVerifySigningDistribution({
+        externalDistDir: externalAuthorityDir,
+        targetDir: isolatedSignerDir,
+        expectedDistDigest: EXPECTED_DIST_DIGEST,
+        expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+      });
+
+      // Rogue keypair generated by attacker
+      const rogueKeypair = generateTestKeypair();
+      const rogueKeysDef = [
+        {
+          keyid: "key-dice-rogue-attacker-01",
+          algorithm: "ed25519",
+          public_key_pem: rogueKeypair.publicKey,
+          roles: ["dice-attestation-signer"],
+          status: "active",
+          created_at: new Date().toISOString(),
+        },
+      ];
+
+      // Attacker injects rogue key into candidate repository registries/dice/trusted-keys.json
+      writeFileSync(
+        join(candidateBase, "registries/dice/trusted-keys.json"),
+        JSON.stringify(rogueKeysDef, null, 2),
+        "utf8",
+      );
+
+      // Attacker creates a rogue attestation signed with rogue private key
+      const evidenceDir = join(p03TempDir, "evidence-rogue-key");
+      createValidEvidence(evidenceDir);
+
+      const rogueStatement = {
+        _type: "https://in-toto.io/Statement/v0.1",
+        subject: [
+          {
+            name: "frame30-candidate-tree",
+            digest: { sha256: candidateTree },
+          },
+        ],
+        predicateType: "https://framique.com/dice/test-attestation/v1",
+        predicate: {
+          qualification: "TEST_QUALIFIED_NON_AUTHORITATIVE",
+          candidate: { commit: candidateCommit, tree: candidateTree },
+        },
+      };
+
+      const rogueAttestation = createAttestationEnvelope(
+        rogueStatement,
+        rogueKeypair.privateKey,
+        "key-dice-rogue-attacker-01",
+      );
+      const rogueAttestationPath = join(
+        evidenceDir,
+        "rogue-attestation.dsse.json",
+      );
+      writeFileSync(
+        rogueAttestationPath,
+        JSON.stringify(rogueAttestation, null, 2),
+        "utf8",
+      );
+
+      // Verifier running with --dist-dir=isolatedSignerDir MUST ignore candidate keys and reject rogue signature fail-closed
+      let cliFailed = false;
+      try {
+        execFileSync(
+          "node",
+          [
+            join(isolatedSignerDir, "scripts/dice-evidence.mjs"),
+            `--attestation=${rogueAttestationPath}`,
+            `--candidate-commit=${candidateCommit}`,
+            `--candidate-tree=${candidateTree}`,
+            `--dist-dir=${isolatedSignerDir}`,
+          ],
+          {
+            cwd: repoRoot,
+            encoding: "utf8",
+            stdio: ["ignore", "pipe", "pipe"],
+          },
+        );
+      } catch (err: unknown) {
+        cliFailed = true;
+        const execErr = err as { stdout?: string; stderr?: string };
+        const out = (execErr.stdout || "") + (execErr.stderr || "");
+        expect(out).toMatch(/not found in trusted registry|FAIL-CLOSED/);
+      }
+      expect(cliFailed).toBe(true);
+    });
+
+    // P0 — Verifier Rejection Matrix
+    it("P0 Verifier Matrix: Verifier CLI rejects invalid signatures, modified payloads, unauthorized keys, revoked keys, and candidate tree mismatch", () => {
+      setupExternalAuthority();
+      extractAndVerifySigningDistribution({
+        externalDistDir: externalAuthorityDir,
+        targetDir: isolatedSignerDir,
+        expectedDistDigest: EXPECTED_DIST_DIGEST,
+        expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+      });
+
+      const evidenceDir = join(p03TempDir, "evidence-verifier-matrix");
+      createValidEvidence(evidenceDir);
+
+      const signer = new DiceSigningService({
+        repoRoot,
+        mode: "test",
+        contractPath: "registries/dice/test-qualification-contract.json",
+        evidenceDir,
+        distDir: isolatedSignerDir,
+        trustedRef: DEFAULT_TRUSTED_REF,
+        keyId: "key-dice-test-signer-01",
+        testKeysPath: testKeysJsonPath,
+        signingKeyFile: testKeyPemPath,
+      });
+      const signRes = signer.execute();
+      const authenticEnvelopePath = signRes.envelopePath!;
+      const authenticEnvelope = JSON.parse(
+        readFileSync(authenticEnvelopePath, "utf8"),
+      );
+
+      // 1. Invalid signature (signature bytes corrupted)
+      const corruptedSigEnvelope = JSON.parse(
+        JSON.stringify(authenticEnvelope),
+      );
+      corruptedSigEnvelope.signatures[0].sig =
+        Buffer.from("bad-sig-bytes").toString("base64");
+      const badSigPath = join(evidenceDir, "bad-sig.dsse.json");
+      writeFileSync(badSigPath, JSON.stringify(corruptedSigEnvelope));
+      expect(() =>
+        verifyIndependentAttestation({
+          attestationPath: badSigPath,
+          testKeysPath: testKeysJsonPath,
+          candidateCommit,
+          candidateTree,
+          distDir: isolatedSignerDir,
+        }),
+      ).toThrow(/signature verification failed|Invalid signature/);
+
+      // 2. Tampered payload
+      const tamperedPayloadEnvelope = JSON.parse(
+        JSON.stringify(authenticEnvelope),
+      );
+      const statement = JSON.parse(
+        Buffer.from(tamperedPayloadEnvelope.payload, "base64").toString("utf8"),
+      );
+      statement.predicate.qualification = "TAMPERED_PASS";
+      tamperedPayloadEnvelope.payload = Buffer.from(
+        JSON.stringify(statement),
+      ).toString("base64");
+      const tamperedPayloadPath = join(
+        evidenceDir,
+        "tampered-payload.dsse.json",
+      );
+      writeFileSync(
+        tamperedPayloadPath,
+        JSON.stringify(tamperedPayloadEnvelope),
+      );
+      expect(() =>
+        verifyIndependentAttestation({
+          attestationPath: tamperedPayloadPath,
+          testKeysPath: testKeysJsonPath,
+          candidateCommit,
+          candidateTree,
+          distDir: isolatedSignerDir,
+        }),
+      ).toThrow(/signature verification failed|Invalid signature/);
+
+      // 3. Unauthorized key (role mismatch)
+      const unauthorizedKeysPath = join(p03TempDir, "unauthorized-keys.json");
+      writeFileSync(
+        unauthorizedKeysPath,
+        JSON.stringify([
+          {
+            keyid: "key-dice-test-signer-01",
+            algorithm: "ed25519",
+            public_key_pem: testKeypair.publicKey,
+            roles: ["unauthorized-auditor"],
+            status: "active",
+          },
+        ]),
+      );
+      expect(() =>
+        verifyIndependentAttestation({
+          attestationPath: authenticEnvelopePath,
+          testKeysPath: unauthorizedKeysPath,
+          candidateCommit,
+          candidateTree,
+          distDir: isolatedSignerDir,
+        }),
+      ).toThrow(/lacks authorized role/);
+
+      // 4. Revoked key
+      const revokedKeysPath = join(p03TempDir, "revoked-keys.json");
+      writeFileSync(
+        revokedKeysPath,
+        JSON.stringify([
+          {
+            keyid: "key-dice-test-signer-01",
+            algorithm: "ed25519",
+            public_key_pem: testKeypair.publicKey,
+            roles: ["dice-attestation-signer"],
+            status: "revoked",
+          },
+        ]),
+      );
+      expect(() =>
+        verifyIndependentAttestation({
+          attestationPath: authenticEnvelopePath,
+          testKeysPath: revokedKeysPath,
+          candidateCommit,
+          candidateTree,
+          distDir: isolatedSignerDir,
+        }),
+      ).toThrow(/REVOKED/);
+
+      // 5. Candidate tree mismatch
+      expect(() =>
+        verifyIndependentAttestation({
+          attestationPath: authenticEnvelopePath,
+          testKeysPath: testKeysJsonPath,
+          candidateCommit,
+          candidateTree: "0".repeat(40),
+          distDir: isolatedSignerDir,
+        }),
+      ).toThrow(/Candidate tree.*mismatch/);
     });
   });
 });

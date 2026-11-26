@@ -114,6 +114,10 @@ The hostile candidate replacement and trust boundary attack vectors are executed
 | **SEC-08** | Committed artifacts in candidate git tree                                | Smuggle pre-baked test results into candidate    | Gate 1 executes `git ls-tree <candidateTree> artifacts`; fails closed if artifacts directory exists in git tree     | **FAIL-CLOSED (Rejected: 0 Attestations)** |
 | **SEC-09** | Fake/unexecuted receipt provenance injection                             | Pass gate with mock or failed command receipts   | Gate 4 & 5 enforce non-empty execution command array and `receipt.exit_code === 0`                                  | **FAIL-CLOSED (Rejected: 0 Attestations)** |
 | **SEC-10** | DSSE attestation signature / payload tampering                           | Forge signature or alter signed payload          | Standalone independent DSSE verification verifies Ed25519 signature over PAE, key identity, and ledger integrity   | **FAIL-CLOSED (Verification Rejected)**     |
+| **V-08**   | Synthetic receipts claiming PASS/0 without authentic execution provenance | Forge verification without running tests         | Gates 4 & 5 require `runner_identity`, `execution_provenance`, disk logs with matching `log_sha256`, and summary matching `runner_sha` | **FAIL-CLOSED (Rejected: 0 Attestations)** |
+| **V-09**   | Candidate mutating `scripts/dice-evidence.mjs` in candidate tree         | Disable post-signing verification or bypass checks | Post-signing verifier executes strictly from external distribution (`$SIGNER_DIR`), candidate script completely ignored | **FAIL-CLOSED (Bypassed & Verified from Protected Distribution)** |
+| **V-10**   | Rogue key injection into candidate `registries/dice/trusted-keys.json`   | Authorize unauthorized signature with candidate key | Verifier resolves keys strictly from `$SIGNER_DIR/registries/dice/trusted-keys.json`, candidate keys completely ignored | **FAIL-CLOSED (Rejected: Unauthorized Key)** |
+| **V-11**   | Signature corruption, payload tampering, role mismatch, revoked keys, or tree mismatch | Bypass verifier cryptographic integrity checks | Verifier CLI rigorously validates Ed25519 signature over PAE, statement fields, key roles, revocation, and candidate tree | **FAIL-CLOSED (Rejected: Cryptographic / Policy Mismatch)** |
 
 Every adversarial attack vector produces strictly **zero valid attestations**.
 
@@ -121,27 +125,38 @@ Every adversarial attack vector produces strictly **zero valid attestations**.
 
 ## 3. Independent Acceptance Decision, Receipt Provenance & Baseline Reconciliation
 
-### 1. Receipt Provenance & Execution Authenticity Guarantees
+### 1. Receipt Execution Authenticity (Not Just Claimed Exit Codes)
 
-In Frame30 DICE, verification evidence cannot be pre-baked, synthetic, or smudged:
+In Frame30 DICE, a command string, status string `PASS`, and exit code `0` do **not** constitute execution evidence:
 
 1. **Candidate Tree Cleanliness (No Committed Artifacts)**:
    - Gate 1 runs `git ls-tree <candidateTree> artifacts`. If the candidate commit contains an `artifacts` tree, signing immediately fails closed. Evidence must be produced by genuine upstream execution stages in the runner workspace, never committed to git.
-2. **Execution Authenticity**:
-   - Gate 4 and Gate 5 validate that all receipts include non-empty command execution arrays (`receipt.invocation.command` or `receipt.execution.command`) and strictly assert `receipt.exit_code === 0`.
-   - Non-authoritative fixture signing in isolated unit test environments remains supported via `receipt.execution.command`, while production runs strictly enforce CLI invocation receipts.
-3. **Independent DSSE Verification**:
-   - The generated attestation envelope is verified by an independently invoked verification step (`scripts/dice-evidence.mjs --verify-attestation=...`) validating all 8 verification criteria:
-     1. DSSE envelope structure (`payloadType`, `payload`, `signatures`).
-     2. Exact payload type `application/vnd.in-toto+json`.
-     3. PAE (Pre-Authentication Encoding) reconstruction and Ed25519 signature verification.
-     4. Public key identity present in trusted key registry.
-     5. Signer key active and authorized for role `dice-attestation-signer`.
-     6. Candidate commit and tree match the candidate Git workspace.
-     7. Predicate type `https://in-toto.io/attestation/qualification/v1` with qualification status `QUALIFIED_PASS`.
-     8. Recalculated ledger SHA-256 matches the attestation predicate ledger digest.
+2. **Process Result & Execution Binding**:
+   - Every receipt records detailed invocation metrics (command array, duration, ISO-8601 timestamps, stdout/stderr digests, and process exit code).
+3. **Execution Log Capture on Disk**:
+   - The orchestrator writes full stdout/stderr streams to `logs/<obligation_id>.log` on disk and computes its SHA-256 digest (`log_sha256`). Gate 5 verifies that the log file exists on disk and its SHA-256 strictly matches the receipt.
+4. **Trusted Runner Identity Binding**:
+   - The orchestrator binds `runner_sha` (the SHA-256 of the trusted launcher/evaluator extracted from `$ROOT_REF`) and `trusted_root_sha` (the immutable policy manifest digest) into every receipt. Gate 5 asserts that `receipt.execution_provenance.runner_sha === trustedInfo.runnerSha`.
+5. **Orchestrator Qualification Summary**:
+   - Gate 4 validates `qualification-summary.json`, asserting that `runner_sha` and `trusted_root_sha` match the trusted root, `candidate_tree` matches the candidate tree, and `ledger_sha256` seals the receipt ledger.
 
-### 2. Monotonic Baseline Reconciliation
+### 2. Independent DSSE Verification from Protected Distribution
+
+1. **Protected Execution Path**:
+   - The post-signing verifier executes strictly from `$SIGNER_DIR/scripts/dice-evidence.mjs`, never from the candidate checkout.
+2. **Authoritative Key Resolution**:
+   - Public keys are loaded exclusively from `$SIGNER_DIR/registries/dice/trusted-keys.json`. Candidate repo keys are completely ignored.
+3. **8-Point Independent Criteria**:
+   1. DSSE envelope structure (`payloadType`, `payload`, `signatures`).
+   2. Exact payload type `application/vnd.in-toto+json`.
+   3. PAE (Pre-Authentication Encoding) reconstruction and Ed25519 signature verification.
+   4. Public key identity present in trusted key registry.
+   5. Signer key active and authorized for role `dice-attestation-signer`.
+   6. Candidate commit and tree match the candidate Git workspace.
+   7. Predicate type `https://in-toto.io/attestation/qualification/v1` with qualification status `QUALIFIED_PASS`.
+   8. Recalculated ledger SHA-256 matches the attestation predicate ledger digest.
+
+### 3. Monotonic Baseline Reconciliation
 
 In accordance with `F30-SDLC-001` Section 13:
 
@@ -160,19 +175,21 @@ In accordance with `F30-SDLC-001` Section 13:
   - Stage 2.4.3 step base: `a4e57f5addbfc8c1e6194d70d6d23ac5e0279b08`
   - All intermediate commits form a clean, verifiable linear continuation from `382261db`.
 
-### 3. External CI Authority Administration Runbook
+### 4. Operational Trust Authority States (CircleCI Context Activation)
 
-`.circleci/config.yml` now attaches context `dice-trust-authority` and mandates `DICE_REQUIRE_EXTERNAL_ANCHORS: "1"`. CircleCI administrator action is required to configure the organization context:
+To prevent false claims of remote production activation, Frame30 DICE strictly differentiates the four lifecycle states of CircleCI Context integration:
 
-1. Navigate to **CircleCI Organization Settings** -> **Contexts**.
-2. Create context `dice-trust-authority`.
-3. Add the following environment variables:
-   - `DICE_EXPECTED_SIGNER_DIST_DIGEST`: `8ae4ee24a51b6f02529a590c291cd8260c6e44d5eb58559e63944e917cbb62c1`
-   - `DICE_EXPECTED_TEST_POLICY_DIGEST`: `eb447909aff1afe029c5207e069259690a7975245926dd7ae0caef01b789380d`
-4. Configure security group restrictions to limit context visibility to authorized release and qualification workflows.
-5. **Fail-Closed Verification**: Until this context is configured in CircleCI, `dice-attestation-signing` will fail closed with status `BLOCKED (Missing required external trust authority digest anchors)`.
+| Trust Lifecycle State | Scope & Location | Verification Status | Operational Notes |
+|---|---|---|---|
+| **State 1: Context Attachment in Repository YAML** | `.circleci/config.yml` (`context: [dice-trust-authority]`) | **`IMPLEMENTED` & `LOCALLY VERIFIED`** | Declarative configuration complete, valid, verified locally. |
+| **State 2: Actual Administrator-Created Context** | CircleCI Organization Settings (`Organization Settings > Contexts > dice-trust-authority`) | **`BLOCKED`** | Requires human specification authority (`@devrahmanbd`) to create context and populate digests. |
+| **State 3: Effective Context Access Restrictions** | Security Group restrictions limiting context to authorized workflows | **`BLOCKED`** | Requires human specification authority (`@devrahmanbd`) to configure in CircleCI UI. |
+| **State 4: Successful Protected Workflow Execution** | Remote CircleCI workflow run consuming injected external anchors | **`BLOCKED`** | Retains `BLOCKED` status until State 2 and State 3 are provisioned and an authoritative run completes remotely. |
 
-### 4. Non-Authoritative Status & Release Authority
+> **Operational Activation Ruling (Non-Negotiable)**:
+> Until the administrator (`@devrahmanbd`) completes organization configuration and a protected workflow successfully consumes the external anchors, operational activation remains **`BLOCKED`**.
+
+### 5. Non-Authoritative Status & Release Authority
 
 1. In strict compliance with `AGENTS.md` and `F30-SDLC-001`, autonomous agents possess **zero authority** to approve change contracts or declare production readiness.
 2. Change contract `features/contracts/F30-DICE-COMPLETE.json` remains strictly in `"approval_state": "proposed"`.

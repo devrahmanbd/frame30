@@ -86,7 +86,13 @@ export class DiceSigningService {
       null;
     this.allowUnapprovedContract = options.allowUnapprovedContract || false;
     this.allowUnpinnedRoots = options.allowUnpinnedRoots || false;
-    this.distDir = options.distDir || resolve(__dirname, "..");
+    const effectiveDistDir =
+      options.distDir ||
+      process.env.DICE_EXTERNAL_DIST_DIR ||
+      (resolve(__dirname, "..") !== resolve(this.repoRoot)
+        ? resolve(__dirname, "..")
+        : null);
+    this.distDir = effectiveDistDir;
   }
 
   execute() {
@@ -296,11 +302,10 @@ export class DiceSigningService {
           "registries/dice/test-policy.json",
         );
       } catch {
-        const protectedPolicyPath = join(
-          this.distDir,
-          "registries/dice/test-policy.json",
-        );
-        if (existsSync(protectedPolicyPath)) {
+        const protectedPolicyPath = this.distDir
+          ? join(this.distDir, "registries/dice/test-policy.json")
+          : join(this.repoRoot, "registries/dice/test-policy.json");
+        if (protectedPolicyPath && existsSync(protectedPolicyPath)) {
           testPolicy = JSON.parse(readFileSync(protectedPolicyPath, "utf8"));
         } else {
           throw new Error(
@@ -390,12 +395,16 @@ export class DiceSigningService {
           "registries/dice/trusted-keys.json",
         );
       } catch {
-        const p = join(this.distDir, "registries/dice/trusted-keys.json");
-        if (existsSync(p)) {
+        const p = this.distDir
+          ? join(this.distDir, "registries/dice/trusted-keys.json")
+          : process.env.DICE_REQUIRE_EXTERNAL_ANCHORS === "1"
+            ? null
+            : join(this.repoRoot, "registries/dice/trusted-keys.json");
+        if (p && existsSync(p)) {
           trustedKeys = JSON.parse(readFileSync(p, "utf8"));
         } else {
           throw new Error(
-            "FAIL-CLOSED: Authoritative registries/dice/trusted-keys.json missing from protected distribution",
+            "FAIL-CLOSED: Authoritative registries/dice/trusted-keys.json missing from protected distribution (BLOCKED)",
           );
         }
       }
@@ -409,7 +418,52 @@ export class DiceSigningService {
     // Validate ledger matches receipts on disk
     signingAuthority.validateLedger(ledgerContent, receiptsDir);
 
-    // Read all receipts from ledger
+    // Validate authentic orchestrator execution evidence (qualification-summary.json)
+    const qualSummaryPath = join(fullEvidenceDir, "qualification-summary.json");
+    if (!existsSync(qualSummaryPath)) {
+      throw new Error(
+        "FAIL-CLOSED: Orchestrator execution evidence missing: qualification-summary.json not found",
+      );
+    }
+    let summary;
+    try {
+      summary = JSON.parse(readFileSync(qualSummaryPath, "utf8"));
+    } catch (err) {
+      throw new Error(
+        `FAIL-CLOSED: Corrupt qualification-summary.json: ${err.message}`,
+      );
+    }
+    if (summary.runner_sha !== trustedInfo.runnerSha) {
+      throw new Error(
+        `FAIL-CLOSED: Orchestrator runner identity mismatch: expected '${trustedInfo.runnerSha}', got '${summary.runner_sha}'`,
+      );
+    }
+    if (
+      summary.trusted_root_sha &&
+      summary.trusted_root_sha !== trustedInfo.trustedRootSha
+    ) {
+      throw new Error(
+        `FAIL-CLOSED: Orchestrator trusted root mismatch: expected '${trustedInfo.trustedRootSha}', got '${summary.trusted_root_sha}'`,
+      );
+    }
+    if (summary.candidate_tree !== candidateTree) {
+      throw new Error(
+        `FAIL-CLOSED: Orchestrator candidate tree mismatch: expected '${candidateTree}', got '${summary.candidate_tree}'`,
+      );
+    }
+    const computedLedgerDigest = computeReceiptDigest(ledgerContent);
+    if (summary.ledger_sha256 !== computedLedgerDigest) {
+      throw new Error(
+        `FAIL-CLOSED: Orchestrator ledger digest mismatch: expected '${computedLedgerDigest}', got '${summary.ledger_sha256}'`,
+      );
+    }
+    if (summary.qualification !== "QUALIFIED_PASS") {
+      throw new Error(
+        `FAIL-CLOSED: Orchestrator qualification is '${summary.qualification}', expected 'QUALIFIED_PASS'`,
+      );
+    }
+
+    // Read all receipts from ledger and enforce authenticated execution provenance
     const receipts = [];
     const ledgerLines = ledgerContent.trim().split("\n").filter(Boolean);
 
@@ -420,7 +474,10 @@ export class DiceSigningService {
       const receiptFile = resolve(receiptsDir, cleanRel);
       const receipt = JSON.parse(readFileSync(receiptFile, "utf8"));
 
-      if (receipt.tree_sha !== candidateTree) {
+      if (
+        receipt.tree_sha !== candidateTree &&
+        receipt.candidate_tree !== candidateTree
+      ) {
         throw new Error(
           `FAIL-CLOSED: Receipt '${cleanRel}' tree_sha (${receipt.tree_sha}) does not match candidate tree (${candidateTree})`,
         );
@@ -443,10 +500,54 @@ export class DiceSigningService {
           `FAIL-CLOSED: Receipt '${cleanRel}' missing execution command array`,
         );
       }
+
+      // Authenticate execution provenance against trusted runner
+      const runnerId = receipt.runner_identity || receipt.execution_provenance;
+      if (!runnerId || !runnerId.runner_sha) {
+        throw new Error(
+          `FAIL-CLOSED: Receipt '${cleanRel}' execution provenance is unauthenticated: missing runner_identity`,
+        );
+      }
+      if (runnerId.runner_sha !== trustedInfo.runnerSha) {
+        throw new Error(
+          `FAIL-CLOSED: Receipt '${cleanRel}' execution provenance is unauthenticated: runner_sha (${runnerId.runner_sha}) does not match trusted runner (${trustedInfo.runnerSha})`,
+        );
+      }
+      if (
+        runnerId.trusted_root_sha &&
+        runnerId.trusted_root_sha !== trustedInfo.trustedRootSha
+      ) {
+        throw new Error(
+          `FAIL-CLOSED: Receipt '${cleanRel}' execution provenance is unauthenticated: trusted_root_sha mismatch`,
+        );
+      }
+
+      // Authenticate process execution logs
+      const logRelPath =
+        receipt.execution_provenance?.log_file ||
+        receipt.log_file ||
+        `logs/${cleanRel.replace(/\.json$/, "")}.log`;
+      const logFilePath = resolve(fullEvidenceDir, logRelPath);
+      if (!existsSync(logFilePath)) {
+        throw new Error(
+          `FAIL-CLOSED: Receipt '${cleanRel}' execution provenance is unauthenticated: execution log missing at ${logRelPath}`,
+        );
+      }
+      const actualLogContent = readFileSync(logFilePath, "utf8");
+      const actualLogSha = createHash("sha256")
+        .update(actualLogContent)
+        .digest("hex");
+      const expectedLogSha = receipt.execution_provenance?.log_sha256;
+      if (expectedLogSha && actualLogSha !== expectedLogSha) {
+        throw new Error(
+          `FAIL-CLOSED: Receipt '${cleanRel}' execution provenance is unauthenticated: execution log SHA-256 mismatch`,
+        );
+      }
+
       receipts.push(receipt);
     }
     console.log(
-      `  ✓ All ${receipts.length} declared method receipts verified against detached ledger`,
+      `  ✓ All ${receipts.length} declared method receipts verified against detached ledger and authenticated execution provenance`,
     );
 
     // Check 6: Method-Level Qualification Re-Evaluation
@@ -463,10 +564,9 @@ export class DiceSigningService {
         "registries/dice/mandatory-obligations.json",
       );
     } catch {
-      mandatoryRegistryPath = join(
-        this.distDir,
-        "registries/dice/mandatory-obligations.json",
-      );
+      mandatoryRegistryPath = this.distDir
+        ? join(this.distDir, "registries/dice/mandatory-obligations.json")
+        : join(this.repoRoot, "registries/dice/mandatory-obligations.json");
       if (existsSync(mandatoryRegistryPath)) {
         mandatoryList = JSON.parse(readFileSync(mandatoryRegistryPath, "utf8"));
       } else {
@@ -671,6 +771,7 @@ if (process.argv[1] && process.argv[1].endsWith("dice-signing-service.mjs")) {
   let trustedRef = process.env.DICE_TRUSTED_REF || DEFAULT_TRUSTED_REF;
   let signingKeyPem = null;
   let signingKeyFile = null;
+  let distDir = null;
 
   for (const arg of process.argv.slice(2)) {
     if (arg === "--help" || arg === "-h") {
@@ -710,6 +811,8 @@ Options:
       signingKeyPem = arg.substring("--signing-key-pem=".length);
     } else if (arg.startsWith("--signing-key-file=")) {
       signingKeyFile = arg.split("=")[1];
+    } else if (arg.startsWith("--dist-dir=")) {
+      distDir = arg.split("=")[1];
     }
   }
 
@@ -736,6 +839,7 @@ Options:
     testKeysPath,
     signingKeyPem,
     signingKeyFile,
+    distDir,
   });
   try {
     const res = service.execute();

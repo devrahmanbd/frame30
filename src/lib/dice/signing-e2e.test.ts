@@ -14,6 +14,10 @@ import {
   DiceSigningAuthority,
   generateTestKeypair,
 } from "../../../scripts/dice-evidence.mjs";
+import {
+  DEFAULT_TRUSTED_REF,
+  DiceTrustedRoot,
+} from "../../../scripts/dice-root-of-trust.mjs";
 
 describe("Frame30 DICE Stage 2.4.1: Positive End-to-End Signing & Hardened Gate Verification (P0-4)", () => {
   const repoRoot = process.cwd();
@@ -23,6 +27,7 @@ describe("Frame30 DICE Stage 2.4.1: Positive End-to-End Signing & Hardened Gate 
   let candidateTree: string;
   let testKeypair: { privateKey: string; publicKey: string };
   let testKeysJsonPath: string;
+  let trustedInfo: { runnerSha: string; trustedRootSha: string };
 
   beforeAll(() => {
     if (existsSync(testDir)) {
@@ -40,6 +45,16 @@ describe("Frame30 DICE Stage 2.4.1: Positive End-to-End Signing & Hardened Gate 
     }).trim();
 
     testKeypair = generateTestKeypair();
+
+    const trustedRoot = new DiceTrustedRoot({
+      repoRoot,
+      trustedRef: DEFAULT_TRUSTED_REF,
+      allowUnpinnedRoots: true,
+    });
+    trustedInfo = trustedRoot.resolve() as {
+      runnerSha: string;
+      trustedRootSha: string;
+    };
 
     // Write isolated test keys registry
     testKeysJsonPath = join(testDir, "test-trusted-keys.json");
@@ -89,7 +104,9 @@ describe("Frame30 DICE Stage 2.4.1: Positive End-to-End Signing & Hardened Gate 
     overrides: Record<string, unknown> = {},
   ) {
     const receiptsDir = join(dir, "receipts");
+    const logsDir = join(dir, "logs");
     mkdirSync(receiptsDir, { recursive: true });
+    mkdirSync(logsDir, { recursive: true });
 
     const activeObs = [
       "OBL-SYS-SCOPE-GUARD-001",
@@ -116,6 +133,11 @@ describe("Frame30 DICE Stage 2.4.1: Positive End-to-End Signing & Hardened Gate 
             ? "BLOCKED"
             : "PASS";
 
+      const logRel = `logs/${obId}.log`;
+      const logContent = `=== EXECUTION LOG FOR ${obId} ===\n`;
+      writeFileSync(join(dir, logRel), logContent, "utf8");
+      const logSha256 = createHash("sha256").update(logContent).digest("hex");
+
       const receipt = {
         receipt_version: "1.0.0",
         obligation_id: obId,
@@ -127,6 +149,21 @@ describe("Frame30 DICE Stage 2.4.1: Positive End-to-End Signing & Hardened Gate 
         environment: {
           node: process.version,
           platform: process.platform,
+        },
+        runner_identity: {
+          runner_sha: trustedInfo?.runnerSha || "runner-sha",
+          trusted_root_sha: trustedInfo?.trustedRootSha || "root-sha",
+        },
+        execution_provenance: {
+          runner_sha: trustedInfo?.runnerSha || "runner-sha",
+          trusted_root_sha: trustedInfo?.trustedRootSha || "root-sha",
+          candidate_commit: candidateCommit,
+          candidate_tree: candidateTree,
+          log_file: logRel,
+          log_sha256: logSha256,
+          exit_code: status === "PASS" ? 0 : 1,
+          duration_ms: 10,
+          started_at: new Date().toISOString(),
         },
         execution: {
           command: ["test"],
@@ -157,7 +194,10 @@ describe("Frame30 DICE Stage 2.4.1: Positive End-to-End Signing & Hardened Gate 
       version: "1.0.0",
       candidate_commit: candidateCommit,
       candidate_tree: candidateTree,
-      qualification: "QUALIFIED_PASS",
+      runner_sha: trustedInfo?.runnerSha || "runner-sha",
+      trusted_root_sha: trustedInfo?.trustedRootSha || "root-sha",
+      ledger_sha256: createHash("sha256").update(ledger).digest("hex"),
+      qualification: overrides.qualification || "QUALIFIED_PASS",
       timestamp: new Date().toISOString(),
     };
     writeFileSync(

@@ -167,44 +167,54 @@ In accordance with `F30-SDLC-001` Section 13:
 
 ---
 
-## 7. External CI Enforcement Limitations & Administration Requirements (P0-5)
+## 7. External CI Enforcement Limitations & Operational Trust Authority States (P0-3 & P0-5)
 
-While `.circleci/config.yml` mechanically enforces job dependencies, input isolation, and test signing separation, CircleCI project administrators must enforce the following platform-level controls outside the repository:
+To maintain rigorous truth in advertising and prevent false claims of remote production activation, Frame30 DICE strictly differentiates the four lifecycle states of CircleCI Context integration:
 
-1. **CircleCI Context Security & Production Key Boundary**:
-   - The production signing key `DICE_SIGNING_KEY` must **never** be defined as a project-level environment variable.
-   - It must reside exclusively in a restricted CircleCI Context (e.g., `dice-production-signer`).
-   - The context must be configured with CircleCI Security Group restrictions permitting access **only** on protected production release branches (`main`, `frame30`) and requiring human specification authority approval (`@devrahmanbd`).
-   - In all normal PR and candidate branch builds, `DICE_SIGNING_KEY` is strictly absent from the environment.
+| Trust Lifecycle State | Scope & Location | Verification Status | Operational Notes |
+|---|---|---|---|
+| **State 1: Context Attachment in Repository YAML** | Declarative pipeline configuration in `.circleci/config.yml` (`context: [dice-trust-authority]`) | **`IMPLEMENTED` & `LOCALLY VERIFIED`** | Code is complete, syntactically valid, validated by unit and local CI pipeline tests. |
+| **State 2: Actual Administrator-Created Context** | CircleCI Organization Settings (`Organization Settings > Contexts > dice-trust-authority`) containing `DICE_EXPECTED_SIGNER_DIST_DIGEST` and `DICE_EXPECTED_TEST_POLICY_DIGEST` | **`BLOCKED`** | Requires human specification authority (`@devrahmanbd`) to create the context and populate external trust digests in CircleCI UI. |
+| **State 3: Effective Context Access Restrictions** | Security Group restrictions in CircleCI ensuring context is restricted to authorized workflows and release branches | **`BLOCKED`** | Requires human specification authority (`@devrahmanbd`) to enforce branch/team containment. |
+| **State 4: Successful Protected Workflow Execution** | Remote CircleCI workflow run where `dice-attestation-signing` actually consumes injected external anchors without fallback | **`BLOCKED`** | Retains `BLOCKED` status until State 2 and State 3 are provisioned and an authoritative run completes remotely. |
 
-2. **Fork and Pull Request Secret Masking**:
-   - In CircleCI Advanced Project Settings, verify that `Pass secrets to builds from forked pull requests` is **DISABLED**.
-   - Verify that `Only build pull requests` is **ENABLED** to prevent redundant parallel workflow triggers.
-
-3. **Branch Protection & Status Check Policy**:
-   - GitHub/Git repository branch protection on `main` and `frame30` must require the following CircleCI gate jobs as mandatory blocking status checks:
-     - `ci/circleci: lint-typecheck`
-     - `ci/circleci: unit-contract`
-     - `ci/circleci: dice-qualification`
-     - `ci/circleci: scan`
-     - `ci/circleci: build`
-     - `ci/circleci: e2e-critical`
-     - `ci/circleci: e2e-security`
-     - `ci/circleci: e2e-levelb-production`
-     - `ci/circleci: e2e-seven-templates`
-     - `ci/circleci: bombadil-staging`
-     - `ci/circleci: plugin-storefront-gate`
-     - `ci/circleci: dice-attestation-signing`
-   - Linear history must be enforced (no merge commits, fast-forward or squash merge only).
-   - Direct pushes and force-pushes to `main` and `frame30` must be restricted to `@devrahmanbd`.
-
-4. **Human Release Authority Verification**:
-   - Autonomous agents have zero authority to approve change contracts or release production builds.
-   - The active change contract `features/contracts/F30-DICE-COMPLETE.json` remains in `proposed` state until formal human review by `@devrahmanbd`.
-   - Production attestations can only be generated when human authorization changes `approval_state` to `approved` in an authorized release lane.
+> **Operational Activation Ruling (Non-Negotiable)**:
+> Documenting or referencing a CircleCI Context in repository configuration does **not** mean it is provisioned, restricted, or operational.
+> Until the administrator (`@devrahmanbd`) completes organization configuration and a protected workflow successfully consumes the external anchors, operational activation remains **`BLOCKED`**.
 
 ---
 
-## 8. Conclusion
+## 8. Receipt Execution Authenticity & Independent Verifier Protection
 
-The DICE CircleCI pipeline architecture achieves complete trust boundary separation, immutable reference extraction, single-file sandbox input containment, mode-segregated cryptographic attestation signing, and full upstream gate integrity. Candidate pull requests have zero opportunity to tamper with verification policies or forge passing production attestations.
+### 8.1 Proving Receipt Execution Authenticity (Not Just Claimed Exit Codes)
+
+A claimed command array, a status string `PASS`, and an asserted exit code `0` do **not** constitute execution evidence; an attacker can synthesize them trivially. In Frame30 DICE Stage 2.4.3:
+
+1. **Process Result & Execution Binding**: Every receipt records detailed invocation metrics (command array, duration, ISO-8601 timestamps, stdout/stderr digests, and process exit code).
+2. **Candidate Identity Binding**: Every receipt binds both `candidate_commit` and `candidate_tree` ensuring receipts cannot be transplanted across commits or trees.
+3. **Execution Log Capture on Disk**: The orchestrator streams raw execution output directly to `logs/<obligation_id>.log` on disk and computes its cryptographic SHA-256 digest (`log_sha256`), which is sealed in `execution_provenance`.
+4. **Trusted Runner Identity Binding**: The orchestrator binds `runner_sha` (the SHA-256 of the trusted launcher/evaluator extracted from `$ROOT_REF`) and `trusted_root_sha` (the immutable policy manifest digest) into every receipt.
+5. **Orchestrator Qualification Summary**: Gate 4 & 5 validate that `qualification-summary.json` exists, matches `runner_sha`, matches `trusted_root_sha`, matches `candidate_tree`, and seals `ledger_sha256`.
+6. **Fail-Closed Adversarial Teeth**: In `src/lib/dice/authority-mutation.test.ts`, an adversarial test crafts completely synthetic receipts with `status: PASS`, `exit_code: 0`, matching candidate commit/tree, and valid SHA-256 ledger. The protected signer detects missing or unauthenticated runner provenance and rejects them fail-closed, producing strictly **zero valid attestations**.
+
+### 8.2 Independent Protection of DSSE Verifier
+
+To prevent candidate pull requests from tampering with the attestation verification logic:
+
+1. **Protected Execution Path**: The post-signing verifier executes strictly from the externally pinned distribution (`$SIGNER_DIR/scripts/dice-evidence.mjs`), never from the candidate checkout.
+2. **External Key Registry**: The trusted public-key registry is resolved exclusively from `$SIGNER_DIR/registries/dice/trusted-keys.json`. Candidate repo keys are completely ignored.
+3. **Rejection Matrix**: The verifier CLI rejects:
+   - Corrupted/invalid Ed25519 signatures (`FAIL-CLOSED: Ed25519 signature verification failed`).
+   - Tampered statements/payloads (`FAIL-CLOSED: Ed25519 signature verification failed`).
+   - Unauthorized signing keys (`FAIL-CLOSED: Key lacks authorized role`).
+   - Revoked signing keys (`FAIL-CLOSED: Key was revoked`).
+   - Candidate tree mismatches (`FAIL-CLOSED: Candidate tree SHA mismatch`).
+
+---
+
+## 9. Conclusion
+
+The Frame30 DICE pipeline enforces complete cryptographic trust boundary separation:
+- Declarative CircleCI context attachment is implemented and locally verified; actual operational activation remains appropriately **`BLOCKED`** pending human administrative provisioning.
+- Receipt authenticity is bound to actual orchestrator execution provenance, runner identity, and raw log files on disk.
+- DSSE verification executes exclusively from the protected external distribution with full fail-closed rejection teeth.

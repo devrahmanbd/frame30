@@ -483,8 +483,10 @@ export function runBootstrap(cliArgs = process.argv.slice(2)) {
   const fullOutDir = resolve(REPO_ROOT, outDir);
   const stagingDir = join(fullOutDir, "staging");
   const receiptsDir = join(fullOutDir, "receipts");
+  const logsDir = join(fullOutDir, "logs");
   mkdirSync(stagingDir, { recursive: true });
   mkdirSync(receiptsDir, { recursive: true });
+  mkdirSync(logsDir, { recursive: true });
 
   // Step 4a: Create Clean-Tree Candidate Snapshot
   console.log(
@@ -526,6 +528,12 @@ export function runBootstrap(cliArgs = process.argv.slice(2)) {
       console.error(
         `  ✗ FAIL-CLOSED: Obligation definition missing or has no methods: ${obId}`,
       );
+      const logFileName = `${obId}.log`;
+      const logRelPath = `logs/${logFileName}`;
+      const rawLog = `=== OBLIGATION DEFINITION ERROR: ${obId} ===\nNo methods found\n`;
+      writeFileSync(join(logsDir, logFileName), rawLog, "utf8");
+      const logSha256 = createHash("sha256").update(rawLog).digest("hex");
+
       const receipt = {
         obligation_id: obId,
         status: "BLOCKED",
@@ -540,6 +548,22 @@ export function runBootstrap(cliArgs = process.argv.slice(2)) {
           bwrap: sandbox.bwrapVersion || "unknown",
           platform: process.platform,
           arch: process.arch,
+        },
+        runner_identity: {
+          runner_sha: trustedInfo.runnerSha,
+          trusted_root_sha: trustedInfo.trustedRootSha,
+          trusted_ref: trustedInfo.trustedCommit,
+        },
+        execution_provenance: {
+          runner_sha: trustedInfo.runnerSha,
+          trusted_root_sha: trustedInfo.trustedRootSha,
+          candidate_commit: candidateCommit,
+          candidate_tree: candidateTree,
+          log_file: logRelPath,
+          log_sha256: logSha256,
+          exit_code: 126,
+          duration_ms: 0,
+          started_at: new Date().toISOString(),
         },
         invocation: {
           command: [],
@@ -572,6 +596,12 @@ export function runBootstrap(cliArgs = process.argv.slice(2)) {
         console.error(
           `  ✗ FAIL-CLOSED: Trusted profile ${method.trusted_profile_ref} not found for obligation ${obId}`,
         );
+        const logFileName = `${receiptName.replace(/\.json$/, "")}.log`;
+        const logRelPath = `logs/${logFileName}`;
+        const rawLog = `=== PROFILE ERROR: ${obId} (${methodId}) ===\nTrusted profile ${method.trusted_profile_ref} not found\n`;
+        writeFileSync(join(logsDir, logFileName), rawLog, "utf8");
+        const logSha256 = createHash("sha256").update(rawLog).digest("hex");
+
         const receipt = {
           obligation_id: obId,
           method_id: methodId,
@@ -586,6 +616,22 @@ export function runBootstrap(cliArgs = process.argv.slice(2)) {
             bwrap: sandbox.bwrapVersion || "unknown",
             platform: process.platform,
             arch: process.arch,
+          },
+          runner_identity: {
+            runner_sha: trustedInfo.runnerSha,
+            trusted_root_sha: trustedInfo.trustedRootSha,
+            trusted_ref: trustedInfo.trustedCommit,
+          },
+          execution_provenance: {
+            runner_sha: trustedInfo.runnerSha,
+            trusted_root_sha: trustedInfo.trustedRootSha,
+            candidate_commit: candidateCommit,
+            candidate_tree: candidateTree,
+            log_file: logRelPath,
+            log_sha256: logSha256,
+            exit_code: 126,
+            duration_ms: 0,
+            started_at: new Date().toISOString(),
           },
           invocation: {
             command: [],
@@ -655,6 +701,12 @@ export function runBootstrap(cliArgs = process.argv.slice(2)) {
       }
 
       if (!argsValid) {
+        const logFileName = `${receiptName.replace(/\.json$/, "")}.log`;
+        const logRelPath = `logs/${logFileName}`;
+        const rawLog = `=== CLI ARGUMENT ERROR: ${obId} (${methodId}) ===\nCLI argument validation failed against trusted profile ${profile.profile_id}\n`;
+        writeFileSync(join(logsDir, logFileName), rawLog, "utf8");
+        const logSha256 = createHash("sha256").update(rawLog).digest("hex");
+
         const receipt = {
           obligation_id: obId,
           method_id: methodId,
@@ -669,6 +721,22 @@ export function runBootstrap(cliArgs = process.argv.slice(2)) {
             bwrap: sandbox.bwrapVersion || "unknown",
             platform: process.platform,
             arch: process.arch,
+          },
+          runner_identity: {
+            runner_sha: trustedInfo.runnerSha,
+            trusted_root_sha: trustedInfo.trustedRootSha,
+            trusted_ref: trustedInfo.trustedCommit,
+          },
+          execution_provenance: {
+            runner_sha: trustedInfo.runnerSha,
+            trusted_root_sha: trustedInfo.trustedRootSha,
+            candidate_commit: candidateCommit,
+            candidate_tree: candidateTree,
+            log_file: logRelPath,
+            log_sha256: logSha256,
+            exit_code: 126,
+            duration_ms: 0,
+            started_at: new Date().toISOString(),
           },
           invocation: {
             command: commandArgs,
@@ -728,6 +796,12 @@ export function runBootstrap(cliArgs = process.argv.slice(2)) {
         );
       }
 
+      const logFileName = `${receiptName.replace(/\.json$/, "")}.log`;
+      const logRelPath = `logs/${logFileName}`;
+      const rawLog = `=== OBLIGATION: ${obId} (${methodId}) ===\n=== COMMAND: ${fullCommand.join(" ")} ===\n=== STDOUT ===\n${execResult.stdout}\n=== STDERR ===\n${execResult.stderr}\n=== PROCESS EXIT: ${execResult.exitCode} ===\n`;
+      writeFileSync(join(logsDir, logFileName), rawLog, "utf8");
+      const logSha256 = createHash("sha256").update(rawLog).digest("hex");
+
       const receipt = {
         obligation_id: obId,
         method_id: methodId,
@@ -743,6 +817,22 @@ export function runBootstrap(cliArgs = process.argv.slice(2)) {
           bwrap: sandbox.bwrapVersion || "unknown",
           platform: process.platform,
           arch: process.arch,
+        },
+        runner_identity: {
+          runner_sha: trustedInfo.runnerSha,
+          trusted_root_sha: trustedInfo.trustedRootSha,
+          trusted_ref: trustedInfo.trustedCommit,
+        },
+        execution_provenance: {
+          runner_sha: trustedInfo.runnerSha,
+          trusted_root_sha: trustedInfo.trustedRootSha,
+          candidate_commit: candidateCommit,
+          candidate_tree: candidateTree,
+          log_file: logRelPath,
+          log_sha256: logSha256,
+          exit_code: execResult.exitCode,
+          duration_ms: durationMs,
+          started_at: startedAt,
         },
         invocation: {
           command: fullCommand,

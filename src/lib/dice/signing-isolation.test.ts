@@ -8,6 +8,7 @@ import {
 } from "node:fs";
 import { join } from "node:path";
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { DiceSigningService } from "../../../scripts/dice-signing-service.mjs";
 import {
   DiceSigningAuthority,
@@ -15,7 +16,10 @@ import {
   serializeReceiptCanonical,
   generateDetachedDigestLedger,
 } from "../../../scripts/dice-evidence.mjs";
-import { DEFAULT_TRUSTED_REF } from "../../../scripts/dice-root-of-trust.mjs";
+import {
+  DEFAULT_TRUSTED_REF,
+  DiceTrustedRoot,
+} from "../../../scripts/dice-root-of-trust.mjs";
 
 describe("Frame30 DICE Stage 2.4: Isolated Signing Authority (Section 4)", () => {
   const repoRoot = process.cwd();
@@ -23,6 +27,7 @@ describe("Frame30 DICE Stage 2.4: Isolated Signing Authority (Section 4)", () =>
   let candidateCommit: string;
   let candidateTree: string;
   let testKeypair: { publicKey: string; privateKey: string };
+  let trustedInfo: { runnerSha: string; trustedRootSha: string };
 
   beforeAll(() => {
     testTempDir = join(repoRoot, ".test-tmp-signing-isolation");
@@ -41,6 +46,16 @@ describe("Frame30 DICE Stage 2.4: Isolated Signing Authority (Section 4)", () =>
     }).trim();
 
     testKeypair = generateTestKeypair();
+
+    const trustedRoot = new DiceTrustedRoot({
+      repoRoot,
+      trustedRef: DEFAULT_TRUSTED_REF,
+      allowUnpinnedRoots: true,
+    });
+    trustedInfo = trustedRoot.resolve() as {
+      runnerSha: string;
+      trustedRootSha: string;
+    };
   });
 
   afterAll(() => {
@@ -54,7 +69,9 @@ describe("Frame30 DICE Stage 2.4: Isolated Signing Authority (Section 4)", () =>
     overrides: Record<string, unknown> = {},
   ) {
     const receiptsDir = join(dir, "receipts");
+    const logsDir = join(dir, "logs");
     mkdirSync(receiptsDir, { recursive: true });
+    mkdirSync(logsDir, { recursive: true });
 
     const activeObs = [
       "OBL-SYS-SCOPE-GUARD-001",
@@ -72,7 +89,19 @@ describe("Frame30 DICE Stage 2.4: Isolated Signing Authority (Section 4)", () =>
 
     const ledgerEntries: { relPath: string; canonicalStr: string }[] = [];
 
+    const runnerSha =
+      (overrides.runnerSha as string) || trustedInfo?.runnerSha || "runner-sha";
+    const trustedRootSha =
+      (overrides.trustedRootSha as string) ||
+      trustedInfo?.trustedRootSha ||
+      "root-sha";
+
     for (const obId of activeObs) {
+      const logRel = `logs/${obId}.log`;
+      const logContent = `=== EXECUTION LOG FOR ${obId} ===\n`;
+      writeFileSync(join(dir, logRel), logContent, "utf8");
+      const logSha256 = createHash("sha256").update(logContent).digest("hex");
+
       const receipt = {
         obligation_id: obId,
         method_id: methodIdMap[obId] || "METH-TEST-01",
@@ -85,6 +114,21 @@ describe("Frame30 DICE Stage 2.4: Isolated Signing Authority (Section 4)", () =>
         toolchain_identity: {
           node: process.version,
           platform: process.platform,
+        },
+        runner_identity: {
+          runner_sha: runnerSha,
+          trusted_root_sha: trustedRootSha,
+        },
+        execution_provenance: {
+          runner_sha: runnerSha,
+          trusted_root_sha: trustedRootSha,
+          candidate_commit: overrides.commit || candidateCommit,
+          candidate_tree: overrides.tree || candidateTree,
+          log_file: logRel,
+          log_sha256: logSha256,
+          exit_code: overrides.exitCode !== undefined ? overrides.exitCode : 0,
+          duration_ms: 10,
+          started_at: new Date().toISOString(),
         },
         invocation: {
           command: ["test"],
@@ -111,8 +155,11 @@ describe("Frame30 DICE Stage 2.4: Isolated Signing Authority (Section 4)", () =>
     const summary = {
       candidate_commit: overrides.commit || candidateCommit,
       candidate_tree: overrides.tree || candidateTree,
+      runner_sha: runnerSha,
+      trusted_root_sha: trustedRootSha,
       contract: "F30-DICE-STAGE2-4",
-      qualification: "QUALIFIED_PASS",
+      ledger_sha256: createHash("sha256").update(ledgerContent).digest("hex"),
+      qualification: overrides.qualification || "QUALIFIED_PASS",
     };
     writeFileSync(
       join(dir, "qualification-summary.json"),

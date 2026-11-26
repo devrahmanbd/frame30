@@ -356,16 +356,34 @@ export function verifyIndependentAttestation(options = {}) {
     }
     trustedKeys = JSON.parse(readFileSync(options.keysPath, "utf8"));
   } else if (!trustedKeys) {
-    const defaultPath = resolve(
-      options.repoRoot || process.cwd(),
-      "registries/dice/trusted-keys.json",
-    );
-    if (existsSync(defaultPath)) {
-      trustedKeys = JSON.parse(readFileSync(defaultPath, "utf8"));
-    } else {
+    if (options.distDir) {
+      const p = join(options.distDir, "registries/dice/trusted-keys.json");
+      if (existsSync(p)) {
+        trustedKeys = JSON.parse(readFileSync(p, "utf8"));
+      } else {
+        throw new Error(
+          `FAIL-CLOSED: Authoritative trusted-keys.json missing from protected distribution at ${p}`,
+        );
+      }
+    } else if (
+      process.env.DICE_REQUIRE_EXTERNAL_ANCHORS === "1" ||
+      options.requireExternalAnchors
+    ) {
       throw new Error(
-        `FAIL-CLOSED: No trusted keys provided and default not found at ${defaultPath}`,
+        "FAIL-CLOSED: External trust anchors required, but no external trusted keys provided (BLOCKED)",
       );
+    } else {
+      const defaultPath = resolve(
+        options.repoRoot || process.cwd(),
+        "registries/dice/trusted-keys.json",
+      );
+      if (existsSync(defaultPath)) {
+        trustedKeys = JSON.parse(readFileSync(defaultPath, "utf8"));
+      } else {
+        throw new Error(
+          `FAIL-CLOSED: No trusted keys provided and default not found at ${defaultPath}`,
+        );
+      }
     }
   }
 
@@ -571,6 +589,7 @@ if (process.argv[1] && process.argv[1].endsWith("dice-evidence.mjs")) {
   let attestationPath = null;
   let testKeysPath = null;
   let keysPath = null;
+  let distDir = null;
   let candidateTree = null;
   let candidateCommit = null;
   let ledgerPath = null;
@@ -585,6 +604,7 @@ Options:
   --verify-attestation=<path> Path to DSSE attestation JSON
   --test-keys=<path>          Path to test trusted-keys.json
   --keys=<path>               Path to trusted-keys.json
+  --dist-dir=<path>           Path to protected external distribution
   --candidate-tree=<sha>      Expected candidate tree SHA
   --candidate-commit=<sha>    Expected candidate commit SHA
   --ledger=<path>             Path to receipts.sha256
@@ -593,12 +613,17 @@ Options:
   --help, -h                  Show this help
 `);
       process.exit(0);
-    } else if (arg.startsWith("--verify-attestation=")) {
+    } else if (
+      arg.startsWith("--verify-attestation=") ||
+      arg.startsWith("--attestation=")
+    ) {
       attestationPath = arg.split("=")[1];
     } else if (arg.startsWith("--test-keys=")) {
       testKeysPath = arg.split("=")[1];
     } else if (arg.startsWith("--keys=")) {
       keysPath = arg.split("=")[1];
+    } else if (arg.startsWith("--dist-dir=")) {
+      distDir = arg.split("=")[1];
     } else if (arg.startsWith("--candidate-tree=")) {
       candidateTree = arg.split("=")[1];
     } else if (arg.startsWith("--candidate-commit=")) {
@@ -618,6 +643,7 @@ Options:
         attestationPath,
         testKeysPath,
         keysPath,
+        distDir,
         candidateTree,
         candidateCommit,
         ledgerPath,

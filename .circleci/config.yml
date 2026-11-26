@@ -260,6 +260,11 @@ jobs:
           name: Extract and Verify Protected DICE Signing Distribution (Pure Node, Isolated)
           command: |
             ROOT_REF="${DICE_ROOT_REF:-2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271}"
+            BOOTSTRAP_DIR="/tmp/dice-bootstrap-root"
+            rm -rf "$BOOTSTRAP_DIR"
+            mkdir -p "$BOOTSTRAP_DIR"
+            git archive "$ROOT_REF" scripts/dice-root-of-trust.mjs | tar -x -C "$BOOTSTRAP_DIR"
+
             SIGNER_DIR="/tmp/dice-protected-signer"
             rm -rf "$SIGNER_DIR"
             mkdir -p "$SIGNER_DIR"
@@ -267,7 +272,7 @@ jobs:
             # Eliminate candidate-controlled signer execution (P0-1)
             # Sourced exclusively from external distribution and verified against external authority digests
             node -e '
-              import("./scripts/dice-root-of-trust.mjs").then(m => {
+              import("/tmp/dice-bootstrap-root/scripts/dice-root-of-trust.mjs").then(m => {
                 const externalDistDir = process.env.DICE_EXTERNAL_DIST_DIR || null;
                 const expectedDistDigest = process.env.DICE_EXPECTED_SIGNER_DIST_DIGEST || null;
                 const expectedTestPolicyDigest = process.env.DICE_EXPECTED_TEST_POLICY_DIGEST || null;
@@ -301,7 +306,7 @@ jobs:
               });
             '
 
-            # Establish test qualification signing keypair and registry
+            # Establish test qualification signing keypair and registry inside protected signer directory
             node -e '
               const crypto = require("node:crypto");
               const fs = require("node:fs");
@@ -319,7 +324,8 @@ jobs:
                   created_at: new Date().toISOString(),
                 }
               ];
-              fs.writeFileSync("/tmp/dice-test-keys.json", JSON.stringify(testKeys, null, 2));
+              fs.mkdirSync("/tmp/dice-protected-signer/registries/dice", { recursive: true });
+              fs.writeFileSync("/tmp/dice-protected-signer/registries/dice/test-keys.json", JSON.stringify(testKeys, null, 2));
               fs.writeFileSync("/tmp/dice-test-key.pem", privateKey);
             '
 
@@ -332,7 +338,7 @@ jobs:
               --evidence-dir=artifacts/dice-evidence \
               --trusted-ref="$ROOT_REF" \
               --key-id=key-dice-test-signer-01 \
-              --test-keys=/tmp/dice-test-keys.json \
+              --test-keys="/tmp/dice-protected-signer/registries/dice/test-keys.json" \
               --signing-key-file=/tmp/dice-test-key.pem
       - run:
           name: Standalone Independent DSSE Attestation Verification Step
@@ -341,10 +347,11 @@ jobs:
             CANDIDATE_TREE="$(git rev-parse HEAD^{tree})"
             CANDIDATE_COMMIT="$(git rev-parse HEAD)"
 
-            # Separately invoked independent DSSE verification step (8-point criteria)
+            # Separately invoked independent DSSE verification step from protected external distribution
             node "$SIGNER_DIR/scripts/dice-evidence.mjs" \
               --verify-attestation=artifacts/dice-evidence/test-attestation.dsse.json \
-              --test-keys=/tmp/dice-test-keys.json \
+              --test-keys="/tmp/dice-protected-signer/registries/dice/test-keys.json" \
+              --dist-dir="$SIGNER_DIR" \
               --candidate-tree="$CANDIDATE_TREE" \
               --candidate-commit="$CANDIDATE_COMMIT" \
               --ledger=artifacts/dice-evidence/receipts.sha256 \
