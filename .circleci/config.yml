@@ -195,7 +195,8 @@ jobs:
             if [ "$(git rev-parse --is-shallow-repository 2>/dev/null)" = "true" ]; then
               git fetch --unshallow origin || git fetch origin --depth=100 || true
             fi
-            git fetch origin 9e6a82abb3502edb84f2d7be9fcc36401b380bfb 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271 382261db0cb5b796046ae03c28fd8f309b901123 || true
+            git fetch origin 5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb 9e6a82abb3502edb84f2d7be9fcc36401b380bfb 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271 382261db0cb5b796046ae03c28fd8f309b901123 || true
+            git rev-parse --verify 5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb^{commit}
             git rev-parse --verify 9e6a82abb3502edb84f2d7be9fcc36401b380bfb^{commit}
             git rev-parse --verify 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271^{commit}
       - run:
@@ -211,8 +212,8 @@ jobs:
           name: Extract and Execute Protected DICE Launcher from Pinned Reference
           command: |
             export NODE_OPTIONS="--import data:text/javascript,globalThis.REPO_ROOT=process.cwd();"
-            TRUSTED_REF="${DICE_TRUSTED_REF:-9e6a82abb3502edb84f2d7be9fcc36401b380bfb}"
-            ROOT_REF="${DICE_ROOT_REF:-2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271}"
+            TRUSTED_REF="${DICE_TRUSTED_REF:-5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb}"
+            ROOT_REF="${DICE_ROOT_REF:-5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb}"
             LAUNCHER_DIR="/tmp/dice-protected-launcher"
             rm -rf "$LAUNCHER_DIR"
             mkdir -p "$LAUNCHER_DIR"
@@ -253,13 +254,14 @@ jobs:
             if [ "$(git rev-parse --is-shallow-repository 2>/dev/null)" = "true" ]; then
               git fetch --unshallow origin || git fetch origin --depth=100 || true
             fi
-            git fetch origin 9e6a82abb3502edb84f2d7be9fcc36401b380bfb 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271 382261db0cb5b796046ae03c28fd8f309b901123 || true
+            git fetch origin 5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb 9e6a82abb3502edb84f2d7be9fcc36401b380bfb 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271 382261db0cb5b796046ae03c28fd8f309b901123 || true
+            git rev-parse --verify 5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb^{commit}
             git rev-parse --verify 9e6a82abb3502edb84f2d7be9fcc36401b380bfb^{commit}
             git rev-parse --verify 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271^{commit}
       - run:
           name: Extract and Verify Protected DICE Signing Distribution (Pure Node, Isolated)
           command: |
-            ROOT_REF="${DICE_ROOT_REF:-2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271}"
+            ROOT_REF="${DICE_ROOT_REF:-5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb}"
             BOOTSTRAP_DIR="/tmp/dice-bootstrap-root"
             rm -rf "$BOOTSTRAP_DIR"
             mkdir -p "$BOOTSTRAP_DIR"

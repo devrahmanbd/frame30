@@ -2870,5 +2870,132 @@ workflows:
       );
       expect(existsSync(join(hostileDir, "attestation.dsse.json"))).toBe(false);
     });
+
+    it("P0.2 Key Separation: Authoritative qualification strictly rejects TEST_LAUNCHER_KEY_ID fail-closed", () => {
+      setupExternalAuthority();
+      extractAndVerifySigningDistribution({
+        externalDistDir: externalAuthorityDir,
+        targetDir: isolatedSignerDir,
+        expectedDistDigest: EXPECTED_DIST_DIGEST,
+        expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+      });
+
+      const p02KeySepDir = join(p03TempDir, "evidence-p02-key-separation");
+      if (existsSync(p02KeySepDir)) {
+        rmSync(p02KeySepDir, { recursive: true, force: true });
+      }
+
+      // Pre-seed valid evidence signed with TEST_LAUNCHER_KEY_ID
+      createValidEvidence(p02KeySepDir, {
+        sealOverrides: {
+          key_id: TEST_LAUNCHER_KEY_ID,
+          public_key: TEST_LAUNCHER_PUBLIC_KEY,
+        },
+      });
+
+      // 1. In authoritative contract qualification (F30-DICE-COMPLETE), DiceExecutionAuthority must reject test launcher key
+      const authorityAuthoritative = new DiceExecutionAuthority({
+        repoRoot,
+        distDir: isolatedSignerDir,
+        contractPath: "features/contracts/F30-DICE-COMPLETE.json",
+        trustedRef: DEFAULT_TRUSTED_REF,
+        executionAuthKey: "protected-orchestrator-execution-secret-999",
+        allowUnpinnedRoots: true,
+      });
+
+      expect(() =>
+        authorityAuthoritative.authenticateExecutionEvidence(p02KeySepDir),
+      ).toThrow(
+        /FAIL-CLOSED: Launcher execution seal key_id 'key-dice-test-launcher-01' is not anchored in independently trusted authority/,
+      );
+
+      // 2. In production mode, DiceSigningService must reject test launcher key
+      const signerProduction = new DiceSigningService({
+        repoRoot,
+        mode: "production",
+        contractPath: "features/contracts/F30-DICE-COMPLETE.json",
+        evidenceDir: p02KeySepDir,
+        distDir: isolatedSignerDir,
+        trustedRef: DEFAULT_TRUSTED_REF,
+        keyId: "key-dice-authoritative-01",
+        signingKeyPem:
+          "-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEILSvSh0R3rzj8DIPQ8UWyATALTWshVpZJNRiDfVT7AjE\n-----END PRIVATE KEY-----\n", // EXAMPLE test key
+        executionAuthKey: "protected-orchestrator-execution-secret-999",
+        allowUnpinnedRoots: true,
+        allowUnapprovedContract: true,
+      });
+
+      expect(() => signerProduction.execute()).toThrow(
+        /FAIL-CLOSED: Launcher execution seal key_id 'key-dice-test-launcher-01' is not anchored in independently trusted authority/,
+      );
+    });
+
+    it("P0.3 Candidate modification of pipeline before ConfigHashGuard fails closed and cannot produce authentic qualification evidence", () => {
+      setupExternalAuthority();
+      extractAndVerifySigningDistribution({
+        externalDistDir: externalAuthorityDir,
+        targetDir: isolatedSignerDir,
+        expectedDistDigest: EXPECTED_DIST_DIGEST,
+        expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+      });
+
+      // Candidate-controlled workspace modifies .circleci/config.yml before ConfigHashGuard
+      const candidateTamperedRepo = join(p03TempDir, "candidate-tampered-pipeline");
+      if (existsSync(candidateTamperedRepo)) {
+        rmSync(candidateTamperedRepo, { recursive: true, force: true });
+      }
+      mkdirSync(join(candidateTamperedRepo, ".circleci"), { recursive: true });
+      mkdirSync(join(candidateTamperedRepo, "registries/dice"), { recursive: true });
+      symlinkSync(join(repoRoot, ".git"), join(candidateTamperedRepo, ".git"));
+
+      // Tampered pipeline config modifying execution steps
+      writeFileSync(
+        join(candidateTamperedRepo, ".circleci/config.yml"),
+        "version: 2.1\njobs:\n  dice-attestation-signing:\n    steps:\n      - run: echo tampered\n",
+        "utf8",
+      );
+
+      const genuineConfigDigest = createHash("sha256")
+        .update(readFileSync(resolve(repoRoot, ".circleci/config.yml")))
+        .digest("hex");
+
+      const evidenceDir = join(p03TempDir, "evidence-p03-candidate-tamper");
+      createValidEvidence(evidenceDir);
+
+      // Attempting to run verifyPipelineConfiguration with candidate modification must fail closed
+      expect(() =>
+        verifyPipelineConfiguration({
+          repoRoot: candidateTamperedRepo,
+          expectedConfigDigest: genuineConfigDigest,
+        }),
+      ).toThrow(
+        /FAIL-CLOSED: Privileged pipeline configuration modified by candidate \(ConfigHashGuard\)/,
+      );
+
+      // Candidate attempting to authenticate execution with tampered config must fail closed
+      const authority = new DiceExecutionAuthority({
+        repoRoot: candidateTamperedRepo,
+        distDir: isolatedSignerDir,
+        contractPath: "registries/dice/test-qualification-contract.json",
+        trustedRef: DEFAULT_TRUSTED_REF,
+        executionAuthKey: "protected-orchestrator-execution-secret-999",
+        allowUnpinnedRoots: true,
+      });
+
+      expect(() => {
+        process.env.DICE_EXPECTED_PIPELINE_CONFIG_DIGEST = genuineConfigDigest;
+        try {
+          authority.authenticateExecutionEvidence(evidenceDir);
+        } finally {
+          delete process.env.DICE_EXPECTED_PIPELINE_CONFIG_DIGEST;
+        }
+      }).toThrow(
+        /FAIL-CLOSED: Privileged pipeline configuration modified by candidate \(ConfigHashGuard\)/,
+      );
+
+      // Zero attestations produced
+      expect(existsSync(join(evidenceDir, "test-attestation.dsse.json"))).toBe(false);
+      expect(existsSync(join(evidenceDir, "attestation.dsse.json"))).toBe(false);
+    });
   });
 });

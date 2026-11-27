@@ -19,7 +19,7 @@ The Frame30 DICE verification mould enforces six independent architectural trust
 │                                                                                   │
 │  [ EXTERNAL TRUST AUTHORITY: CIRCLECI CONTEXT & IMMUTABLE ANCHORS ]               │
 │  - Organization Context: dice-trust-authority (restricted admin access)          │
-│  - DICE_EXPECTED_SIGNER_DIST_DIGEST: 8ae4ee24a51b6f02529a590c291cd8260c6e44d5eb58... │
+│  - DICE_EXPECTED_SIGNER_DIST_DIGEST: ea0e3d69b3c1df0fff27cff2fd7c65af0c5f0d5e1fb0... │
 │  - DICE_EXPECTED_TEST_POLICY_DIGEST: eb447909aff1afe029c5207e069259690a797524592... │
 │  - DICE_REQUIRE_EXTERNAL_ANCHORS: 1 (enforces external injection)                 │
 │       │                                                                           │

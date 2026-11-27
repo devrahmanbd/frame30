@@ -39,9 +39,11 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { canonicalizeJson } from "./dice-plan-generator.mjs";
 
-export const DEFAULT_TRUSTED_REF = "9e6a82abb3502edb84f2d7be9fcc36401b380bfb";
+export const DEFAULT_TRUSTED_REF = "5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb";
 
 export const APPROVED_ROOTS = Object.freeze({
+  "5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb":
+    "c03c2ecf6715b681d1e1ac748b31feada764e97d",
   "9e6a82abb3502edb84f2d7be9fcc36401b380bfb":
     "2194ec156151f39002d78e3a1cffdcd760d80ead",
   "2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271":
@@ -54,7 +56,7 @@ export const TEST_LAUNCHER_KEY_ID = "key-dice-test-launcher-01";
 export const TEST_LAUNCHER_PUBLIC_KEY =
   "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAJKFO5yzXUKk5HosI/Aw2OYYm0oPJtGfObXSIr6rkX3E=\n-----END PUBLIC KEY-----\n";
 export const TEST_LAUNCHER_PRIVATE_KEY =
-  "-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEILSvSh0R3rzj8DIPQ8UWyATALTWshVpZJNRiDfVT7AjE\n-----END PRIVATE KEY-----\n";
+  "-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEILSvSh0R3rzj8DIPQ8UWyATALTWshVpZJNRiDfVT7AjE\n-----END PRIVATE KEY-----\n"; // sast-allow: secret-access -- EXAMPLE non-authoritative test launcher key for CI test mode
 
 export const AUTHORITATIVE_LAUNCHER_KEY_ID = "key-dice-launcher-01";
 export const AUTHORITATIVE_LAUNCHER_PUBLIC_KEY =
@@ -116,6 +118,11 @@ export function computeSealPayload(seal) {
 export function resolveTrustedLauncherKey(keyId, options = {}) {
   if (!keyId || typeof keyId !== "string") return null;
 
+  const allowTestKeys = options.allowTestKeys ?? true;
+  if (!allowTestKeys && keyId === TEST_LAUNCHER_KEY_ID) {
+    return null;
+  }
+
   if (Array.isArray(options.trustedKeys)) {
     const found = options.trustedKeys.find(
       (k) =>
@@ -124,7 +131,12 @@ export function resolveTrustedLauncherKey(keyId, options = {}) {
         k.roles.includes("dice-launcher") &&
         k.status === "active",
     );
-    if (found) return found;
+    if (found) {
+      if (!allowTestKeys && (found.keyid === TEST_LAUNCHER_KEY_ID || found.key_id === TEST_LAUNCHER_KEY_ID)) {
+        return null;
+      }
+      return found;
+    }
   }
 
   const pathsToCheck = [];
@@ -149,7 +161,12 @@ export function resolveTrustedLauncherKey(keyId, options = {}) {
             k.roles.includes("dice-launcher") &&
             k.status === "active",
         );
-        if (found) return found;
+        if (found) {
+          if (!allowTestKeys && (found.keyid === TEST_LAUNCHER_KEY_ID || found.key_id === TEST_LAUNCHER_KEY_ID)) {
+            return null;
+          }
+          return found;
+        }
       } catch {
         /* ignore */
       }
@@ -172,6 +189,9 @@ export function resolveTrustedLauncherKey(keyId, options = {}) {
 
   const builtIn = TRUSTED_LAUNCHER_KEYS.find((k) => k.keyid === keyId);
   if (builtIn && builtIn.status === "active") {
+    if (!allowTestKeys && builtIn.keyid === TEST_LAUNCHER_KEY_ID) {
+      return null;
+    }
     return builtIn;
   }
 

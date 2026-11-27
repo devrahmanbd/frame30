@@ -47,6 +47,8 @@ import {
 } from "./dice-evidence.mjs";
 import { DiceTrustedRoot, DEFAULT_TRUSTED_REF } from "./dice-root-of-trust.mjs";
 
+const REPO_ROOT = globalThis.REPO_ROOT || process.cwd();
+
 /**
  * Stage 2.4 Multi-Oracle Evaluation Engine
  * Evaluates execution results against declared oracle types:
@@ -130,6 +132,7 @@ export function runBootstrap(cliArgs = process.argv.slice(2)) {
   let isDryRun = false;
   let contractPath = "features/contracts/F30-DICE-STAGE2-4.json";
   let outDir = "artifacts/dice-evidence";
+  let trustedRef = process.env.DICE_TRUSTED_REF || DEFAULT_TRUSTED_REF;
 
   for (const arg of cliArgs) {
     if (arg === "--dry-run") {
@@ -138,6 +141,8 @@ export function runBootstrap(cliArgs = process.argv.slice(2)) {
       contractPath = arg.split("=")[1];
     } else if (arg.startsWith("--out-dir=")) {
       outDir = arg.split("=")[1];
+    } else if (arg.startsWith("--trusted-ref=")) {
+      trustedRef = arg.split("=")[1];
     }
   }
 

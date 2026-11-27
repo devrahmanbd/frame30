@@ -537,10 +537,14 @@ export class DiceSigningService {
         );
       }
 
+      const isAuthoritative =
+        this.mode === "production" ||
+        this.contractPath.includes("F30-DICE-COMPLETE");
       const trustedLauncherKey = resolveTrustedLauncherKey(seal.key_id, {
         distDir: this.distDir,
         repoRoot: this.repoRoot,
         trustedKeys,
+        allowTestKeys: !isAuthoritative,
       });
       if (!trustedLauncherKey) {
         throw new Error(
@@ -1153,10 +1157,12 @@ export class DiceExecutionAuthority {
       );
     }
 
+    const isAuthoritative = this.contractPath.includes("F30-DICE-COMPLETE");
     const trustedLauncherKey = resolveTrustedLauncherKey(seal.key_id, {
       distDir: this.distDir,
       repoRoot: this.repoRoot,
       trustedKeys: this.trustedKeys,
+      allowTestKeys: !isAuthoritative,
     });
     if (!trustedLauncherKey) {
       throw new Error(

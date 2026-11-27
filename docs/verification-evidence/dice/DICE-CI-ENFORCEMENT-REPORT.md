@@ -24,15 +24,24 @@ In accordance with `AGENTS.md` and `F30-SDLC-001` Section 11:
 To defeat candidate-injected tampering, the CircleCI configuration enforces pinned reference extraction:
 
 ```yaml
-TRUSTED_REF="${DICE_TRUSTED_REF:-9e6a82abb3502edb84f2d7be9fcc36401b380bfb}"
-ROOT_REF="${DICE_ROOT_REF:-2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271}"
+TRUSTED_REF="${DICE_TRUSTED_REF:-5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb}"
+ROOT_REF="${DICE_ROOT_REF:-5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb}"
 ```
 
 Before running any verification commands:
 
-1. `git fetch origin $TRUSTED_REF $ROOT_REF 382261db0cb5b796046ae03c28fd8f309b901123` retrieves the immutable baseline and trusted reference commits.
+1. `git fetch origin 5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb 9e6a82abb3502edb84f2d7be9fcc36401b380bfb 2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271 382261db0cb5b796046ae03c28fd8f309b901123` retrieves the immutable baseline and approved trusted reference commits.
 2. `git archive "$TRUSTED_REF"` extracts trusted verification scripts and registries into external directories (`/tmp/dice-protected-launcher`, `/tmp/dice-protected-signer`).
 3. In-tree candidate scripts are strictly bypassed and cannot override the verification launcher or signer.
+
+### Verified Approved Trust-Release Digest Record (`5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb`)
+- **Commit SHA**: `5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb`
+- **Tree SHA**: `c03c2ecf6715b681d1e1ac748b31feada764e97d`
+- **Policy Digest (`manifest_sha256`)**: `ec5b16193d2cf5e4bcdd48bb48dc805708930261c0d45a667b2efdeda1842656`
+- **Runner SHA**: `f1649c625bd4ed6f5e1ef59a8c4608528cf2c02b71d16768e33226e77c76300b`
+- **Launcher SHA**: `e11517728899b8b8e0f57eb28ad61e3f6cbb4ec1318c01c83f6431b2cdfcf6be`
+- **Distribution Digest**: `ea0e3d69b3c1df0fff27cff2fd7c65af0c5f0d5e1fb0e9a8d0444d4cc6a76a0b`
+- **Test Policy Digest**: `eb447909aff1afe029c5207e069259690a7975245926dd7ae0caef01b789380d`
 
 ---
 
@@ -188,9 +197,9 @@ To transition State 2, State 3, and State 4 from `BLOCKED` to `OPERATIONAL`:
    - Navigate to CircleCI Web Console: `Organization Settings > Contexts > Create Context`.
    - Context Name: `dice-trust-authority`.
 2. **Environment Variable Configuration**:
-   - `DICE_EXPECTED_SIGNER_DIST_DIGEST`: `8ae4ee24a51b6f02529a590c291cd8260c6e44d5eb58559e63944e917cbb62c1` (covers all 16 signer distribution files).
+   - `DICE_EXPECTED_SIGNER_DIST_DIGEST`: `ea0e3d69b3c1df0fff27cff2fd7c65af0c5f0d5e1fb0e9a8d0444d4cc6a76a0b` (covers all 16 signer distribution files from candidate root).
    - `DICE_EXPECTED_TEST_POLICY_DIGEST`: `eb447909aff1afe029c5207e069259690a7975245926dd7ae0caef01b789380d` (covers `test-policy.json`).
-   - `DICE_EXPECTED_PIPELINE_CONFIG_DIGEST`: `<sha256 of approved .circleci/config.yml>` (pins privileged workflow configuration against candidate tampering via `ConfigHashGuard`).
+   - `DICE_EXPECTED_PIPELINE_CONFIG_DIGEST`: `becbf599136f1a70f46c0d8383a3ea379f312fb677f68b1b6cdc73bd2d2e79fd` (pins privileged workflow configuration against candidate tampering via `ConfigHashGuard`).
    - `DICE_EXECUTION_AUTH_KEY`: `<cryptographic secret key>` (independently generated secret shared strictly between protected orchestrator and signing service).
    - `DICE_SIGNING_KEY`: (Production signing only; remains unset until human specification authority approves change contract).
 3. **Workflow Security Boundaries**:

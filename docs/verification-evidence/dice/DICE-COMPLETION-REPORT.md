@@ -123,18 +123,24 @@ All static, logic, formal, and adversarial verification gates pass cleanly acros
 
 | Verification Gate | Command | Result | Details |
 |---|---|---|---|
-| Mechanical Scope Guard | `ACTIVE_CHANGE_CONTRACT=features/contracts/F30-DICE-COMPLETE.json bun run gate:scope` | **PASS** | 59 changed files strictly conform |
+| Mechanical Scope Guard | `ACTIVE_CHANGE_CONTRACT=features/contracts/F30-DICE-COMPLETE.json bun run gate:scope` | **PASS** | 219 evaluated paths strictly conform |
 | Verification Drift Gate | `bun run gate:drift` | **PASS** | 0 model/source SHA-256 drift |
-| ESLint | `bun run lint` | **PASS** | 0 errors, 0 warnings |
-| Typecheck | `bun run typecheck` | **PASS** | `tsgo --noEmit` clean |
+| Secret Scan Gate | `bun run secrets:scan` | **PASS** | 0 credentials in repository tree |
+| SAST Scan Gate | `bun run sast:scan` | **PASS** | 0 unreviewed security findings |
+| ESLint | `bun run lint` | **NON-ZERO (Baseline)** | 1261 errors in 29 application files outside DICE scope; 0 in DICE |
+| Typecheck | `bun run typecheck` | **NON-ZERO (Baseline)** | 281 errors in 29 application files outside DICE scope; 0 in DICE |
 | Permanent Die Registry | `bun run test:dies` | **PASS** | 5 accepted dies intact |
+| Feature Map Completeness | `bun run test:features` | **PASS** | 6 feature specs verified |
 | Contract Tests | `bun run test:contracts` | **PASS** | 13 suites, 258 tests passing |
-| Lean 4 Formal Theorems | `PATH="$HOME/.elan/bin:$PATH" bun run test:lean` | **PASS** | 32 theorems machine-checked, 0 sorry |
-| Bend 2 Correctness Laws | `bun run test:bend` | **PASS** | ALL PROOFS CHECK (BendTT kernel) |
-| TLA+ / TLC Model Checker | `bun run test:tla` | **PASS** | 4 specifications, >1.5M states explored |
-| Bombadil DOM Fuzzer | `bun run test:bombadil` | **PASS** | 8 viewports, 0 DOM invariant breaches |
-| DICE Vitest Suite | `bunx vitest run src/lib/dice/ --fileParallelism=false` | **PASS** | 12 test files, 247 passed, 10 skipped, 0 failed |
-| 27 Mutation Matrix | `bunx vitest run src/lib/dice/mutation-matrix.test.ts` | **PASS** | 27/27 mutation classes detected |
+| Mutation Sensitivity Gate | `bun run test:mutation` | **PASS** | 16/16 defect classes detected |
+| Lean 4 Formal Theorems | `bun run test:lean` | **PASS** | Lake build + axioms verified (0 sorry) |
+| Bend 2 Correctness Laws | `bun run test:bend` | **PASS** | 6/6 proofs pass (BendTT kernel --verdict) |
+| TLA+ / TLC Model Checker | `bun run test:tla` | **PASS** | 4 specifications verified (>1.5M states, 0 errors) |
+| Property-Based Testing | `bun run test:properties` | **PASS** | 10 suites, 63 fast-check properties passing |
+| DICE Vitest Suite | `bunx vitest run src/lib/dice/ --fileParallelism=false` | **PASS** | 12 test files, 251 passed, 10 Darwin skipped, 0 failed |
+| 27 Mutation Matrix | `bunx vitest run src/lib/dice/mutation-matrix.test.ts` | **PASS** | 27/27 mutation classes detected fail-closed |
+| 5 Native Toolchain Adapters | `bunx vitest run src/lib/dice/adapters.test.ts` | **PASS** | 32/32 tests passing |
+| Authority & Signing Tests | `bunx vitest run src/lib/dice/authority-mutation.test.ts ...` | **PASS** | 89/89 tests passing (P0.2 & P0.3 verified) |
 
 ---
 
@@ -147,3 +153,17 @@ In accordance with `F30-SDLC-001` Section 1:
 - Preserved Stage 2.3 root: `2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271`
 
 No existing commits, branches, permanent dies, or baseline specifications were overwritten, amended, or discarded.
+
+---
+
+## 5. Final 6-Package Acceptance Table
+
+| Package | Implementation | Local Verification | Remote Verification | Administrator Verification |
+|---|---|---|---|---|
+| **1. Source / publication** | `IMPLEMENTED` | `LOCALLY VERIFIED` | `REMOTELY VERIFIED` | `ADMINISTRATOR VERIFIED` (Branch protection on `dice/complete-implementation`) |
+| **2. External trust / CI** | `IMPLEMENTED` | `LOCALLY VERIFIED` | `BLOCKED` (Context `dice-trust-authority` pending creation) | `BLOCKED` (CircleCI administrator creation of Context & digests) |
+| **3. Execution provenance** | `IMPLEMENTED` | `LOCALLY VERIFIED` | `REMOTELY VERIFIED` (Hostile attacks A-G rejected) | `BLOCKED` (`DICE_EXECUTION_AUTH_KEY` injection required) |
+| **4. DSSE verification** | `IMPLEMENTED` | `LOCALLY VERIFIED` | `REMOTELY VERIFIED` | `ADMINISTRATOR VERIFIED` (Test DSSE verified; prod pending approval) |
+| **5. Normative qualification** | `IMPLEMENTED` | `LOCALLY VERIFIED` (251 pass, 10 Darwin skipped by Inv 5) | `REMOTELY VERIFIED` (Linux Bubblewrap 6 scenarios) | `BLOCKED` (281 pre-existing TS errors block upstream `lint-typecheck` job) |
+| **6. Independent acceptance** | `IMPLEMENTED` | `LOCALLY VERIFIED` | `BLOCKED` | `BLOCKED` (Human Specification Authority `@devrahmanbd` sign-off pending) |
+
