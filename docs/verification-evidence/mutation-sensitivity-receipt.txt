@@ -1,74 +1,74 @@
 =============================================================================
 FRAME30 ADVERSARIAL MUTATION SENSITIVITY EVIDENCE RECEIPT
 =============================================================================
-Timestamp: 2026-11-26T19:08:40.934Z
+Timestamp: 2026-11-27T06:35:08.742Z
 Total Mutations Tested: 16
 
 [Mutation 1] Class 1: Tenancy/RLS Weakening (Cross-Tenant Boundary Bypass)
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: AssertionError
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-tenant-rls.test.ts (7 tests | 1 failed) 41ms      × strictly forbids Merchant A from reading Merchant B's page (cross-tenant leak) 5ms   Test Files  1 failed (1)       Tests  1 failed | 6 passed (7)    Start at  01:07:45    Duration  532...
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-tenant-rls.test.ts (7 tests | 1 failed) 41ms      × strictly forbids Merchant A from reading Merchant B's page (cross-tenant leak) 5ms   Test Files  1 failed (1)       Tests  1 failed | 6 passed (7)    Start at  12:34:14    Duration  526...
 
 [Mutation 2] Class 2: Forged merchant_id Bypass (Client Override of Session Claim)
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: AssertionError
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-tenant-rls.test.ts (7 tests | 1 failed) 40ms      × prevents forged merchant ID override during document save 34ms   Test Files  1 failed (1)       Tests  1 failed | 6 passed (7)    Start at  01:07:47    Duration  515ms (transform 290ms,...
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-tenant-rls.test.ts (7 tests | 1 failed) 41ms      × prevents forged merchant ID override during document save 35ms   Test Files  1 failed (1)       Tests  1 failed | 6 passed (7)    Start at  12:34:15    Duration  522ms (transform 294ms,...
 
 [Mutation 3] Class 3: Broken Auth / Unauthorized Publish Not Demoted to Pending
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: AssertionError
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-lifecycle.test.ts (6 tests | 1 failed) 40ms      × demotes publishing to pending review if actor lacks publish permission 4ms   Test Files  1 failed (1)       Tests  1 failed | 5 passed (6)    Start at  01:07:49    Duration  520ms (trans...
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-lifecycle.test.ts (6 tests | 1 failed) 41ms      × demotes publishing to pending review if actor lacks publish permission 4ms   Test Files  1 failed (1)       Tests  1 failed | 5 passed (6)    Start at  12:34:17    Duration  526ms (trans...
 
 [Mutation 4] Class 4: Draft Content Leak to Public Storefront
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: AssertionError
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-properties.test.ts (6 tests | 1 failed | 5 skipped) 12ms      × Property 3: Draft content is strictly non-public across all arbitrary documents 11ms   Test Files  1 failed (1)       Tests  1 failed | 5 skipped (6)    Start at  01:07:51  ...
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-properties.test.ts (6 tests | 1 failed | 5 skipped) 11ms      × Property 3: Draft content is strictly non-public across all arbitrary documents 10ms   Test Files  1 failed (1)       Tests  1 failed | 5 skipped (6)    Start at  12:34:19  ...
 
 [Mutation 5] Class 5: Stale Save Overwrite (Optimistic Concurrency Check Disabled)
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: AssertionError
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-lifecycle.test.ts (6 tests | 1 failed) 42ms      × detects and rejects stale saves (concurrency conflict) 6ms   Test Files  1 failed (1)       Tests  1 failed | 5 passed (6)    Start at  01:07:52    Duration  521ms (transform 290ms, setu...
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-lifecycle.test.ts (6 tests | 1 failed) 42ms      × detects and rejects stale saves (concurrency conflict) 6ms   Test Files  1 failed (1)       Tests  1 failed | 5 passed (6)    Start at  12:34:21    Duration  525ms (transform 293ms, setu...
 
 [Mutation 6] Class 6: Autosave Sets Published (State Machine Violation)
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: AssertionError
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-lifecycle.test.ts (6 tests | 1 failed) 41ms      × creates a draft with valid invariants (is_published = false) 36ms   Test Files  1 failed (1)       Tests  1 failed | 5 passed (6)    Start at  01:07:54    Duration  519ms (transform 292m...
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-lifecycle.test.ts (6 tests | 1 failed) 43ms      × creates a draft with valid invariants (is_published = false) 38ms   Test Files  1 failed (1)       Tests  1 failed | 5 passed (6)    Start at  12:34:22    Duration  547ms (transform 311m...
 
 [Mutation 7] Class 7: Scheduled Content Public Before Time (Premature Release)
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: AssertionError
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-properties.test.ts (6 tests | 1 failed | 5 skipped) 12ms      × Property 4: Scheduled publication invariant — future dates remain scheduled, reached dates publish 11ms   Test Files  1 failed (1)       Tests  1 failed | 5 skipped (6)    S...
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-properties.test.ts (6 tests | 1 failed | 5 skipped) 10ms      × Property 4: Scheduled publication invariant — future dates remain scheduled, reached dates publish 9ms   Test Files  1 failed (1)       Tests  1 failed | 5 skipped (6)    St...
 
 [Mutation 8] Class 8: Revision Rollback Truncates History (Non-Monotonic Revision)
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: AssertionError
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-lifecycle.test.ts (6 tests | 1 failed) 42ms      × allows revision rollback and preserves append-only history 5ms   Test Files  1 failed (1)       Tests  1 failed | 5 passed (6)    Start at  01:07:58    Duration  521ms (transform 291ms, ...
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/cms-lifecycle.test.ts (6 tests | 1 failed) 41ms      × allows revision rollback and preserves append-only history 4ms   Test Files  1 failed (1)       Tests  1 failed | 5 passed (6)    Start at  12:34:26    Duration  529ms (transform 299ms, ...
 
 [Mutation 9] Class 9: Responsive Override Lost On Reload (DIE-001 Violation)
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: AssertionError
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/components/builder/builder-ast-conformance.test.ts (5 tests | 1 failed) 10ms      × preserves responsive overrides across serialization and AST reload (DIE-001) 4ms   Test Files  1 failed (1)       Tests  1 failed | 4 passed (5)    Start at  01:...
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/components/builder/builder-ast-conformance.test.ts (5 tests | 1 failed) 9ms      × preserves responsive overrides across serialization and AST reload (DIE-001) 4ms   Test Files  1 failed (1)       Tests  1 failed | 4 passed (5)    Start at  12:3...
 
 [Mutation 10] Class 10: Collection Rail Self-Exclusion Inverted (DIE-002 Violation)
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: AssertionError
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/themes/collection-composition-properties.test.ts (6 tests | 3 failed) 38ms      × Property P1: Redundant active-collection rails are strictly eliminated 11ms      × Property P3: Product cards in active collection are never duplicated by seco...
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/lib/themes/collection-composition-properties.test.ts (6 tests | 3 failed) 37ms      × Property P1: Redundant active-collection rails are strictly eliminated 11ms      × Property P3: Product cards in active collection are never duplicated by seco...
 
 [Mutation 11] Class 11: Corrupted Widget Catalog (Invalid Widget Accepted)
   Detection Status: DETECTED & REJECTED (PASS)
   Expected Signature: AssertionError
   Clean Restoration: VERIFIED (PASS)
-  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/components/builder/builder-ast-conformance.test.ts (5 tests | 1 failed) 10ms      × detects builder JSON body format reliably via isBuilderBody 4ms   Test Files  1 failed (1)       Tests  1 failed | 4 passed (5)    Start at  01:08:02    Duration...
+  Output Snippet:   RUN  v4.1.11 /Users/rahman/Documents/frame30   ❯ src/components/builder/builder-ast-conformance.test.ts (5 tests | 1 failed) 9ms      × detects builder JSON body format reliably via isBuilderBody 4ms   Test Files  1 failed (1)       Tests  1 failed | 4 passed (5)    Start at  12:34:30    Duration ...
 
 [Mutation 12] Class 12: TLA+ Inverted Model Invariant (NoPublicDraft Inverted)
   Detection Status: DETECTED & REJECTED (PASS)

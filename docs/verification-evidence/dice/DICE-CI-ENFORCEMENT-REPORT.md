@@ -67,7 +67,7 @@ artifacts/dice-evidence (Signed Attestation Bundle + Detached Digest Signature)
 ### Job 2: `dice-attestation-signing` (Isolated Cryptographic Signing)
 
 - **Executor**: Ubuntu 22.04 (`ubuntu-2204:current`) machine runner with pure Node execution.
-- **Workflow Context**: Attached restricted CircleCI Context `dice-trust-authority`.
+- **Workflow Context & Filters**: Attached restricted CircleCI Context `dice-trust-authority` protected by `filters: branches: only: [main, frame30]`. Candidate pull request branches cannot execute this job or attach the context.
 - **Environment**: `DICE_REQUIRE_EXTERNAL_ANCHORS: "1"` enforced fail-closed.
 - **Access Boundary**: Possesses `DICE_SIGNING_KEY` credential in environment for production mode (inaccessible to `dice-qualification` worker). In test mode, `DICE_SIGNING_KEY` must be strictly absent.
 - **Isolation Guarantees**:

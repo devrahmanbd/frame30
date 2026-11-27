@@ -773,9 +773,15 @@ workflows:
             - build
       - plugin-storefront-gate
       # P0-2: Attestation signing strictly requires all mandatory qualification jobs
+      # Protected execution authority: restricted to protected branches only (candidate branches cannot access context)
       - dice-attestation-signing:
           context:
             - dice-trust-authority
+          filters:
+            branches:
+              only:
+                - main
+                - frame30
           requires:
             - lint-typecheck
             - unit-contract

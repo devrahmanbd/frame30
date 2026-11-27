@@ -23,12 +23,16 @@ import {
 } from "node:fs";
 import { join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
-import { createHash, generateKeyPairSync, sign, randomUUID } from "node:crypto";
+import { createHash, sign, randomUUID } from "node:crypto";
 import {
   DiceTrustedRoot,
   DEFAULT_TRUSTED_REF,
   validateSafePath,
   validateTrustedRef,
+  TEST_LAUNCHER_KEY_ID,
+  TEST_LAUNCHER_PUBLIC_KEY,
+  TEST_LAUNCHER_PRIVATE_KEY,
+  computeSealPayload,
 } from "./dice-root-of-trust.mjs";
 
 export class DiceLauncher {
@@ -47,6 +51,18 @@ export class DiceLauncher {
     this.isDryRun = options.isDryRun || false;
     this.allowUnpinnedRoots = options.allowUnpinnedRoots || false;
     this.throwOnError = options.throwOnError || false;
+    this.launcherKeyId =
+      options.launcherKeyId ||
+      process.env.DICE_LAUNCHER_KEY_ID ||
+      TEST_LAUNCHER_KEY_ID;
+    this.launcherPrivateKey =
+      options.launcherPrivateKey ||
+      process.env.DICE_LAUNCHER_KEY ||
+      TEST_LAUNCHER_PRIVATE_KEY;
+    this.launcherPublicKey =
+      options.launcherPublicKey ||
+      process.env.DICE_LAUNCHER_PUBLIC_KEY ||
+      TEST_LAUNCHER_PUBLIC_KEY;
   }
 
   launch() {
@@ -186,32 +202,32 @@ export class DiceLauncher {
           }).trim();
         } catch {}
 
-        const { privateKey, publicKey } = generateKeyPairSync("ed25519", {
-          publicKeyEncoding: { type: "spki", format: "pem" },
-          privateKeyEncoding: { type: "pkcs8", format: "pem" },
-        });
-
         const launcherExecutionId =
           typeof randomUUID === "function"
             ? randomUUID()
             : createHash("sha256").update(Date.now().toString()).digest("hex");
         const sealedAt = new Date().toISOString();
 
-        const sealPayload = [
-          candidateCommit || "unknown-commit",
-          candidateTree || "unknown-tree",
-          ledgerSha256,
-          trustedInfo.launcherSha || "launcher-sha",
-          trustedInfo.runnerSha,
-          trustedInfo.trustedRootSha,
-          launcherExecutionId,
-          sealedAt,
-        ].join(":");
+        const sealData = {
+          candidate_commit: candidateCommit,
+          candidate_tree: candidateTree,
+          runner_sha: trustedInfo.runnerSha,
+          launcher_sha: trustedInfo.launcherSha || "launcher-sha",
+          trusted_root_sha: trustedInfo.trustedRootSha,
+          ledger_sha256: ledgerSha256,
+          receipt_hashes: receiptHashes,
+          log_hashes: logHashes,
+          launcher_execution_id: launcherExecutionId,
+          sealed_at: sealedAt,
+          key_id: this.launcherKeyId,
+        };
+
+        const sealPayload = computeSealPayload(sealData);
 
         const signature = sign(
           null,
           Buffer.from(sealPayload, "utf8"),
-          privateKey,
+          this.launcherPrivateKey,
         ).toString("hex");
 
         const seal = {
@@ -219,6 +235,7 @@ export class DiceLauncher {
           seal_type: "dice-launcher-execution-seal-v1",
           launcher_execution_id: launcherExecutionId,
           sealed_at: sealedAt,
+          key_id: this.launcherKeyId,
           candidate_commit: candidateCommit,
           candidate_tree: candidateTree,
           launcher_sha: trustedInfo.launcherSha || "launcher-sha",
@@ -229,7 +246,7 @@ export class DiceLauncher {
           receipt_hashes: receiptHashes,
           log_hashes: logHashes,
           signature,
-          public_key: publicKey,
+          public_key: this.launcherPublicKey,
         };
 
         const sealPath = join(fullOutDir, ".launcher-seal.json");

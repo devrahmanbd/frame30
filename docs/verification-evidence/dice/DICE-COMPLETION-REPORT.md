@@ -26,7 +26,7 @@ The Frame30 Die-driven Invariant & Conformance Engine (DICE) implementation prog
 │ 1. Architecture & Integrity       │ COMPLETE (All 7 Inviolable Invariants enforced)    │
 │ 2. Native Verification Adapters   │ COMPLETE (Lean 4, TLA+/TLC, Bend 2, Bombadil)      │
 │ 3. 27-Class Adversarial Mutations │ QUALIFIED_PASS (27/27 Mutation Classes caught)     │
-│ 4. Unit & Contract Test Suites    │ QUALIFIED_PASS (12 suites, 247 pass, 0 fail, 10 Darwin skipped) │
+│ 4. Unit & Contract Test Suites    │ QUALIFIED_PASS (12 suites, 249 pass, 0 fail, 10 Darwin skipped) │
 │ 5. Formal Verification Proofs     │ QUALIFIED_PASS (Lean 32/32, Bend 6/6, TLC 4/4)     │
 │ 6. CircleCI Remote Pipeline       │ QUALIFIED_PASS (Protected launcher & signer wired) │
 │ 7. Local Host Execution (macOS)   │ QUALIFIED_BLOCKED (Live bwrap blocked by Inv 5)    │
@@ -86,13 +86,16 @@ All items mandated by the programme have been implemented, tested, and placed un
    - Machine-readable receipt serialization and Ed25519 keypair management.
    - Detached digest ledger verification.
 
-8. **Privileged Pipeline Configuration Protection (`ConfigHashGuard` in `scripts/dice-root-of-trust.mjs`)**:
-   - Enforces `DICE_EXPECTED_PIPELINE_CONFIG_DIGEST` (injected via restricted CircleCI Context `dice-trust-authority`) against candidate `.circleci/config.yml`.
-   - Rejects candidate modifications attempting to inject malicious exfiltration or arbitrary commands into privileged signing context.
+8. **Privileged Pipeline Configuration Protection (`ConfigHashGuard` & CircleCI Branch Filter)**:
+   - Restricts `dice-attestation-signing` in `.circleci/config.yml` via `filters: branches: only: [main, frame30]`, ensuring candidate pull request branches cannot attach or access `dice-trust-authority` or `DICE_EXECUTION_AUTH_KEY`.
+   - Enforces `ConfigHashGuard` in `scripts/dice-root-of-trust.mjs` verifying `.circleci/config.yml` digest against authoritative digest from external context before any privileged signing steps execute.
+   - Rejects candidate modifications attempting to inject malicious host commands or exfiltrate private execution credentials.
 
-9. **Launcher Execution Sealing (`.launcher-seal.json` in `scripts/dice-launcher.mjs`)**:
-   - Cryptographically binds raw receipts, execution logs, and ledger into an immutable `.launcher-seal.json` using an ephemeral Ed25519 keypair during launcher execution.
-   - Prevents subsequent candidate commands from replacing receipts or rebuilding the ledger.
+9. **Launcher Execution Sealing (`.launcher-seal.json` in `scripts/dice-launcher.mjs` & `scripts/dice-root-of-trust.mjs`)**:
+   - Cryptographically binds candidate commit, candidate tree, runner SHA, launcher SHA, trusted root SHA, ledger SHA-256, sorted receipt hashes digest, sorted log hashes digest, launcher execution ID, sealed timestamp, and key_id (`computeSealPayload`) into an immutable `.launcher-seal.json`.
+   - Signed using an independently anchored launcher key (`key-dice-launcher-01` or `key-dice-test-launcher-01` in `TRUSTED_LAUNCHER_KEYS` with authorized role `dice-launcher`). Candidate-generated ephemeral keypairs are strictly rejected fail-closed.
+   - Mandatory signature and public key validation anchored against independent trusted authority via `resolveTrustedLauncherKey`. Omission of signature or public key triggers immediate fail-closed rejection.
+   - Verified by both `DiceExecutionAuthority` and `DiceSigningService` before any qualification evaluation or attestation signing.
 
 ### 2.2 Native Verification Toolchain Adapters (`src/lib/dice/adapters/`)
 Under a unified object-oriented interface (`DiceAdapter`), native adapters provide complete lifecycle control, environment validation, specification hashing, and output diagnosis:

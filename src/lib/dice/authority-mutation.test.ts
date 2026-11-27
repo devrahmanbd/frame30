@@ -25,6 +25,10 @@ import {
   computeDistributionDigest,
   extractAndVerifySigningDistribution,
   verifyPipelineConfiguration,
+  computeSealPayload,
+  TEST_LAUNCHER_KEY_ID,
+  TEST_LAUNCHER_PUBLIC_KEY,
+  TEST_LAUNCHER_PRIVATE_KEY,
 } from "../../../scripts/dice-root-of-trust.mjs";
 import { DiceLauncher } from "../../../scripts/dice-launcher.mjs";
 import {
@@ -946,34 +950,19 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
           }
         }
 
-        const { privateKey, publicKey } = generateKeyPairSync("ed25519", {
-          publicKeyEncoding: { type: "spki", format: "pem" },
-          privateKeyEncoding: { type: "pkcs8", format: "pem" },
-        });
-
         const launcherExecutionId =
           (overrides.launcherExecutionId as string) ||
           "test-launcher-exec-id-01";
         const sealedAt = new Date().toISOString();
 
-        const sealPayload = [
-          candidateCommit,
-          candidateTree,
-          ledgerDigest,
-          launcherSha,
-          runnerSha,
-          trustedRootSha,
-          launcherExecutionId,
-          sealedAt,
-        ].join(":");
+        const keyId =
+          (overrides.launcherKeyId as string) || TEST_LAUNCHER_KEY_ID;
+        const privateKey =
+          (overrides.launcherPrivateKey as string) || TEST_LAUNCHER_PRIVATE_KEY;
+        const publicKey =
+          (overrides.launcherPublicKey as string) || TEST_LAUNCHER_PUBLIC_KEY;
 
-        const signature = sign(
-          null,
-          Buffer.from(sealPayload, "utf8"),
-          privateKey,
-        ).toString("hex");
-
-        const seal = {
+        const sealData: Record<string, unknown> = {
           version: "1.0.0",
           seal_type: "dice-launcher-execution-seal-v1",
           launcher_execution_id: launcherExecutionId,
@@ -987,14 +976,33 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
           receipt_count: Object.keys(receiptHashes).length,
           receipt_hashes: receiptHashes,
           log_hashes: logHashes,
-          signature,
+          key_id: keyId,
           public_key: publicKey,
           ...((overrides.sealOverrides as Record<string, unknown>) || {}),
         };
 
+        const sealPayload = computeSealPayload(sealData);
+        let signature = "";
+        if (privateKey) {
+          try {
+            signature = sign(
+              null,
+              Buffer.from(sealPayload, "utf8"),
+              privateKey,
+            ).toString("hex");
+          } catch {
+            signature = "invalid-signature";
+          }
+        }
+
+        sealData.signature =
+          overrides.sealSignature !== undefined
+            ? overrides.sealSignature
+            : signature;
+
         writeFileSync(
           join(dir, ".launcher-seal.json"),
-          JSON.stringify(seal, null, 2),
+          JSON.stringify(sealData, null, 2),
           "utf8",
         );
       }
@@ -2404,8 +2412,24 @@ workflows:
         .update(readFileSync(genuineConfigPath))
         .digest("hex");
 
+      const evidenceDir = join(p03TempDir, "evidence-adversarial-pipeline");
+      createValidEvidence(evidenceDir);
+
       // Verify that candidate-controlled workflow steps cannot obtain private authority:
-      // A) verifyPipelineConfiguration detects modified candidate config and fails closed immediately
+      // A) In candidate execution environment (PR branches), DICE_EXECUTION_AUTH_KEY is undefined
+      //    Any attempt by candidate steps to invoke execution authority fails closed
+      const unprivilegedAuthority = new DiceExecutionAuthority({
+        repoRoot: adversarialRepoDir,
+        distDir: isolatedSignerDir,
+        executionAuthKey: null,
+      });
+      expect(() =>
+        unprivilegedAuthority.authenticateExecutionEvidence(evidenceDir),
+      ).toThrow(
+        /FAIL-CLOSED: Missing independently protected execution authority key \(DICE_EXECUTION_AUTH_KEY\)/,
+      );
+
+      // B) verifyPipelineConfiguration detects modified candidate config and fails closed immediately
       expect(() =>
         verifyPipelineConfiguration({
           repoRoot: adversarialRepoDir,
@@ -2415,7 +2439,7 @@ workflows:
         /FAIL-CLOSED: Privileged pipeline configuration modified by candidate \(ConfigHashGuard\)/,
       );
 
-      // B) DiceExecutionAuthority rejects adversarial pipeline configuration fail-closed
+      // C) DiceExecutionAuthority rejects adversarial pipeline configuration fail-closed
       const authority = new DiceExecutionAuthority({
         repoRoot: adversarialRepoDir,
         distDir: isolatedSignerDir,
@@ -2424,9 +2448,6 @@ workflows:
         executionAuthKey: "protected-orchestrator-execution-secret-999",
         allowUnpinnedRoots: true,
       });
-
-      const evidenceDir = join(p03TempDir, "evidence-adversarial-pipeline");
-      createValidEvidence(evidenceDir);
 
       expect(() => {
         process.env.DICE_EXPECTED_PIPELINE_CONFIG_DIGEST =
@@ -2706,6 +2727,148 @@ workflows:
       expect(
         existsSync(join(hostileEvidenceDir, "attestation.dsse.json")),
       ).toBe(false);
+    });
+
+    it("P0.1 Hostile Attack A: Candidate replacing receipts, logs, ledger, summary AND launcher seal with attacker keypair is rejected fail-closed", () => {
+      setupExternalAuthority();
+      extractAndVerifySigningDistribution({
+        externalDistDir: externalAuthorityDir,
+        targetDir: isolatedSignerDir,
+        expectedDistDigest: EXPECTED_DIST_DIGEST,
+        expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+      });
+
+      const hostileDir = join(p03TempDir, "evidence-hostile-attack-a");
+      if (existsSync(hostileDir)) {
+        rmSync(hostileDir, { recursive: true, force: true });
+      }
+
+      // Generate attacker keypair not anchored in trusted authority
+      const { privateKey: attackerPriv, publicKey: attackerPub } =
+        generateKeyPairSync("ed25519", {
+          publicKeyEncoding: { type: "spki", format: "pem" },
+          privateKeyEncoding: { type: "pkcs8", format: "pem" },
+        });
+
+      // Candidate creates valid-looking evidence signed by attacker keypair
+      createValidEvidence(hostileDir, {
+        launcherKeyId: "key-attacker-01",
+        launcherPrivateKey: attackerPriv,
+        launcherPublicKey: attackerPub,
+      });
+
+      // Evidence directory is internally consistent:
+      // - Receipts match logs
+      // - Ledger matches receipts
+      // - Summary matches ledger
+      // - Seal contains valid signature from attacker key over complete seal payload
+      expect(existsSync(join(hostileDir, ".launcher-seal.json"))).toBe(true);
+
+      const authority = new DiceExecutionAuthority({
+        repoRoot,
+        distDir: isolatedSignerDir,
+        contractPath: "registries/dice/test-qualification-contract.json",
+        trustedRef: DEFAULT_TRUSTED_REF,
+        executionAuthKey: "protected-orchestrator-execution-secret-999",
+        allowUnpinnedRoots: true,
+      });
+
+      // Must FAIL-CLOSED: attacker key is not anchored in independently trusted authority
+      expect(() => authority.authenticateExecutionEvidence(hostileDir)).toThrow(
+        /FAIL-CLOSED: Launcher execution seal key_id 'key-attacker-01' is not anchored in independently trusted authority/i,
+      );
+
+      const signer = new DiceSigningService({
+        repoRoot,
+        mode: "test",
+        contractPath: "registries/dice/test-qualification-contract.json",
+        evidenceDir: hostileDir,
+        distDir: isolatedSignerDir,
+        trustedRef: DEFAULT_TRUSTED_REF,
+        keyId: "key-dice-test-signer-01",
+        testKeysPath: testKeysJsonPath,
+        signingKeyFile: testKeyPemPath,
+        executionAuthKey: "protected-orchestrator-execution-secret-999",
+        allowUnpinnedRoots: true,
+      });
+
+      expect(() => signer.execute()).toThrow(
+        /FAIL-CLOSED: Launcher execution seal key_id 'key-attacker-01' is not anchored in independently trusted authority/i,
+      );
+
+      // Zero attestations produced
+      expect(existsSync(join(hostileDir, "test-attestation.dsse.json"))).toBe(
+        false,
+      );
+      expect(existsSync(join(hostileDir, "attestation.dsse.json"))).toBe(false);
+    });
+
+    it("P0.1 Hostile Attack B: Candidate removing signature and public_key from launcher seal is rejected fail-closed", () => {
+      setupExternalAuthority();
+      extractAndVerifySigningDistribution({
+        externalDistDir: externalAuthorityDir,
+        targetDir: isolatedSignerDir,
+        expectedDistDigest: EXPECTED_DIST_DIGEST,
+        expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+      });
+
+      const hostileDir = join(p03TempDir, "evidence-hostile-attack-b");
+      if (existsSync(hostileDir)) {
+        rmSync(hostileDir, { recursive: true, force: true });
+      }
+
+      // Candidate creates evidence where seal has no signature and no public key
+      createValidEvidence(hostileDir, {
+        sealOverrides: {
+          signature: undefined,
+          public_key: undefined,
+        },
+      });
+
+      // Strip signature and public_key completely from disk seal
+      const sealPath = join(hostileDir, ".launcher-seal.json");
+      const sealContent = JSON.parse(readFileSync(sealPath, "utf8"));
+      delete sealContent.signature;
+      delete sealContent.public_key;
+      writeFileSync(sealPath, JSON.stringify(sealContent, null, 2), "utf8");
+
+      const authority = new DiceExecutionAuthority({
+        repoRoot,
+        distDir: isolatedSignerDir,
+        contractPath: "registries/dice/test-qualification-contract.json",
+        trustedRef: DEFAULT_TRUSTED_REF,
+        executionAuthKey: "protected-orchestrator-execution-secret-999",
+        allowUnpinnedRoots: true,
+      });
+
+      // Must FAIL-CLOSED: missing mandatory launcher seal signature
+      expect(() => authority.authenticateExecutionEvidence(hostileDir)).toThrow(
+        /FAIL-CLOSED: Missing mandatory launcher seal signature/i,
+      );
+
+      const signer = new DiceSigningService({
+        repoRoot,
+        mode: "test",
+        contractPath: "registries/dice/test-qualification-contract.json",
+        evidenceDir: hostileDir,
+        distDir: isolatedSignerDir,
+        trustedRef: DEFAULT_TRUSTED_REF,
+        keyId: "key-dice-test-signer-01",
+        testKeysPath: testKeysJsonPath,
+        signingKeyFile: testKeyPemPath,
+        executionAuthKey: "protected-orchestrator-execution-secret-999",
+        allowUnpinnedRoots: true,
+      });
+
+      expect(() => signer.execute()).toThrow(
+        /FAIL-CLOSED: Missing mandatory launcher seal signature/i,
+      );
+
+      // Zero attestations produced
+      expect(existsSync(join(hostileDir, "test-attestation.dsse.json"))).toBe(
+        false,
+      );
+      expect(existsSync(join(hostileDir, "attestation.dsse.json"))).toBe(false);
     });
   });
 });

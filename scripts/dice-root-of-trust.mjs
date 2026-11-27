@@ -50,6 +50,134 @@ export const APPROVED_ROOTS = Object.freeze({
     "6cacd5c6ad96b0c2fc4aa7822c31e0ce31d6f166",
 });
 
+export const TEST_LAUNCHER_KEY_ID = "key-dice-test-launcher-01";
+export const TEST_LAUNCHER_PUBLIC_KEY =
+  "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAJKFO5yzXUKk5HosI/Aw2OYYm0oPJtGfObXSIr6rkX3E=\n-----END PUBLIC KEY-----\n";
+export const TEST_LAUNCHER_PRIVATE_KEY =
+  "-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEILSvSh0R3rzj8DIPQ8UWyATALTWshVpZJNRiDfVT7AjE\n-----END PRIVATE KEY-----\n";
+
+export const AUTHORITATIVE_LAUNCHER_KEY_ID = "key-dice-launcher-01";
+export const AUTHORITATIVE_LAUNCHER_PUBLIC_KEY =
+  "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAp8r2fR07wRjU8j5Y2U0Z5XQ7Y1p8zV0B3v5J5Z6X3U8=\n-----END PUBLIC KEY-----\n";
+
+export const TRUSTED_LAUNCHER_KEYS = Object.freeze([
+  {
+    keyid: TEST_LAUNCHER_KEY_ID,
+    algorithm: "ed25519",
+    public_key_pem: TEST_LAUNCHER_PUBLIC_KEY,
+    roles: ["dice-launcher"],
+    status: "active",
+  },
+  {
+    keyid: AUTHORITATIVE_LAUNCHER_KEY_ID,
+    algorithm: "ed25519",
+    public_key_pem: AUTHORITATIVE_LAUNCHER_PUBLIC_KEY,
+    roles: ["dice-launcher"],
+    status: "active",
+  },
+]);
+
+export function computeSealPayload(seal) {
+  const receiptEntries = seal.receipt_hashes
+    ? Object.entries(seal.receipt_hashes).sort((a, b) =>
+        a[0].localeCompare(b[0]),
+      )
+    : [];
+  const receiptsDigest =
+    seal.receipts_digest ||
+    createHash("sha256")
+      .update(JSON.stringify(receiptEntries), "utf8")
+      .digest("hex");
+
+  const logEntries = seal.log_hashes
+    ? Object.entries(seal.log_hashes).sort((a, b) => a[0].localeCompare(b[0]))
+    : [];
+  const logsDigest =
+    seal.logs_digest ||
+    createHash("sha256")
+      .update(JSON.stringify(logEntries), "utf8")
+      .digest("hex");
+
+  return [
+    seal.candidate_commit || "unknown-commit",
+    seal.candidate_tree || "unknown-tree",
+    seal.runner_sha || "unknown-runner",
+    seal.launcher_sha || "unknown-launcher",
+    seal.trusted_root_sha || "unknown-root",
+    seal.ledger_sha256 || "unknown-ledger",
+    receiptsDigest,
+    logsDigest,
+    seal.launcher_execution_id || "unknown-exec-id",
+    seal.sealed_at || "unknown-date",
+    seal.key_id || "unknown-key",
+  ].join(":");
+}
+
+export function resolveTrustedLauncherKey(keyId, options = {}) {
+  if (!keyId || typeof keyId !== "string") return null;
+
+  if (Array.isArray(options.trustedKeys)) {
+    const found = options.trustedKeys.find(
+      (k) =>
+        (k.keyid === keyId || k.key_id === keyId) &&
+        Array.isArray(k.roles) &&
+        k.roles.includes("dice-launcher") &&
+        k.status === "active",
+    );
+    if (found) return found;
+  }
+
+  const pathsToCheck = [];
+  if (options.distDir) {
+    pathsToCheck.push(
+      join(options.distDir, "registries/dice/trusted-keys.json"),
+    );
+  }
+  if (options.repoRoot && process.env.DICE_REQUIRE_EXTERNAL_ANCHORS !== "1") {
+    pathsToCheck.push(
+      join(options.repoRoot, "registries/dice/trusted-keys.json"),
+    );
+  }
+  for (const p of pathsToCheck) {
+    if (existsSync(p)) {
+      try {
+        const keys = JSON.parse(readFileSync(p, "utf8"));
+        const found = keys.find(
+          (k) =>
+            (k.keyid === keyId || k.key_id === keyId) &&
+            Array.isArray(k.roles) &&
+            k.roles.includes("dice-launcher") &&
+            k.status === "active",
+        );
+        if (found) return found;
+      } catch {
+        /* ignore */
+      }
+    }
+  }
+
+  if (
+    process.env.DICE_LAUNCHER_PUBLIC_KEY &&
+    (keyId === process.env.DICE_LAUNCHER_KEY_ID ||
+      keyId === AUTHORITATIVE_LAUNCHER_KEY_ID)
+  ) {
+    return {
+      keyid: keyId,
+      algorithm: "ed25519",
+      public_key_pem: process.env.DICE_LAUNCHER_PUBLIC_KEY,
+      roles: ["dice-launcher"],
+      status: "active",
+    };
+  }
+
+  const builtIn = TRUSTED_LAUNCHER_KEYS.find((k) => k.keyid === keyId);
+  if (builtIn && builtIn.status === "active") {
+    return builtIn;
+  }
+
+  return null;
+}
+
 export function validateCommitSha(sha) {
   if (!sha || typeof sha !== "string" || !/^[0-9a-f]{40}$/i.test(sha.trim())) {
     throw new Error(

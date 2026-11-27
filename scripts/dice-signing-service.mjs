@@ -37,6 +37,8 @@ import {
   validateTreeSha,
   validateSafePath,
   verifyPipelineConfiguration,
+  computeSealPayload,
+  resolveTrustedLauncherKey,
 } from "./dice-root-of-trust.mjs";
 import { evaluateCandidateQualification } from "./dice-qualify.mjs";
 import {
@@ -514,6 +516,78 @@ export class DiceSigningService {
       );
     }
 
+    // Verify launcher execution seal
+    const sealPath = join(fullEvidenceDir, ".launcher-seal.json");
+    let seal = null;
+    if (existsSync(sealPath)) {
+      seal = JSON.parse(readFileSync(sealPath, "utf8"));
+      if (!seal.signature || typeof seal.signature !== "string") {
+        throw new Error(
+          "FAIL-CLOSED: Missing mandatory launcher seal signature. Execution evidence unauthenticated.",
+        );
+      }
+      if (!seal.public_key || typeof seal.public_key !== "string") {
+        throw new Error(
+          "FAIL-CLOSED: Missing mandatory launcher seal public_key. Execution evidence unauthenticated.",
+        );
+      }
+      if (!seal.key_id || typeof seal.key_id !== "string") {
+        throw new Error(
+          "FAIL-CLOSED: Missing mandatory launcher seal key_id. Execution evidence unauthenticated.",
+        );
+      }
+
+      const trustedLauncherKey = resolveTrustedLauncherKey(seal.key_id, {
+        distDir: this.distDir,
+        repoRoot: this.repoRoot,
+        trustedKeys,
+      });
+      if (!trustedLauncherKey) {
+        throw new Error(
+          `FAIL-CLOSED: Launcher execution seal key_id '${seal.key_id}' is not anchored in independently trusted authority (Candidate-generated keypairs are rejected)`,
+        );
+      }
+      const normalizePem = (p) => (p || "").replace(/\r\n/g, "\n").trim();
+      if (
+        normalizePem(seal.public_key) !==
+        normalizePem(trustedLauncherKey.public_key_pem)
+      ) {
+        throw new Error(
+          `FAIL-CLOSED: Launcher execution seal public_key does not match independently trusted authority for key '${seal.key_id}'`,
+        );
+      }
+
+      const sealPayload = computeSealPayload(seal);
+      let sealValid = false;
+      try {
+        sealValid = verify(
+          null,
+          Buffer.from(sealPayload, "utf8"),
+          trustedLauncherKey.public_key_pem,
+          Buffer.from(seal.signature, "hex"),
+        );
+      } catch (err) {
+        throw new Error(
+          `FAIL-CLOSED: Launcher execution seal signature verification error: ${err.message}`,
+        );
+      }
+      if (!sealValid) {
+        throw new Error(
+          "FAIL-CLOSED: Launcher execution seal signature verification failed (unauthenticated provenance)",
+        );
+      }
+
+      if (seal.ledger_sha256 !== computedLedgerDigest) {
+        throw new Error(
+          `FAIL-CLOSED: Replaced execution evidence detected! Detached ledger hash (${computedLedgerDigest}) does not match authenticated launcher execution seal (${seal.ledger_sha256})`,
+        );
+      }
+    } else if (summary.execution_auth?.launcher_execution_id) {
+      throw new Error(
+        "FAIL-CLOSED: Missing authentic launcher execution seal (.launcher-seal.json). Execution evidence unauthenticated.",
+      );
+    }
+
     // Cryptographic authentication of orchestrator execution evidence using independently protected execution authority
     const executionAuthKey =
       this.executionAuthKey || process.env.DICE_EXECUTION_AUTH_KEY || null;
@@ -570,18 +644,6 @@ export class DiceSigningService {
       }
     }
 
-    // Verify launcher execution seal if present
-    const sealPath = join(fullEvidenceDir, ".launcher-seal.json");
-    let seal = null;
-    if (existsSync(sealPath)) {
-      seal = JSON.parse(readFileSync(sealPath, "utf8"));
-      if (seal.ledger_sha256 !== computedLedgerDigest) {
-        throw new Error(
-          `FAIL-CLOSED: Replaced execution evidence detected! Detached ledger hash (${computedLedgerDigest}) does not match authenticated launcher execution seal (${seal.ledger_sha256})`,
-        );
-      }
-    }
-
     // Read all receipts from ledger and enforce authenticated execution provenance
     const receipts = [];
     const ledgerLines = ledgerContent.trim().split("\n").filter(Boolean);
@@ -591,7 +653,18 @@ export class DiceSigningService {
       const relPath = parts[parts.length - 1];
       const cleanRel = relPath.replace(/^receipts\//, "");
       const receiptFile = resolve(receiptsDir, cleanRel);
-      const receipt = JSON.parse(readFileSync(receiptFile, "utf8"));
+      const receiptStr = readFileSync(receiptFile, "utf8");
+      const computedReceiptHash = createHash("sha256")
+        .update(receiptStr, "utf8")
+        .digest("hex");
+      if (seal && seal.receipt_hashes && seal.receipt_hashes[cleanRel]) {
+        if (computedReceiptHash !== seal.receipt_hashes[cleanRel]) {
+          throw new Error(
+            `FAIL-CLOSED: Replaced execution evidence detected! Receipt '${cleanRel}' digest (${computedReceiptHash}) does not match authenticated launcher execution seal (${seal.receipt_hashes[cleanRel]})`,
+          );
+        }
+      }
+      const receipt = JSON.parse(receiptStr);
 
       if (
         receipt.tree_sha !== candidateTree &&
@@ -690,6 +763,13 @@ export class DiceSigningService {
         throw new Error(
           `FAIL-CLOSED: Receipt '${cleanRel}' execution provenance is unauthenticated: execution log SHA-256 mismatch: expected '${expectedLogSha}', got '${actualLogSha}'`,
         );
+      }
+      if (seal && seal.log_hashes && seal.log_hashes[logRelPath]) {
+        if (actualLogSha !== seal.log_hashes[logRelPath]) {
+          throw new Error(
+            `FAIL-CLOSED: Replaced execution evidence detected! Execution log '${logRelPath}' digest (${actualLogSha}) does not match authenticated launcher execution seal (${seal.log_hashes[logRelPath]})`,
+          );
+        }
       }
 
       receipts.push(receipt);
@@ -931,8 +1011,11 @@ export class DiceExecutionAuthority {
       process.env.ACTIVE_CHANGE_CONTRACT ||
       "registries/dice/test-qualification-contract.json";
     this.executionAuthKey =
-      options.executionAuthKey || process.env.DICE_EXECUTION_AUTH_KEY || null;
+      options.executionAuthKey !== undefined
+        ? options.executionAuthKey
+        : process.env.DICE_EXECUTION_AUTH_KEY || null;
     this.allowUnpinnedRoots = options.allowUnpinnedRoots || false;
+    this.trustedKeys = options.trustedKeys || null;
   }
 
   authenticateExecutionEvidence(evidenceDir = "artifacts/dice-evidence") {
@@ -1054,28 +1137,60 @@ export class DiceExecutionAuthority {
       );
     }
 
-    if (seal.signature && seal.public_key) {
-      const sealPayload = [
-        seal.candidate_commit || candidateCommit,
-        seal.candidate_tree || candidateTree,
-        seal.ledger_sha256,
-        seal.launcher_sha || "launcher-sha",
-        seal.runner_sha,
-        seal.trusted_root_sha,
-        seal.launcher_execution_id,
-        seal.sealed_at,
-      ].join(":");
-      const sealValid = verify(
+    if (!seal.signature || typeof seal.signature !== "string") {
+      throw new Error(
+        "FAIL-CLOSED: Missing mandatory launcher seal signature. Execution evidence unauthenticated.",
+      );
+    }
+    if (!seal.public_key || typeof seal.public_key !== "string") {
+      throw new Error(
+        "FAIL-CLOSED: Missing mandatory launcher seal public_key. Execution evidence unauthenticated.",
+      );
+    }
+    if (!seal.key_id || typeof seal.key_id !== "string") {
+      throw new Error(
+        "FAIL-CLOSED: Missing mandatory launcher seal key_id. Execution evidence unauthenticated.",
+      );
+    }
+
+    const trustedLauncherKey = resolveTrustedLauncherKey(seal.key_id, {
+      distDir: this.distDir,
+      repoRoot: this.repoRoot,
+      trustedKeys: this.trustedKeys,
+    });
+    if (!trustedLauncherKey) {
+      throw new Error(
+        `FAIL-CLOSED: Launcher execution seal key_id '${seal.key_id}' is not anchored in independently trusted authority (Candidate-generated keypairs are rejected)`,
+      );
+    }
+    const normalizePem = (p) => (p || "").replace(/\r\n/g, "\n").trim();
+    if (
+      normalizePem(seal.public_key) !==
+      normalizePem(trustedLauncherKey.public_key_pem)
+    ) {
+      throw new Error(
+        `FAIL-CLOSED: Launcher execution seal public_key does not match independently trusted authority for key '${seal.key_id}'`,
+      );
+    }
+
+    const sealPayload = computeSealPayload(seal);
+    let sealValid = false;
+    try {
+      sealValid = verify(
         null,
         Buffer.from(sealPayload, "utf8"),
-        seal.public_key,
+        trustedLauncherKey.public_key_pem,
         Buffer.from(seal.signature, "hex"),
       );
-      if (!sealValid) {
-        throw new Error(
-          "FAIL-CLOSED: Launcher execution seal signature verification failed (unauthenticated provenance)",
-        );
-      }
+    } catch (err) {
+      throw new Error(
+        `FAIL-CLOSED: Launcher execution seal signature verification error: ${err.message}`,
+      );
+    }
+    if (!sealValid) {
+      throw new Error(
+        "FAIL-CLOSED: Launcher execution seal signature verification failed (unauthenticated provenance)",
+      );
     }
 
     const summary = JSON.parse(readFileSync(summaryPath, "utf8"));
