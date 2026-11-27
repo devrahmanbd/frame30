@@ -272,9 +272,111 @@ To prevent candidate commands running after `dice-launcher.mjs` in `dice-qualifi
 
 ---
 
-## 9. Conclusion
+## 10. Stage 5: TypeScript Baseline Closure & Final CircleCI Dependency Truthfulness
 
-The Frame30 DICE pipeline enforces complete cryptographic trust boundary separation:
-- Declarative CircleCI context attachment is implemented and locally verified; actual operational activation remains appropriately **`BLOCKED`** pending human administrative provisioning.
-- Receipt authenticity is bound to actual orchestrator execution provenance, runner identity, and raw log files on disk.
-- DSSE verification executes exclusively from the protected external distribution with full fail-closed rejection teeth.
+### 10.1 Investigation Methodology & Identical Environment Reconstitution
+To definitively resolve diagnostic ambiguity across historical reports (which reported varying counts between 218/57/6 and 244/37), exact diagnostic comparisons were executed using disposable Git worktrees (`git worktree add --detach`) under identical runtime toolchains:
+- **Bun Version**: `1.3.14`
+- **Node Version**: `v26.10.0`
+- **tsgo Version**: `7.0.0-dev.20260707.2`
+- **TypeScript Compiler Version**: `5.9.3`
+- **tsconfig.json Fingerprint**: SHA-256 `55c899e400b7b2a4d9ba38b253df1b00cb6372ac6c929f38b0c8806a5ed23795` (identical across all 5 revisions)
+- **Dependency Resolution**: Frozen lockfile install (`bun install --frozen-lockfile`)
+- **Execution Command**: Exact `package.json` script `bun run typecheck` (`tsgo --noEmit`), with raw stdout/stderr captured without grep filtering.
+
+### 10.2 Five-Revision Diagnostic Comparison Matrix
+Every revision was evaluated for exit status, error count, and full diagnostic identity (`file + line + column + TS code + message`):
+
+| Comparison Revision | Commit SHA | Lockfile SHA-256 | tsconfig SHA-256 | Exit Code | Total Diagnostics | Diagnostic Equivalence to Candidate HEAD |
+|---|---|---|---|---|---|---|
+| **1. Active Contract Baseline** | `382261db0cb5b796046ae03c28fd8f309b901123` | `8dd68102...` | `55c899e4...` | `1` | 282 | 281 application diagnostics byte-identical; contains 1 extra DICE test error (`src/lib/dice/signing-isolation.test.ts:108:49`) fixed on candidate branch |
+| **2. Diagnostic Baseline** | `916c89ab2fdbdb9bf90bea32c7776479f9448405` | `8dd68102...` | `55c899e4...` | `1` | 281 | **100% BYTE-FOR-BYTE IDENTICAL** across all 281 diagnostics |
+| **3. Trusted Release** | `5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb` | `8dd68102...` | `55c899e4...` | `1` | 281 | **100% BYTE-FOR-BYTE IDENTICAL** across all 281 diagnostics |
+| **4. Current Candidate HEAD** | `f5027c393ce817ba8f7e2403d7435941e31962a8` | `8dd68102...` | `55c899e4...` | `1` | 281 | Reference candidate |
+| **5. Reference origin/main** | `3376ed6914faefee5718728d65ba199ce75ab348` | `4fd243b9...` | `55c899e4...` | `1` | 281 | 269 diagnostics byte-identical; 12 diagnostics in `src/components/store/CollectionView.tsx` identical in TS code and message but shifted by 1 line due to removal of an unused import (`3376ed69`) |
+
+### 10.3 Resolution of Reporting Discrepancies
+The discrepancy between previous reports (218 route / 57 component / 6 lib vs 244 route / 37 component) arose solely from differing subjective manual aggregation of storefront page components in `src/components/store/` (e.g. `PageView.tsx`, `ProductView.tsx`, `StoreHomepage.tsx`, `StorefrontPage.tsx`).
+The exact, mechanical directory distribution across the 281 diagnostics is:
+- **`src/routes/`**: 15 files, 198 diagnostics
+- **`src/components/`**: 8 files, 72 diagnostics (65 in storefront page view components, 5 in product card, 1 in admin shell, 1 in store test)
+- **`src/lib/`**: 6 files, 11 diagnostics (storefront, themes, and global blocks server functions)
+- **DICE Subsystem Files (`src/lib/dice/**`, `scripts/*dice*`)**: **0 diagnostics**
+
+### 10.4 DICE-Specific TypeScript Project Boundary
+Direct verification of the DICE TypeScript compilation boundary:
+```bash
+bunx tsgo --project tsconfig.dice.json --noEmit
+```
+- **Exit Status**: `0` (`PASS`)
+- **Diagnostic Count**: `0`
+- **Coverage**: All core DICE modules, adapters (`lean4`, `tla`, `bend2`, `bombadil`, `vitest`), and test suites under `src/lib/dice/` are fully included.
+- **Suppression Audit**: Zero `@ts-ignore`, zero `@ts-nocheck`, and zero `@ts-expect-error` directives in `src/lib/dice/`.
+- **Finding**: DICE code is 100% type-sound; zero compiler errors originate from DICE.
+
+### 10.5 Route Generation & Production Build Consistency
+- **Route Artifact Immutability**: `src/routeTree.gen.ts` is committed under Git and begins with `// @ts-nocheck`. Its SHA-256 fingerprint (`e6e3e9b289b3a2c2155212bfd2da746c231ab6b0779b24721d05ee85e3104d21`) is identical across all five revisions. Route re-generation is not required prior to typechecking.
+- **Production Build Status**: `bun run build` completed with **Exit Code 0** (`PASS`), emitting `.output/nitro.json` and all SSR server/client bundles without modifying tracked repository files (`git status` remains clean).
+
+### 10.6 CircleCI Gate Dependency Analysis & Truthful Accounting
+Inspection of `.circleci/config.yml` workflows reveals:
+1. `dice-attestation-signing` strictly requires all mandatory qualification jobs:
+   ```yaml
+   requires:
+     - lint-typecheck
+     - unit-contract
+     - dice-qualification
+     - scan
+     - build
+     - e2e-critical
+     - e2e-security
+     - e2e-levelb-production
+     - e2e-seven-templates
+     - bombadil-staging
+     - plugin-storefront-gate
+   ```
+2. Because `lint-typecheck` fails on the 281 pre-existing application diagnostics (exit code 1), CircleCI fails the workflow at `lint-typecheck`. Downstream jobs requiring `lint-typecheck` (`dice-attestation-signing`) are marked `BLOCKED` (never run).
+3. Furthermore, `dice-attestation-signing` is restricted by branch filters:
+   ```yaml
+   filters:
+     branches:
+       only:
+         - main
+         - frame30
+   ```
+   Candidate branches (`dice/complete-implementation`) are blocked from invoking `dice-attestation-signing` by both the branch filter and the upstream `lint-typecheck` failure.
+
+### 10.7 Governance Outcome & Policy Determination
+- **Applicable Outcome**: **Outcome B — All diagnostics are demonstrably pre-existing and unchanged.**
+- **Classification**: Candidate typecheck status is **`BASELINE-CONFORMANT`** (distinct from full compiler `PASS`).
+- **Contract Boundary**: `features/contracts/F30-DICE-COMPLETE.json` currently specifies `"bun run typecheck"` without an explicit baseline-differential mechanism.
+- **Human Authority Decision**: Because an autonomous agent may not weaken compiler gates or approve baseline exceptions unilaterally (SDLC Law 0.1 & Inviolable Invariant 1), the following minimal governance options are submitted to the Human Specification Authority (`@devrahmanbd`):
+  1. **Option 1 (Baseline-Differential Gate Ratification)**: Human authority approves amending `F30-DICE-COMPLETE.json` to allow differential baseline typechecking (asserting 0 new diagnostics introduced over `5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb`), enabling CI qualification on `dice/complete-implementation`.
+  2. **Option 2 (Pre-requisite Application Repair)**: Human authority directs remediation of the 281 out-of-scope application diagnostics in `src/routes/` and `src/components/` under a separate authorized feature contract before qualifying DICE on protected branches.
+
+---
+
+## 11. Recomputed External Trust Anchors
+
+Recomputed directly from the approved trusted release (`5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb`):
+
+| Trust Anchor Attribute | Approved Trusted Release (`5c3b0726`) | Candidate HEAD (`f5027c39`) | Status in CircleCI Context |
+|---|---|---|---|
+| **Trusted Commit SHA** | `5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb` | `f5027c393ce817ba8f7e2403d7435941e31962a8` | Pinned in pipeline / launcher |
+| **Trusted Tree SHA** | `c03c2ecf6715b681d1e1ac748b31feada764e97d` | `00b2f9f4cd079a1287fa8e0b854c163a3d965a02` | Verified against git tree |
+| **Launcher Script SHA-256** | `e11517728899b8b8e0f57eb28ad61e3f6cbb4ec1318c01c83f6431b2cdfcf6be` | `e11517728899b8b8e0f57eb28ad61e3f6cbb4ec1318c01c83f6431b2cdfcf6be` | Unchanged |
+| **Root-of-Trust Digest** | `db17b09623c27c1eb16a687ab25dd1e59fc5cb8dd81270b0a4e646f4c1a46b18` | `e95857d256be250a2269d667ced4071dfd73302d2d44e5b309639697e4277891` | Candidate updated cache logic |
+| **Signer Distribution Digest (`DICE_EXPECTED_SIGNER_DIST_DIGEST`)** | `55b5066a45c53287be15fbb776b8a638a0414658dc5bea77cc923220709db851` | `ea0e3d69b3c1df0fff27cff2fd7c65af0c5f0d5e1fb0e9a8d0444d4cc6a76a0b` | **`BLOCKED`** (Context pending administrator creation) |
+| **Test Policy Digest (`DICE_EXPECTED_TEST_POLICY_DIGEST`)** | `eb447909aff1afe029c5207e069259690a7975245926dd7ae0caef01b789380d` | `eb447909aff1afe029c5207e069259690a7975245926dd7ae0caef01b789380d` | **`BLOCKED`** (Context pending administrator creation) |
+| **Pipeline Config Digest (`DICE_EXPECTED_PIPELINE_CONFIG_DIGEST`)** | `89b622542de8be1a9efe304c17fa3dbb9e4af6dcf22f0f1da864ed130b35b5d7` | `becbf599136f1a70f46c0d8383a3ea379f312fb677f68b1b6cdc73bd2d2e79fd` | **`BLOCKED`** (Context pending administrator creation) |
+
+---
+
+## 12. Conclusion
+
+The Stage 5 investigation conclusively demonstrates:
+1. **Zero New Diagnostics in DICE**: All 281 TypeScript diagnostics are pre-existing application defects, byte-for-byte identical to baseline `916c89ab` and release `5c3b0726`.
+2. **DICE TypeScript Boundary**: Passes with zero errors (`bunx tsgo --project tsconfig.dice.json --noEmit` -> code 0).
+3. **Build Soundness**: Production build is 100% functional (exit code 0).
+4. **CI Blockage Truth**: The upstream `lint-typecheck` job failure mechanically blocks `dice-attestation-signing` in CircleCI.
+5. **Operational State**: The implementation is functionally complete; final production signing awaits human authority governance resolution on baseline typecheck policy and CircleCI Context provisioning.
