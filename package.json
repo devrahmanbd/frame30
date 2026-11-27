@@ -17,6 +17,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "typecheck": "tsgo --noEmit",
+    "static:baseline": "node scripts/dice-baseline-differential.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:theme-compliance": "vitest run src/lib/themes/theme-compliance.test.ts",

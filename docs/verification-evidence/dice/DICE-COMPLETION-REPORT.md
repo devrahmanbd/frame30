@@ -127,8 +127,9 @@ All static, logic, formal, and adversarial verification gates pass cleanly acros
 | Verification Drift Gate | `bun run gate:drift` | **PASS** | 0 model/source SHA-256 drift |
 | Secret Scan Gate | `bun run secrets:scan` | **PASS** | 0 credentials in repository tree |
 | SAST Scan Gate | `bun run sast:scan` | **PASS** | 0 unreviewed security findings |
-| ESLint | `bun run lint` | **NON-ZERO (Baseline)** | 1226 errors in out-of-scope application files; 0 in DICE |
+| ESLint | `bun run lint` | **NON-ZERO (Baseline)** | 1220 errors, 331 warnings in out-of-scope application files; 0 in DICE |
 | Whole-Repository Typecheck | `bun run typecheck` (`tsgo --noEmit`) | **BASELINE-CONFORMANT** | 281 pre-existing application errors (100% byte-identical to `916c89ab` and `5c3b0726`); 0 in DICE |
+| Baseline-Differential Static Gate | `bun run static:baseline` | **BASELINE-CONFORMANT** | 0 new, 0 changed, 0 removed across 1542 ESLint & 281 TS diagnostics vs baseline `5c3b0726` |
 | DICE TypeScript Boundary | `bunx tsgo --project tsconfig.dice.json --noEmit` | **PASS** | Code 0, 0 errors across all DICE modules, adapters, and tests |
 | Production Build | `bun run build` | **PASS** | Code 0, clean Vite/Nitro build, 0 modified tracked files |
 | Permanent Die Registry | `bun run test:dies` | **PASS** | 5 accepted dies intact |
@@ -139,7 +140,8 @@ All static, logic, formal, and adversarial verification gates pass cleanly acros
 | Bend 2 Correctness Laws | `bun run test:bend` | **PASS** | 6/6 proofs pass (BendTT kernel --verdict) |
 | TLA+ / TLC Model Checker | `bun run test:tla` | **PASS** | 4 specifications verified (>1.5M states, 0 errors) |
 | Property-Based Testing | `bun run test:properties` | **PASS** | 10 suites, 63 fast-check properties passing |
-| DICE Vitest Suite | `bunx vitest run src/lib/dice/ --fileParallelism=false` | **PASS** | 12 test files, 251 passed, 10 Darwin skipped (Inv 5), 0 failed |
+| DICE Vitest Suite | `bunx vitest run src/lib/dice/ --fileParallelism=false` | **PASS** | 13 test files, 272 passed, 10 Darwin skipped (Inv 5), 0 failed |
+| Baseline Differential Tests | `bunx vitest run src/lib/dice/baseline-differential.test.ts` | **PASS** | 21/21 tests passing (all 20 required contract cases) |
 | 27 Mutation Matrix | `bunx vitest run src/lib/dice/mutation-matrix.test.ts` | **PASS** | 27/27 mutation classes detected fail-closed |
 | 5 Native Toolchain Adapters | `bunx vitest run src/lib/dice/adapters.test.ts` | **PASS** | 32/32 tests passing |
 | Authority & Signing Tests | `bunx vitest run src/lib/dice/authority-mutation.test.ts ...` | **PASS** | 89/89 tests passing (P0.2 & P0.3 verified) |

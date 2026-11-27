@@ -78,6 +78,24 @@ jobs:
           name: Harness registry (schema check, no execution)
           command: node harness/run.mjs --list > /dev/null
 
+  dice-static-baseline-preview:
+    executor: bun-executor
+    steps:
+      - checkout
+      - setup-bun
+      - run:
+          name: Fetch diagnostic baseline commit
+          command: |
+            git fetch origin 5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb || true
+      - run:
+          name: Execute baseline-differential static analysis (non-authoritative preview)
+          command: |
+            mkdir -p artifacts/dice-static-baseline
+            bun run static:baseline --report-dir=artifacts/dice-static-baseline
+      - store_artifacts:
+          path: artifacts/dice-static-baseline
+          destination: dice-static-baseline
+
   unit-contract:
     executor: bun-executor
     steps:
@@ -739,6 +757,7 @@ workflows:
   gates:
     jobs:
       - lint-typecheck
+      - dice-static-baseline-preview
       - unit-contract
       - dice-qualification
       - scan

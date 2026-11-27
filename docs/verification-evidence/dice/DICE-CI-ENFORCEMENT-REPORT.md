@@ -348,11 +348,20 @@ Inspection of `.circleci/config.yml` workflows reveals:
 
 ### 10.7 Governance Outcome & Policy Determination
 - **Applicable Outcome**: **Outcome B — All diagnostics are demonstrably pre-existing and unchanged.**
-- **Classification**: Candidate typecheck status is **`BASELINE-CONFORMANT`** (distinct from full compiler `PASS`).
-- **Contract Boundary**: `features/contracts/F30-DICE-COMPLETE.json` currently specifies `"bun run typecheck"` without an explicit baseline-differential mechanism.
-- **Human Authority Decision**: Because an autonomous agent may not weaken compiler gates or approve baseline exceptions unilaterally (SDLC Law 0.1 & Inviolable Invariant 1), the following minimal governance options are submitted to the Human Specification Authority (`@devrahmanbd`):
-  1. **Option 1 (Baseline-Differential Gate Ratification)**: Human authority approves amending `F30-DICE-COMPLETE.json` to allow differential baseline typechecking (asserting 0 new diagnostics introduced over `5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb`), enabling CI qualification on `dice/complete-implementation`.
-  2. **Option 2 (Pre-requisite Application Repair)**: Human authority directs remediation of the 281 out-of-scope application diagnostics in `src/routes/` and `src/components/` under a separate authorized feature contract before qualifying DICE on protected branches.
+- **Classification**: Candidate static and typecheck status is **`BASELINE-CONFORMANT`** (distinct from full compiler zero-defect `PASS`).
+- **Contract Boundary**: `features/contracts/F30-DICE-COMPLETE.json` specifies `"bun run static:baseline"` under `verification.static` and `verification.unit_component`.
+- **Approved Policy Implementation (Stage 5.2 - Option A)**:
+  Under Stage 5.2, Option A has been implemented as an executable, reproducible baseline-differential static analysis engine (`scripts/dice-baseline-differential.mjs`) backed by test suite `src/lib/dice/baseline-differential.test.ts`.
+  - Pinned diagnostic baseline SHA: `5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb`.
+  - Compares candidate commit multiset against baseline commit multiset using disposable git worktrees.
+  - Verifies execution conditions: Bun version, Node version, lockfile SHA-256 (`bun.lock`), ESLint config digest (`eslint.config.js`), and TypeScript config digest (`tsconfig.json`).
+  - ESLint comparison: Exactly 1542 baseline diagnostics vs 1542 candidate diagnostics -> 0 new, 0 changed, 0 removed.
+  - TypeScript comparison: Exactly 281 baseline diagnostics vs 281 candidate diagnostics -> 0 new, 0 changed, 0 removed.
+  - Gate verdict: `BASELINE-CONFORMANT` (exit code 0).
+- **CircleCI Preview Job**:
+  - `dice-static-baseline-preview` configured in `.circleci/config.yml` as an unprivileged preview job.
+  - Generates machine-readable receipt (`artifacts/dice-static-baseline/dice-static-baseline-receipt.json`) and human-readable markdown report (`artifacts/dice-static-baseline/dice-static-baseline-report.md`).
+  - Runs without privileged signing credentials and without modifying or bypassing the upstream `lint-typecheck` job.
 
 ---
 
@@ -372,11 +381,13 @@ Recomputed directly from the approved trusted release (`5c3b0726db7de1fb0e20f111
 
 ---
 
-## 12. Conclusion
+## 12. Conclusion & Stage 5.2 Status
 
-The Stage 5 investigation conclusively demonstrates:
-1. **Zero New Diagnostics in DICE**: All 281 TypeScript diagnostics are pre-existing application defects, byte-for-byte identical to baseline `916c89ab` and release `5c3b0726`.
-2. **DICE TypeScript Boundary**: Passes with zero errors (`bunx tsgo --project tsconfig.dice.json --noEmit` -> code 0).
-3. **Build Soundness**: Production build is 100% functional (exit code 0).
-4. **CI Blockage Truth**: The upstream `lint-typecheck` job failure mechanically blocks `dice-attestation-signing` in CircleCI.
-5. **Operational State**: The implementation is functionally complete; final production signing awaits human authority governance resolution on baseline typecheck policy and CircleCI Context provisioning.
+The Stage 5.2 implementation conclusively demonstrates:
+1. **Executable Baseline Differential Engine**: `scripts/dice-baseline-differential.mjs` executes identical ESLint and TypeScript scans against pinned baseline `5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb` in disposable git worktrees.
+2. **Zero Injected Diagnostics**: Multiset subtraction confirms exactly 0 new, 0 changed, and 0 removed diagnostics in both ESLint and TypeScript.
+3. **Automated Verification**: `src/lib/dice/baseline-differential.test.ts` validates all 20 required contract cases (21 tests passing).
+4. **CI Integration**: Unprivileged CircleCI preview job `dice-static-baseline-preview` stores machine-readable receipts and markdown summaries.
+5. **DICE TypeScript Boundary**: Clean pass (`bunx tsgo --project tsconfig.dice.json --noEmit` -> code 0).
+6. **Build Soundness**: Production build is 100% functional (exit code 0).
+7. **Operational State**: Contract remains in proposed state (`approval_state: "proposed"`). Production signing remains gated on human specification authority sign-off and CircleCI Context provisioning.

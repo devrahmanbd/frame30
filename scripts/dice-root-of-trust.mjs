@@ -132,7 +132,11 @@ export function resolveTrustedLauncherKey(keyId, options = {}) {
         k.status === "active",
     );
     if (found) {
-      if (!allowTestKeys && (found.keyid === TEST_LAUNCHER_KEY_ID || found.key_id === TEST_LAUNCHER_KEY_ID)) {
+      if (
+        !allowTestKeys &&
+        (found.keyid === TEST_LAUNCHER_KEY_ID ||
+          found.key_id === TEST_LAUNCHER_KEY_ID)
+      ) {
         return null;
       }
       return found;
@@ -162,7 +166,11 @@ export function resolveTrustedLauncherKey(keyId, options = {}) {
             k.status === "active",
         );
         if (found) {
-          if (!allowTestKeys && (found.keyid === TEST_LAUNCHER_KEY_ID || found.key_id === TEST_LAUNCHER_KEY_ID)) {
+          if (
+            !allowTestKeys &&
+            (found.keyid === TEST_LAUNCHER_KEY_ID ||
+              found.key_id === TEST_LAUNCHER_KEY_ID)
+          ) {
             return null;
           }
           return found;

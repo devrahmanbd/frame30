@@ -48,10 +48,12 @@
       "scripts/dice-qualify.mjs",
       "scripts/dice-evidence.mjs",
       "scripts/dice-plan-generator.mjs",
+      "scripts/dice-baseline-differential.mjs",
       "scripts/extract-dependencies.mjs",
       "scripts/scope-guard.mjs"
     ],
     "files": [
+      "package.json",
       "features/contracts/F30-DICE-COMPLETE.json",
       "docs/governance/dice-architecture.md",
       "scripts/dice-root-of-trust.mjs",
@@ -62,8 +64,10 @@
       "scripts/dice-qualify.mjs",
       "scripts/dice-evidence.mjs",
       "scripts/dice-plan-generator.mjs",
+      "scripts/dice-baseline-differential.mjs",
       "scripts/extract-dependencies.mjs",
       "scripts/scope-guard.mjs",
+      "src/lib/dice/baseline-differential.test.ts",
       "src/lib/dice/adapters/types.ts",
       "src/lib/dice/adapters/lean4-adapter.ts",
       "src/lib/dice/adapters/tla-adapter.ts",
@@ -139,6 +143,7 @@
     ]
   },
   "allowed_file_changes": [
+    "package.json",
     "features/contracts/F30-DICE-COMPLETE.json",
     "docs/governance/dice-architecture.md",
     "scripts/dice-root-of-trust.mjs",
@@ -149,9 +154,11 @@
     "scripts/dice-qualify.mjs",
     "scripts/dice-evidence.mjs",
     "scripts/dice-plan-generator.mjs",
+    "scripts/dice-baseline-differential.mjs",
     "scripts/extract-dependencies.mjs",
     "scripts/scope-guard.mjs",
     "scripts/mutation-test.mjs",
+    "src/lib/dice/baseline-differential.test.ts",
     "src/lib/dice/adapters/**",
     "src/lib/dice/adapters.test.ts",
     "src/lib/dice/mutation-matrix.test.ts",
@@ -219,11 +226,13 @@
     "static": [
       "bun run gate:scope",
       "bun run gate:drift",
+      "bun run static:baseline",
       "bun run lint",
       "bun run typecheck",
       "bun run secrets:scan"
     ],
     "unit_component": [
+      "bunx vitest run src/lib/dice/baseline-differential.test.ts",
       "bunx vitest run src/lib/dice/root-of-trust.test.ts",
       "bunx vitest run src/lib/dice/sandbox.test.ts",
       "bunx vitest run src/lib/dice/qualification.test.ts",
@@ -286,5 +295,9 @@
       "DIE-005-builder-widget-ast"
     ]
   },
+  "required_acceptance": [
+    "Baseline-differential ESLint acceptance: Execute full ESLint scan ('bun run lint') against diagnostic baseline commit 5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb and candidate revision using identical toolchains, dependency lockfile (bun.lock), and approved configuration; compare exact diagnostic identities (file, line, column, rule ID, message); any new or changed diagnostic BLOCKS qualification; removed diagnostics are permitted; unchanged diagnostics are classified as BASELINE-CONFORMANT, never PASS; missing baseline, scanner failure, incomplete output, or diagnostic parsing failure must BLOCK; full scan is preserved with zero suppressions, filters, or gate weakening.",
+    "Baseline-differential TypeScript acceptance: Execute full TypeScript scan ('bun run typecheck') against diagnostic baseline commit 5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb and candidate revision using identical toolchains, dependency lockfile (bun.lock), and approved configuration; compare exact diagnostic identities (file, line, column, diagnostic code, complete message); any new or changed diagnostic BLOCKS qualification; removed diagnostics are permitted; unchanged diagnostics are classified as BASELINE-CONFORMANT, never PASS; missing baseline, scanner failure, incomplete output, or diagnostic parsing failure must BLOCK; full scan is preserved with zero suppressions, filters, or gate weakening."
+  ],
   "approval_state": "proposed"
 }

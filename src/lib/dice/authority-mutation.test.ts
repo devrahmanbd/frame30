@@ -2940,12 +2940,17 @@ workflows:
       });
 
       // Candidate-controlled workspace modifies .circleci/config.yml before ConfigHashGuard
-      const candidateTamperedRepo = join(p03TempDir, "candidate-tampered-pipeline");
+      const candidateTamperedRepo = join(
+        p03TempDir,
+        "candidate-tampered-pipeline",
+      );
       if (existsSync(candidateTamperedRepo)) {
         rmSync(candidateTamperedRepo, { recursive: true, force: true });
       }
       mkdirSync(join(candidateTamperedRepo, ".circleci"), { recursive: true });
-      mkdirSync(join(candidateTamperedRepo, "registries/dice"), { recursive: true });
+      mkdirSync(join(candidateTamperedRepo, "registries/dice"), {
+        recursive: true,
+      });
       symlinkSync(join(repoRoot, ".git"), join(candidateTamperedRepo, ".git"));
 
       // Tampered pipeline config modifying execution steps
@@ -2994,8 +2999,12 @@ workflows:
       );
 
       // Zero attestations produced
-      expect(existsSync(join(evidenceDir, "test-attestation.dsse.json"))).toBe(false);
-      expect(existsSync(join(evidenceDir, "attestation.dsse.json"))).toBe(false);
+      expect(existsSync(join(evidenceDir, "test-attestation.dsse.json"))).toBe(
+        false,
+      );
+      expect(existsSync(join(evidenceDir, "attestation.dsse.json"))).toBe(
+        false,
+      );
     });
   });
 });
