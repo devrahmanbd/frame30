@@ -712,22 +712,19 @@ describe("DICE Baseline-Differential Static Gates (Stage 5.2 Option A)", () => {
 
   // 5. Candidate identity: rejects dirty working tree when candidate SHA is inferred
   it("Stage 5.2.1.5: rejects dirty working tree with BLOCK when candidate SHA is inferred", async () => {
-    // In a test environment with simulated dirty git status
+    // Create an isolated git repo with an uncommitted file
+    const dirtyRepo = join(tmpRoot, "dirty-git-repo");
+    mkdirSync(dirtyRepo, { recursive: true });
+
     const report = await runDifferentialComparison({
-      contractPath: "features/contracts/F30-DICE-COMPLETE.json",
-      baselineSha: "5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb",
-      candidateSha: null, // inferred from repoRoot
-      repoRoot: process.cwd(), // actual working tree if dirty or checked
+      baselineDir,
+      candidateDir,
+      repoRoot: dirtyRepo,
+      candidateSha: null, // trigger inference from repoRoot
+      skipGitVerify: true,
     });
 
-    // If working tree has uncommitted modifications, it must return BLOCK
-    // We also test explicit clean worktree bypass by passing candidateSha
-    if (report.error && report.error.includes("uncommitted modifications")) {
-      expect(report.finalDisposition).toBe("BLOCK");
-      expect(report.exitCode).toBe(1);
-    } else {
-      // If working tree is clean, it proceeds normally
-      expect(report.finalDisposition).toBeDefined();
-    }
+    expect(report.finalDisposition).toBe("BLOCK");
+    expect(report.exitCode).toBe(1);
   });
 });
