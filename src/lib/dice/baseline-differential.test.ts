@@ -637,9 +637,9 @@ describe("DICE Baseline-Differential Static Gates (Stage 5.2 Option A)", () => {
   // 3. Strict ESLint parsing
   it("Stage 5.2.1.3: strictly validates ESLint entries, messages array, severity, and totals", () => {
     // Missing/invalid file entry
-    expect(() => parseEslintDiagnostics(JSON.stringify([null]), "/repo")).toThrow(
-      /file entry at index 0 is not a valid file object/,
-    );
+    expect(() =>
+      parseEslintDiagnostics(JSON.stringify([null]), "/repo"),
+    ).toThrow(/file entry at index 0 is not a valid file object/);
     expect(() =>
       parseEslintDiagnostics(JSON.stringify([{ filePath: "" }]), "/repo"),
     ).toThrow(/file entry at index 0 is not a valid file object/);
