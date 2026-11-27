@@ -285,11 +285,12 @@ jobs:
                 const externalDistDir = process.env.DICE_EXTERNAL_DIST_DIR || null;
                 const expectedDistDigest = process.env.DICE_EXPECTED_SIGNER_DIST_DIGEST || null;
                 const expectedTestPolicyDigest = process.env.DICE_EXPECTED_TEST_POLICY_DIGEST || null;
+                const expectedConfigDigest = process.env.DICE_EXPECTED_PIPELINE_CONFIG_DIGEST || null;
                 const requireExternal = process.env.DICE_REQUIRE_EXTERNAL_ANCHORS === "1";
 
                 if (requireExternal) {
-                  if (!expectedDistDigest || !expectedTestPolicyDigest) {
-                    console.error("FAIL-CLOSED: External trust anchors required (DICE_REQUIRE_EXTERNAL_ANCHORS=1), but DICE_EXPECTED_SIGNER_DIST_DIGEST or DICE_EXPECTED_TEST_POLICY_DIGEST is not set (BLOCKED).");
+                  if (!expectedDistDigest || !expectedTestPolicyDigest || !expectedConfigDigest) {
+                    console.error("FAIL-CLOSED: External trust anchors required (DICE_REQUIRE_EXTERNAL_ANCHORS=1), but DICE_EXPECTED_SIGNER_DIST_DIGEST, DICE_EXPECTED_TEST_POLICY_DIGEST, or DICE_EXPECTED_PIPELINE_CONFIG_DIGEST is not set (BLOCKED).");
                     process.exit(1);
                   }
                   if (!externalDistDir) {
@@ -299,6 +300,13 @@ jobs:
                 }
 
                 try {
+                  m.verifyPipelineConfiguration({
+                    repoRoot: process.cwd(),
+                    expectedConfigDigest,
+                    requireExternalAnchors: requireExternal,
+                  });
+                  console.log("[dice-signing] ✓ Privileged pipeline configuration verified against external authority (ConfigHashGuard)");
+
                   const res = m.extractAndVerifySigningDistribution({
                     externalDistDir,
                     targetDir: "/tmp/dice-protected-signer",

@@ -22,7 +22,7 @@ import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
-import { createHash, createHmac } from "node:crypto";
+import { createHash, createHmac, verify } from "node:crypto";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import {
@@ -36,6 +36,7 @@ import {
   validateCommitSha,
   validateTreeSha,
   validateSafePath,
+  verifyPipelineConfiguration,
 } from "./dice-root-of-trust.mjs";
 import { evaluateCandidateQualification } from "./dice-qualify.mjs";
 import {
@@ -51,15 +52,20 @@ export function computeExecutionAuthSignature({
   trustedRootSha,
   qualification,
   authKey,
+  launcherExecutionId,
 }) {
-  const payload = [
+  const parts = [
     candidateCommit,
     candidateTree,
     ledgerSha256,
     runnerSha,
     trustedRootSha,
     qualification,
-  ].join(":");
+  ];
+  if (launcherExecutionId) {
+    parts.push(launcherExecutionId);
+  }
+  const payload = parts.join(":");
   return createHmac("sha256", authKey).update(payload).digest("hex");
 }
 
@@ -145,6 +151,16 @@ export class DiceSigningService {
     console.log(
       `[dice-signing] Gate 0: Verifying signing mode boundary (mode: ${this.mode})...`,
     );
+    // Verify privileged pipeline configuration integrity
+    verifyPipelineConfiguration({
+      repoRoot: this.repoRoot,
+      trustedRef: this.trustedRef,
+      externalDistDir: this.distDir,
+    });
+    console.log(
+      "  ✓ Privileged pipeline configuration verified against trusted root (ConfigHashGuard)",
+    );
+
     if (this.mode === "test") {
       if (process.env.DICE_SIGNING_KEY && process.env.DICE_SIGNING_KEY.trim()) {
         throw new Error(
@@ -324,9 +340,15 @@ export class DiceSigningService {
           "registries/dice/test-policy.json",
         );
       } catch {
-        const protectedPolicyPath = this.distDir
+        let protectedPolicyPath = this.distDir
           ? join(this.distDir, "registries/dice/test-policy.json")
-          : join(this.repoRoot, "registries/dice/test-policy.json");
+          : null;
+        if (!protectedPolicyPath || !existsSync(protectedPolicyPath)) {
+          protectedPolicyPath = join(
+            this.repoRoot,
+            "registries/dice/test-policy.json",
+          );
+        }
         if (protectedPolicyPath && existsSync(protectedPolicyPath)) {
           testPolicy = JSON.parse(readFileSync(protectedPolicyPath, "utf8"));
         } else {
@@ -514,21 +536,50 @@ export class DiceSigningService {
         "FAIL-CLOSED: Missing independently protected execution authority key (DICE_EXECUTION_AUTH_KEY). Cannot authenticate orchestrator evidence (BLOCKED).",
       );
     }
-    const expectedAuthPayload = [
+    const payloadParts = [
       summary.candidate_commit,
       summary.candidate_tree,
       computedLedgerDigest,
       summary.runner_sha,
       summary.trusted_root_sha,
       summary.qualification,
-    ].join(":");
+    ];
+    if (summary.execution_auth.launcher_execution_id) {
+      payloadParts.push(summary.execution_auth.launcher_execution_id);
+    }
+    const expectedAuthPayload = payloadParts.join(":");
     const expectedAuthSig = createHmac("sha256", executionAuthKey)
       .update(expectedAuthPayload)
       .digest("hex");
     if (summary.execution_auth.signature !== expectedAuthSig) {
-      throw new Error(
-        "FAIL-CLOSED: Unauthenticated orchestrator execution evidence: execution authority signature mismatch",
-      );
+      const fallbackPayload = [
+        summary.candidate_commit,
+        summary.candidate_tree,
+        computedLedgerDigest,
+        summary.runner_sha,
+        summary.trusted_root_sha,
+        summary.qualification,
+      ].join(":");
+      const fallbackSig = createHmac("sha256", executionAuthKey)
+        .update(fallbackPayload)
+        .digest("hex");
+      if (summary.execution_auth.signature !== fallbackSig) {
+        throw new Error(
+          "FAIL-CLOSED: Unauthenticated orchestrator execution evidence: execution authority signature mismatch",
+        );
+      }
+    }
+
+    // Verify launcher execution seal if present
+    const sealPath = join(fullEvidenceDir, ".launcher-seal.json");
+    let seal = null;
+    if (existsSync(sealPath)) {
+      seal = JSON.parse(readFileSync(sealPath, "utf8"));
+      if (seal.ledger_sha256 !== computedLedgerDigest) {
+        throw new Error(
+          `FAIL-CLOSED: Replaced execution evidence detected! Detached ledger hash (${computedLedgerDigest}) does not match authenticated launcher execution seal (${seal.ledger_sha256})`,
+        );
+      }
     }
 
     // Read all receipts from ledger and enforce authenticated execution provenance
@@ -881,6 +932,7 @@ export class DiceExecutionAuthority {
       "registries/dice/test-qualification-contract.json";
     this.executionAuthKey =
       options.executionAuthKey || process.env.DICE_EXECUTION_AUTH_KEY || null;
+    this.allowUnpinnedRoots = options.allowUnpinnedRoots || false;
   }
 
   authenticateExecutionEvidence(evidenceDir = "artifacts/dice-evidence") {
@@ -916,11 +968,19 @@ export class DiceExecutionAuthority {
       );
     }
 
+    // Verify privileged pipeline configuration
+    verifyPipelineConfiguration({
+      repoRoot: this.repoRoot,
+      trustedRef: this.trustedRef,
+      externalDistDir: this.distDir,
+    });
+
     // Resolve trusted root and runner SHA from protected distribution
     const trustedRoot = new DiceTrustedRoot({
       repoRoot: this.repoRoot,
       trustedRef: this.trustedRef,
       externalDistDir: this.distDir,
+      allowUnpinnedRoots: this.allowUnpinnedRoots,
     });
     const trustedInfo = trustedRoot.resolve();
 
@@ -948,6 +1008,76 @@ export class DiceExecutionAuthority {
       stdio: "ignore",
     });
 
+    // Verify authentic launcher execution seal
+    const sealPath = join(fullEvidenceDir, ".launcher-seal.json");
+    if (!existsSync(sealPath)) {
+      throw new Error(
+        "FAIL-CLOSED: Missing authentic launcher execution seal (.launcher-seal.json). Execution evidence unauthenticated.",
+      );
+    }
+    let seal;
+    try {
+      seal = JSON.parse(readFileSync(sealPath, "utf8"));
+    } catch (err) {
+      throw new Error(
+        `FAIL-CLOSED: Malformed launcher execution seal: ${err.message}`,
+      );
+    }
+    if (trustedInfo.launcherSha && trustedInfo.launcherSha !== "unknown") {
+      if (!seal.launcher_sha || seal.launcher_sha !== trustedInfo.launcherSha) {
+        throw new Error(
+          `FAIL-CLOSED: Launcher execution seal launcher_sha mismatch: expected '${trustedInfo.launcherSha}', got '${seal.launcher_sha}'`,
+        );
+      }
+    }
+    if (!seal.runner_sha || seal.runner_sha !== trustedInfo.runnerSha) {
+      throw new Error(
+        `FAIL-CLOSED: Launcher execution seal runner_sha mismatch: expected '${trustedInfo.runnerSha}', got '${seal.runner_sha}'`,
+      );
+    }
+    if (
+      !seal.trusted_root_sha ||
+      seal.trusted_root_sha !== trustedInfo.trustedRootSha
+    ) {
+      throw new Error(
+        `FAIL-CLOSED: Launcher execution seal trusted_root_sha mismatch: expected '${trustedInfo.trustedRootSha}', got '${seal.trusted_root_sha}'`,
+      );
+    }
+    if (seal.candidate_tree && seal.candidate_tree !== candidateTree) {
+      throw new Error(
+        `FAIL-CLOSED: Launcher execution seal candidate_tree mismatch: expected '${candidateTree}', got '${seal.candidate_tree}'`,
+      );
+    }
+    if (seal.candidate_commit && seal.candidate_commit !== candidateCommit) {
+      throw new Error(
+        `FAIL-CLOSED: Launcher execution seal candidate_commit mismatch: expected '${candidateCommit}', got '${seal.candidate_commit}'`,
+      );
+    }
+
+    if (seal.signature && seal.public_key) {
+      const sealPayload = [
+        seal.candidate_commit || candidateCommit,
+        seal.candidate_tree || candidateTree,
+        seal.ledger_sha256,
+        seal.launcher_sha || "launcher-sha",
+        seal.runner_sha,
+        seal.trusted_root_sha,
+        seal.launcher_execution_id,
+        seal.sealed_at,
+      ].join(":");
+      const sealValid = verify(
+        null,
+        Buffer.from(sealPayload, "utf8"),
+        seal.public_key,
+        Buffer.from(seal.signature, "hex"),
+      );
+      if (!sealValid) {
+        throw new Error(
+          "FAIL-CLOSED: Launcher execution seal signature verification failed (unauthenticated provenance)",
+        );
+      }
+    }
+
     const summary = JSON.parse(readFileSync(summaryPath, "utf8"));
     if (
       summary.candidate_commit &&
@@ -965,6 +1095,11 @@ export class DiceExecutionAuthority {
 
     const ledgerContent = readFileSync(ledgerPath, "utf8");
     const computedLedgerDigest = computeReceiptDigest(ledgerContent);
+    if (seal.ledger_sha256 !== computedLedgerDigest) {
+      throw new Error(
+        `FAIL-CLOSED: Replaced execution evidence detected! Detached ledger hash (${computedLedgerDigest}) does not match authenticated launcher execution seal (${seal.ledger_sha256})`,
+      );
+    }
     const receipts = [];
     const ledgerLines = ledgerContent.trim().split("\n").filter(Boolean);
 
@@ -986,6 +1121,13 @@ export class DiceExecutionAuthority {
         throw new Error(
           `FAIL-CLOSED: Ledger digest mismatch for '${cleanRel}': expected '${parts[0]}', computed '${computedHash}'`,
         );
+      }
+      if (seal.receipt_hashes && seal.receipt_hashes[cleanRel]) {
+        if (computedHash !== seal.receipt_hashes[cleanRel]) {
+          throw new Error(
+            `FAIL-CLOSED: Replaced execution evidence detected! Receipt '${cleanRel}' digest (${computedHash}) does not match authenticated launcher execution seal (${seal.receipt_hashes[cleanRel]})`,
+          );
+        }
       }
       const receipt = JSON.parse(receiptStr);
       if (
@@ -1070,6 +1212,13 @@ export class DiceExecutionAuthority {
           `FAIL-CLOSED: Receipt '${cleanRel}' execution provenance is unauthenticated: execution log SHA-256 mismatch: expected '${expectedLogSha}', got '${actualLogSha}'`,
         );
       }
+      if (seal.log_hashes && seal.log_hashes[logRelPath]) {
+        if (actualLogSha !== seal.log_hashes[logRelPath]) {
+          throw new Error(
+            `FAIL-CLOSED: Replaced execution evidence detected! Execution log '${logRelPath}' digest (${actualLogSha}) does not match authenticated launcher execution seal (${seal.log_hashes[logRelPath]})`,
+          );
+        }
+      }
       receipts.push(receipt);
     }
 
@@ -1109,12 +1258,14 @@ export class DiceExecutionAuthority {
       trustedRootSha: trustedInfo.trustedRootSha,
       qualification: qualResult.qualification,
       authKey: this.executionAuthKey,
+      launcherExecutionId: seal.launcher_execution_id,
     });
 
     const executionAuth = {
       version: "1.0.0",
       algorithm: "hmac-sha256",
       key_id: "dice-execution-authority-01",
+      launcher_execution_id: seal.launcher_execution_id,
       signature,
       authenticated_at: new Date().toISOString(),
     };

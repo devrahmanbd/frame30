@@ -123,6 +123,8 @@ The hostile candidate replacement and trust boundary attack vectors are executed
 | **V-14**   | Malicious dependency installation hook (`package.json` postinstall) | Exfiltrate execution authority keys during `bun install` | Candidate dependency installation runs in unprivileged candidate job with zero access to signing or execution authority | **FAIL-CLOSED (Keys Unavailable to Package Hooks)** |
 | **V-15**   | Candidate-controlled shell command outside Bubblewrap | Search disk, `/proc`, or environment for execution credentials | Candidate environment has zero execution authority secrets provisioned | **FAIL-CLOSED (Zero Credentials in Environment)** |
 | **V-16**   | Candidate code attempting to invoke `DiceExecutionAuthority` directly without private key | Force generation of `execution_auth` HMAC token | `DiceExecutionAuthority` fails closed immediately if `DICE_EXECUTION_AUTH_KEY` is undefined; candidate has zero access | **FAIL-CLOSED (Rejected: 0 Attestations)** |
+| **V-17**   | Malicious candidate modification to `.circleci/config.yml` attempting to inject exfiltration commands into privileged `dice-attestation-signing` job | Steal `DICE_EXECUTION_AUTH_KEY` or `DICE_SIGNING_KEY` during privileged context execution | `ConfigHashGuard` in `scripts/dice-root-of-trust.mjs` and Gate 0 of `scripts/dice-signing-service.mjs` verifies `.circleci/config.yml` against `DICE_EXPECTED_PIPELINE_CONFIG_DIGEST`, external distribution, or trusted ref git tree before executing; fails closed | **FAIL-CLOSED (Rejected: 0 Attestations & Zero Keys Exfiltrated)** |
+| **V-18**   | Hostile post-execution evidence replacement: candidate commands running after `dice-launcher.mjs` replacing receipts, logs, and ledger with fabricated evidence | Bypass execution tests via internally-consistent fabricated evidence with correct runner & root hashes | Trusted `DiceLauncher` (`scripts/dice-launcher.mjs`) generates an immutable `.launcher-seal.json` containing an Ed25519 signature over candidate commit/tree, authentic ledger digest, runner SHA, launcher SHA, root SHA, receipt hashes, and log hashes; `DiceExecutionAuthority` and `DiceSigningService` independently verify seal signature and enforce `computedLedgerDigest === seal.ledger_sha256` | **FAIL-CLOSED (Rejected: 0 Attestations & Replaced Evidence Blocked)** |
 
 Every adversarial attack vector produces strictly **zero valid attestations**.
 
@@ -145,14 +147,28 @@ In Frame30 DICE, a command string, status string `PASS`, and exit code `0` do **
    - Upon independent verification, `DiceExecutionAuthority` computes an HMAC-SHA256 signature (`execution_auth`) over:
      `candidate_commit : candidate_tree : ledger_sha256 : runner_sha : trusted_root_sha : qualification`
      using the independently protected `DICE_EXECUTION_AUTH_KEY` provisioned strictly in the signing context.
-   - The downstream signing service (`DiceSigningService`) verifies this signature in Gate 5. If `execution_auth` is missing or invalid, signing fails closed immediately.
-3. **Candidate Tree Cleanliness (No Committed Artifacts)**:
+    - The downstream signing service (`DiceSigningService`) verifies this signature in Gate 5. If `execution_auth` is missing or invalid, signing fails closed immediately.
+3. **Privileged Pipeline Configuration Protection (`ConfigHashGuard`)**:
+   - The execution steps of the privileged context-bearing `dice-attestation-signing` job are protected against candidate modification.
+   - `verifyPipelineConfiguration(options)` (`ConfigHashGuard`) in `scripts/dice-root-of-trust.mjs` and Gate 0 of `DiceSigningService`:
+     - Compares candidate `.circleci/config.yml` digest against `DICE_EXPECTED_PIPELINE_CONFIG_DIGEST` (injected exclusively from the restricted administrator context `dice-trust-authority`), external distribution, or authoritative ref git tree.
+     - When external anchors are required (`DICE_REQUIRE_EXTERNAL_ANCHORS=1`), a missing expected digest fails closed (`BLOCKED`).
+     - Any adversarial modification to `.circleci/config.yml` attempting to inject exfiltration steps or commands into the privileged signing job triggers immediate fail-closed abort (`FAIL-CLOSED: Privileged pipeline configuration modified by candidate (ConfigHashGuard)`) before any secrets are accessed or commands are run.
+4. **Hostile Evidence Replacement Prevention (`.launcher-seal.json`)**:
+   - Protects against subsequent candidate commands in `dice-qualification` replacing receipts, logs, and ledger after trusted launcher execution.
+   - When `DiceLauncher` (`scripts/dice-launcher.mjs`) executes, it calculates digests of all receipts and logs produced during verification, generates an ephemeral Ed25519 signing keypair, signs a structured execution seal, and writes an immutable, read-only `.launcher-seal.json` containing:
+     `candidate_commit`, `candidate_tree`, `ledger_sha256`, `launcher_sha`, `runner_sha`, `trusted_root_sha`, `receipt_hashes`, and `log_hashes`.
+   - `DiceExecutionAuthority` and `DiceSigningService` independently verify the seal's cryptographic signature, runner identity, and verify that `computedLedgerDigest === seal.ledger_sha256`.
+   - If candidate attempts the 7-step hostile replacement scenario (running launcher, modifying receipts/logs, rebuilding ledger and summary), `DiceExecutionAuthority` detects that the rebuilt ledger digest does not match the authentic launcher seal and immediately throws:
+     `FAIL-CLOSED: Replaced execution evidence detected! Built ledger digest ... does not match authentic launcher seal ...`
+     Resulting in zero valid attestations issued.
+5. **Candidate Tree Cleanliness (No Committed Artifacts)**:
    - Gate 1 runs `git ls-tree <candidateTree> artifacts`. If the candidate commit contains an `artifacts` tree, signing immediately fails closed. Evidence must be produced by genuine upstream execution stages in the runner workspace, never committed to git.
-4. **Execution Log Capture on Disk**:
+6. **Execution Log Capture on Disk**:
    - The orchestrator writes full stdout/stderr streams to `logs/<obligation_id>.log` on disk and computes its SHA-256 digest (`log_sha256`). Gate 5 verifies that the log file exists on disk and its SHA-256 strictly matches the receipt.
-5. **Trusted Runner Identity Binding**:
+7. **Trusted Runner Identity Binding**:
    - The orchestrator binds `runner_sha` (the SHA-256 of the trusted launcher/evaluator extracted from `$ROOT_REF`) and `trusted_root_sha` (the immutable policy manifest digest) into every receipt. Gate 5 asserts that `receipt.execution_provenance.runner_sha === trustedInfo.runnerSha`.
-6. **Orchestrator Qualification Summary**:
+8. **Orchestrator Qualification Summary**:
    - Gate 4 validates `qualification-summary.json`, asserting that `runner_sha` and `trusted_root_sha` match the trusted root, `candidate_tree` matches the candidate tree, and `ledger_sha256` seals the receipt ledger.
 
 ### 2. Independent DSSE Verification from Protected Distribution
@@ -210,5 +226,5 @@ To prevent false claims of remote production activation, Frame30 DICE strictly d
 2. Change contract `features/contracts/F30-DICE-COMPLETE.json` remains strictly in `"approval_state": "proposed"`.
 3. Test qualification signing produces **only** non-authoritative `test-attestation.dsse.json` bearing `TEST_QUALIFIED_NON_AUTHORITATIVE`.
 4. Production attestation generation requires human specification authority (`@devrahmanbd`) to approve the contract and configure the restricted CircleCI Context `dice-trust-authority`.
-5. 100% of DICE unit, contract, property, mutation, and boundary test suites pass (234 passed, 10 Linux-specific sandbox skipped on Darwin).
+5. 100% of DICE unit, contract, property, mutation, and boundary test suites pass (247 passed, 10 Linux-specific sandbox skipped on Darwin across 12 test files).
 6. Scope guard (`gate:scope`) and verification drift (`gate:drift`) pass with zero errors.

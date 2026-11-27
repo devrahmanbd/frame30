@@ -71,15 +71,17 @@ artifacts/dice-evidence (Signed Attestation Bundle + Detached Digest Signature)
 - **Environment**: `DICE_REQUIRE_EXTERNAL_ANCHORS: "1"` enforced fail-closed.
 - **Access Boundary**: Possesses `DICE_SIGNING_KEY` credential in environment for production mode (inaccessible to `dice-qualification` worker). In test mode, `DICE_SIGNING_KEY` must be strictly absent.
 - **Isolation Guarantees**:
+  0. Pipeline Configuration Integrity Verification (`ConfigHashGuard`): Verifies `.circleci/config.yml` digest against `DICE_EXPECTED_PIPELINE_CONFIG_DIGEST` (injected via CircleCI Context `dice-trust-authority`), external distribution, or authoritative ref git tree before executing any commands. Prevents candidate-controlled PR steps from modifying the privileged context-bearing job.
   1. No candidate dependencies installed (`bun install` omitted).
   2. No candidate-controlled tests executed in signing context.
   3. External Signer Distribution (P0-1 & Stage 2.4.3): Pure Node runner extracts the protected signer distribution exclusively from an external authority directory (`externalDistDir` via `DICE_EXTERNAL_DIST_DIR`) and verifies it against externally established cryptographic digests:
      - Expected Distribution SHA-256: `8ae4ee24a51b6f02529a590c291cd8260c6e44d5eb58559e63944e917cbb62c1` (covers all 16 verifier scripts, registries, and schemas)
      - Expected Test Policy SHA-256: `eb447909aff1afe029c5207e069259690a7975245926dd7ae0caef01b789380d`
-  4. External Trust Authority Injection: `DICE_EXPECTED_SIGNER_DIST_DIGEST` and `DICE_EXPECTED_TEST_POLICY_DIGEST` are injected exclusively via CircleCI Context `dice-trust-authority`. Zero candidate-controlled fallback constants exist in `.circleci/config.yml`.
+  4. External Trust Authority Injection: `DICE_EXPECTED_SIGNER_DIST_DIGEST`, `DICE_EXPECTED_TEST_POLICY_DIGEST`, and `DICE_EXPECTED_PIPELINE_CONFIG_DIGEST` are injected exclusively via CircleCI Context `dice-trust-authority`. Zero candidate-controlled fallback constants exist in `.circleci/config.yml`.
   5. Fail-Closed Fallback Elimination:
      - Missing external anchors => `BLOCKED` (exit code 1).
      - Missing external distribution => `BLOCKED` (exit code 1).
+     - Modified pipeline config (`ConfigHashGuard`) => `FAIL` (exit code 1).
      - Incorrect distribution digest => `FAIL` (exit code 1).
      - Incorrect policy digest => `FAIL` (exit code 1).
      - Candidate-local signer substitution => `FAIL` (exit code 1).
@@ -188,6 +190,7 @@ To transition State 2, State 3, and State 4 from `BLOCKED` to `OPERATIONAL`:
 2. **Environment Variable Configuration**:
    - `DICE_EXPECTED_SIGNER_DIST_DIGEST`: `8ae4ee24a51b6f02529a590c291cd8260c6e44d5eb58559e63944e917cbb62c1` (covers all 16 signer distribution files).
    - `DICE_EXPECTED_TEST_POLICY_DIGEST`: `eb447909aff1afe029c5207e069259690a7975245926dd7ae0caef01b789380d` (covers `test-policy.json`).
+   - `DICE_EXPECTED_PIPELINE_CONFIG_DIGEST`: `<sha256 of approved .circleci/config.yml>` (pins privileged workflow configuration against candidate tampering via `ConfigHashGuard`).
    - `DICE_EXECUTION_AUTH_KEY`: `<cryptographic secret key>` (independently generated secret shared strictly between protected orchestrator and signing service).
    - `DICE_SIGNING_KEY`: (Production signing only; remains unset until human specification authority approves change contract).
 3. **Workflow Security Boundaries**:
@@ -243,6 +246,20 @@ To prevent candidate pull requests from tampering with the attestation verificat
    - Unauthorized signing keys (`FAIL-CLOSED: Key lacks authorized role`).
    - Revoked signing keys (`FAIL-CLOSED: Key was revoked`).
    - Candidate tree mismatches (`FAIL-CLOSED: Candidate tree SHA mismatch`).
+
+### 8.3 Protection Against Hostile Evidence Replacement (`.launcher-seal.json`)
+
+To prevent candidate commands running after `dice-launcher.mjs` in `dice-qualification` from mutating or replacing receipts:
+
+1. **Launcher Execution Sealing**: `DiceLauncher` (`scripts/dice-launcher.mjs`) generates an ephemeral Ed25519 keypair, hashes all receipts and logs, and signs an execution seal payload:
+   `candidate_commit : candidate_tree : ledger_sha256 : launcher_sha : runner_sha : trusted_root_sha : receipt_hashes : log_hashes`
+   The sealed payload and signature are written to `.launcher-seal.json` with permissions `0444` (read-only).
+2. **Independent Seal Verification**: `DiceExecutionAuthority` and `DiceSigningService` independently verify:
+   - Presence and cryptographic signature of `.launcher-seal.json`.
+   - Matching launcher SHA, runner SHA, and trusted root SHA.
+   - Matching individual receipt SHA-256 and log SHA-256 digests against `receipt_hashes` and `log_hashes`.
+   - Strict equality between the recalculated receipt ledger digest and `seal.ledger_sha256`.
+3. **Adversarial Replacement Detection**: If an adversary replaces receipts or logs and rebuilds the ledger, `DiceExecutionAuthority` detects that the rebuilt ledger digest does not match the authentic launcher seal and aborts fail-closed, yielding zero valid attestations.
 
 ---
 

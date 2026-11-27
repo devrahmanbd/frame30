@@ -26,7 +26,7 @@ The Frame30 Die-driven Invariant & Conformance Engine (DICE) implementation prog
 │ 1. Architecture & Integrity       │ COMPLETE (All 7 Inviolable Invariants enforced)    │
 │ 2. Native Verification Adapters   │ COMPLETE (Lean 4, TLA+/TLC, Bend 2, Bombadil)      │
 │ 3. 27-Class Adversarial Mutations │ QUALIFIED_PASS (27/27 Mutation Classes caught)     │
-│ 4. Unit & Contract Test Suites    │ QUALIFIED_PASS (12 suites, 185 pass, 0 fail)       │
+│ 4. Unit & Contract Test Suites    │ QUALIFIED_PASS (12 suites, 247 pass, 0 fail, 10 Darwin skipped) │
 │ 5. Formal Verification Proofs     │ QUALIFIED_PASS (Lean 32/32, Bend 6/6, TLC 4/4)     │
 │ 6. CircleCI Remote Pipeline       │ QUALIFIED_PASS (Protected launcher & signer wired) │
 │ 7. Local Host Execution (macOS)   │ QUALIFIED_BLOCKED (Live bwrap blocked by Inv 5)    │
@@ -86,6 +86,14 @@ All items mandated by the programme have been implemented, tested, and placed un
    - Machine-readable receipt serialization and Ed25519 keypair management.
    - Detached digest ledger verification.
 
+8. **Privileged Pipeline Configuration Protection (`ConfigHashGuard` in `scripts/dice-root-of-trust.mjs`)**:
+   - Enforces `DICE_EXPECTED_PIPELINE_CONFIG_DIGEST` (injected via restricted CircleCI Context `dice-trust-authority`) against candidate `.circleci/config.yml`.
+   - Rejects candidate modifications attempting to inject malicious exfiltration or arbitrary commands into privileged signing context.
+
+9. **Launcher Execution Sealing (`.launcher-seal.json` in `scripts/dice-launcher.mjs`)**:
+   - Cryptographically binds raw receipts, execution logs, and ledger into an immutable `.launcher-seal.json` using an ephemeral Ed25519 keypair during launcher execution.
+   - Prevents subsequent candidate commands from replacing receipts or rebuilding the ledger.
+
 ### 2.2 Native Verification Toolchain Adapters (`src/lib/dice/adapters/`)
 Under a unified object-oriented interface (`DiceAdapter`), native adapters provide complete lifecycle control, environment validation, specification hashing, and output diagnosis:
 1. `Lean4Adapter` (`src/lib/dice/adapters/lean4-adapter.ts`): Lake build orchestration, axiom auditing (`sorryAx` detection), and synthetic test vector equivalence checking.
@@ -122,7 +130,7 @@ All static, logic, formal, and adversarial verification gates pass cleanly acros
 | Bend 2 Correctness Laws | `bun run test:bend` | **PASS** | ALL PROOFS CHECK (BendTT kernel) |
 | TLA+ / TLC Model Checker | `bun run test:tla` | **PASS** | 4 specifications, >1.5M states explored |
 | Bombadil DOM Fuzzer | `bun run test:bombadil` | **PASS** | 8 viewports, 0 DOM invariant breaches |
-| DICE Vitest Suite | `bunx vitest run src/lib/dice/ --fileParallelism=false` | **PASS** | 12 test files, 185 passed, 0 failed |
+| DICE Vitest Suite | `bunx vitest run src/lib/dice/ --fileParallelism=false` | **PASS** | 12 test files, 247 passed, 10 skipped, 0 failed |
 | 27 Mutation Matrix | `bunx vitest run src/lib/dice/mutation-matrix.test.ts` | **PASS** | 27/27 mutation classes detected |
 
 ---

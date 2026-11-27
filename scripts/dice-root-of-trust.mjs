@@ -303,6 +303,7 @@ export class DiceTrustedRoot {
       "schemas/dice",
       "registries/dice",
       "scripts/dice-root-of-trust.mjs",
+      "scripts/dice-launcher.mjs",
       "scripts/dice-bootstrap.mjs",
       "scripts/dice-qualify.mjs",
       "scripts/dice-plan-generator.mjs",
@@ -382,12 +383,56 @@ export class DiceTrustedRoot {
       this.runnerSha = "unknown";
     }
 
+    // 5. Compute launcher SHA from trusted distribution cache
+    try {
+      const launcherContent = readFileSync(
+        join(this.cacheDir, "scripts/dice-launcher.mjs"),
+        "utf8",
+      );
+      this.launcherSha = createHash("sha256")
+        .update(launcherContent, "utf8")
+        .digest("hex");
+    } catch {
+      try {
+        const out = execFileSync(
+          "git",
+          ["show", `${this.trustedCommit}:scripts/dice-launcher.mjs`],
+          {
+            cwd: this.repoRoot,
+            encoding: "utf8",
+            stdio: ["ignore", "pipe", "pipe"],
+          },
+        );
+        this.launcherSha = createHash("sha256")
+          .update(out, "utf8")
+          .digest("hex");
+      } catch {
+        try {
+          const out = execFileSync(
+            "git",
+            ["show", `${DEFAULT_TRUSTED_REF}:scripts/dice-launcher.mjs`],
+            {
+              cwd: this.repoRoot,
+              encoding: "utf8",
+              stdio: ["ignore", "pipe", "pipe"],
+            },
+          );
+          this.launcherSha = createHash("sha256")
+            .update(out, "utf8")
+            .digest("hex");
+        } catch {
+          this.launcherSha = "unknown";
+        }
+      }
+    }
+
     return {
       trustedRef: this.trustedRef,
       trustedCommit: this.trustedCommit,
       trustedTree: this.trustedTree,
       trustedRootSha: this.trustedRootSha,
       runnerSha: this.runnerSha,
+      launcherSha: this.launcherSha,
       cacheDir: this.cacheDir,
       policyManifest: this.policyManifest,
     };
@@ -750,5 +795,100 @@ export function extractAndVerifySigningDistribution(options = {}) {
     testPolicyDigest,
     targetDir,
     manifest,
+  };
+}
+
+export function verifyPipelineConfiguration(options = {}) {
+  const repoRoot = options.repoRoot || process.cwd();
+  const trustedRef =
+    options.trustedRef ||
+    process.env.DICE_ROOT_REF ||
+    process.env.DICE_TRUSTED_REF ||
+    DEFAULT_TRUSTED_REF;
+  const externalDistDir =
+    options.externalDistDir || process.env.DICE_EXTERNAL_DIST_DIR || null;
+  const configRelPath = options.configPath || ".circleci/config.yml";
+  const expectedConfigDigest =
+    options.expectedConfigDigest ||
+    process.env.DICE_EXPECTED_PIPELINE_CONFIG_DIGEST ||
+    null;
+
+  const requireExternalAnchors =
+    options.requireExternalAnchors !== undefined
+      ? options.requireExternalAnchors
+      : process.env.DICE_REQUIRE_EXTERNAL_ANCHORS === "1";
+
+  validateSafePath(repoRoot);
+  validateSafePath(configRelPath);
+
+  const candidateConfigPath = resolve(repoRoot, configRelPath);
+  if (!existsSync(candidateConfigPath)) {
+    throw new Error(
+      `FAIL-CLOSED: Pipeline configuration missing at ${candidateConfigPath} (ConfigHashGuard)`,
+    );
+  }
+
+  const candidateContent = readFileSync(candidateConfigPath);
+  const candidateDigest = createHash("sha256")
+    .update(candidateContent)
+    .digest("hex");
+
+  if (requireExternalAnchors) {
+    if (!expectedConfigDigest) {
+      throw new Error(
+        "FAIL-CLOSED: External trust anchors required (DICE_REQUIRE_EXTERNAL_ANCHORS=1), but DICE_EXPECTED_PIPELINE_CONFIG_DIGEST is not set (BLOCKED).",
+      );
+    }
+  }
+
+  // Check against expected external anchor digest if provisioned
+  if (expectedConfigDigest) {
+    if (candidateDigest !== expectedConfigDigest) {
+      throw new Error(
+        `FAIL-CLOSED: Privileged pipeline configuration modified by candidate (ConfigHashGuard). Expected digest ${expectedConfigDigest}, got candidate digest ${candidateDigest}. The privileged signing configuration must originate from an independently protected source.`,
+      );
+    }
+  } else if (
+    externalDistDir &&
+    existsSync(join(externalDistDir, configRelPath))
+  ) {
+    const authoritativeContent = readFileSync(
+      join(externalDistDir, configRelPath),
+    );
+    const authoritativeDigest = createHash("sha256")
+      .update(authoritativeContent)
+      .digest("hex");
+    if (candidateDigest !== authoritativeDigest) {
+      throw new Error(
+        `FAIL-CLOSED: Privileged pipeline configuration modified by candidate (ConfigHashGuard). Candidate modified ${configRelPath} without authorization. The privileged signing configuration must originate from an independently protected source.`,
+      );
+    }
+  } else if (options.authoritativeRef) {
+    let authoritativeContent = null;
+    try {
+      authoritativeContent = execFileSync(
+        "git",
+        ["show", `${options.authoritativeRef}:${configRelPath}`],
+        { cwd: repoRoot, stdio: ["ignore", "pipe", "pipe"] },
+      );
+    } catch (err) {
+      throw new Error(
+        `FAIL-CLOSED: Authoritative pipeline configuration '${configRelPath}' cannot be resolved from trusted ref '${options.authoritativeRef}': ${err.message}`,
+      );
+    }
+    const authoritativeDigest = createHash("sha256")
+      .update(authoritativeContent)
+      .digest("hex");
+    if (candidateDigest !== authoritativeDigest) {
+      throw new Error(
+        `FAIL-CLOSED: Privileged pipeline configuration modified by candidate (ConfigHashGuard). Candidate modified ${configRelPath} without authorization. The privileged signing configuration must originate from an independently protected source.`,
+      );
+    }
+  }
+
+  return {
+    verified: true,
+    configPath: configRelPath,
+    digest: candidateDigest,
   };
 }

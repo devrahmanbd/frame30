@@ -290,9 +290,13 @@ export function runBootstrap(cliArgs = process.argv.slice(2)) {
   console.log(
     "\n[dice-bootstrap] Step 1: Resolving Independent Trusted Root-of-Trust...",
   );
-  const trustedRef =
-    process.env.DICE_TRUSTED_REF || contract.base_commit || DEFAULT_TRUSTED_REF;
-  const trustedRoot = new DiceTrustedRoot({ repoRoot: REPO_ROOT, trustedRef });
+  const allowUnpinnedRoots =
+    process.env.DICE_ALLOW_UNPINNED_ROOTS === "1" || isDryRun;
+  const trustedRoot = new DiceTrustedRoot({
+    repoRoot: REPO_ROOT,
+    trustedRef,
+    allowUnpinnedRoots,
+  });
   let trustedInfo;
   try {
     trustedInfo = trustedRoot.resolve();
