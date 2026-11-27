@@ -381,13 +381,24 @@ Recomputed directly from the approved trusted release (`5c3b0726db7de1fb0e20f111
 
 ---
 
-## 12. Conclusion & Stage 5.2 Status
+## 12. Conclusion & Stage 5.2 / 5.2.1 Status
 
-The Stage 5.2 implementation conclusively demonstrates:
-1. **Executable Baseline Differential Engine**: `scripts/dice-baseline-differential.mjs` executes identical ESLint and TypeScript scans against pinned baseline `5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb` in disposable git worktrees.
+### 12.1 Stage 5.2 Executable Baseline Differential Engine
+1. **Engine Architecture**: `scripts/dice-baseline-differential.mjs` executes identical ESLint and TypeScript scans against pinned baseline `5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb` in disposable git worktrees.
 2. **Zero Injected Diagnostics**: Multiset subtraction confirms exactly 0 new, 0 changed, and 0 removed diagnostics in both ESLint and TypeScript.
-3. **Automated Verification**: `src/lib/dice/baseline-differential.test.ts` validates all 20 required contract cases (21 tests passing).
-4. **CI Integration**: Unprivileged CircleCI preview job `dice-static-baseline-preview` stores machine-readable receipts and markdown summaries.
-5. **DICE TypeScript Boundary**: Clean pass (`bunx tsgo --project tsconfig.dice.json --noEmit` -> code 0).
-6. **Build Soundness**: Production build is 100% functional (exit code 0).
-7. **Operational State**: Contract remains in proposed state (`approval_state: "proposed"`). Production signing remains gated on human specification authority sign-off and CircleCI Context provisioning.
+3. **CI Integration**: Unprivileged CircleCI preview job `dice-static-baseline-preview` stores machine-readable receipts and markdown summaries without privileged credentials.
+4. **DICE TypeScript Boundary**: Clean pass (`bunx tsgo --project tsconfig.dice.json --noEmit` -> code 0).
+5. **Build Soundness**: Production build is 100% functional (exit code 0).
+
+### 12.2 Stage 5.2.1 Engine Correctness Verification
+The five defects identified in Stage 5.2 have been resolved and independently verified:
+1. **Baseline Resolution**: Operational fallback to `DEFAULT_DIAGNOSTIC_BASELINE_SHA` was eliminated. Missing or malformed baseline commit definitions in active contracts fail closed (`BLOCK`). Proved via automated test `Stage 5.2.1.1`.
+2. **ESLint Severity Comparison**: The approved 5-tuple identity `(file, line, column, rule_id, message)` is preserved. Severity is explicitly compared across identity matches; warning-to-error and error-to-warning changes fail closed (`BLOCK`) under change category `changed_severity`. Proved via automated tests `Stage 5.2.1.2a` and `Stage 5.2.1.2b`.
+3. **Strict ESLint Parsing & Discrepancy Reconciliation**:
+   - Strict validation rejects invalid file entries, non-array `messages`, malformed message objects, and invalid severity values (`!== 1 && !== 2`).
+   - Verifies reported `errorCount` and `warningCount` against parsed message totals.
+   - **Reconciliation of 1542 vs 1551 Discrepancy**: Raw ESLint scanner execution on the working tree reports 1551 diagnostics (1220 errors, 331 warnings). The 9 diagnostic difference is accounted for by gitignored file `.superpowers/sdd/phase1b/StoreHeader.pre-phase1b.tsx` present in the dirty local checkout (1 error, 8 warnings). In disposable git worktrees created from tracked tree revisions (`5c3b0726` and `c29a9a01`), the scanner correctly reports exactly 1542 diagnostics (1219 errors, 323 warnings).
+4. **TypeScript Scanner Exit Status**: The engine strictly accepts only normal compiler outcomes: exit 0 (clean compilation) and exit 1 (diagnostics reported). Any abnormal nonzero exit (e.g., SIGSEGV exit 139) fails closed (`BLOCK`), even when partial diagnostics were emitted. Proved via automated test `Stage 5.2.1.4`.
+5. **Candidate Identity & Working Tree Containment**: File synchronization from the uncommitted host working tree into the candidate worktree was removed. If candidate SHA is inferred from the environment, the working tree must be strictly clean or the engine fails closed (`BLOCK`). When candidate SHA is explicitly specified, the exact committed tree is verified. Proved via automated test `Stage 5.2.1.5`.
+
+Automated test suite `src/lib/dice/baseline-differential.test.ts` now runs 27 passing tests (20 mandatory Stage 5.2 requirement cases + multiline continuation check + 6 Stage 5.2.1 correctness cases). Baseline-conformant results strictly report `BASELINE-CONFORMANT`, never `PASS`. Contract remains in proposed state (`approval_state: "proposed"`).

@@ -33,10 +33,6 @@ import { join, resolve, relative } from "node:path";
 import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
 
-// Pinned fallback baseline commit if not extracted from contract
-export const DEFAULT_DIAGNOSTIC_BASELINE_SHA =
-  "5c3b0726db7de1fb0e20f111d36c2e2f89c36ebb";
-
 export function validateSha(sha, label = "commit SHA") {
   if (!sha || typeof sha !== "string" || !/^[0-9a-f]{40}$/i.test(sha.trim())) {
     throw new Error(
@@ -85,8 +81,9 @@ export function extractDiagnosticBaselineFromContract(
     }
   }
 
-  // 3. Fallback to default pinned baseline SHA if referenced in problem/evidence or constants
-  return DEFAULT_DIAGNOSTIC_BASELINE_SHA;
+  throw new Error(
+    `No diagnostic baseline commit found in active contract: ${contractPath}`,
+  );
 }
 
 export function normalizeToRelative(filePath, repoRoot = process.cwd()) {
@@ -154,24 +151,60 @@ export function parseEslintDiagnostics(output, repoRoot = process.cwd()) {
 
   const diagnostics = [];
 
-  for (const fileEntry of parsed) {
-    if (!fileEntry || typeof fileEntry !== "object") continue;
-    const rawFilePath = fileEntry.filePath || "";
+  for (let fIdx = 0; fIdx < parsed.length; fIdx++) {
+    const fileEntry = parsed[fIdx];
+    if (
+      !fileEntry ||
+      typeof fileEntry !== "object" ||
+      typeof fileEntry.filePath !== "string" ||
+      !fileEntry.filePath.trim()
+    ) {
+      throw new Error(
+        `Malformed ESLint JSON: file entry at index ${fIdx} is not a valid file object with filePath`,
+      );
+    }
+    if (!Array.isArray(fileEntry.messages)) {
+      throw new Error(
+        `Malformed ESLint JSON: messages property for ${fileEntry.filePath} is not an array`,
+      );
+    }
+
+    const rawFilePath = fileEntry.filePath;
     const relFile = normalizeToRelative(rawFilePath, repoRoot);
 
-    const messages = Array.isArray(fileEntry.messages)
-      ? fileEntry.messages
-      : [];
-    for (const msg of messages) {
-      if (!msg || typeof msg !== "object") continue;
+    let fileErrorCount = 0;
+    let fileWarningCount = 0;
+
+    for (let mIdx = 0; mIdx < fileEntry.messages.length; mIdx++) {
+      const msg = fileEntry.messages[mIdx];
+      if (!msg || typeof msg !== "object") {
+        throw new Error(
+          `Malformed ESLint JSON: message at index ${mIdx} in ${fileEntry.filePath} is not an object`,
+        );
+      }
+
+      if (typeof msg.message !== "string") {
+        throw new Error(
+          `Malformed ESLint JSON: message in ${fileEntry.filePath} missing message string`,
+        );
+      }
+
+      if (msg.severity !== 1 && msg.severity !== 2) {
+        throw new Error(
+          `Malformed ESLint JSON: invalid severity ${JSON.stringify(msg.severity)} in ${fileEntry.filePath}:${msg.line}:${msg.column}`,
+        );
+      }
 
       const line = Number.isInteger(msg.line) ? msg.line : 0;
       const column = Number.isInteger(msg.column) ? msg.column : 0;
       const ruleId = msg.ruleId || "(none)";
-      const rawMessage = (msg.message || "").trim();
+      const rawMessage = msg.message.trim();
       const severity = msg.severity === 2 ? "error" : "warning";
 
-      // Exact diagnostic identity tuple
+      if (msg.severity === 2) fileErrorCount++;
+      if (msg.severity === 1) fileWarningCount++;
+
+      // Approved diagnostic identity tuple
       const identity = `${relFile}:${line}:${column}:${ruleId}:${rawMessage}`;
 
       diagnostics.push({
@@ -183,6 +216,24 @@ export function parseEslintDiagnostics(output, repoRoot = process.cwd()) {
         severity,
         identity,
       });
+    }
+
+    // Verify reported error/warning totals against parsed messages
+    if (
+      Number.isInteger(fileEntry.errorCount) &&
+      fileEntry.errorCount !== fileErrorCount
+    ) {
+      throw new Error(
+        `Malformed ESLint JSON: errorCount mismatch for ${fileEntry.filePath} (reported ${fileEntry.errorCount}, parsed ${fileErrorCount})`,
+      );
+    }
+    if (
+      Number.isInteger(fileEntry.warningCount) &&
+      fileEntry.warningCount !== fileWarningCount
+    ) {
+      throw new Error(
+        `Malformed ESLint JSON: warningCount mismatch for ${fileEntry.filePath} (reported ${fileEntry.warningCount}, parsed ${fileWarningCount})`,
+      );
     }
   }
 
@@ -199,6 +250,14 @@ export function parseTypeScriptDiagnostics(
   repoRoot = process.cwd(),
   exitCode = 0,
 ) {
+  // Accept only normal compiler outcomes: exit 0 for successful compilation and exit 1 for reported diagnostics.
+  // Any abnormal nonzero exit must BLOCK, even when partial diagnostics were emitted.
+  if (exitCode !== 0 && exitCode !== 1) {
+    throw new Error(
+      `Abnormal TypeScript compiler exit status: exit code ${exitCode}`,
+    );
+  }
+
   const combined = (stdout || "") + "\n" + (stderr || "");
   const lines = combined.split(/\r?\n/).map((l) => l.trimEnd());
 
@@ -271,10 +330,18 @@ export function parseTypeScriptDiagnostics(
     diagnostics.push(finalizeTsDiag(current, repoRoot));
   }
 
-  // If compiler exited non-zero but emitted 0 parseable diagnostics, output is incomplete or crashed
-  if (exitCode !== 0 && diagnostics.length === 0) {
+  // Accept only normal compiler outcomes: exit 0 for successful compilation and exit 1 for reported diagnostics.
+  // Any abnormal nonzero exit must BLOCK, even when partial diagnostics were emitted.
+  if (exitCode !== 0 && exitCode !== 1) {
     throw new Error(
-      `Incomplete diagnostic output: TypeScript compiler exited with code ${exitCode} but 0 diagnostics parsed`,
+      `Abnormal TypeScript compiler exit status: exit code ${exitCode}`,
+    );
+  }
+
+  // If compiler exited with code 1 but emitted 0 parseable diagnostics, output is incomplete
+  if (exitCode === 1 && diagnostics.length === 0) {
+    throw new Error(
+      `Incomplete diagnostic output: TypeScript compiler exited with code 1 but 0 diagnostics parsed`,
     );
   }
 
@@ -332,7 +399,21 @@ export function compareDiagnosticMultisets(baselineDiags, candidateDiags) {
     const cCount = cCounts.get(id) || 0;
 
     if (bCount === cCount) {
-      // Identical
+      // Diagnostic identity matches. Now check whether severity differs between matches.
+      const bMatches = baselineDiags.filter((d) => d.identity === id);
+      const cMatches = candidateDiags.filter((d) => d.identity === id);
+      for (let k = 0; k < bMatches.length; k++) {
+        const bItem = bMatches[k];
+        const cItem = cMatches[k];
+        if (bItem.severity !== cItem.severity) {
+          changedCount++;
+          changedItems.push({
+            type: "changed_severity",
+            baseline: bItem,
+            candidate: cItem,
+          });
+        }
+      }
       continue;
     } else if (bCount > cCount) {
       // Diagnostic was removed (cCount < bCount)
@@ -376,9 +457,12 @@ export function compareDiagnosticMultisets(baselineDiags, candidateDiags) {
           (base.message && base.message === cand.message) ||
           (base.complete_message &&
             base.complete_message === cand.complete_message);
+        const sameSeverity = base.severity === cand.severity;
 
         let changeType = null;
-        if (sameLoc && !sameCode) {
+        if (sameLoc && sameCode && sameMsg && !sameSeverity) {
+          changeType = "changed_severity";
+        } else if (sameLoc && !sameCode) {
           changeType = "changed_rule_or_code";
         } else if (sameLoc && !sameMsg) {
           changeType = "changed_message";
@@ -634,12 +718,21 @@ export async function runDifferentialComparison(options = {}) {
       return makeFailureResult(
         "BLOCK",
         `Failed to read contract: ${err.message}`,
-        baselineSha,
+        null,
         null,
       );
     }
   }
-  baselineSha = validateSha(baselineSha, "baseline commit SHA");
+  try {
+    baselineSha = validateSha(baselineSha, "baseline commit SHA");
+  } catch (err) {
+    return makeFailureResult(
+      "BLOCK",
+      `Invalid baseline commit SHA: ${err.message}`,
+      null,
+      null,
+    );
+  }
 
   // Verify baseline commit exists in Git (unless using direct mock directories)
   if (!options.baselineDir && !options.skipGitVerify) {
@@ -661,7 +754,20 @@ export async function runDifferentialComparison(options = {}) {
   // Resolve candidate commit
   let candidateSha = options.candidateSha;
   if (!candidateSha) {
+    // Require a clean working tree when candidate SHA is inferred
     try {
+      const porcelain = execFileSync("git", ["status", "--porcelain"], {
+        cwd: repoRoot,
+        encoding: "utf8",
+      }).trim();
+      if (porcelain.length > 0) {
+        return makeFailureResult(
+          "BLOCK",
+          "Working tree has uncommitted modifications. Candidate SHA must be explicitly specified or working tree must be clean.",
+          baselineSha,
+          null,
+        );
+      }
       candidateSha = execFileSync("git", ["rev-parse", "HEAD"], {
         cwd: repoRoot,
         encoding: "utf8",
@@ -675,7 +781,16 @@ export async function runDifferentialComparison(options = {}) {
       );
     }
   }
-  candidateSha = validateSha(candidateSha, "candidate commit SHA");
+  try {
+    candidateSha = validateSha(candidateSha, "candidate commit SHA");
+  } catch (err) {
+    return makeFailureResult(
+      "BLOCK",
+      `Invalid candidate commit SHA: ${err.message}`,
+      baselineSha,
+      null,
+    );
+  }
 
   // Worktree setup or direct directories
   let baselineDir = options.baselineDir;
@@ -718,37 +833,6 @@ export async function runDifferentialComparison(options = {}) {
           join(candidateDir, "node_modules"),
           "junction",
         );
-      }
-
-      // If working tree has uncommitted modifications and candidate was resolved from HEAD,
-      // sync the modified files into the candidate worktree
-      if (!options.candidateSha) {
-        try {
-          const porcelain = execFileSync("git", ["status", "--porcelain"], {
-            cwd: repoRoot,
-            encoding: "utf8",
-          });
-          const lines = porcelain
-            .split("\n")
-            .filter((l) => l.trim().length > 0);
-          for (const line of lines) {
-            const status = line.slice(0, 2).trim();
-            const relPath = line.slice(3).trim();
-            const srcPath = join(repoRoot, relPath);
-            const destPath = join(candidateDir, relPath);
-
-            if (status === "D") {
-              if (existsSync(destPath)) {
-                rmSync(destPath, { recursive: true, force: true });
-              }
-            } else if (existsSync(srcPath) && statSync(srcPath).isFile()) {
-              mkdirSync(join(destPath, ".."), { recursive: true });
-              copyFileSync(srcPath, destPath);
-            }
-          }
-        } catch (err) {
-          void err;
-        }
       }
     }
 
