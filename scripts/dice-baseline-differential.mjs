@@ -219,18 +219,22 @@ export function parseEslintDiagnostics(output, repoRoot = process.cwd()) {
     }
 
     // Verify reported error/warning totals against parsed messages
-    if (
-      Number.isInteger(fileEntry.errorCount) &&
-      fileEntry.errorCount !== fileErrorCount
-    ) {
+    if (!Number.isInteger(fileEntry.errorCount)) {
+      throw new Error(
+        `Malformed ESLint JSON: missing or non-integer errorCount for ${fileEntry.filePath}`,
+      );
+    }
+    if (!Number.isInteger(fileEntry.warningCount)) {
+      throw new Error(
+        `Malformed ESLint JSON: missing or non-integer warningCount for ${fileEntry.filePath}`,
+      );
+    }
+    if (fileEntry.errorCount !== fileErrorCount) {
       throw new Error(
         `Malformed ESLint JSON: errorCount mismatch for ${fileEntry.filePath} (reported ${fileEntry.errorCount}, parsed ${fileErrorCount})`,
       );
     }
-    if (
-      Number.isInteger(fileEntry.warningCount) &&
-      fileEntry.warningCount !== fileWarningCount
-    ) {
+    if (fileEntry.warningCount !== fileWarningCount) {
       throw new Error(
         `Malformed ESLint JSON: warningCount mismatch for ${fileEntry.filePath} (reported ${fileEntry.warningCount}, parsed ${fileWarningCount})`,
       );
@@ -263,6 +267,7 @@ export function parseTypeScriptDiagnostics(
 
   const diagnostics = [];
   let current = null;
+  let reportedTotalErrors = null;
 
   // Pattern 1: Non-TTY paren format: file(line,col): error/warning TS<code>: message
   const parenRegex =
@@ -277,10 +282,9 @@ export function parseTypeScriptDiagnostics(
     if (!trimmed) return true;
     if (/^\$\s+tsgo/.test(trimmed)) return true;
     if (/^error:\s*script\s*"typecheck"/.test(trimmed)) return true;
-    if (/^Found\s+\d+\s+errors?\s+in\s+\d+\s+files?/i.test(trimmed))
-      return true;
+    if (/^Found\s+\d+\s+errors?/i.test(trimmed)) return true;
     if (/^Errors\s+Files/i.test(trimmed)) return true;
-    if (/^\d+\s+src\//.test(trimmed)) return true;
+    if (/^\d+\s+[a-zA-Z0-9_\-\.\/]+/.test(trimmed)) return true;
     return false;
   };
 
@@ -293,6 +297,12 @@ export function parseTypeScriptDiagnostics(
     const parenMatch = line.match(parenRegex);
     const colonMatch = line.match(colonRegex);
     const match = parenMatch || colonMatch;
+
+    const trimmedLine = line.trim();
+    const totalMatch = trimmedLine.match(/^Found\s+(\d+)\s+errors?/i);
+    if (totalMatch) {
+      reportedTotalErrors = parseInt(totalMatch[1], 10);
+    }
 
     if (match) {
       if (current) {
@@ -342,6 +352,16 @@ export function parseTypeScriptDiagnostics(
   if (exitCode === 1 && diagnostics.length === 0) {
     throw new Error(
       `Incomplete diagnostic output: TypeScript compiler exited with code 1 but 0 diagnostics parsed`,
+    );
+  }
+
+  // If reported diagnostic total was provided, verify parsed diagnostics match
+  if (
+    reportedTotalErrors !== null &&
+    diagnostics.length !== reportedTotalErrors
+  ) {
+    throw new Error(
+      `Incomplete diagnostic output: TypeScript compiler reported ${reportedTotalErrors} errors, but ${diagnostics.length} diagnostics were parsed`,
     );
   }
 

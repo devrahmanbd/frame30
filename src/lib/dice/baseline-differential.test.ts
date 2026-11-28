@@ -63,6 +63,8 @@ describe("DICE Baseline-Differential Static Gates (Stage 5.2 Option A)", () => {
     const baselineEslint = [
       {
         filePath: "/repo/src/routes/search.tsx",
+        errorCount: 0,
+        warningCount: 1,
         messages: [
           {
             line: 548,
@@ -115,6 +117,8 @@ describe("DICE Baseline-Differential Static Gates (Stage 5.2 Option A)", () => {
     const baseline = [
       {
         filePath: "/repo/src/routes/a.tsx",
+        errorCount: 1,
+        warningCount: 0,
         messages: [
           {
             line: 10,
@@ -129,6 +133,8 @@ describe("DICE Baseline-Differential Static Gates (Stage 5.2 Option A)", () => {
     const candidate = [
       {
         filePath: "/repo/src/routes/a.tsx",
+        errorCount: 2,
+        warningCount: 0,
         messages: [
           {
             line: 10,
@@ -161,6 +167,8 @@ describe("DICE Baseline-Differential Static Gates (Stage 5.2 Option A)", () => {
     const baseline = [
       {
         filePath: "/repo/src/routes/a.tsx",
+        errorCount: 0,
+        warningCount: 1,
         messages: [
           {
             line: 10,
@@ -175,6 +183,8 @@ describe("DICE Baseline-Differential Static Gates (Stage 5.2 Option A)", () => {
     const candidate = [
       {
         filePath: "/repo/src/routes/a.tsx",
+        errorCount: 0,
+        warningCount: 2,
         messages: [
           {
             line: 10,
@@ -207,6 +217,8 @@ describe("DICE Baseline-Differential Static Gates (Stage 5.2 Option A)", () => {
     const baseline = [
       {
         filePath: "/repo/src/routes/a.tsx",
+        errorCount: 1,
+        warningCount: 0,
         messages: [
           {
             line: 10,
@@ -221,6 +233,8 @@ describe("DICE Baseline-Differential Static Gates (Stage 5.2 Option A)", () => {
     const candidate = [
       {
         filePath: "/repo/src/routes/a.tsx",
+        errorCount: 1,
+        warningCount: 0,
         messages: [
           {
             line: 10,
@@ -246,6 +260,8 @@ describe("DICE Baseline-Differential Static Gates (Stage 5.2 Option A)", () => {
     const baseline = [
       {
         filePath: "/repo/src/routes/a.tsx",
+        errorCount: 1,
+        warningCount: 0,
         messages: [
           {
             line: 10,
@@ -260,6 +276,8 @@ describe("DICE Baseline-Differential Static Gates (Stage 5.2 Option A)", () => {
     const candidate = [
       {
         filePath: "/repo/src/routes/a.tsx",
+        errorCount: 1,
+        warningCount: 0,
         messages: [
           {
             line: 10,
@@ -285,6 +303,8 @@ describe("DICE Baseline-Differential Static Gates (Stage 5.2 Option A)", () => {
     const baseline = [
       {
         filePath: "/repo/src/routes/a.tsx",
+        errorCount: 1,
+        warningCount: 0,
         messages: [
           {
             line: 10,
@@ -299,6 +319,8 @@ describe("DICE Baseline-Differential Static Gates (Stage 5.2 Option A)", () => {
     const candidate = [
       {
         filePath: "/repo/src/routes/a.tsx",
+        errorCount: 1,
+        warningCount: 0,
         messages: [
           {
             line: 15,
@@ -556,6 +578,8 @@ describe("DICE Baseline-Differential Static Gates (Stage 5.2 Option A)", () => {
     const baseline = [
       {
         filePath: "/repo/src/routes/a.tsx",
+        errorCount: 0,
+        warningCount: 1,
         messages: [
           {
             line: 10,
@@ -570,6 +594,8 @@ describe("DICE Baseline-Differential Static Gates (Stage 5.2 Option A)", () => {
     const candidate = [
       {
         filePath: "/repo/src/routes/a.tsx",
+        errorCount: 1,
+        warningCount: 0,
         messages: [
           {
             line: 10,
@@ -597,6 +623,8 @@ describe("DICE Baseline-Differential Static Gates (Stage 5.2 Option A)", () => {
     const baseline = [
       {
         filePath: "/repo/src/routes/a.tsx",
+        errorCount: 1,
+        warningCount: 0,
         messages: [
           {
             line: 10,
@@ -611,6 +639,8 @@ describe("DICE Baseline-Differential Static Gates (Stage 5.2 Option A)", () => {
     const candidate = [
       {
         filePath: "/repo/src/routes/a.tsx",
+        errorCount: 0,
+        warningCount: 1,
         messages: [
           {
             line: 10,
@@ -670,6 +700,34 @@ describe("DICE Baseline-Differential Static Gates (Stage 5.2 Option A)", () => {
       ),
     ).toThrow(/invalid severity 3/);
 
+    // Missing errorCount
+    expect(() =>
+      parseEslintDiagnostics(
+        JSON.stringify([
+          {
+            filePath: "a.ts",
+            messages: [{ message: "err", severity: 2 }],
+            warningCount: 0,
+          },
+        ]),
+        "/repo",
+      ),
+    ).toThrow(/missing or non-integer errorCount for a\.ts/);
+
+    // Missing warningCount
+    expect(() =>
+      parseEslintDiagnostics(
+        JSON.stringify([
+          {
+            filePath: "a.ts",
+            messages: [{ message: "warn", severity: 1 }],
+            errorCount: 0,
+          },
+        ]),
+        "/repo",
+      ),
+    ).toThrow(/missing or non-integer warningCount for a\.ts/);
+
     // Error count mismatch
     expect(() =>
       parseEslintDiagnostics(
@@ -678,6 +736,7 @@ describe("DICE Baseline-Differential Static Gates (Stage 5.2 Option A)", () => {
             filePath: "a.ts",
             messages: [{ message: "err", severity: 2 }],
             errorCount: 0, // reported 0 but parsed 1
+            warningCount: 0,
           },
         ]),
         "/repo",
@@ -691,6 +750,7 @@ describe("DICE Baseline-Differential Static Gates (Stage 5.2 Option A)", () => {
           {
             filePath: "a.ts",
             messages: [{ message: "warn", severity: 1 }],
+            errorCount: 0,
             warningCount: 0, // reported 0 but parsed 1
           },
         ]),
@@ -708,6 +768,20 @@ describe("DICE Baseline-Differential Static Gates (Stage 5.2 Option A)", () => {
     expect(() =>
       parseTypeScriptDiagnostics(partialOutput, "", "/repo", 139),
     ).toThrow(/Abnormal TypeScript compiler exit status: exit code 139/);
+  });
+
+  // Stage 5.3.1: Output-completeness condition for TypeScript reported diagnostic totals
+  it("Stage 5.3.1: rejects incomplete TypeScript output when reported total exceeds parsed diagnostics", () => {
+    const partialOutput =
+      "src/routes/search.tsx(548,25): error TS2339: Property 'tokens' does not exist on type '{}'.\n" +
+      "\n" +
+      "Found 5 errors in 2 files.";
+
+    expect(() =>
+      parseTypeScriptDiagnostics(partialOutput, "", "/repo", 1),
+    ).toThrow(
+      /Incomplete diagnostic output: TypeScript compiler reported 5 errors, but 1 diagnostics were parsed/,
+    );
   });
 
   // 5. Candidate identity: rejects dirty working tree when candidate SHA is inferred
