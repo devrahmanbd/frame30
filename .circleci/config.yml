@@ -80,9 +80,21 @@ jobs:
 
   dice-static-baseline-preview:
     executor: bun-executor
+    resource_class: large
     steps:
       - checkout
       - setup-bun
+      - run:
+          name: Inspect executor memory and cgroup limits
+          command: |
+            echo "=== EXECUTOR RESOURCE DIAGNOSTICS ==="
+            if [ -f /sys/fs/cgroup/memory.max ]; then
+              echo "cgroup v2 memory.max: $(cat /sys/fs/cgroup/memory.max)"
+              echo "cgroup v2 memory.current: $(cat /sys/fs/cgroup/memory.current)"
+              echo "cgroup v2 memory.events:"
+              cat /sys/fs/cgroup/memory.events 2>/dev/null || true
+            fi
+            free -h 2>/dev/null || true
       - run:
           name: Fetch diagnostic baseline commit
           command: |
@@ -92,6 +104,18 @@ jobs:
           command: |
             mkdir -p artifacts/dice-static-baseline
             bun run static:baseline --report-dir=artifacts/dice-static-baseline
+      - run:
+          name: Record post-execution cgroup memory statistics
+          command: |
+            echo "=== POST-EXECUTION MEMORY DIAGNOSTICS ==="
+            if [ -f /sys/fs/cgroup/memory.peak ]; then
+              echo "cgroup v2 memory.peak: $(cat /sys/fs/cgroup/memory.peak)"
+            fi
+            if [ -f /sys/fs/cgroup/memory.events ]; then
+              echo "cgroup v2 memory.events:"
+              cat /sys/fs/cgroup/memory.events 2>/dev/null || true
+            fi
+          when: always
       - store_artifacts:
           path: artifacts/dice-static-baseline
           destination: dice-static-baseline
