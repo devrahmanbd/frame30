@@ -28,6 +28,8 @@ import {
   statSync,
   realpathSync,
   copyFileSync,
+  chmodSync,
+  readdirSync,
 } from "node:fs";
 import { join, resolve, relative } from "node:path";
 import { createHash } from "node:crypto";
@@ -853,8 +855,34 @@ export async function runDifferentialComparison(options = {}) {
           join(candidateDir, "node_modules"),
           "junction",
         );
+
+        // Ensure tsgo and native compiler binaries have executable permissions
+        const binTsgo = join(hostNodeModules, ".bin/tsgo");
+        if (existsSync(binTsgo)) {
+          try {
+            chmodSync(binTsgo, 0o755);
+          } catch {}
+        }
+        const nativeDir = join(hostNodeModules, "@typescript");
+        if (existsSync(nativeDir)) {
+          try {
+            for (const d of readdirSync(nativeDir)) {
+              const nativeBin = join(nativeDir, d, "lib/tsgo");
+              if (existsSync(nativeBin)) {
+                try {
+                  chmodSync(nativeBin, 0o755);
+                } catch {}
+              }
+            }
+          } catch {}
+        }
       }
     }
+
+    const runEnv = {
+      ...process.env,
+      PATH: `${join(repoRoot, "node_modules/.bin")}:${process.env.PATH || ""}`,
+    };
 
     // Enforce identical execution conditions
     const condCheck = verifyExecutionConditions(baselineDir, candidateDir);
@@ -875,6 +903,7 @@ export async function runDifferentialComparison(options = {}) {
     if (bEslintOut === undefined) {
       const res = spawnSync("bun", ["run", "lint", "--", "-f", "json"], {
         cwd: baselineDir,
+        env: runEnv,
         encoding: "utf8",
         maxBuffer: 50 * 1024 * 1024,
       });
@@ -891,6 +920,7 @@ export async function runDifferentialComparison(options = {}) {
     if (cEslintOut === undefined) {
       const res = spawnSync("bun", ["run", "lint", "--", "-f", "json"], {
         cwd: candidateDir,
+        env: runEnv,
         encoding: "utf8",
         maxBuffer: 50 * 1024 * 1024,
       });
@@ -927,6 +957,7 @@ export async function runDifferentialComparison(options = {}) {
     if (bTsRes === undefined) {
       const res = spawnSync("bun", ["run", "typecheck"], {
         cwd: baselineDir,
+        env: runEnv,
         encoding: "utf8",
         maxBuffer: 50 * 1024 * 1024,
       });
@@ -947,6 +978,7 @@ export async function runDifferentialComparison(options = {}) {
     if (cTsRes === undefined) {
       const res = spawnSync("bun", ["run", "typecheck"], {
         cwd: candidateDir,
+        env: runEnv,
         encoding: "utf8",
         maxBuffer: 50 * 1024 * 1024,
       });
@@ -973,6 +1005,29 @@ export async function runDifferentialComparison(options = {}) {
         baselineDir,
         bTsRes.exitCode,
       );
+    } catch (err) {
+      console.error(
+        `[dice-baseline-differential] ✗ Baseline TS parse error: ${err.message}`,
+      );
+      if (bTsRes.stdout) {
+        console.error(
+          `[dice-baseline-differential] Baseline stdout (sample):\n${bTsRes.stdout.slice(0, 500)}`,
+        );
+      }
+      if (bTsRes.stderr) {
+        console.error(
+          `[dice-baseline-differential] Baseline stderr (sample):\n${bTsRes.stderr.slice(0, 500)}`,
+        );
+      }
+      return makeFailureResult(
+        "BLOCK",
+        `TypeScript diagnostic parsing error on baseline: ${err.message}`,
+        baselineSha,
+        candidateSha,
+      );
+    }
+
+    try {
       cTsDiags = parseTypeScriptDiagnostics(
         cTsRes.stdout,
         cTsRes.stderr,
@@ -980,9 +1035,22 @@ export async function runDifferentialComparison(options = {}) {
         cTsRes.exitCode,
       );
     } catch (err) {
+      console.error(
+        `[dice-baseline-differential] ✗ Candidate TS parse error: ${err.message}`,
+      );
+      if (cTsRes.stdout) {
+        console.error(
+          `[dice-baseline-differential] Candidate stdout (sample):\n${cTsRes.stdout.slice(0, 500)}`,
+        );
+      }
+      if (cTsRes.stderr) {
+        console.error(
+          `[dice-baseline-differential] Candidate stderr (sample):\n${cTsRes.stderr.slice(0, 500)}`,
+        );
+      }
       return makeFailureResult(
         "BLOCK",
-        `TypeScript diagnostic parsing error: ${err.message}`,
+        `TypeScript diagnostic parsing error on candidate: ${err.message}`,
         baselineSha,
         candidateSha,
       );
